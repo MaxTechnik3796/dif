@@ -1,9 +1,4 @@
 {
-  "creative_tab.dif.main": "TheDifferential: Main",
-  "block.dif.example_block": "Example Block",
-  "item.dif.example_item": "Example Item",
-
-
   "subtitles.cremeka": "",
   "subtitles.redstone": "",
   "subtitles.maty_create": "",
@@ -12,14 +7,12 @@
   "subtitles.furt_ta_stejna_hra": "",
   "subtitles.clairdelune": "",
 
-
-
   "item.dif.mayonnaise": "Majo",
   "item.dif.cremeka": "Music Disc",
   "item.dif.maty_create": "Music Disc",
   "item.dif.furt_ta_stejna_hra": "Music Disc",
   "item.dif.redstone": "Music Disc",
-  "item.dif.maty_pada_steam": "Music Disc",
+  "item.dif.maty_pada_stream": "Music Disc",
   "item.dif.clairdelune": "Music Disc",
 
   "item.dif.mayonnaise.desc": "§7Mayonnaise on an escalator! - §6Copyright?§r",
@@ -28,5 +21,22 @@
   "item.dif.furt_ta_stejna_hra.desc": "§7Furt Ta Stejná Hra - §b©2024 LaserLinx§r",
   "item.dif.redstone.desc": "§7Redstone - §eNocopy§r",
   "item.dif.maty_pada_stream.desc": "§7Matymu padá stream - §6Copyright?§r",
-  "item.dif.clairdelune.desc": "§7Clairdelune - §aFree§r"
+  "item.dif.clairdelune.desc": "§7Clairdelune - §aFree§r",
+
+
+  "creative_tab.dif.main": "TheDifferential: Main",
+  "creative_tab.dif.music": "TheDifferential: Music",
+
+
+
+  "item.dif.example_item": "Example Item",
+  "item.dif.cherry": "Cherry",
+  "item.dis.tresnovice": "Třešňovice",
+
+  "block.dif.example_block": "Example Block"
+
+
+
+
+
 }

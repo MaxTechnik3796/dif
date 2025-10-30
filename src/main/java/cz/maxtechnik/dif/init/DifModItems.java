@@ -3,6 +3,8 @@ package cz.maxtechnik.dif.init;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.item.BasicItem;
 import cz.maxtechnik.dif.item.MusicDisc;
+import cz.maxtechnik.dif.item.food.BasicFood;
+import cz.maxtechnik.dif.item.food.Tresnovice;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DoubleHighBlockItem;
 import net.minecraft.world.item.Item;
@@ -16,7 +18,10 @@ public class DifModItems{
     private static RegistryObject<Item>block(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new BlockItem(block.get(),new Item.Properties()));}
     private static RegistryObject<Item>doubleBlock(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));}
 
-    public static final RegistryObject<Item>EXAMPLE_ITEM=REGISTRY.register("example_item", BasicItem::new);
+    public static final RegistryObject<Item>EXAMPLE_ITEM=REGISTRY.register("example_item",BasicItem::new);
+    public static final RegistryObject<Item>CHERRY=REGISTRY.register("cherry",()->new BasicFood(1,0.1F));
+    public static final RegistryObject<Item>TRESNOVICE=REGISTRY.register("tresnovice", Tresnovice::new);
+
     public static final RegistryObject<Item>EXAMPLE_BLOCK=block(DifModBlocks.EXAMPLE_BLOCK);
 
 
