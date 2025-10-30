@@ -3,7 +3,6 @@ package cz.maxtechnik.dif.init;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.item.BasicItem;
 import cz.maxtechnik.dif.item.MusicDisc;
-import cz.maxtechnik.dif.item.MusicDisc2;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DoubleHighBlockItem;
 import net.minecraft.world.item.Item;
@@ -23,8 +22,7 @@ public class DifModItems{
 
 
     //MusicDiscs:
-    public static final RegistryObject<Item>CLAIRDELUNE=REGISTRY.register("clairdelune", MusicDisc2::new);
-    //public static final RegistryObject<Item>CLAIRDELUNE=REGISTRY.register("clairdelune",()->new MusicDisc(5,6320,DifMod.MODID,"clairdelune"));
+    public static final RegistryObject<Item>CLAIRDELUNE=REGISTRY.register("clairdelune",()->new MusicDisc(5,6320,DifMod.MODID,"clairdelune"));
     public static final RegistryObject<Item>CREMEKA=REGISTRY.register("cremeka",()->new MusicDisc(15,3860,DifMod.MODID,"cremeka"));
     public static final RegistryObject<Item>FURT_TA_STEJNA_HRA=REGISTRY.register("furt_ta_stejna_hra",()->new MusicDisc(15,2100,DifMod.MODID,"furt_ta_stejna_hra"));
     public static final RegistryObject<Item>MATY_CREATE=REGISTRY.register("maty_create",()->new MusicDisc(10,1900,DifMod.MODID,"maty_create"));

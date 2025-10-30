@@ -26,7 +26,7 @@
   "maty_create": {
     "sounds": [
       {
-        "name": "dif:record/maty_create",
+        "name": "dif:records/maty_create",
         "stream": true
       }
     ]
