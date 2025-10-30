@@ -15,5 +15,12 @@ public class DifModTabs{
         tabData.accept(Blocks.STONE.asItem());
         tabData.accept(DifModBlocks.EXAMPLE_BLOCK.get().asItem());
         tabData.accept(DifModItems.EXAMPLE_ITEM.get());
+        tabData.accept(DifModItems.CLAIRDELUNE.get());
+        tabData.accept(DifModItems.CREMEKA.get());
+        tabData.accept(DifModItems.FURT_TA_STEJNA_HRA.get());
+        tabData.accept(DifModItems.MATY_CREATE.get());
+        tabData.accept(DifModItems.MATY_PADA_STREAM.get());
+        tabData.accept(DifModItems.MAYONNAISE.get());
+        tabData.accept(DifModItems.REDSTONE.get());
     })).build());
 }
