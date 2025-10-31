@@ -1,42 +1,77 @@
 {
-  "subtitles.cremeka": "",
-  "subtitles.redstone": "",
-  "subtitles.maty_create": "",
-  "subtitles.mayonnaise": "",
-  "subtitles.maty_pada_stream": "",
-  "subtitles.furt_ta_stejna_hra": "",
-  "subtitles.clairdelune": "",
+	"effect.dif.redstone_iq": "Redstone Boost",
+	"effect.dif.redstone_not_iq": "Redstonenot Anti-Boost",
 
-  "item.dif.mayonnaise": "Majo",
-  "item.dif.cremeka": "Music Disc",
-  "item.dif.maty_create": "Music Disc",
-  "item.dif.furt_ta_stejna_hra": "Music Disc",
-  "item.dif.redstone": "Music Disc",
-  "item.dif.maty_pada_stream": "Music Disc",
-  "item.dif.clairdelune": "Music Disc",
+	"subtitles.cremeka":"",
+	"subtitles.redstone":"",
+	"subtitles.maty_create":"",
+	"subtitles.mayonnaise":"",
+	"subtitles.maty_pada_stream":"",
+	"subtitles.furt_ta_stejna_hra":"",
+	"subtitles.clairdelune":"",
 
-  "item.dif.mayonnaise.desc": "§7Mayonnaise on an escalator! - §6Copyright?§r",
-  "item.dif.cremeka.desc": "§7Cremeka song! - §eNocopy§r",
-  "item.dif.maty_create.desc": "§7Maty Create: Song - §eNocopy§r",
-  "item.dif.furt_ta_stejna_hra.desc": "§7Furt Ta Stejná Hra - §b©2024 LaserLinx§r",
-  "item.dif.redstone.desc": "§7Redstone - §eNocopy§r",
-  "item.dif.maty_pada_stream.desc": "§7Matymu padá stream - §6Copyright?§r",
-  "item.dif.clairdelune.desc": "§7Clairdelune - §aFree§r",
+	"item.dif.mayonnaise":"Majo",
+	"item.dif.cremeka":"Music Disc",
+	"item.dif.maty_create":"Music Disc",
+	"item.dif.furt_ta_stejna_hra":"Music Disc",
+	"item.dif.redstone":"Music Disc",
+	"item.dif.maty_pada_stream":"Music Disc",
+	"item.dif.clairdelune":"Music Disc",
 
+	"item.dif.mayonnaise.desc":"§7Mayonnaise on an escalator! - Harry Arbuckle§r",
+	"item.dif.cremeka.desc":"§7Cremeka song! - CZ|Ted<3 & AI§r",
+	"item.dif.maty_create.desc":"§7Maty Create Song - Matrixgold§r",
+	"item.dif.furt_ta_stejna_hra.desc":"§7Furt Ta Stejná Hra - LaserLinx_yt & AI§r",
+	"item.dif.redstone.desc":"§7Redstone - Matrixgold & AI§r",
+	"item.dif.maty_pada_stream.desc":"§7Matymu padá stream - CZ|Ted<3 & AI§r",
+	"item.dif.clairdelune.desc":"§7Clairdelune - Christelle Dabos§r",
 
-  "creative_tab.dif.main": "TheDifferential: Main",
-  "creative_tab.dif.music": "TheDifferential: Music",
-
-
-
-  "item.dif.example_item": "Example Item",
-  "item.dif.cherry": "Cherry",
-  "item.dis.tresnovice": "Třešňovice",
-
-  "block.dif.example_block": "Example Block"
-
+	"item.dif.mayonnaise.desc2":"§7License: §6Copyright?§r",
+	"item.dif.cremeka.desc2":"§7License: §eNocopy§r",
+	"item.dif.maty_create.desc2":"§7License: §eNocopy§r",
+	"item.dif.furt_ta_stejna_hra.desc2":"§7License: §b©2024 LaserLinx§r",
+	"item.dif.redstone.desc2":"§7License: §eNocopy§r",
+	"item.dif.maty_pada_stream.desc2":"§7License: §eNocopy§r",
+	"item.dif.clairdelune.desc2":"§7License: §aFree§r",
 
 
+	"creative_tab.dif.main":"TheDifferential: Main",
+	"creative_tab.dif.music":"TheDifferential: Music",
+	"creative_tab.dif.random":"TheDifferential: Random",
 
+	"item.dif.example_item":"Example Item",
+	"item.mcc.question_mark":"Question Mark",
+	"item.dif.bluestone":"Bluestone",
+	"item.dif.cpu_singularity":"§dCPU Singularity§r",
+	"item.dif.incomplete_cpu_singularity":"§dIncomplete Cpu Singularity§r",
+	"item.dif.masticka":"Mastička",
+	"item.dif.blue_plate":"Blue Plate",
+	"item.dif.heavy_plate":"Heavy Plate",
 
+	"item.dif.cherry":"Cherry",
+	"item.dif.tresnovice":"Třešňovice",
+	"item.dif.rotten_belt":"Rotten Belt",
+	"item.dif.rotten_apple":"Rotten Apple",
+	"item.dif.bottle_of_molotovuv_koktejl":"Bottle of Molotovuv Koktejl",
+	"item.dif.bottle_of_uranovej_koktejl":"Bottle of Uranovej Koktejl",
+
+	"item.dif.maty_drink":"§eMáty Drink§r",
+	"item.dif.mata":"Máta",
+	"block.dif.mata_plant":"Mátová Rostlina",
+	"block.dif.maty_block":"Máty Block",
+
+	"block.dif.example_block":"Example Block",
+	"block.dif.the_differential":"TheDifferential",
+	"block.dif.event_bus":"Event Bus",
+	"block.dif.generator":"§lBenzínovej Generator§r",
+	"block.dif.hospital_handle":"Hospital Handle",
+	"block.dif.singularitator":"§lSingularitátor§r",
+
+	"block.dif.wooded_arrow":"Wooded Arrow",
+	"block.dif.stoned_arrow":"Stoned Arrow",
+	"block.dif.deepslated_arrow":"Deepslated Arrow",
+
+	"block.dif.pedrock":"Pedrock",
+	"block.dif.andesite_lattice":"Andesite Lattice Block",
+	"block.dif.andesite_window":"Andesite Window"
 }

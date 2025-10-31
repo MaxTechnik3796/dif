@@ -1,0 +1,13 @@
+{
+	"parent":"block/cube",
+	"textures":{
+		"down":"dif:block/deepslated_arrow2",
+		"up":"dif:block/deepslated_arrow2",
+		"north":"dif:block/deepslated_arrow3",
+		"east":"dif:block/deepslated_arrow0",
+		"south":"dif:block/deepslated_arrow1",
+		"west":"dif:block/deepslated_arrow2",
+		"particle":"dif:block/deepslated_arrow2"
+	},
+	"render_type":"solid"
+}

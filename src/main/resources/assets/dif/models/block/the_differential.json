@@ -2,9 +2,10 @@
 	"format_version": "1.9.0",
 	"credit": "Made by: MaxTechnik in: Blockbench",
 	"texture_size": [32, 32],
+	"render_type": "cutout",
 	"textures": {
 		"0": "dif:block/the_differential",
-		"particle": "dif:block/the_differential"
+		"particle": "minecraft:block/stone"
 	},
 	"elements": [
 		{

@@ -3,6 +3,7 @@ loaderVersion="${loader_version_range}"
 license="${mod_license}"
 [[mods]]
 modId="${mod_id}"
+logoFile="pack.png"
 version="${mod_version}"
 displayName="${mod_name}"
 displayURL="https://discord.gg/mjVprFtWTk"

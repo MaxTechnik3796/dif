@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "dif:block/the_differential"
+    },
+    "facing=east": {
+      "model": "dif:block/the_differential",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "dif:block/the_differential",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "dif:block/the_differential",
+      "y": 270
+    }
+  }
+}

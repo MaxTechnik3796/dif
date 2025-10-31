@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "dif:block/stoned_arrow"
+    },
+    "facing=east": {
+      "model": "dif:block/stoned_arrow",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "dif:block/stoned_arrow",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "dif:block/stoned_arrow",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+	"parent":"block/cube",
+	"textures":{
+		"down":"dif:block/wooded_arrow2",
+		"up":"dif:block/wooded_arrow2",
+		"north":"dif:block/wooded_arrow3",
+		"east":"dif:block/wooded_arrow0",
+		"south":"dif:block/wooded_arrow1",
+		"west":"dif:block/wooded_arrow2",
+		"particle":"dif:block/wooded_arrow2"
+	},
+	"render_type":"solid"
+}

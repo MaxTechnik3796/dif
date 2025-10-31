@@ -1,0 +1,14 @@
+{
+	"replace":false,
+	"values":[
+		"dif:event_bus",
+		"dif:the_differential",
+		"dif:generator",
+		"dif:hospital_handle",
+		"dif:deepslated_arrow",
+		"dif:stoned_arrow",
+		"dif:maty_block",
+		"dif:andesite_lattice",
+		"dif:andesite_window"
+	]
+}

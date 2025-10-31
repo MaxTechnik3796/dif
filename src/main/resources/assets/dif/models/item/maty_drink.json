@@ -1,0 +1,6 @@
+{
+	"parent":"dif:item/pet",
+	"textures":{
+		"1":"dif:item/maty_drink"
+	}
+}

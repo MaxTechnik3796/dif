@@ -3,6 +3,8 @@ package cz.maxtechnik.dif;
 import com.mojang.logging.LogUtils;
 import cz.maxtechnik.dif.init.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -30,6 +32,7 @@ public class DifMod {
         DifModItems.REGISTRY.register(bus);
         DifModTabs.REGISTER.register(bus);
         DifModSounds.REGISTRY.register(bus);
+		DifModMobEffects.REGISTRY.register(bus);
 
         MinecraftForge.EVENT_BUS.register(this);
         bus.addListener(this::addCreative);
@@ -66,4 +69,7 @@ public class DifMod {
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
     }
+	public static boolean rouletteBoolean(int range){
+		return 0==Mth.nextInt(RandomSource.create(),0,range);
+	}
 }
