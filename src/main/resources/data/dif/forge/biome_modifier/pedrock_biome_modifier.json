@@ -1,0 +1,8 @@
+{
+  "type": "forge:add_features",
+  "biomes": {
+    "type": "forge:any"
+  },
+  "features": "dif:pedrock",
+  "step": "underground_ores"
+}

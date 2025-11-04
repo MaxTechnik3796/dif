@@ -5,12 +5,12 @@ import cz.maxtechnik.dif.init.DifModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.BlockTags; // NOVÝ IMPORT
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.tags.TagKey;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.SugarCaneBlock;
@@ -22,7 +22,7 @@ import net.minecraftforge.common.PlantType;
 import org.jetbrains.annotations.NotNull;
 
 public class MataPlant extends SugarCaneBlock implements BonemealableBlock{
-	private static final net.minecraft.tags.TagKey<net.minecraft.world.level.block.Block>MATA_PLANT_SOIL=net.minecraft.tags.BlockTags.create(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"mata_plant_soil"));
+	private static final TagKey<net.minecraft.world.level.block.Block>FLOWER_PLANT_SOIL=BlockTags.create(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"flower_plant_soil"));
 	public MataPlant(){
 		super(Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN).randomTicks().sound(SoundType.GRASS).instabreak().noCollission().offsetType(OffsetType.XZ).pushReaction(PushReaction.DESTROY));
 	}
@@ -38,7 +38,7 @@ public class MataPlant extends SugarCaneBlock implements BonemealableBlock{
 	public boolean canSurvive(@NotNull BlockState blockstate,LevelReader worldIn,BlockPos pos){
 		BlockPos blockpos=pos.below();
 		BlockState groundState=worldIn.getBlockState(blockpos);
-		return groundState.is(this)||groundState.is(MATA_PLANT_SOIL);
+		return groundState.is(this)||groundState.is(FLOWER_PLANT_SOIL);
 	}
 	@Override
 	public @NotNull PlantType getPlantType(@NotNull BlockGetter world,@NotNull BlockPos pos) {

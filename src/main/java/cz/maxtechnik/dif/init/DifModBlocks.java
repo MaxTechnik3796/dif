@@ -17,6 +17,7 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>GENERATOR=REGISTRY.register("generator",()->new CustomWaterloggedHorizontalRotation(SoundType.STONE,5F,6F,true));
 	public static final RegistryObject<Block>HOSPITAL_HANDLE=REGISTRY.register("hospital_handle",HospitalHandle::new);
 	public static final RegistryObject<Block>SINGULARITATOR=REGISTRY.register("singularitator",()->new CustomWaterlogged(SoundType.METAL,5F,6F,true));
+	public static final RegistryObject<Block>SUPER_BOX=REGISTRY.register("super_box",SuperBox::new);
 
 	public static final RegistryObject<Block>PEDROCK=REGISTRY.register("pedrock",()->new Custom(SoundType.STONE,1000F,999999999F,true));
 	public static final RegistryObject<Block>ANDESITE_LATTICE=REGISTRY.register("andesite_lattice",AndesiteLattice::new);
@@ -26,7 +27,7 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>STONED_ARROW=REGISTRY.register("stoned_arrow",()->new CustomHorizontalRotation(SoundType.STONE,1.5F,6F,true));
 	public static final RegistryObject<Block>WOODED_ARROW=REGISTRY.register("wooded_arrow",()->new CustomHorizontalRotation(SoundType.WOOD,2F,3F,false));
 
-
+	public static final RegistryObject<Block>CANOLA_PLANT=REGISTRY.register("canola_plant",CanolaPlant::new);
 	public static final RegistryObject<Block>MATA_PLANT=REGISTRY.register("mata_plant",MataPlant::new);
 	public static final RegistryObject<Block>MATY_BLOCK=REGISTRY.register("maty_block",MatyBlock::new);
 }

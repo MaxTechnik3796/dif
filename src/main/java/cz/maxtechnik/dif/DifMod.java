@@ -20,55 +20,57 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
 @Mod(DifMod.MODID)
-public class DifMod {
-    public static final String MODID = "dif";
-    public static final Logger LOGGER = LogUtils.getLogger();
-    public DifMod() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        bus.addListener(this::commonSetup);
+public class DifMod{
+	public static final String MODID="dif";
+	public static final Logger LOGGER=LogUtils.getLogger();
+	public DifMod(){
+		IEventBus bus=FMLJavaModLoadingContext.get().getModEventBus();
+		bus.addListener(this::commonSetup);
 
 
-        DifModBlocks.REGISTRY.register(bus);
-        DifModItems.REGISTRY.register(bus);
-        DifModTabs.REGISTER.register(bus);
-        DifModSounds.REGISTRY.register(bus);
+		DifModBlocks.REGISTRY.register(bus);
+		DifModItems.REGISTRY.register(bus);
+		DifModTabs.REGISTER.register(bus);
+		DifModSounds.REGISTRY.register(bus);
 		DifModMobEffects.REGISTRY.register(bus);
+		DifModBlockEntities.REGISTRY.register(bus);
+		DifModMenus.REGISTRY.register(bus);
 
-        MinecraftForge.EVENT_BUS.register(this);
-        bus.addListener(this::addCreative);
+		MinecraftForge.EVENT_BUS.register(this);
+		bus.addListener(this::addCreative);
 
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, DifModConfig.SPEC);
-    }
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON,DifModConfig.SPEC);
+	}
 
-    private void commonSetup(final FMLCommonSetupEvent event) {
-        LOGGER.info("HELLO FROM COMMON SETUP");
-        //LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
+	private void commonSetup(final FMLCommonSetupEvent event){
+		LOGGER.info("HELLO FROM COMMON SETUP");
+		//LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
 
-        //if (DifModConfig.logDirtBlock) LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
+		//if (DifModConfig.logDirtBlock) LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
 
-        //LOGGER.info(DifModConfig.magicNumberIntroduction + DifModConfig.magicNumber);
+		//LOGGER.info(DifModConfig.magicNumberIntroduction + DifModConfig.magicNumber);
 
-        //DifModConfig.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
-    }
+		//DifModConfig.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
+	}
 
-    private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        //if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) event.accept(EXAMPLE_BLOCK_ITEM);
-    }
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {
-        LOGGER.info("HELLO from server starting");
-    }
+	private void addCreative(BuildCreativeModeTabContentsEvent event) {
+		//if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) event.accept(EXAMPLE_BLOCK_ITEM);
+	}
+	@SubscribeEvent
+	public void onServerStarting(ServerStartingEvent event){
+		LOGGER.info("HELLO from server starting");
+	}
 
-    @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientModEvents {
+	@Mod.EventBusSubscriber(modid=MODID,bus=Mod.EventBusSubscriber.Bus.MOD,value=Dist.CLIENT)
+	public static class ClientModEvents {
 
-        @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event) {
-            LOGGER.info("HELLO FROM CLIENT SETUP");
-            LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
-        }
-    }
+		@SubscribeEvent
+		public static void onClientSetup(FMLClientSetupEvent event){
+			LOGGER.info("HELLO FROM CLIENT SETUP");
+			LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+		}
+	}
 	public static boolean rouletteBoolean(int range){
 		return 0==Mth.nextInt(RandomSource.create(),0,range);
 	}

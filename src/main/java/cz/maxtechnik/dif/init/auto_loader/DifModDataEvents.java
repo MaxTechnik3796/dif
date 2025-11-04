@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.data;
+package cz.maxtechnik.dif.init.auto_loader;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.DifModItems;

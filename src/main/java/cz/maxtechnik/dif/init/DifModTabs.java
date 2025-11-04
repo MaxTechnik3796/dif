@@ -19,6 +19,8 @@ public class DifModTabs{
 		tabData.accept(DifModBlocks.ANDESITE_LATTICE.get().asItem());
 		tabData.accept(DifModBlocks.ANDESITE_WINDOW.get().asItem());
         tabData.accept(DifModItems.CPU_SINGULARITY.get());
+		tabData.accept(DifModItems.MITHRIL.get());
+		tabData.accept(DifModItems.MITHRIL_PLATE.get());
 		tabData.accept(DifModItems.HEAVY_PLATE.get());
 		tabData.accept(DifModItems.TRESNOVICE.get());
 		tabData.accept(DifModItems.CHERRY.get());
@@ -26,6 +28,8 @@ public class DifModTabs{
 		tabData.accept(DifModItems.MATA.get());
 		tabData.accept(DifModBlocks.MATA_PLANT.get().asItem());
 		tabData.accept(DifModBlocks.MATY_BLOCK.get().asItem());
+		tabData.accept(DifModBlocks.CANOLA_PLANT.get());
+		tabData.accept(DifModItems.CANOLA_SEEDS.get());
 		tabData.accept(DifModItems.BOTTLE_OF_MOLOTOVUV_KOKTEJL.get());
 		tabData.accept(DifModItems.BOTTLE_OF_URANOVEJ_KOKTEJL.get());
 
@@ -45,6 +49,7 @@ public class DifModTabs{
         tabData.accept(DifModBlocks.GENERATOR.get().asItem());
 		tabData.accept(DifModBlocks.HOSPITAL_HANDLE.get().asItem());
 		tabData.accept(DifModBlocks.SINGULARITATOR.get().asItem());
+		tabData.accept(DifModBlocks.SUPER_BOX.get().asItem());
 		tabData.accept(DifModItems.MASTICKA.get());
 		tabData.accept(DifModItems.BLUE_PLATE.get());
 
@@ -52,5 +57,6 @@ public class DifModTabs{
         tabData.accept(DifModItems.ROTTEN_BELT.get());
         tabData.accept(DifModItems.ROTTEN_APPLE.get());
         tabData.accept(DifModItems.INCOMPLETE_CPU_SINGULARITY.get());
+		tabData.accept(DifModItems.INCOMPLETE_MITHRIL_PLATE.get());
     })).build());
 }

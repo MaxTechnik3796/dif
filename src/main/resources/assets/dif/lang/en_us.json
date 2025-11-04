@@ -2,6 +2,9 @@
 	"effect.dif.redstone_iq": "Redstone Boost",
 	"effect.dif.redstone_not_iq": "Redstonenot Anti-Boost",
 
+	"gui.dif.inventory": "Inventory",
+	"gui.dif.super_box": "§lSuper Box§r",
+
 	"subtitles.cremeka":"",
 	"subtitles.redstone":"",
 	"subtitles.maty_create":"",
@@ -40,10 +43,10 @@
 	"creative_tab.dif.random":"TheDifferential: Random",
 
 	"item.dif.example_item":"Example Item",
-	"item.mcc.question_mark":"Question Mark",
+	"item.dif.question_mark":"Question Mark",
 	"item.dif.bluestone":"Bluestone",
 	"item.dif.cpu_singularity":"§dCPU Singularity§r",
-	"item.dif.incomplete_cpu_singularity":"§dIncomplete Cpu Singularity§r",
+	"item.dif.incomplete_cpu_singularity":"§dIncomplete CPU Singularity§r",
 	"item.dif.masticka":"Mastička",
 	"item.dif.blue_plate":"Blue Plate",
 	"item.dif.heavy_plate":"Heavy Plate",
@@ -55,10 +58,17 @@
 	"item.dif.bottle_of_molotovuv_koktejl":"Bottle of Molotovuv Koktejl",
 	"item.dif.bottle_of_uranovej_koktejl":"Bottle of Uranovej Koktejl",
 
-	"item.dif.maty_drink":"§eMáty Drink§r",
+	"item.dif.canola_seeds": "Canola Seeds",
+	"block.dif.canola_plant": "Canola Plant",
+
+	"item.dif.maty_drink":"Máty Drink",
 	"item.dif.mata":"Máta",
 	"block.dif.mata_plant":"Mátová Rostlina",
 	"block.dif.maty_block":"Máty Block",
+
+	"item.dif.mithril_plate": "Mithril Plate",
+	"item.dif.mithril": "Mithril",
+	"item.dif.incomplete_mithril_plate": "Incomplete Mithril Plate",
 
 	"block.dif.example_block":"Example Block",
 	"block.dif.the_differential":"TheDifferential",
@@ -66,6 +76,7 @@
 	"block.dif.generator":"§lBenzínovej Generator§r",
 	"block.dif.hospital_handle":"Hospital Handle",
 	"block.dif.singularitator":"§lSingularitátor§r",
+	"block.dif.super_box": "§e§lSuper Box§r",
 
 	"block.dif.wooded_arrow":"Wooded Arrow",
 	"block.dif.stoned_arrow":"Stoned Arrow",

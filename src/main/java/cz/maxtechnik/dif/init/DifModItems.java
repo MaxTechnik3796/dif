@@ -31,6 +31,14 @@ public class DifModItems{
 	public static final RegistryObject<Item>MATA_PLANT=block(DifModBlocks.MATA_PLANT);
 	public static final RegistryObject<Item>MATY_BLOCK=block(DifModBlocks.MATY_BLOCK);
 
+	public static final RegistryObject<Item>CANOLA_SEEDS=REGISTRY.register("canola_seeds",Canola::new);
+	public static final RegistryObject<Item>CANOLA_PLANT=block(DifModBlocks.CANOLA_PLANT);
+
+	public static final RegistryObject<Item>MITHRIL=REGISTRY.register("mithril",Basic::new);
+	public static final RegistryObject<Item>MITHRIL_PLATE=REGISTRY.register("mithril_plate",Basic::new);
+	public static final RegistryObject<Item>INCOMPLETE_MITHRIL_PLATE=REGISTRY.register("incomplete_mithril_plate",Basic::new);
+
+
     public static final RegistryObject<Item>BLUESTONE=REGISTRY.register("bluestone",Basic::new);
     public static final RegistryObject<Item>CPU_SINGULARITY=REGISTRY.register("cpu_singularity",Basic::new);
     public static final RegistryObject<Item>INCOMPLETE_CPU_SINGULARITY=REGISTRY.register("incomplete_cpu_singularity",Basic::new);
@@ -44,6 +52,7 @@ public class DifModItems{
     public static final RegistryObject<Item>GENERATOR=block(DifModBlocks.GENERATOR);
     public static final RegistryObject<Item>HOSPITAL_HANDLE=block(DifModBlocks.HOSPITAL_HANDLE);
 	public static final RegistryObject<Item>SINGULARITATOR=block(DifModBlocks.SINGULARITATOR);
+	public static final RegistryObject<Item>SUPER_BOX=block(DifModBlocks.SUPER_BOX);
 
 	public static final RegistryObject<Item>DEEPSLATED_ARROW=block(DifModBlocks.DEEPSLATED_ARROW);
     public static final RegistryObject<Item>STONED_ARROW=block(DifModBlocks.STONED_ARROW);

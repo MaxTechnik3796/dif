@@ -1,0 +1,15 @@
+{
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		"#"
+	],
+	"key":{
+		"#":{
+			"item":"dif:canola_plant"
+		}
+	},
+	"result":{
+		"item":"dif:canola_seeds",
+		"count":4
+	}
+}

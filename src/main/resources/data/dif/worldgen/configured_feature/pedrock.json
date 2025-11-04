@@ -1,0 +1,83 @@
+{
+  "type": "minecraft:ore",
+  "config": {
+    "size": 10,
+    "discard_chance_on_air_exposure": 0,
+    "targets": [
+      {
+        "target": {
+          "predicate_type": "tag_match",
+          "tag": "stone_ore_replaceables"
+        },
+        "state": {
+          "Name": "dif:pedrock"
+        }
+      },
+      {
+        "target": {
+          "predicate_type": "tag_match",
+          "tag": "minecraft:stone"
+        },
+        "state": {
+          "Name": "dif:pedrock"
+        }
+      },
+      {
+        "target": {
+          "predicate_type": "blockstate_match",
+          "block_state": {
+            "Name": "minecraft:deepslate",
+            "Properties": {
+              "axis": "y"
+            }
+          }
+        },
+        "state": {
+          "Name": "dif:pedrock"
+        }
+      },
+      {
+        "target": {
+          "predicate_type": "blockstate_match",
+          "block_state": {
+            "Name": "minecraft:blackstone"
+          }
+        },
+        "state": {
+          "Name": "dif:pedrock"
+        }
+      },
+      {
+        "target": {
+          "predicate_type": "tag_match",
+          "tag": "minecraft:dirt"
+        },
+        "state": {
+          "Name": "dif:pedrock"
+        }
+      },
+      {
+        "target": {
+          "predicate_type": "blockstate_match",
+          "block_state": {
+            "Name": "minecraft:tuff"
+          }
+        },
+        "state": {
+          "Name": "dif:pedrock"
+        }
+      },
+      {
+        "target": {
+          "predicate_type": "blockstate_match",
+          "block_state": {
+            "Name": "minecraft:gravel"
+          }
+        },
+        "state": {
+          "Name": "dif:pedrock"
+        }
+      }
+    ]
+  }
+}
