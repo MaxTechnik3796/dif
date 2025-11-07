@@ -1,7 +1,7 @@
 
-package cz.maxtechnik.dif.world.inventory;
+package cz.maxtechnik.dif.gui.menu;
 
-import cz.maxtechnik.dif.init.DifModMenus;
+import cz.maxtechnik.dif.init.gui.DifModMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;

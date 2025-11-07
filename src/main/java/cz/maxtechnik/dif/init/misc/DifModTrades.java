@@ -1,6 +1,6 @@
-package cz.maxtechnik.dif.init.auto_loader;
+package cz.maxtechnik.dif.init.misc;
 
-import cz.maxtechnik.dif.init.DifModItems;
+import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.BasicItemListing;

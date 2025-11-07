@@ -1,6 +1,6 @@
-package cz.maxtechnik.dif.init.auto_loader;
+package cz.maxtechnik.dif.init.misc;
 
-import cz.maxtechnik.dif.init.DifModItems;
+import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -15,5 +15,6 @@ public class DifModCompostableItems{
 		ComposterBlock.COMPOSTABLES.put(Blocks.BAMBOO.asItem(),0.4F);
 		ComposterBlock.COMPOSTABLES.put(DifModItems.CANOLA_PLANT.get().asItem(),1F);
 		ComposterBlock.COMPOSTABLES.put(DifModItems.CANOLA_SEEDS.get(),1F);
+		ComposterBlock.COMPOSTABLES.put(DifModItems.CHERRY.get(),0.65F);
 	}
 }

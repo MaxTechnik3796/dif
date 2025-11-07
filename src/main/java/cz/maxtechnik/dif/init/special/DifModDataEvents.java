@@ -1,7 +1,7 @@
-package cz.maxtechnik.dif.init.auto_loader;
+package cz.maxtechnik.dif.init.special;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.init.DifModItems;
+import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;

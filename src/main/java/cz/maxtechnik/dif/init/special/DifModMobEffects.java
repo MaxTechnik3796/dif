@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.init;
+package cz.maxtechnik.dif.init.special;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.potion.*;

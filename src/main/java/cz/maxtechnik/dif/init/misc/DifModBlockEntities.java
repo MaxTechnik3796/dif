@@ -1,7 +1,8 @@
-package cz.maxtechnik.dif.init;
+package cz.maxtechnik.dif.init.misc;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.block.entity.*;
+import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;

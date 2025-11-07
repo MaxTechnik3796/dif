@@ -1,7 +1,7 @@
-package cz.maxtechnik.dif.client.gui;
+package cz.maxtechnik.dif.gui.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import cz.maxtechnik.dif.world.inventory.SuperBoxGuiMenu;
+import cz.maxtechnik.dif.gui.menu.SuperBoxGuiMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;

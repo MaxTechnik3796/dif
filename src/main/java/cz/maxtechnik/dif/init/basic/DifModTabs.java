@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.init;
+package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
 import net.minecraft.core.registries.Registries;
@@ -18,6 +18,7 @@ public class DifModTabs{
         tabData.accept(DifModBlocks.WOODED_ARROW.get().asItem());
 		tabData.accept(DifModBlocks.ANDESITE_LATTICE.get().asItem());
 		tabData.accept(DifModBlocks.ANDESITE_WINDOW.get().asItem());
+		tabData.accept(DifModItems.BAN_HAMMER.get());
         tabData.accept(DifModItems.CPU_SINGULARITY.get());
 		tabData.accept(DifModItems.MITHRIL.get());
 		tabData.accept(DifModItems.MITHRIL_PLATE.get());
@@ -32,6 +33,11 @@ public class DifModTabs{
 		tabData.accept(DifModItems.CANOLA_SEEDS.get());
 		tabData.accept(DifModItems.BOTTLE_OF_MOLOTOVUV_KOKTEJL.get());
 		tabData.accept(DifModItems.BOTTLE_OF_URANOVEJ_KOKTEJL.get());
+		tabData.accept(DifModBlocks.SOLAR_PANEL_00.get().asItem());
+		tabData.accept(DifModBlocks.SOLAR_PANEL_01.get().asItem());
+		tabData.accept(DifModBlocks.SOLAR_PANEL_02.get().asItem());
+		tabData.accept(DifModBlocks.SOLAR_PANEL_03.get().asItem());
+		tabData.accept(DifModBlocks.SOLAR_PANEL_04.get().asItem());
 
     })).build());
     public static final RegistryObject<CreativeModeTab>MUSIC=REGISTER.register("music",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.music")).icon(()->new ItemStack(DifModItems.REDSTONE.get())).withTabsBefore(MAIN.getKey()).displayItems(((parameters,tabData)->{

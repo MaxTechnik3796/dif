@@ -1,7 +1,7 @@
-package cz.maxtechnik.dif.init;
+package cz.maxtechnik.dif.init.gui;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.world.inventory.*;
+import cz.maxtechnik.dif.gui.menu.SuperBoxGuiMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;

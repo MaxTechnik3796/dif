@@ -58,17 +58,22 @@
 	"item.dif.bottle_of_molotovuv_koktejl":"Bottle of Molotovuv Koktejl",
 	"item.dif.bottle_of_uranovej_koktejl":"Bottle of Uranovej Koktejl",
 
-	"item.dif.canola_seeds": "Canola Seeds",
-	"block.dif.canola_plant": "Canola Plant",
+	"item.dif.create_can":"§3§lKonzerva Create Bordelu§r",
+	"item.dif.create_bowl":"§3§lMiska Create Bordelu§r",
+	"item.dif.super_heated_create_bowl":"§b§lPřehřátá Miska Create Bordelu§r",
+
+	"item.dif.canola_seeds":"Canola Seeds",
+	"block.dif.canola_plant":"Canola Plant",
+	"item.dif.ban_hammer":"§c§lBan Hammer§r",
 
 	"item.dif.maty_drink":"Máty Drink",
 	"item.dif.mata":"Máta",
 	"block.dif.mata_plant":"Mátová Rostlina",
 	"block.dif.maty_block":"Máty Block",
 
-	"item.dif.mithril_plate": "Mithril Plate",
-	"item.dif.mithril": "Mithril",
-	"item.dif.incomplete_mithril_plate": "Incomplete Mithril Plate",
+	"item.dif.mithril_plate":"Mithril Plate",
+	"item.dif.mithril":"Mithril",
+	"item.dif.incomplete_mithril_plate":"Incomplete Mithril Plate",
 
 	"block.dif.example_block":"Example Block",
 	"block.dif.the_differential":"TheDifferential",
@@ -77,6 +82,12 @@
 	"block.dif.hospital_handle":"Hospital Handle",
 	"block.dif.singularitator":"§lSingularitátor§r",
 	"block.dif.super_box": "§e§lSuper Box§r",
+
+	"block.dif.solar_panel_00":"Solar Panel",
+	"block.dif.solar_panel_01":"Solar Panel",
+	"block.dif.solar_panel_02":"Solar Panel",
+	"block.dif.solar_panel_03":"Solar Panel",
+	"block.dif.solar_panel_04":"Solar Panel",
 
 	"block.dif.wooded_arrow":"Wooded Arrow",
 	"block.dif.stoned_arrow":"Stoned Arrow",

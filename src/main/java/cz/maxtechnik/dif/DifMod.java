@@ -1,7 +1,13 @@
 package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
-import cz.maxtechnik.dif.init.*;
+import cz.maxtechnik.dif.init.basic.DifModBlocks;
+import cz.maxtechnik.dif.init.basic.DifModItems;
+import cz.maxtechnik.dif.init.basic.DifModSounds;
+import cz.maxtechnik.dif.init.basic.DifModTabs;
+import cz.maxtechnik.dif.init.gui.DifModMenus;
+import cz.maxtechnik.dif.init.misc.DifModBlockEntities;
+import cz.maxtechnik.dif.init.special.DifModMobEffects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;

@@ -1,8 +1,9 @@
-package cz.maxtechnik.dif.init;
+package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
+import cz.maxtechnik.dif.item.tool.*;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DoubleHighBlockItem;
 import net.minecraft.world.item.Item;
@@ -26,6 +27,11 @@ public class DifModItems{
 	public static final RegistryObject<Item>BOTTLE_OF_MOLOTOVUV_KOKTEJL=REGISTRY.register("bottle_of_molotovuv_koktejl",MolotovuvKoktejl::new);
 	public static final RegistryObject<Item>BOTTLE_OF_URANOVEJ_KOKTEJL=REGISTRY.register("bottle_of_uranovej_koktejl",UranovejKoktejl::new);
 
+	public static final RegistryObject<Item>CREATE_CAN=REGISTRY.register("create_can",Create::new);
+	public static final RegistryObject<Item>CREATE_BOWL=REGISTRY.register("create_bowl",Create::new);
+	public static final RegistryObject<Item>SUPER_HEATED_CREATE_BOWL=REGISTRY.register("super_heated_create_bowl",Create::new);
+
+
 	public static final RegistryObject<Item>MATY_DRINK=REGISTRY.register("maty_drink",MatyDrink::new);
 	public static final RegistryObject<Item>MATA=REGISTRY.register("mata",()->new Custom(1,0.2F));
 	public static final RegistryObject<Item>MATA_PLANT=block(DifModBlocks.MATA_PLANT);
@@ -34,6 +40,7 @@ public class DifModItems{
 	public static final RegistryObject<Item>CANOLA_SEEDS=REGISTRY.register("canola_seeds",Canola::new);
 	public static final RegistryObject<Item>CANOLA_PLANT=block(DifModBlocks.CANOLA_PLANT);
 
+	public static final RegistryObject<Item>BAN_HAMMER=REGISTRY.register("ban_hammer",BanHammer::new);
 	public static final RegistryObject<Item>MITHRIL=REGISTRY.register("mithril",Basic::new);
 	public static final RegistryObject<Item>MITHRIL_PLATE=REGISTRY.register("mithril_plate",Basic::new);
 	public static final RegistryObject<Item>INCOMPLETE_MITHRIL_PLATE=REGISTRY.register("incomplete_mithril_plate",Basic::new);
@@ -53,6 +60,12 @@ public class DifModItems{
     public static final RegistryObject<Item>HOSPITAL_HANDLE=block(DifModBlocks.HOSPITAL_HANDLE);
 	public static final RegistryObject<Item>SINGULARITATOR=block(DifModBlocks.SINGULARITATOR);
 	public static final RegistryObject<Item>SUPER_BOX=block(DifModBlocks.SUPER_BOX);
+
+	public static final RegistryObject<Item>SOLAR_PANEL_00=block(DifModBlocks.SOLAR_PANEL_00);
+	public static final RegistryObject<Item>SOLAR_PANEL_01=block(DifModBlocks.SOLAR_PANEL_01);
+	public static final RegistryObject<Item>SOLAR_PANEL_02=block(DifModBlocks.SOLAR_PANEL_02);
+	public static final RegistryObject<Item>SOLAR_PANEL_03=block(DifModBlocks.SOLAR_PANEL_03);
+	public static final RegistryObject<Item>SOLAR_PANEL_04=block(DifModBlocks.SOLAR_PANEL_04);
 
 	public static final RegistryObject<Item>DEEPSLATED_ARROW=block(DifModBlocks.DEEPSLATED_ARROW);
     public static final RegistryObject<Item>STONED_ARROW=block(DifModBlocks.STONED_ARROW);

@@ -9,6 +9,14 @@
 		"dif:stoned_arrow",
 		"dif:maty_block",
 		"dif:andesite_lattice",
-		"dif:andesite_window"
+		"dif:andesite_window",
+		"dif:solar_panel_00",
+		"dif:solar_panel_01",
+		"dif:solar_panel_02",
+		"dif:solar_panel_03",
+		"dif:solar_panel_04",
+		"dif:pedrock",
+		"dif:singularitator",
+		"dif:super_box"
 	]
 }
