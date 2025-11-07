@@ -34,7 +34,7 @@ public class GeneratorScreen extends AbstractContainerScreen<GeneratorMenu> {
 	}
 
 	private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath("dif","textures/screens/generator.png");
-	private static final ResourceLocation WIDGETS_TEXTURE = ResourceLocation.fromNamespaceAndPath("mtpw","textures/gui/widgets.png");
+	private static final ResourceLocation WIDGETS_TEXTURE = ResourceLocation.fromNamespaceAndPath("dif","textures/screens/widgets.png");
 
 	@Override
 	public void render(@NotNull GuiGraphics guiGraphics,int mouseX,int mouseY,float partialTicks) {

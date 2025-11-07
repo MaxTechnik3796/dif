@@ -48,7 +48,7 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 
 	public static final int ENERGY_PER_TICK = 20;
 	public static final int MAX_ENERGY = 10000;
-	public static final int MAX_RECEIVE = 0;
+	public static final int MAX_RECEIVE = 200;
 	public static final int MAX_EXTRACT = 200;
 
 
@@ -154,57 +154,44 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 		if (level.isClientSide) {
 			return;
 		}
-		boolean hasEnergySpace = entity.energyStorage.getEnergyStored() < entity.energyStorage.getMaxEnergyStored();
-		boolean isBurning = entity.burnTime > 0;
-		boolean changed = false;
-
-		if (hasEnergySpace) {
-			if (isBurning) {
+		if(entity.energyStorage.getEnergyStored()+ENERGY_PER_TICK<=entity.energyStorage.getMaxEnergyStored()){
+			if(entity.burnTime>0){
 				entity.burnTime--;
-				entity.energyStorage.receiveEnergy(ENERGY_PER_TICK, false);
-				changed = true;
-			} else {
-				ItemStack fuelStack = entity.getItem(0);
-				if (!fuelStack.isEmpty()) {
-					int fuelBurnTime = ForgeHooks.getBurnTime(fuelStack, RecipeType.SMELTING);
-					if (fuelBurnTime > 0) {
-						entity.burnTime = fuelBurnTime;
-						entity.currentFuelItemBurnTime = fuelBurnTime;
+				entity.energyStorage.receiveEnergy(ENERGY_PER_TICK,false);
+			}else{
+				ItemStack fuelStack=entity.getItem(0);
+				if(!fuelStack.isEmpty()){
+					int burnDuration=ForgeHooks.getBurnTime(fuelStack,null);
+					if(burnDuration>0){
+						entity.burnTime=burnDuration;
+						entity.currentFuelItemBurnTime=burnDuration;
 						fuelStack.shrink(1);
-						entity.setItem(0, fuelStack);
-						changed = true;
+						entity.setItem(0,fuelStack);
 					}
 				}
 			}
 		}
 		if (entity.energyStorage.getEnergyStored() > 0) {
-			final int MAX_FE_OUTPUT_PER_SIDE = 100;
-			final GeneratorBlockEntity finalEntity = entity;
 			for (Direction direction : Direction.values()) {
-				BlockPos neighborPos = pos.relative(direction);
-				BlockEntity neighborBE = level.getBlockEntity(neighborPos);
-				if (neighborBE != null) {
-					LazyOptional<IEnergyStorage> neighborEnergyOptional = neighborBE.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite());
-					neighborEnergyOptional.ifPresent(neighborEnergy -> {
-						if (neighborEnergy.canReceive()) {
-							int energyToPush = Math.min(MAX_FE_OUTPUT_PER_SIDE, finalEntity.energyStorage.getEnergyStored());
-							if (energyToPush > 0) {
-								int energyActuallyReceived = neighborEnergy.receiveEnergy(energyToPush, true);
-								if (energyActuallyReceived > 0) {
-									int extractedFromSelf = finalEntity.energyStorage.extractEnergy(energyActuallyReceived, false);
-									neighborEnergy.receiveEnergy(extractedFromSelf, false);
-								}
+				BlockEntity neighbor = level.getBlockEntity(pos.relative(direction));
+				if (neighbor != null) {
+					LazyOptional<IEnergyStorage> neighborEnergy = neighbor.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite());
+					neighborEnergy.ifPresent(storage -> {
+						int energyToTransfer = Math.min(entity.energyStorage.getEnergyStored(),MAX_EXTRACT);
+						if (energyToTransfer > 0 && storage.canReceive()) {
+							int received = storage.receiveEnergy(energyToTransfer, false);
+							if (received > 0) {
+								entity.energyStorage.extractEnergy(received, false);
 							}
 						}
 					});
-					changed = true;
 				}
 			}
 		}
-		if (changed) {
-			entity.setChanged();
-		}
+
 	}
+
+
 
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket() {
