@@ -12,6 +12,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class DifModBlockEntities{
 	public static final DeferredRegister<BlockEntityType<?>>REGISTRY=DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES,DifMod.MODID);
 	public static final RegistryObject<BlockEntityType<?>>SUPER_BOX=register("super_box",DifModBlocks.SUPER_BOX,SuperBox::new);
+	public static final RegistryObject<BlockEntityType<GeneratorBlockEntity>>GENERATOR_BE=REGISTRY.register("generator_be",()->BlockEntityType.Builder.of(GeneratorBlockEntity::new,DifModBlocks.GENERATOR.get()).build(null));
 
 	private static RegistryObject<BlockEntityType<?>>register(String registryname,RegistryObject<Block> block,BlockEntityType.BlockEntitySupplier<?>supplier){
 		return REGISTRY.register(registryname,()->BlockEntityType.Builder.of(supplier,block.get()).build(null));

@@ -14,7 +14,7 @@ public class DifModBlocks{
 
 	public static final RegistryObject<Block>THE_DIFFERENTIAL=REGISTRY.register("the_differential",()->new CustomWaterloggedHorizontalRotation(SoundType.STONE,5F,6F,true));
 	public static final RegistryObject<Block>EVENT_BUS=REGISTRY.register("event_bus",()->new CustomWaterloggedHorizontalRotation(SoundType.NETHERITE_BLOCK,5F,6F,true));
-	public static final RegistryObject<Block>GENERATOR=REGISTRY.register("generator",()->new CustomWaterloggedHorizontalRotation(SoundType.STONE,5F,6F,true));
+	public static final RegistryObject<Block>GENERATOR=REGISTRY.register("generator",Generator::new);
 	public static final RegistryObject<Block>HOSPITAL_HANDLE=REGISTRY.register("hospital_handle",HospitalHandle::new);
 	public static final RegistryObject<Block>SINGULARITATOR=REGISTRY.register("singularitator",()->new CustomWaterlogged(SoundType.METAL,5F,6F,true));
 	public static final RegistryObject<Block>SUPER_BOX=REGISTRY.register("super_box",SuperBox::new);
@@ -25,6 +25,9 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>SOLAR_PANEL_03=REGISTRY.register("solar_panel_03",SolarPanel::new);
 	public static final RegistryObject<Block>SOLAR_PANEL_04=REGISTRY.register("solar_panel_04",SolarPanel::new);
 
+	public static final RegistryObject<Block>SOLANA_BLOCK=REGISTRY.register("solana_block",Crypto::new);
+	public static final RegistryObject<Block>BITCOIN_BLOCK=REGISTRY.register("bitcoin_block", Crypto::new);
+	public static final RegistryObject<Block>CINDER_FLOUR_BLOCK=REGISTRY.register("cinder_flour_block",()->new Custom(SoundType.WART_BLOCK,0.4F,0.6F,false));
 	public static final RegistryObject<Block>PEDROCK=REGISTRY.register("pedrock",()->new Custom(SoundType.STONE,1000F,999999999F,true));
 	public static final RegistryObject<Block>ANDESITE_LATTICE=REGISTRY.register("andesite_lattice",AndesiteLattice::new);
 	public static final RegistryObject<Block>ANDESITE_WINDOW=REGISTRY.register("andesite_window",AndesiteWindow::new);

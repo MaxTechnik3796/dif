@@ -10,35 +10,38 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class DifModTabs{
     public static final DeferredRegister<CreativeModeTab>REGISTER=DeferredRegister.create(Registries.CREATIVE_MODE_TAB,DifMod.MODID);
-    public static final RegistryObject<CreativeModeTab>MAIN=REGISTER.register("main",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.main")).icon(()->new ItemStack(DifModBlocks.THE_DIFFERENTIAL.get().asItem())).displayItems(((parameters,tabData)->{
-		tabData.accept(DifModBlocks.THE_DIFFERENTIAL.get().asItem());
-		tabData.accept(DifModBlocks.PEDROCK.get().asItem());
-        tabData.accept(DifModBlocks.DEEPSLATED_ARROW.get().asItem());
-        tabData.accept(DifModBlocks.STONED_ARROW.get().asItem());
-        tabData.accept(DifModBlocks.WOODED_ARROW.get().asItem());
-		tabData.accept(DifModBlocks.ANDESITE_LATTICE.get().asItem());
-		tabData.accept(DifModBlocks.ANDESITE_WINDOW.get().asItem());
+    public static final RegistryObject<CreativeModeTab>MAIN=REGISTER.register("main",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.main")).icon(()->new ItemStack(DifModItems.THE_DIFFERENTIAL.get())).displayItems(((parameters,tabData)->{
+		tabData.accept(DifModItems.THE_DIFFERENTIAL.get());
+		tabData.accept(DifModItems.PEDROCK.get());
+		tabData.accept(DifModItems.CINDER_FLOUR_BLOCK.get());
+		tabData.accept(DifModItems.DEEPSLATED_ARROW.get());
+		tabData.accept(DifModItems.STONED_ARROW.get());
+		tabData.accept(DifModItems.WOODED_ARROW.get());
+		tabData.accept(DifModItems.ANDESITE_LATTICE.get());
+		tabData.accept(DifModItems.ANDESITE_WINDOW.get());
 		tabData.accept(DifModItems.BAN_HAMMER.get());
-        tabData.accept(DifModItems.CPU_SINGULARITY.get());
+		tabData.accept(DifModItems.CPU_SINGULARITY.get());
 		tabData.accept(DifModItems.MITHRIL.get());
 		tabData.accept(DifModItems.MITHRIL_PLATE.get());
 		tabData.accept(DifModItems.HEAVY_PLATE.get());
 		tabData.accept(DifModItems.TRESNOVICE.get());
 		tabData.accept(DifModItems.CHERRY.get());
+		tabData.accept(DifModItems.CREATE_CAN.get());
+		tabData.accept(DifModItems.CREATE_BOWL.get());
+		tabData.accept(DifModItems.SUPER_HEATED_CREATE_BOWL.get());
 		tabData.accept(DifModItems.MATY_DRINK.get());
 		tabData.accept(DifModItems.MATA.get());
-		tabData.accept(DifModBlocks.MATA_PLANT.get().asItem());
-		tabData.accept(DifModBlocks.MATY_BLOCK.get().asItem());
-		tabData.accept(DifModBlocks.CANOLA_PLANT.get());
+		tabData.accept(DifModItems.MATA_PLANT.get());
+		tabData.accept(DifModItems.MATY_BLOCK.get());
+		tabData.accept(DifModItems.CANOLA_PLANT.get());
 		tabData.accept(DifModItems.CANOLA_SEEDS.get());
 		tabData.accept(DifModItems.BOTTLE_OF_MOLOTOVUV_KOKTEJL.get());
 		tabData.accept(DifModItems.BOTTLE_OF_URANOVEJ_KOKTEJL.get());
-		tabData.accept(DifModBlocks.SOLAR_PANEL_00.get().asItem());
-		tabData.accept(DifModBlocks.SOLAR_PANEL_01.get().asItem());
-		tabData.accept(DifModBlocks.SOLAR_PANEL_02.get().asItem());
-		tabData.accept(DifModBlocks.SOLAR_PANEL_03.get().asItem());
-		tabData.accept(DifModBlocks.SOLAR_PANEL_04.get().asItem());
-
+		tabData.accept(DifModItems.SOLAR_PANEL_00.get());
+		tabData.accept(DifModItems.SOLAR_PANEL_01.get());
+		tabData.accept(DifModItems.SOLAR_PANEL_02.get());
+		tabData.accept(DifModItems.SOLAR_PANEL_03.get());
+		tabData.accept(DifModItems.SOLAR_PANEL_04.get());
     })).build());
     public static final RegistryObject<CreativeModeTab>MUSIC=REGISTER.register("music",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.music")).icon(()->new ItemStack(DifModItems.REDSTONE.get())).withTabsBefore(MAIN.getKey()).displayItems(((parameters,tabData)->{
 		tabData.accept(DifModItems.CREMEKA.get());
@@ -50,13 +53,16 @@ public class DifModTabs{
 		tabData.accept(DifModItems.CLAIRDELUNE.get());
     })).build());
     public static final RegistryObject<CreativeModeTab>RANDOM=REGISTER.register("random",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.random")).icon(()->new ItemStack(DifModItems.QUESTION_MARK.get())).withTabsBefore(MUSIC.getKey()).displayItems(((parameters,tabData)->{
-        tabData.accept(DifModItems.QUESTION_MARK.get());
-        tabData.accept(DifModBlocks.EVENT_BUS.get().asItem());
-        tabData.accept(DifModBlocks.GENERATOR.get().asItem());
-		tabData.accept(DifModBlocks.HOSPITAL_HANDLE.get().asItem());
-		tabData.accept(DifModBlocks.SINGULARITATOR.get().asItem());
-		tabData.accept(DifModBlocks.SUPER_BOX.get().asItem());
+		tabData.accept(DifModItems.QUESTION_MARK.get());
+		tabData.accept(DifModItems.EVENT_BUS.get());
+		tabData.accept(DifModItems.GENERATOR.get());
+		tabData.accept(DifModItems.HOSPITAL_HANDLE.get());
+		tabData.accept(DifModItems.SINGULARITATOR.get());
+		tabData.accept(DifModItems.SOLANA_BLOCK.get());
+		tabData.accept(DifModItems.BITCOIN_BLOCK.get());
+		tabData.accept(DifModItems.SUPER_BOX.get());
 		tabData.accept(DifModItems.MASTICKA.get());
+		tabData.accept(DifModItems.BLUESTONE.get());
 		tabData.accept(DifModItems.BLUE_PLATE.get());
 
 

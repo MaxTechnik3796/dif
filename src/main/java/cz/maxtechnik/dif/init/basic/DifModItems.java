@@ -3,6 +3,7 @@ package cz.maxtechnik.dif.init.basic;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
+import cz.maxtechnik.dif.item.food.create.*;
 import cz.maxtechnik.dif.item.tool.*;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DoubleHighBlockItem;
@@ -27,9 +28,9 @@ public class DifModItems{
 	public static final RegistryObject<Item>BOTTLE_OF_MOLOTOVUV_KOKTEJL=REGISTRY.register("bottle_of_molotovuv_koktejl",MolotovuvKoktejl::new);
 	public static final RegistryObject<Item>BOTTLE_OF_URANOVEJ_KOKTEJL=REGISTRY.register("bottle_of_uranovej_koktejl",UranovejKoktejl::new);
 
-	public static final RegistryObject<Item>CREATE_CAN=REGISTRY.register("create_can",Create::new);
-	public static final RegistryObject<Item>CREATE_BOWL=REGISTRY.register("create_bowl",Create::new);
-	public static final RegistryObject<Item>SUPER_HEATED_CREATE_BOWL=REGISTRY.register("super_heated_create_bowl",Create::new);
+	public static final RegistryObject<Item>CREATE_CAN=REGISTRY.register("create_can",Can::new);
+	public static final RegistryObject<Item>CREATE_BOWL=REGISTRY.register("create_bowl",Bowl::new);
+	public static final RegistryObject<Item>SUPER_HEATED_CREATE_BOWL=REGISTRY.register("super_heated_create_bowl",Super::new);
 
 
 	public static final RegistryObject<Item>MATY_DRINK=REGISTRY.register("maty_drink",MatyDrink::new);
@@ -71,6 +72,9 @@ public class DifModItems{
     public static final RegistryObject<Item>STONED_ARROW=block(DifModBlocks.STONED_ARROW);
     public static final RegistryObject<Item>WOODED_ARROW=block(DifModBlocks.WOODED_ARROW);
 
+	public static final RegistryObject<Item>BITCOIN_BLOCK=block(DifModBlocks.BITCOIN_BLOCK);
+	public static final RegistryObject<Item>SOLANA_BLOCK=block(DifModBlocks.SOLANA_BLOCK);
+	public static final RegistryObject<Item>CINDER_FLOUR_BLOCK=block(DifModBlocks.CINDER_FLOUR_BLOCK);
 	public static final RegistryObject<Item>PEDROCK=block(DifModBlocks.PEDROCK);
 	public static final RegistryObject<Item>ANDESITE_LATTICE=block(DifModBlocks.ANDESITE_LATTICE);
 	public static final RegistryObject<Item>ANDESITE_WINDOW=block(DifModBlocks.ANDESITE_WINDOW);

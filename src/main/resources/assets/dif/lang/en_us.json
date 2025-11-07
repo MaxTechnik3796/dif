@@ -3,6 +3,7 @@
 	"effect.dif.redstone_not_iq": "Redstonenot Anti-Boost",
 
 	"gui.dif.inventory": "Inventory",
+	"gui.dif.generator": "Generator",
 	"gui.dif.super_box": "§lSuper Box§r",
 
 	"subtitles.cremeka":"",
@@ -82,6 +83,7 @@
 	"block.dif.hospital_handle":"Hospital Handle",
 	"block.dif.singularitator":"§lSingularitátor§r",
 	"block.dif.super_box": "§e§lSuper Box§r",
+	"block.dif.cinder_flour_block": "Cinder Flour Block",
 
 	"block.dif.solar_panel_00":"Solar Panel",
 	"block.dif.solar_panel_01":"Solar Panel",
@@ -93,6 +95,8 @@
 	"block.dif.stoned_arrow":"Stoned Arrow",
 	"block.dif.deepslated_arrow":"Deepslated Arrow",
 
+	"block.dif.bitcoin_block": "Block of Bitcoin",
+	"block.dif.solana_block": "Block of Solana ",
 	"block.dif.pedrock":"Pedrock",
 	"block.dif.andesite_lattice":"Andesite Lattice Block",
 	"block.dif.andesite_window":"Andesite Window"

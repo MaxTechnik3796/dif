@@ -17,6 +17,8 @@
 		"dif:solar_panel_04",
 		"dif:pedrock",
 		"dif:singularitator",
-		"dif:super_box"
+		"dif:super_box",
+		"dif:solana_block",
+		"dif:bitcoin_block"
 	]
 }

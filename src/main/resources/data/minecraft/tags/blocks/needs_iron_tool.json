@@ -2,6 +2,8 @@
 	"replace":false,
 	"values":[
 		"dif:singularitator",
-		"dif:super_box"
+		"dif:super_box",
+		"dif:solana_block",
+		"dif:bitcoin_block"
   ]
 }
