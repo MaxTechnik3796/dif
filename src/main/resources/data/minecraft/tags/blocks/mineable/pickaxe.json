@@ -3,7 +3,7 @@
 	"values":[
 		"dif:event_bus",
 		"dif:the_differential",
-		"dif:generator",
+		"dif:burning_generator",
 		"dif:hospital_handle",
 		"dif:deepslated_arrow",
 		"dif:stoned_arrow",

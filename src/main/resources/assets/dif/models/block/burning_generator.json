@@ -1,0 +1,6 @@
+{
+	"parent":"dif:block/generator",
+	"textures":{
+		"0": "dif:block/burning_generator"
+	}
+}

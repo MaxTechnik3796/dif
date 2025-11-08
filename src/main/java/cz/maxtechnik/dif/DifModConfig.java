@@ -15,6 +15,12 @@ public class DifModConfig{
 	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_03;
 	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_04;
 
+
+	private static final ForgeConfigSpec.IntValue BURNING_GENERATOR_ENERGY_PER_TICK;
+	private static final ForgeConfigSpec.IntValue BURNING_GENERATOR_MAX_ENERGY;
+	private static final ForgeConfigSpec.IntValue BURNING_GENERATOR_MAX_EXTRACT;
+
+
 	private static final ForgeConfigSpec.BooleanValue LOG_DIRT_BLOCK;
 	private static final ForgeConfigSpec.IntValue MAGIC_NUMBER;
 	private static final ForgeConfigSpec.ConfigValue<String>MAGIC_NUMBER_INTRODUCTION;
@@ -25,6 +31,11 @@ public class DifModConfig{
 		SOLAR_PANEL_02=BUILDER.comment("Production of Solar Panel 02, Fe/t.\nDefault value: 20").defineInRange("solar_panel_02",20,0,Integer.MAX_VALUE);
 		SOLAR_PANEL_03=BUILDER.comment("Production of Solar Panel 03, Fe/t.\nDefault value: 50").defineInRange("solar_panel_03",50,0,Integer.MAX_VALUE);
 		SOLAR_PANEL_04=BUILDER.comment("Production of Solar Panel 04, Fe/t.\nDefault value: 100").defineInRange("solar_panel_04",100,0,Integer.MAX_VALUE);
+		BUILDER.pop();
+		BUILDER.push("BurningGenerator");
+		BURNING_GENERATOR_ENERGY_PER_TICK=BUILDER.comment("Production of Burning Generator, Fe/t.\nRestart required!\nDefault value: 20").defineInRange("burning_generator_energy_per_tick",20,0,Integer.MAX_VALUE);
+		BURNING_GENERATOR_MAX_ENERGY=BUILDER.comment("Maximum capacity of the Burning Generator, Fe.\nRestart required!\nDefault value: 32000").defineInRange("burning_generator_max_energy",32000,0,Integer.MAX_VALUE);
+		BURNING_GENERATOR_MAX_EXTRACT=BUILDER.comment("Maximum energy output from the Burning Generator, Fe/t.\nRestart required!\nDefault value: 200").defineInRange("burning_generator_max_extract",200,0,Integer.MAX_VALUE);
 		BUILDER.pop();
 		BUILDER.push("GeneralSettings");
 		LOG_DIRT_BLOCK=BUILDER.comment("Whether to log the dirt block").define("logDirtBlock",false);
@@ -39,6 +50,10 @@ public class DifModConfig{
 	public static int solarPanel_02;
 	public static int solarPanel_03;
 	public static int solarPanel_04;
+
+	public static int burningGeneratorEnergyPerTick;
+	public static int burningGeneratorMaxEnergy;
+	public static int burningGeneratorMaxExtract;
 
 	public static boolean logDirtBlock;
 	public static int magicNumber;
@@ -58,6 +73,10 @@ public class DifModConfig{
 		solarPanel_02=SOLAR_PANEL_02.get();
 		solarPanel_03=SOLAR_PANEL_03.get();
 		solarPanel_04=SOLAR_PANEL_04.get();
+
+		burningGeneratorEnergyPerTick=BURNING_GENERATOR_ENERGY_PER_TICK.get();
+		burningGeneratorMaxEnergy=BURNING_GENERATOR_MAX_ENERGY.get();
+		burningGeneratorMaxExtract=BURNING_GENERATOR_MAX_EXTRACT.get();
 
 		logDirtBlock=LOG_DIRT_BLOCK.get();
 		magicNumber=MAGIC_NUMBER.get();

@@ -1,12 +1,13 @@
 package cz.maxtechnik.dif.block.entity;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.block.Generator;
-import cz.maxtechnik.dif.gui.menu.GeneratorMenu;
+import cz.maxtechnik.dif.DifModConfig;
+import cz.maxtechnik.dif.gui.menu.BurningGeneratorMenu;
 import cz.maxtechnik.dif.init.misc.DifModBlockEntities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.ForgeHooks;
@@ -36,35 +37,47 @@ import javax.annotation.Nullable;
 import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.NotNull;
 
-public class GeneratorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer{
+import java.util.stream.IntStream;
+
+public class BurningGenerator extends RandomizableContainerBlockEntity implements WorldlyContainer{
 	public static final int SLOTS=1;
 	public static final int INPUT_SLOT=0;
 
-	public static final int ENERGY_PER_TICK=20;
-	public static final int MAX_ENERGY=10000;
-	public static final int MAX_RECEIVE=200;
-	public static final int MAX_EXTRACT=200;
+	public static final int ENERGY_PER_TICK=DifModConfig.burningGeneratorEnergyPerTick;
+	public static final int MAX_ENERGY=DifModConfig.burningGeneratorMaxEnergy;
+	public static final int MAX_RECEIVE=Integer.MAX_VALUE;
+	public static final int MAX_EXTRACT=DifModConfig.burningGeneratorMaxExtract;
 
 	private NonNullList<ItemStack>stacks=NonNullList.withSize(SLOTS,ItemStack.EMPTY);
 	private final LazyOptional<?extends IItemHandler>[]handlers=SidedInvWrapper.create(this,Direction.values());
 	private int burnTime;
 	private int maxBurnTime;
-	public final ContainerData dataAccess=new SimpleContainerData(4){
+	public final ContainerData dataAccess=new SimpleContainerData(7){
 		@Override
 		public int get(int index){
+			int lit=0;
+			if(getBlockState().getValue(cz.maxtechnik.dif.block.BurningGenerator.LIT))
+				lit=1;
+			int empty=0;
+			if(isEmpty()){
+				empty=1;
+			}
 			return switch (index){
-				case 0->GeneratorBlockEntity.this.burnTime;
-				case 1->GeneratorBlockEntity.this.maxBurnTime;
-				case 2->GeneratorBlockEntity.this.energyStorage.getEnergyStored();
-				case 3->GeneratorBlockEntity.this.energyStorage.getMaxEnergyStored();
+				case 0->BurningGenerator.this.burnTime;
+				case 1->BurningGenerator.this.maxBurnTime;
+				case 2->lit;
+				case 3->BurningGenerator.this.energyStorage.getEnergyStored();
+				case 4->BurningGenerator.this.energyStorage.getMaxEnergyStored();
+				case 5->ForgeHooks.getBurnTime(getItem(INPUT_SLOT),null);
+				case 6->empty;
 				default->0;
 			};
 		}
 		@Override
 		public void set(int index,int value){
 			switch (index){
-				case 0->GeneratorBlockEntity.this.burnTime=value;
-				case 1->GeneratorBlockEntity.this.maxBurnTime=value;
+				case 0->BurningGenerator.this.burnTime=value;
+				case 1->BurningGenerator.this.maxBurnTime=value;
 			}
 		}
 		@Override
@@ -94,8 +107,8 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 			return retval;
 		}
 	};
-	public GeneratorBlockEntity(BlockPos position,BlockState state){
-		super(DifModBlockEntities.GENERATOR_BE.get(),position,state);
+	public BurningGenerator(BlockPos position,BlockState state){
+		super(DifModBlockEntities.BURNING_GENERATOR.get(),position,state);
 	}
 	@Override
 	public void load(@NotNull CompoundTag compound){
@@ -116,30 +129,35 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 		compound.putInt("maxBurnTime",this.maxBurnTime);
 		super.saveAdditional(compound);
 	}
-	public static void clientTick(Level level,BlockPos pos,BlockState state,GeneratorBlockEntity entity){
-		if(state.getValue(Generator.LIT)){
-			if(state.getValue(Generator.FACING).getAxis().equals(Direction.Axis.X)){
-				if(DifMod.rouletteBoolean(8))
-					level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.42,pos.getY()+0.28,pos.getZ()+0.15,0,0.007,0);
-				if(DifMod.rouletteBoolean(8))
-					level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.58,pos.getY()+0.28,pos.getZ()+0.15,0,0.007,0);
-				if(DifMod.rouletteBoolean(8))
-					level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.42,pos.getY()+0.28,pos.getZ()+0.85,0,0.007,0);
-				if(DifMod.rouletteBoolean(8))
-					level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.58,pos.getY()+0.28,pos.getZ()+0.85,0,0.007,0);
-			}else if(state.getValue(Generator.FACING).getAxis().equals(Direction.Axis.Z)){
-				if(DifMod.rouletteBoolean(8))
-					level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.15,pos.getY()+0.28,pos.getZ()+0.42,0,0.007,0);
-				if(DifMod.rouletteBoolean(8))
-					level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.15,pos.getY()+0.28,pos.getZ()+0.58,0,0.007,0);
-				if(DifMod.rouletteBoolean(8))
-					level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.85,pos.getY()+0.28,pos.getZ()+0.42,0,0.007,0);
-				if(DifMod.rouletteBoolean(8))
-					level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.85,pos.getY()+0.28,pos.getZ()+0.58,0,0.007,0);
+	public static void clientTick(Level level,BlockPos pos,BlockState state,BurningGenerator entity){
+		if(state.getValue(cz.maxtechnik.dif.block.BurningGenerator.LIT)){
+			final double Y_OFFSET=0.28;
+			final double Y_VELOCITY=0.007;
+			double[][]offsets;
+			Direction.Axis axis=state.getValue(cz.maxtechnik.dif.block.BurningGenerator.FACING).getAxis();
+			if(axis.equals(Direction.Axis.X)){
+				offsets=new double[][]{
+						{0.42,0.15},
+						{0.58,0.15},
+						{0.42,0.85},
+						{0.58,0.85}};
+			}else if(axis.equals(Direction.Axis.Z)){
+				offsets=new double[][]{
+						{0.15,0.42},
+						{0.15,0.58},
+						{0.85,0.42},
+						{0.85,0.58}};
+			}else{
+				return;
+			}
+			for(double[]offset:offsets){
+				if(DifMod.rouletteBoolean(8)){
+					level.addParticle(ParticleTypes.SMOKE,pos.getX()+offset[0],pos.getY()+Y_OFFSET,pos.getZ()+offset[1],0,Y_VELOCITY,0);
+				}
 			}
 		}
 	}
-	public static void serverTick(Level level,BlockPos pos,BlockState state,GeneratorBlockEntity entity){
+	public static void serverTick(Level level,BlockPos pos,BlockState state,BurningGenerator entity){
 		boolean shouldBeLit=false;
 		if(entity.energyStorage.getEnergyStored()+ENERGY_PER_TICK<=entity.energyStorage.getMaxEnergyStored()){
 			if(entity.burnTime>0){
@@ -153,7 +171,11 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 					if(burnDuration>0){
 						entity.burnTime=burnDuration;
 						entity.maxBurnTime=burnDuration;
-						fuelStack.shrink(1);
+						if(fuelStack.getItem().equals(Items.LAVA_BUCKET)){
+							fuelStack=new ItemStack(Items.BUCKET);
+						}else{
+							fuelStack.shrink(1);
+						}
 						entity.setItem(INPUT_SLOT,fuelStack);
 						shouldBeLit=true;
 					}
@@ -177,8 +199,8 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 				}
 			}
 		}
-		if(state.getValue(Generator.LIT)!=shouldBeLit)
-			level.setBlock(pos,state.setValue(Generator.LIT,shouldBeLit),3);
+		if(state.getValue(cz.maxtechnik.dif.block.BurningGenerator.LIT)!=shouldBeLit)
+			level.setBlock(pos,state.setValue(cz.maxtechnik.dif.block.BurningGenerator.LIT,shouldBeLit),3);
 	}
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket(){
@@ -205,7 +227,7 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 	}
 	@Override
 	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory){
-		return new GeneratorMenu(id,inventory,new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(this.worldPosition));
+		return new BurningGeneratorMenu(id,inventory,new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(this.worldPosition));
 	}
 	@Override
 	public @NotNull Component getDisplayName(){
@@ -225,7 +247,7 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 	}
 	@Override
 	public int @NotNull[]getSlotsForFace(@NotNull Direction side){
-		return new int[]{INPUT_SLOT,this.getContainerSize()};
+		return IntStream.range(0,this.getContainerSize()).toArray();
 	}
 	@Override
 	public boolean canPlaceItemThroughFace(int index,@NotNull ItemStack stack,@Nullable Direction direction){

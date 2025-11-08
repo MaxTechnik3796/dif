@@ -1,6 +1,6 @@
 {
 	"type":"minecraft:block",
-	"random_sequence":"dif:blocks/generator",
+	"random_sequence":"dif:blocks/burning_generator",
 	"pools":[
 		{
 			"rolls":1.0,
@@ -12,7 +12,7 @@
 			"entries":[
 				{
 					"type":"minecraft:item",
-					"name":"dif:generator"
+					"name":"dif:burning_generator"
 				}
 			]
 		}

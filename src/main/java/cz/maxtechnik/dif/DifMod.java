@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 public class DifMod{
 	public static final String MODID="dif";
 	public static final Logger LOGGER=LogUtils.getLogger();
+	@SuppressWarnings("removal")
 	public DifMod(){
 		IEventBus bus=FMLJavaModLoadingContext.get().getModEventBus();
 		bus.addListener(this::commonSetup);
@@ -79,5 +80,8 @@ public class DifMod{
 	}
 	public static boolean rouletteBoolean(int range){
 		return 0==Mth.nextInt(RandomSource.create(),0,range);
+	}
+	public static boolean mouseIn(int mouseX,int mouseY,int x,int y,int w,int h){
+		return mouseX>=x&&mouseX<x+w&&mouseY>=y&&mouseY<y+h;
 	}
 }

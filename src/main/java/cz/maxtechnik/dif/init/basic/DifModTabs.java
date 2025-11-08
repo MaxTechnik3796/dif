@@ -55,7 +55,7 @@ public class DifModTabs{
     public static final RegistryObject<CreativeModeTab>RANDOM=REGISTER.register("random",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.random")).icon(()->new ItemStack(DifModItems.QUESTION_MARK.get())).withTabsBefore(MUSIC.getKey()).displayItems(((parameters,tabData)->{
 		tabData.accept(DifModItems.QUESTION_MARK.get());
 		tabData.accept(DifModItems.EVENT_BUS.get());
-		tabData.accept(DifModItems.GENERATOR.get());
+		tabData.accept(DifModItems.BURNING_GENERATOR.get());
 		tabData.accept(DifModItems.HOSPITAL_HANDLE.get());
 		tabData.accept(DifModItems.SINGULARITATOR.get());
 		tabData.accept(DifModItems.SOLANA_BLOCK.get());

@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.gui.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import cz.maxtechnik.dif.gui.menu.SuperBoxGuiMenu;
+import cz.maxtechnik.dif.gui.menu.SuperBoxMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -9,9 +9,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
-public class SuperBoxGuiScreen extends AbstractContainerScreen<SuperBoxGuiMenu>{
+public class SuperBoxScreen extends AbstractContainerScreen<SuperBoxMenu>{
 
-    public SuperBoxGuiScreen(SuperBoxGuiMenu container,Inventory inventory,Component text){
+    public SuperBoxScreen(SuperBoxMenu container,Inventory inventory,Component text){
 		super(container,inventory,text);
         this.imageWidth=424;
 		this.imageHeight=236;

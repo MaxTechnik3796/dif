@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class SuperBoxGuiMenu extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
+public class SuperBoxMenu extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
 	public final static HashMap<String, Object> guistate = new HashMap<>();
 	public final Level world;
 	public final Player entity;
@@ -37,8 +37,8 @@ public class SuperBoxGuiMenu extends AbstractContainerMenu implements Supplier<M
 	private Entity boundEntity = null;
 	private BlockEntity boundBlockEntity = null;
 
-	public SuperBoxGuiMenu(int id,Inventory inv,FriendlyByteBuf extraData) {
-		super(DifModMenus.SUPER_BOX_GUI.get(), id);
+	public SuperBoxMenu(int id,Inventory inv,FriendlyByteBuf extraData) {
+		super(DifModMenus.SUPER_BOX_MENU.get(), id);
 		this.entity = inv.player;
 		this.world = inv.player.level();
 		this.internal = new ItemStackHandler(231);

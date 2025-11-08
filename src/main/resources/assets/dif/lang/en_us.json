@@ -3,7 +3,9 @@
 	"effect.dif.redstone_not_iq": "Redstonenot Anti-Boost",
 
 	"gui.dif.inventory": "Inventory",
-	"gui.dif.generator": "Generator",
+	"gui.dif.burning_generator": "Burning Generator",
+	"gui.dif.invalid_fuel0": "This is not",
+	"gui.dif.invalid_fuel1": "flammable fuel!",
 	"gui.dif.super_box": "§lSuper Box§r",
 
 	"subtitles.cremeka":"",
@@ -80,6 +82,7 @@
 	"block.dif.the_differential":"TheDifferential",
 	"block.dif.event_bus":"Event Bus",
 	"block.dif.generator":"§lBenzínovej Generator§r",
+	"block.dif.burning_generator":"Burning Generator",
 	"block.dif.hospital_handle":"Hospital Handle",
 	"block.dif.singularitator":"§lSingularitátor§r",
 	"block.dif.super_box": "§e§lSuper Box§r",

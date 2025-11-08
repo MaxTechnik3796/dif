@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.block.entity;
 
 import cz.maxtechnik.dif.init.misc.DifModBlockEntities;
-import cz.maxtechnik.dif.gui.menu.SuperBoxGuiMenu;
+import cz.maxtechnik.dif.gui.menu.SuperBoxMenu;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -81,7 +81,7 @@ public class SuperBox extends RandomizableContainerBlockEntity implements Worldl
 
 	@Override
 	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory) {
-		return new SuperBoxGuiMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(this.worldPosition));
+		return new SuperBoxMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(this.worldPosition));
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.block;
 
-import cz.maxtechnik.dif.block.entity.GeneratorBlockEntity;
-import cz.maxtechnik.dif.gui.menu.GeneratorMenu;
+import cz.maxtechnik.dif.gui.menu.BurningGeneratorMenu;
 import cz.maxtechnik.dif.init.misc.DifModBlockEntities;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
@@ -38,11 +37,11 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Generator extends Block implements SimpleWaterloggedBlock,EntityBlock{
+public class BurningGenerator extends Block implements SimpleWaterloggedBlock,EntityBlock{
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
 	public static final BooleanProperty LIT=BooleanProperty.create("lit");
-	public Generator(){
+	public BurningGenerator(){
 		super(Properties.of().strength(5F,6F).sound(SoundType.STONE).requiresCorrectToolForDrops().noOcclusion().lightLevel(state->state.getValue(LIT)?5:0));
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(WATERLOGGED,false).setValue(LIT,false));
 	}
@@ -88,14 +87,14 @@ public class Generator extends Block implements SimpleWaterloggedBlock,EntityBlo
 	}
 	@Override
 	public @Nullable<T extends BlockEntity>BlockEntityTicker<T>getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T>type){
-		return level.isClientSide?createClientTicker(level,type,DifModBlockEntities.GENERATOR_BE.get()):createServerTicker(level,type,DifModBlockEntities.GENERATOR_BE.get());
+		return level.isClientSide?createClientTicker(level,type,DifModBlockEntities.BURNING_GENERATOR.get()):createServerTicker(level,type,DifModBlockEntities.BURNING_GENERATOR.get());
 	}
 	@Nullable
-	protected static<T extends BlockEntity>BlockEntityTicker<T> createServerTicker(Level level,BlockEntityType<T>type,BlockEntityType<?extends GeneratorBlockEntity>expectedType){
-		return type==expectedType?(lvl,pos,state,blockEntity)->GeneratorBlockEntity.serverTick(lvl,pos,state,(GeneratorBlockEntity)blockEntity):null;
+	protected static<T extends BlockEntity>BlockEntityTicker<T> createServerTicker(Level level,BlockEntityType<T>type,BlockEntityType<?extends cz.maxtechnik.dif.block.entity.BurningGenerator>expectedType){
+		return type==expectedType?(lvl,pos,state,blockEntity)->cz.maxtechnik.dif.block.entity.BurningGenerator.serverTick(lvl,pos,state,(cz.maxtechnik.dif.block.entity.BurningGenerator)blockEntity):null;
 	}
-	protected static<T extends BlockEntity>BlockEntityTicker<T>createClientTicker(Level level,BlockEntityType<T>type,BlockEntityType<?extends GeneratorBlockEntity>expectedType){
-		return type==expectedType?(lvl,pos,state,blockEntity)->GeneratorBlockEntity.clientTick(lvl,pos,state,(GeneratorBlockEntity)blockEntity):null;
+	protected static<T extends BlockEntity>BlockEntityTicker<T>createClientTicker(Level level,BlockEntityType<T>type,BlockEntityType<?extends cz.maxtechnik.dif.block.entity.BurningGenerator>expectedType){
+		return type==expectedType?(lvl,pos,state,blockEntity)->cz.maxtechnik.dif.block.entity.BurningGenerator.clientTick(lvl,pos,state,(cz.maxtechnik.dif.block.entity.BurningGenerator)blockEntity):null;
 	}
 	@Override
 	public @NotNull InteractionResult use(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player entity,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
@@ -108,7 +107,7 @@ public class Generator extends Block implements SimpleWaterloggedBlock,EntityBlo
 				}
 				@Override
 				public AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory,@NotNull Player player){
-					return new GeneratorMenu(id,inventory,new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos));
+					return new BurningGeneratorMenu(id,inventory,new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos));
 				}
 			},pos);
 		}
@@ -121,7 +120,7 @@ public class Generator extends Block implements SimpleWaterloggedBlock,EntityBlo
 	}
 	@Override
 	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		return new GeneratorBlockEntity(pos,state);
+		return new cz.maxtechnik.dif.block.entity.BurningGenerator(pos,state);
 	}
 	@Override
 	public boolean triggerEvent(@NotNull BlockState state,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
@@ -133,7 +132,7 @@ public class Generator extends Block implements SimpleWaterloggedBlock,EntityBlo
 	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
 		if(state.getBlock()!=newState.getBlock()){
 			BlockEntity blockEntity=world.getBlockEntity(pos);
-			if(blockEntity instanceof GeneratorBlockEntity be){
+			if(blockEntity instanceof cz.maxtechnik.dif.block.entity.BurningGenerator be){
 				Containers.dropContents(world,pos,be);
 				world.updateNeighbourForOutputSignal(pos,this);
 			}
@@ -147,7 +146,7 @@ public class Generator extends Block implements SimpleWaterloggedBlock,EntityBlo
 	@Override
 	public int getAnalogOutputSignal(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos){
 		BlockEntity tileentity=world.getBlockEntity(pos);
-		if (tileentity instanceof GeneratorBlockEntity be)
+		if (tileentity instanceof cz.maxtechnik.dif.block.entity.BurningGenerator be)
 			return AbstractContainerMenu.getRedstoneSignalFromContainer(be);
 		else
 			return 0;

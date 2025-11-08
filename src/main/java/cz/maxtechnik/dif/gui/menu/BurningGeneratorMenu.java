@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.gui.menu;
 
-import cz.maxtechnik.dif.block.entity.GeneratorBlockEntity;
+import cz.maxtechnik.dif.block.entity.BurningGenerator;
 import net.minecraft.world.inventory.*;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -11,7 +11,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
@@ -21,7 +20,7 @@ import java.util.HashMap;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import org.jetbrains.annotations.NotNull;
 
-public class GeneratorMenu extends AbstractContainerMenu implements Supplier<Map<Integer,Slot>>{
+public class BurningGeneratorMenu extends AbstractContainerMenu implements Supplier<Map<Integer,Slot>>{
 	public final static HashMap<String,Object>guistate=new HashMap<>();
 	public final Level world;
 	public final Player entity;
@@ -30,12 +29,10 @@ public class GeneratorMenu extends AbstractContainerMenu implements Supplier<Map
 	private IItemHandler internal;
 	private final Map<Integer,Slot>customSlots=new HashMap<>();
 	private boolean bound=false;
-	private final Supplier<Boolean>boundItemMatcher=null;
-	private final Entity boundEntity=null;
 	private BlockEntity boundBlockEntity=null;
 	private final ContainerData data;
 
-	public GeneratorMenu(int id,Inventory inv,FriendlyByteBuf extraData){
+	public BurningGeneratorMenu(int id,Inventory inv,FriendlyByteBuf extraData){
 		super(DifModMenus.GENERATOR_MENU.get(),id);
 		this.entity=inv.player;
 		this.world=inv.player.level();
@@ -52,7 +49,7 @@ public class GeneratorMenu extends AbstractContainerMenu implements Supplier<Map
 		if(pos!=null){
 			blockEntityFromWorld=this.world.getBlockEntity(pos);
 		}
-		if (blockEntityFromWorld instanceof GeneratorBlockEntity generatorBlockEntity){
+		if (blockEntityFromWorld instanceof BurningGenerator generatorBlockEntity){
 			this.internal=generatorBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER,null).orElse(new ItemStackHandler(2));
 			this.data=generatorBlockEntity.dataAccess;
 			this.bound=true;
@@ -62,9 +59,7 @@ public class GeneratorMenu extends AbstractContainerMenu implements Supplier<Map
 			this.data=new SimpleContainerData(3);
 		}
 		this.addDataSlots(this.data);
-		this.customSlots.put(0,this.addSlot(new SlotItemHandler(internal,0,79,35){
-			private final int slot = 0;
-		}));
+		this.customSlots.put(0,this.addSlot(new SlotItemHandler(internal,0,79,35){}));
 		for(int si=0;si<3;++si)
 			for(int sj=0;sj<9;++sj)
 				this.addSlot(new Slot(inv,sj+(si+1)*9,8+sj*18,84+si*18));
@@ -77,11 +72,20 @@ public class GeneratorMenu extends AbstractContainerMenu implements Supplier<Map
 	public int getMaxBurnTime(){
 		return this.data.get(1);
 	}
-	public int getEnergyStored(){
+	public int getLit(){
 		return this.data.get(2);
 	}
-	public int getMaxEnergyStored(){
+	public int getEnergyStored(){
 		return this.data.get(3);
+	}
+	public int getMaxEnergyStored(){
+		return this.data.get(4);
+	}
+	public int getFuel(){
+		return this.data.get(5);
+	}
+	public int getEmpty(){
+		return this.data.get(6);
 	}
 	@Override
 	public boolean stillValid(@NotNull Player player){
@@ -216,4 +220,5 @@ public class GeneratorMenu extends AbstractContainerMenu implements Supplier<Map
 	public Map<Integer,Slot>get(){
 		return customSlots;
 	}
+
 }
