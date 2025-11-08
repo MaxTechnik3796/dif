@@ -41,21 +41,22 @@ import org.jetbrains.annotations.Nullable;
 public class Generator extends Block implements SimpleWaterloggedBlock,EntityBlock{
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
+	public static final BooleanProperty LIT=BooleanProperty.create("lit");
 	public Generator(){
-		super(Properties.of().strength(5F,6F).sound(SoundType.STONE).requiresCorrectToolForDrops().noOcclusion());
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(WATERLOGGED,false));
+		super(Properties.of().strength(5F,6F).sound(SoundType.STONE).requiresCorrectToolForDrops().noOcclusion().lightLevel(state->state.getValue(LIT)?5:0));
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(WATERLOGGED,false).setValue(LIT,false));
 	}
 	@Override
 	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos) {
 		return 0;
 	}
 	@Override
-	public @NotNull VoxelShape getVisualShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context){
+	public @NotNull VoxelShape getVisualShape(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
 		return Shapes.empty();
 	}
 	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder){
-		builder.add(FACING,WATERLOGGED);
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState>builder){
+		builder.add(FACING,WATERLOGGED,LIT);
 	}
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context){
@@ -64,7 +65,7 @@ public class Generator extends Block implements SimpleWaterloggedBlock,EntityBlo
 	}
 	@Override
 	public @NotNull BlockState rotate(BlockState state,Rotation rot){
-		return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
+		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));
 	}
 	@Override
 	public @NotNull BlockState mirror(BlockState state,Mirror mirrorIn){
@@ -81,84 +82,71 @@ public class Generator extends Block implements SimpleWaterloggedBlock,EntityBlo
 		}
 		return super.updateShape(state,facing,facingState,world,currentPos,facingPos);
 	}
-
 	@Override
 	public void tick(@NotNull BlockState blockstate,@NotNull ServerLevel world,@NotNull BlockPos pos,@NotNull RandomSource random) {
 		super.tick(blockstate,world,pos,random);
 	}
-
 	@Override
-	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T> type) {
-		return level.isClientSide ? null : createTicker(level, type, DifModBlockEntities.GENERATOR_BE.get());
+	public @Nullable<T extends BlockEntity>BlockEntityTicker<T>getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T>type){
+		return level.isClientSide?null:createTicker(level,type,DifModBlockEntities.GENERATOR_BE.get());
 	}
-
 	@Nullable
-	protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level level, BlockEntityType<T> type, BlockEntityType<? extends GeneratorBlockEntity> expectedType) {
-		return type == expectedType ? (lvl, pos, state, blockEntity) -> GeneratorBlockEntity.tick(lvl, pos, state, (GeneratorBlockEntity) blockEntity) : null;
+	protected static<T extends BlockEntity>BlockEntityTicker<T>createTicker(Level level,BlockEntityType<T>type,BlockEntityType<?extends GeneratorBlockEntity>expectedType){
+		return type==expectedType?(lvl,pos,state,blockEntity)->GeneratorBlockEntity.tick(lvl,pos,state,(GeneratorBlockEntity) blockEntity):null;
 	}
-
-
 	@Override
-	public InteractionResult use(BlockState blockstate, Level world, BlockPos pos, Player entity, InteractionHand hand, BlockHitResult hit) {
-		super.use(blockstate, world, pos, entity, hand, hit);
+	public @NotNull InteractionResult use(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player entity,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
+		super.use(blockstate,world,pos,entity,hand,hit);
 		if (entity instanceof ServerPlayer player) {
-			NetworkHooks.openScreen(player, new MenuProvider() {
+			NetworkHooks.openScreen(player,new MenuProvider(){
 				@Override
-				public Component getDisplayName() {
+				public @NotNull Component getDisplayName(){
 					return Component.literal("Generator");
 				}
-
 				@Override
-				public AbstractContainerMenu createMenu(int id,Inventory inventory,Player player) {
-					return new GeneratorMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos));
+				public AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory,@NotNull Player player){
+					return new GeneratorMenu(id,inventory,new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos));
 				}
-			}, pos);
+			},pos);
 		}
 		return InteractionResult.SUCCESS;
 	}
-
 	@Override
-	public MenuProvider getMenuProvider(BlockState state, Level worldIn, BlockPos pos) {
-		BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-		return tileEntity instanceof MenuProvider menuProvider ? menuProvider : null;
+	public MenuProvider getMenuProvider(@NotNull BlockState state,Level worldIn,@NotNull BlockPos pos){
+		BlockEntity tileEntity=worldIn.getBlockEntity(pos);
+		return tileEntity instanceof MenuProvider menuProvider?menuProvider:null;
 	}
-
 	@Override
-	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return new GeneratorBlockEntity(pos, state);
+	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
+		return new GeneratorBlockEntity(pos,state);
 	}
-
 	@Override
-	public boolean triggerEvent(BlockState state, Level world, BlockPos pos, int eventID, int eventParam) {
-		super.triggerEvent(state, world, pos, eventID, eventParam);
-		BlockEntity blockEntity = world.getBlockEntity(pos);
-		return blockEntity == null ? false : blockEntity.triggerEvent(eventID, eventParam);
+	public boolean triggerEvent(@NotNull BlockState state,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
+		super.triggerEvent(state,world,pos,eventID,eventParam);
+		BlockEntity blockEntity=world.getBlockEntity(pos);
+		return blockEntity!=null&&blockEntity.triggerEvent(eventID,eventParam);
 	}
-
 	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (state.getBlock() != newState.getBlock()) {
-			BlockEntity blockEntity = world.getBlockEntity(pos);
-			if (blockEntity instanceof GeneratorBlockEntity be) {
-				Containers.dropContents(world, pos,(Container)be);
-				world.updateNeighbourForOutputSignal(pos, this);
+	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
+		if(state.getBlock()!=newState.getBlock()){
+			BlockEntity blockEntity=world.getBlockEntity(pos);
+			if(blockEntity instanceof GeneratorBlockEntity be){
+				Containers.dropContents(world,pos,be);
+				world.updateNeighbourForOutputSignal(pos,this);
 			}
-			super.onRemove(state, world, pos, newState, isMoving);
+			super.onRemove(state,world,pos,newState,isMoving);
 		}
 	}
-
 	@Override
-	public boolean hasAnalogOutputSignal(BlockState state) {
+	public boolean hasAnalogOutputSignal(@NotNull BlockState state){
 		return true;
 	}
-
 	@Override
-	public int getAnalogOutputSignal(BlockState blockState, Level world, BlockPos pos) {
-		BlockEntity tileentity = world.getBlockEntity(pos);
+	public int getAnalogOutputSignal(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos){
+		BlockEntity tileentity=world.getBlockEntity(pos);
 		if (tileentity instanceof GeneratorBlockEntity be)
-			return AbstractContainerMenu.getRedstoneSignalFromContainer((Container)be);
+			return AbstractContainerMenu.getRedstoneSignalFromContainer(be);
 		else
 			return 0;
 	}
-
 }

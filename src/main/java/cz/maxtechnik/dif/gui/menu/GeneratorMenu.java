@@ -6,7 +6,6 @@ import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
@@ -16,130 +15,113 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
-
 import java.util.function.Supplier;
 import java.util.Map;
 import java.util.HashMap;
-
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import org.jetbrains.annotations.NotNull;
 
-public class GeneratorMenu extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
-	public final static HashMap<String, Object> guistate = new HashMap<>();
+public class GeneratorMenu extends AbstractContainerMenu implements Supplier<Map<Integer,Slot>>{
+	public final static HashMap<String,Object>guistate=new HashMap<>();
 	public final Level world;
 	public final Player entity;
-	public int x, y, z;
-	private ContainerLevelAccess access = ContainerLevelAccess.NULL;
+	public int x,y,z;
+	private ContainerLevelAccess access=ContainerLevelAccess.NULL;
 	private IItemHandler internal;
-	private final Map<Integer, Slot> customSlots = new HashMap<>();
-	private boolean bound = false;
-	private Supplier<Boolean> boundItemMatcher = null;
-	private Entity boundEntity = null;
-	private BlockEntity boundBlockEntity = null;
-
+	private final Map<Integer,Slot>customSlots=new HashMap<>();
+	private boolean bound=false;
+	private final Supplier<Boolean>boundItemMatcher=null;
+	private final Entity boundEntity=null;
+	private BlockEntity boundBlockEntity=null;
 	private final ContainerData data;
 
-	public GeneratorMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
-		super(DifModMenus.GENERATOR_MENU.get(), id);
-		this.entity = inv.player;
-		this.world = inv.player.level();
-		this.internal = new ItemStackHandler(1);
-		BlockPos pos = null;
-		if (extraData != null) {
-			pos = extraData.readBlockPos();
-			this.x = pos.getX();
-			this.y = pos.getY();
-			this.z = pos.getZ();
-			access = ContainerLevelAccess.create(world, pos);
+	public GeneratorMenu(int id,Inventory inv,FriendlyByteBuf extraData){
+		super(DifModMenus.GENERATOR_MENU.get(),id);
+		this.entity=inv.player;
+		this.world=inv.player.level();
+		this.internal=new ItemStackHandler(1);
+		BlockPos pos=null;
+		if(extraData!=null) {
+			pos=extraData.readBlockPos();
+			this.x=pos.getX();
+			this.y=pos.getY();
+			this.z=pos.getZ();
+			access=ContainerLevelAccess.create(world,pos);
 		}
-		BlockEntity blockEntityFromWorld = null;
-		if (pos != null) {
-			blockEntityFromWorld = this.world.getBlockEntity(pos);
+		BlockEntity blockEntityFromWorld=null;
+		if(pos!=null){
+			blockEntityFromWorld=this.world.getBlockEntity(pos);
 		}
-
-		if (blockEntityFromWorld instanceof GeneratorBlockEntity generatorBlockEntity) {
-			this.internal = generatorBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).orElse(new ItemStackHandler(2));
-			this.data = generatorBlockEntity.dataAccess;
-			this.bound = true;
-			this.boundBlockEntity = generatorBlockEntity;
+		if (blockEntityFromWorld instanceof GeneratorBlockEntity generatorBlockEntity){
+			this.internal=generatorBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER,null).orElse(new ItemStackHandler(2));
+			this.data=generatorBlockEntity.dataAccess;
+			this.bound=true;
+			this.boundBlockEntity=generatorBlockEntity;
 		} else {
-			this.internal = new ItemStackHandler(2);
-			this.data = new SimpleContainerData(3);
+			this.internal=new ItemStackHandler(2);
+			this.data=new SimpleContainerData(3);
 		}
 		this.addDataSlots(this.data);
-
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 79, 35) {
+		this.customSlots.put(0,this.addSlot(new SlotItemHandler(internal,0,79,35){
 			private final int slot = 0;
 		}));
-		for (int si = 0; si < 3; ++si)
-			for (int sj = 0; sj < 9; ++sj)
-				this.addSlot(new Slot(inv, sj + (si + 1) * 9,8+sj*18,84+si*18));
-		for (int si = 0; si < 9; ++si)
-			this.addSlot(new Slot(inv, si,8+si*18,142));
+		for(int si=0;si<3;++si)
+			for(int sj=0;sj<9;++sj)
+				this.addSlot(new Slot(inv,sj+(si+1)*9,8+sj*18,84+si*18));
+		for(int si=0;si<9;++si)
+			this.addSlot(new Slot(inv,si,8+si*18,142));
 	}
-
 	public int getBurnTime(){
 		return this.data.get(0);
 	}
-	public int getEnergyStored(){
+	public int getMaxBurnTime(){
 		return this.data.get(1);
 	}
-	public int getCurrentFuelItemBurnTime(){
+	public int getEnergyStored(){
 		return this.data.get(2);
 	}
 	public int getMaxEnergyStored(){
 		return this.data.get(3);
 	}
-
-
-
-
-
 	@Override
-	public boolean stillValid(@NotNull Player player) {
-		if (this.bound) {
-			if (this.boundItemMatcher != null)
-				return this.boundItemMatcher.get();
-			else if (this.boundBlockEntity != null)
-				return AbstractContainerMenu.stillValid(this.access, player, this.boundBlockEntity.getBlockState().getBlock());
-			else if (this.boundEntity != null)
-				return this.boundEntity.isAlive();
+	public boolean stillValid(@NotNull Player player){
+		if(this.bound){
+			if(this.boundBlockEntity!=null)
+				return AbstractContainerMenu.stillValid(this.access,player,this.boundBlockEntity.getBlockState().getBlock());
 		}
 		return true;
 	}
-
 	@Override
 	public @NotNull ItemStack quickMoveStack(@NotNull Player playerIn,int index) {
-		ItemStack itemstack = ItemStack.EMPTY;
-		Slot slot = (Slot) this.slots.get(index);
-		if (slot.hasItem()) {
-			ItemStack itemstack1 = slot.getItem();
-			itemstack = itemstack1.copy();
-			if (index < 1) {
-				if (!this.moveItemStackTo(itemstack1, 1, this.slots.size(), true))
+		ItemStack itemstack=ItemStack.EMPTY;
+		Slot slot=this.slots.get(index);
+		if(slot.hasItem()){
+			ItemStack itemstack1=slot.getItem();
+			itemstack=itemstack1.copy();
+			if(index<1){
+				if(!this.moveItemStackTo(itemstack1,1,this.slots.size(),true))
 					return ItemStack.EMPTY;
-				slot.onQuickCraft(itemstack1, itemstack);
-			} else if (!this.moveItemStackTo(itemstack1, 0, 1, false)) {
-				if (index < 1 + 27) {
-					if (!this.moveItemStackTo(itemstack1, 1 + 27, this.slots.size(), true))
+				slot.onQuickCraft(itemstack1,itemstack);
+			}else if(!this.moveItemStackTo(itemstack1,0,1,false)){
+				if(index<1+27){
+					if(!this.moveItemStackTo(itemstack1,1+27,this.slots.size(),true))
 						return ItemStack.EMPTY;
-				} else {
-					if (!this.moveItemStackTo(itemstack1, 1, 1 + 27, false))
+				}else{
+					if(!this.moveItemStackTo(itemstack1,1,1+27,false))
 						return ItemStack.EMPTY;
 				}
 				return ItemStack.EMPTY;
 			}
-			if (itemstack1.getCount() == 0)
+			if(itemstack1.getCount()==0)
 				slot.set(ItemStack.EMPTY);
 			else
 				slot.setChanged();
-			if (itemstack1.getCount() == itemstack.getCount())
+			if(itemstack1.getCount()==itemstack.getCount())
 				return ItemStack.EMPTY;
-			slot.onTake(playerIn, itemstack1);
+			slot.onTake(playerIn,itemstack1);
 		}
 		return itemstack;
 	}
-
 	@Override
 	protected boolean moveItemStackTo(@NotNull ItemStack p_38904_,int p_38905_,int p_38906_,boolean p_38907_) {
 		boolean flag = false;
@@ -206,16 +188,15 @@ public class GeneratorMenu extends AbstractContainerMenu implements Supplier<Map
 					flag = true;
 					break;
 				}
-				if (p_38907_) {
+				if(p_38907_){
 					--i;
-				} else {
+				}else{
 					++i;
 				}
 			}
 		}
 		return flag;
 	}
-
 	@Override
 	public void removed(@NotNull Player playerIn) {
 		super.removed(playerIn);
@@ -232,7 +213,7 @@ public class GeneratorMenu extends AbstractContainerMenu implements Supplier<Map
 		}
 	}
 
-	public Map<Integer, Slot> get() {
+	public Map<Integer,Slot>get(){
 		return customSlots;
 	}
 }
