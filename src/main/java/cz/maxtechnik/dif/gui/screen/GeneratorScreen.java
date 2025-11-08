@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.gui.screen;
 
+import cz.maxtechnik.dif.DifMod;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;

@@ -1,6 +1,8 @@
 package cz.maxtechnik.dif.block.entity;
 
 
+import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.block.Generator;
 import cz.maxtechnik.dif.gui.menu.GeneratorMenu;
 import cz.maxtechnik.dif.init.misc.DifModBlockEntities;
 import net.minecraft.world.inventory.ContainerData;
@@ -35,6 +37,7 @@ import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.NotNull;
 
 
+
 public class GeneratorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer{
 	public static final int SLOTS=1;
 	public static final int INPUT_SLOT=0;
@@ -48,7 +51,7 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 	private final LazyOptional<?extends IItemHandler>[]handlers=SidedInvWrapper.create(this,Direction.values());
 	private int burnTime;
 	private int maxBurnTime;
-	public final ContainerData dataAccess=new SimpleContainerData(3){
+	public final ContainerData dataAccess=new SimpleContainerData(4){
 		@Override
 		public int get(int index){
 			return switch (index){
@@ -61,10 +64,6 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 		}
 		@Override
 		public void set(int index,int value){
-			switch (index){
-				case 0->GeneratorBlockEntity.this.burnTime=value;
-				case 1->GeneratorBlockEntity.this.maxBurnTime=value;
-			}
 		}
 		@Override
 		public int getCount(){
@@ -99,6 +98,7 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 	@Override
 	public void load(@NotNull CompoundTag compound){
 		super.load(compound);
+		DifMod.LOGGER.debug("Loading "+compound);
 		if(!this.tryLoadLootTable(compound))
 			this.stacks=NonNullList.withSize(this.getContainerSize(),ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(compound,this.stacks);
@@ -109,21 +109,23 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 	}
 	@Override
 	public void saveAdditional(@NotNull CompoundTag compound){
-		super.saveAdditional(compound);
-		if(!this.trySaveLootTable(compound))
-			ContainerHelper.saveAllItems(compound,this.stacks);
+		DifMod.LOGGER.debug("Saving: "+compound);
+		ContainerHelper.saveAllItems(compound,this.stacks);
 		compound.put("energyStorage",energyStorage.serializeNBT());
 		compound.putInt("burtTime",this.burnTime);
 		compound.putInt("maxBurnTime",this.maxBurnTime);
+		super.saveAdditional(compound);
 	}
 	public static void tick(Level level,BlockPos pos,BlockState state,GeneratorBlockEntity entity){
 		boolean changed=false;
+		boolean shouldBeLit=false;
 		if (level.isClientSide){
 			return;
 		}
 		if(entity.energyStorage.getEnergyStored()+ENERGY_PER_TICK<=entity.energyStorage.getMaxEnergyStored()){
 			if(entity.burnTime>0){
 				changed=true;
+				shouldBeLit=true;
 				entity.burnTime--;
 				entity.energyStorage.receiveEnergy(ENERGY_PER_TICK,false);
 			}else{
@@ -136,6 +138,7 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 						fuelStack.shrink(1);
 						entity.setItem(INPUT_SLOT,fuelStack);
 						changed=true;
+						shouldBeLit=true;
 					}
 				}
 			}
@@ -159,6 +162,8 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 		}
 		if(changed)
 			setChanged(level,pos,state);
+		if(shouldBeLit)
+			level.setBlock(pos,state.setValue(Generator.LIT,shouldBeLit),3);
 	}
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket(){
@@ -185,7 +190,7 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 	}
 	@Override
 	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory){
-		return new GeneratorMenu(id,inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(this.worldPosition));
+		return new GeneratorMenu(id,inventory,new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(this.worldPosition));
 	}
 	@Override
 	public @NotNull Component getDisplayName(){
