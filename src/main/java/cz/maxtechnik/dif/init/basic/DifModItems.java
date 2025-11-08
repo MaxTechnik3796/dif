@@ -31,7 +31,7 @@ public class DifModItems{
 	public static final RegistryObject<Item>CREATE_CAN=REGISTRY.register("create_can",Can::new);
 	public static final RegistryObject<Item>CREATE_BOWL=REGISTRY.register("create_bowl",Bowl::new);
 	public static final RegistryObject<Item>SUPER_HEATED_CREATE_BOWL=REGISTRY.register("super_heated_create_bowl",Super::new);
-
+	public static final RegistryObject<Item>JADERNEJ_SUTR=REGISTRY.register("jadernej_sutr",JadernejSutr::new);
 
 	public static final RegistryObject<Item>MATY_DRINK=REGISTRY.register("maty_drink",MatyDrink::new);
 	public static final RegistryObject<Item>MATA=REGISTRY.register("mata",()->new Custom(1,0.2F));
