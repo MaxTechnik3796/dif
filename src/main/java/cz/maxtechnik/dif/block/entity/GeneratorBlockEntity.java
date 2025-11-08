@@ -1,10 +1,10 @@
 package cz.maxtechnik.dif.block.entity;
 
-
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.block.Generator;
 import cz.maxtechnik.dif.gui.menu.GeneratorMenu;
 import cz.maxtechnik.dif.init.misc.DifModBlockEntities;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.level.Level;
@@ -36,8 +36,6 @@ import javax.annotation.Nullable;
 import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.NotNull;
 
-
-
 public class GeneratorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer{
 	public static final int SLOTS=1;
 	public static final int INPUT_SLOT=0;
@@ -64,6 +62,10 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 		}
 		@Override
 		public void set(int index,int value){
+			switch (index){
+				case 0->GeneratorBlockEntity.this.burnTime=value;
+				case 1->GeneratorBlockEntity.this.maxBurnTime=value;
+			}
 		}
 		@Override
 		public int getCount(){
@@ -98,7 +100,6 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 	@Override
 	public void load(@NotNull CompoundTag compound){
 		super.load(compound);
-		DifMod.LOGGER.debug("Loading "+compound);
 		if(!this.tryLoadLootTable(compound))
 			this.stacks=NonNullList.withSize(this.getContainerSize(),ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(compound,this.stacks);
@@ -109,22 +110,39 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 	}
 	@Override
 	public void saveAdditional(@NotNull CompoundTag compound){
-		DifMod.LOGGER.debug("Saving: "+compound);
 		ContainerHelper.saveAllItems(compound,this.stacks);
 		compound.put("energyStorage",energyStorage.serializeNBT());
-		compound.putInt("burtTime",this.burnTime);
+		compound.putInt("burnTime",this.burnTime);
 		compound.putInt("maxBurnTime",this.maxBurnTime);
 		super.saveAdditional(compound);
 	}
-	public static void tick(Level level,BlockPos pos,BlockState state,GeneratorBlockEntity entity){
-		boolean changed=false;
-		boolean shouldBeLit=false;
-		if (level.isClientSide){
-			return;
+	public static void clientTick(Level level,BlockPos pos,BlockState state,GeneratorBlockEntity entity){
+		if(state.getValue(Generator.LIT)){
+			if(state.getValue(Generator.FACING).getAxis().equals(Direction.Axis.X)){
+				if(DifMod.rouletteBoolean(8))
+					level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.42,pos.getY()+0.28,pos.getZ()+0.15,0,0.007,0);
+				if(DifMod.rouletteBoolean(8))
+					level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.58,pos.getY()+0.28,pos.getZ()+0.15,0,0.007,0);
+				if(DifMod.rouletteBoolean(8))
+					level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.42,pos.getY()+0.28,pos.getZ()+0.85,0,0.007,0);
+				if(DifMod.rouletteBoolean(8))
+					level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.58,pos.getY()+0.28,pos.getZ()+0.85,0,0.007,0);
+			}else if(state.getValue(Generator.FACING).getAxis().equals(Direction.Axis.Z)){
+				if(DifMod.rouletteBoolean(8))
+					level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.15,pos.getY()+0.28,pos.getZ()+0.42,0,0.007,0);
+				if(DifMod.rouletteBoolean(8))
+					level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.15,pos.getY()+0.28,pos.getZ()+0.58,0,0.007,0);
+				if(DifMod.rouletteBoolean(8))
+					level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.85,pos.getY()+0.28,pos.getZ()+0.42,0,0.007,0);
+				if(DifMod.rouletteBoolean(8))
+					level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.85,pos.getY()+0.28,pos.getZ()+0.58,0,0.007,0);
+			}
 		}
+	}
+	public static void serverTick(Level level,BlockPos pos,BlockState state,GeneratorBlockEntity entity){
+		boolean shouldBeLit=false;
 		if(entity.energyStorage.getEnergyStored()+ENERGY_PER_TICK<=entity.energyStorage.getMaxEnergyStored()){
 			if(entity.burnTime>0){
-				changed=true;
 				shouldBeLit=true;
 				entity.burnTime--;
 				entity.energyStorage.receiveEnergy(ENERGY_PER_TICK,false);
@@ -137,7 +155,6 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 						entity.maxBurnTime=burnDuration;
 						fuelStack.shrink(1);
 						entity.setItem(INPUT_SLOT,fuelStack);
-						changed=true;
 						shouldBeLit=true;
 					}
 				}
@@ -160,9 +177,7 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 				}
 			}
 		}
-		if(changed)
-			setChanged(level,pos,state);
-		if(shouldBeLit)
+		if(state.getValue(Generator.LIT)!=shouldBeLit)
 			level.setBlock(pos,state.setValue(Generator.LIT,shouldBeLit),3);
 	}
 	@Override

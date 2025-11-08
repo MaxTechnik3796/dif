@@ -88,11 +88,14 @@ public class Generator extends Block implements SimpleWaterloggedBlock,EntityBlo
 	}
 	@Override
 	public @Nullable<T extends BlockEntity>BlockEntityTicker<T>getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T>type){
-		return level.isClientSide?null:createTicker(level,type,DifModBlockEntities.GENERATOR_BE.get());
+		return level.isClientSide?createClientTicker(level,type,DifModBlockEntities.GENERATOR_BE.get()):createServerTicker(level,type,DifModBlockEntities.GENERATOR_BE.get());
 	}
 	@Nullable
-	protected static<T extends BlockEntity>BlockEntityTicker<T>createTicker(Level level,BlockEntityType<T>type,BlockEntityType<?extends GeneratorBlockEntity>expectedType){
-		return type==expectedType?(lvl,pos,state,blockEntity)->GeneratorBlockEntity.tick(lvl,pos,state,(GeneratorBlockEntity) blockEntity):null;
+	protected static<T extends BlockEntity>BlockEntityTicker<T> createServerTicker(Level level,BlockEntityType<T>type,BlockEntityType<?extends GeneratorBlockEntity>expectedType){
+		return type==expectedType?(lvl,pos,state,blockEntity)->GeneratorBlockEntity.serverTick(lvl,pos,state,(GeneratorBlockEntity)blockEntity):null;
+	}
+	protected static<T extends BlockEntity>BlockEntityTicker<T>createClientTicker(Level level,BlockEntityType<T>type,BlockEntityType<?extends GeneratorBlockEntity>expectedType){
+		return type==expectedType?(lvl,pos,state,blockEntity)->GeneratorBlockEntity.clientTick(lvl,pos,state,(GeneratorBlockEntity)blockEntity):null;
 	}
 	@Override
 	public @NotNull InteractionResult use(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player entity,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){

@@ -1,6 +1,5 @@
 package cz.maxtechnik.dif.gui.screen;
 
-import cz.maxtechnik.dif.DifMod;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
@@ -46,8 +45,8 @@ public class GeneratorScreen extends AbstractContainerScreen<GeneratorMenu>{
 			int scaledFlameHeight=(int)(14*(burnTime/(double)maxBurnTime));
 			int flameSourceX=32;
 			int flameSourceY=14-scaledFlameHeight;//0+
-			int flameX=this.leftPos+80;
-			int flameY=this.topPos+19+(14-scaledFlameHeight);
+			int flameX=this.leftPos+79;
+			int flameY=this.topPos+18+(14-scaledFlameHeight);
 			guiGraphics.blit(WIDGETS_TEXTURE,flameX,flameY,flameSourceX,flameSourceY,14,scaledFlameHeight,128,128);
 		}
 		int energyStored=this.menu.getEnergyStored();
