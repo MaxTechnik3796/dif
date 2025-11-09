@@ -45,18 +45,18 @@ public class MataPlant extends SugarCaneBlock implements BonemealableBlock{
 		return PlantType.PLAINS;
 	}
 	@Override
-	public void randomTick(@NotNull BlockState blockstate,ServerLevel world, BlockPos pos,@NotNull RandomSource random){
+	public void randomTick(@NotNull BlockState blockstate,ServerLevel world,BlockPos pos,@NotNull RandomSource random){
 		if (world.isEmptyBlock(pos.above())){
-			int i=1;
-			for (;world.getBlockState(pos.below(i)).is(this);++i);
-			if(i<2){
-				int j=blockstate.getValue(AGE);
-				if(ForgeHooks.onCropsGrowPre(world,pos,blockstate,true)){
-					if(j==15){
-						world.setBlockAndUpdate(pos.above(),defaultBlockState());
-						world.setBlock(pos,blockstate.setValue(AGE,0),4);
-					}else{
-						world.setBlock(pos,blockstate.setValue(AGE,j+1),4);
+			for (int i=1;world.getBlockState(pos.below(i)).is(this);++i){
+				if(i<2){
+					int j=blockstate.getValue(AGE);
+					if(ForgeHooks.onCropsGrowPre(world,pos,blockstate,true)){
+						if(j==15){
+							world.setBlockAndUpdate(pos.above(),defaultBlockState());
+							world.setBlock(pos,blockstate.setValue(AGE,0),4);
+						}else{
+							world.setBlock(pos,blockstate.setValue(AGE,j+1),4);
+						}
 					}
 				}
 			}

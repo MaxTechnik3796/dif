@@ -1,6 +1,5 @@
 package cz.maxtechnik.dif.item.food.create;
 
-import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;

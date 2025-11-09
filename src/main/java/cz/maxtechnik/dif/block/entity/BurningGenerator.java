@@ -129,7 +129,7 @@ public class BurningGenerator extends RandomizableContainerBlockEntity implement
 		compound.putInt("maxBurnTime",this.maxBurnTime);
 		super.saveAdditional(compound);
 	}
-	public static void clientTick(Level level,BlockPos pos,BlockState state,BurningGenerator entity){
+	public static void clientTick(Level level,BlockPos pos,BlockState state){
 		if(state.getValue(cz.maxtechnik.dif.block.BurningGenerator.LIT)){
 			final double Y_OFFSET=0.28;
 			final double Y_VELOCITY=0.007;

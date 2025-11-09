@@ -18,7 +18,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-
+@SuppressWarnings("deprecation")
 public class CustomWaterlogged extends Block implements SimpleWaterloggedBlock{
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
 	public CustomWaterlogged(SoundType sound,float hardness,float resistance,boolean requiresCorrectToolForDrops){

@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-
+@SuppressWarnings("deprecation")
 public class MatyBlock extends Block {
 	public MatyBlock() {
 		super(Properties.of().sound(SoundType.MOSS).strength(0.9F,7F));

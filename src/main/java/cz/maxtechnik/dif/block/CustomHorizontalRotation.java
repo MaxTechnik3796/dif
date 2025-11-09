@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.NotNull;
-
+@SuppressWarnings("deprecation")
 public class CustomHorizontalRotation extends Block{
     public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
     public CustomHorizontalRotation(SoundType sound,float hardness,float resistance,boolean requiresCorrectToolForDrops){

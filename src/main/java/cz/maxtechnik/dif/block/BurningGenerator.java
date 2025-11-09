@@ -36,7 +36,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
+@SuppressWarnings("deprecation")
 public class BurningGenerator extends Block implements SimpleWaterloggedBlock,EntityBlock{
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
@@ -87,14 +87,14 @@ public class BurningGenerator extends Block implements SimpleWaterloggedBlock,En
 	}
 	@Override
 	public @Nullable<T extends BlockEntity>BlockEntityTicker<T>getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T>type){
-		return level.isClientSide?createClientTicker(level,type,DifModBlockEntities.BURNING_GENERATOR.get()):createServerTicker(level,type,DifModBlockEntities.BURNING_GENERATOR.get());
+		return level.isClientSide?createClientTicker(type,DifModBlockEntities.BURNING_GENERATOR.get()):createServerTicker(type,DifModBlockEntities.BURNING_GENERATOR.get());
 	}
 	@Nullable
-	protected static<T extends BlockEntity>BlockEntityTicker<T> createServerTicker(Level level,BlockEntityType<T>type,BlockEntityType<?extends cz.maxtechnik.dif.block.entity.BurningGenerator>expectedType){
+	protected static<T extends BlockEntity>BlockEntityTicker<T> createServerTicker(BlockEntityType<T>type,BlockEntityType<?extends cz.maxtechnik.dif.block.entity.BurningGenerator>expectedType){
 		return type==expectedType?(lvl,pos,state,blockEntity)->cz.maxtechnik.dif.block.entity.BurningGenerator.serverTick(lvl,pos,state,(cz.maxtechnik.dif.block.entity.BurningGenerator)blockEntity):null;
 	}
-	protected static<T extends BlockEntity>BlockEntityTicker<T>createClientTicker(Level level,BlockEntityType<T>type,BlockEntityType<?extends cz.maxtechnik.dif.block.entity.BurningGenerator>expectedType){
-		return type==expectedType?(lvl,pos,state,blockEntity)->cz.maxtechnik.dif.block.entity.BurningGenerator.clientTick(lvl,pos,state,(cz.maxtechnik.dif.block.entity.BurningGenerator)blockEntity):null;
+	protected static<T extends BlockEntity>BlockEntityTicker<T>createClientTicker(BlockEntityType<T>type,BlockEntityType<?extends cz.maxtechnik.dif.block.entity.BurningGenerator>expectedType){
+		return type==expectedType?(lvl,pos,state,blockEntity)->cz.maxtechnik.dif.block.entity.BurningGenerator.clientTick(lvl,pos,state):null;
 	}
 	@Override
 	public @NotNull InteractionResult use(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player entity,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){

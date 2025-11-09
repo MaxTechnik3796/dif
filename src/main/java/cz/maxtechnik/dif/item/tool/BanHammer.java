@@ -9,13 +9,13 @@ import net.minecraft.world.entity.EquipmentSlot;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.ImmutableMultimap;
 import org.jetbrains.annotations.NotNull;
-
+@SuppressWarnings("deprecation")
 public class BanHammer extends Item{
 	public BanHammer(){
 		super(new Item.Properties().stacksTo(1).fireResistant());
 	}
 	@Override
-	public Multimap<Attribute,AttributeModifier>getDefaultAttributeModifiers(@NotNull EquipmentSlot equipmentSlot){
+	public @NotNull Multimap<Attribute,AttributeModifier>getDefaultAttributeModifiers(@NotNull EquipmentSlot equipmentSlot){
 		if (equipmentSlot==EquipmentSlot.MAINHAND){
 			ImmutableMultimap.Builder<Attribute,AttributeModifier>builder=ImmutableMultimap.builder();
 			builder.putAll(super.getDefaultAttributeModifiers(equipmentSlot));

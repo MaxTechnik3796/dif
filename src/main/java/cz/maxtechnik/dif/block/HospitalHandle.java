@@ -18,7 +18,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-
+@SuppressWarnings("deprecation")
 public class HospitalHandle extends Block implements SimpleWaterloggedBlock{
     public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
@@ -37,7 +37,7 @@ public class HospitalHandle extends Block implements SimpleWaterloggedBlock{
         return 0;
     }
     @Override
-    public VoxelShape getVisualShape(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
+    public @NotNull VoxelShape getVisualShape(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
         return Shapes.empty();
     }
     @Override
@@ -63,7 +63,7 @@ public class HospitalHandle extends Block implements SimpleWaterloggedBlock{
         return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
     }
     @Override
-    public FluidState getFluidState(BlockState state){
+    public @NotNull FluidState getFluidState(BlockState state){
         return state.getValue(WATERLOGGED)?Fluids.WATER.getSource(false):super.getFluidState(state);
     }
     @Override

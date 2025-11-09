@@ -21,7 +21,6 @@ import cz.maxtechnik.dif.init.gui.DifModMenus;
 import org.jetbrains.annotations.NotNull;
 
 public class BurningGeneratorMenu extends AbstractContainerMenu implements Supplier<Map<Integer,Slot>>{
-	public final static HashMap<String,Object>guistate=new HashMap<>();
 	public final Level world;
 	public final Player entity;
 	public int x,y,z;

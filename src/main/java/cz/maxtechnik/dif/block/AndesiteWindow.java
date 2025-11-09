@@ -12,7 +12,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-
+@SuppressWarnings("deprecation")
 public class AndesiteWindow extends Block{
 	public AndesiteWindow(){
 		super(Properties.of().instrument(NoteBlockInstrument.HAT).sound(SoundType.GLASS).strength(0.35f).noOcclusion().isRedstoneConductor((bs,br,bp)->false));
@@ -30,7 +30,7 @@ public class AndesiteWindow extends Block{
 		return 0;
 	}
 	@Override
-	public VoxelShape getVisualShape(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
+	public @NotNull VoxelShape getVisualShape(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
 		return Shapes.empty();
 	}
 }

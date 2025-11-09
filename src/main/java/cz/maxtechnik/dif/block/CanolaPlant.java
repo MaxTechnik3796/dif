@@ -66,7 +66,7 @@ public class CanolaPlant extends FlowerBlock implements BonemealableBlock{
 
 	@Override
 	public void performBonemeal(@NotNull ServerLevel world,@NotNull RandomSource random,BlockPos pos,@NotNull BlockState blockstate) {
-		ItemEntity entityToSpawn = new ItemEntity(world,pos.getX()+0.5,pos.getY(),pos.getZ()+0.5,new ItemStack(DifModBlocks.CANOLA_PLANT.get()));
+		ItemEntity entityToSpawn=new ItemEntity(world,pos.getX()+0.5,pos.getY(),pos.getZ()+0.5,new ItemStack(DifModBlocks.CANOLA_PLANT.get()));
 		entityToSpawn.setPickUpDelay(10);
 		world.addFreshEntity(entityToSpawn);
 	}

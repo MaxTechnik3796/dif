@@ -24,12 +24,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
-
+@SuppressWarnings("removal")
 @Mod(DifMod.MODID)
 public class DifMod{
 	public static final String MODID="dif";
 	public static final Logger LOGGER=LogUtils.getLogger();
-	@SuppressWarnings("removal")
 	public DifMod(){
 		IEventBus bus=FMLJavaModLoadingContext.get().getModEventBus();
 		bus.addListener(this::commonSetup);
@@ -52,13 +51,10 @@ public class DifMod{
 
 	private void commonSetup(final FMLCommonSetupEvent event){
 		LOGGER.info("HELLO FROM COMMON SETUP");
-		//LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
-
+		/*LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
 		//if (DifModConfig.logDirtBlock) LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
-
 		//LOGGER.info(DifModConfig.magicNumberIntroduction + DifModConfig.magicNumber);
-
-		//DifModConfig.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
+		DifModConfig.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));*/
 	}
 
 	private void addCreative(BuildCreativeModeTabContentsEvent event) {
