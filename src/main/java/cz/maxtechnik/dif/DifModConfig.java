@@ -20,24 +20,34 @@ public class DifModConfig{
 	private static final ForgeConfigSpec.IntValue BURNING_GENERATOR_MAX_ENERGY;
 	private static final ForgeConfigSpec.IntValue BURNING_GENERATOR_MAX_EXTRACT;
 
+	private static final ForgeConfigSpec.IntValue MATA_PLANT_MAX_HEIGHT;
 
 	private static final ForgeConfigSpec.BooleanValue LOG_DIRT_BLOCK;
 	private static final ForgeConfigSpec.IntValue MAGIC_NUMBER;
 	private static final ForgeConfigSpec.ConfigValue<String>MAGIC_NUMBER_INTRODUCTION;
 	static{
+		BUILDER.comment("Dif common config.");
+		BUILDER.comment("This configuration is generated, do not overwrite anything except the values!");
+		BUILDER.comment("+----------------------------------------+");
+		BUILDER.comment("Restart required - restart the game/server.");
+		BUILDER.comment("Dif-reload required - use '/dif_config_reload' command.");
+		BUILDER.comment("+----------------------------------------+");
 		BUILDER.push("SolarPanelSettings");
-		SOLAR_PANEL_00=BUILDER.comment("Production of Solar Panel 00, Fe/t.\nDefault value: 1").defineInRange("solar_panel_00",1,0,Integer.MAX_VALUE);
-		SOLAR_PANEL_01=BUILDER.comment("Production of Solar Panel 01, Fe/t.\nDefault value: 5").defineInRange("solar_panel_01",5,0,Integer.MAX_VALUE);
-		SOLAR_PANEL_02=BUILDER.comment("Production of Solar Panel 02, Fe/t.\nDefault value: 20").defineInRange("solar_panel_02",20,0,Integer.MAX_VALUE);
-		SOLAR_PANEL_03=BUILDER.comment("Production of Solar Panel 03, Fe/t.\nDefault value: 50").defineInRange("solar_panel_03",50,0,Integer.MAX_VALUE);
-		SOLAR_PANEL_04=BUILDER.comment("Production of Solar Panel 04, Fe/t.\nDefault value: 100").defineInRange("solar_panel_04",100,0,Integer.MAX_VALUE);
+		SOLAR_PANEL_00=BUILDER.comment("Production of Solar Panel 00, (Fe/t.)\nDif-reload required!\nDefault value: 1").defineInRange("solar_panel_00",1,0,Integer.MAX_VALUE);
+		SOLAR_PANEL_01=BUILDER.comment("Production of Solar Panel 01, (Fe/t.)\nDif-reload required!\nDefault value: 5").defineInRange("solar_panel_01",5,0,Integer.MAX_VALUE);
+		SOLAR_PANEL_02=BUILDER.comment("Production of Solar Panel 02, (Fe/t.)\nDif-reload required!\nDefault value: 20").defineInRange("solar_panel_02",20,0,Integer.MAX_VALUE);
+		SOLAR_PANEL_03=BUILDER.comment("Production of Solar Panel 03, (Fe/t.)\nDif-reload required!\nDefault value: 50").defineInRange("solar_panel_03",50,0,Integer.MAX_VALUE);
+		SOLAR_PANEL_04=BUILDER.comment("Production of Solar Panel 04, (Fe/t.)\nDif-reload required!\nDefault value: 100").defineInRange("solar_panel_04",100,0,Integer.MAX_VALUE);
 		BUILDER.pop();
 		BUILDER.push("BurningGenerator");
-		BURNING_GENERATOR_ENERGY_PER_TICK=BUILDER.comment("Production of Burning Generator, Fe/t.\nRestart required!\nDefault value: 20").defineInRange("burning_generator_energy_per_tick",20,0,Integer.MAX_VALUE);
-		BURNING_GENERATOR_MAX_ENERGY=BUILDER.comment("Maximum capacity of the Burning Generator, Fe.\nRestart required!\nDefault value: 32000").defineInRange("burning_generator_max_energy",32000,0,Integer.MAX_VALUE);
-		BURNING_GENERATOR_MAX_EXTRACT=BUILDER.comment("Maximum energy output from the Burning Generator, Fe/t.\nRestart required!\nDefault value: 200").defineInRange("burning_generator_max_extract",200,0,Integer.MAX_VALUE);
+		BURNING_GENERATOR_ENERGY_PER_TICK=BUILDER.comment("Production of Burning Generator, (Fe/t.)\nRestart required!\nDefault value: 20").defineInRange("burning_generator_energy_per_tick",20,0,Integer.MAX_VALUE);
+		BURNING_GENERATOR_MAX_ENERGY=BUILDER.comment("Maximum capacity of the Burning Generator, (Fe.)\nRestart required!\nDefault value: 32000").defineInRange("burning_generator_max_energy",32000,0,Integer.MAX_VALUE);
+		BURNING_GENERATOR_MAX_EXTRACT=BUILDER.comment("Maximum energy output from the Burning Generator, (Fe/t.)\nRestart required!\nDefault value: 200").defineInRange("burning_generator_max_extract",200,0,Integer.MAX_VALUE);
 		BUILDER.pop();
 		BUILDER.push("GeneralSettings");
+		MATA_PLANT_MAX_HEIGHT=BUILDER.comment("Maximal height of Mata Plant, (Blocks)\nDif-reload required!\nDefault value: 2").defineInRange("mata_plant_max_height",2,1,Integer.MAX_VALUE);
+		BUILDER.pop();
+		BUILDER.push("TrashSettings");
 		LOG_DIRT_BLOCK=BUILDER.comment("Whether to log the dirt block").define("logDirtBlock",false);
 		MAGIC_NUMBER=BUILDER.comment("The magic number").defineInRange("magicNumber",42,0,1000);
 		MAGIC_NUMBER_INTRODUCTION=BUILDER.comment("A string to introduce the magic number").define("magicNumberIntroduction","The magic number is...");
@@ -55,6 +65,8 @@ public class DifModConfig{
 	public static int burningGeneratorMaxEnergy;
 	public static int burningGeneratorMaxExtract;
 
+	public static int mataPlantMaxHeight;
+
 	public static boolean logDirtBlock;
 	public static int magicNumber;
 	public static String magicNumberIntroduction;
@@ -67,7 +79,8 @@ public class DifModConfig{
 	public static void onReload(ModConfigEvent.Reloading event){
 		load();
 	}
-	private static void load(){
+	public static void load(){
+		DifMod.LOGGER.debug("Configuration loaded!");
 		solarPanel_00=SOLAR_PANEL_00.get();
 		solarPanel_01=SOLAR_PANEL_01.get();
 		solarPanel_02=SOLAR_PANEL_02.get();
@@ -77,6 +90,8 @@ public class DifModConfig{
 		burningGeneratorEnergyPerTick=BURNING_GENERATOR_ENERGY_PER_TICK.get();
 		burningGeneratorMaxEnergy=BURNING_GENERATOR_MAX_ENERGY.get();
 		burningGeneratorMaxExtract=BURNING_GENERATOR_MAX_EXTRACT.get();
+
+		mataPlantMaxHeight=MATA_PLANT_MAX_HEIGHT.get();
 
 		logDirtBlock=LOG_DIRT_BLOCK.get();
 		magicNumber=MAGIC_NUMBER.get();

@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.block;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.DifModConfig;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -46,20 +47,25 @@ public class MataPlant extends SugarCaneBlock implements BonemealableBlock{
 	}
 	@Override
 	public void randomTick(@NotNull BlockState blockstate,ServerLevel world,BlockPos pos,@NotNull RandomSource random){
-		if (world.isEmptyBlock(pos.above())){
-			for (int i=1;world.getBlockState(pos.below(i)).is(this);++i){
-				if(i<2){
-					int j=blockstate.getValue(AGE);
-					if(ForgeHooks.onCropsGrowPre(world,pos,blockstate,true)){
-						if(j==15){
-							world.setBlockAndUpdate(pos.above(),defaultBlockState());
-							world.setBlock(pos,blockstate.setValue(AGE,0),4);
-						}else{
-							world.setBlock(pos,blockstate.setValue(AGE,j+1),4);
-						}
+		if(world.isEmptyBlock(pos.above())){
+			int i = 1;
+			BlockPos checkPos=pos.below();
+			while(world.getBlockState(checkPos).is(this)){
+				i++;
+				checkPos=checkPos.below();
+			}
+			if (i <DifModConfig.mataPlantMaxHeight) {
+				int j = blockstate.getValue(AGE);
+				if (ForgeHooks.onCropsGrowPre(world, pos, blockstate, true)) {
+					if (j == 15) {
+						world.setBlockAndUpdate(pos.above(), defaultBlockState());
+						world.setBlock(pos, blockstate.setValue(AGE, 0), 4);
+					} else {
+						world.setBlock(pos, blockstate.setValue(AGE, j + 1), 4);
 					}
 				}
 			}
+
 		}
 	}
 	@Override
