@@ -62,6 +62,10 @@ public class DifModItems{
 	public static final RegistryObject<Item>SINGULARITATOR=block(DifModBlocks.SINGULARITATOR);
 	public static final RegistryObject<Item>SUPER_BOX=block(DifModBlocks.SUPER_BOX);
 
+	public static final RegistryObject<Item>RUBY=REGISTRY.register("ruby",Basic::new);
+	public static final RegistryObject<Item>RUBY_ORE=block(DifModBlocks.RUBY_ORE);
+	public static final RegistryObject<Item>RUBY_BLOCK=block(DifModBlocks.RUBY_BLOCK);
+
 	public static final RegistryObject<Item>SOLAR_PANEL_00=block(DifModBlocks.SOLAR_PANEL_00);
 	public static final RegistryObject<Item>SOLAR_PANEL_01=block(DifModBlocks.SOLAR_PANEL_01);
 	public static final RegistryObject<Item>SOLAR_PANEL_02=block(DifModBlocks.SOLAR_PANEL_02);
