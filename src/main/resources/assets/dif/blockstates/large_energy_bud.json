@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "dif:block/large_energy_bud",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "dif:block/large_energy_bud",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "dif:block/large_energy_bud",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "dif:block/large_energy_bud",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up": {
+      "model": "dif:block/large_energy_bud"
+    },
+    "facing=west": {
+      "model": "dif:block/large_energy_bud",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

@@ -42,6 +42,13 @@ public class DifModTabs{
 		tabData.accept(DifModItems.SOLAR_PANEL_02.get());
 		tabData.accept(DifModItems.SOLAR_PANEL_03.get());
 		tabData.accept(DifModItems.SOLAR_PANEL_04.get());
+		tabData.accept(DifModItems.ENERGY_BLOCK.get());
+		tabData.accept(DifModItems.BUDDING_ENERGY.get());
+		tabData.accept(DifModItems.ENERGY_CLUSTER.get());
+		tabData.accept(DifModItems.LARGE_ENERGY_BUD.get());
+		tabData.accept(DifModItems.MEDIUM_ENERGY_BUD.get());
+		tabData.accept(DifModItems.SMALL_ENERGY_BUD.get());
+		tabData.accept(DifModItems.ENERGY_SHARD.get());
     })).build());
     public static final RegistryObject<CreativeModeTab>MUSIC=REGISTER.register("music",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.music")).icon(()->new ItemStack(DifModItems.REDSTONE.get())).withTabsBefore(MAIN.getKey()).displayItems(((parameters,tabData)->{
 		tabData.accept(DifModItems.CREMEKA.get());

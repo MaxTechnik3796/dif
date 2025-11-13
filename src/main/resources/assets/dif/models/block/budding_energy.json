@@ -1,0 +1,8 @@
+{
+	"parent":"block/cube_all",
+	"textures":{
+		"all":"dif:block/budding_energy",
+		"particle":"dif:block/budding_energy"
+	},
+	"render_type":"solid"
+}

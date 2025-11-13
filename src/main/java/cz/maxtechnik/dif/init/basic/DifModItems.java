@@ -89,6 +89,14 @@ public class DifModItems{
 	public static final RegistryObject<Item>ANDESITE_LATTICE=block(DifModBlocks.ANDESITE_LATTICE);
 	public static final RegistryObject<Item>ANDESITE_WINDOW=block(DifModBlocks.ANDESITE_WINDOW);
 
+	public static final RegistryObject<Item>ENERGY_BLOCK=block(DifModBlocks.ENERGY_BLOCK);
+	public static final RegistryObject<Item>BUDDING_ENERGY=block(DifModBlocks.BUDDING_ENERGY);
+	public static final RegistryObject<Item>ENERGY_CLUSTER=block(DifModBlocks.ENERGY_CLUSTER);
+	public static final RegistryObject<Item>LARGE_ENERGY_BUD=block(DifModBlocks.LARGE_ENERGY_BUD);
+	public static final RegistryObject<Item>MEDIUM_ENERGY_BUD=block(DifModBlocks.MEDIUM_ENERGY_BUD);
+	public static final RegistryObject<Item>SMALL_ENERGY_BUD=block(DifModBlocks.SMALL_ENERGY_BUD);
+	public static final RegistryObject<Item>ENERGY_SHARD=REGISTRY.register("energy_shard",Basic::new);
+
     //MusicDiscs:
     public static final RegistryObject<Item>CLAIRDELUNE=REGISTRY.register("clairdelune",()->new MusicDiscDesc2(5,6320,DifMod.MODID,"clairdelune"));
     public static final RegistryObject<Item>CREMEKA=REGISTRY.register("cremeka",()->new MusicDiscDesc2(15,3860,DifMod.MODID,"cremeka"));

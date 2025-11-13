@@ -89,8 +89,8 @@
 	"block.dif.burning_generator":"Burning Generator",
 	"block.dif.hospital_handle":"Hospital Handle",
 	"block.dif.singularitator":"§lSingularitátor§r",
-	"block.dif.super_box": "§e§lSuper Box§r",
-	"block.dif.cinder_flour_block": "Cinder Flour Block",
+	"block.dif.super_box":"§e§lSuper Box§r",
+	"block.dif.cinder_flour_block":"Cinder Flour Block",
 
 	"block.dif.solar_panel_00":"Solar Panel",
 	"block.dif.solar_panel_01":"Solar Panel",
@@ -102,15 +102,23 @@
 	"block.dif.stoned_arrow":"Stoned Arrow",
 	"block.dif.deepslated_arrow":"Deepslated Arrow",
 
-	"block.dif.deepslate_bauxite_ore": "Deepslate Bauxite Ore",
-	"block.dif.bauxite_ore": "Bauxite Ore",
-	"item.dif.raw_bauxite": "Raw Bauxite",
-	"item.dif.crushed_raw_bauxite": "Crushed Raw Bauxite",
-	"item.dif.aluminum_ingot": "Aluminum Ingot",
+	"block.dif.deepslate_bauxite_ore":"Deepslate Bauxite Ore",
+	"block.dif.bauxite_ore":"Bauxite Ore",
+	"item.dif.raw_bauxite":"Raw Bauxite",
+	"item.dif.crushed_raw_bauxite":"Crushed Raw Bauxite",
+	"item.dif.aluminum_ingot":"Aluminum Ingot",
 
-	"block.dif.bitcoin_block": "Block of Bitcoin",
-	"block.dif.solana_block": "Block of Solana ",
+	"block.dif.bitcoin_block":"Block of Bitcoin",
+	"block.dif.solana_block":"Block of Solana ",
 	"block.dif.pedrock":"Pedrock",
 	"block.dif.andesite_lattice":"Andesite Lattice Block",
-	"block.dif.andesite_window":"Andesite Window"
+	"block.dif.andesite_window":"Andesite Window",
+
+	"block.dif.energy_block":"Energy Block",
+	"block.dif.budding_energy":"Budding Energy",
+	"block.dif.energy_cluster":"Energy Cluster",
+	"block.dif.large_energy_bud":"Large Energy Bud",
+	"block.dif.medium_energy_bud":"Medium Energy Bud",
+	"block.dif.small_energy_bud":"Small Energy Bud",
+	"item.dif.energy.shard": "Energy Shard"
 }
