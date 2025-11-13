@@ -102,6 +102,12 @@
 	"block.dif.stoned_arrow":"Stoned Arrow",
 	"block.dif.deepslated_arrow":"Deepslated Arrow",
 
+	"block.dif.deepslate_bauxite_ore": "Deepslate Bauxite Ore",
+	"block.dif.bauxite_ore": "Bauxite Ore",
+	"item.dif.raw_bauxite": "Raw Bauxite",
+	"item.dif.crushed_raw_bauxite": "Crushed Raw Bauxite",
+	"item.dif.aluminum_ingot": "Aluminum Ingot",
+
 	"block.dif.bitcoin_block": "Block of Bitcoin",
 	"block.dif.solana_block": "Block of Solana ",
 	"block.dif.pedrock":"Pedrock",

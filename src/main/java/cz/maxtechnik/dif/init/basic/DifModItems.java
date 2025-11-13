@@ -76,6 +76,12 @@ public class DifModItems{
     public static final RegistryObject<Item>STONED_ARROW=block(DifModBlocks.STONED_ARROW);
     public static final RegistryObject<Item>WOODED_ARROW=block(DifModBlocks.WOODED_ARROW);
 
+	public static final RegistryObject<Item>BAUXITE_ORE=block(DifModBlocks.BAUXITE_ORE);
+	public static final RegistryObject<Item>DEEPSLATE_BAUXITE_ORE=block(DifModBlocks.DEEPSLATE_BAUXITE_ORE);
+	public static final RegistryObject<Item>RAW_BAUXITE=REGISTRY.register("raw_bauxite",Basic::new);
+	public static final RegistryObject<Item>CRUSHED_RAW_BAUXITE=REGISTRY.register("crushed_raw_bauxite",Basic::new);
+	public static final RegistryObject<Item>ALUMINUM_INGOT=REGISTRY.register("aluminum_ingot",Basic::new);
+
 	public static final RegistryObject<Item>BITCOIN_BLOCK=block(DifModBlocks.BITCOIN_BLOCK);
 	public static final RegistryObject<Item>SOLANA_BLOCK=block(DifModBlocks.SOLANA_BLOCK);
 	public static final RegistryObject<Item>CINDER_FLOUR_BLOCK=block(DifModBlocks.CINDER_FLOUR_BLOCK);
