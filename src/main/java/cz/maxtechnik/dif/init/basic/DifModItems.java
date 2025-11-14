@@ -18,7 +18,7 @@ public class DifModItems{
     private static RegistryObject<Item>block(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new BlockItem(block.get(),new Item.Properties()));}
     private static RegistryObject<Item>doubleBlock(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));}
 
-    public static final RegistryObject<Item>EXAMPLE_ITEM=REGISTRY.register("example_item",Example::new);
+    public static final RegistryObject<Item>EXAMPLE_ITEM=REGISTRY.register("example_item",Basic::new);
     public static final RegistryObject<Item>QUESTION_MARK=REGISTRY.register("question_mark",Basic::new);
 
     public static final RegistryObject<Item>CHERRY=REGISTRY.register("cherry",()->new Custom(1,0.1F));
@@ -41,6 +41,7 @@ public class DifModItems{
 	public static final RegistryObject<Item>CANOLA_SEEDS=REGISTRY.register("canola_seeds",Canola::new);
 	public static final RegistryObject<Item>CANOLA_PLANT=block(DifModBlocks.CANOLA_PLANT);
 
+	public static final RegistryObject<Item>PORTAL_GUN=REGISTRY.register("portal_gun",PortalGun::new);
 	public static final RegistryObject<Item>LASER_HOOKAH=REGISTRY.register("laser_hookah",LaserHookah::new);
 	public static final RegistryObject<Item>BAN_HAMMER=REGISTRY.register("ban_hammer",BanHammer::new);
 	public static final RegistryObject<Item>MITHRIL=REGISTRY.register("mithril",Basic::new);
@@ -82,6 +83,7 @@ public class DifModItems{
 	public static final RegistryObject<Item>RAW_BAUXITE=REGISTRY.register("raw_bauxite",Basic::new);
 	public static final RegistryObject<Item>CRUSHED_RAW_BAUXITE=REGISTRY.register("crushed_raw_bauxite",Basic::new);
 	public static final RegistryObject<Item>ALUMINUM_INGOT=REGISTRY.register("aluminum_ingot",Basic::new);
+	public static final RegistryObject<Item>ALUMINUM_PROFILE=block(DifModBlocks.ALUMINUM_PROFILE);
 
 	public static final RegistryObject<Item>BITCOIN_BLOCK=block(DifModBlocks.BITCOIN_BLOCK);
 	public static final RegistryObject<Item>SOLANA_BLOCK=block(DifModBlocks.SOLANA_BLOCK);

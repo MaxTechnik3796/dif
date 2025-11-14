@@ -40,6 +40,7 @@ public class DifModBlocks{
 
 	public static final RegistryObject<Block>BAUXITE_ORE=REGISTRY.register("bauxite_ore",()->new Custom(SoundType.STONE,3F,3F,true));
 	public static final RegistryObject<Block>DEEPSLATE_BAUXITE_ORE=REGISTRY.register("deepslate_bauxite_ore",()->new Custom(SoundType.DEEPSLATE,4.5F,3F,true));
+	public static final RegistryObject<Block>ALUMINUM_PROFILE=REGISTRY.register("aluminum_profile",AluminumProfile::new);
 
 	public static final RegistryObject<Block>CANOLA_PLANT=REGISTRY.register("canola_plant",CanolaPlant::new);
 	public static final RegistryObject<Block>MATA_PLANT=REGISTRY.register("mata_plant",MataPlant::new);

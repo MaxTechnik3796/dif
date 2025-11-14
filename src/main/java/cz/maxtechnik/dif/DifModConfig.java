@@ -15,12 +15,15 @@ public class DifModConfig{
 	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_03;
 	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_04;
 
-
 	private static final ForgeConfigSpec.IntValue BURNING_GENERATOR_ENERGY_PER_TICK;
 	private static final ForgeConfigSpec.IntValue BURNING_GENERATOR_MAX_ENERGY;
 	private static final ForgeConfigSpec.IntValue BURNING_GENERATOR_MAX_EXTRACT;
 
 	private static final ForgeConfigSpec.IntValue MATA_PLANT_MAX_HEIGHT;
+
+	private static final ForgeConfigSpec.IntValue PORTAL_GUN_MAX_AMMO;
+	private static final ForgeConfigSpec.IntValue PORTAL_GUN_MAX_RANGE;
+	private static final ForgeConfigSpec.IntValue PORTAL_GUN_COOLDOWN;
 
 	private static final ForgeConfigSpec.BooleanValue LOG_DIRT_BLOCK;
 	private static final ForgeConfigSpec.IntValue MAGIC_NUMBER;
@@ -45,7 +48,12 @@ public class DifModConfig{
 		BURNING_GENERATOR_MAX_EXTRACT=BUILDER.comment("Maximum energy output from the Burning Generator, (Fe/t.)\nRestart required!\nDefault value: 200").defineInRange("burning_generator_max_extract",200,0,Integer.MAX_VALUE);
 		BUILDER.pop();
 		BUILDER.push("GeneralSettings");
-		MATA_PLANT_MAX_HEIGHT=BUILDER.comment("Maximal height of Mata Plant, (Blocks)\nDif-reload required!\nDefault value: 2").defineInRange("mata_plant_max_height",2,1,Integer.MAX_VALUE);
+		MATA_PLANT_MAX_HEIGHT=BUILDER.comment("Maximal height of Mata Plant, (Blocks.)\nDif-reload required!\nDefault value: 2").defineInRange("mata_plant_max_height",2,1,Integer.MAX_VALUE);
+		BUILDER.pop();
+		BUILDER.push("PortalGun");
+		PORTAL_GUN_MAX_AMMO=BUILDER.comment("Maximal capacity of Portal Gun, (Shots.)\nDif-reload required!\nDefault value: 16").defineInRange("portal_gun_max_ammo",16,1,Integer.MAX_VALUE);
+		PORTAL_GUN_MAX_RANGE=BUILDER.comment("Maximal shot power of Portal Gun, (Number.)\nDif-reload required!\nDefault value: 3").defineInRange("portal_gun_max_range",3,1,255);
+		PORTAL_GUN_COOLDOWN=BUILDER.comment("Cooldown of Portal Gun, (t.)\nDif-reload required!\nDefault value: 80").defineInRange("portal_gun_cooldown",80,0,Integer.MAX_VALUE);
 		BUILDER.pop();
 		BUILDER.push("TrashSettings");
 		LOG_DIRT_BLOCK=BUILDER.comment("Whether to log the dirt block").define("logDirtBlock",false);
@@ -66,6 +74,10 @@ public class DifModConfig{
 	public static int burningGeneratorMaxExtract;
 
 	public static int mataPlantMaxHeight;
+
+	public static int portalGunMaxAmmo;
+	public static int portalGunMaxRange;
+	public static int portalGunCooldown;
 
 	public static boolean logDirtBlock;
 	public static int magicNumber;
@@ -92,6 +104,10 @@ public class DifModConfig{
 		burningGeneratorMaxExtract=BURNING_GENERATOR_MAX_EXTRACT.get();
 
 		mataPlantMaxHeight=MATA_PLANT_MAX_HEIGHT.get();
+
+		portalGunMaxAmmo=PORTAL_GUN_MAX_AMMO.get();
+		portalGunMaxRange=PORTAL_GUN_MAX_RANGE.get();
+		portalGunCooldown=PORTAL_GUN_COOLDOWN.get();
 
 		logDirtBlock=LOG_DIRT_BLOCK.get();
 		magicNumber=MAGIC_NUMBER.get();

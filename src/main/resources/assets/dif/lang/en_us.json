@@ -68,6 +68,7 @@
 	"item.dif.canola_seeds":"Canola Seeds",
 	"block.dif.canola_plant":"Canola Plant",
 
+	"item.dif.portal_gun": "Portal Gun",
 	"item.dif.laser_hookah": "Laser Hookah",
 	"item.dif.ban_hammer":"§c§lBan Hammer§r",
 	"item.dif.jadernej_sutr":"§lJ§radernej §lŠUTR§r",
@@ -109,6 +110,7 @@
 	"item.dif.raw_bauxite":"Raw Bauxite",
 	"item.dif.crushed_raw_bauxite":"Crushed Raw Bauxite",
 	"item.dif.aluminum_ingot":"Aluminum Ingot",
+	"block.dif.aluminum_profile": "Aluminum Profile",
 
 	"block.dif.bitcoin_block":"Block of Bitcoin",
 	"block.dif.solana_block":"Block of Solana ",

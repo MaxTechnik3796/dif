@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.DifModConfig;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -20,6 +21,9 @@ public class DifModTabs{
 		tabData.accept(DifModItems.ANDESITE_LATTICE.get());
 		tabData.accept(DifModItems.ANDESITE_WINDOW.get());
 		tabData.accept(DifModItems.BAN_HAMMER.get());
+		ItemStack portalGun=new ItemStack(DifModItems.PORTAL_GUN.get());
+		portalGun.getOrCreateTag().putInt("ammo",DifModConfig.portalGunMaxAmmo);
+		tabData.accept(portalGun);
 		tabData.accept(DifModItems.CPU_SINGULARITY.get());
 		tabData.accept(DifModItems.MITHRIL.get());
 		tabData.accept(DifModItems.MITHRIL_PLATE.get());

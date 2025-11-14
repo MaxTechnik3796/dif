@@ -1,0 +1,16 @@
+{
+	"variants": {
+		"axis=x": {
+			"model": "dif:block/aluminum_profile",
+			"x": 90,
+			"y": 90
+		},
+		"axis=y": {
+			"model": "dif:block/aluminum_profile"
+		},
+		"axis=z": {
+			"model": "dif:block/aluminum_profile",
+			"x": 90
+		}
+	}
+}
