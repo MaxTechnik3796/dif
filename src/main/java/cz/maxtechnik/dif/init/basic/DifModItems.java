@@ -18,7 +18,7 @@ public class DifModItems{
     private static RegistryObject<Item>block(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new BlockItem(block.get(),new Item.Properties()));}
     private static RegistryObject<Item>doubleBlock(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));}
 
-    public static final RegistryObject<Item>EXAMPLE_ITEM=REGISTRY.register("example_item",Basic::new);
+    public static final RegistryObject<Item>EXAMPLE_ITEM=REGISTRY.register("example_item",Example::new);
     public static final RegistryObject<Item>QUESTION_MARK=REGISTRY.register("question_mark",Basic::new);
 
     public static final RegistryObject<Item>CHERRY=REGISTRY.register("cherry",()->new Custom(1,0.1F));
@@ -41,6 +41,7 @@ public class DifModItems{
 	public static final RegistryObject<Item>CANOLA_SEEDS=REGISTRY.register("canola_seeds",Canola::new);
 	public static final RegistryObject<Item>CANOLA_PLANT=block(DifModBlocks.CANOLA_PLANT);
 
+	public static final RegistryObject<Item>LASER_HOOKAH=REGISTRY.register("laser_hookah",LaserHookah::new);
 	public static final RegistryObject<Item>BAN_HAMMER=REGISTRY.register("ban_hammer",BanHammer::new);
 	public static final RegistryObject<Item>MITHRIL=REGISTRY.register("mithril",Basic::new);
 	public static final RegistryObject<Item>MITHRIL_PLATE=REGISTRY.register("mithril_plate",Basic::new);

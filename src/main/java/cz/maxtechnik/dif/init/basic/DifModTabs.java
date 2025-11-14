@@ -71,6 +71,7 @@ public class DifModTabs{
 		tabData.accept(DifModItems.MASTICKA.get());
 		tabData.accept(DifModItems.BLUESTONE.get());
 		tabData.accept(DifModItems.BLUE_PLATE.get());
+		tabData.accept(DifModItems.LASER_HOOKAH.get());
 
 
         tabData.accept(DifModItems.ROTTEN_BELT.get());
