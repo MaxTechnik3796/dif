@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.init.gui;
 
 import cz.maxtechnik.dif.gui.screen.BurningGeneratorScreen;
+import cz.maxtechnik.dif.gui.screen.SpecialCraftingScreen;
 import cz.maxtechnik.dif.gui.screen.SuperBoxScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
@@ -15,6 +16,7 @@ public class DifModScreens{
 		event.enqueueWork(()->{
 			MenuScreens.register(DifModMenus.SUPER_BOX_MENU.get(),SuperBoxScreen::new);
 			MenuScreens.register(DifModMenus.GENERATOR_MENU.get(),BurningGeneratorScreen::new);
+			MenuScreens.register(DifModMenus.SPECIAL_CRAFTING_MENU.get(),SpecialCraftingScreen::new);
 		});
 	}
 }

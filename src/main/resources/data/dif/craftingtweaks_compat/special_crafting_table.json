@@ -2,11 +2,5 @@
 	"modid": "dif",
 	"containerClass": "cz.maxtechnik.dif.gui.menu.SpecialCraftingMenu",
 	"gridSlotNumber": 1,
-	"gridSize": 9,
-	"tweakClear": {
-		"enabled": true,
-		"showButton": true,
-		"buttonX": 10
-
-	}
+	"gridSize": 9
 }

@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.gui.screen;
 
+import cz.maxtechnik.dif.gui.menu.SpecialCraftingMenu;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
@@ -9,34 +9,35 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.CraftingMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
-public class SpecialCraftingScreen extends AbstractContainerScreen<SpecialCraftingScreen> implements RecipeUpdateListener {
+public class SpecialCraftingScreen extends AbstractContainerScreen<SpecialCraftingMenu> implements RecipeUpdateListener {
    private static final ResourceLocation CRAFTING_TABLE_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft","textures/gui/container/crafting_table.png");
    private static final ResourceLocation RECIPE_BUTTON_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft","textures/gui/recipe_button.png");
    private final RecipeBookComponent recipeBookComponent = new RecipeBookComponent();
    private boolean widthTooNarrow;
 
-   public SpecialCraftingScreen(CraftingMenu p_98448_,Inventory p_98449_,Component p_98450_) {
-      super(p_98448_, p_98449_, p_98450_);
+   public SpecialCraftingScreen(SpecialCraftingMenu menu,Inventory inventory,Component component) {
+      super(menu,inventory,component);
    }
 
    protected void init() {
       super.init();
       this.widthTooNarrow = this.width < 379;
-      this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.menu);
+	   assert this.minecraft!=null;
+	   this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.menu);
       this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
-      this.addRenderableWidget(new ImageButton(this.leftPos + 5, this.height / 2 - 49, 20, 18, 0, 0, 19, RECIPE_BUTTON_LOCATION, (p_289630_) -> {
+      /*this.addRenderableWidget(new ImageButton(this.leftPos + 5, this.height / 2 - 49, 20, 18, 0, 0, 19, RECIPE_BUTTON_LOCATION, (p_289630_) -> {
          this.recipeBookComponent.toggleVisibility();
          this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
          p_289630_.setPosition(this.leftPos + 5, this.height / 2 - 49);
-      }));
-      this.addWidget(this.recipeBookComponent);
-      this.setInitialFocus(this.recipeBookComponent);
+      }));*/
+      //this.addWidget(this.recipeBookComponent);
+      //this.setInitialFocus(this.recipeBookComponent);
       this.titleLabelX = 29;
    }
 
@@ -45,19 +46,19 @@ public class SpecialCraftingScreen extends AbstractContainerScreen<SpecialCrafti
       this.recipeBookComponent.tick();
    }
 
-   public void render(GuiGraphics p_282508_, int p_98480_, int p_98481_, float p_98482_) {
-      this.renderBackground(p_282508_);
+   public void render(@NotNull GuiGraphics guiGraphics,int p_98480_,int p_98481_,float p_98482_) {
+      this.renderBackground(guiGraphics);
       if (this.recipeBookComponent.isVisible() && this.widthTooNarrow) {
-         this.renderBg(p_282508_, p_98482_, p_98480_, p_98481_);
-         this.recipeBookComponent.render(p_282508_, p_98480_, p_98481_, p_98482_);
+         this.renderBg(guiGraphics, p_98482_, p_98480_, p_98481_);
+         this.recipeBookComponent.render(guiGraphics, p_98480_, p_98481_, p_98482_);
       } else {
-         this.recipeBookComponent.render(p_282508_, p_98480_, p_98481_, p_98482_);
-         super.render(p_282508_, p_98480_, p_98481_, p_98482_);
-         this.recipeBookComponent.renderGhostRecipe(p_282508_, this.leftPos, this.topPos, true, p_98482_);
+         this.recipeBookComponent.render(guiGraphics, p_98480_, p_98481_, p_98482_);
+         super.render(guiGraphics, p_98480_, p_98481_, p_98482_);
+         this.recipeBookComponent.renderGhostRecipe(guiGraphics, this.leftPos, this.topPos, true, p_98482_);
       }
 
-      this.renderTooltip(p_282508_, p_98480_, p_98481_);
-      this.recipeBookComponent.renderTooltip(p_282508_, this.leftPos, this.topPos, p_98480_, p_98481_);
+      this.renderTooltip(guiGraphics, p_98480_, p_98481_);
+      this.recipeBookComponent.renderTooltip(guiGraphics, this.leftPos, this.topPos, p_98480_, p_98481_);
    }
 
    protected void renderBg(GuiGraphics p_283540_, float p_282132_, int p_283078_, int p_283647_) {
@@ -70,12 +71,12 @@ public class SpecialCraftingScreen extends AbstractContainerScreen<SpecialCrafti
       return (!this.widthTooNarrow || !this.recipeBookComponent.isVisible()) && super.isHovering(p_98462_, p_98463_, p_98464_, p_98465_, p_98466_, p_98467_);
    }
 
-   public boolean mouseClicked(double p_98452_, double p_98453_, int p_98454_) {
-      if (this.recipeBookComponent.mouseClicked(p_98452_, p_98453_, p_98454_)) {
+   public boolean mouseClicked(double x, double y, int id) {
+      if (this.recipeBookComponent.mouseClicked(x,y,id)) {
          this.setFocused(this.recipeBookComponent);
          return true;
       } else {
-         return this.widthTooNarrow && this.recipeBookComponent.isVisible() ? true : super.mouseClicked(p_98452_, p_98453_, p_98454_);
+         return this.widthTooNarrow&&this.recipeBookComponent.isVisible()||super.mouseClicked(x,y,id);
       }
    }
 
@@ -84,7 +85,7 @@ public class SpecialCraftingScreen extends AbstractContainerScreen<SpecialCrafti
       return this.recipeBookComponent.hasClickedOutside(p_98456_, p_98457_, this.leftPos, this.topPos, this.imageWidth, this.imageHeight, p_98460_) && flag;
    }
 
-   protected void slotClicked(Slot p_98469_, int p_98470_, int p_98471_, ClickType p_98472_) {
+   protected void slotClicked(@NotNull Slot p_98469_,int p_98470_,int p_98471_,@NotNull ClickType p_98472_) {
       super.slotClicked(p_98469_, p_98470_, p_98471_, p_98472_);
       this.recipeBookComponent.slotClicked(p_98469_);
    }
@@ -93,7 +94,7 @@ public class SpecialCraftingScreen extends AbstractContainerScreen<SpecialCrafti
       this.recipeBookComponent.recipesUpdated();
    }
 
-   public RecipeBookComponent getRecipeBookComponent() {
+   public @NotNull RecipeBookComponent getRecipeBookComponent() {
       return this.recipeBookComponent;
    }
 }
