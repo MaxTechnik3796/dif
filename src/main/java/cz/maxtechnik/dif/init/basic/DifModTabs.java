@@ -21,9 +21,6 @@ public class DifModTabs{
 		tabData.accept(DifModItems.ANDESITE_LATTICE.get());
 		tabData.accept(DifModItems.ANDESITE_WINDOW.get());
 		tabData.accept(DifModItems.BAN_HAMMER.get());
-		ItemStack portalGun=new ItemStack(DifModItems.PORTAL_GUN.get());
-		portalGun.getOrCreateTag().putInt("ammo",DifModConfig.portalGunMaxAmmo);
-		tabData.accept(portalGun);
 		tabData.accept(DifModItems.CPU_SINGULARITY.get());
 		tabData.accept(DifModItems.MITHRIL.get());
 		tabData.accept(DifModItems.MITHRIL_PLATE.get());
@@ -46,6 +43,10 @@ public class DifModTabs{
 		tabData.accept(DifModItems.SOLAR_PANEL_02.get());
 		tabData.accept(DifModItems.SOLAR_PANEL_03.get());
 		tabData.accept(DifModItems.SOLAR_PANEL_04.get());
+		tabData.accept(DifModItems.COIN_00.get());
+		tabData.accept(DifModItems.COIN_01.get());
+		tabData.accept(DifModItems.COIN_02.get());
+		tabData.accept(DifModItems.COIN_03.get());
 		tabData.accept(DifModItems.ENERGY_BLOCK.get());
 		tabData.accept(DifModItems.BUDDING_ENERGY.get());
 		tabData.accept(DifModItems.ENERGY_CLUSTER.get());
@@ -75,8 +76,11 @@ public class DifModTabs{
 		tabData.accept(DifModItems.MASTICKA.get());
 		tabData.accept(DifModItems.BLUESTONE.get());
 		tabData.accept(DifModItems.BLUE_PLATE.get());
+		tabData.accept(DifModItems.ITEM_5261.get());
 		tabData.accept(DifModItems.LASER_HOOKAH.get());
-
+		ItemStack portalGun=new ItemStack(DifModItems.PORTAL_GUN.get());
+		portalGun.getOrCreateTag().putInt("ammo",DifModConfig.portalGunMaxAmmo);
+		tabData.accept(portalGun);
 
         tabData.accept(DifModItems.ROTTEN_BELT.get());
         tabData.accept(DifModItems.ROTTEN_APPLE.get());

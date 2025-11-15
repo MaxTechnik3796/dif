@@ -54,6 +54,7 @@
 	"item.dif.blue_plate":"Blue Plate",
 	"item.dif.heavy_plate":"Heavy Plate",
 
+
 	"item.dif.cherry":"Cherry",
 	"item.dif.tresnovice":"Třešňovice",
 	"item.dif.rotten_belt":"Rotten Belt",
@@ -72,9 +73,16 @@
 	"item.dif.laser_hookah": "Laser Hookah",
 	"item.dif.ban_hammer":"§c§lBan Hammer§r",
 	"item.dif.jadernej_sutr":"§lJ§radernej §lŠUTR§r",
+	"item.dif.item_5261": "52616E646F6D20706573207A204149206B64797A2074616D20646173206C6F676F204372656174752058444444",
+	"item.dif.vhs": "VHS",
 	"item.dif.ruby": "Ruby",
 	"block.dif.ruby_ore": "Ruby Ore",
 	"block.dif.ruby_block": "Block of Ruby",
+
+	"item.dif.coin_00": "Coin",
+	"item.dif.coin_01": "Coin",
+	"item.dif.coin_02": "Coin",
+	"item.dif.coin_03": "Coin",
 
 	"item.dif.maty_drink":"Máty Drink",
 	"item.dif.mata":"Máta",
