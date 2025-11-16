@@ -1,26 +1,15 @@
 package cz.maxtechnik.dif.gui.menu;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
-import cz.maxtechnik.dif.block.entity.SpecialCrafting;
-import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Container;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -29,179 +18,216 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
-public class SpecialCraftingMenu extends RecipeBookMenu<CraftingContainer>{
-	public static final int RESULT_SLOT=0;
-	public static final int CRAFT_SLOT_START=1;
-	public static final int CRAFT_SLOT_END=10;
-	public static final int INV_SLOT_START=10;
-	public static final int INV_SLOT_END=37;
-	public static final int BAR_SLOT_START=37;
-	public static final int BAR_SLOT_END=46;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
+public class SpecialCraftingMenu extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
+	public final static HashMap<String, Object> guistate = new HashMap<>();
+	public final Level world;
+	public final Player entity;
+	public int x, y, z;
+	private ContainerLevelAccess access = ContainerLevelAccess.NULL;
+	private IItemHandler internal;
+	private final Map<Integer,Slot> customSlots = new HashMap<>();
+	private boolean bound = false;
+	private Supplier<Boolean> boundItemMatcher = null;
+	private Entity boundEntity = null;
+	private BlockEntity boundBlockEntity = null;
 	public final CraftingContainer craftSlots=new TransientCraftingContainer(this, 3, 3);
 	public final ResultContainer resultSlots=new ResultContainer();
-	private IItemHandler internal;
-	public final Player player;
-	private ContainerLevelAccess access=ContainerLevelAccess.NULL;
-	public final Level world;
-	public int x,y,z;
-	private final Map<Integer,Slot> customSlots=new HashMap<>();
-	private boolean bound=false;
-	private BlockEntity boundBlockEntity=null;
 
-
-	public SpecialCraftingMenu(int id,Inventory inventory,FriendlyByteBuf extraData) {
-		super(DifModMenus.SPECIAL_CRAFTING_MENU.get(),id);
-		this.player=inventory.player;
-		this.world=inventory.player.level();
-		this.internal=new ItemStackHandler(1);
-		BlockPos pos=null;
-		if(extraData!=null) {
-			pos=extraData.readBlockPos();
-			this.x=pos.getX();
-			this.y=pos.getY();
-			this.z=pos.getZ();
-			access=ContainerLevelAccess.create(world,pos);
+	public SpecialCraftingMenu(int id,Inventory inv,FriendlyByteBuf extraData) {
+		super(DifModMenus.SPECIAL_CRAFTING_MENU.get(), id);
+		this.entity = inv.player;
+		this.world = inv.player.level();
+		this.internal = new ItemStackHandler(10);
+		BlockPos pos = null;
+		if (extraData != null) {
+			pos = extraData.readBlockPos();
+			this.x = pos.getX();
+			this.y = pos.getY();
+			this.z = pos.getZ();
+			access = ContainerLevelAccess.create(world, pos);
 		}
-		BlockEntity blockEntityFromWorld=null;
-		if(pos!=null){
-			blockEntityFromWorld=this.world.getBlockEntity(pos);
+		if (pos != null) {
+			if (extraData.readableBytes() == 1) { // bound to item
+				byte hand = extraData.readByte();
+				ItemStack itemstack = hand == 0 ? this.entity.getMainHandItem() : this.entity.getOffhandItem();
+				this.boundItemMatcher = () -> itemstack == (hand == 0 ? this.entity.getMainHandItem() : this.entity.getOffhandItem());
+				itemstack.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {
+					this.internal = capability;
+					this.bound = true;
+				});
+			} else if (extraData.readableBytes() > 1) { // bound to entity
+				extraData.readByte(); // drop padding
+				boundEntity = world.getEntity(extraData.readVarInt());
+				if (boundEntity != null)
+					boundEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {
+						this.internal = capability;
+						this.bound = true;
+					});
+			} else { // might be bound to block
+				boundBlockEntity = this.world.getBlockEntity(pos);
+				if (boundBlockEntity != null)
+					boundBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {
+						this.internal = capability;
+						this.bound = true;
+					});
+			}
 		}
-		if (blockEntityFromWorld instanceof SpecialCrafting specialCraftingBlockEntity){
-			this.internal=specialCraftingBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER,null).orElse(new ItemStackHandler(2));
-			this.bound=true;
-			this.boundBlockEntity=specialCraftingBlockEntity;
-		} else {
-			this.internal=new ItemStackHandler(2);
-		}
+		this.addSlot(new ResultSlot(inv.player,this.craftSlots,this.resultSlots,0,124,35));
 		int slotSize=18;
 		int gridSlotOffsetX=30;
 		int gridSlotOffsetY=17;
 		int invSlotOffsetX=8;
 		int invSlotOffsetY=84;
 		int barSlotOffsetY=142;
-		this.addSlot(new ResultSlot(inventory.player,this.craftSlots,this.resultSlots,0,124,35));
 		for(int i=0;i<3;i++){
 			for(int j=0;j<3;j++){
 				this.addSlot(new SlotItemHandler(internal,j+3*i,gridSlotOffsetX+slotSize*j,gridSlotOffsetY+slotSize*i));
 			}
 		}
-		for(int i=0;i<3;i++){
-			for(int j=0;j<9;j++){
-				this.addSlot(new Slot(inventory,9+j+9*i,invSlotOffsetX+slotSize*j,invSlotOffsetY+slotSize*i));
+		for (int si = 0; si < 3; ++si)
+			for (int sj = 0; sj < 9; ++sj)
+				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, 0 + 84 + si * 18));
+		for (int si = 0; si < 9; ++si)
+			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, 0 + 142));
+	}
+	@Override
+	public boolean stillValid(@NotNull Player player) {
+		if (this.bound) {
+			if (this.boundItemMatcher != null)
+				return this.boundItemMatcher.get();
+			else if (this.boundBlockEntity != null)
+				return AbstractContainerMenu.stillValid(this.access, player, this.boundBlockEntity.getBlockState().getBlock());
+			else if (this.boundEntity != null)
+				return this.boundEntity.isAlive();
+		}
+		return true;
+	}
+	@Override
+	public @NotNull ItemStack quickMoveStack(@NotNull Player playerIn,int index) {
+		ItemStack itemstack = ItemStack.EMPTY;
+		Slot slot =this.slots.get(index);
+		if (slot.hasItem()) {
+			ItemStack itemstack1 = slot.getItem();
+			itemstack = itemstack1.copy();
+			if (index < 10) {
+				if (!this.moveItemStackTo(itemstack1, 10, this.slots.size(), true))
+					return ItemStack.EMPTY;
+				slot.onQuickCraft(itemstack1, itemstack);
+			} else if (!this.moveItemStackTo(itemstack1, 0, 10, false)) {
+				if (index < 10 + 27) {
+					if (!this.moveItemStackTo(itemstack1, 10 + 27, this.slots.size(), true))
+						return ItemStack.EMPTY;
+				} else {
+					if (!this.moveItemStackTo(itemstack1, 10, 10 + 27, false))
+						return ItemStack.EMPTY;
+				}
+				return ItemStack.EMPTY;
+			}
+			if (itemstack1.getCount() == 0)
+				slot.set(ItemStack.EMPTY);
+			else
+				slot.setChanged();
+			if (itemstack1.getCount() == itemstack.getCount())
+				return ItemStack.EMPTY;
+			slot.onTake(playerIn, itemstack1);
+		}
+		return itemstack;
+	}
+	@Override
+	protected boolean moveItemStackTo(@NotNull ItemStack p_38904_,int p_38905_,int p_38906_,boolean p_38907_) {
+		boolean flag = false;
+		int i = p_38905_;
+		if (p_38907_) {
+			i = p_38906_ - 1;
+		}
+		if (p_38904_.isStackable()) {
+			while (!p_38904_.isEmpty()) {
+				if (p_38907_) {
+					if (i < p_38905_) {
+						break;
+					}
+				} else if (i >= p_38906_) {
+					break;
+				}
+				Slot slot = this.slots.get(i);
+				ItemStack itemstack = slot.getItem();
+				if (slot.mayPlace(itemstack) && !itemstack.isEmpty() && ItemStack.isSameItemSameTags(p_38904_, itemstack)) {
+					int j = itemstack.getCount() + p_38904_.getCount();
+					int maxSize = Math.min(slot.getMaxStackSize(), p_38904_.getMaxStackSize());
+					if (j <= maxSize) {
+						p_38904_.setCount(0);
+						itemstack.setCount(j);
+						slot.set(itemstack);
+						flag = true;
+					} else if (itemstack.getCount() < maxSize) {
+						p_38904_.shrink(maxSize - itemstack.getCount());
+						itemstack.setCount(maxSize);
+						slot.set(itemstack);
+						flag = true;
+					}
+				}
+				if (p_38907_) {
+					--i;
+				} else {
+					++i;
+				}
 			}
 		}
-		for(int i=0;i<9;i++){
-			this.addSlot(new Slot(inventory,i,invSlotOffsetX+slotSize*i,barSlotOffsetY));
+		if (!p_38904_.isEmpty()) {
+			if (p_38907_) {
+				i = p_38906_ - 1;
+			} else {
+				i = p_38905_;
+			}
+			while (true) {
+				if (p_38907_) {
+					if (i < p_38905_) {
+						break;
+					}
+				} else if (i >= p_38906_) {
+					break;
+				}
+				Slot slot1 = this.slots.get(i);
+				ItemStack itemstack1 = slot1.getItem();
+				if (itemstack1.isEmpty() && slot1.mayPlace(p_38904_)) {
+					if (p_38904_.getCount() > slot1.getMaxStackSize()) {
+						slot1.setByPlayer(p_38904_.split(slot1.getMaxStackSize()));
+					} else {
+						slot1.setByPlayer(p_38904_.split(p_38904_.getCount()));
+					}
+					slot1.setChanged();
+					flag = true;
+					break;
+				}
+				if (p_38907_) {
+					--i;
+				} else {
+					++i;
+				}
+			}
 		}
+		return flag;
 	}
-	protected static void slotChangedCraftingGrid(AbstractContainerMenu menu,Level world,Player player,CraftingContainer container,ResultContainer result) {
-      if (!world.isClientSide) {
-         ServerPlayer serverplayer = (ServerPlayer)player;
-         ItemStack itemstack = ItemStack.EMPTY;
-         Optional<CraftingRecipe> optional = Objects.requireNonNull(world.getServer()).getRecipeManager().getRecipeFor(RecipeType.CRAFTING,container,world);
-         if (optional.isPresent()) {
-            CraftingRecipe craftingrecipe = optional.get();
-            if (result.setRecipeUsed(world, serverplayer, craftingrecipe)) {
-               ItemStack itemstack1 = craftingrecipe.assemble(container, world.registryAccess());
-               if (itemstack1.isItemEnabled(world.enabledFeatures())) {
-                  itemstack = itemstack1;
-               }
-            }
-         }
-         result.setItem(0, itemstack);
-         menu.setRemoteSlot(0, itemstack);
-         serverplayer.connection.send(new ClientboundContainerSetSlotPacket(menu.containerId,menu.incrementStateId(), 0, itemstack));
-      }
-   }
-	public void slotsChanged(@NotNull Container container) {
-      this.access.execute((world,pos)->slotChangedCraftingGrid(this,world, this.player, this.craftSlots, this.resultSlots));
-   }
-	public void fillCraftSlotsStackedContents(@NotNull StackedContents stackedContents) {
-      this.craftSlots.fillStackedContents(stackedContents);
-   }
-	public void clearCraftingContent() {
-      this.craftSlots.clearContent();
-      this.resultSlots.clearContent();
-   }
-	public boolean recipeMatches(@NotNull Recipe<? super CraftingContainer>container){
-      return container.matches(this.craftSlots,this.player.level());
-   }
-	public void removed(@NotNull Player player){
-		super.removed(player);
-		if (!bound && player instanceof ServerPlayer serverPlayer) {
+	@Override
+	public void removed(@NotNull Player playerIn) {
+		super.removed(playerIn);
+		if (!bound && playerIn instanceof ServerPlayer serverPlayer) {
 			if (!serverPlayer.isAlive() || serverPlayer.hasDisconnected()) {
 				for (int j = 0; j < internal.getSlots(); ++j) {
-					player.drop(internal.extractItem(j, internal.getStackInSlot(j).getCount(), false), false);
+					playerIn.drop(internal.extractItem(j, internal.getStackInSlot(j).getCount(), false), false);
 				}
 			} else {
 				for (int i = 0; i < internal.getSlots(); ++i) {
-					player.getInventory().placeItemBackInInventory(internal.extractItem(i, internal.getStackInSlot(i).getCount(), false));
+					playerIn.getInventory().placeItemBackInInventory(internal.extractItem(i, internal.getStackInSlot(i).getCount(), false));
 				}
 			}
 		}
 	}
-	public boolean stillValid(@NotNull Player player) {
-      return stillValid(this.access, player,DifModBlocks.EXAMPLE_BLOCK.get());
-   }
-	public @NotNull ItemStack quickMoveStack(@NotNull Player player,int id) {
-      ItemStack itemstack=ItemStack.EMPTY;
-      Slot slot=this.slots.get(id);
-      if(slot.hasItem()){
-         ItemStack itemstack1 = slot.getItem();
-         itemstack = itemstack1.copy();
-         if(id==0){
-            this.access.execute((p_39378_,p_39379_)->itemstack1.getItem().onCraftedBy(itemstack1, p_39378_, player));
-            if (!this.moveItemStackTo(itemstack1, 10, 46, true)) {
-               return ItemStack.EMPTY;
-            }
-            slot.onQuickCraft(itemstack1, itemstack);
-         }else if(id>=10&&id<46){
-            if (!this.moveItemStackTo(itemstack1, 1, 10, false)) {
-               if (id< 37) {
-                  if (!this.moveItemStackTo(itemstack1, 37, 46, false)) {
-                     return ItemStack.EMPTY;
-                  }
-               } else if (!this.moveItemStackTo(itemstack1, 10, 37, false)) {
-                  return ItemStack.EMPTY;
-               }
-            }
-         } else if (!this.moveItemStackTo(itemstack1, 10, 46, false)) {
-            return ItemStack.EMPTY;
-         }
-         if (itemstack1.isEmpty()) {
-            slot.setByPlayer(ItemStack.EMPTY);
-         } else {
-            slot.setChanged();
-         }
-         if (itemstack1.getCount() == itemstack.getCount()) {
-            return ItemStack.EMPTY;
-         }
-         slot.onTake(player, itemstack1);
-         if (id== 0) {
-            player.drop(itemstack1, false);
-         }
-      }
-      return itemstack;
-   }
-	public boolean canTakeItemForPickAll(@NotNull ItemStack itemStack,Slot slot) {
-      return slot.container!=this.resultSlots && super.canTakeItemForPickAll(itemStack,slot);
-   }
-	public int getResultSlotIndex() {
-      return 0;
-   }
-	public int getGridWidth() {
-      return 3;
-   }
-	public int getGridHeight() {
-      return 3;
-   }
-	public int getSize() {
-      return 10;
-   }
-	public @NotNull RecipeBookType getRecipeBookType() {
-      return RecipeBookType.CRAFTING;
-   }
-	public boolean shouldMoveToInventory(int id) {
-      return id!=this.getResultSlotIndex();
-   }
+	public Map<Integer, Slot> get() {
+		return customSlots;
+	}
 }
