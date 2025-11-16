@@ -8,93 +8,36 @@ import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
-
 @OnlyIn(Dist.CLIENT)
-public class SpecialCraftingScreen extends AbstractContainerScreen<SpecialCraftingMenu> implements RecipeUpdateListener {
-   private static final ResourceLocation CRAFTING_TABLE_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft","textures/gui/container/crafting_table.png");
-   private static final ResourceLocation RECIPE_BUTTON_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft","textures/gui/recipe_button.png");
-   private final RecipeBookComponent recipeBookComponent = new RecipeBookComponent();
-   private boolean widthTooNarrow;
-
-   public SpecialCraftingScreen(SpecialCraftingMenu menu,Inventory inventory,Component component) {
-      super(menu,inventory,component);
-   }
-
-   protected void init() {
-      super.init();
-      this.widthTooNarrow = this.width < 379;
-	   assert this.minecraft!=null;
-	   this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.menu);
-      this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
-      /*this.addRenderableWidget(new ImageButton(this.leftPos + 5, this.height / 2 - 49, 20, 18, 0, 0, 19, RECIPE_BUTTON_LOCATION, (p_289630_) -> {
-         this.recipeBookComponent.toggleVisibility();
-         this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
-         p_289630_.setPosition(this.leftPos + 5, this.height / 2 - 49);
-      }));*/
-      //this.addWidget(this.recipeBookComponent);
-      //this.setInitialFocus(this.recipeBookComponent);
-      this.titleLabelX = 29;
-   }
-
-   public void containerTick() {
-      super.containerTick();
-      this.recipeBookComponent.tick();
-   }
-
-   public void render(@NotNull GuiGraphics guiGraphics,int p_98480_,int p_98481_,float p_98482_) {
-      this.renderBackground(guiGraphics);
-      if (this.recipeBookComponent.isVisible() && this.widthTooNarrow) {
-         this.renderBg(guiGraphics, p_98482_, p_98480_, p_98481_);
-         this.recipeBookComponent.render(guiGraphics, p_98480_, p_98481_, p_98482_);
-      } else {
-         this.recipeBookComponent.render(guiGraphics, p_98480_, p_98481_, p_98482_);
-         super.render(guiGraphics, p_98480_, p_98481_, p_98482_);
-         this.recipeBookComponent.renderGhostRecipe(guiGraphics, this.leftPos, this.topPos, true, p_98482_);
-      }
-
-      this.renderTooltip(guiGraphics, p_98480_, p_98481_);
-      this.recipeBookComponent.renderTooltip(guiGraphics, this.leftPos, this.topPos, p_98480_, p_98481_);
-   }
-
-   protected void renderBg(GuiGraphics p_283540_, float p_282132_, int p_283078_, int p_283647_) {
-      int i = this.leftPos;
-      int j = (this.height - this.imageHeight) / 2;
-      p_283540_.blit(CRAFTING_TABLE_LOCATION, i, j, 0, 0, this.imageWidth, this.imageHeight);
-   }
-
-   protected boolean isHovering(int p_98462_, int p_98463_, int p_98464_, int p_98465_, double p_98466_, double p_98467_) {
-      return (!this.widthTooNarrow || !this.recipeBookComponent.isVisible()) && super.isHovering(p_98462_, p_98463_, p_98464_, p_98465_, p_98466_, p_98467_);
-   }
-
-   public boolean mouseClicked(double x, double y, int id) {
-      if (this.recipeBookComponent.mouseClicked(x,y,id)) {
-         this.setFocused(this.recipeBookComponent);
-         return true;
-      } else {
-         return this.widthTooNarrow&&this.recipeBookComponent.isVisible()||super.mouseClicked(x,y,id);
-      }
-   }
-
-   protected boolean hasClickedOutside(double p_98456_, double p_98457_, int p_98458_, int p_98459_, int p_98460_) {
-      boolean flag = p_98456_ < (double)p_98458_ || p_98457_ < (double)p_98459_ || p_98456_ >= (double)(p_98458_ + this.imageWidth) || p_98457_ >= (double)(p_98459_ + this.imageHeight);
-      return this.recipeBookComponent.hasClickedOutside(p_98456_, p_98457_, this.leftPos, this.topPos, this.imageWidth, this.imageHeight, p_98460_) && flag;
-   }
-
-   protected void slotClicked(@NotNull Slot p_98469_,int p_98470_,int p_98471_,@NotNull ClickType p_98472_) {
-      super.slotClicked(p_98469_, p_98470_, p_98471_, p_98472_);
-      this.recipeBookComponent.slotClicked(p_98469_);
-   }
-
-   public void recipesUpdated() {
-      this.recipeBookComponent.recipesUpdated();
-   }
-
-   public @NotNull RecipeBookComponent getRecipeBookComponent() {
-      return this.recipeBookComponent;
-   }
+public class SpecialCraftingScreen extends AbstractContainerScreen<SpecialCraftingMenu> implements RecipeUpdateListener{
+	public SpecialCraftingScreen(SpecialCraftingMenu menu,Inventory inventory,Component text){
+		super(menu,inventory,text);
+	}
+	private static final ResourceLocation GUI_TEXTURE=ResourceLocation.fromNamespaceAndPath("minecraft","textures/gui/container/crafting_table.png");
+	private final RecipeBookComponent recipeBookComponent=new RecipeBookComponent();
+	public void render(@NotNull GuiGraphics guiGraphics,int p_98480_,int p_98481_,float p_98482_){
+		this.renderBackground(guiGraphics);
+		this.renderBg(guiGraphics,p_98482_,p_98480_,p_98481_);
+		super.render(guiGraphics,p_98480_,p_98481_,p_98482_);
+		this.renderTooltip(guiGraphics,p_98480_,p_98481_);
+	}
+	protected void renderBg(GuiGraphics p_283540_,float p_282132_,int p_283078_,int p_283647_){
+		int i=this.leftPos;
+		int j=(this.height-this.imageHeight)/2;
+		p_283540_.blit(GUI_TEXTURE,i,j,0,0,this.imageWidth,this.imageHeight);
+	}
+	public void containerTick(){
+	super.containerTick();
+	}
+	public void recipesUpdated(){}
+	public @NotNull RecipeBookComponent getRecipeBookComponent(){
+		return this.recipeBookComponent;
+	}
+	protected void init(){
+		super.init();
+		this.titleLabelX=29;
+	}
 }
