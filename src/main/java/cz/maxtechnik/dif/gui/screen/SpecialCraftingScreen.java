@@ -12,6 +12,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 @OnlyIn(Dist.CLIENT)
+/**
+ Out of service (Unfinished)
+ **/
 public class SpecialCraftingScreen extends AbstractContainerScreen<SpecialCraftingMenu> implements RecipeUpdateListener{
 	public SpecialCraftingScreen(SpecialCraftingMenu menu,Inventory inventory,Component text){
 		super(menu,inventory,text);

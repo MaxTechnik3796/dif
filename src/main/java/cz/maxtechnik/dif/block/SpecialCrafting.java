@@ -19,6 +19,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("deprecation")
+/**
+ Out of service (Unfinished)
+ **/
 public class SpecialCrafting extends Block implements EntityBlock{
 	private static final Component CONTAINER_TITLE = Component.literal("Special Crafting");
 	public SpecialCrafting(){
