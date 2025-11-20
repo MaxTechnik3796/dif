@@ -21,6 +21,7 @@ public class DifModItems{
     public static final RegistryObject<Item>EXAMPLE_ITEM=REGISTRY.register("example_item",Test::new);
     public static final RegistryObject<Item>QUESTION_MARK=REGISTRY.register("question_mark",Basic::new);
 
+    public static final RegistryObject<Item>FERNET=REGISTRY.register("fernet",Fernet::new);
     public static final RegistryObject<Item>CHERRY=REGISTRY.register("cherry",()->new Custom(1,0.1F));
     public static final RegistryObject<Item>TRESNOVICE=REGISTRY.register("tresnovice",Tresnovice::new);
     public static final RegistryObject<Item>ROTTEN_BELT=REGISTRY.register("rotten_belt",Bad::new);
