@@ -1,65 +1,106 @@
-package cz.maxtechnik.dif.client; // <-- Můžeš si upravit balíček
+package cz.maxtechnik.dif.client;
 
-// Důležité importy pro klienta
-import cz.maxtechnik.dif.init.special.DifModMobEffects; // <--- UPRAV CESTU ke své registraci efektů
+import cz.maxtechnik.dif.init.basic.DifModSounds;
+import cz.maxtechnik.dif.init.special.DifModMobEffects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGuiEvent;
+import net.minecraftforge.client.event.ViewportEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.awt.Color; // Použijeme java.awt.Color pro snadné HSB (duhové) barvy
+import java.awt.Color;
 
-/**
- * Tato třída se automaticky zaregistruje jako "event listener"
- * DŮLEŽITÉ: 'modid = "dif"' musí odpovídat tvému MODID v souboru mods.toml
- * 'value = Dist.CLIENT' zajistí, že se tento kód nikdy nespustí na serveru.
- */
-@Mod.EventBusSubscriber(modid = "dif", value = Dist.CLIENT) // <--- ZMĚŇ "dif" na TVOJE MODID
+@Mod.EventBusSubscriber(modid = "dif", value = Dist.CLIENT) // Tvoje MODID
 public class ModClientEvents {
 
-    /**
-     * Tato metoda se zavolá každý frame po vykreslení HUDu.
-     */
+    private static boolean wasEffectActive = false;
+    private static SoundInstance playingSound = null;
+
+    @SubscribeEvent
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        // Logika pro zvuk a stav (beze změny)
+        if (event.phase == TickEvent.Phase.START) {
+            Minecraft mc = Minecraft.getInstance();
+            Player player = mc.player;
+            if (player == null) return;
+            boolean isEffectActive = player.hasEffect(DifModMobEffects.DRANK.get());
+
+            if (isEffectActive && !wasEffectActive) {
+                if (playingSound == null) {
+                    playingSound = new SimpleSoundInstance(
+                            DifModSounds.FURT_TA_STEJNA_HRA.get().getLocation(),
+                            SoundSource.PLAYERS,
+                            1.0F, 1.0F,
+                            player.getRandom(),
+                            true, // Loop
+                            0, SoundInstance.Attenuation.NONE,
+                            0.0, 0.0, 0.0, true
+                    );
+                    mc.getSoundManager().play(playingSound);
+                }
+            }
+            else if (!isEffectActive && wasEffectActive) {
+                if (playingSound != null) {
+                    mc.getSoundManager().stop(playingSound);
+                    playingSound = null;
+                }
+            }
+            wasEffectActive = isEffectActive;
+        }
+    }
+
     @SubscribeEvent
     public static void onRenderGuiOverlay(RenderGuiEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
         var player = mc.player;
 
-        // 1. Zjistíme, jestli má hráč náš efekt
-        // Musíš mít efekt někde registrovaný, např. ve třídě ModEffects
-        // UPRAV "ModEffects.DRANK.get()" tak, aby to odpovídalo tvému kódu!
-        DifModMobEffects ModEffects = null;
         if (player != null && player.hasEffect(DifModMobEffects.DRANK.get())) {
-
-            // 2. Získáme GuiGraphics a rozměry obrazovky
             GuiGraphics guiGraphics = event.getGuiGraphics();
             int width = event.getWindow().getGuiScaledWidth();
             int height = event.getWindow().getGuiScaledHeight();
 
-            // 3. Vypočítáme barvu (cyklení duhy)
-            // player.tickCount je herní čas. Dělením 100f získáme cyklus každých 5 sekund.
-            float hue = (player.tickCount % 100) / 100.0f;
-            // Vytvoříme barvu pomocí HSB (Hue, Saturation, Brightness)
-            int rgbColor = Color.getHSBColor(hue, 1.0f, 1.0f).getRGB(); // Čistá barva
+            // <--- ZMĚNA: 2x pomalejší duha (7.5f / 2 = 3.75f)
+            float hue = ((player.tickCount * 3.75f) % 100) / 100.0f;
+            int rgbColor = Color.getHSBColor(hue, 1.0f, 1.0f).getRGB();
 
-            // 4. Vypočítáme blikání (měnící se průhlednost)
-            // Použijeme sinusovku pro plynulé "dýchání" / pulzování
-            // (Math.sin(...) + 1.0) / 2.0 převede rozsah (-1, 1) na (0, 1)
-            float alphaNormalized = (float) (Math.sin(player.tickCount * 0.2f) + 1.0f) / 2.0f;
-
-            // Chceme, aby průhlednost byla mezi 20% (0.2) a 70% (0.7)
-            float alpha = 0.2f + (alphaNormalized * 0.5f); // Výsledná průhlednost 0.2 až 0.7
-
-            // Převedeme alpha (0.0-1.0) na ARGB komponentu (0-255) a posuneme bity
+            // <--- ZMĚNA: 2x pomalejší blikání (1.5f / 2 = 0.75f)
+            float alphaNormalized = (float) (Math.sin(player.tickCount * 0.75f) + 1.0f) / 2.0f;
+            float alpha = 0.2f + (alphaNormalized * 0.5f);
             int alphaComponent = ((int) (alpha * 255.0f)) << 24;
 
-            // 5. Spojíme barvu (RGB) a průhlednost (A)
             int finalColor = alphaComponent | (rgbColor & 0x00FFFFFF);
-
-            // 6. Vykreslíme poloprůhledný obdélník přes celou obrazovku
             guiGraphics.fill(0, 0, width, height, finalColor);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onCameraSetup(ViewportEvent.ComputeCameraAngles event) {
+        // Logika pro rotaci kamery (beze změny)
+        Minecraft mc = Minecraft.getInstance();
+        var player = mc.player;
+
+        if (player != null && player.hasEffect(DifModMobEffects.DRANK.get())) {
+
+            // Rychlost rotace kamery zůstává na 5.0f
+            float orbitalYaw = (player.tickCount * 5.0f) % 360.0f;
+
+            // Rychlost chaotického houpání zůstává
+            float orbitalPitch = (float)(Math.sin(player.tickCount * 0.125f) * 45.0f) +
+                    (float)(Math.cos(player.tickCount * 0.1875f) * 45.0f);
+
+            // Rychlost rollu zůstává na 5.0f
+            float orbitalRoll = (player.tickCount * 5.0f) % 360.0f;
+
+            event.setYaw(orbitalYaw);
+            event.setPitch(orbitalPitch);
+            event.setRoll(orbitalRoll);
         }
     }
 }

@@ -14,11 +14,10 @@ public class DrankMobEffect extends MobEffect {
 
     @Override
     public void applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
-        // Ponecháme POUZE rotaci (CONFUSION). 
-        // Blikání barev vyřešíme na klientu.
+        // Ponecháme CONFUSION pro základní "opilou" rotaci.
         entity.addEffect(new MobEffectInstance(
                 MobEffects.CONFUSION,
-                60, // Doba trvání v ticích (3s)
+                60,
                 amplifier,
                 false,
                 true,
