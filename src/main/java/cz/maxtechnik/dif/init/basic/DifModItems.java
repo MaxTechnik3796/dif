@@ -46,6 +46,7 @@ public class DifModItems{
 	public static final RegistryObject<Item>MATA=REGISTRY.register("mata",()->new Custom(1,0.2F));
 	public static final RegistryObject<Item>MATA_PLANT=block(DifModBlocks.MATA_PLANT);
 	public static final RegistryObject<Item>MATY_BLOCK=block(DifModBlocks.MATY_BLOCK);
+	public static final RegistryObject<Item> COPPER_CHEST = REGISTRY.register("copper_chest", () -> new cz.maxtechnik.dif.item.CopperChestItem((cz.maxtechnik.dif.block.CopperChestBlock) cz.maxtechnik.dif.init.basic.DifModBlocks.COPPER_CHEST.get()));
 
 	public static final RegistryObject<Item>CANOLA_SEEDS=REGISTRY.register("canola_seeds",Canola::new);
 	public static final RegistryObject<Item>CANOLA_PLANT=block(DifModBlocks.CANOLA_PLANT);

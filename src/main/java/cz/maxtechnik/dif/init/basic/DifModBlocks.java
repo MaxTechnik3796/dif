@@ -2,6 +2,7 @@ package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.block.*;
+import cz.maxtechnik.dif.block.CopperChestBlock;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -12,6 +13,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class DifModBlocks{
 	public static final DeferredRegister<Block>REGISTRY=DeferredRegister.create(ForgeRegistries.BLOCKS,DifMod.MODID);
+		public static final RegistryObject<Block> COPPER_CHEST = REGISTRY.register("copper_chest", CopperChestBlock::new);
 	public static final RegistryObject<Block>EXAMPLE_BLOCK=REGISTRY.register("example_block",Test::new);
 
 	public static final RegistryObject<Block>THE_DIFFERENTIAL=REGISTRY.register("the_differential",()->new CustomWaterloggedHorizontalRotation(SoundType.STONE,5F,6F,true));
