@@ -55,6 +55,7 @@ public class DifMod{
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON,DifModConfig.SPEC);
 	}
 
+
 	private void commonSetup(final FMLCommonSetupEvent event){
 		LOGGER.info("HELLO FROM COMMON SETUP");
 		/*LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
