@@ -14,16 +14,16 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("deprecation")
-public class MatyBlock extends Block {
-	public MatyBlock() {
+public class MatyBlock extends Block{
+	public MatyBlock(){
 		super(Properties.of().sound(SoundType.MOSS).strength(0.9F,7F));
 	}
 	@Override
-	public int getLightBlock(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos) {
+	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
 		return 15;
 	}
 	@Override
-	public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, Direction side) {
+	public boolean canConnectRedstone(BlockState state,BlockGetter world,BlockPos pos,Direction side){
 		return true;
 	}
 	@Override

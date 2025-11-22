@@ -26,9 +26,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-
-@Mod.EventBusSubscriber(modid=DifMod.MODID,bus=Mod.EventBusSubscriber.Bus.FORGE)
-public class DifModDataEvents{
+@Mod.EventBusSubscriber(modid=DifMod.MODID, bus=Mod.EventBusSubscriber.Bus.FORGE)
+public class DifModForgeEvents{
 	public static final ResourceLocation CHERRY_LEAVES_ID=ResourceLocation.fromNamespaceAndPath("minecraft","blocks/cherry_leaves");
 	public static final ResourceLocation CHISELED_BOOKSHELF_ID=ResourceLocation.fromNamespaceAndPath("minecraft","blocks/chiseled_bookshelf");
 	public static ItemStack emerald(int count){

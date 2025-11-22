@@ -23,52 +23,51 @@ import org.jetbrains.annotations.NotNull;
  Out of service (Unfinished)
  **/
 public class SpecialCrafting extends Block implements EntityBlock{
-	private static final Component CONTAINER_TITLE = Component.literal("Special Crafting");
+	private static final Component CONTAINER_TITLE=Component.literal("Special Crafting");
 	public SpecialCrafting(){
-        super(Properties.of());
-    }
+		super(Properties.of());
+	}
 	@Override
-	public @NotNull InteractionResult use(@NotNull BlockState blockstate, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player entity, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
-		super.use(blockstate, world, pos, entity, hand, hit);
-		if (entity instanceof ServerPlayer player) {
-			NetworkHooks.openScreen(player, new MenuProvider() {
+	public @NotNull InteractionResult use(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player entity,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
+		super.use(blockstate,world,pos,entity,hand,hit);
+		if(entity instanceof ServerPlayer player){
+			NetworkHooks.openScreen(player,new MenuProvider(){
 				@Override
-				public @NotNull Component getDisplayName() {
+				public @NotNull Component getDisplayName(){
 					return CONTAINER_TITLE;
 				}
-
 				@Override
-				public AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory,@NotNull Player player) {
-					return new SpecialCraftingMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos));
+				public AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory,@NotNull Player player){
+					return new SpecialCraftingMenu(id,inventory,new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos));
 				}
-			}, pos);
+			},pos);
 		}
 		return InteractionResult.SUCCESS;
 	}
 	@Override
-	public MenuProvider getMenuProvider(@NotNull BlockState state, Level worldIn, @NotNull BlockPos pos) {
-		BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-		return tileEntity instanceof MenuProvider menuProvider ? menuProvider : null;
+	public MenuProvider getMenuProvider(@NotNull BlockState state,Level worldIn,@NotNull BlockPos pos){
+		BlockEntity tileEntity=worldIn.getBlockEntity(pos);
+		return tileEntity instanceof MenuProvider menuProvider?menuProvider:null;
 	}
 	@Override
-	public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
-		return new cz.maxtechnik.dif.block.entity.SpecialCrafting(pos, state);
+	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
+		return new cz.maxtechnik.dif.block.entity.SpecialCrafting(pos,state);
 	}
 	@Override
-	public void onRemove(BlockState state, @NotNull Level world, @NotNull BlockPos pos, BlockState newState, boolean isMoving) {
-		if (state.getBlock() != newState.getBlock()) {
-			BlockEntity blockEntity = world.getBlockEntity(pos);
-			if (blockEntity instanceof cz.maxtechnik.dif.block.entity.SpecialCrafting be) {
-				Containers.dropContents(world, pos, be);
-				world.updateNeighbourForOutputSignal(pos, this);
+	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
+		if(state.getBlock()!=newState.getBlock()){
+			BlockEntity blockEntity=world.getBlockEntity(pos);
+			if(blockEntity instanceof cz.maxtechnik.dif.block.entity.SpecialCrafting be){
+				Containers.dropContents(world,pos,be);
+				world.updateNeighbourForOutputSignal(pos,this);
 			}
-			super.onRemove(state, world, pos, newState, isMoving);
+			super.onRemove(state,world,pos,newState,isMoving);
 		}
 	}
 	@Override
-	public boolean triggerEvent(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, int eventID, int eventParam) {
-		super.triggerEvent(state, world, pos, eventID, eventParam);
-		BlockEntity blockEntity = world.getBlockEntity(pos);
-		return blockEntity != null && blockEntity.triggerEvent(eventID, eventParam);
+	public boolean triggerEvent(@NotNull BlockState state,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
+		super.triggerEvent(state,world,pos,eventID,eventParam);
+		BlockEntity blockEntity=world.getBlockEntity(pos);
+		return blockEntity!=null&&blockEntity.triggerEvent(eventID,eventParam);
 	}
 }

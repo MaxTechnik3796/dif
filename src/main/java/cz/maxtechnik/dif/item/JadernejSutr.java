@@ -8,11 +8,10 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-
-public class JadernejSutr extends Item {
-    public JadernejSutr(){
-        super(new Properties());
-    }
+public class JadernejSutr extends Item{
+	public JadernejSutr(){
+		super(new Properties());
+	}
 	@Override
 	public void appendHoverText(@NotNull ItemStack itemstack,Level level,@NotNull List<Component> list,@NotNull TooltipFlag flag){
 		super.appendHoverText(itemstack,level,list,flag);

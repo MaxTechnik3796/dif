@@ -13,7 +13,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
-
 @SuppressWarnings("deprecation")
 public class BuddingEnergyBlock extends AmethystBlock{
 	public static final int GROWTH_CHANCE=5;
@@ -29,12 +28,12 @@ public class BuddingEnergyBlock extends AmethystBlock{
 			BlockState blockstate=world.getBlockState(blockpos);
 			Block block=null;
 			if(canClusterGrowAtState(blockstate)){
-			block=DifModBlocks.SMALL_ENERGY_BUD.get();
+				block=DifModBlocks.SMALL_ENERGY_BUD.get();
 			}else if(blockstate.is(DifModBlocks.SMALL_ENERGY_BUD.get())&&blockstate.getValue(AmethystClusterBlock.FACING)==direction){
-			block=DifModBlocks.MEDIUM_ENERGY_BUD.get();
-			}else if(blockstate.is(DifModBlocks.MEDIUM_ENERGY_BUD.get()) && blockstate.getValue(AmethystClusterBlock.FACING)==direction){
-			block=DifModBlocks.LARGE_ENERGY_BUD.get();
-			}else if(blockstate.is(DifModBlocks.LARGE_ENERGY_BUD.get()) && blockstate.getValue(AmethystClusterBlock.FACING)==direction){
+				block=DifModBlocks.MEDIUM_ENERGY_BUD.get();
+			}else if(blockstate.is(DifModBlocks.MEDIUM_ENERGY_BUD.get())&&blockstate.getValue(AmethystClusterBlock.FACING)==direction){
+				block=DifModBlocks.LARGE_ENERGY_BUD.get();
+			}else if(blockstate.is(DifModBlocks.LARGE_ENERGY_BUD.get())&&blockstate.getValue(AmethystClusterBlock.FACING)==direction){
 				block=DifModBlocks.ENERGY_CLUSTER.get();
 			}
 			if(block!=null){

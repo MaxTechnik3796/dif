@@ -21,9 +21,8 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.PlantType;
 import org.jetbrains.annotations.NotNull;
-
 public class MataPlant extends SugarCaneBlock implements BonemealableBlock{
-	private static final TagKey<net.minecraft.world.level.block.Block>FLOWER_PLANT_SOIL=BlockTags.create(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"flower_plant_soil"));
+	private static final TagKey<net.minecraft.world.level.block.Block> FLOWER_PLANT_SOIL=BlockTags.create(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"flower_plant_soil"));
 	public MataPlant(){
 		super(Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN).randomTicks().sound(SoundType.GRASS).instabreak().noCollission().offsetType(OffsetType.XZ).pushReaction(PushReaction.DESTROY));
 	}
@@ -42,34 +41,33 @@ public class MataPlant extends SugarCaneBlock implements BonemealableBlock{
 		return groundState.is(this)||groundState.is(FLOWER_PLANT_SOIL);
 	}
 	@Override
-	public @NotNull PlantType getPlantType(@NotNull BlockGetter world,@NotNull BlockPos pos) {
+	public @NotNull PlantType getPlantType(@NotNull BlockGetter world,@NotNull BlockPos pos){
 		return PlantType.PLAINS;
 	}
 	@Override
 	public void randomTick(@NotNull BlockState blockstate,ServerLevel world,BlockPos pos,@NotNull RandomSource random){
 		if(world.isEmptyBlock(pos.above())){
-			int i = 1;
+			int i=1;
 			BlockPos checkPos=pos.below();
 			while(world.getBlockState(checkPos).is(this)){
 				i++;
 				checkPos=checkPos.below();
 			}
-			if (i <DifModConfig.mataPlantMaxHeight) {
-				int j = blockstate.getValue(AGE);
-				if (ForgeHooks.onCropsGrowPre(world, pos, blockstate, true)) {
-					if (j == 15) {
-						world.setBlockAndUpdate(pos.above(), defaultBlockState());
-						world.setBlock(pos, blockstate.setValue(AGE, 0), 4);
-					} else {
-						world.setBlock(pos, blockstate.setValue(AGE, j + 1), 4);
+			if(i<DifModConfig.mataPlantMaxHeight){
+				int j=blockstate.getValue(AGE);
+				if(ForgeHooks.onCropsGrowPre(world,pos,blockstate,true)){
+					if(j==15){
+						world.setBlockAndUpdate(pos.above(),defaultBlockState());
+						world.setBlock(pos,blockstate.setValue(AGE,0),4);
+					}else{
+						world.setBlock(pos,blockstate.setValue(AGE,j+1),4);
 					}
 				}
 			}
-
 		}
 	}
 	@Override
-	public boolean isValidBonemealTarget(@NotNull LevelReader worldIn,@NotNull BlockPos pos,@NotNull BlockState blockstate,boolean clientSide) {
+	public boolean isValidBonemealTarget(@NotNull LevelReader worldIn,@NotNull BlockPos pos,@NotNull BlockState blockstate,boolean clientSide){
 		return true;
 	}
 	@Override

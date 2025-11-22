@@ -27,7 +27,7 @@ public class CustomWaterlogged extends Block implements SimpleWaterloggedBlock{
 	}
 	@Override
 	public boolean skipRendering(@NotNull BlockState state,BlockState adjacentBlockState,@NotNull Direction side){
-		return adjacentBlockState.getBlock()==this||super.skipRendering(state, adjacentBlockState, side);
+		return adjacentBlockState.getBlock()==this||super.skipRendering(state,adjacentBlockState,side);
 	}
 	@Override
 	public boolean propagatesSkylightDown(BlockState state,@NotNull BlockGetter reader,@NotNull BlockPos pos){
@@ -42,7 +42,7 @@ public class CustomWaterlogged extends Block implements SimpleWaterloggedBlock{
 		return Shapes.empty();
 	}
 	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState>builder){
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
 		builder.add(WATERLOGGED);
 	}
 	@Override
@@ -56,7 +56,7 @@ public class CustomWaterlogged extends Block implements SimpleWaterloggedBlock{
 	}
 	@Override
 	public @NotNull BlockState updateShape(BlockState state,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
-		if (state.getValue(WATERLOGGED)){
+		if(state.getValue(WATERLOGGED)){
 			world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
 		}
 		return super.updateShape(state,facing,facingState,world,currentPos,facingPos);

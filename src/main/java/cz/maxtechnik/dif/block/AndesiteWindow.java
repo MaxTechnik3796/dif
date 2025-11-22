@@ -1,4 +1,3 @@
-
 package cz.maxtechnik.dif.block;
 
 import net.minecraft.core.BlockPos;

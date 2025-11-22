@@ -34,7 +34,7 @@ public class SolarPanel extends Block implements SimpleWaterloggedBlock{
 	}
 	@Override
 	public boolean skipRendering(@NotNull BlockState state,BlockState adjacentBlockState,@NotNull Direction side){
-		return adjacentBlockState.getBlock()==this||super.skipRendering(state, adjacentBlockState, side);
+		return adjacentBlockState.getBlock()==this||super.skipRendering(state,adjacentBlockState,side);
 	}
 	@Override
 	public boolean propagatesSkylightDown(BlockState state,@NotNull BlockGetter reader,@NotNull BlockPos pos){
@@ -53,7 +53,7 @@ public class SolarPanel extends Block implements SimpleWaterloggedBlock{
 		return box(0,0,0,16,3,16);
 	}
 	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState>builder){
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
 		builder.add(WATERLOGGED);
 	}
 	@Override
@@ -67,19 +67,18 @@ public class SolarPanel extends Block implements SimpleWaterloggedBlock{
 	}
 	@Override
 	public @NotNull BlockState updateShape(BlockState state,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
-		if (state.getValue(WATERLOGGED)){
+		if(state.getValue(WATERLOGGED)){
 			world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
 		}
 		return super.updateShape(state,facing,facingState,world,currentPos,facingPos);
 	}
 	@Override
-	public void onPlace(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull BlockState oldState,boolean moving) {
+	public void onPlace(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull BlockState oldState,boolean moving){
 		super.onPlace(blockstate,world,pos,oldState,moving);
 		world.scheduleTick(pos,this,1);
 	}
-
 	@Override
-	public void tick(@NotNull BlockState blockstate,@NotNull ServerLevel world,@NotNull BlockPos pos,@NotNull RandomSource random) {
+	public void tick(@NotNull BlockState blockstate,@NotNull ServerLevel world,@NotNull BlockPos pos,@NotNull RandomSource random){
 		super.tick(blockstate,world,pos,random);
 		BlockEntity ent=world.getBlockEntity(pos.below());
 		if(world.canSeeSky(pos)&&world.isDay()&&world.dimension().equals(Level.OVERWORLD)&&ent!=null){

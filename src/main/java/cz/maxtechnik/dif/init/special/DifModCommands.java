@@ -8,8 +8,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraft.commands.Commands;
-import java.util.Objects;
 
+import java.util.Objects;
 @Mod.EventBusSubscriber
 public class DifModCommands{
 	@SubscribeEvent

@@ -9,7 +9,6 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-
 public class MatyDrink extends Item{
 	public MatyDrink(){
 		super(new Item.Properties().rarity(Rarity.UNCOMMON).food((new FoodProperties.Builder()).nutrition(13).saturationMod(2f).alwaysEat().build()));
@@ -28,7 +27,7 @@ public class MatyDrink extends Item{
 		if(itemstack.isEmpty()){
 			return retval;
 		}else{
-			if(entity instanceof Player player &&!player.getAbilities().instabuild){
+			if(entity instanceof Player player&&!player.getAbilities().instabuild){
 				if(!player.getInventory().add(retval)){
 					player.drop(retval,false);
 				}

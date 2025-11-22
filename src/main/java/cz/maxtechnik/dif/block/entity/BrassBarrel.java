@@ -1,6 +1,5 @@
 package cz.maxtechnik.dif.block.entity;
 
-import cz.maxtechnik.dif.block.BrassBarrel;
 import cz.maxtechnik.dif.gui.menu.BrassBarrelMenu; // Důležitý import
 import cz.maxtechnik.dif.init.misc.DifModBlockEntities;
 import io.netty.buffer.Unpooled;
@@ -33,19 +32,19 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.stream.IntStream;
 
-public class BrassBarrelBE extends RandomizableContainerBlockEntity implements WorldlyContainer {
+public class BrassBarrel extends RandomizableContainerBlockEntity implements WorldlyContainer {
     private NonNullList<ItemStack> stacks = NonNullList.withSize(54, ItemStack.EMPTY);
     private final LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper.create(this, Direction.values());
     private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
         @Override
         protected void onOpen(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
             level.playSound(null, pos, SoundEvents.BARREL_OPEN, SoundSource.BLOCKS, 1.0F, 1.0F);
-            level.setBlock(pos, state.setValue(BrassBarrel.OPEN, true), 3);
+            level.setBlock(pos, state.setValue(cz.maxtechnik.dif.block.BrassBarrel.OPEN, true), 3);
         }
         @Override
         protected void onClose(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
             level.playSound(null, pos, SoundEvents.BARREL_CLOSE, SoundSource.BLOCKS, 1.0F, 1.0F);
-            level.setBlock(pos, state.setValue(BrassBarrel.OPEN, false), 3);
+            level.setBlock(pos, state.setValue(cz.maxtechnik.dif.block.BrassBarrel.OPEN, false), 3);
         }
         @Override
         protected void openerCountChanged(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, int p_155062_, int p_155063_) {
@@ -53,12 +52,12 @@ public class BrassBarrelBE extends RandomizableContainerBlockEntity implements W
         @Override
         protected boolean isOwnContainer(Player player) {
             if (player.containerMenu instanceof BrassBarrelMenu menu) {
-                return menu.getBlockEntity() == BrassBarrelBE.this;
+                return menu.getBlockEntity() == BrassBarrel.this;
             }
             return false;
         }
     };
-    public BrassBarrelBE(BlockPos position, BlockState state) {
+    public BrassBarrel(BlockPos position,BlockState state) {
         super(DifModBlockEntities.BRASS_BARREL.get(), position, state);
     }
     @Override

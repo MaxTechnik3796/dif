@@ -16,10 +16,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
 import java.util.UUID;
-
-public class PortalGun extends Item {
+public class PortalGun extends Item{
 	public PortalGun(){
 		super(new Properties().stacksTo(1));
 	}
@@ -29,7 +29,7 @@ public class PortalGun extends Item {
 		setCharge(itemstack,itemstack.getOrCreateTag().getInt("ammo"));
 	}
 	@Override
-	public @NotNull InteractionResultHolder<ItemStack>use(@NotNull Level world,@NotNull Player player,@NotNull InteractionHand hand){
+	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world,@NotNull Player player,@NotNull InteractionHand hand){
 		super.use(world,player,hand);
 		ItemStack itemStack=player.getItemInHand(hand);
 		CompoundTag nbt=itemStack.getOrCreateTag();
@@ -45,7 +45,7 @@ public class PortalGun extends Item {
 					itemStack.getOrCreateTag().putUUID("uuid",player.getUUID());
 				}
 				Entity owner;
-				if (nbt.contains("uuid")){
+				if(nbt.contains("uuid")){
 					UUID entityUuid=nbt.getUUID("uuid");
 					Entity potentialOwner=null;
 					if(world instanceof ServerLevel serverLevel){
@@ -60,7 +60,7 @@ public class PortalGun extends Item {
 				}
 				Projectile entityToSpawn=new Object(){
 					public Projectile getProjectile(Level level){
-						Projectile entityToSpawn=new ThrownEnderpearl(EntityType.ENDER_PEARL, level);
+						Projectile entityToSpawn=new ThrownEnderpearl(EntityType.ENDER_PEARL,level);
 						entityToSpawn.setOwner(owner);
 						return entityToSpawn;
 					}

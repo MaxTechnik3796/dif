@@ -33,9 +33,10 @@ public class SpecialCraftingScreen extends AbstractContainerScreen<SpecialCrafti
 		p_283540_.blit(GUI_TEXTURE,i,j,0,0,this.imageWidth,this.imageHeight);
 	}
 	public void containerTick(){
-	super.containerTick();
+		super.containerTick();
 	}
-	public void recipesUpdated(){}
+	public void recipesUpdated(){
+	}
 	public @NotNull RecipeBookComponent getRecipeBookComponent(){
 		return this.recipeBookComponent;
 	}

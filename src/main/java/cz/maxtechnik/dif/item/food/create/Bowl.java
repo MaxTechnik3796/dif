@@ -10,8 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-
-
 public class Bowl extends Item{
 	public Bowl(){
 		super(new Properties().food((new FoodProperties.Builder()).nutrition(18).saturationMod(1.2F).alwaysEat().build()));
@@ -28,9 +26,9 @@ public class Bowl extends Item{
 		if(itemstack.isEmpty()){
 			return retval;
 		}else{
-			if(entity instanceof Player player &&!player.getAbilities().instabuild){
+			if(entity instanceof Player player&&!player.getAbilities().instabuild){
 				if(!player.getInventory().add(retval)){
-					player.drop(retval, false);
+					player.drop(retval,false);
 				}
 			}
 			return itemstack;

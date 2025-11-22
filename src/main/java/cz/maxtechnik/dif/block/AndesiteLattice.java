@@ -1,4 +1,3 @@
-
 package cz.maxtechnik.dif.block;
 
 import net.minecraft.core.BlockPos;
@@ -44,12 +43,12 @@ public class AndesiteLattice extends Block implements SimpleWaterloggedBlock{
 		return Shapes.empty();
 	}
 	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState>builder){
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
 		builder.add(WATERLOGGED);
 	}
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context){
-		boolean flag = context.getLevel().getFluidState(context.getClickedPos()).getType()==Fluids.WATER;
+		boolean flag=context.getLevel().getFluidState(context.getClickedPos()).getType()==Fluids.WATER;
 		return this.defaultBlockState().setValue(WATERLOGGED,flag);
 	}
 	@Override
@@ -58,8 +57,8 @@ public class AndesiteLattice extends Block implements SimpleWaterloggedBlock{
 	}
 	@Override
 	public @NotNull BlockState updateShape(BlockState state,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
-		if (state.getValue(WATERLOGGED)){
-			world.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+		if(state.getValue(WATERLOGGED)){
+			world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
 		}
 		return super.updateShape(state,facing,facingState,world,currentPos,facingPos);
 	}

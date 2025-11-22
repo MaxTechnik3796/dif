@@ -23,7 +23,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("deprecation")
 public class AluminumProfile extends Block implements SimpleWaterloggedBlock{
-	public static final EnumProperty<Direction.Axis>AXIS=BlockStateProperties.AXIS;
+	public static final EnumProperty<Direction.Axis> AXIS=BlockStateProperties.AXIS;
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
 	public AluminumProfile(){
 		super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).requiresCorrectToolForDrops().noOcclusion().isRedstoneConductor((bs,br,bp)->false));
@@ -42,7 +42,7 @@ public class AluminumProfile extends Block implements SimpleWaterloggedBlock{
 		return Shapes.empty();
 	}
 	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState>builder){
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
 		builder.add(AXIS,WATERLOGGED);
 	}
 	@Override
@@ -55,19 +55,19 @@ public class AluminumProfile extends Block implements SimpleWaterloggedBlock{
 		if(rot==Rotation.CLOCKWISE_90||rot==Rotation.COUNTERCLOCKWISE_90){
 			if(state.getValue(AXIS)==Direction.Axis.X){
 				return state.setValue(AXIS,Direction.Axis.Z);
-			} else if (state.getValue(AXIS)==Direction.Axis.Z){
+			}else if(state.getValue(AXIS)==Direction.Axis.Z){
 				return state.setValue(AXIS,Direction.Axis.X);
 			}
 		}
 		return state;
 	}
 	@Override
-	public @NotNull FluidState getFluidState(BlockState state) {
+	public @NotNull FluidState getFluidState(BlockState state){
 		return state.getValue(WATERLOGGED)?Fluids.WATER.getSource(false):super.getFluidState(state);
 	}
 	@Override
 	public @NotNull BlockState updateShape(BlockState state,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
-		if (state.getValue(WATERLOGGED)){
+		if(state.getValue(WATERLOGGED)){
 			world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
 		}
 		return super.updateShape(state,facing,facingState,world,currentPos,facingPos);

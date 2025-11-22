@@ -12,7 +12,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-
 public class Can extends Item{
 	public Can(){
 		super(new Properties().food((new FoodProperties.Builder()).nutrition(9).saturationMod(1.2F).alwaysEat().build()));
@@ -29,9 +28,9 @@ public class Can extends Item{
 		if(itemstack.isEmpty()){
 			return retval;
 		}else{
-			if(entity instanceof Player player &&!player.getAbilities().instabuild){
+			if(entity instanceof Player player&&!player.getAbilities().instabuild){
 				if(!player.getInventory().add(retval)){
-					player.drop(retval, false);
+					player.drop(retval,false);
 				}
 			}
 			return itemstack;

@@ -8,13 +8,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import org.jetbrains.annotations.NotNull;
-
 public class RedstoneNotIQMobEffect extends MobEffect{
 	public RedstoneNotIQMobEffect(){
 		super(MobEffectCategory.HARMFUL,-16776961);
 	}
 	@Override
-	public void applyEffectTick(@NotNull LivingEntity entity,int amplifier) {
+	public void applyEffectTick(@NotNull LivingEntity entity,int amplifier){
 		if(entity.hasEffect(DifModMobEffects.REDSTONE_IQ.get())){
 			entity.removeEffect(DifModMobEffects.REDSTONE_IQ.get());
 			entity.removeEffect(DifModMobEffects.REDSTONE_NOT_IQ.get());

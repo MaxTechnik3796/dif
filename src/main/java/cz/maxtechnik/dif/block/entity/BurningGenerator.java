@@ -33,23 +33,22 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+
 import javax.annotation.Nullable;
+
 import io.netty.buffer.Unpooled;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.IntStream;
-
 public class BurningGenerator extends RandomizableContainerBlockEntity implements WorldlyContainer{
 	public static final int SLOTS=1;
 	public static final int INPUT_SLOT=0;
-
 	public static final int ENERGY_PER_TICK=DifModConfig.burningGeneratorEnergyPerTick;
 	public static final int MAX_ENERGY=DifModConfig.burningGeneratorMaxEnergy;
 	public static final int MAX_RECEIVE=Integer.MAX_VALUE;
 	public static final int MAX_EXTRACT=DifModConfig.burningGeneratorMaxExtract;
-
-	private NonNullList<ItemStack>stacks=NonNullList.withSize(SLOTS,ItemStack.EMPTY);
-	private final LazyOptional<?extends IItemHandler>[]handlers=SidedInvWrapper.create(this,Direction.values());
+	private NonNullList<ItemStack> stacks=NonNullList.withSize(SLOTS,ItemStack.EMPTY);
+	private final LazyOptional<? extends IItemHandler>[] handlers=SidedInvWrapper.create(this,Direction.values());
 	private int burnTime;
 	private int maxBurnTime;
 	public final ContainerData dataAccess=new SimpleContainerData(7){
@@ -62,22 +61,22 @@ public class BurningGenerator extends RandomizableContainerBlockEntity implement
 			if(isEmpty()){
 				empty=1;
 			}
-			return switch (index){
-				case 0->BurningGenerator.this.burnTime;
-				case 1->BurningGenerator.this.maxBurnTime;
-				case 2->lit;
-				case 3->BurningGenerator.this.energyStorage.getEnergyStored();
-				case 4->BurningGenerator.this.energyStorage.getMaxEnergyStored();
-				case 5->ForgeHooks.getBurnTime(getItem(INPUT_SLOT),null);
-				case 6->empty;
-				default->0;
+			return switch(index){
+				case 0 -> BurningGenerator.this.burnTime;
+				case 1 -> BurningGenerator.this.maxBurnTime;
+				case 2 -> lit;
+				case 3 -> BurningGenerator.this.energyStorage.getEnergyStored();
+				case 4 -> BurningGenerator.this.energyStorage.getMaxEnergyStored();
+				case 5 -> ForgeHooks.getBurnTime(getItem(INPUT_SLOT),null);
+				case 6 -> empty;
+				default -> 0;
 			};
 		}
 		@Override
 		public void set(int index,int value){
-			switch (index){
-				case 0->BurningGenerator.this.burnTime=value;
-				case 1->BurningGenerator.this.maxBurnTime=value;
+			switch(index){
+				case 0 -> BurningGenerator.this.burnTime=value;
+				case 1 -> BurningGenerator.this.maxBurnTime=value;
 			}
 		}
 		@Override
@@ -92,13 +91,13 @@ public class BurningGenerator extends RandomizableContainerBlockEntity implement
 			if(!simulate){
 				setChanged();
 				assert level!=null;
-				level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition),level.getBlockState(worldPosition),3);
+				level.sendBlockUpdated(worldPosition,level.getBlockState(worldPosition),level.getBlockState(worldPosition),3);
 			}
 			return retval;
 		}
 		@Override
 		public int extractEnergy(int maxExtract,boolean simulate){
-			int retval=super.extractEnergy(maxExtract, simulate);
+			int retval=super.extractEnergy(maxExtract,simulate);
 			if(!simulate){
 				setChanged();
 				assert level!=null;
@@ -116,7 +115,7 @@ public class BurningGenerator extends RandomizableContainerBlockEntity implement
 		if(!this.tryLoadLootTable(compound))
 			this.stacks=NonNullList.withSize(this.getContainerSize(),ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(compound,this.stacks);
-		if(compound.contains("energyStorage")&&compound.get("energyStorage")instanceof IntTag intTag)
+		if(compound.contains("energyStorage")&&compound.get("energyStorage") instanceof IntTag intTag)
 			energyStorage.deserializeNBT(intTag);
 		this.burnTime=compound.getInt("burnTime");
 		this.maxBurnTime=compound.getInt("maxBurnTime");
@@ -133,7 +132,7 @@ public class BurningGenerator extends RandomizableContainerBlockEntity implement
 		if(state.getValue(cz.maxtechnik.dif.block.BurningGenerator.LIT)){
 			final double Y_OFFSET=0.28;
 			final double Y_VELOCITY=0.007;
-			double[][]offsets;
+			double[][] offsets;
 			Direction.Axis axis=state.getValue(cz.maxtechnik.dif.block.BurningGenerator.FACING).getAxis();
 			if(axis.equals(Direction.Axis.X)){
 				offsets=new double[][]{
@@ -150,7 +149,7 @@ public class BurningGenerator extends RandomizableContainerBlockEntity implement
 			}else{
 				return;
 			}
-			for(double[]offset:offsets){
+			for(double[] offset: offsets){
 				if(DifMod.rouletteBoolean(8)){
 					level.addParticle(ParticleTypes.SMOKE,pos.getX()+offset[0],pos.getY()+Y_OFFSET,pos.getZ()+offset[1],0,Y_VELOCITY,0);
 				}
@@ -183,10 +182,10 @@ public class BurningGenerator extends RandomizableContainerBlockEntity implement
 			}
 		}
 		if(entity.energyStorage.getEnergyStored()>0){
-			for(Direction direction:Direction.values()){
+			for(Direction direction: Direction.values()){
 				BlockEntity neighbor=level.getBlockEntity(pos.relative(direction));
 				if(neighbor!=null){
-					LazyOptional<IEnergyStorage>neighborEnergy=neighbor.getCapability(ForgeCapabilities.ENERGY,direction.getOpposite());
+					LazyOptional<IEnergyStorage> neighborEnergy=neighbor.getCapability(ForgeCapabilities.ENERGY,direction.getOpposite());
 					neighborEnergy.ifPresent(storage->{
 						int energyToTransfer=Math.min(entity.energyStorage.getEnergyStored(),MAX_EXTRACT);
 						if(energyToTransfer>0&&storage.canReceive()){
@@ -216,7 +215,7 @@ public class BurningGenerator extends RandomizableContainerBlockEntity implement
 	}
 	@Override
 	public boolean isEmpty(){
-		for(ItemStack itemstack:this.stacks)
+		for(ItemStack itemstack: this.stacks)
 			if(!itemstack.isEmpty())
 				return false;
 		return true;
@@ -234,7 +233,7 @@ public class BurningGenerator extends RandomizableContainerBlockEntity implement
 		return Component.literal("Generator");
 	}
 	@Override
-	protected @NotNull NonNullList<ItemStack>getItems(){
+	protected @NotNull NonNullList<ItemStack> getItems(){
 		return this.stacks;
 	}
 	@Override
@@ -246,7 +245,7 @@ public class BurningGenerator extends RandomizableContainerBlockEntity implement
 		return true;
 	}
 	@Override
-	public int @NotNull[]getSlotsForFace(@NotNull Direction side){
+	public int @NotNull [] getSlotsForFace(@NotNull Direction side){
 		return IntStream.range(0,this.getContainerSize()).toArray();
 	}
 	@Override
@@ -258,8 +257,8 @@ public class BurningGenerator extends RandomizableContainerBlockEntity implement
 		return true;
 	}
 	@Override
-	public <T> @NotNull LazyOptional<T>getCapability(@NotNull Capability<T>capability,@Nullable Direction facing){
-		if (!this.remove && facing!=null && capability==ForgeCapabilities.ITEM_HANDLER)
+	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability,@Nullable Direction facing){
+		if(!this.remove&&facing!=null&&capability==ForgeCapabilities.ITEM_HANDLER)
 			return handlers[facing.ordinal()].cast();
 		if(!this.remove&&capability==ForgeCapabilities.ENERGY)
 			return LazyOptional.of(()->new IEnergyStorage(){
@@ -293,7 +292,7 @@ public class BurningGenerator extends RandomizableContainerBlockEntity implement
 	@Override
 	public void setRemoved(){
 		super.setRemoved();
-		for (LazyOptional<?extends IItemHandler>handler:handlers)
+		for(LazyOptional<? extends IItemHandler> handler: handlers)
 			handler.invalidate();
 	}
 }

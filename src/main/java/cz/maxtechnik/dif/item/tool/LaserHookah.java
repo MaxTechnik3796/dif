@@ -12,8 +12,7 @@ import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-
-public class LaserHookah extends Item {
+public class LaserHookah extends Item{
 	private static final int USE_DURATION=1200;
 	public LaserHookah(){
 		super(new Properties().stacksTo(1));
@@ -27,7 +26,7 @@ public class LaserHookah extends Item {
 		return UseAnim.TOOT_HORN;
 	}
 	@Override
-	public @NotNull InteractionResultHolder<ItemStack>use(@NotNull Level world,Player player,@NotNull InteractionHand hand){
+	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world,Player player,@NotNull InteractionHand hand){
 		player.awardStat(Stats.ITEM_USED.get(this));
 		player.getItemInHand(hand).getOrCreateTag().putBoolean("active",true);
 		return ItemUtils.startUsingInstantly(world,player,hand);
@@ -41,5 +40,4 @@ public class LaserHookah extends Item {
 			}
 		}
 	}
-
 }

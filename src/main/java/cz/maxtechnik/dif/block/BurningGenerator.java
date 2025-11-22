@@ -37,7 +37,7 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("deprecation")
-public class BurningGenerator extends Block implements SimpleWaterloggedBlock,EntityBlock{
+public class BurningGenerator extends Block implements SimpleWaterloggedBlock, EntityBlock{
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
 	public static final BooleanProperty LIT=BooleanProperty.create("lit");
@@ -46,7 +46,7 @@ public class BurningGenerator extends Block implements SimpleWaterloggedBlock,En
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(WATERLOGGED,false).setValue(LIT,false));
 	}
 	@Override
-	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos) {
+	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
 		return 0;
 	}
 	@Override
@@ -54,7 +54,7 @@ public class BurningGenerator extends Block implements SimpleWaterloggedBlock,En
 		return Shapes.empty();
 	}
 	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState>builder){
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
 		builder.add(FACING,WATERLOGGED,LIT);
 	}
 	@Override
@@ -76,30 +76,30 @@ public class BurningGenerator extends Block implements SimpleWaterloggedBlock,En
 	}
 	@Override
 	public @NotNull BlockState updateShape(BlockState state,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
-		if (state.getValue(WATERLOGGED)){
+		if(state.getValue(WATERLOGGED)){
 			world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
 		}
 		return super.updateShape(state,facing,facingState,world,currentPos,facingPos);
 	}
 	@Override
-	public void tick(@NotNull BlockState blockstate,@NotNull ServerLevel world,@NotNull BlockPos pos,@NotNull RandomSource random) {
+	public void tick(@NotNull BlockState blockstate,@NotNull ServerLevel world,@NotNull BlockPos pos,@NotNull RandomSource random){
 		super.tick(blockstate,world,pos,random);
 	}
 	@Override
-	public @Nullable<T extends BlockEntity>BlockEntityTicker<T>getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T>type){
+	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T> type){
 		return level.isClientSide?createClientTicker(type,DifModBlockEntities.BURNING_GENERATOR.get()):createServerTicker(type,DifModBlockEntities.BURNING_GENERATOR.get());
 	}
 	@Nullable
-	protected static<T extends BlockEntity>BlockEntityTicker<T> createServerTicker(BlockEntityType<T>type,BlockEntityType<?extends cz.maxtechnik.dif.block.entity.BurningGenerator>expectedType){
+	protected static <T extends BlockEntity> BlockEntityTicker<T> createServerTicker(BlockEntityType<T> type,BlockEntityType<? extends cz.maxtechnik.dif.block.entity.BurningGenerator> expectedType){
 		return type==expectedType?(lvl,pos,state,blockEntity)->cz.maxtechnik.dif.block.entity.BurningGenerator.serverTick(lvl,pos,state,(cz.maxtechnik.dif.block.entity.BurningGenerator)blockEntity):null;
 	}
-	protected static<T extends BlockEntity>BlockEntityTicker<T>createClientTicker(BlockEntityType<T>type,BlockEntityType<?extends cz.maxtechnik.dif.block.entity.BurningGenerator>expectedType){
+	protected static <T extends BlockEntity> BlockEntityTicker<T> createClientTicker(BlockEntityType<T> type,BlockEntityType<? extends cz.maxtechnik.dif.block.entity.BurningGenerator> expectedType){
 		return type==expectedType?(lvl,pos,state,blockEntity)->cz.maxtechnik.dif.block.entity.BurningGenerator.clientTick(lvl,pos,state):null;
 	}
 	@Override
 	public @NotNull InteractionResult use(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player entity,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
 		super.use(blockstate,world,pos,entity,hand,hit);
-		if (entity instanceof ServerPlayer player) {
+		if(entity instanceof ServerPlayer player){
 			NetworkHooks.openScreen(player,new MenuProvider(){
 				@Override
 				public @NotNull Component getDisplayName(){
@@ -146,7 +146,7 @@ public class BurningGenerator extends Block implements SimpleWaterloggedBlock,En
 	@Override
 	public int getAnalogOutputSignal(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos){
 		BlockEntity tileentity=world.getBlockEntity(pos);
-		if (tileentity instanceof cz.maxtechnik.dif.block.entity.BurningGenerator be)
+		if(tileentity instanceof cz.maxtechnik.dif.block.entity.BurningGenerator be)
 			return AbstractContainerMenu.getRedstoneSignalFromContainer(be);
 		else
 			return 0;
