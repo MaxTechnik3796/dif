@@ -39,7 +39,6 @@ public class DifMod{
 		IEventBus bus=FMLJavaModLoadingContext.get().getModEventBus();
 		bus.addListener(this::commonSetup);
 
-
 		DifModBlocks.REGISTRY.register(bus);
 		DifModItems.REGISTRY.register(bus);
 		DifModTabs.REGISTER.register(bus);
