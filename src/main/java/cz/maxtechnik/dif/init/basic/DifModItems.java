@@ -72,6 +72,7 @@ public class DifModItems{
     public static final RegistryObject<Item>HOSPITAL_HANDLE=block(DifModBlocks.HOSPITAL_HANDLE);
 	public static final RegistryObject<Item>SINGULARITATOR=block(DifModBlocks.SINGULARITATOR);
 	public static final RegistryObject<Item>SUPER_BOX=block(DifModBlocks.SUPER_BOX);
+	public static final RegistryObject<Item>BRASS_BARREL=block(DifModBlocks.BRASS_BARREL);
 
 	public static final RegistryObject<Item>RUBY=REGISTRY.register("ruby",Basic::new);
 	public static final RegistryObject<Item>RUBY_ORE=block(DifModBlocks.RUBY_ORE);

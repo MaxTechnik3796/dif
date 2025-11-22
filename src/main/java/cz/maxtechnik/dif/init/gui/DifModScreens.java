@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.init.gui;
 
 import cz.maxtechnik.dif.gui.screen.BurningGeneratorScreen;
+import cz.maxtechnik.dif.gui.screen.BrassBarrelScreen;
 import cz.maxtechnik.dif.gui.screen.SpecialCraftingScreen;
 import cz.maxtechnik.dif.gui.screen.SuperBoxScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -13,10 +14,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class DifModScreens{
 	@SubscribeEvent
 	public static void clientLoad(FMLClientSetupEvent event){
-		event.enqueueWork(()->{
-			MenuScreens.register(DifModMenus.SUPER_BOX_MENU.get(),SuperBoxScreen::new);
-			MenuScreens.register(DifModMenus.GENERATOR_MENU.get(),BurningGeneratorScreen::new);
-			MenuScreens.register(DifModMenus.SPECIAL_CRAFTING_MENU.get(),SpecialCraftingScreen::new);
-		});
+				event.enqueueWork(()->{
+					MenuScreens.register(DifModMenus.SUPER_BOX_MENU.get(),SuperBoxScreen::new);
+					MenuScreens.register(DifModMenus.BRASS_BARREL_MENU.get(),BrassBarrelScreen::new);
+					MenuScreens.register(DifModMenus.GENERATOR_MENU.get(),BurningGeneratorScreen::new);
+					MenuScreens.register(DifModMenus.SPECIAL_CRAFTING_MENU.get(),SpecialCraftingScreen::new);
+				});
 	}
 }

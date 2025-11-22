@@ -1,0 +1,174 @@
+package cz.maxtechnik.dif.block;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
+
+@SuppressWarnings("deprecation")
+public class BrassBarrel extends Block implements SimpleWaterloggedBlock, EntityBlock {
+    // --- ZMĚNA ZDE ---
+    // Místo 'HorizontalDirectionalBlock.FACING' použijeme 'BlockStateProperties.FACING',
+    // který umožňuje všech 6 směrů (včetně UP a DOWN).
+    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
+
+    public BrassBarrel() {
+        super(Properties.of().sound(SoundType.WOOD).strength(2.5f).requiresCorrectToolForDrops().noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
+        // Registrujeme výchozí stav (stále může být NORTH, ale nyní používá novou 'FACING' property)
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false).setValue(OPEN, false));
+    }
+
+    @Override
+    public boolean skipRendering(@NotNull BlockState state, BlockState adjacentBlockState, @NotNull Direction side) {
+        return adjacentBlockState.getBlock() == this || super.skipRendering(state, adjacentBlockState, side);
+    }
+
+    @Override
+    public boolean propagatesSkylightDown(BlockState state, @NotNull BlockGetter reader, @NotNull BlockPos pos) {
+        return state.getFluidState().isEmpty();
+    }
+
+    @Override
+    public int getLightBlock(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos) {
+        return 0;
+    }
+
+    @Override
+    public @NotNull VoxelShape getVisualShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+        return Shapes.empty();
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        // Property 'FACING' zde již je, takže není třeba měnit
+        builder.add(FACING, WATERLOGGED, OPEN);
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        // --- ZMĚNA ZDE ---
+        // Místo 'context.getHorizontalDirection().getOpposite()' (jen 4 směry)
+        // použijeme 'context.getClickedFace().getOpposite()' (všech 6 směrů).
+        // To způsobí, že "dno" sudu bude na ploše, na kterou klikneš.
+        // Příklad: Klikneš na zem (ClickedFace=UP), sud se položí FACING=DOWN.
+        //          (To je jak funguje vanilkový sud, FACING ukazuje směr dna).
+        boolean flag = context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER;
+        return this.defaultBlockState()
+                .setValue(FACING, context.getClickedFace().getOpposite()) // <-- TATO ŘÁDKA JE ZMĚNĚNA
+                .setValue(WATERLOGGED, flag)
+                .setValue(OPEN, false);
+    }
+
+    // --- ZMĚNA ZDE ---
+    // Tato metoda teď správně otáčí všemi 6 směry.
+    public @NotNull BlockState rotate(BlockState state, Rotation rot) {
+        return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
+    }
+
+    // --- ZMĚNA ZDE ---
+    // Oprava 'mirror' metody, aby správně zrcadlila všechny směry,
+    // nejen horizontální.
+    public @NotNull BlockState mirror(BlockState state, Mirror mirrorIn) {
+        return state.setValue(FACING, mirrorIn.mirror(state.getValue(FACING)));
+    }
+
+    @Override
+    public @NotNull FluidState getFluidState(BlockState state) {
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+    }
+
+    @Override
+    public @NotNull BlockState updateShape(BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world, @NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
+        if (state.getValue(WATERLOGGED)) {
+            world.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+        }
+        return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
+    }
+
+    @Override
+    public @NotNull InteractionResult use(@NotNull BlockState blockstate, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player entity, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+
+        if (world.isClientSide) {
+            return InteractionResult.SUCCESS;
+        }
+
+        if (entity instanceof ServerPlayer player) {
+            BlockEntity be = world.getBlockEntity(pos);
+            if (be instanceof MenuProvider menuProvider) {
+                NetworkHooks.openScreen(player, menuProvider, pos);
+            }
+        }
+        return InteractionResult.CONSUME;
+    }
+
+    @Override
+    public MenuProvider getMenuProvider(@NotNull BlockState state, Level worldIn, @NotNull BlockPos pos) {
+        BlockEntity tileEntity = worldIn.getBlockEntity(pos);
+        return tileEntity instanceof MenuProvider menuProvider ? menuProvider : null;
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
+        return new cz.maxtechnik.dif.block.entity.BrassBarrelBE(pos, state);
+    }
+
+    @Override
+    public boolean triggerEvent(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, int eventID, int eventParam) {
+        super.triggerEvent(state, world, pos, eventID, eventParam);
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        return blockEntity != null && blockEntity.triggerEvent(eventID, eventParam);
+    }
+
+    @Override
+    public void onRemove(BlockState state, @NotNull Level world, @NotNull BlockPos pos, BlockState newState, boolean isMoving) {
+        if (state.getBlock() != newState.getBlock()) {
+            BlockEntity blockEntity = world.getBlockEntity(pos);
+            if (blockEntity instanceof cz.maxtechnik.dif.block.entity.BrassBarrelBE be) {
+                Containers.dropContents(world, pos, be);
+                world.updateNeighbourForOutputSignal(pos, this);
+            }
+            super.onRemove(state, world, pos, newState, isMoving);
+        }
+    }
+
+    @Override
+    public boolean hasAnalogOutputSignal(@NotNull BlockState state) {
+        return true;
+    }
+
+    @Override
+    public int getAnalogOutputSignal(@NotNull BlockState blockState, Level world, @NotNull BlockPos pos) {
+        BlockEntity tileentity = world.getBlockEntity(pos);
+        if (tileentity instanceof cz.maxtechnik.dif.block.entity.BrassBarrelBE be)
+            return AbstractContainerMenu.getRedstoneSignalFromContainer(be);
+        else
+            return 0;
+    }
+}

@@ -132,5 +132,8 @@
 	"block.dif.large_energy_bud":"Large Energy Bud",
 	"block.dif.medium_energy_bud":"Medium Energy Bud",
 	"block.dif.small_energy_bud":"Small Energy Bud",
-	"item.dif.energy.shard": "Energy Shard"
+	"item.dif.energy.shard": "Energy Shard",
+
+	"block.dif.brass_barrel": "Mosazný sud",
+	"container.dif.brass_barrel": "Mosazný sud"
 }
