@@ -67,7 +67,7 @@ public class SuperBox extends RandomizableContainerBlockEntity implements Worldl
 	}
 	@Override
 	public @NotNull Component getDefaultName(){
-		return Component.literal("super_box");
+		return Component.translatable("gui.dif.super_box");
 	}
 	@Override
 	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory){
@@ -75,7 +75,7 @@ public class SuperBox extends RandomizableContainerBlockEntity implements Worldl
 	}
 	@Override
 	public @NotNull Component getDisplayName(){
-		return Component.literal("§e§lSuper Box");
+		return Component.translatable("gui.dif.super_box");
 	}
 	@Override
 	protected @NotNull NonNullList<ItemStack> getItems(){

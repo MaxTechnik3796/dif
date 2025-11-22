@@ -12,6 +12,10 @@ public class DifModBlockEntities{
 	public static final DeferredRegister<BlockEntityType<?>>REGISTRY=DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES,DifMod.MODID);
 	public static final RegistryObject<BlockEntityType<?>>SUPER_BOX=register("super_box",DifModBlocks.SUPER_BOX,SuperBox::new);
 	public static final RegistryObject<BlockEntityType<?>>BRASS_BARREL=register("brass_barrel",DifModBlocks.BRASS_BARREL,BrassBarrel::new);
+
+	public static final RegistryObject<BlockEntityType<?>>ANDESITE_BARREL=register("andesite_barrel",DifModBlocks.ANDESITE_BARREL,AndesiteBarrel::new);
+	public static final RegistryObject<BlockEntityType<?>>STURDY_BARREL=register("sturdy_barrel",DifModBlocks.STURDY_BARREL,SturdyBarrel::new);
+
 	public static final RegistryObject<BlockEntityType<BurningGenerator>> BURNING_GENERATOR=REGISTRY.register("generator_be",()->BlockEntityType.Builder.of(BurningGenerator::new,DifModBlocks.BURNING_GENERATOR.get()).build(null));
 	public static final RegistryObject<BlockEntityType<?>>SPECIAL_CRAFTING=register("special_crafting",DifModBlocks.EXAMPLE_BLOCK,SpecialCrafting::new);
 	private static RegistryObject<BlockEntityType<?>> register(String registryname,RegistryObject<Block> block,BlockEntityType.BlockEntitySupplier<?> supplier){

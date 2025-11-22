@@ -56,5 +56,7 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>MEDIUM_ENERGY_BUD=REGISTRY.register("medium_energy_bud",()->new AmethystClusterBlock(4,3,BlockBehaviour.Properties.copy(ENERGY_CLUSTER.get()).sound(SoundType.LARGE_AMETHYST_BUD).forceSolidOn().lightLevel((p_152617_)->2).pushReaction(PushReaction.DESTROY)));
 	public static final RegistryObject<Block>SMALL_ENERGY_BUD=REGISTRY.register("small_energy_bud",()->new AmethystClusterBlock(3,4,BlockBehaviour.Properties.copy(ENERGY_CLUSTER.get()).sound(SoundType.SMALL_AMETHYST_BUD).forceSolidOn().lightLevel((p_187409_)->1).pushReaction(PushReaction.DESTROY)));
 
-	public static final RegistryObject<Block>BRASS_BARREL=REGISTRY.register("brass_barrel", BrassBarrel::new);
+	public static final RegistryObject<Block>BRASS_BARREL=REGISTRY.register("brass_barrel",BrassBarrel::new);
+	public static final RegistryObject<Block>ANDESITE_BARREL=REGISTRY.register("andesite_barrel",AndesiteBarrel::new);
+	public static final RegistryObject<Block>STURDY_BARREL=REGISTRY.register("sturdy_barrel",SturdyBarrel::new);
 }
