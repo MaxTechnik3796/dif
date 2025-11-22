@@ -12,7 +12,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,8 +19,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -29,13 +26,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("deprecation")
-public class BrassBarrel extends Block implements SimpleWaterloggedBlock, EntityBlock{
+public class BrassBarrel extends Block implements EntityBlock{
 	public static final DirectionProperty FACING=BlockStateProperties.FACING;
-	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
 	public static final BooleanProperty OPEN=BlockStateProperties.OPEN;
 	public BrassBarrel(){
 		super(Properties.of().sound(SoundType.WOOD).strength(2.5F).requiresCorrectToolForDrops().noOcclusion().isRedstoneConductor((bs,br,bp)->false));
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(WATERLOGGED,false).setValue(OPEN,false));
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(OPEN,false));
 	}
 	@Override
 	public boolean skipRendering(@NotNull BlockState state,BlockState adjacentBlockState,@NotNull Direction side){
@@ -55,14 +51,12 @@ public class BrassBarrel extends Block implements SimpleWaterloggedBlock, Entity
 	}
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
-		builder.add(FACING,WATERLOGGED,OPEN);
+		builder.add(FACING,OPEN);
 	}
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context){
-		boolean flag=context.getLevel().getFluidState(context.getClickedPos()).getType()==Fluids.WATER;
 		return this.defaultBlockState()
 				.setValue(FACING,context.getClickedFace())
-				.setValue(WATERLOGGED,flag)
 				.setValue(OPEN,false);
 	}
 	public @NotNull BlockState rotate(BlockState state,Rotation rot){
@@ -70,17 +64,6 @@ public class BrassBarrel extends Block implements SimpleWaterloggedBlock, Entity
 	}
 	public @NotNull BlockState mirror(BlockState state,Mirror mirrorIn){
 		return state.setValue(FACING,mirrorIn.mirror(state.getValue(FACING)));
-	}
-	@Override
-	public @NotNull FluidState getFluidState(BlockState state){
-		return state.getValue(WATERLOGGED)?Fluids.WATER.getSource(false):super.getFluidState(state);
-	}
-	@Override
-	public @NotNull BlockState updateShape(BlockState state,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
-		if(state.getValue(WATERLOGGED)){
-			world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
-		}
-		return super.updateShape(state,facing,facingState,world,currentPos,facingPos);
 	}
 	@Override
 	public @NotNull InteractionResult use(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player entity,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
