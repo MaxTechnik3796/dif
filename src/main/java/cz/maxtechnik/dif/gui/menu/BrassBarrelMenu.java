@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.gui.menu;
 
-import cz.maxtechnik.dif.block.entity.BrassBarrelBE; // --- NOVÝ IMPORT ---
+import cz.maxtechnik.dif.block.entity.BrassBarrelBE;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class BrassBarrelMenu extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
-    // ... (všechny proměnné zůstávají stejné) ...
     public final Level world;
     public final Player entity;
     public int x, y, z;
@@ -36,7 +35,6 @@ public class BrassBarrelMenu extends AbstractContainerMenu implements Supplier<M
     private Supplier<Boolean> boundItemMatcher = null;
     private Entity boundEntity = null;
     private BlockEntity boundBlockEntity = null;
-
     public BrassBarrelMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
         super(DifModMenus.BRASS_BARREL_MENU.get(), id);
         this.entity = inv.player;
@@ -50,32 +48,18 @@ public class BrassBarrelMenu extends AbstractContainerMenu implements Supplier<M
             this.z = pos.getZ();
             access = ContainerLevelAccess.create(world, pos);
         }
-        if (pos != null) {
-            // ... (části 'bound to item' a 'bound to entity' zůstávají stejné) ...
-            if (extraData.readableBytes() == 1) {
-                // ...
-            } else if (extraData.readableBytes() > 1) {
-                // ...
-            } else { // bound to block
-                boundBlockEntity = this.world.getBlockEntity(pos);
-                if (boundBlockEntity != null) {
-                    boundBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {
-                        this.internal = capability;
-                        this.bound = true;
-                    });
-
-                    // --- NOVÁ LOGIKA ZDE ---
-                    // Řekneme BlockEntity, že hráč začal koukat
-                    if (boundBlockEntity instanceof BrassBarrelBE be) {
-                        be.startOpen(inv.player);
-                    }
-                    // --- KONEC NOVÉ LOGIKY ---
+        if (pos != null && extraData.readableBytes() == 0) {
+            boundBlockEntity = this.world.getBlockEntity(pos);
+            if (boundBlockEntity != null) {
+                boundBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(capability -> {
+                    this.internal = capability;
+                    this.bound = true;
+                });
+                if (boundBlockEntity instanceof BrassBarrelBE be) {
+                    be.startOpen(inv.player);
                 }
             }
         }
-
-        // ... (vytváření slotů zůstává stejné) ...
-        // Add 54 custom slots (6 rows x 9 columns)
         int startX = 8;
         int startY = 18;
         int index = 0;
@@ -87,8 +71,6 @@ public class BrassBarrelMenu extends AbstractContainerMenu implements Supplier<M
                 index++;
             }
         }
-
-        // Player inventory
         int invOffsetX = 8;
         int invOffsetY = 140;
         for (int si = 0; si < 3; ++si)
@@ -97,8 +79,6 @@ public class BrassBarrelMenu extends AbstractContainerMenu implements Supplier<M
         for (int si = 0; si < 9; ++si)
             this.addSlot(new Slot(inv, si, invOffsetX + si * 18, invOffsetY + 58));
     }
-
-    // ... (metody stillValid, quickMoveStack, moveItemStackTo zůstávají stejné) ...
     @Override
     public boolean stillValid(@NotNull Player player) {
         if (this.bound) {
@@ -111,10 +91,8 @@ public class BrassBarrelMenu extends AbstractContainerMenu implements Supplier<M
         }
         return true;
     }
-
     @Override
     public @NotNull ItemStack quickMoveStack(@NotNull Player playerIn, int index) {
-        // ... (kód beze změny) ...
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot.hasItem()) {
@@ -144,10 +122,8 @@ public class BrassBarrelMenu extends AbstractContainerMenu implements Supplier<M
         }
         return itemstack;
     }
-
     @Override
     protected boolean moveItemStackTo(@NotNull ItemStack p_38904_, int p_38905_, int p_38906_, boolean p_38907_) {
-        // ... (kód beze změny) ...
         boolean flag = false;
         int i = p_38905_;
         if (p_38907_) {
@@ -221,20 +197,12 @@ public class BrassBarrelMenu extends AbstractContainerMenu implements Supplier<M
         }
         return flag;
     }
-
     @Override
     public void removed(@NotNull Player playerIn) {
-
-        // --- UPRAVENÁ LOGIKA ZAVŘENÍ ---
-        // Řekneme BlockEntity, že hráč přestal koukat
         if (this.boundBlockEntity instanceof BrassBarrelBE be) {
             be.stopOpen(playerIn);
         }
-        // --- KONEC UPRAVENÉ LOGIKY ---
-
-        super.removed(playerIn); // Zavoláme super
-
-        // Logika pro dropnutí itemů (beze změny)
+        super.removed(playerIn);
         if (!bound && playerIn instanceof ServerPlayer serverPlayer) {
             if (!serverPlayer.isAlive() || serverPlayer.hasDisconnected()) {
                 for (int j = 0; j < internal.getSlots(); ++j) {
@@ -250,14 +218,7 @@ public class BrassBarrelMenu extends AbstractContainerMenu implements Supplier<M
     public Map<Integer, Slot> get() {
         return customSlots;
     }
-
-    // --- PŘIDEJ TUTO METODU ---
-    /**
-     * Vrací BlockEntity, ke které je toto menu vázáno.
-     * Používá se v 'ContainerOpenersCounter' pro ověření.
-     */
     public BlockEntity getBlockEntity() {
         return this.boundBlockEntity;
     }
-    // --- KONEC NOVÉ METODY ---
 }

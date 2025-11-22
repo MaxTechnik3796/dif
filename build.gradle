@@ -96,7 +96,7 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
     runtimeOnly fg.deobf("curse.maven:worldedit-225608:4586218")
-    runtimeOnly fg.deobf("curse.maven:create-328085:7178761")
+    implementation fg.deobf("curse.maven:create-328085:7149905")
     runtimeOnly fg.deobf("curse.maven:createaddition-439890:6901922")
     runtimeOnly fg.deobf("curse.maven:jade-324717:6855440")
     runtimeOnly fg.deobf("curse.maven:mouse-tweaks-60089:5338457")
