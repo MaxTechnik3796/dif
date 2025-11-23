@@ -14,7 +14,6 @@ public class DifModScreens{
 			MenuScreens.register(DifModMenus.SUPER_BOX_MENU.get(),SuperBoxScreen::new);
 			MenuScreens.register(DifModMenus.BRASS_BARREL_MENU.get(),BrassBarrelScreen::new);
 			MenuScreens.register(DifModMenus.ANDESITE_BARREL_MENU.get(),AndesiteBarrelScreen::new);
-			MenuScreens.register(DifModMenus.STURDY_BARREL_MENU.get(),SturdyBarrelScreen::new);
 			MenuScreens.register(DifModMenus.GENERATOR_MENU.get(),BurningGeneratorScreen::new);
 			MenuScreens.register(DifModMenus.SPECIAL_CRAFTING_MENU.get(),SpecialCraftingScreen::new);
 		});

@@ -57,7 +57,6 @@ public class DifModTabs{
 		tabData.accept(DifModItems.ENERGY_SHARD.get());
 		tabData.accept(DifModItems.ANDESITE_BARREL.get());
 		tabData.accept(DifModItems.BRASS_BARREL.get());
-		tabData.accept(DifModItems.STURDY_BARREL.get());
     })).build());
     public static final RegistryObject<CreativeModeTab>MUSIC=REGISTER.register("music",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.music")).icon(()->new ItemStack(DifModItems.REDSTONE.get())).withTabsBefore(MAIN.getKey()).displayItems(((parameters,tabData)->{
 		tabData.accept(DifModItems.CREMEKA.get());

@@ -58,5 +58,4 @@ public class DifModBlocks{
 
 	public static final RegistryObject<Block>BRASS_BARREL=REGISTRY.register("brass_barrel",BrassBarrel::new);
 	public static final RegistryObject<Block>ANDESITE_BARREL=REGISTRY.register("andesite_barrel",AndesiteBarrel::new);
-	public static final RegistryObject<Block>STURDY_BARREL=REGISTRY.register("sturdy_barrel",SturdyBarrel::new);
 }
