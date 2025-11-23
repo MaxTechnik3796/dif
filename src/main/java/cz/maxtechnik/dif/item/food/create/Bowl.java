@@ -19,7 +19,7 @@ public class Bowl extends Item{
 		ItemStack retval=new ItemStack(Items.BOWL);
 		super.finishUsingItem(itemstack,world,entity);
 		if(!world.isClientSide()){
-			entity.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED,1200,2));
+			entity.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED,1800,1));
 			entity.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION,3000,0));
 			entity.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST,2400,0));
 		}

@@ -21,7 +21,7 @@ public class Can extends Item{
 		ItemStack retval=new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("create","andesite_alloy"))));
 		super.finishUsingItem(itemstack,world,entity);
 		if(!world.isClientSide()){
-			entity.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED,600,1));
+			entity.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED,900,0));
 			entity.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION,1500,0));
 			entity.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST,1200,0));
 		}
