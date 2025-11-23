@@ -7,6 +7,9 @@
 	"gui.dif.invalid_fuel0": "This is not",
 	"gui.dif.invalid_fuel1": "flammable fuel!",
 	"gui.dif.super_box": "§lSuper Box§r",
+	"container.dif.brass_barrel": "Brass Barrel",
+	"container.dif.andesite_barrel": "Andesite Barrel",
+	"container.dif.sturdy_barrel": "Sturdy Barrel",
 
 	"subtitles.cremeka":"",
 	"subtitles.redstone":"",
@@ -134,6 +137,7 @@
 	"block.dif.small_energy_bud":"Small Energy Bud",
 	"item.dif.energy.shard": "Energy Shard",
 
-	"block.dif.brass_barrel": "Brass_Barrel",
-	"container.dif.brass_barrel": "Brass_Barrel"
+	"block.dif.brass_barrel": "Brass Barrel",
+	"block.dif.andesite_barrel": "Andesite Barrel",
+	"block.dif.sturdy_barrel": "Sturdy Barrel"
 }

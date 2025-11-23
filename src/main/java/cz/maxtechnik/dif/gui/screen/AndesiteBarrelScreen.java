@@ -1,16 +1,16 @@
 package cz.maxtechnik.dif.gui.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import cz.maxtechnik.dif.gui.menu.BrassBarrelMenu;
+import cz.maxtechnik.dif.gui.menu.AndesiteBarrelMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
-public class BrassBarrelScreen extends AbstractContainerScreen<BrassBarrelMenu>{
+public class AndesiteBarrelScreen extends AbstractContainerScreen<AndesiteBarrelMenu>{
 	private static final ResourceLocation TEXTURE=ResourceLocation.fromNamespaceAndPath("minecraft","textures/gui/container/generic_54.png");
-	public BrassBarrelScreen(BrassBarrelMenu container,Inventory inventory,Component text){
+	public AndesiteBarrelScreen(AndesiteBarrelMenu container,Inventory inventory,Component text){
 		super(container,inventory,text);
 		this.imageWidth=176;
 		this.imageHeight=222;

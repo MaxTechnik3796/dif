@@ -1,10 +1,7 @@
 package cz.maxtechnik.dif.init.gui;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.gui.menu.BurningGeneratorMenu;
-import cz.maxtechnik.dif.gui.menu.BrassBarrelMenu;
-import cz.maxtechnik.dif.gui.menu.SpecialCraftingMenu;
-import cz.maxtechnik.dif.gui.menu.SuperBoxMenu;
+import cz.maxtechnik.dif.gui.menu.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,6 +21,10 @@ public class DifModMenus<T extends AbstractContainerMenu> implements FeatureElem
 	public static final DeferredRegister<MenuType<?>>REGISTRY=DeferredRegister.create(ForgeRegistries.MENU_TYPES,DifMod.MODID);
 	public static final RegistryObject<MenuType<SuperBoxMenu>>SUPER_BOX_MENU=REGISTRY.register("super_box_menu",()->IForgeMenuType.create(SuperBoxMenu::new));
 	public static final RegistryObject<MenuType<BrassBarrelMenu>>BRASS_BARREL_MENU=REGISTRY.register("brass_barrel_menu",()->IForgeMenuType.create(BrassBarrelMenu::new));
+
+	public static final RegistryObject<MenuType<AndesiteBarrelMenu>>ANDESITE_BARREL_MENU=REGISTRY.register("andesite_barrel_menu",()->IForgeMenuType.create(AndesiteBarrelMenu::new));
+	public static final RegistryObject<MenuType<SturdyBarrelMenu>>STURDY_BARREL_MENU=REGISTRY.register("sturdy_barrel_menu",()->IForgeMenuType.create(SturdyBarrelMenu::new));
+
 	public static final RegistryObject<MenuType<BurningGeneratorMenu>>GENERATOR_MENU=REGISTRY.register("generator_menu",()->IForgeMenuType.create(BurningGeneratorMenu::new));
 	public static final RegistryObject<MenuType<SpecialCraftingMenu>>SPECIAL_CRAFTING_MENU=REGISTRY.register("special_crafting_menu",()->IForgeMenuType.create(SpecialCraftingMenu::new));
 	private FeatureFlagSet requiredFeatures;
