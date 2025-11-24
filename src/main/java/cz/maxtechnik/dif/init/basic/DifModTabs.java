@@ -91,7 +91,7 @@ public class DifModTabs{
 		tabData.accept(DifModItems.INCOMPLETE_MITHRIL_PLATE.get());
     })).build());
 	public static void addCreative(BuildCreativeModeTabContentsEvent event){
-		if(event.getTabKey()==CreativeModeTabs.COMBAT){
+		if(event.getTabKey().equals(CreativeModeTabs.COMBAT)){
 			event.getEntries().putAfter(new ItemStack(Items.NETHERITE_SWORD),new ItemStack(DifModItems.WOODEN_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.getEntries().putAfter(new ItemStack(DifModItems.WOODEN_KATANA.get()),new ItemStack(DifModItems.STONE_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.getEntries().putAfter(new ItemStack(DifModItems.STONE_KATANA.get()),new ItemStack(DifModItems.IRON_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
@@ -106,6 +106,9 @@ public class DifModTabs{
             event.getEntries().putAfter(new ItemStack(DifModItems.GOLDEN_BATTLE_AXE.get()),new ItemStack(DifModItems.DIAMOND_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.getEntries().putAfter(new ItemStack(DifModItems.DIAMOND_BATTLE_AXE.get()),new ItemStack(DifModItems.NETHERITE_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 
+		}else if(event.getTabKey().equals(CreativeModeTabs.OP_BLOCKS)){
+			event.accept(DifModItems.EXAMPLE_ITEM.get());
+			event.accept(DifModItems.EXAMPLE_BLOCK.get());
 		}
 	}
 }
