@@ -17,67 +17,107 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.awt.Color;
-@Mod.EventBusSubscriber(modid=DifMod.MODID,value=Dist.CLIENT)
-public class DifModClientEvents{
-	private static boolean wasEffectActive=false;
-	private static SoundInstance playingSound=null;
-	@SubscribeEvent
-	public static void onClientTick(TickEvent.ClientTickEvent event){
-		if(event.phase==TickEvent.Phase.START){
-			Minecraft mc=Minecraft.getInstance();
-			Player player=mc.player;
-			if(player==null)return;
-			boolean isEffectActive=player.hasEffect(DifModMobEffects.DRANK.get());
-			if(isEffectActive&&!wasEffectActive){
-				if(playingSound==null){
-					playingSound=new SimpleSoundInstance(
-						DifModSounds.FURT_TA_STEJNA_HRA.get().getLocation(),
-						SoundSource.PLAYERS,
-						1.0F,1.0F,
-						player.getRandom(),
-						true,
-						0,SoundInstance.Attenuation.NONE,
-						0.0,0.0,0.0,true
-					);
-					mc.getSoundManager().play(playingSound);
-				}
-			}else if(!isEffectActive&&wasEffectActive){
-				if(playingSound!=null){
-					mc.getSoundManager().stop(playingSound);
-					playingSound=null;
-				}
-			}
-			wasEffectActive=isEffectActive;
-		}
-	}
-	@SubscribeEvent
-	public static void onRenderGuiOverlay(RenderGuiEvent.Post event){
-		Minecraft mc=Minecraft.getInstance();
-		var player=mc.player;
-		if(player!=null&&player.hasEffect(DifModMobEffects.DRANK.get())){
-			GuiGraphics guiGraphics=event.getGuiGraphics();
-			int width=event.getWindow().getGuiScaledWidth();
-			int height=event.getWindow().getGuiScaledHeight();
-			float hue=((player.tickCount*3.75f)%100)/100.0f;
-			int rgbColor=Color.getHSBColor(hue,1.0f,1.0f).getRGB();
-			float alphaNormalized=(float)(Math.sin(player.tickCount*0.75f)+1.0f)/2.0f;
-			float alpha=0.2f+(alphaNormalized*0.5f);
-			int alphaComponent=((int)(alpha*255.0f))<<24;
-			int finalColor=alphaComponent|(rgbColor&0x00FFFFFF);
-			guiGraphics.fill(0,0,width,height,finalColor);
-		}
-	}
-	@SubscribeEvent
-	public static void onCameraSetup(ViewportEvent.ComputeCameraAngles event){
-		Minecraft mc=Minecraft.getInstance();
-		var player=mc.player;
-		if(player!=null&&player.hasEffect(DifModMobEffects.DRANK.get())){
-			float orbitalYaw=(player.tickCount*5.0f)%360.0f;
-			float orbitalPitch=(float)(Math.sin(player.tickCount*0.125f)*45.0f)+(float)(Math.cos(player.tickCount*0.1875f)*45.0f);
-			float orbitalRoll=(player.tickCount*5.0f)%360.0f;
-			event.setYaw(orbitalYaw);
-			event.setPitch(orbitalPitch);
-			event.setRoll(orbitalRoll);
-		}
-	}
+
+@Mod.EventBusSubscriber(modid = DifMod.MODID, value = Dist.CLIENT)
+public class DifModClientEvents {
+
+    // === DRANK zvuk ===
+    private static boolean wasDrankActive = false;
+    private static SoundInstance playingDrankSound = null;
+
+    @SubscribeEvent
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.START) return;
+
+        Minecraft mc = Minecraft.getInstance();
+        Player player = mc.player;
+        if (player == null) return;
+
+        boolean isDrank = player.hasEffect(DifModMobEffects.DRANK.get());
+
+        // DRANK – spuštění/zastavení hudby
+        if (isDrank && !wasDrankActive) {
+            if (playingDrankSound == null) {
+                playingDrankSound = new SimpleSoundInstance(
+                        DifModSounds.FURT_TA_STEJNA_HRA.get().getLocation(),
+                        SoundSource.PLAYERS, 1.0F, 1.0F,
+                        player.getRandom(), true, 0, SoundInstance.Attenuation.NONE,
+                        0.0, 0.0, 0.0, true
+                );
+                mc.getSoundManager().play(playingDrankSound);
+            }
+        } else if (!isDrank && wasDrankActive) {
+            if (playingDrankSound != null) {
+                mc.getSoundManager().stop(playingDrankSound);
+                playingDrankSound = null;
+            }
+        }
+        wasDrankActive = isDrank;
+    }
+
+    @SubscribeEvent
+    public static void onCameraSetup(ViewportEvent.ComputeCameraAngles event) {
+        Minecraft mc = Minecraft.getInstance();
+        Player player = mc.player;
+        if (player == null) return;
+
+        // DRANK má absolutní přednost – úplně přepíše kameru
+        if (player.hasEffect(DifModMobEffects.DRANK.get())) {
+            float t = player.tickCount;
+            float yaw = (t * 5.0f) % 360.0f;
+            float pitch = (float)(Math.sin(t * 0.125f) * 45.0f) + (float)(Math.cos(t * 0.1875f) * 45.0f);
+            float roll = (t * 5.0f) % 360.0f;
+
+            event.setYaw(yaw);
+            event.setPitch(pitch);
+            event.setRoll(roll);
+            return;
+        }
+
+        // ZULENÍ – normální ovládání + pomalé válcování (sudování)
+        if (player.hasEffect(DifModMobEffects.ZULENI.get())) {
+            // Normální yaw a pitch necháme tak, jak hráč ovládá – žádná úprava!
+
+            // Ale roll = pomalé otáčení kolem dokola (jednou normálně, jednou vzhůru nohama)
+            float rollSpeed = 0.8f; // stupňů za tick → cca 1 otočka za ~7,5 sekundy
+            float rollAngle = (player.tickCount * rollSpeed) % 360.0f;
+
+            // Přidáme ještě trochu chill vlnění navrch
+            float wobble = (float)Math.sin(player.tickCount * 0.12f) * 12.0f;
+            event.setRoll(rollAngle + wobble);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRenderGuiOverlay(RenderGuiEvent.Post event) {
+        Minecraft mc = Minecraft.getInstance();
+        Player player = mc.player;
+        if (player == null) return;
+
+        GuiGraphics gg = event.getGuiGraphics();
+        int w = event.getWindow().getGuiScaledWidth();
+        int h = event.getWindow().getGuiScaledHeight();
+
+        // DRANK – duhový overlay
+        if (player.hasEffect(DifModMobEffects.DRANK.get())) {
+            float hue = (player.tickCount * 3.75f % 100) / 100.0f;
+            int rgb = Color.getHSBColor(hue, 1.0f, 1.0f).getRGB();
+            float alpha = 0.2f + (float)(Math.sin(player.tickCount * 0.75f) + 1.0) / 2.0f * 0.5f;
+            int color = ((int)(alpha * 255) << 24) | (rgb & 0xFFFFFF);
+            gg.fill(0, 0, w, h, color);
+        }
+
+        // ZULENÍ – žluto-zelený pulzující overlay
+        if (player.hasEffect(DifModMobEffects.ZULENI.get())) {
+            float time = player.tickCount * 0.02f;
+            float hue = 0.30f + 0.06f * (float)Math.sin(time); // plynule mezi žlutou a zelenou
+            int rgb = Color.getHSBColor(hue, 0.9f, 0.95f).getRGB();
+
+            float pulse = (float)(Math.sin(player.tickCount * 0.05f) + 1.0) * 0.5f;
+            float alpha = 0.18f + pulse * 0.25f; // od 18% do 43% průhlednosti
+
+            int color = ((int)(alpha * 255) << 24) | (rgb & 0xFFFFFF);
+            gg.fill(0, 0, w, h, color);
+        }
+    }
 }
