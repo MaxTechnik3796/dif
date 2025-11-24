@@ -4,8 +4,8 @@ import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.DifModConfig;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -90,4 +90,27 @@ public class DifModTabs{
         tabData.accept(DifModItems.INCOMPLETE_CPU_SINGULARITY.get());
 		tabData.accept(DifModItems.INCOMPLETE_MITHRIL_PLATE.get());
     })).build());
+	public static void addCreative(BuildCreativeModeTabContentsEvent event){
+		if(event.getTabKey()==CreativeModeTabs.COMBAT){
+			event.getEntries().putAfter(new ItemStack(Items.NETHERITE_SWORD),new ItemStack(DifModItems.WOODEN_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+
+
+			event.accept(DifModItems.STONE_KATANA.get());
+			event.accept(DifModItems.IRON_KATANA.get());
+			event.accept(DifModItems.GOLDEN_KATANA.get());
+			event.accept(DifModItems.DIAMOND_KATANA.get());
+			event.accept(DifModItems.NETHERITE_KATANA.get());
+
+			event.getEntries().putAfter(new ItemStack(Items.NETHERITE_AXE),new ItemStack(DifModItems.WOODEN_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+
+
+			event.accept(DifModItems.STONE_BATTLE_AXE.get());
+			event.accept(DifModItems.IRON_BATTLE_AXE.get());
+			event.accept(DifModItems.GOLDEN_BATTLE_AXE.get());
+			event.accept(DifModItems.DIAMOND_BATTLE_AXE.get());
+			event.accept(DifModItems.NETHERITE_BATTLE_AXE.get());
+
+
+		}
+	}
 }

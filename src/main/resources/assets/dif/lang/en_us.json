@@ -75,7 +75,7 @@
 	"item.dif.portal_gun": "Portal Gun",
 	"item.dif.laser_hookah": "Laser Hookah",
 	"item.dif.ban_hammer":"§c§lBan Hammer§r",
-	"item.dif.jadernej_sutr":"§lJ§radernej §lŠUTR§r",
+	"item.dif.jadernej_sutr":"§lJ§Jadernej §lŠUTR§r",
 	"item.dif.item_5261": "52616E646F6D20706573207A204149206B64797A2074616D20646173206C6F676F204372656174752058444444",
 	"item.dif.vhs": "VHS",
 	"item.dif.ruby": "Ruby",
@@ -139,5 +139,22 @@
 
 	"block.dif.brass_barrel": "Brass Barrel",
 	"block.dif.andesite_barrel": "Andesite Barrel",
-	"block.dif.sturdy_barrel": "Sturdy Barrel"
+	"block.dif.sturdy_barrel": "Sturdy Barrel",
+
+	"item.dif.wooden_battle_axe":"Wooden Battle Axe",
+	"item.dif.golden_battle_axe":"Golden Battle Axe",
+	"item.dif.stone_battle_axe":"Stone Battle Axe",
+	"item.dif.iron_battle_axe":"Iron Battle Axe",
+	"item.dif.diamond_battle_axe":"Diamond Battle Axe",
+	"item.dif.netherite_battle_axe":"Netherite Battle Axe",
+
+	"item.dif.wooden_katana":"Wooden Katana",
+	"item.dif.golden_katana":"Golden Katana",
+	"item.dif.stone_katana":"Stone Katana",
+	"item.dif.iron_katana":"Iron Katana",
+	"item.dif.diamond_katana":"Diamond Katana",
+	"item.dif.netherite_katana":"Netherite Katana"
+
+
+
 }

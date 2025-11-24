@@ -17,10 +17,12 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -48,23 +50,17 @@ public class DifMod{
 		DifModMenus.REGISTRY.register(bus);
 
 		MinecraftForge.EVENT_BUS.register(this);
-		bus.addListener(this::addCreative);
+		bus.addListener(DifModTabs::addCreative);
 
 
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON,DifModConfig.SPEC);
 	}
-
-
 	private void commonSetup(final FMLCommonSetupEvent event){
 		LOGGER.info("HELLO FROM COMMON SETUP");
 		/*LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
 		//if (DifModConfig.logDirtBlock) LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
 		//LOGGER.info(DifModConfig.magicNumberIntroduction + DifModConfig.magicNumber);
 		DifModConfig.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));*/
-	}
-
-	private void addCreative(BuildCreativeModeTabContentsEvent event) {
-		//if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) event.accept(EXAMPLE_BLOCK_ITEM);
 	}
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event){
