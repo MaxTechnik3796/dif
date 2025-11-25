@@ -71,20 +71,6 @@ public class DifModClientEvents {
             event.setYaw(yaw);
             event.setPitch(pitch);
             event.setRoll(roll);
-            return;
-        }
-
-        // ZULENÍ – normální ovládání + pomalé válcování (sudování)
-        if (player.hasEffect(DifModMobEffects.ZULENI.get())) {
-            // Normální yaw a pitch necháme tak, jak hráč ovládá – žádná úprava!
-
-            // Ale roll = pomalé otáčení kolem dokola (jednou normálně, jednou vzhůru nohama)
-            float rollSpeed = 0.8f; // stupňů za tick → cca 1 otočka za ~7,5 sekundy
-            float rollAngle = (player.tickCount * rollSpeed) % 360.0f;
-
-            // Přidáme ještě trochu chill vlnění navrch
-            float wobble = (float)Math.sin(player.tickCount * 0.12f) * 12.0f;
-            event.setRoll(rollAngle + wobble);
         }
     }
 

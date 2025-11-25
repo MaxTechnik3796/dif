@@ -99,7 +99,7 @@ public class DifModTabs{
             event.getEntries().putAfter(new ItemStack(DifModItems.GOLDEN_KATANA.get()),new ItemStack(DifModItems.DIAMOND_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.getEntries().putAfter(new ItemStack(DifModItems.DIAMOND_KATANA.get()),new ItemStack(DifModItems.NETHERITE_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 
-			event.getEntries().putAfter(new ItemStack(Items.NETHERITE_AXE),new ItemStack(DifModItems.WOODEN_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			event.getEntries().putAfter(new ItemStack(DifModItems.NETHERITE_KATANA.get()),new ItemStack(DifModItems.WOODEN_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.getEntries().putAfter(new ItemStack(DifModItems.WOODEN_BATTLE_AXE.get()),new ItemStack(DifModItems.STONE_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.getEntries().putAfter(new ItemStack(DifModItems.STONE_BATTLE_AXE.get()),new ItemStack(DifModItems.IRON_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.getEntries().putAfter(new ItemStack(DifModItems.IRON_BATTLE_AXE.get()),new ItemStack(DifModItems.GOLDEN_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);

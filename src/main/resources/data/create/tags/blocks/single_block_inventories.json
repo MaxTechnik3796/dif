@@ -2,7 +2,6 @@
 	"replace":false,
 	"values": [
 		"dif:brass_barrel",
-		"dif:andesite_barrel",
-		"dif:sturdy_barrel"
+		"dif:andesite_barrel"
 	]
 }

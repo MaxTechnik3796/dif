@@ -139,7 +139,6 @@
 
 	"block.dif.brass_barrel": "Brass Barrel",
 	"block.dif.andesite_barrel": "Andesite Barrel",
-	"block.dif.sturdy_barrel": "Sturdy Barrel",
 
 	"item.dif.wooden_battle_axe":"Wooden Battle Axe",
 	"item.dif.golden_battle_axe":"Golden Battle Axe",
@@ -154,7 +153,4 @@
 	"item.dif.iron_katana":"Iron Katana",
 	"item.dif.diamond_katana":"Diamond Katana",
 	"item.dif.netherite_katana":"Netherite Katana"
-
-
-
 }
