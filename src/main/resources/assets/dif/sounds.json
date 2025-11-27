@@ -1,12 +1,4 @@
 {
-  "clairdelune": {
-    "sounds": [
-      {
-        "name": "dif:records/clairdelune",
-        "stream": true
-      }
-    ]
-  },
   "cremeka": {
     "sounds": [
       {

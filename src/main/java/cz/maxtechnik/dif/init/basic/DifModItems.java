@@ -118,7 +118,6 @@ public class DifModItems{
 	public static final RegistryObject<Item>ENERGY_SHARD=REGISTRY.register("energy_shard",Basic::new);
 
     //MusicDiscs:
-    public static final RegistryObject<Item>CLAIRDELUNE=REGISTRY.register("clairdelune",()->new MusicDiscDesc2(5,6320,DifMod.MODID,"clairdelune"));
     public static final RegistryObject<Item>CREMEKA=REGISTRY.register("cremeka",()->new MusicDiscDesc2(15,3860,DifMod.MODID,"cremeka"));
     public static final RegistryObject<Item>FURT_TA_STEJNA_HRA=REGISTRY.register("furt_ta_stejna_hra",()->new MusicDiscDesc2(15,2100,DifMod.MODID,"furt_ta_stejna_hra"));
     public static final RegistryObject<Item>MATY_CREATE=REGISTRY.register("maty_create",()->new MusicDiscDesc2(10,1900,DifMod.MODID,"maty_create"));

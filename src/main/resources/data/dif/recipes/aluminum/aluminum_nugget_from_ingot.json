@@ -1,0 +1,15 @@
+{
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		"#"
+	],
+	"key":{
+		"#":{
+			"item":"dif:aluminum_ingot"
+		}
+	},
+	"result":{
+		"item":"dif:aluminum_nugget",
+		"count":9
+	}
+}
