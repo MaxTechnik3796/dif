@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.init.misc;
+package cz.maxtechnik.dif.init.events;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModItems;

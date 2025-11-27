@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.block.entity;
 
-import cz.maxtechnik.dif.init.misc.DifModBlockEntities;
+import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.gui.menu.SuperBoxMenu;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;

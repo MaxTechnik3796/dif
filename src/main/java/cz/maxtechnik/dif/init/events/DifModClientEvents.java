@@ -1,8 +1,8 @@
-package cz.maxtechnik.dif.init.misc;
+package cz.maxtechnik.dif.init.events;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModSounds;
-import cz.maxtechnik.dif.init.special.DifModMobEffects;
+import cz.maxtechnik.dif.init.other.DifModMobEffects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
