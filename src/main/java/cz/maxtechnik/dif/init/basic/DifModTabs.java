@@ -28,6 +28,7 @@ public class DifModTabs{
 		tabData.accept(DifModItems.TRESNOVICE.get());
 		tabData.accept(DifModItems.CHERRY.get());
         tabData.accept(DifModItems.FERNET.get());
+		tabData.accept(DifModItems.BEER.get());
 		tabData.accept(DifModItems.CREATE_CAN.get());
 		tabData.accept(DifModItems.CREATE_BOWL.get());
 		tabData.accept(DifModItems.SUPER_HEATED_CREATE_BOWL.get());

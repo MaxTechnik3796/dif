@@ -1,0 +1,1 @@
+execute as @a[scores={dif.beer.trigger=1..}] run function dif:beer/counter

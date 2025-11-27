@@ -1,0 +1,23 @@
+{
+	"criteria":{
+		"beer":{
+			"trigger":"minecraft:consume_item", 
+			"conditions":{
+				"item":{
+					"items":["dif:beer"]
+				}
+			}
+		}
+	},
+	"rewards":{
+		"function":"dif:beer/trigger"
+	},
+	"display":{
+		"title":{"text":"Pití Goldbergu"},
+		"description":{"text":"Vypij Goldberg a dostaneš score.\n(Automatikcy se přičte a advancment se zruší aby to fungovalo znova)"},
+		"icon":{"item":"dif:beer"},
+		"show_toast":false,
+		"announce_to_chat":false
+	},
+	"parent":"dif:root"
+}

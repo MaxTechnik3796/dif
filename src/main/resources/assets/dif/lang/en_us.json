@@ -1,4 +1,5 @@
 {
+	"chat.dif.mod_prefix": "§f§l[§e§lTheDifferential§f§l]§r",
 	"effect.dif.redstone_iq": "Redstone Boost",
 	"effect.dif.redstone_not_iq": "Redstonenot Anti-Boost",
 

@@ -8,12 +8,10 @@ import cz.maxtechnik.dif.init.basic.DifModTabs;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.init.other.DifModMobEffects;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
@@ -78,13 +76,10 @@ public class DifMod{
 	public static boolean mouseIn(int mouseX,int mouseY,int x,int y,int w,int h){
 		return mouseX>=x&&mouseX<x+w&&mouseY>=y&&mouseY<y+h;
 	}
-	public static Style MESSAGE_PREFIX_BRACKET=Style.EMPTY.withColor(TextColor.fromLegacyFormat(ChatFormatting.WHITE)).withBold(true);
-	public static Style MESSAGE_PREFIX=Style.EMPTY.withColor(TextColor.fromLegacyFormat(ChatFormatting.GOLD)).withBold(true);
 	public static void sendMessageToPlayer(Player player,MutableComponent message){
-		MutableComponent messageTemplate=Component.literal("");
-		messageTemplate.append(Component.literal("[").withStyle(MESSAGE_PREFIX_BRACKET));
-		messageTemplate.append(Component.literal("TheDifferential").withStyle(MESSAGE_PREFIX));
-		messageTemplate.append(Component.literal("] ").withStyle(MESSAGE_PREFIX_BRACKET));
+		MutableComponent messageTemplate=Component.empty();
+		messageTemplate.append(Component.translatable("chat.dif.mod_prefix"));
+		messageTemplate.append(CommonComponents.space());
 		messageTemplate.append(message);
 		player.sendSystemMessage(messageTemplate);
 	}
