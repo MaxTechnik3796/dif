@@ -21,7 +21,7 @@ public class DifModItems{
     private static RegistryObject<Item>doubleBlock(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));}
 
 
-	public static final RegistryObject<Item>BEER=REGISTRY.register("beer",()->new BlockItem(DifModBlocks.BEER.get(),));
+    public static final RegistryObject<Item>BEER=REGISTRY.register("beer", () -> new Beer(DifModBlocks.BEER.get(), new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationMod(1F).alwaysEat().build())));
     public static final RegistryObject<Item>EXAMPLE_ITEM=REGISTRY.register("example_item",Test::new);
     public static final RegistryObject<Item>QUESTION_MARK=REGISTRY.register("question_mark",Basic::new);
 

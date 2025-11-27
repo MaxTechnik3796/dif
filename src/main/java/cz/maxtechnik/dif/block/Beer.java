@@ -39,7 +39,7 @@ public class Beer extends Block implements SimpleWaterloggedBlock{
 	}
 	@Override
 	public @NotNull VoxelShape getShape(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
-		return box(5,0,5,11,10,11);
+		return box(5,0,5,11,9,11);
 	}
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
