@@ -9,6 +9,7 @@
 		"dif:ruby_block",
 		"dif:deepslate_bauxite_ore",
 		"dif:bauxite_ore",
-		"dif:aluminum_profile"
+		"dif:aluminum_profile",
+		"dif:aluminum_block"
   ]
 }

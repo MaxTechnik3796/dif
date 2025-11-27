@@ -5,6 +5,7 @@ import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
 import cz.maxtechnik.dif.item.food.create.*;
 import cz.maxtechnik.dif.item.tool.*;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.DeferredRegister;
@@ -19,6 +20,8 @@ public class DifModItems{
     private static RegistryObject<Item>block(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new BlockItem(block.get(),new Item.Properties()));}
     private static RegistryObject<Item>doubleBlock(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));}
 
+
+	public static final RegistryObject<Item>BEER=REGISTRY.register("beer",()->new BlockItem(DifModBlocks.BEER.get(),));
     public static final RegistryObject<Item>EXAMPLE_ITEM=REGISTRY.register("example_item",Test::new);
     public static final RegistryObject<Item>QUESTION_MARK=REGISTRY.register("question_mark",Basic::new);
 
@@ -95,6 +98,8 @@ public class DifModItems{
 	public static final RegistryObject<Item>RAW_BAUXITE=REGISTRY.register("raw_bauxite",Basic::new);
 	public static final RegistryObject<Item>CRUSHED_RAW_BAUXITE=REGISTRY.register("crushed_raw_bauxite",Basic::new);
 	public static final RegistryObject<Item>ALUMINUM_INGOT=REGISTRY.register("aluminum_ingot",Basic::new);
+	public static final RegistryObject<Item>ALUMINUM_NUGGET=REGISTRY.register("aluminum_nugget",Basic::new);
+	public static final RegistryObject<Item>ALUMINUM_BLOCK=block(DifModBlocks.ALUMINUM_BLOCK);
 	public static final RegistryObject<Item>ALUMINUM_PROFILE=block(DifModBlocks.ALUMINUM_PROFILE);
 
 	public static final RegistryObject<Item>BITCOIN_BLOCK=block(DifModBlocks.BITCOIN_BLOCK);

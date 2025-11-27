@@ -121,6 +121,8 @@
 	"item.dif.raw_bauxite":"Raw Bauxite",
 	"item.dif.crushed_raw_bauxite":"Crushed Raw Bauxite",
 	"item.dif.aluminum_ingot":"Aluminum Ingot",
+	"item.dif.aluminum_nugget": "Aluminum Nugget",
+	"block.dif.aluminum_block": "Block of Aluminum",
 	"block.dif.aluminum_profile": "Aluminum Profile",
 
 	"block.dif.bitcoin_block":"Block of Bitcoin",

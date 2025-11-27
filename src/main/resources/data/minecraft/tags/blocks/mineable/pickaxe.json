@@ -30,6 +30,7 @@
 		"dif:medium_energy_bud",
 		"dif:large_energy_bud",
 		"dif:energy_cluster",
-		"dif:aluminum_profile"
+		"dif:aluminum_profile",
+		"dif:aluminum_block"
 	]
 }
