@@ -25,3 +25,10 @@ ordering="NONE"
 side="BOTH"
 
 
+[[dependencies."${mod_id}"]]
+modId="create"
+mandatory=true
+ordering="NONE"
+side="BOTH"
+
+
