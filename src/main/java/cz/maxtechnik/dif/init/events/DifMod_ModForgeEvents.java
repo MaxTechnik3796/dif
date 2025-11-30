@@ -6,6 +6,7 @@ import net.minecraft.advancements.critereon.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ComposterBlock;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.functions.LootingEnchantFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
@@ -38,7 +40,6 @@ public class DifMod_ModForgeEvents{
 	}
 	@SubscribeEvent
 	public static void onLootTableLoad(LootTableLoadEvent event){
-		DifMod.LOGGER.debug(String.valueOf(event.getName()));
 		if(event.getName().equals(CHERRY_LEAVES_ID)){
 			LootItemCondition.Builder withoutSilkTouch=MatchTool.toolMatches(ItemPredicate.Builder.item().hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH,MinMaxBounds.Ints.atLeast(1)))).invert();
 			LootItemCondition.Builder withoutShears=MatchTool.toolMatches(ItemPredicate.Builder.item().of(Items.SHEARS)).invert();
@@ -66,16 +67,16 @@ public class DifMod_ModForgeEvents{
 					.setRolls(ConstantValue.exactly(1F))
 					.when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setOnFire(false).build())))
 					.add(LootItem.lootTableItem(Items.MUTTON)
-							.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1F))))
-							.apply(ApplyBonusCount.addUniformBonusCount(Enchantments.MOB_LOOTING,3))
-					.build();
+							.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1F)))
+							.apply(LootingEnchantFunction.lootingMultiplier(ConstantValue.exactly(1.0F)))
+							).build();
 			LootPool cookedMeatPool=LootPool.lootPool().name("dif_cooked_meat")
 					.setRolls(ConstantValue.exactly(1F))
 					.when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS,EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setOnFire(true).build())))
 					.add(LootItem.lootTableItem(Items.COOKED_MUTTON)
-							.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1F))))
-							.apply(ApplyBonusCount.addUniformBonusCount(Enchantments.MOB_LOOTING,3))
-					.build();
+							.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1F)))
+							.apply(LootingEnchantFunction.lootingMultiplier(ConstantValue.exactly(1.0F)))
+					).build();
 			LootTable table=LootTable.EMPTY;
 			table.addPool(woolPool);
 			table.addPool(rawMeatPool);
