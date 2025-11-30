@@ -31,6 +31,11 @@
 		"dif:large_energy_bud",
 		"dif:energy_cluster",
 		"dif:aluminum_profile",
-		"dif:aluminum_block"
+		"dif:aluminum_block",
+		"#forge:glass",
+		"#forge:glass_panes",
+		"minecraft:redstone_lamp",
+		"minecraft:glowstone",
+		"minecraft:sea_lantern"
 	]
 }
