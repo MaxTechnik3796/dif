@@ -66,7 +66,6 @@ public class DifModTabs{
 		tabData.accept(DifModItems.REDSTONE.get());
 		tabData.accept(DifModItems.MATY_PADA_STREAM.get());
 		tabData.accept(DifModItems.FURT_TA_STEJNA_HRA.get());
-		tabData.accept(DifModItems.CLAIRDELUNE.get());
     })).build());
     public static final RegistryObject<CreativeModeTab>RANDOM=REGISTER.register("random",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.random")).icon(()->new ItemStack(DifModItems.QUESTION_MARK.get())).withTabsBefore(MUSIC.getKey()).displayItems(((parameters,tabData)->{
 		tabData.accept(DifModItems.QUESTION_MARK.get());

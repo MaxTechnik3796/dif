@@ -106,6 +106,8 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:crafting-tweaks-233071:6784525")
     runtimeOnly fg.deobf("curse.maven:balm-531761:7087245")
 
+    //implementation fg.deobf("curse.maven:diversity-1039632:7130442")
+
 
     runtimeOnly fg.deobf("curse.maven:mt-tools-1380280:7195314")
 }
