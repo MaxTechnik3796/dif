@@ -76,10 +76,14 @@ public class DifModTabs{
 		tabData.accept(DifModItems.SOLANA_BLOCK.get());
 		tabData.accept(DifModItems.BITCOIN_BLOCK.get());
 		tabData.accept(DifModItems.SUPER_BOX.get());
+		tabData.accept(DifModItems.OLD_CHEST.get());
+
 		tabData.accept(DifModItems.MASTICKA.get());
 		tabData.accept(DifModItems.BLUESTONE.get());
 		tabData.accept(DifModItems.BLUE_PLATE.get());
 		tabData.accept(DifModItems.ITEM_5261.get());
+
+
 		tabData.accept(DifModItems.LASER_HOOKAH.get());
 		ItemStack portalGun=new ItemStack(DifModItems.PORTAL_GUN.get());
 		portalGun.getOrCreateTag().putInt("ammo",DifModConfig.portalGunMaxAmmo);

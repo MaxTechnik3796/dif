@@ -76,6 +76,8 @@ public class DifModItems{
     public static final RegistryObject<Item>HOSPITAL_HANDLE=block(DifModBlocks.HOSPITAL_HANDLE);
 	public static final RegistryObject<Item>SINGULARITATOR=block(DifModBlocks.SINGULARITATOR);
 	public static final RegistryObject<Item>SUPER_BOX=block(DifModBlocks.SUPER_BOX);
+	public static final RegistryObject<Item>OLD_CHEST=block(DifModBlocks.OLD_CHEST);
+
 	public static final RegistryObject<Item>BRASS_BARREL=block(DifModBlocks.BRASS_BARREL);
 	public static final RegistryObject<Item>ANDESITE_BARREL=block(DifModBlocks.ANDESITE_BARREL);
 

@@ -22,6 +22,7 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>HOSPITAL_HANDLE=REGISTRY.register("hospital_handle",HospitalHandle::new);
 	public static final RegistryObject<Block>SINGULARITATOR=REGISTRY.register("singularitator",()->new CustomWaterlogged(SoundType.METAL,5F,6F,true));
 	public static final RegistryObject<Block>SUPER_BOX=REGISTRY.register("super_box",SuperBox::new);
+	public static final RegistryObject<Block>OLD_CHEST=REGISTRY.register("old_chest",OldChest::new);
 
 	public static final RegistryObject<Block>SOLAR_PANEL_00=REGISTRY.register("solar_panel_00",SolarPanel::new);
 	public static final RegistryObject<Block>SOLAR_PANEL_01=REGISTRY.register("solar_panel_01",SolarPanel::new);
