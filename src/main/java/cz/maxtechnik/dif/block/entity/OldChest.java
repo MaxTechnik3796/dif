@@ -23,7 +23,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.jetbrains.annotations.NotNull;
-
 import javax.annotation.Nullable;
 import java.util.stream.IntStream;
 public class OldChest extends RandomizableContainerBlockEntity implements WorldlyContainer{
@@ -67,7 +66,7 @@ public class OldChest extends RandomizableContainerBlockEntity implements Worldl
 	}
 	@Override
 	public @NotNull Component getDefaultName(){
-		return Component.translatable("container.chest");
+		return Component.translatable("container.dif.old_chest");
 	}
 	@Override
 	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory){
@@ -75,7 +74,7 @@ public class OldChest extends RandomizableContainerBlockEntity implements Worldl
 	}
 	@Override
 	public @NotNull Component getDisplayName(){
-		return Component.translatable("container.chest");
+		return Component.translatable("container.dif.old_chest");
 	}
 	@Override
 	protected @NotNull NonNullList<ItemStack> getItems(){
