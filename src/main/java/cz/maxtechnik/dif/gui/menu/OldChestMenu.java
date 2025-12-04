@@ -49,6 +49,8 @@ public class OldChestMenu extends AbstractContainerMenu implements Supplier<Map<
 
 	// Celkový počet slotů ve všech bednách dohromady
 	private int totalChestSlots = 0;
+	// Počet řádků beden (pro GUI renderování)
+	private int chestRows = 0;
 
 	public OldChestMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
 		super(DifModMenus.OLD_CHEST_MENU.get(), id);
@@ -76,13 +78,13 @@ public class OldChestMenu extends AbstractContainerMenu implements Supplier<Map<
 			checkNeighbor(pos.south());
 			checkNeighbor(pos.west());
 
-			// Spustíme animaci otevření pro hlavní blok (volitelně i pro sousedy, pokud chcete)
+			// Spustíme animaci otevření pro hlavní blok
 			if (this.boundBlockEntity instanceof OldChest blockEntity) {
 				blockEntity.startOpen(inv.player);
 			}
 		}
 
-		// Fallback: Pokud se nic nenašlo (např. chyba na klientovi), vytvoříme dummy handler
+		// Fallback
 		if (connectedHandlers.isEmpty()) {
 			this.connectedHandlers.add(new ItemStackHandler(27));
 		}
@@ -90,17 +92,22 @@ public class OldChestMenu extends AbstractContainerMenu implements Supplier<Map<
 		// 2. Generování slotů pro všechny nalezené bedny
 		int currentY = CHEST_START_Y;
 		int totalIndex = 0;
+		this.chestRows = 0;
 
 		for (IItemHandler handler : connectedHandlers) {
 			int slots = handler.getSlots();
 			int rows = slots / 9;
-			// Ošetření pro případ, že počet slotů není dělitelný 9 (zbytek se dá na další řádek)
 			if (slots % 9 != 0) rows++;
+
+			this.chestRows += rows; // Počítáme celkové řádky
 
 			for (int i = 0; i < slots; i++) {
 				int row = i / 9;
 				int col = i % 9;
 
+				// Výpočet pozice slotu. Sloty se skládají pod sebe.
+				// Pro vizuální centrování na obrazovce se postará Screen třída,
+				// ale zde musíme zajistit, že sloty mají správné relativní souřadnice v rámci kontejneru.
 				int slotX = CHEST_START_X + col * SLOT_X_SPACING;
 				int slotY = currentY + row * SLOT_Y_SPACING;
 
@@ -110,17 +117,18 @@ public class OldChestMenu extends AbstractContainerMenu implements Supplier<Map<
 				totalIndex++;
 			}
 
-			// Posuneme Y pro další bednu (přidáme mezeru mezi bednami, nebo navážeme hned)
+			// Posuneme Y pro další bednu
 			currentY += rows * SLOT_Y_SPACING;
 		}
 
 		this.totalChestSlots = totalIndex;
 
 		// 3. Generování inventáře hráče
-		// Vypočítáme Y pozici inventáře hráče tak, aby byla pod všemi bednami
-		// Základní offset 140 je pro 3 řádky beden. My to musíme upravit.
-		// Přidáme malý padding (např. 13 pixelů jako ve vanilla GUI mezi chest a inv)
-		int playerInvY = currentY + 13;
+		// Pozice inventáře hráče závisí na počtu řádků beden.
+		// Standardní mezera mezi bednou a inventářem je cca 14 pixelů (v textuře 18-4=14)
+		// Pokud je 1 bedna (3 řádky), Y je 18 + 3*18 + 14 = 86 (cca 84 ve vanilla)
+		// Tady to vypočítáme dynamicky:
+		int playerInvY = currentY + 14; // 14px mezera
 
 		for (int si = 0; si < 3; ++si) {
 			for (int sj = 0; sj < 9; ++sj) {
@@ -134,7 +142,6 @@ public class OldChestMenu extends AbstractContainerMenu implements Supplier<Map<
 
 	/**
 	 * Pomocná metoda pro kontrolu souseda.
-	 * Pokud je blok na dané pozici STEJNÝ jako hlavní blok, přidá jeho handler.
 	 */
 	private void checkNeighbor(BlockPos neighborPos) {
 		if (this.boundBlockEntity == null) return;
@@ -142,7 +149,6 @@ public class OldChestMenu extends AbstractContainerMenu implements Supplier<Map<
 		BlockState mainState = this.boundBlockEntity.getBlockState();
 		BlockState neighborState = this.world.getBlockState(neighborPos);
 
-		// Kontrola: Je to stejný blok?
 		if (mainState.getBlock() == neighborState.getBlock()) {
 			BlockEntity neighborBE = this.world.getBlockEntity(neighborPos);
 			addBlockHandler(neighborBE);
@@ -156,6 +162,11 @@ public class OldChestMenu extends AbstractContainerMenu implements Supplier<Map<
 				this.bound = true;
 			});
 		}
+	}
+
+	// Getter pro počet řádků (pro Screen, aby věděl jak velké okno vykreslit)
+	public int getChestRows() {
+		return this.chestRows;
 	}
 
 	@Override
@@ -175,15 +186,12 @@ public class OldChestMenu extends AbstractContainerMenu implements Supplier<Map<
 			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
 
-			// Pokud klikneme na slot v bednách (index < totalChestSlots)
 			if (index < this.totalChestSlots) {
 				if (!this.moveItemStackTo(itemstack1, this.totalChestSlots, this.slots.size(), true))
 					return ItemStack.EMPTY;
 				slot.onQuickCraft(itemstack1, itemstack);
 			}
-			// Pokud klikneme v inventáři hráče -> přesun do beden
 			else if (!this.moveItemStackTo(itemstack1, 0, this.totalChestSlots, false)) {
-				// Logika pro přesun v rámci inventáře hráče (hotbar <-> main)
 				if (index < this.totalChestSlots + 27) {
 					if (!this.moveItemStackTo(itemstack1, this.totalChestSlots + 27, this.slots.size(), true))
 						return ItemStack.EMPTY;
@@ -211,8 +219,6 @@ public class OldChestMenu extends AbstractContainerMenu implements Supplier<Map<
 			blockEntity.stopOpen(playerIn);
 		}
 		super.removed(playerIn);
-		// Poznámka: Tady by se nemělo nic dropovat, protože itemy zůstávají v bednách (TileEntities).
-		// Kód pro dropování při zničení bloku by měl být v Block.onRemove(), ne v Menu.
 	}
 
 	public Map<Integer, Slot> get() {
