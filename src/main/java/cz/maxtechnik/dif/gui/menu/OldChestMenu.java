@@ -105,7 +105,7 @@ public class OldChestMenu extends AbstractContainerMenu implements Supplier<Map<
 		// Standardní mezera mezi bednou a inventářem je cca 14 pixelů (v textuře 18-4=14)
 		// Pokud je 1 bedna (3 řádky), Y je 18 + 3*18 + 14 = 86 (cca 84 ve vanilla)
 		// Tady to vypočítáme dynamicky:
-		int playerInvY=currentY+14; // 14px mezera
+		int playerInvY=currentY+13; // 13px mezera
 		for(int si=0;si<3;++si){
 			for(int sj=0;sj<9;++sj){
 				this.addSlot(new Slot(inv,sj+(si+1)*9,8+sj*18,playerInvY+si*18));
