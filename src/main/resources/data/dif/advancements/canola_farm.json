@@ -1,0 +1,26 @@
+{
+	"criteria":{
+		"mata":{
+			"trigger":"minecraft:placed_block",
+			"conditions":{
+				"location":[
+					{
+						"condition":"minecraft:block_state_property",
+						"block":"dif:canola_plant"
+					}
+				]
+			}
+		}
+	},
+	"rewards":{},
+	"display":{
+		"title":{"text":"Kartel uý jede"},
+		"description":{"text":"Založ si Canolovej kartel."},
+		"icon":{"item":"dif:canola_plant"},
+		"frame":"task",
+		"hidden":false,
+		"show_toast":true,
+		"announce_to_chat":true
+	},
+	"parent":"dif:canola_seeds"
+}

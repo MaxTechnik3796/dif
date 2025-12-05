@@ -1,0 +1,27 @@
+{
+	"criteria":{
+		"mata":{
+			"trigger":"minecraft:inventory_changed",
+			"conditions":{
+				"items":[
+					{
+						"items":[
+							"dif:mata_plant"
+						]
+					}
+				]
+			}
+		}
+	},
+	"rewards":{},
+	"display":{
+		"title":{"text":"Co pak to tu roste?"},
+		"description":{"text":"Najdi Mátovou rostlinu."},
+		"icon":{"item":"dif:mata_plant"},
+		"frame":"task",
+		"hidden":false,
+		"show_toast":true,
+		"announce_to_chat":true
+	},
+	"parent":"dif:root"
+}
