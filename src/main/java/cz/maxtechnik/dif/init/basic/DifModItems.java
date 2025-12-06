@@ -8,6 +8,7 @@ import cz.maxtechnik.dif.item.tool.*;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -17,11 +18,18 @@ import cz.maxtechnik.dif.item.tool.BattleAxeItem;
 
 public class DifModItems{
     public static final DeferredRegister<Item>REGISTRY=DeferredRegister.create(ForgeRegistries.ITEMS,DifMod.MODID);
+	public static final DeferredRegister<Item>V_REGISTRY=DeferredRegister.create(ForgeRegistries.ITEMS,"minecraft");
     private static RegistryObject<Item>block(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new BlockItem(block.get(),new Item.Properties()));}
     private static RegistryObject<Item>doubleBlock(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));}
 
+	public static final RegistryObject<Item>END_PORTAL=V_REGISTRY.register("end_portal",()->new BlockItem(Blocks.END_PORTAL,new Item.Properties()));
+	public static final RegistryObject<Item>END_GATEWAY=V_REGISTRY.register("end_gateway",()->new BlockItem(Blocks.END_GATEWAY,new Item.Properties()));
+	public static final RegistryObject<Item>NETHER_PORTAL=V_REGISTRY.register("nether_portal",()->new BlockItem(Blocks.NETHER_PORTAL,new Item.Properties()));
+	public static final RegistryObject<Item>WATER=V_REGISTRY.register("water",()->new BlockItem(Blocks.WATER,new Item.Properties()));
+	public static final RegistryObject<Item>LAVA=V_REGISTRY.register("lava",()->new BlockItem(Blocks.LAVA,new Item.Properties().fireResistant()));
+	public static final RegistryObject<Item>FIRE=V_REGISTRY.register("fire",()->new BlockItem(Blocks.FIRE,new Item.Properties().fireResistant()));
 
-    public static final RegistryObject<Item>BEER=REGISTRY.register("beer",()->new Beer(DifModBlocks.BEER.get(),new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationMod(1F).alwaysEat().build())));
+	public static final RegistryObject<Item>BEER=REGISTRY.register("beer",()->new Beer(DifModBlocks.BEER.get(),new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationMod(1F).alwaysEat().build())));
     public static final RegistryObject<Item>EXAMPLE_ITEM=REGISTRY.register("example_item",Test::new);
     public static final RegistryObject<Item>QUESTION_MARK=REGISTRY.register("question_mark",Basic::new);
 

@@ -4,7 +4,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
-
+import net.minecraftforge.registries.RegistryObject;
 @Mod.EventBusSubscriber(modid=DifMod.MODID,bus=Mod.EventBusSubscriber.Bus.MOD)
 public class DifModConfig{
 	private static final ForgeConfigSpec.Builder BUILDER=new ForgeConfigSpec.Builder();
@@ -20,6 +20,7 @@ public class DifModConfig{
 	private static final ForgeConfigSpec.IntValue BURNING_GENERATOR_MAX_EXTRACT;
 
 	private static final ForgeConfigSpec.IntValue MATA_PLANT_MAX_HEIGHT;
+	private static final ForgeConfigSpec.BooleanValue DISABLE_END;
 
 	private static final ForgeConfigSpec.IntValue PORTAL_GUN_MAX_AMMO;
 	private static final ForgeConfigSpec.IntValue PORTAL_GUN_MAX_RANGE;
@@ -49,6 +50,7 @@ public class DifModConfig{
 		BUILDER.pop();
 		BUILDER.push("GeneralSettings");
 		MATA_PLANT_MAX_HEIGHT=BUILDER.comment("Maximal height of Mata Plant, (Blocks.)\nDif-reload required!\nDefault value: 2").defineInRange("mata_plant_max_height",2,1,Integer.MAX_VALUE);
+		DISABLE_END=BUILDER.comment("Disable End dimension, (t/f.)\nDif-reload required!\nDefault value: false").define("disable_end",false);
 		BUILDER.pop();
 		BUILDER.push("PortalGun");
 		PORTAL_GUN_MAX_AMMO=BUILDER.comment("Maximal capacity of Portal Gun, (Shots.)\nDif-reload required!\nDefault value: 16").defineInRange("portal_gun_max_ammo",16,1,Integer.MAX_VALUE);
@@ -56,7 +58,7 @@ public class DifModConfig{
 		PORTAL_GUN_COOLDOWN=BUILDER.comment("Cooldown of Portal Gun, (t.)\nDif-reload required!\nDefault value: 80").defineInRange("portal_gun_cooldown",80,0,Integer.MAX_VALUE);
 		BUILDER.pop();
 		BUILDER.push("TrashSettings");
-		LOG_DIRT_BLOCK=BUILDER.comment("Whether to log the dirt block").define("logDirtBlock",false);
+		LOG_DIRT_BLOCK=BUILDER.comment("Whether to log the dirt item").define("logDirtBlock",false);
 		MAGIC_NUMBER=BUILDER.comment("The magic number").defineInRange("magicNumber",42,0,1000);
 		MAGIC_NUMBER_INTRODUCTION=BUILDER.comment("A string to introduce the magic number").define("magicNumberIntroduction","The magic number is...");
 		BUILDER.pop();
@@ -74,6 +76,7 @@ public class DifModConfig{
 	public static int burningGeneratorMaxExtract;
 
 	public static int mataPlantMaxHeight;
+	public static boolean disableEnd;
 
 	public static int portalGunMaxAmmo;
 	public static int portalGunMaxRange;
@@ -104,6 +107,7 @@ public class DifModConfig{
 		burningGeneratorMaxExtract=BURNING_GENERATOR_MAX_EXTRACT.get();
 
 		mataPlantMaxHeight=MATA_PLANT_MAX_HEIGHT.get();
+		disableEnd=DISABLE_END.get();
 
 		portalGunMaxAmmo=PORTAL_GUN_MAX_AMMO.get();
 		portalGunMaxRange=PORTAL_GUN_MAX_RANGE.get();

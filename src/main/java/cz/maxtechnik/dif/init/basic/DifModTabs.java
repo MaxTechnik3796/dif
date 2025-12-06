@@ -113,6 +113,12 @@ public class DifModTabs{
 		}else if(event.getTabKey().equals(CreativeModeTabs.OP_BLOCKS)){
 			event.accept(DifModItems.EXAMPLE_ITEM.get());
 			event.accept(DifModItems.EXAMPLE_BLOCK.get());
+			event.accept(DifModItems.END_PORTAL.get());
+			event.accept(DifModItems.END_GATEWAY.get());
+			event.accept(DifModItems.NETHER_PORTAL.get());
+			event.accept(DifModItems.WATER.get());
+			event.accept(DifModItems.LAVA.get());
+			event.accept(DifModItems.FIRE.get());
 		}
 	}
 }

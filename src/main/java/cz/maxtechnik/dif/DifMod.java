@@ -38,6 +38,7 @@ public class DifMod{
 
 		DifModBlocks.REGISTRY.register(bus);
 		DifModItems.REGISTRY.register(bus);
+		DifModItems.V_REGISTRY.register(bus);
 		DifModTabs.REGISTER.register(bus);
 		DifModSounds.REGISTRY.register(bus);
 		DifModMobEffects.REGISTRY.register(bus);
