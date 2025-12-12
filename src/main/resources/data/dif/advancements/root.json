@@ -7,8 +7,8 @@
 	"display":{
 		"background":"dif:textures/screens/maty_uwu.png",
 		"_background":"minecraft:textures/gui/advancments/backgrounds/stone.png",
-		"title":{"text":"%Vložit zadaní jméno serveru%"},
-		"description":{"text":"Vítej na %Vložit zadaní jméno serveru%!"},
+		"title":{"text":"%CreateHorizon%"},
+		"description":{"text":"Vítej na CreateHorizon!"},
 		"icon":{"item":"dif:the_differential"},
 		"frame":"task",
 		"hidden":false,
