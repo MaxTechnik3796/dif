@@ -36,6 +36,7 @@
 		"#forge:glass_panes",
 		"minecraft:redstone_lamp",
 		"minecraft:glowstone",
-		"minecraft:sea_lantern"
+		"minecraft:sea_lantern",
+		"dif:smooth_stone_double_slab"
 	]
 }

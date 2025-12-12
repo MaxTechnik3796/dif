@@ -119,6 +119,8 @@ public class DifModTabs{
 			event.accept(DifModItems.WATER.get());
 			event.accept(DifModItems.LAVA.get());
 			event.accept(DifModItems.FIRE.get());
+		}else if(event.getTabKey().equals(CreativeModeTabs.BUILDING_BLOCKS)){
+			event.getEntries().putAfter(new ItemStack(Items.SMOOTH_STONE),new ItemStack(DifModItems.SMOOTH_STONE_DOUBLE_SLAB.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 		}
 	}
 }

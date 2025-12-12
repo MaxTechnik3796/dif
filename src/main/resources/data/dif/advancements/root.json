@@ -7,7 +7,7 @@
 	"display":{
 		"background":"dif:textures/screens/maty_uwu.png",
 		"_background":"minecraft:textures/gui/advancments/backgrounds/stone.png",
-		"title":{"text":"%CreateHorizon%"},
+		"title":{"text":"CreateHorizon"},
 		"description":{"text":"Vítej na CreateHorizon!"},
 		"icon":{"item":"dif:the_differential"},
 		"frame":"task",
