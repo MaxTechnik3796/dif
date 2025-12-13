@@ -91,6 +91,8 @@ public class DifModTabs{
 
         tabData.accept(DifModItems.ROTTEN_BELT.get());
         tabData.accept(DifModItems.ROTTEN_APPLE.get());
+		tabData.accept(DifModItems.RAM.get());
+		tabData.accept(DifModItems.EXPLOSIVE_RAM.get());
         tabData.accept(DifModItems.INCOMPLETE_CPU_SINGULARITY.get());
 		tabData.accept(DifModItems.INCOMPLETE_MITHRIL_PLATE.get());
     })).build());

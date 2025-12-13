@@ -4,6 +4,8 @@ import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
 import cz.maxtechnik.dif.item.food.create.*;
+import cz.maxtechnik.dif.item.random.ExplosiveRam;
+import cz.maxtechnik.dif.item.random.JadernejSutr;
 import cz.maxtechnik.dif.item.tool.*;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
@@ -92,6 +94,9 @@ public class DifModItems{
 	public static final RegistryObject<Item>RUBY=REGISTRY.register("ruby",Basic::new);
 	public static final RegistryObject<Item>RUBY_ORE=block(DifModBlocks.RUBY_ORE);
 	public static final RegistryObject<Item>RUBY_BLOCK=block(DifModBlocks.RUBY_BLOCK);
+
+	public static final RegistryObject<Item>RAM=REGISTRY.register("ram",()->new StackSize(16));
+	public static final RegistryObject<Item>EXPLOSIVE_RAM=REGISTRY.register("explosive_ram",ExplosiveRam::new);
 
 	public static final RegistryObject<Item>SOLAR_PANEL_00=block(DifModBlocks.SOLAR_PANEL_00);
 	public static final RegistryObject<Item>SOLAR_PANEL_01=block(DifModBlocks.SOLAR_PANEL_01);

@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.item;
+package cz.maxtechnik.dif.item.random;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;

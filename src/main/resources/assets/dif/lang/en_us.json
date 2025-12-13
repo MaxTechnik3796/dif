@@ -114,6 +114,9 @@
 	"block.dif.stoned_arrow":"Stoned Arrow",
 	"block.dif.deepslated_arrow":"Deepslated Arrow",
 
+	"item.dif.ram": "RAM",
+	"item.dif.explosive_ram": "§cExplosive RAM§r",
+
 	"block.dif.deepslate_bauxite_ore":"Deepslate Bauxite Ore",
 	"block.dif.bauxite_ore":"Bauxite Ore",
 	"item.dif.raw_bauxite":"Raw Bauxite",
