@@ -1,8 +1,9 @@
 {
-  "type": "forge:add_features",
-  "biomes": {
-    "type": "forge:any"
-  },
-  "features": "dif:bauxite_ore",
-  "step": "underground_ores"
+	"type":"forge:add_features",
+	"biomes":"the_void",
+	"_biomes":{
+		"type":"forge:any"
+	},
+	"features":"dif:bauxite_ore",
+	"step":"underground_ores"
 }
