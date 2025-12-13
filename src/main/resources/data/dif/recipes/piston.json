@@ -1,0 +1,27 @@
+{
+	"type":"minecraft:crafting_shaped",
+	"category":"redstone",
+	"pattern":[
+		"aaa",
+		"bcb",
+		"bdb"
+	],
+	"key":{
+		"a":{
+			"tag":"minecraft:planks"
+		},
+		"b":{
+			"item":"minecraft:cobblestone"
+		},
+		"c":{
+			"item":"minecraft:redstone"
+		},
+		"d":{
+			"item":"minecraft:iron_ingot"
+		}
+	},
+	"result":{
+		"item":"minecraft:piston",
+		"count":1
+	}
+}

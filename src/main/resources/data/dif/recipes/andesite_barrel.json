@@ -1,0 +1,20 @@
+{
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		"# #",
+		"#<#",
+		"# #"
+	],
+	"key":{
+		"#":{
+			"item":"create:andesite_alloy"
+		},
+		"<":{
+			"item":"minecraft:barrel"
+		}
+	},
+	"result":{
+		"item":"dif:andesite_barrel",
+		"count":1
+	}
+}
