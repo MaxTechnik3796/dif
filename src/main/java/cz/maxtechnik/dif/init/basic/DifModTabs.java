@@ -81,18 +81,20 @@ public class DifModTabs{
 		tabData.accept(DifModItems.MASTICKA.get());
 		tabData.accept(DifModItems.BLUESTONE.get());
 		tabData.accept(DifModItems.BLUE_PLATE.get());
-		tabData.accept(DifModItems.ITEM_5261.get());
+		tabData.accept(DifModItems.SPRING.get());
 
+		tabData.accept(DifModItems.ITEM_5261.get());
+        tabData.accept(DifModItems.ROTTEN_BELT.get());
+        tabData.accept(DifModItems.ROTTEN_APPLE.get());
+
+		tabData.accept(DifModItems.RAM.get());
+		tabData.accept(DifModItems.EXPLOSIVE_RAM.get());
 
 		tabData.accept(DifModItems.LASER_HOOKAH.get());
 		ItemStack portalGun=new ItemStack(DifModItems.PORTAL_GUN.get());
 		portalGun.getOrCreateTag().putInt("ammo",DifModConfig.portalGunMaxAmmo);
 		tabData.accept(portalGun);
 
-        tabData.accept(DifModItems.ROTTEN_BELT.get());
-        tabData.accept(DifModItems.ROTTEN_APPLE.get());
-		tabData.accept(DifModItems.RAM.get());
-		tabData.accept(DifModItems.EXPLOSIVE_RAM.get());
         tabData.accept(DifModItems.INCOMPLETE_CPU_SINGULARITY.get());
 		tabData.accept(DifModItems.INCOMPLETE_MITHRIL_PLATE.get());
     })).build());
@@ -104,14 +106,12 @@ public class DifModTabs{
             event.getEntries().putAfter(new ItemStack(DifModItems.IRON_KATANA.get()),new ItemStack(DifModItems.GOLDEN_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.getEntries().putAfter(new ItemStack(DifModItems.GOLDEN_KATANA.get()),new ItemStack(DifModItems.DIAMOND_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.getEntries().putAfter(new ItemStack(DifModItems.DIAMOND_KATANA.get()),new ItemStack(DifModItems.NETHERITE_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-
 			event.getEntries().putAfter(new ItemStack(DifModItems.NETHERITE_KATANA.get()),new ItemStack(DifModItems.WOODEN_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.getEntries().putAfter(new ItemStack(DifModItems.WOODEN_BATTLE_AXE.get()),new ItemStack(DifModItems.STONE_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.getEntries().putAfter(new ItemStack(DifModItems.STONE_BATTLE_AXE.get()),new ItemStack(DifModItems.IRON_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.getEntries().putAfter(new ItemStack(DifModItems.IRON_BATTLE_AXE.get()),new ItemStack(DifModItems.GOLDEN_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.getEntries().putAfter(new ItemStack(DifModItems.GOLDEN_BATTLE_AXE.get()),new ItemStack(DifModItems.DIAMOND_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             event.getEntries().putAfter(new ItemStack(DifModItems.DIAMOND_BATTLE_AXE.get()),new ItemStack(DifModItems.NETHERITE_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-
 		}else if(event.getTabKey().equals(CreativeModeTabs.OP_BLOCKS)){
 			event.accept(DifModItems.EXAMPLE_ITEM.get());
 			event.accept(DifModItems.EXAMPLE_BLOCK.get());

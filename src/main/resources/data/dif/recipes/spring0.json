@@ -1,0 +1,23 @@
+{
+	"type":"create:mechanical_crafting",
+	"acceptMirrored":true,
+	"key":{
+		"#":{
+			"item":"createaddition:iron_wire"
+		}
+	},
+	"pattern":[
+		"# ### ###",
+		"# # # # #",
+		"# # # # #",
+		"# # # # #",
+		"# # # # #",
+		"# # # # #",
+		"# # # # #",
+		"# # # # #",
+		"### ### #"
+	],
+	"result":{
+		"item":"dif:spring"
+	}
+}

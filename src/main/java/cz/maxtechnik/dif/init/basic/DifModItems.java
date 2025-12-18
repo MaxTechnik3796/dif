@@ -50,6 +50,7 @@ public class DifModItems{
 	public static final RegistryObject<Item>JADERNEJ_SUTR=REGISTRY.register("jadernej_sutr",JadernejSutr::new);
 	public static final RegistryObject<Item>ITEM_5261=REGISTRY.register("item_5261",Basic::new);
 	public static final RegistryObject<Item>VHS=REGISTRY.register("vhs",()->new StackSize(16));
+	public static final RegistryObject<Item>SPRING=REGISTRY.register("spring",Basic::new);
 
 	public static final RegistryObject<Item>COIN_00=REGISTRY.register("coin_00",Basic::new);
 	public static final RegistryObject<Item>COIN_01=REGISTRY.register("coin_01",Basic::new);
