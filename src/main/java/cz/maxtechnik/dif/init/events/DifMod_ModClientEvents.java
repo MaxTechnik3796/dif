@@ -78,7 +78,7 @@ public class DifMod_ModClientEvents{
 			int color=((int)(alpha*255)<<24)|(rgb&0xFFFFFF);
 			gg.fill(0,0,w,h,color);
 		}
-		// ZULENÍ – žluto-zelený pulzující overlay
+		// ZHULENÍ – žluto-zelený pulzující overlay
 		if(player.hasEffect(DifModMobEffects.ZHULENI.get())){
 			float time=player.tickCount*0.02f;
 			float hue=0.30f+0.06f*(float)Math.sin(time); // plynule mezi žlutou a zelenou
