@@ -10,8 +10,9 @@
 	"gui.dif.invalid_fuel0": "This is not",
 	"gui.dif.invalid_fuel1": "flammable fuel!",
 	"gui.dif.super_box": "§lSuper Box§r",
-	"container.dif.brass_barrel": "Brass Barrel",
 	"container.dif.andesite_barrel": "Andesite Barrel",
+	"container.dif.copper_barrel": "Copper Barrel",
+	"container.dif.brass_barrel": "Brass Barrel",
 	"container.dif.sturdy_barrel": "Sturdy Barrel",
 	"container.dif.old_chest":"Alpha Chest",
 
@@ -145,8 +146,9 @@
 	"block.dif.small_energy_bud":"Small Energy Bud",
 	"item.dif.energy.shard":"Energy Shard",
 
-	"block.dif.brass_barrel":"Brass Barrel",
 	"block.dif.andesite_barrel":"Andesite Barrel",
+	"block.dif.copper_barrel":"Copper Barrel",
+	"block.dif.brass_barrel":"Brass Barrel",
 
     "block.dif.beer":"GoldBerg",
 

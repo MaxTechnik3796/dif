@@ -2,6 +2,7 @@
 	"replace":false,
 	"values":[
 		"dif:andesite_barrel",
+		"dif:copper_barrel",
 		"dif:brass_barrel"
   ]
 }

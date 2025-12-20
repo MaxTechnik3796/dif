@@ -89,8 +89,9 @@ public class DifModItems{
 	public static final RegistryObject<Item>SUPER_BOX=block(DifModBlocks.SUPER_BOX);
 	public static final RegistryObject<Item>OLD_CHEST=block(DifModBlocks.OLD_CHEST);
 
-	public static final RegistryObject<Item>BRASS_BARREL=block(DifModBlocks.BRASS_BARREL);
 	public static final RegistryObject<Item>ANDESITE_BARREL=block(DifModBlocks.ANDESITE_BARREL);
+	public static final RegistryObject<Item>COPPER_BARREL=block(DifModBlocks.COPPER_BARREL);
+	public static final RegistryObject<Item>BRASS_BARREL=block(DifModBlocks.BRASS_BARREL);
 
 	public static final RegistryObject<Item>RUBY=REGISTRY.register("ruby",Basic::new);
 	public static final RegistryObject<Item>RUBY_ORE=block(DifModBlocks.RUBY_ORE);

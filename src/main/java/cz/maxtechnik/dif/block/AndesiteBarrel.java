@@ -30,7 +30,7 @@ public class AndesiteBarrel extends Block implements EntityBlock{
 	public static final DirectionProperty FACING=BlockStateProperties.FACING;
 	public static final BooleanProperty OPEN=BlockStateProperties.OPEN;
 	public AndesiteBarrel(){
-		super(Properties.of().sound(SoundType.WOOD).strength(2.5F).requiresCorrectToolForDrops().noOcclusion().isRedstoneConductor((bs,br,bp)->false));
+		super(Properties.of().sound(SoundType.WOOD).strength(2.5F).noOcclusion().isRedstoneConductor((bs,br,bp)->false));
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(OPEN,false));
 	}
 	@Override
@@ -55,9 +55,7 @@ public class AndesiteBarrel extends Block implements EntityBlock{
 	}
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context){
-		return this.defaultBlockState()
-				.setValue(FACING,context.getClickedFace())
-				.setValue(OPEN,false);
+		return this.defaultBlockState().setValue(FACING,context.getNearestLookingDirection().getOpposite()).setValue(OPEN,false);
 	}
 	public @NotNull BlockState rotate(BlockState state,Rotation rot){
 		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));

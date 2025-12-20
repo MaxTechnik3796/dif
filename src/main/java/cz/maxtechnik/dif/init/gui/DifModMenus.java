@@ -20,11 +20,18 @@ import org.jetbrains.annotations.NotNull;
 public class DifModMenus<T extends AbstractContainerMenu> implements FeatureElement, net.minecraftforge.common.extensions.IForgeMenuType<T>{
 	public static final DeferredRegister<MenuType<?>>REGISTRY=DeferredRegister.create(ForgeRegistries.MENU_TYPES,DifMod.MODID);
 	public static final RegistryObject<MenuType<SuperBoxMenu>>SUPER_BOX_MENU=REGISTRY.register("super_box_menu",()->IForgeMenuType.create(SuperBoxMenu::new));
-	public static final RegistryObject<MenuType<BrassBarrelMenu>>BRASS_BARREL_MENU=REGISTRY.register("brass_barrel_menu",()->IForgeMenuType.create(BrassBarrelMenu::new));
 	public static final RegistryObject<MenuType<AndesiteBarrelMenu>>ANDESITE_BARREL_MENU=REGISTRY.register("andesite_barrel_menu",()->IForgeMenuType.create(AndesiteBarrelMenu::new));
+	public static final RegistryObject<MenuType<CopperBarrelMenu>>COPPER_BARREL_MENU=REGISTRY.register("copper_barrel_menu",()->IForgeMenuType.create(CopperBarrelMenu::new));
+	public static final RegistryObject<MenuType<BrassBarrelMenu>>BRASS_BARREL_MENU=REGISTRY.register("brass_barrel_menu",()->IForgeMenuType.create(BrassBarrelMenu::new));
 	public static final RegistryObject<MenuType<OldChestMenu>>OLD_CHEST_MENU=REGISTRY.register("old_chest_menu",()->IForgeMenuType.create(OldChestMenu::new));
 	public static final RegistryObject<MenuType<BurningGeneratorMenu>>GENERATOR_MENU=REGISTRY.register("generator_menu",()->IForgeMenuType.create(BurningGeneratorMenu::new));
 	public static final RegistryObject<MenuType<SpecialCraftingMenu>>SPECIAL_CRAFTING_MENU=REGISTRY.register("special_crafting_menu",()->IForgeMenuType.create(SpecialCraftingMenu::new));
+
+
+
+
+
+
 	private FeatureFlagSet requiredFeatures;
 	private MenuType.MenuSupplier<T> constructor;
 	public DifModMenus(MenuType.MenuSupplier<T> constructor){
