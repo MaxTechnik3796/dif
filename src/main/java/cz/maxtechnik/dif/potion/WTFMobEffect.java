@@ -6,15 +6,13 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
-public class DrankMobEffect extends MobEffect{
-	public DrankMobEffect(){
-		super(MobEffectCategory.BENEFICIAL,-3407668);
+public class WTFMobEffect extends MobEffect{
+	public WTFMobEffect(){
+		super(MobEffectCategory.BENEFICIAL,0x1A4D2E);
 	}
 	@Override
 	public void applyEffectTick(@NotNull LivingEntity entity,int amplifier){
 		super.applyEffectTick(entity,amplifier);
-		if(entity.hasEffect(MobEffects.CONFUSION))return;
-		entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION,60,amplifier));
 	}
 	@Override
 	public boolean isDurationEffectTick(int duration,int amplifier){

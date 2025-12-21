@@ -11,5 +11,5 @@ public class DifModMobEffects{
 	public static final RegistryObject<MobEffect>REDSTONE_IQ=REGISTRY.register("redstone_iq",RedstoneIQMobEffect::new);
 	public static final RegistryObject<MobEffect>REDSTONE_NOT_IQ=REGISTRY.register("redstone_not_iq",RedstoneNotIQMobEffect::new);
 	public static final RegistryObject<MobEffect>DRANK=REGISTRY.register("drank",DrankMobEffect::new);
-    public static final RegistryObject<MobEffect>ZHULENI=REGISTRY.register("zhuleni",DrankMobEffect::new);
+    public static final RegistryObject<MobEffect>WTF=REGISTRY.register("wtf",WTFMobEffect::new);
 }
