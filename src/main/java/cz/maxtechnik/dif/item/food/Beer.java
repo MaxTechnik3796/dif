@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.item.food;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.init.other.DifModMobEffects;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -24,7 +25,7 @@ public class Beer extends BlockItem{
 		super.finishUsingItem(itemstack,world,entity);
 		if(!world.isClientSide()){
 			if(DifMod.rouletteBoolean(4)){
-				entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION,600,0));
+				entity.addEffect(new MobEffectInstance(DifModMobEffects.DRANK.get(),600,0));
 			}else{
 				entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION,100,0));
 			}

@@ -46,8 +46,6 @@
 
 
 	"creative_tab.dif.main":"TheDifferential: Main",
-	"creative_tab.dif.music":"TheDifferential: Music",
-	"creative_tab.dif.random":"TheDifferential: Random",
 
 	"item.dif.example_item":"Example Item",
 	"item.dif.question_mark":"Question Mark",
@@ -145,7 +143,7 @@
 	"block.dif.large_energy_bud":"Large Energy Bud",
 	"block.dif.medium_energy_bud":"Medium Energy Bud",
 	"block.dif.small_energy_bud":"Small Energy Bud",
-	"item.dif.energy.shard":"Energy Shard",
+	"item.dif.energy_shard":"Energy Shard",
 
 	"block.dif.andesite_barrel":"Andesite Barrel",
 	"block.dif.copper_barrel":"Copper Barrel",
