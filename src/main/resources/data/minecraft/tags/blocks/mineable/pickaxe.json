@@ -3,6 +3,7 @@
 	"values":[
 		"dif:event_bus",
 		"dif:the_differential",
+		"dif:washing_machine",
 		"dif:burning_generator",
 		"dif:hospital_handle",
 		"dif:deepslated_arrow",

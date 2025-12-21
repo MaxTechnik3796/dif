@@ -83,6 +83,7 @@ public class DifModItems{
     public static final RegistryObject<Item>EXAMPLE_BLOCK=block(DifModBlocks.EXAMPLE_BLOCK);
     public static final RegistryObject<Item>THE_DIFFERENTIAL=block(DifModBlocks.THE_DIFFERENTIAL);
     public static final RegistryObject<Item>EVENT_BUS=block(DifModBlocks.EVENT_BUS);
+	public static final RegistryObject<Item>WASHING_MACHINE=block(DifModBlocks.WASHING_MACHINE);
     public static final RegistryObject<Item>BURNING_GENERATOR=block(DifModBlocks.BURNING_GENERATOR);
     public static final RegistryObject<Item>HOSPITAL_HANDLE=block(DifModBlocks.HOSPITAL_HANDLE);
 	public static final RegistryObject<Item>SINGULARITATOR=block(DifModBlocks.SINGULARITATOR);

@@ -100,6 +100,7 @@
 	"block.dif.example_block":"Example Block",
 	"block.dif.the_differential":"TheDifferential",
 	"block.dif.event_bus":"Event Bus",
+	"block.dif.washing_machine": "Pračka",
 	"block.dif.generator":"§lBenzínovej Generator§r",
 	"block.dif.burning_generator":"Burning Generator",
 	"block.dif.hospital_handle":"Hospital Handle",
