@@ -11,45 +11,50 @@ import net.minecraftforge.registries.RegistryObject;
 public class DifModTabs{
 	public static final DeferredRegister<CreativeModeTab>REGISTER=DeferredRegister.create(Registries.CREATIVE_MODE_TAB,DifMod.MODID);
 	public static final RegistryObject<CreativeModeTab>MAIN=REGISTER.register("main",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.main")).icon(()->new ItemStack(DifModItems.THE_DIFFERENTIAL.get())).displayItems(((parameters,tabData)->{
+		ItemStack PORTAL_GUN=new ItemStack(DifModItems.PORTAL_GUN.get());PORTAL_GUN.getOrCreateTag().putInt("ammo",DifModConfig.portalGunMaxAmmo);
+
 		tabData.accept(DifModItems.THE_DIFFERENTIAL.get());
 		tabData.accept(DifModItems.BAN_HAMMER.get());
-		tabData.accept(DifModItems.QUESTION_MARK.get());
 		tabData.accept(DifModItems.EVENT_BUS.get());
+		tabData.accept(DifModItems.HOSPITAL_HANDLE.get());
 		tabData.accept(DifModItems.WASHING_MACHINE.get());
 		tabData.accept(DifModItems.BURNING_GENERATOR.get());
 		tabData.accept(DifModItems.ANDESITE_LATTICE.get());
 		tabData.accept(DifModItems.ANDESITE_WINDOW.get());
-		tabData.accept(DifModItems.HOSPITAL_HANDLE.get());
+		tabData.accept(DifModItems.SUPER_BOX.get());
+
 		tabData.accept(DifModItems.SINGULARITATOR.get());
 		tabData.accept(DifModItems.SOLANA_BLOCK.get());
 		tabData.accept(DifModItems.BITCOIN_BLOCK.get());
-		tabData.accept(DifModItems.SUPER_BOX.get());
-		tabData.accept(DifModItems.MASTICKA.get());
-		tabData.accept(DifModItems.SPRING.get());
-		tabData.accept(DifModItems.HEAVY_PLATE.get());
-		tabData.accept(DifModItems.BLUESTONE.get());
-		tabData.accept(DifModItems.BLUE_PLATE.get());
-		tabData.accept(DifModItems.MITHRIL.get());
-		tabData.accept(DifModItems.MITHRIL_PLATE.get());
-		tabData.accept(DifModItems.ITEM_5261.get());
-		tabData.accept(DifModItems.ROTTEN_BELT.get());
-		tabData.accept(DifModItems.ROTTEN_APPLE.get());
-		tabData.accept(DifModItems.RAM.get());
-		tabData.accept(DifModItems.EXPLOSIVE_RAM.get());
-		tabData.accept(DifModItems.LASER_HOOKAH.get());
-		ItemStack portalGun=new ItemStack(DifModItems.PORTAL_GUN.get());
-		portalGun.getOrCreateTag().putInt("ammo",DifModConfig.portalGunMaxAmmo);
-		tabData.accept(portalGun);
 		tabData.accept(DifModItems.SOLAR_PANEL_00.get());
 		tabData.accept(DifModItems.SOLAR_PANEL_01.get());
 		tabData.accept(DifModItems.SOLAR_PANEL_02.get());
 		tabData.accept(DifModItems.SOLAR_PANEL_03.get());
 		tabData.accept(DifModItems.SOLAR_PANEL_04.get());
+		tabData.accept(DifModItems.QUESTION_MARK.get());
+
+		tabData.accept(DifModItems.MASTICKA.get());
+		tabData.accept(DifModItems.ITEM_5261.get());
 		tabData.accept(DifModItems.CPU_SINGULARITY.get());
+		tabData.accept(DifModItems.HEAVY_PLATE.get());
+		tabData.accept(DifModItems.SPRING.get());
+		tabData.accept(DifModItems.MITHRIL.get());
+		tabData.accept(DifModItems.MITHRIL_PLATE.get());
+		tabData.accept(DifModItems.BLUESTONE.get());
+		tabData.accept(DifModItems.BLUE_PLATE.get());
+
 		tabData.accept(DifModItems.COIN_00.get());
 		tabData.accept(DifModItems.COIN_01.get());
 		tabData.accept(DifModItems.COIN_02.get());
 		tabData.accept(DifModItems.COIN_03.get());
+		tabData.accept(DifModItems.RAM.get());
+		tabData.accept(DifModItems.EXPLOSIVE_RAM.get());
+		tabData.accept(DifModItems.ROTTEN_BELT.get());
+		tabData.accept(DifModItems.ROTTEN_APPLE.get());
+		tabData.accept(DifModItems.LASER_HOOKAH.get());
+
+		tabData.accept(PORTAL_GUN);
+
 		tabData.accept(DifModItems.INCOMPLETE_CPU_SINGULARITY.get());
 		tabData.accept(DifModItems.INCOMPLETE_MITHRIL_PLATE.get());
 	})).build());
@@ -62,7 +67,7 @@ public class DifModTabs{
 
 		}else if(event.getTabKey().equals(CreativeModeTabs.NATURAL_BLOCKS)){
 			event.getEntries().putAfter(new ItemStack(Items.SNOW),new ItemStack(DifModItems.MATY_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(Items.NETHERRACK),new ItemStack(DifModItems.CINDER_FLOUR_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			event.getEntries().putAfter(new ItemStack(Items.CRYING_OBSIDIAN),new ItemStack(DifModItems.CINDER_FLOUR_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(Items.AMETHYST_CLUSTER),new ItemStack(DifModItems.ENERGY_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.ENERGY_BLOCK.get()),new ItemStack(DifModItems.BUDDING_ENERGY.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.BUDDING_ENERGY.get()),new ItemStack(DifModItems.SMALL_ENERGY_BUD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);

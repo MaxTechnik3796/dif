@@ -12,9 +12,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -83,5 +85,8 @@ public class DifMod{
 		messageTemplate.append(CommonComponents.space());
 		messageTemplate.append(message);
 		player.sendSystemMessage(messageTemplate);
+	}
+	public static boolean playerGameModeIsCreativeCategory(ServerPlayer player){
+		return player.gameMode.isCreative()||player.gameMode.getGameModeForPlayer().equals(GameType.SPECTATOR);
 	}
 }

@@ -1,8 +1,0 @@
-{
-	"type":"minecraft:stonecutting",
-	"ingredient":{
-		"item":"create:andesite_alloy"
-	},
-	"result":"dif:andesite_window",
-	"count":3
-}

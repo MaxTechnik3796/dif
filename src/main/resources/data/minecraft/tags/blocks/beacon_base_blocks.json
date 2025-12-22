@@ -1,0 +1,7 @@
+{
+	"replace":false,
+	"values":[
+		"dif:solana_block",
+		"dif:bitcoin_block"
+  ]
+}
