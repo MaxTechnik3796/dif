@@ -10,6 +10,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -70,4 +72,17 @@ public class BattleAxeItem extends SwordItem{
 			return InteractionResult.PASS;
 		}
 	}
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        if (enchantment == Enchantments.MENDING ||
+                enchantment == Enchantments.VANISHING_CURSE) {
+            return true;
+        }
+        return
+                enchantment == Enchantments.UNBREAKING ||
+                enchantment == Enchantments.FIRE_ASPECT ||
+                enchantment == Enchantments.SHARPNESS ||
+                enchantment == Enchantments.SWEEPING_EDGE ||
+                enchantment == Enchantments.KNOCKBACK;
+    }
 }
