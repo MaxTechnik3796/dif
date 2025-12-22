@@ -85,6 +85,7 @@ public class DifModTabs{
 			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_BARREL.get()),new ItemStack(DifModItems.BRASS_BARREL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 
 		}else if(event.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES)){
+			event.getEntries().putAfter(new ItemStack(Items.LAVA_BUCKET),new ItemStack(DifModItems.BEER_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.accept(DifModItems.CREMEKA.get());
 			event.accept(DifModItems.MATY_CREATE.get());
 			event.accept(DifModItems.MAYONNAISE.get());

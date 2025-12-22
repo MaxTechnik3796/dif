@@ -5,6 +5,8 @@ import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.basic.DifModSounds;
 import cz.maxtechnik.dif.init.basic.DifModTabs;
+import cz.maxtechnik.dif.init.fluid.DifModFluidTypes;
+import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.init.other.DifModMobEffects;
@@ -46,6 +48,9 @@ public class DifMod{
 		DifModMobEffects.REGISTRY.register(bus);
 		DifModBlockEntities.REGISTRY.register(bus);
 		DifModMenus.REGISTRY.register(bus);
+		DifModFluids.REGISTRY.register(bus);
+		DifModFluidTypes.REGISTRY.register(bus);
+
 
 		MinecraftForge.EVENT_BUS.register(this);
 		bus.addListener(DifModTabs::addCreative);

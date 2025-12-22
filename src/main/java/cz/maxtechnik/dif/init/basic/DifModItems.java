@@ -2,10 +2,10 @@ package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.item.*;
+import cz.maxtechnik.dif.item.bucket.*;
 import cz.maxtechnik.dif.item.food.*;
 import cz.maxtechnik.dif.item.food.create.*;
-import cz.maxtechnik.dif.item.random.ExplosiveRam;
-import cz.maxtechnik.dif.item.random.JadernejSutr;
+import cz.maxtechnik.dif.item.random.*;
 import cz.maxtechnik.dif.item.tool.*;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
@@ -14,15 +14,13 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Tiers;
-import cz.maxtechnik.dif.item.tool.BattleAxeItem;
-
 public class DifModItems{
     public static final DeferredRegister<Item>REGISTRY=DeferredRegister.create(ForgeRegistries.ITEMS,DifMod.MODID);
 	public static final DeferredRegister<Item>V_REGISTRY=DeferredRegister.create(ForgeRegistries.ITEMS,"minecraft");
     private static RegistryObject<Item>block(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new BlockItem(block.get(),new Item.Properties()));}
     private static RegistryObject<Item>doubleBlock(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));}
+
+	public static final RegistryObject<Item>BEER_BUCKET=REGISTRY.register("beer_bucket",BeerBucket::new);
 
 	public static final RegistryObject<Item>END_PORTAL=V_REGISTRY.register("end_portal",()->new BlockItem(Blocks.END_PORTAL,new Item.Properties()));
 	public static final RegistryObject<Item>END_GATEWAY=V_REGISTRY.register("end_gateway",()->new BlockItem(Blocks.END_GATEWAY,new Item.Properties()));

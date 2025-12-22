@@ -17,6 +17,8 @@ public class DifModBlockEntities{
 	public static final RegistryObject<BlockEntityType<?>>OLD_CHEST=register("old_chest",DifModBlocks.OLD_CHEST,OldChest::new);
 
 
+	public static final RegistryObject<BlockEntityType<?>>TEST=REGISTRY.register("test",()->BlockEntityType.Builder.of(TestBlockEntity::new,DifModBlocks.EXAMPLE_BLOCK.get()).build(null));
+
 	public static final RegistryObject<BlockEntityType<BurningGenerator>> BURNING_GENERATOR=REGISTRY.register("generator_be",()->BlockEntityType.Builder.of(BurningGenerator::new,DifModBlocks.BURNING_GENERATOR.get()).build(null));
 	public static final RegistryObject<BlockEntityType<?>>SPECIAL_CRAFTING=register("special_crafting",DifModBlocks.EXAMPLE_BLOCK,SpecialCrafting::new);
 	private static RegistryObject<BlockEntityType<?>> register(String registryname,RegistryObject<Block> block,BlockEntityType.BlockEntitySupplier<?> supplier){

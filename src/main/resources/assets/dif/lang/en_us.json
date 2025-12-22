@@ -30,6 +30,12 @@
 	"item.dif.redstone":"Music Disc",
 	"item.dif.maty_pada_stream":"Music Disc",
 
+	"item.dif.beer_bucket":"Beer Bucket",
+	"block.dif.beer_fluid":"Beer",
+	"fluid.dif.beer_fluid":"Beer",
+	"fluid_type.dif.beer_fluid":"Beer",
+
+
 	"item.dif.mayonnaise.desc":"§7Mayonnaise on an escalator! - Harry Arbuckle§r",
 	"item.dif.cremeka.desc":"§7Cremeka song! - CZ|Ted<3 & AI§r",
 	"item.dif.maty_create.desc":"§7Maty Create Song - Matrixgold§r",
