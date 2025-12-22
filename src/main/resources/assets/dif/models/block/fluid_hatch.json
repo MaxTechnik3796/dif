@@ -1,13 +1,14 @@
 {
-	"credit": "Made with Blockbench",
-	"parent": "block/block",
+	"format_version": "1.9.0",
+	"credit": "Made by: Suriken in: Blockbench",
+	"render_type": "cutout",
 	"textures": {
-		"0": "create:block/hatch",
-		"1": "create:block/hatch_closed",
-		"particle": "create:block/industrial_iron_block"
+		"0": "dif:block/fluid_hatch",
+		"particle": "create:block/copper_casing"
 	},
 	"elements": [
 		{
+			"name": "plate",
 			"from": [1, 0, 0],
 			"to": [15, 16, 2],
 			"rotation": {"angle": 0, "axis": "y", "origin": [1, 0, 0]},
@@ -21,26 +22,41 @@
 			}
 		},
 		{
+			"name": "back",
 			"from": [2, 1, -2],
 			"to": [14, 15, 0],
 			"rotation": {"angle": 0, "axis": "y", "origin": [2, 1, -2]},
 			"faces": {
 				"north": {"uv": [1.5, 1.5, 7.5, 8.5], "texture": "#0"},
-				"east": {"uv": [9, 1.5, 10, 8.5], "texture": "#0"},
-				"west": {"uv": [10, 1.5, 9, 8.5], "texture": "#0"},
-				"up": {"uv": [11.5, 2, 10.5, 8], "rotation": 90, "texture": "#0"},
-				"down": {"uv": [10.5, 2, 11.5, 8], "rotation": 90, "texture": "#0"}
+				"east": {"uv": [14, 0, 15, 7], "texture": "#0"},
+				"west": {"uv": [15, 0, 14, 7], "texture": "#0"},
+				"up": {"uv": [16, 0, 15, 6], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [15, 0, 16, 6], "rotation": 90, "texture": "#0"}
 			}
 		},
 		{
+			"name": "mini_item_drain",
 			"from": [2, 0, 2],
 			"to": [14, 10.6, 12.6],
 			"rotation": {"angle": -45, "axis": "x", "origin": [8, 0, 2]},
 			"faces": {
-				"east": {"uv": [9.5, 15, 15, 9.5], "rotation": 90, "texture": "#0"},
-				"south": {"uv": [2, 3, 14, 14], "texture": "#1"},
-				"west": {"uv": [9.5, 9.5, 15, 15], "rotation": 90, "texture": "#0"},
-				"down": {"uv": [1.5, 9.5, 7.5, 15.1], "texture": "#0"}
+				"east": {"uv": [6, 16, 11.5, 10.5], "rotation": 90, "texture": "#0"},
+				"south": {"uv": [8, 0, 14, 5.5], "texture": "#0"},
+				"west": {"uv": [6, 10.5, 11.5, 16], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [0, 10.5, 6, 16], "texture": "#0"}
+			}
+		},
+		{
+			"name": "inside_drain",
+			"from": [11, 9.4, 2.05],
+			"to": [5, 11.4, 7.05],
+			"rotation": {"angle": 45, "axis": "x", "origin": [16, 10, 5]},
+			"faces": {
+				"north": {"uv": [8.5, 7.5, 13.5, 5.55], "texture": "#0"},
+				"east": {"uv": [13.45, 5.55, 11.5, 9.5], "rotation": 270, "texture": "#0"},
+				"south": {"uv": [13.5, 7.55, 8.5, 9.5], "texture": "#0"},
+				"west": {"uv": [10.5, 9.5, 8.5, 5.55], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [8.5, 5.55, 13.5, 9.5], "texture": "#0"}
 			}
 		}
 	],
@@ -60,7 +76,7 @@
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"firstperson_lefthand": {
-			"rotation": [0, 225, 0],
+			"rotation": [0, -135, 0],
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"ground": {
@@ -73,7 +89,7 @@
 			"scale": [0.625, 0.625, 0.625]
 		},
 		"fixed": {
-			"rotation": [0, 180, 0],
+			"rotation": [0, -180, 0],
 			"translation": [0, 0, -2.5],
 			"scale": [0.5, 0.5, 0.5]
 		}

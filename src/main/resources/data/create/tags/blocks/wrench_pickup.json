@@ -1,0 +1,26 @@
+{
+	"replace":false,
+	"values":[
+		"dif:bitcoin_block",
+		"dif:the_differential",
+		"dif:washing_machine",
+		"dif:solana_block",
+		"dif:maty_block",
+		"minecraft:jukebox",
+		"dif:andesite_lattice",
+		"dif:andesite_window",
+		"dif:solar_panel_00",
+		"dif:solar_panel_01",
+		"dif:solar_panel_02",
+		"dif:solar_panel_03",
+		"dif:solar_panel_04",
+		"minecraft:crafting_table",
+		"dif:canola_plant",
+		"dif:mata_plant",
+		"dif:event_bus",
+		"dif:hospital_handle",
+		"dif:burning_generator",
+		"dif:singularitator",
+		"dif:fluid_hatch"
+	]
+}

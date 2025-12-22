@@ -149,6 +149,8 @@
 	"block.dif.old_chest":"Alpha Chest",
 	"block.dif.smooth_stone_double_slab":"Smooth Stone Double Slab",
 
+	"block.dif.fluid_hatch":"Fluid Hatch",
+
 	"block.dif.energy_block":"Energy Block",
 	"block.dif.budding_energy":"Budding Energy",
 	"block.dif.energy_cluster":"Energy Cluster",
