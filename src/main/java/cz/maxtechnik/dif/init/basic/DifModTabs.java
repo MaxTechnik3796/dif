@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.DifModConfig;
+import cz.maxtechnik.dif.DifModCommonConfig;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
@@ -11,7 +11,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class DifModTabs{
 	public static final DeferredRegister<CreativeModeTab>REGISTER=DeferredRegister.create(Registries.CREATIVE_MODE_TAB,DifMod.MODID);
 	public static final RegistryObject<CreativeModeTab>MAIN=REGISTER.register("main",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.main")).icon(()->new ItemStack(DifModItems.THE_DIFFERENTIAL.get())).displayItems(((parameters,tabData)->{
-		ItemStack PORTAL_GUN=new ItemStack(DifModItems.PORTAL_GUN.get());PORTAL_GUN.getOrCreateTag().putInt("ammo",DifModConfig.portalGunMaxAmmo);
+		ItemStack PORTAL_GUN=new ItemStack(DifModItems.PORTAL_GUN.get());PORTAL_GUN.getOrCreateTag().putInt("ammo",DifModCommonConfig.portalGunMaxAmmo);
 
 		tabData.accept(DifModItems.THE_DIFFERENTIAL.get());
 		tabData.accept(DifModItems.BAN_HAMMER.get());
@@ -55,6 +55,8 @@ public class DifModTabs{
 
 		tabData.accept(PORTAL_GUN);
 
+		tabData.accept(DifModItems.FLUID_HATCH.get());
+
 		tabData.accept(DifModItems.INCOMPLETE_CPU_SINGULARITY.get());
 		tabData.accept(DifModItems.INCOMPLETE_MITHRIL_PLATE.get());
 	})).build());
@@ -85,7 +87,9 @@ public class DifModTabs{
 			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_BARREL.get()),new ItemStack(DifModItems.BRASS_BARREL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 
 		}else if(event.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES)){
+			event.getEntries().putAfter(new ItemStack(Items.NETHERITE_HOE),new ItemStack(DifModItems.ELECTRUM_DESTROYER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(Items.LAVA_BUCKET),new ItemStack(DifModItems.BEER_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			event.getEntries().putAfter(new ItemStack(DifModItems.BEER_BUCKET.get()),new ItemStack(DifModItems.XP_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.accept(DifModItems.CREMEKA.get());
 			event.accept(DifModItems.MATY_CREATE.get());
 			event.accept(DifModItems.MAYONNAISE.get());

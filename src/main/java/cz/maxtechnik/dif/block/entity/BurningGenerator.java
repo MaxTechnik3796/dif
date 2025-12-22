@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.block.entity;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.DifModConfig;
+import cz.maxtechnik.dif.DifModCommonConfig;
 import cz.maxtechnik.dif.gui.menu.BurningGeneratorMenu;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.particles.ParticleTypes;
@@ -43,10 +43,10 @@ import java.util.stream.IntStream;
 public class BurningGenerator extends RandomizableContainerBlockEntity implements WorldlyContainer{
 	public static final int SLOTS=1;
 	public static final int INPUT_SLOT=0;
-	public static final int ENERGY_PER_TICK=DifModConfig.burningGeneratorEnergyPerTick;
-	public static final int MAX_ENERGY=DifModConfig.burningGeneratorMaxEnergy;
+	public static final int ENERGY_PER_TICK=DifModCommonConfig.burningGeneratorEnergyPerTick;
+	public static final int MAX_ENERGY=DifModCommonConfig.burningGeneratorMaxEnergy;
 	public static final int MAX_RECEIVE=Integer.MAX_VALUE;
-	public static final int MAX_EXTRACT=DifModConfig.burningGeneratorMaxExtract;
+	public static final int MAX_EXTRACT=DifModCommonConfig.burningGeneratorMaxExtract;
 	private NonNullList<ItemStack> stacks=NonNullList.withSize(SLOTS,ItemStack.EMPTY);
 	private final LazyOptional<? extends IItemHandler>[] handlers=SidedInvWrapper.create(this,Direction.values());
 	private int burnTime;

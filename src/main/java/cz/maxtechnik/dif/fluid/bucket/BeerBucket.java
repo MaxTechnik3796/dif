@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.item.bucket;
+package cz.maxtechnik.dif.fluid.bucket;
 
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import net.minecraft.world.item.Rarity;

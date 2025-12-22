@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.item.tool;
 
-import cz.maxtechnik.dif.DifModConfig;
+import cz.maxtechnik.dif.DifModCommonConfig;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -39,8 +39,8 @@ public class PortalGun extends Item{
 				itemStack.getOrCreateTag().putUUID("uuid",player.getUUID());
 			}else{
 				nbt.putInt("ammo",nbt.getInt("ammo")-1);
-				if(DifModConfig.portalGunCooldown!=0)
-					player.getCooldowns().addCooldown(itemStack.getItem(),DifModConfig.portalGunCooldown);
+				if(DifModCommonConfig.portalGunCooldown!=0)
+					player.getCooldowns().addCooldown(itemStack.getItem(),DifModCommonConfig.portalGunCooldown);
 				if(itemStack.getOrCreateTag().getBoolean("needReset")){
 					itemStack.getOrCreateTag().putUUID("uuid",player.getUUID());
 				}
@@ -66,7 +66,7 @@ public class PortalGun extends Item{
 					}
 				}.getProjectile(world);
 				entityToSpawn.setPos(player.getX(),player.getEyeY()-0.1,player.getZ());
-				entityToSpawn.shoot(player.getLookAngle().x,player.getLookAngle().y,player.getLookAngle().z,DifModConfig.portalGunMaxRange,0);
+				entityToSpawn.shoot(player.getLookAngle().x,player.getLookAngle().y,player.getLookAngle().z,DifModCommonConfig.portalGunMaxRange,0);
 				world.addFreshEntity(entityToSpawn);
 				nbt.putBoolean("needReset",true);
 				nbt.putUUID("uuid",player.getUUID());
@@ -93,7 +93,7 @@ public class PortalGun extends Item{
 		return itemStack.getOrCreateTag().getInt("charge");
 	}
 	public static void setCharge(ItemStack itemStack,int value){
-		itemStack.getOrCreateTag().putInt("charge",Math.min(value,DifModConfig.portalGunMaxAmmo));
+		itemStack.getOrCreateTag().putInt("charge",Math.min(value,DifModCommonConfig.portalGunMaxAmmo));
 	}
 	@Override
 	public boolean isBarVisible(@NotNull ItemStack itemStack){
@@ -103,7 +103,7 @@ public class PortalGun extends Item{
 	@Override
 	public int getBarWidth(@NotNull ItemStack itemStack){
 		int charge=getCharge(itemStack);
-		return Math.round(13.0f*charge/DifModConfig.portalGunMaxAmmo);
+		return Math.round(13.0f*charge/DifModCommonConfig.portalGunMaxAmmo);
 	}
 	@Override
 	public int getBarColor(@NotNull ItemStack itemStack){

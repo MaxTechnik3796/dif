@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.block;
 
-import cz.maxtechnik.dif.DifModConfig;
+import cz.maxtechnik.dif.DifModCommonConfig;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -84,15 +84,15 @@ public class SolarPanel extends Block implements SimpleWaterloggedBlock{
 		if(world.canSeeSky(pos)&&world.isDay()&&world.dimension().equals(Level.OVERWORLD)&&ent!=null){
 			Block block=blockstate.getBlock();
 			if(block.equals(DifModBlocks.SOLAR_PANEL_00.get())){
-				generate(ent,DifModConfig.solarPanel_00);
+				generate(ent,DifModCommonConfig.solarPanel_00);
 			}else if(block.equals(DifModBlocks.SOLAR_PANEL_01.get())){
-				generate(ent,DifModConfig.solarPanel_01);
+				generate(ent,DifModCommonConfig.solarPanel_01);
 			}else if(block.equals(DifModBlocks.SOLAR_PANEL_02.get())){
-				generate(ent,DifModConfig.solarPanel_02);
+				generate(ent,DifModCommonConfig.solarPanel_02);
 			}else if(block.equals(DifModBlocks.SOLAR_PANEL_03.get())){
-				generate(ent,DifModConfig.solarPanel_03);
+				generate(ent,DifModCommonConfig.solarPanel_03);
 			}else if(block.equals(DifModBlocks.SOLAR_PANEL_04.get())){
-				generate(ent,DifModConfig.solarPanel_04);
+				generate(ent,DifModCommonConfig.solarPanel_04);
 			}
 		}
 		world.scheduleTick(pos,this,1);

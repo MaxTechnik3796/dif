@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.init.events;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.DifModConfig;
+import cz.maxtechnik.dif.DifModCommonConfig;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.BlockPos;
@@ -15,7 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -141,7 +140,7 @@ public class DifMod_ModForgeEvents{
 	@SubscribeEvent
 	public static void onPlayerChangedDimensionEvent(PlayerEvent.PlayerChangedDimensionEvent event){
 		if(event.getEntity().level().isClientSide())return;
-		if(event.getTo().equals(Level.END)&&DifModConfig.disableEnd){
+		if(event.getTo().equals(Level.END)&&DifModCommonConfig.disableEnd){
 			if(event.getEntity()instanceof ServerPlayer player){
 				if(player.gameMode.getGameModeForPlayer().equals(GameType.CREATIVE)||player.gameMode.getGameModeForPlayer().equals(GameType.SPECTATOR))return;
 				ResourceKey<Level>home=player.getRespawnDimension();

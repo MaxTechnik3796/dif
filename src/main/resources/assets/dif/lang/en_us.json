@@ -35,6 +35,10 @@
 	"fluid.dif.beer_fluid":"Beer",
 	"fluid_type.dif.beer_fluid":"Beer",
 
+	"item.dif.xp_bucket":"Experience Bucket",
+	"block.dif.xp_fluid":"Experience",
+	"fluid.dif.xp_fluid":"Experience",
+	"fluid_type.dif.xp_fluid":"Experience",
 
 	"item.dif.mayonnaise.desc":"§7Mayonnaise on an escalator! - Harry Arbuckle§r",
 	"item.dif.cremeka.desc":"§7Cremeka song! - CZ|Ted<3 & AI§r",
@@ -64,7 +68,8 @@
 
     "item.dif.fernet":"Fernet",
 	"item.dif.cherry":"Cherry",
-	"item.dif.tresnovice":"Třešňovice",
+	"item.dif.cherry_bottle":"Cherry Bottle",
+	"item.dif.nether_wart_bottle":"Nether Wart Bottle",
 	"item.dif.rotten_belt":"Rotten Belt",
 	"item.dif.rotten_apple":"Rotten Apple",
 	"item.dif.bottle_of_molotovuv_koktejl":"Bottle of Molotovuv Koktejl",
@@ -80,6 +85,7 @@
 	"item.dif.portal_gun":"Portal Gun",
 	"item.dif.laser_hookah":"Laser Hookah",
 	"item.dif.ban_hammer":"§c§lBan Hammer§r",
+	"item.dif.electrum_destroyer":"Electrum Destroyer",
 	"item.dif.jadernej_sutr":"§lJ§Jadernej §lŠUTR§r",
 	"item.dif.item_5261":"52616E646F6D20706573207A204149206B64797A2074616D20646173206C6F676F204372656174752058444444",
 	"item.dif.vhs":"VHS",
@@ -104,7 +110,7 @@
 	"block.dif.example_block":"Example Block",
 	"block.dif.the_differential":"TheDifferential",
 	"block.dif.event_bus":"Event Bus",
-	"block.dif.washing_machine": "Pračka",
+	"block.dif.washing_machine":"Pračka",
 	"block.dif.generator":"§lBenzínovej Generator§r",
 	"block.dif.burning_generator":"Burning Generator",
 	"block.dif.hospital_handle":"Hospital Handle",
@@ -122,8 +128,8 @@
 	"block.dif.stoned_arrow":"Stoned Arrow",
 	"block.dif.deepslated_arrow":"Deepslated Arrow",
 
-	"item.dif.ram": "RAM",
-	"item.dif.explosive_ram": "§cExplosive RAM§r",
+	"item.dif.ram":"RAM",
+	"item.dif.explosive_ram":"§cExplosive RAM§r",
 	"item.dif.spring":"Spring",
 
 	"block.dif.deepslate_bauxite_ore":"Deepslate Bauxite Ore",

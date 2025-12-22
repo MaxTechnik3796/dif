@@ -9,4 +9,5 @@ import net.minecraftforge.registries.RegistryObject;
 public class DifModFluidTypes{
 	public static final DeferredRegister<FluidType>REGISTRY=DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES,DifMod.MODID);
 	public static final RegistryObject<FluidType>BEER_TYPE=REGISTRY.register("beer_fluid",BeerFluidType::new);
+	public static final RegistryObject<FluidType>XP_TYPE=REGISTRY.register("xp_fluid",XpFluidType::new);
 }

@@ -4,9 +4,8 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
-import net.minecraftforge.registries.RegistryObject;
 @Mod.EventBusSubscriber(modid=DifMod.MODID,bus=Mod.EventBusSubscriber.Bus.MOD)
-public class DifModConfig{
+public class DifModCommonConfig{
 	private static final ForgeConfigSpec.Builder BUILDER=new ForgeConfigSpec.Builder();
 
 	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_00;

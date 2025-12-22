@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.block;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.DifModConfig;
+import cz.maxtechnik.dif.DifModCommonConfig;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -53,7 +53,7 @@ public class MataPlant extends SugarCaneBlock implements BonemealableBlock{
 				i++;
 				checkPos=checkPos.below();
 			}
-			if(i<DifModConfig.mataPlantMaxHeight){
+			if(i<DifModCommonConfig.mataPlantMaxHeight){
 				int j=blockstate.getValue(AGE);
 				if(ForgeHooks.onCropsGrowPre(world,pos,blockstate,true)){
 					if(j==15){

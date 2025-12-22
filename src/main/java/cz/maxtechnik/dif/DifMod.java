@@ -56,7 +56,7 @@ public class DifMod{
 		bus.addListener(DifModTabs::addCreative);
 
 
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON,DifModConfig.SPEC);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON,DifModCommonConfig.SPEC);
 	}
 	private void commonSetup(final FMLCommonSetupEvent event){
 		LOGGER.info("HELLO FROM COMMON SETUP");

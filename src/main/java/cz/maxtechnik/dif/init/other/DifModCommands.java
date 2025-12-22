@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.DifModConfig;
+import cz.maxtechnik.dif.DifModCommonConfig;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraftforge.fml.common.Mod;
@@ -18,7 +18,7 @@ public class DifModCommands{
 			MutableComponent message=Component.literal("");
 			message.append(Component.literal("Configuration re-loaded!"));
 			DifMod.sendMessageToPlayer(Objects.requireNonNull(arguments.getSource().getPlayer()),message);
-			DifModConfig.load();
+			DifModCommonConfig.load();
 			return 0;
 		}));
 	}

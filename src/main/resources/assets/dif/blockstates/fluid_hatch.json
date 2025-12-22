@@ -1,0 +1,19 @@
+{
+	"variants":{
+		"facing=north":{
+			"model":"dif:block/fluid_hatch"
+		},
+		"facing=east":{
+			"model":"dif:block/fluid_hatch",
+			"y":90
+		},
+		"facing=south":{
+			"model":"dif:block/fluid_hatch",
+			"y":180
+		},
+		"facing=west":{
+			"model":"dif:block/fluid_hatch",
+			"y":270
+		}
+	}
+}

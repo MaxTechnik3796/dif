@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.init.fluid;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.fluid.BeerFluid;
+import cz.maxtechnik.dif.fluid.*;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -16,14 +16,19 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class DifModFluids{
 	public static final DeferredRegister<Fluid>REGISTRY=DeferredRegister.create(ForgeRegistries.FLUIDS,DifMod.MODID);
+
 	public static final RegistryObject<FlowingFluid>BEER=REGISTRY.register("beer_fluid",BeerFluid.Source::new);
 	public static final RegistryObject<FlowingFluid>FLOWING_BEER=REGISTRY.register("flowing_beer_fluid",BeerFluid.Flowing::new);
+
+	public static final RegistryObject<FlowingFluid>XP=REGISTRY.register("xp_fluid",XpFluid.Source::new);
+	public static final RegistryObject<FlowingFluid>FLOWING_XP=REGISTRY.register("flowing_xp_fluid",XpFluid.Flowing::new);
 
 	@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD,value=Dist.CLIENT)
 	public static class FluidsClientSideHandler{
 		@SubscribeEvent
 		public static void clientSetup(FMLClientSetupEvent event) {
 			ItemBlockRenderTypes.setRenderLayer(BEER.get(),RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(XP.get(),RenderType.translucent());
 		}
 	}
 }

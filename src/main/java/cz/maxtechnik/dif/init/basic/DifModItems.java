@@ -1,8 +1,8 @@
 package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.fluid.bucket.*;
 import cz.maxtechnik.dif.item.*;
-import cz.maxtechnik.dif.item.bucket.*;
 import cz.maxtechnik.dif.item.food.*;
 import cz.maxtechnik.dif.item.food.create.*;
 import cz.maxtechnik.dif.item.random.*;
@@ -20,7 +20,10 @@ public class DifModItems{
     private static RegistryObject<Item>block(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new BlockItem(block.get(),new Item.Properties()));}
     private static RegistryObject<Item>doubleBlock(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));}
 
+	public static final RegistryObject<Item>FLUID_HATCH=block(DifModBlocks.FLUID_HATCH);
+
 	public static final RegistryObject<Item>BEER_BUCKET=REGISTRY.register("beer_bucket",BeerBucket::new);
+	public static final RegistryObject<Item>XP_BUCKET=REGISTRY.register("xp_bucket",XpBucket::new);
 
 	public static final RegistryObject<Item>END_PORTAL=V_REGISTRY.register("end_portal",()->new BlockItem(Blocks.END_PORTAL,new Item.Properties()));
 	public static final RegistryObject<Item>END_GATEWAY=V_REGISTRY.register("end_gateway",()->new BlockItem(Blocks.END_GATEWAY,new Item.Properties()));
@@ -66,6 +69,7 @@ public class DifModItems{
 	public static final RegistryObject<Item>PORTAL_GUN=REGISTRY.register("portal_gun",PortalGun::new);
 	public static final RegistryObject<Item>LASER_HOOKAH=REGISTRY.register("laser_hookah",LaserHookah::new);
 	public static final RegistryObject<Item>BAN_HAMMER=REGISTRY.register("ban_hammer",BanHammer::new);
+	public static final RegistryObject<Item>ELECTRUM_DESTROYER=REGISTRY.register("electrum_destroyer",ElectrumDestroyer::new);
 	public static final RegistryObject<Item>MITHRIL=REGISTRY.register("mithril",Basic::new);
 	public static final RegistryObject<Item>MITHRIL_PLATE=REGISTRY.register("mithril_plate",Basic::new);
 	public static final RegistryObject<Item>INCOMPLETE_MITHRIL_PLATE=REGISTRY.register("incomplete_mithril_plate",Basic::new);
