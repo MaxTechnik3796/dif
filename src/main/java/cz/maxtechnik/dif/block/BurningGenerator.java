@@ -54,6 +54,10 @@ public class BurningGenerator extends Block implements SimpleWaterloggedBlock, E
 		return Shapes.empty();
 	}
 	@Override
+	public float getShadeBrightness(@NotNull BlockState blockState,@NotNull BlockGetter blockGetter,@NotNull BlockPos pos){
+		return 1.0f;
+	}
+	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
 		builder.add(FACING,WATERLOGGED,LIT);
 	}

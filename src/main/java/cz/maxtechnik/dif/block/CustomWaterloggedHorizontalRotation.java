@@ -38,6 +38,10 @@ public class CustomWaterloggedHorizontalRotation extends Block implements Simple
 		builder.add(FACING,WATERLOGGED);
 	}
 	@Override
+	public float getShadeBrightness(@NotNull BlockState blockState,@NotNull BlockGetter blockGetter,@NotNull BlockPos pos){
+		return 1.0f;
+	}
+	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context){
 		boolean flag=context.getLevel().getFluidState(context.getClickedPos()).getType()==Fluids.WATER;
 		return this.defaultBlockState().setValue(FACING,context.getHorizontalDirection().getOpposite()).setValue(WATERLOGGED,flag);

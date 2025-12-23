@@ -25,6 +25,10 @@ public class AndesiteWindow extends Block{
 		return true;
 	}
 	@Override
+	public float getShadeBrightness(@NotNull BlockState blockState,@NotNull BlockGetter blockGetter,@NotNull BlockPos pos){
+		return 1.0f;
+	}
+	@Override
 	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
 		return 0;
 	}
