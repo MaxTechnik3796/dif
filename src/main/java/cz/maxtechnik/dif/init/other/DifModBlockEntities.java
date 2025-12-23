@@ -17,11 +17,11 @@ public class DifModBlockEntities{
 	public static final RegistryObject<BlockEntityType<?>>OLD_CHEST=register("old_chest",DifModBlocks.OLD_CHEST,OldChest::new);
 
 
-	public static final RegistryObject<BlockEntityType<?>>TEST=REGISTRY.register("test",()->BlockEntityType.Builder.of(TestBlockEntity::new,DifModBlocks.EXAMPLE_BLOCK.get()).build(null));
+	public static final RegistryObject<BlockEntityType<?>>XP_STORAGE=REGISTRY.register("xp_storage",()->BlockEntityType.Builder.of(XpStorageBlockEntity::new,DifModBlocks.XP_STORAGE.get()).build(null));
 
 	public static final RegistryObject<BlockEntityType<BurningGenerator>> BURNING_GENERATOR=REGISTRY.register("generator_be",()->BlockEntityType.Builder.of(BurningGenerator::new,DifModBlocks.BURNING_GENERATOR.get()).build(null));
-	public static final RegistryObject<BlockEntityType<?>>SPECIAL_CRAFTING=register("special_crafting",DifModBlocks.EXAMPLE_BLOCK,SpecialCrafting::new);
-	private static RegistryObject<BlockEntityType<?>> register(String registryname,RegistryObject<Block> block,BlockEntityType.BlockEntitySupplier<?> supplier){
+	public static final RegistryObject<BlockEntityType<?>>SPECIAL_CRAFTING=register("special_crafting",DifModBlocks.XP_STORAGE,SpecialCrafting::new);
+	private static RegistryObject<BlockEntityType<?>>register(String registryname,RegistryObject<Block> block,BlockEntityType.BlockEntitySupplier<?> supplier){
 		return REGISTRY.register(registryname,()->BlockEntityType.Builder.of(supplier,block.get()).build(null));
 	}
 }

@@ -179,5 +179,7 @@
 	"item.dif.stone_katana":"Stone Katana",
 	"item.dif.iron_katana":"Iron Katana",
 	"item.dif.diamond_katana":"Diamond Katana",
-	"item.dif.netherite_katana":"Netherite Katana"
+	"item.dif.netherite_katana":"Netherite Katana",
+
+	"block.dif.xp_storage":"XP Storage Block"
 }

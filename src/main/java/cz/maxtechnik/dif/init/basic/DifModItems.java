@@ -20,7 +20,8 @@ public class DifModItems{
     private static RegistryObject<Item>block(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new BlockItem(block.get(),new Item.Properties()));}
     private static RegistryObject<Item>doubleBlock(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));}
 
-	public static final RegistryObject<Item>FLUID_HATCH=block(DifModBlocks.FLUID_HATCH);
+	public static final RegistryObject<Item>EXAMPLE_BLOCK=block(DifModBlocks.EXAMPLE_BLOCK);
+
 
 	public static final RegistryObject<Item>BEER_BUCKET=REGISTRY.register("beer_bucket",BeerBucket::new);
 	public static final RegistryObject<Item>XP_BUCKET=REGISTRY.register("xp_bucket",XpBucket::new);
@@ -85,11 +86,12 @@ public class DifModItems{
 	public static final RegistryObject<Item>BLUE_PLATE=REGISTRY.register("blue_plate",Basic::new);
 	public static final RegistryObject<Item>HEAVY_PLATE=REGISTRY.register("heavy_plate",Basic::new);
 
-    public static final RegistryObject<Item>EXAMPLE_BLOCK=block(DifModBlocks.EXAMPLE_BLOCK);
+    public static final RegistryObject<Item>XP_STORAGE=block(DifModBlocks.XP_STORAGE);
     public static final RegistryObject<Item>THE_DIFFERENTIAL=block(DifModBlocks.THE_DIFFERENTIAL);
     public static final RegistryObject<Item>EVENT_BUS=block(DifModBlocks.EVENT_BUS);
 	public static final RegistryObject<Item>WASHING_MACHINE=block(DifModBlocks.WASHING_MACHINE);
     public static final RegistryObject<Item>BURNING_GENERATOR=block(DifModBlocks.BURNING_GENERATOR);
+	public static final RegistryObject<Item>FLUID_HATCH=block(DifModBlocks.FLUID_HATCH);
     public static final RegistryObject<Item>HOSPITAL_HANDLE=block(DifModBlocks.HOSPITAL_HANDLE);
 	public static final RegistryObject<Item>SINGULARITATOR=block(DifModBlocks.SINGULARITATOR);
 	public static final RegistryObject<Item>SUPER_BOX=block(DifModBlocks.SUPER_BOX);

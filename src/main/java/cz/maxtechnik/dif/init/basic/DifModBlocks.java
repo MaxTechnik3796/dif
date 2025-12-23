@@ -16,17 +16,15 @@ public class DifModBlocks{
 	public static final DeferredRegister<Block>REGISTRY=DeferredRegister.create(ForgeRegistries.BLOCKS,DifMod.MODID);
 	public static final RegistryObject<Block>EXAMPLE_BLOCK=REGISTRY.register("example_block",Test::new);
 
-
 	public static final RegistryObject<Block>BEER_FLUID=REGISTRY.register("beer_fluid",BeerBlock::new);
 	public static final RegistryObject<Block>XP_FLUID=REGISTRY.register("xp_fluid",XpBlock::new);
-
-	public static final RegistryObject<Block>FLUID_HATCH=REGISTRY.register("fluid_hatch",FluidHatch::new);
 
 	public static final RegistryObject<Block>BEER=REGISTRY.register("beer",Beer::new);
 	public static final RegistryObject<Block>THE_DIFFERENTIAL=REGISTRY.register("the_differential",()->new CustomWaterloggedHorizontalRotation(SoundType.STONE,5F,6F,true));
 	public static final RegistryObject<Block>WASHING_MACHINE=REGISTRY.register("washing_machine",WashingMachine::new);
 	public static final RegistryObject<Block>EVENT_BUS=REGISTRY.register("event_bus",()->new CustomWaterloggedHorizontalRotation(SoundType.NETHERITE_BLOCK,5F,6F,true));
 	public static final RegistryObject<Block>BURNING_GENERATOR=REGISTRY.register("burning_generator",BurningGenerator::new);
+	public static final RegistryObject<Block>FLUID_HATCH=REGISTRY.register("fluid_hatch",FluidHatch::new);
 	public static final RegistryObject<Block>HOSPITAL_HANDLE=REGISTRY.register("hospital_handle",HospitalHandle::new);
 	public static final RegistryObject<Block>SINGULARITATOR=REGISTRY.register("singularitator",()->new CustomWaterlogged(SoundType.METAL,5F,6F,true));
 	public static final RegistryObject<Block>SUPER_BOX=REGISTRY.register("super_box",SuperBox::new);
@@ -71,4 +69,6 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>ANDESITE_BARREL=REGISTRY.register("andesite_barrel",AndesiteBarrel::new);
 	public static final RegistryObject<Block>COPPER_BARREL=REGISTRY.register("copper_barrel",CopperBarrel::new);
 	public static final RegistryObject<Block>BRASS_BARREL=REGISTRY.register("brass_barrel",BrassBarrel::new);
+
+	public static final RegistryObject<Block>XP_STORAGE=REGISTRY.register("xp_storage",XpStorage::new);
 }

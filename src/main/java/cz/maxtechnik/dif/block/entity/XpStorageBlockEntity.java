@@ -7,10 +7,10 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-public class TestBlockEntity extends BlockEntity{
+public class XpStorageBlockEntity extends BlockEntity{
 	public int xp;
-	public TestBlockEntity(BlockPos pos, BlockState state){
-		super(DifModBlockEntities.TEST.get(),pos,state);
+	public XpStorageBlockEntity(BlockPos pos,BlockState state){
+		super(DifModBlockEntities.XP_STORAGE.get(),pos,state);
 	}
 	@Override
 	public void load(@NotNull CompoundTag compound){

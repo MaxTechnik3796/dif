@@ -99,23 +99,18 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 			if(DifMod.playerGameModeIsCreativeCategory(serverPlayer)||!player.getMainHandItem().isEmpty())return;
 			if(!blockState.getValue(XP)) return;
 			if(player.isShiftKeyDown()){
-				// left-click + shift: extract +30 levels (or as much as tank has)
 				handleXpExtraction(world,pos,blockState,player,30);
 			}else{
-				// left-click: extract +1 level (but if fractional only to next whole level first)
 				handleXpExtraction(world,pos,blockState,player,1);
 			}
 		}
 	}
-
-		// XP / level conversion helpers (Minecraft formulas)
 		private static int totalXpForLevel(int level){
 			if(level<=0) return 0;
 			if(level<=16) return level*level + 6*level;
 			if(level<=31) return (int)(2.5*level*level - 40.5*level + 360);
 			return (int)(4.5*level*level - 162.5*level + 2220);
 		}
-
     private void handleXpInsertion(Level world, BlockPos targetPos, BlockState blockState, Player player, boolean insertAll){
 			BlockEntity blockEntity=world.getBlockEntity(targetPos);
 			if(blockEntity==null) return;
@@ -181,7 +176,6 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 				}
 			});
 		}
-
 		private static int getPlayerTotalXp(Player player){
 			return player.totalExperience;
 		}
@@ -196,13 +190,12 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		}
 		pos=pos.relative(blockState.getValue(FACING));
 		BlockEntity blockEntity=world.getBlockEntity(pos);
+		if(player instanceof ServerPlayer serverPlayer)if(DifMod.playerGameModeIsCreativeCategory(serverPlayer))return InteractionResult.SUCCESS;
 		if(blockEntity!=null){
 			if(blockState.getValue(XP)&&player.getItemInHand(hand).isEmpty()){
 				AtomicInteger retval0=new AtomicInteger(0);
 				blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER,blockState.getValue(FACING)).ifPresent(capability->retval0.set(capability.getTanks()));
 				if(retval0.get()>0){
-                    // right-click + shift: insert all levels (or as much as tank accepts)
-                    // right-click: insert fractional progress (round down to whole level)
                     handleXpInsertion(world,pos,blockState,player, player.isShiftKeyDown());
 				}
 			}else{
