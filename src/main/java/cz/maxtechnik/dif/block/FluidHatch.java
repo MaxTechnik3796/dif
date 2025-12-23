@@ -1,5 +1,7 @@
 package cz.maxtechnik.dif.block;
 
+import com.simibubi.create.AllSoundEvents;
+import com.simibubi.create.Create;
 import cz.maxtechnik.dif.DifMod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -108,6 +110,7 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		if(world.isClientSide())return InteractionResult.SUCCESS;
 		if(player.getItemInHand(hand).is(ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge","tools/wrench")))){
 			world.setBlock(pos,blockState.setValue(XP,!blockState.getValue(XP)),3);
+			AllSoundEvents.WRENCH_ROTATE.playOnServer(world,pos,1.0F,Create.RANDOM.nextFloat() * 0.5F + 0.5F);
 			return InteractionResult.SUCCESS;
 		}
 		pos=pos.relative(blockState.getValue(FACING));
