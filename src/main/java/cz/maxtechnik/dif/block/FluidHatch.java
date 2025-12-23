@@ -3,7 +3,9 @@ package cz.maxtechnik.dif.block;
 import cz.maxtechnik.dif.DifMod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -88,18 +90,43 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		return super.updateShape(state,facing,facingState,world,currentPos,facingPos);
 	}
 	@Override
+	public void attack(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player){
+		super.attack(blockState,world,pos,player);
+		if(player instanceof ServerPlayer serverPlayer){
+			if(DifMod.playerGameModeIsCreativeCategory(serverPlayer)||!player.getMainHandItem().isEmpty())return;
+			if(player.isShiftKeyDown()){
+				//akce s.hit
+			}else{
+				//akce hit
+			}
+		}
+	}
+
+	@Override
 	public @NotNull InteractionResult use(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
 		super.use(blockState,world,pos,player,hand,hit);
+		if(world.isClientSide())return InteractionResult.SUCCESS;
+		if(player.getItemInHand(hand).is(ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge","tools/wrench")))){
+			world.setBlock(pos,blockState.setValue(XP,!blockState.getValue(XP)),3);
+			return InteractionResult.SUCCESS;
+		}
 		pos=pos.relative(blockState.getValue(FACING));
 		BlockEntity blockEntity=world.getBlockEntity(pos);
-		if(!world.isClientSide()&&blockEntity!=null){
+		if(blockEntity!=null&&player.getItemInHand(hand).isEmpty()){
 			if(blockState.getValue(XP)){
-
+				AtomicInteger retval0=new AtomicInteger(0);
+				blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER,blockState.getValue(FACING)).ifPresent(capability->retval0.set(capability.getTanks()));
+				if(retval0.get()>0){
+					if(player.isShiftKeyDown()){
+						//akce s.klik
+					}else{
+						//akce klik
+					}
+				}
 			}else{
 				AtomicInteger retval0=new AtomicInteger(0);
 				blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER,blockState.getValue(FACING)).ifPresent(capability->retval0.set(capability.getTanks()));
-				int tanks=retval0.get();
-				if(tanks>0){
+				if(retval0.get()>0){
 					if(player.getItemInHand(hand).getItem() instanceof BucketItem bucket){
 						AtomicInteger retval1=new AtomicInteger(0);
 						blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER,blockState.getValue(FACING)).ifPresent(capability->retval1.set(capability.fill(new FluidStack(bucket.getFluid(),1000),IFluidHandler.FluidAction.SIMULATE)));
