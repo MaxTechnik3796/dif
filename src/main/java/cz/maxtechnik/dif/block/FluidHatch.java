@@ -112,8 +112,8 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		}
 		pos=pos.relative(blockState.getValue(FACING));
 		BlockEntity blockEntity=world.getBlockEntity(pos);
-		if(blockEntity!=null&&player.getItemInHand(hand).isEmpty()){
-			if(blockState.getValue(XP)){
+		if(blockEntity!=null){
+			if(blockState.getValue(XP)&&player.getItemInHand(hand).isEmpty()){
 				AtomicInteger retval0=new AtomicInteger(0);
 				blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER,blockState.getValue(FACING)).ifPresent(capability->retval0.set(capability.getTanks()));
 				if(retval0.get()>0){
