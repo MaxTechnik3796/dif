@@ -116,17 +116,11 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 			return (int)(4.5*level*level - 162.5*level + 2220);
 		}
 
-		private static int xpToAddForLevels(int currentTotalXp,int targetLevel){
-			int targetTotal=totalXpForLevel(targetLevel);
-			int need=targetTotal - currentTotalXp;
-			return Math.max(0,need);
-		}
-
-		private void handleXpInsertion(Level world, BlockPos targetPos, BlockState blockState, Player player, boolean insertAll){
+    private void handleXpInsertion(Level world, BlockPos targetPos, BlockState blockState, Player player, boolean insertAll){
 			BlockEntity blockEntity=world.getBlockEntity(targetPos);
 			if(blockEntity==null) return;
 			blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER,blockState.getValue(FACING)).ifPresent(capability->{
-				int playerTotal=player.totalExperience;
+				int playerTotal=getPlayerTotalXp(player);
 				int toInsert;
 				if(insertAll){
 					toInsert=playerTotal;
@@ -140,12 +134,14 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 				FluidStack sim=new FluidStack(DifModFluids.XP.get(),toInsert);
 				int accepted=capability.fill(sim,IFluidHandler.FluidAction.SIMULATE);
 				if(accepted>0){
-					if(player instanceof ServerPlayer serverPlayer){
-						if(!DifMod.playerGameModeIsCreativeCategory(serverPlayer)){
-							player.giveExperiencePoints(-accepted);
+					int filled=capability.fill(new FluidStack(DifModFluids.XP.get(),accepted),IFluidHandler.FluidAction.EXECUTE);
+					if(filled>0){
+						if(player instanceof ServerPlayer serverPlayer){
+							if(!DifMod.playerGameModeIsCreativeCategory(serverPlayer)){
+								player.giveExperiencePoints(-filled);
+							}
 						}
 					}
-					capability.fill(new FluidStack(DifModFluids.XP.get(),accepted),IFluidHandler.FluidAction.EXECUTE);
 				}
 			});
 		}
@@ -155,30 +151,39 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 			BlockEntity blockEntity=world.getBlockEntity(targetPos);
 			if(blockEntity==null) return;
 			blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER,blockState.getValue(FACING)).ifPresent(capability->{
-				int currentTotal=player.totalExperience;
+				int currentTotal=getPlayerTotalXp(player);
 				int desiredXp;
+				int targetLevel;
 				if(levelsRequested<=1){
 					// give enough to reach next whole level
-					int nextLevel=player.experienceLevel+1;
-					desiredXp = totalXpForLevel(nextLevel) - currentTotal;
-					if(desiredXp<0) desiredXp=0;
+					targetLevel=player.experienceLevel+1;
 				}else{
-					int targetLevel = player.experienceLevel + levelsRequested;
-					desiredXp = xpToAddForLevels(currentTotal, targetLevel);
+					// shift-left: add N levels (e.g., 30) relative to current level
+					targetLevel=player.experienceLevel + levelsRequested;
 				}
-				if(desiredXp<=0) return;
+				desiredXp = totalXpForLevel(targetLevel) - currentTotal;
+				if(desiredXp<=0){
+					// edge-case rounding: if player level still below target, request at least 1 xp
+					if(player.experienceLevel < targetLevel) desiredXp = 1; else return;
+				}
 				FluidStack want=new FluidStack(DifModFluids.XP.get(),desiredXp);
 				FluidStack drainedSim=capability.drain(want,IFluidHandler.FluidAction.SIMULATE);
 				int available= drainedSim.getAmount();
 				if(available<=0) return;
-				// give to player the available amount (1 mB = 1 xp point)
+				FluidStack drained=capability.drain(new FluidStack(DifModFluids.XP.get(),available),IFluidHandler.FluidAction.EXECUTE);
+				int actual= drained.getAmount();
+				if(actual<=0) return;
+				// give to player the actual drained amount (1 mB = 1 xp point)
 				if(player instanceof ServerPlayer serverPlayer){
 					if(!DifMod.playerGameModeIsCreativeCategory(serverPlayer)){
-						player.giveExperiencePoints(available);
+						player.giveExperiencePoints(actual);
 					}
 				}
-				capability.drain(new FluidStack(DifModFluids.XP.get(),available),IFluidHandler.FluidAction.EXECUTE);
 			});
+		}
+
+		private static int getPlayerTotalXp(Player player){
+			return player.totalExperience;
 		}
 	@Override
 	public @NotNull InteractionResult use(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
