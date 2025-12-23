@@ -85,7 +85,6 @@ public class DifModTabs{
 			event.getEntries().putAfter(new ItemStack(Items.BARREL),new ItemStack(DifModItems.ANDESITE_BARREL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.ANDESITE_BARREL.get()),new ItemStack(DifModItems.COPPER_BARREL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_BARREL.get()),new ItemStack(DifModItems.BRASS_BARREL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-
 		}else if(event.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES)){
 			event.getEntries().putAfter(new ItemStack(Items.NETHERITE_HOE),new ItemStack(DifModItems.ELECTRUM_DESTROYER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(Items.LAVA_BUCKET),new ItemStack(DifModItems.BEER_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
@@ -118,7 +117,7 @@ public class DifModTabs{
 			event.getEntries().putAfter(new ItemStack(Items.MILK_BUCKET),new ItemStack(DifModItems.BEER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.BEER.get()),new ItemStack(DifModItems.MATY_DRINK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.MATY_DRINK.get()),new ItemStack(DifModItems.FERNET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.FERNET.get()),new ItemStack(DifModItems.TRESNOVICE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			event.getEntries().putAfter(new ItemStack(DifModItems.FERNET.get()),new ItemStack(DifModItems.WINE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.accept(DifModItems.BOTTLE_OF_MOLOTOVUV_KOKTEJL.get());
 			event.accept(DifModItems.BOTTLE_OF_URANOVEJ_KOKTEJL.get());
 		}else if(event.getTabKey().equals(CreativeModeTabs.INGREDIENTS)){
