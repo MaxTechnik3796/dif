@@ -36,8 +36,11 @@ public class DifModItems{
     public static final RegistryObject<Item>EXAMPLE_ITEM=REGISTRY.register("example_item",Test::new);
     public static final RegistryObject<Item>QUESTION_MARK=REGISTRY.register("question_mark",Basic::new);
 
-	public static final RegistryObject<Item>WINE=REGISTRY.register("wine",Basic::new);
+	public static final RegistryObject<Item>CHERRY_BOTTLE=REGISTRY.register("cherry_bottle",CherryBottle::new);
+	public static final RegistryObject<Item>NETHER_WART_BOTTLE=REGISTRY.register("nether_wart_bottle",NetherWartBottle::new);
+	public static final RegistryObject<Item>WINE=REGISTRY.register("wine",Wine::new);
     public static final RegistryObject<Item>FERNET=REGISTRY.register("fernet",Fernet::new);
+	public static final RegistryObject<Item>SUGAR_MUSHROOM=REGISTRY.register("sugar_mushroom",()->new Custom(3,0.5F));
     public static final RegistryObject<Item>CHERRY=REGISTRY.register("cherry",()->new Custom(1,0.1F));
     public static final RegistryObject<Item>ROTTEN_BELT=REGISTRY.register("rotten_belt",Bad::new);
     public static final RegistryObject<Item>ROTTEN_APPLE=REGISTRY.register("rotten_apple",Bad::new);

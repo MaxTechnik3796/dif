@@ -20,8 +20,10 @@ public class Fernet extends Item{
 	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemstack,@NotNull Level world,@NotNull LivingEntity entity){
 		ItemStack retval=new ItemStack(Items.GLASS_BOTTLE);
 		super.finishUsingItem(itemstack,world,entity);
-		entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION,200,0));
-		entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION,200,0));
+		if(!world.isClientSide()){
+			entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION,200,0));
+			entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION,200,0));
+		}
 		if(itemstack.isEmpty()){
 			return retval;
 		}else{

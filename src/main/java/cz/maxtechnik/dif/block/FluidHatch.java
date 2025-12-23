@@ -44,7 +44,7 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 	public static final BooleanProperty XP=BooleanProperty.create("xp");
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
 	public FluidHatch(){
-		super(Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops().noOcclusion().isRedstoneConductor((bs,br,bp)->false));
+		super(Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(3F,6F).requiresCorrectToolForDrops().noOcclusion().isRedstoneConductor((bs,br,bp)->false));
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(WATERLOGGED,false).setValue(XP,false));
 	}
 	@Override

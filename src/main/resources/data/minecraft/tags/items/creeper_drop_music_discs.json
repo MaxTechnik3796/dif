@@ -1,11 +1,8 @@
 {
 	"replace":false,
 	"values":[
-		"dif:cremeka",
 		"dif:furt_ta_stejna_hra",
-		"dif:maty_create",
 		"dif:maty_pada_stream",
-		"dif:mayonnaise",
 		"dif:redstone"
 	]
 }

@@ -18,18 +18,18 @@
 
 
 		"facing=north,xp=true":{
-			"model":"dif:block/fluid_hatch"
+			"model":"dif:block/fluid_hatch_xp"
 		},
 		"facing=east,xp=true":{
-			"model":"dif:block/fluid_hatch",
+			"model":"dif:block/fluid_hatch_xp",
 			"y":90
 		},
 		"facing=south,xp=true":{
-			"model":"dif:block/fluid_hatch",
+			"model":"dif:block/fluid_hatch_xp",
 			"y":180
 		},
 		"facing=west,xp=true":{
-			"model":"dif:block/fluid_hatch",
+			"model":"dif:block/fluid_hatchxp",
 			"y":270
 		}
 

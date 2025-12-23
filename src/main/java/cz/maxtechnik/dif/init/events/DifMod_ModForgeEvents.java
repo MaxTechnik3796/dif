@@ -50,12 +50,9 @@ public class DifMod_ModForgeEvents{
 	}
 	@SubscribeEvent
 	public static void registerWanderingTrades(WandererTradesEvent event){
-		event.getGenericTrades().add(new BasicItemListing(emerald(5),new ItemStack(DifModItems.CREMEKA.get(),1),3,0,0F));
-		event.getGenericTrades().add(new BasicItemListing(emerald(5),new ItemStack(DifModItems.FURT_TA_STEJNA_HRA.get(),1),3,0,0F));
-		event.getGenericTrades().add(new BasicItemListing(emerald(5),new ItemStack(DifModItems.MATY_CREATE.get(),1),3,0,0F));
-		event.getGenericTrades().add(new BasicItemListing(emerald(5),new ItemStack(DifModItems.MATY_PADA_STREAM.get(),1),3,0,0F));
-		event.getGenericTrades().add(new BasicItemListing(emerald(5),new ItemStack(DifModItems.MAYONNAISE.get(),1),3,0,0F));
-		event.getGenericTrades().add(new BasicItemListing(emerald(5),new ItemStack(DifModItems.REDSTONE.get(),1),3,0,0F));
+		event.getGenericTrades().add(new BasicItemListing(emerald(5),new ItemStack(DifModItems.CREMEKA.get(),1),2,0,0F));
+		event.getGenericTrades().add(new BasicItemListing(emerald(5),new ItemStack(DifModItems.MATY_CREATE.get(),1),2,0,0F));
+		event.getGenericTrades().add(new BasicItemListing(emerald(5),new ItemStack(DifModItems.MAYONNAISE.get(),1),2,0,0F));
 	}
 	@SubscribeEvent
 	public static void addComposterItems(FMLCommonSetupEvent event){
