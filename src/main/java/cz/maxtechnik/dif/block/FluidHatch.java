@@ -36,6 +36,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
+import cz.maxtechnik.dif.init.fluid.DifModFluids;
 
 import java.util.concurrent.atomic.AtomicInteger;
 @SuppressWarnings("deprecation")
@@ -96,14 +97,89 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		super.attack(blockState,world,pos,player);
 		if(player instanceof ServerPlayer serverPlayer){
 			if(DifMod.playerGameModeIsCreativeCategory(serverPlayer)||!player.getMainHandItem().isEmpty())return;
+			if(!blockState.getValue(XP)) return;
 			if(player.isShiftKeyDown()){
-				//akce s.hit
+				// left-click + shift: extract +30 levels (or as much as tank has)
+				handleXpExtraction(world,pos,blockState,player,30);
 			}else{
-				//akce hit
+				// left-click: extract +1 level (but if fractional only to next whole level first)
+				handleXpExtraction(world,pos,blockState,player,1);
 			}
 		}
 	}
 
+		// XP / level conversion helpers (Minecraft formulas)
+		private static int totalXpForLevel(int level){
+			if(level<=0) return 0;
+			if(level<=16) return level*level + 6*level;
+			if(level<=31) return (int)(2.5*level*level - 40.5*level + 360);
+			return (int)(4.5*level*level - 162.5*level + 2220);
+		}
+
+		private static int xpToAddForLevels(int currentTotalXp,int targetLevel){
+			int targetTotal=totalXpForLevel(targetLevel);
+			int need=targetTotal - currentTotalXp;
+			return Math.max(0,need);
+		}
+
+		private void handleXpInsertion(Level world, BlockPos targetPos, BlockState blockState, Player player, boolean insertAll){
+			BlockEntity blockEntity=world.getBlockEntity(targetPos);
+			if(blockEntity==null) return;
+			blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER,blockState.getValue(FACING)).ifPresent(capability->{
+				int playerTotal=player.totalExperience;
+				int toInsert;
+				if(insertAll){
+					toInsert=playerTotal;
+				}else{
+					int nextLevel=player.experienceLevel+1;
+					int need=totalXpForLevel(nextLevel)-playerTotal; // xp needed to reach next whole level
+					if(need<0) need=0;
+					toInsert=need;
+				}
+				if(toInsert<=0) return;
+				FluidStack sim=new FluidStack(DifModFluids.XP.get(),toInsert);
+				int accepted=capability.fill(sim,IFluidHandler.FluidAction.SIMULATE);
+				if(accepted>0){
+					if(player instanceof ServerPlayer serverPlayer){
+						if(!DifMod.playerGameModeIsCreativeCategory(serverPlayer)){
+							player.giveExperiencePoints(-accepted);
+						}
+					}
+					capability.fill(new FluidStack(DifModFluids.XP.get(),accepted),IFluidHandler.FluidAction.EXECUTE);
+				}
+			});
+		}
+
+		private void handleXpExtraction(Level world, BlockPos hatchPos, BlockState blockState, Player player, int levelsRequested){
+			BlockPos targetPos=hatchPos.relative(blockState.getValue(FACING));
+			BlockEntity blockEntity=world.getBlockEntity(targetPos);
+			if(blockEntity==null) return;
+			blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER,blockState.getValue(FACING)).ifPresent(capability->{
+				int currentTotal=player.totalExperience;
+				int desiredXp;
+				if(levelsRequested<=1){
+					// give enough to reach next whole level
+					int nextLevel=player.experienceLevel+1;
+					desiredXp = totalXpForLevel(nextLevel) - currentTotal;
+					if(desiredXp<0) desiredXp=0;
+				}else{
+					int targetLevel = player.experienceLevel + levelsRequested;
+					desiredXp = xpToAddForLevels(currentTotal, targetLevel);
+				}
+				if(desiredXp<=0) return;
+				FluidStack want=new FluidStack(DifModFluids.XP.get(),desiredXp);
+				FluidStack drainedSim=capability.drain(want,IFluidHandler.FluidAction.SIMULATE);
+				int available= drainedSim.getAmount();
+				if(available<=0) return;
+				// give to player the available amount (1 mB = 1 xp point)
+				if(player instanceof ServerPlayer serverPlayer){
+					if(!DifMod.playerGameModeIsCreativeCategory(serverPlayer)){
+						player.giveExperiencePoints(available);
+					}
+				}
+				capability.drain(new FluidStack(DifModFluids.XP.get(),available),IFluidHandler.FluidAction.EXECUTE);
+			});
+		}
 	@Override
 	public @NotNull InteractionResult use(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
 		super.use(blockState,world,pos,player,hand,hit);
@@ -120,11 +196,9 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 				AtomicInteger retval0=new AtomicInteger(0);
 				blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER,blockState.getValue(FACING)).ifPresent(capability->retval0.set(capability.getTanks()));
 				if(retval0.get()>0){
-					if(player.isShiftKeyDown()){
-						//akce s.klik
-					}else{
-						//akce klik
-					}
+                    // right-click + shift: insert all levels (or as much as tank accepts)
+                    // right-click: insert fractional progress (round down to whole level)
+                    handleXpInsertion(world,pos,blockState,player, player.isShiftKeyDown());
 				}
 			}else{
 				AtomicInteger retval0=new AtomicInteger(0);
