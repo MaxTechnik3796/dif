@@ -6,6 +6,8 @@
 		"dif:stone_katana",
 		"dif:iron_katana",
 		"dif:diamond_katana",
-		"dif:netherite_katana"
+		"dif:netherite_katana",
+		"dif:copper_katana",
+		"dif:copper_sword"
 	]
 }

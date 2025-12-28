@@ -7,6 +7,7 @@ import cz.maxtechnik.dif.item.food.*;
 import cz.maxtechnik.dif.item.food.create.*;
 import cz.maxtechnik.dif.item.random.*;
 import cz.maxtechnik.dif.item.tool.*;
+import cz.maxtechnik.dif.item.armor.*;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
@@ -151,13 +152,15 @@ public class DifModItems{
     public static final RegistryObject<Item>MAYONNAISE=REGISTRY.register("mayonnaise",()->new MusicDiscDesc2(15,180,DifMod.MODID,"mayonnaise"));
     public static final RegistryObject<Item>REDSTONE=REGISTRY.register("redstone",()->new MusicDiscDesc2(15,3960,DifMod.MODID,"redstone"));
 
-    //weapons
+    //Weapons:
 	public static final RegistryObject<Item>WOODEN_BATTLE_AXE=REGISTRY.register("wooden_battle_axe",()->new BattleAxeItem(Tiers.WOOD,6,-3.4F,new Item.Properties()));
 	public static final RegistryObject<Item>GOLDEN_BATTLE_AXE=REGISTRY.register("golden_battle_axe",()->new BattleAxeItem(Tiers.GOLD,8,-3.4F,new Item.Properties()));
 	public static final RegistryObject<Item>STONE_BATTLE_AXE=REGISTRY.register("stone_battle_axe",()->new BattleAxeItem(Tiers.STONE,7,-3.4F,new Item.Properties()));
 	public static final RegistryObject<Item>IRON_BATTLE_AXE=REGISTRY.register("iron_battle_axe",()->new BattleAxeItem(Tiers.IRON,7,-3.3F,new Item.Properties()));
 	public static final RegistryObject<Item>DIAMOND_BATTLE_AXE=REGISTRY.register("diamond_battle_axe",()->new BattleAxeItem(Tiers.DIAMOND,7,-3.3F,new Item.Properties()));
 	public static final RegistryObject<Item>NETHERITE_BATTLE_AXE=REGISTRY.register("netherite_battle_axe",()->new BattleAxeItem(Tiers.NETHERITE,7,-3.3F,new Item.Properties()));
+	public static final RegistryObject<Item>COPPER_BATTLE_AXE=REGISTRY.register("copper_battle_axe",()->new BattleAxeItem(Tiers.IRON,7,-3.3F,new Item.Properties()));
+
 
 	public static final RegistryObject<Item>WOODEN_KATANA=REGISTRY.register("wooden_katana",()->new SwordItem(Tiers.WOOD,1,-1F,new Item.Properties()));
 	public static final RegistryObject<Item>GOLDEN_KATANA=REGISTRY.register("golden_katana",()->new SwordItem(Tiers.GOLD,2,-1F,new Item.Properties()));
@@ -165,5 +168,20 @@ public class DifModItems{
 	public static final RegistryObject<Item>IRON_KATANA=REGISTRY.register("iron_katana",()->new SwordItem(Tiers.IRON,1,-1F,new Item.Properties()));
 	public static final RegistryObject<Item>DIAMOND_KATANA=REGISTRY.register("diamond_katana",()->new SwordItem(Tiers.DIAMOND,1,-1F,new Item.Properties()));
 	public static final RegistryObject<Item>NETHERITE_KATANA=REGISTRY.register("netherite_katana",()->new SwordItem(Tiers.NETHERITE,1,-1F,new Item.Properties()));
+	public static final RegistryObject<Item>COPPER_KATANA=REGISTRY.register("copper_katana",()->new SwordItem(Tiers.IRON,1,-1F,new Item.Properties()));
+
+
+	//Copper Tools:
+	public static final RegistryObject<Item>COPPER_SHOVEL=REGISTRY.register("copper_shovel",Basic::new);
+	public static final RegistryObject<Item>COPPER_PICKAXE=REGISTRY.register("copper_pickaxe",Basic::new);
+	public static final RegistryObject<Item>COPPER_SWORD=REGISTRY.register("copper_sword",Basic::new);
+	public static final RegistryObject<Item>COPPER_AXE=REGISTRY.register("copper_axe",Basic::new);
+	public static final RegistryObject<Item>COPPER_HOE=REGISTRY.register("copper_hoe",Basic::new);
+
+	public static final RegistryObject<Item>COPPER_HELMET=REGISTRY.register("copper_helmet",CopperArmor.Helmet::new);
+	public static final RegistryObject<Item>COPPER_CHESTPLATE=REGISTRY.register("copper_chestplate",CopperArmor.Chestplate::new);
+	public static final RegistryObject<Item>COPPER_LEGGINGS=REGISTRY.register("copper_leggings",CopperArmor.Leggings::new);
+	public static final RegistryObject<Item>COPPER_BOOTS=REGISTRY.register("copper_boots",CopperArmor.Boots::new);
+
 
 }

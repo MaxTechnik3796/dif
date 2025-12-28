@@ -6,6 +6,8 @@
 		"dif:stone_battle_axe",
 		"dif:iron_battle_axe",
 		"dif:diamond_battle_axe",
-		"dif:netherite_battle_axe"
+		"dif:netherite_battle_axe",
+		"dif:copper_battle_axe",
+		"dif:copper_axe"
 	]
 }

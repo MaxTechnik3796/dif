@@ -88,7 +88,11 @@ public class DifModTabs{
 			event.getEntries().putAfter(new ItemStack(DifModItems.ANDESITE_BARREL.get()),new ItemStack(DifModItems.COPPER_BARREL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_BARREL.get()),new ItemStack(DifModItems.BRASS_BARREL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 		}else if(event.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES)){
-			event.getEntries().putAfter(new ItemStack(Items.NETHERITE_HOE),new ItemStack(DifModItems.ELECTRUM_DESTROYER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			event.getEntries().putAfter(new ItemStack(Items.STONE_HOE),new ItemStack(DifModItems.COPPER_SHOVEL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_SHOVEL.get()),new ItemStack(DifModItems.COPPER_PICKAXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_PICKAXE.get()),new ItemStack(DifModItems.COPPER_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_AXE.get()),new ItemStack(DifModItems.COPPER_HOE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			event.getEntries().putBefore(new ItemStack(Items.BUCKET),new ItemStack(DifModItems.ELECTRUM_DESTROYER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(Items.LAVA_BUCKET),new ItemStack(DifModItems.BEER_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.BEER_BUCKET.get()),new ItemStack(DifModItems.XP_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.accept(DifModItems.CREMEKA.get());
@@ -98,18 +102,28 @@ public class DifModTabs{
 			event.accept(DifModItems.MATY_PADA_STREAM.get());
 			event.accept(DifModItems.FURT_TA_STEJNA_HRA.get());
 		}else if(event.getTabKey().equals(CreativeModeTabs.COMBAT)){
+			event.getEntries().putAfter(new ItemStack(Items.STONE_SWORD),new ItemStack(DifModItems.COPPER_SWORD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(Items.NETHERITE_SWORD),new ItemStack(DifModItems.WOODEN_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.WOODEN_KATANA.get()),new ItemStack(DifModItems.STONE_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.STONE_KATANA.get()),new ItemStack(DifModItems.IRON_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			event.getEntries().putAfter(new ItemStack(DifModItems.STONE_KATANA.get()),new ItemStack(DifModItems.COPPER_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_KATANA.get()),new ItemStack(DifModItems.IRON_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.IRON_KATANA.get()),new ItemStack(DifModItems.GOLDEN_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.GOLDEN_KATANA.get()),new ItemStack(DifModItems.DIAMOND_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.DIAMOND_KATANA.get()),new ItemStack(DifModItems.NETHERITE_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.NETHERITE_KATANA.get()),new ItemStack(DifModItems.WOODEN_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.WOODEN_BATTLE_AXE.get()),new ItemStack(DifModItems.STONE_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.STONE_BATTLE_AXE.get()),new ItemStack(DifModItems.IRON_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			event.getEntries().putAfter(new ItemStack(DifModItems.STONE_BATTLE_AXE.get()),new ItemStack(DifModItems.COPPER_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_BATTLE_AXE.get()),new ItemStack(DifModItems.IRON_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.IRON_BATTLE_AXE.get()),new ItemStack(DifModItems.GOLDEN_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.GOLDEN_BATTLE_AXE.get()),new ItemStack(DifModItems.DIAMOND_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.DIAMOND_BATTLE_AXE.get()),new ItemStack(DifModItems.NETHERITE_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			event.getEntries().putAfter(new ItemStack(Items.STONE_AXE),new ItemStack(DifModItems.COPPER_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+
+			event.getEntries().putAfter(new ItemStack(Items.CHAINMAIL_BOOTS),new ItemStack(DifModItems.COPPER_HELMET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_HELMET.get()),new ItemStack(DifModItems.COPPER_CHESTPLATE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_CHESTPLATE.get()),new ItemStack(DifModItems.COPPER_LEGGINGS.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_LEGGINGS.get()),new ItemStack(DifModItems.COPPER_BOOTS.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+
 		}else if(event.getTabKey().equals(CreativeModeTabs.FOOD_AND_DRINKS)){
 			event.getEntries().putAfter(new ItemStack(Items.RABBIT_STEW),new ItemStack(DifModItems.CREATE_CAN.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.CREATE_CAN.get()),new ItemStack(DifModItems.CREATE_BOWL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
