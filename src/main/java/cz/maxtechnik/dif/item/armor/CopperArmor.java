@@ -1,48 +1,12 @@
 package cz.maxtechnik.dif.item.armor;
 
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
+import cz.maxtechnik.dif.init.other.DifModTiers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.crafting.Ingredient;
-import org.jetbrains.annotations.NotNull;
 public abstract class CopperArmor extends ArmorItem{
 	public CopperArmor(ArmorItem.Type type,Item.Properties properties){
-		super(new ArmorMaterial(){
-			@Override
-			public int getDurabilityForType(ArmorItem.@NotNull Type type){
-				return new int[]{13,15,16,11}[type.getSlot().getIndex()]*15;
-			}
-			@Override
-			public int getDefenseForType(ArmorItem.@NotNull Type type){
-				return new int[]{2,5,6,2}[type.getSlot().getIndex()];
-			}
-			@Override
-			public int getEnchantmentValue(){
-				return 9;
-			}
-			@Override
-			public @NotNull SoundEvent getEquipSound(){
-				return SoundEvents.EMPTY;
-			}
-			@Override
-			public @NotNull Ingredient getRepairIngredient(){
-				return Ingredient.of(new ItemStack(Items.COPPER_INGOT));
-			}
-			@Override
-			public @NotNull String getName(){
-				return "Copper";
-			}
-			@Override
-			public float getToughness(){
-				return 0f;
-			}
-			@Override
-			public float getKnockbackResistance(){
-				return 0f;
-			}
-		},type,properties);
+		super(DifModTiers.ARMOR_MATERIAL,type,properties);
 	}
 	public static class Helmet extends CopperArmor{
 		public Helmet(){
