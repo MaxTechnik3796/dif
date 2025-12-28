@@ -166,6 +166,8 @@
 	"block.dif.brass_barrel":"Brass Barrel",
 
     "block.dif.beer":"GoldBerg",
+	"item.dif.raw_horse_salami":"§lSyrovej Koňskej Salám§r",
+	"item.dif.cooked_horse_salami":"§lVařenej Koňskej Salám§r",
 
 	"item.dif.wooden_battle_axe":"Wooden Battle Axe",
 	"item.dif.golden_battle_axe":"Golden Battle Axe",

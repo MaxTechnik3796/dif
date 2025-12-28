@@ -125,6 +125,8 @@ public class DifModTabs{
 			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_LEGGINGS.get()),new ItemStack(DifModItems.COPPER_BOOTS.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 
 		}else if(event.getTabKey().equals(CreativeModeTabs.FOOD_AND_DRINKS)){
+			event.getEntries().putAfter(new ItemStack(Items.COOKED_RABBIT),new ItemStack(DifModItems.RAW_HORSE_SALAMI.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			event.getEntries().putAfter(new ItemStack(DifModItems.RAW_HORSE_SALAMI.get()),new ItemStack(DifModItems.COOKED_HORSE_SALAMI.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(Items.RABBIT_STEW),new ItemStack(DifModItems.CREATE_CAN.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.CREATE_CAN.get()),new ItemStack(DifModItems.CREATE_BOWL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.CREATE_BOWL.get()),new ItemStack(DifModItems.SUPER_HEATED_CREATE_BOWL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);

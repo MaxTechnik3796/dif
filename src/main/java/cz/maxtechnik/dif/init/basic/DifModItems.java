@@ -48,6 +48,8 @@ public class DifModItems{
     public static final RegistryObject<Item>ROTTEN_APPLE=REGISTRY.register("rotten_apple",Bad::new);
 	public static final RegistryObject<Item>BOTTLE_OF_MOLOTOVUV_KOKTEJL=REGISTRY.register("bottle_of_molotovuv_koktejl",MolotovuvKoktejl::new);
 	public static final RegistryObject<Item>BOTTLE_OF_URANOVEJ_KOKTEJL=REGISTRY.register("bottle_of_uranovej_koktejl",UranovejKoktejl::new);
+	public static final RegistryObject<Item>RAW_HORSE_SALAMI=REGISTRY.register("raw_horse_salami",()->new Custom(2,0.1F));
+	public static final RegistryObject<Item>COOKED_HORSE_SALAMI=REGISTRY.register("cooked_horse_salami",()->new Custom(6,0.8F));
 
 	public static final RegistryObject<Item>CREATE_CAN=REGISTRY.register("create_can",Can::new);
 	public static final RegistryObject<Item>CREATE_BOWL=REGISTRY.register("create_bowl",Bowl::new);
