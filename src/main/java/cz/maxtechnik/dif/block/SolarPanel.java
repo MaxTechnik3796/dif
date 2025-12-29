@@ -83,15 +83,15 @@ public class SolarPanel extends Block implements SimpleWaterloggedBlock{
 		BlockEntity ent=world.getBlockEntity(pos.below());
 		if(world.canSeeSky(pos)&&world.isDay()&&world.dimension().equals(Level.OVERWORLD)&&ent!=null){
 			Block block=blockstate.getBlock();
-			if(block.equals(DifModBlocks.SOLAR_PANEL_00.get())){
+			if(block.equals(DifModBlocks.SOLAR_PANEL_00.get())||block.equals(DifModBlocks.SOLAR_PANEL_00_W.get())){
 				generate(ent,DifModCommonConfig.solarPanel_00);
-			}else if(block.equals(DifModBlocks.SOLAR_PANEL_01.get())){
+			}else if(block.equals(DifModBlocks.SOLAR_PANEL_01.get())||block.equals(DifModBlocks.SOLAR_PANEL_01_W.get())){
 				generate(ent,DifModCommonConfig.solarPanel_01);
-			}else if(block.equals(DifModBlocks.SOLAR_PANEL_02.get())){
+			}else if(block.equals(DifModBlocks.SOLAR_PANEL_02.get())||block.equals(DifModBlocks.SOLAR_PANEL_02_W.get())){
 				generate(ent,DifModCommonConfig.solarPanel_02);
-			}else if(block.equals(DifModBlocks.SOLAR_PANEL_03.get())){
+			}else if(block.equals(DifModBlocks.SOLAR_PANEL_03.get())||block.equals(DifModBlocks.SOLAR_PANEL_03_W.get())){
 				generate(ent,DifModCommonConfig.solarPanel_03);
-			}else if(block.equals(DifModBlocks.SOLAR_PANEL_04.get())){
+			}else if(block.equals(DifModBlocks.SOLAR_PANEL_04.get())||block.equals(DifModBlocks.SOLAR_PANEL_04_W.get())){
 				generate(ent,DifModCommonConfig.solarPanel_04);
 			}
 		}

@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "dif:block/mata_plant"
-    }
-  }
+	"variants":{
+		"":{
+			"model":"dif:block/mata_plant"
+		}
+	}
 }

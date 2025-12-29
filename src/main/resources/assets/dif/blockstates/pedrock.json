@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "dif:block/pedrock"
-    }
-  }
+	"variants":{
+		"":{
+			"model":"dif:block/pedrock"
+		}
+	}
 }

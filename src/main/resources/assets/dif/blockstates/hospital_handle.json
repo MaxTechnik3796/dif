@@ -1,19 +1,19 @@
 {
-  "variants": {
-    "facing=north": {
-      "model": "dif:block/hospital_handle"
-    },
-    "facing=east": {
-      "model": "dif:block/hospital_handle",
-      "y": 90
-    },
-    "facing=south": {
-      "model": "dif:block/hospital_handle",
-      "y": 180
-    },
-    "facing=west": {
-      "model": "dif:block/hospital_handle",
-      "y": 270
-    }
-  }
+	"variants":{
+		"facing=north":{
+			"model":"dif:block/hospital_handle"
+		},
+		"facing=east":{
+			"model":"dif:block/hospital_handle",
+			"y":90
+		},
+		"facing=south":{
+			"model":"dif:block/hospital_handle",
+			"y":180
+		},
+		"facing=west":{
+			"model":"dif:block/hospital_handle",
+			"y":270
+		}
+	}
 }

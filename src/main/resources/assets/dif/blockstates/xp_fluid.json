@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "dif:block/xp_fluid"
-    }
-  }
+	"variants":{
+		"":{
+			"model":"dif:block/xp_fluid"
+		}
+	}
 }

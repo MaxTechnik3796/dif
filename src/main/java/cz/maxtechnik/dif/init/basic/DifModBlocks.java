@@ -36,6 +36,12 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>SOLAR_PANEL_03=REGISTRY.register("solar_panel_03",SolarPanel::new);
 	public static final RegistryObject<Block>SOLAR_PANEL_04=REGISTRY.register("solar_panel_04",SolarPanel::new);
 
+	public static final RegistryObject<Block>SOLAR_PANEL_00_W=REGISTRY.register("solar_panel_00_w",SolarPanel::new);
+	public static final RegistryObject<Block>SOLAR_PANEL_01_W=REGISTRY.register("solar_panel_01_w",SolarPanel::new);
+	public static final RegistryObject<Block>SOLAR_PANEL_02_W=REGISTRY.register("solar_panel_02_w",SolarPanel::new);
+	public static final RegistryObject<Block>SOLAR_PANEL_03_W=REGISTRY.register("solar_panel_03_w",SolarPanel::new);
+	public static final RegistryObject<Block>SOLAR_PANEL_04_W=REGISTRY.register("solar_panel_04_w",SolarPanel::new);
+
 	public static final RegistryObject<Block>SOLANA_BLOCK=REGISTRY.register("solana_block",Crypto::new);
 	public static final RegistryObject<Block>BITCOIN_BLOCK=REGISTRY.register("bitcoin_block", Crypto::new);
 	public static final RegistryObject<Block>CINDER_FLOUR_BLOCK=REGISTRY.register("cinder_flour_block",()->new Custom(SoundType.WART_BLOCK,0.4F,0.6F,false));

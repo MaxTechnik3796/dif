@@ -1,0 +1,6 @@
+{
+	"parent":"dif:block/solar_panel",
+	"textures":{
+		"1":"dif:block/none"
+	}
+}

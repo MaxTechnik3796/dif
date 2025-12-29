@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "dif:block/maty_block"
-    }
-  }
+	"variants":{
+		"":{
+			"model":"dif:block/maty_block"
+		}
+	}
 }

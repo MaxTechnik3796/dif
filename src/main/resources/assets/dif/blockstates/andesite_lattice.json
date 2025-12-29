@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "dif:block/andesite_lattice"
-    }
-  }
+	"variants":{
+		"":{
+			"model":"dif:block/andesite_lattice"
+		}
+	}
 }

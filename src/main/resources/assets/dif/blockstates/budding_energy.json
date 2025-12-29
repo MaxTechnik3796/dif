@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "dif:block/budding_energy"
-    }
-  }
+	"variants":{
+		"":{
+			"model":"dif:block/budding_energy"
+		}
+	}
 }

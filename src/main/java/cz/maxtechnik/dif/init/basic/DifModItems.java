@@ -60,6 +60,7 @@ public class DifModItems{
 	public static final RegistryObject<Item>ITEM_5261=REGISTRY.register("item_5261",Basic::new);
 	public static final RegistryObject<Item>VHS=REGISTRY.register("vhs",()->new StackSize(16));
 	public static final RegistryObject<Item>SPRING=REGISTRY.register("spring",Basic::new);
+	public static final RegistryObject<Item>INCOMPLETE_UNIVERSAL=REGISTRY.register("incomplete_universal",Basic::new);
 
 	public static final RegistryObject<Item>COIN_00=REGISTRY.register("coin_00",Basic::new);
 	public static final RegistryObject<Item>COIN_01=REGISTRY.register("coin_01",Basic::new);
@@ -112,11 +113,17 @@ public class DifModItems{
 	public static final RegistryObject<Item>RAM=REGISTRY.register("ram",()->new StackSize(16));
 	public static final RegistryObject<Item>EXPLOSIVE_RAM=REGISTRY.register("explosive_ram",ExplosiveRam::new);
 
+	public static final RegistryObject<Item>SOLAR_PANEL_INC=REGISTRY.register("solar_panel_inc",Basic::new);
 	public static final RegistryObject<Item>SOLAR_PANEL_00=block(DifModBlocks.SOLAR_PANEL_00);
 	public static final RegistryObject<Item>SOLAR_PANEL_01=block(DifModBlocks.SOLAR_PANEL_01);
 	public static final RegistryObject<Item>SOLAR_PANEL_02=block(DifModBlocks.SOLAR_PANEL_02);
 	public static final RegistryObject<Item>SOLAR_PANEL_03=block(DifModBlocks.SOLAR_PANEL_03);
 	public static final RegistryObject<Item>SOLAR_PANEL_04=block(DifModBlocks.SOLAR_PANEL_04);
+	public static final RegistryObject<Item>SOLAR_PANEL_00_W=block(DifModBlocks.SOLAR_PANEL_00_W);
+	public static final RegistryObject<Item>SOLAR_PANEL_01_W=block(DifModBlocks.SOLAR_PANEL_01_W);
+	public static final RegistryObject<Item>SOLAR_PANEL_02_W=block(DifModBlocks.SOLAR_PANEL_02_W);
+	public static final RegistryObject<Item>SOLAR_PANEL_03_W=block(DifModBlocks.SOLAR_PANEL_03_W);
+	public static final RegistryObject<Item>SOLAR_PANEL_04_W=block(DifModBlocks.SOLAR_PANEL_04_W);
 
 	public static final RegistryObject<Item>DEEPSLATED_ARROW=block(DifModBlocks.DEEPSLATED_ARROW);
     public static final RegistryObject<Item>STONED_ARROW=block(DifModBlocks.STONED_ARROW);

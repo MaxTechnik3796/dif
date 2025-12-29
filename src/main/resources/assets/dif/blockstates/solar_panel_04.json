@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "dif:block/solar_panel_04"
-    }
-  }
+	"variants":{
+		"":{
+			"model":"dif:block/solar_panel_04"
+		}
+	}
 }

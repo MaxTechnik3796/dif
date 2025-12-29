@@ -120,11 +120,17 @@
 	"block.dif.super_box":"§e§lSuper Box§r",
 	"block.dif.cinder_flour_block":"Cinder Flour Block",
 
+	"block.dif.solar_panel_inc":"Incomplete Solar panel",
 	"block.dif.solar_panel_00":"Solar Panel",
 	"block.dif.solar_panel_01":"Solar Panel",
 	"block.dif.solar_panel_02":"Solar Panel",
 	"block.dif.solar_panel_03":"Solar Panel",
 	"block.dif.solar_panel_04":"Solar Panel",
+	"block.dif.solar_panel_00_w":"Solar Panel",
+	"block.dif.solar_panel_01_w":"Solar Panel",
+	"block.dif.solar_panel_02_w":"Solar Panel",
+	"block.dif.solar_panel_03_w":"Solar Panel",
+	"block.dif.solar_panel_04_w":"Solar Panel",
 
 	"block.dif.wooded_arrow":"Wooded Arrow",
 	"block.dif.stoned_arrow":"Stoned Arrow",
@@ -133,6 +139,7 @@
 	"item.dif.ram":"RAM",
 	"item.dif.explosive_ram":"§cExplosive RAM§r",
 	"item.dif.spring":"Spring",
+	"item.dif.incomplete_universal":"Incomplete Universal",
 
 	"block.dif.deepslate_bauxite_ore":"Deepslate Bauxite Ore",
 	"block.dif.bauxite_ore":"Bauxite Ore",

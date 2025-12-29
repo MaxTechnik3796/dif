@@ -11,6 +11,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class DifModTabs{
 	public static final DeferredRegister<CreativeModeTab>REGISTER=DeferredRegister.create(Registries.CREATIVE_MODE_TAB,DifMod.MODID);
 	public static final RegistryObject<CreativeModeTab>MAIN=REGISTER.register("main",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.main")).icon(()->new ItemStack(DifModItems.THE_DIFFERENTIAL.get())).displayItems(((parameters,tabData)->{
+
 		ItemStack PORTAL_GUN=new ItemStack(DifModItems.PORTAL_GUN.get());PORTAL_GUN.getOrCreateTag().putInt("ammo",DifModCommonConfig.portalGunMaxAmmo);
 
 		tabData.accept(DifModItems.THE_DIFFERENTIAL.get());
@@ -22,7 +23,6 @@ public class DifModTabs{
 		tabData.accept(DifModItems.FLUID_HATCH.get());
 		tabData.accept(DifModItems.ANDESITE_LATTICE.get());
 		tabData.accept(DifModItems.ANDESITE_WINDOW.get());
-
 		tabData.accept(DifModItems.SUPER_BOX.get());
 		tabData.accept(DifModItems.SINGULARITATOR.get());
 		tabData.accept(DifModItems.SOLANA_BLOCK.get());
@@ -32,7 +32,11 @@ public class DifModTabs{
 		tabData.accept(DifModItems.SOLAR_PANEL_02.get());
 		tabData.accept(DifModItems.SOLAR_PANEL_03.get());
 		tabData.accept(DifModItems.SOLAR_PANEL_04.get());
-
+		tabData.accept(DifModItems.SOLAR_PANEL_00_W.get());
+		tabData.accept(DifModItems.SOLAR_PANEL_01_W.get());
+		tabData.accept(DifModItems.SOLAR_PANEL_02_W.get());
+		tabData.accept(DifModItems.SOLAR_PANEL_03_W.get());
+		tabData.accept(DifModItems.SOLAR_PANEL_04_W.get());
 		tabData.accept(DifModItems.MASTICKA.get());
 		tabData.accept(DifModItems.ITEM_5261.get());
 		tabData.accept(DifModItems.CPU_SINGULARITY.get());
@@ -42,7 +46,6 @@ public class DifModTabs{
 		tabData.accept(DifModItems.MITHRIL_PLATE.get());
 		tabData.accept(DifModItems.BLUESTONE.get());
 		tabData.accept(DifModItems.BLUE_PLATE.get());
-
 		tabData.accept(DifModItems.COIN_00.get());
 		tabData.accept(DifModItems.COIN_01.get());
 		tabData.accept(DifModItems.COIN_02.get());
@@ -52,15 +55,15 @@ public class DifModTabs{
 		tabData.accept(DifModItems.ROTTEN_BELT.get());
 		tabData.accept(DifModItems.ROTTEN_APPLE.get());
 		tabData.accept(DifModItems.QUESTION_MARK.get());
-
 		tabData.accept(DifModItems.LASER_HOOKAH.get());
 		tabData.accept(PORTAL_GUN);
 
 
 		tabData.accept(DifModItems.INCOMPLETE_CPU_SINGULARITY.get());
 		tabData.accept(DifModItems.INCOMPLETE_MITHRIL_PLATE.get());
+		tabData.accept(DifModItems.SOLAR_PANEL_INC.get());
 
-
+		tabData.accept(DifModItems.INCOMPLETE_UNIVERSAL.get());
 	})).build());
 	public static void addCreative(BuildCreativeModeTabContentsEvent event){
 		if(event.getTabKey().equals(CreativeModeTabs.BUILDING_BLOCKS)){

@@ -15,8 +15,6 @@
 			"model":"dif:block/fluid_hatch",
 			"y":270
 		},
-
-
 		"facing=north,xp=true":{
 			"model":"dif:block/fluid_hatch_xp"
 		},
@@ -32,6 +30,5 @@
 			"model":"dif:block/fluid_hatchxp",
 			"y":270
 		}
-
 	}
 }
