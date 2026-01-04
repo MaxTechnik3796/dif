@@ -24,7 +24,6 @@ public class DifModItems{
 
 	public static final RegistryObject<Item>EXAMPLE_BLOCK=block(DifModBlocks.EXAMPLE_BLOCK);
 
-
 	public static final RegistryObject<Item>BEER_BUCKET=REGISTRY.register("beer_bucket",BeerBucket::new);
 	public static final RegistryObject<Item>XP_BUCKET=REGISTRY.register("xp_bucket",XpBucket::new);
 
@@ -60,6 +59,7 @@ public class DifModItems{
 	public static final RegistryObject<Item>ITEM_5261=REGISTRY.register("item_5261",Basic::new);
 	public static final RegistryObject<Item>VHS=REGISTRY.register("vhs",()->new StackSize(16));
 	public static final RegistryObject<Item>SPRING=REGISTRY.register("spring",Basic::new);
+	public static final RegistryObject<Item>SOLDERING_IRON=REGISTRY.register("soldering_iron",()->new StackSize(1));
 	public static final RegistryObject<Item>INCOMPLETE_UNIVERSAL=REGISTRY.register("incomplete_universal",Basic::new);
 
 	public static final RegistryObject<Item>COIN_00=REGISTRY.register("coin_00",Basic::new);

@@ -42,6 +42,7 @@ public class DifModTabs{
 		tabData.accept(DifModItems.CPU_SINGULARITY.get());
 		tabData.accept(DifModItems.HEAVY_PLATE.get());
 		tabData.accept(DifModItems.SPRING.get());
+		tabData.accept(DifModItems.SOLDERING_IRON.get());
 		tabData.accept(DifModItems.MITHRIL.get());
 		tabData.accept(DifModItems.MITHRIL_PLATE.get());
 		tabData.accept(DifModItems.BLUESTONE.get());
@@ -86,7 +87,7 @@ public class DifModTabs{
 			event.getEntries().putAfter(new ItemStack(DifModItems.CANOLA_PLANT.get()),new ItemStack(DifModItems.CANOLA_SEEDS.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(Items.BEDROCK),new ItemStack(DifModItems.PEDROCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 		}else if(event.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS)){
-			event.getEntries().putAfter(new ItemStack(Items.CHEST),new ItemStack(DifModItems.OLD_CHEST.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			event.getEntries().putBefore(new ItemStack(Items.BARREL),new ItemStack(DifModItems.OLD_CHEST.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(Items.BARREL),new ItemStack(DifModItems.ANDESITE_BARREL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.ANDESITE_BARREL.get()),new ItemStack(DifModItems.COPPER_BARREL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_BARREL.get()),new ItemStack(DifModItems.BRASS_BARREL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
