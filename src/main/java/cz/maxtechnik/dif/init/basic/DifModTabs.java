@@ -69,96 +69,96 @@ public class DifModTabs{
 
 		tabData.accept(DifModItems.INCOMPLETE_UNIVERSAL.get());
 	})).build());
-	public static void addCreative(BuildCreativeModeTabContentsEvent event){
-		if(event.getTabKey().equals(CreativeModeTabs.BUILDING_BLOCKS)){
-			event.getEntries().putAfter(new ItemStack(Items.SMOOTH_STONE),new ItemStack(DifModItems.SMOOTH_STONE_DOUBLE_SLAB.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.accept(DifModItems.DEEPSLATED_ARROW.get());
-			event.accept(DifModItems.STONED_ARROW.get());
-			event.accept(DifModItems.WOODED_ARROW.get());
-		}else if(event.getTabKey().equals(CreativeModeTabs.NATURAL_BLOCKS)){
-			event.getEntries().putAfter(new ItemStack(Items.SNOW),new ItemStack(DifModItems.MATY_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(Items.CRYING_OBSIDIAN),new ItemStack(DifModItems.CINDER_FLOUR_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(Items.AMETHYST_CLUSTER),new ItemStack(DifModItems.ENERGY_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.ENERGY_BLOCK.get()),new ItemStack(DifModItems.BUDDING_ENERGY.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.BUDDING_ENERGY.get()),new ItemStack(DifModItems.SMALL_ENERGY_BUD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.SMALL_ENERGY_BUD.get()),new ItemStack(DifModItems.MEDIUM_ENERGY_BUD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.MEDIUM_ENERGY_BUD.get()),new ItemStack(DifModItems.LARGE_ENERGY_BUD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.LARGE_ENERGY_BUD.get()),new ItemStack(DifModItems.ENERGY_CLUSTER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(Items.WARPED_FUNGUS),new ItemStack(DifModItems.SUGAR_MUSHROOM.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(Items.SUGAR_CANE),new ItemStack(DifModItems.MATA_PLANT.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.MATA_PLANT.get()),new ItemStack(DifModItems.CANOLA_PLANT.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.CANOLA_PLANT.get()),new ItemStack(DifModItems.CANOLA_SEEDS.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(Items.BEDROCK),new ItemStack(DifModItems.PEDROCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-		}else if(event.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS)){
-			event.getEntries().putBefore(new ItemStack(Items.BARREL),new ItemStack(DifModItems.OLD_CHEST.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(Items.BARREL),new ItemStack(DifModItems.ANDESITE_BARREL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.ANDESITE_BARREL.get()),new ItemStack(DifModItems.COPPER_BARREL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_BARREL.get()),new ItemStack(DifModItems.BRASS_BARREL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-		}else if(event.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES)){
-			event.getEntries().putAfter(new ItemStack(Items.STONE_HOE),new ItemStack(DifModItems.COPPER_SHOVEL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_SHOVEL.get()),new ItemStack(DifModItems.COPPER_PICKAXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_PICKAXE.get()),new ItemStack(DifModItems.COPPER_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_AXE.get()),new ItemStack(DifModItems.COPPER_HOE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putBefore(new ItemStack(Items.BUCKET),new ItemStack(DifModItems.ELECTRUM_DESTROYER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(Items.LAVA_BUCKET),new ItemStack(DifModItems.BEER_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.BEER_BUCKET.get()),new ItemStack(DifModItems.XP_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.accept(DifModItems.CREMEKA.get());
-			event.accept(DifModItems.MATY_CREATE.get());
-			event.accept(DifModItems.MAYONNAISE.get());
-			event.accept(DifModItems.REDSTONE.get());
-			event.accept(DifModItems.MATY_PADA_STREAM.get());
-			event.accept(DifModItems.FURT_TA_STEJNA_HRA.get());
-		}else if(event.getTabKey().equals(CreativeModeTabs.COMBAT)){
-			event.getEntries().putAfter(new ItemStack(Items.STONE_SWORD),new ItemStack(DifModItems.COPPER_SWORD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(Items.NETHERITE_SWORD),new ItemStack(DifModItems.WOODEN_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.WOODEN_KATANA.get()),new ItemStack(DifModItems.STONE_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.STONE_KATANA.get()),new ItemStack(DifModItems.COPPER_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_KATANA.get()),new ItemStack(DifModItems.IRON_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.IRON_KATANA.get()),new ItemStack(DifModItems.GOLDEN_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.GOLDEN_KATANA.get()),new ItemStack(DifModItems.DIAMOND_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.DIAMOND_KATANA.get()),new ItemStack(DifModItems.NETHERITE_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.NETHERITE_KATANA.get()),new ItemStack(DifModItems.WOODEN_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.WOODEN_BATTLE_AXE.get()),new ItemStack(DifModItems.STONE_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.STONE_BATTLE_AXE.get()),new ItemStack(DifModItems.COPPER_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_BATTLE_AXE.get()),new ItemStack(DifModItems.IRON_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.IRON_BATTLE_AXE.get()),new ItemStack(DifModItems.GOLDEN_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.GOLDEN_BATTLE_AXE.get()),new ItemStack(DifModItems.DIAMOND_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.DIAMOND_BATTLE_AXE.get()),new ItemStack(DifModItems.NETHERITE_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(Items.STONE_AXE),new ItemStack(DifModItems.COPPER_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-
-			event.getEntries().putAfter(new ItemStack(Items.CHAINMAIL_BOOTS),new ItemStack(DifModItems.COPPER_HELMET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_HELMET.get()),new ItemStack(DifModItems.COPPER_CHESTPLATE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_CHESTPLATE.get()),new ItemStack(DifModItems.COPPER_LEGGINGS.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.COPPER_LEGGINGS.get()),new ItemStack(DifModItems.COPPER_BOOTS.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-
-		}else if(event.getTabKey().equals(CreativeModeTabs.FOOD_AND_DRINKS)){
-			event.getEntries().putAfter(new ItemStack(Items.COOKED_RABBIT),new ItemStack(DifModItems.RAW_HORSE_SALAMI.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.RAW_HORSE_SALAMI.get()),new ItemStack(DifModItems.COOKED_HORSE_SALAMI.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(Items.RABBIT_STEW),new ItemStack(DifModItems.CREATE_CAN.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.CREATE_CAN.get()),new ItemStack(DifModItems.CREATE_BOWL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.CREATE_BOWL.get()),new ItemStack(DifModItems.SUPER_HEATED_CREATE_BOWL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(Items.SWEET_BERRIES),new ItemStack(DifModItems.MATA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.MATA.get()),new ItemStack(DifModItems.CHERRY.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(Items.MILK_BUCKET),new ItemStack(DifModItems.BEER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.BEER.get()),new ItemStack(DifModItems.MATY_DRINK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.MATY_DRINK.get()),new ItemStack(DifModItems.FERNET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.FERNET.get()),new ItemStack(DifModItems.WINE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.WINE.get()),new ItemStack(DifModItems.CHERRY_BOTTLE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.getEntries().putAfter(new ItemStack(DifModItems.CHERRY.get()),new ItemStack(DifModItems.NETHER_WART_BOTTLE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			event.accept(DifModItems.BOTTLE_OF_MOLOTOVUV_KOKTEJL.get());
-			event.accept(DifModItems.BOTTLE_OF_URANOVEJ_KOKTEJL.get());
-		}else if(event.getTabKey().equals(CreativeModeTabs.INGREDIENTS)){
-			event.getEntries().putAfter(new ItemStack(Items.AMETHYST_SHARD),new ItemStack(DifModItems.ENERGY_SHARD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-		}else if(event.getTabKey().equals(CreativeModeTabs.OP_BLOCKS)){
-			event.accept(DifModItems.EXAMPLE_ITEM.get());
-			event.accept(DifModItems.EXAMPLE_BLOCK.get());
-			event.accept(DifModItems.XP_STORAGE.get());
-			event.accept(DifModItems.END_PORTAL.get());
-			event.accept(DifModItems.END_GATEWAY.get());
-			event.accept(DifModItems.NETHER_PORTAL.get());
-			event.accept(DifModItems.WATER.get());
-			event.accept(DifModItems.LAVA.get());
-			event.accept(DifModItems.FIRE.get());
+	public static void addCreative(BuildCreativeModeTabContentsEvent tabData){
+		if(tabData.getTabKey().equals(CreativeModeTabs.BUILDING_BLOCKS)){
+			tabData.getEntries().putAfter(new ItemStack(Items.SMOOTH_STONE),new ItemStack(DifModItems.SMOOTH_STONE_DOUBLE_SLAB.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.accept(DifModItems.DEEPSLATED_ARROW.get());
+			tabData.accept(DifModItems.STONED_ARROW.get());
+			tabData.accept(DifModItems.WOODED_ARROW.get());
+		}else if(tabData.getTabKey().equals(CreativeModeTabs.NATURAL_BLOCKS)){
+			tabData.getEntries().putAfter(new ItemStack(Items.SNOW),new ItemStack(DifModItems.MATY_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(Items.CRYING_OBSIDIAN),new ItemStack(DifModItems.CINDER_FLOUR_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(Items.AMETHYST_CLUSTER),new ItemStack(DifModItems.ENERGY_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.ENERGY_BLOCK.get()),new ItemStack(DifModItems.BUDDING_ENERGY.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.BUDDING_ENERGY.get()),new ItemStack(DifModItems.SMALL_ENERGY_BUD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.SMALL_ENERGY_BUD.get()),new ItemStack(DifModItems.MEDIUM_ENERGY_BUD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.MEDIUM_ENERGY_BUD.get()),new ItemStack(DifModItems.LARGE_ENERGY_BUD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.LARGE_ENERGY_BUD.get()),new ItemStack(DifModItems.ENERGY_CLUSTER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(Items.WARPED_FUNGUS),new ItemStack(DifModItems.SUGAR_MUSHROOM.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(Items.SUGAR_CANE),new ItemStack(DifModItems.MATA_PLANT.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.MATA_PLANT.get()),new ItemStack(DifModItems.CANOLA_PLANT.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.CANOLA_PLANT.get()),new ItemStack(DifModItems.CANOLA_SEEDS.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(Items.BEDROCK),new ItemStack(DifModItems.PEDROCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		}else if(tabData.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS)){
+			tabData.getEntries().putBefore(new ItemStack(Items.BARREL),new ItemStack(DifModItems.OLD_CHEST.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(Items.BARREL),new ItemStack(DifModItems.ANDESITE_BARREL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.ANDESITE_BARREL.get()),new ItemStack(DifModItems.COPPER_BARREL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.COPPER_BARREL.get()),new ItemStack(DifModItems.BRASS_BARREL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		}else if(tabData.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES)){
+			tabData.getEntries().putAfter(new ItemStack(Items.STONE_HOE),new ItemStack(DifModItems.COPPER_SHOVEL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.COPPER_SHOVEL.get()),new ItemStack(DifModItems.COPPER_PICKAXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.COPPER_PICKAXE.get()),new ItemStack(DifModItems.COPPER_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.COPPER_AXE.get()),new ItemStack(DifModItems.COPPER_HOE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putBefore(new ItemStack(Items.BUCKET),new ItemStack(DifModItems.ELECTRUM_DESTROYER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(Items.LAVA_BUCKET),new ItemStack(DifModItems.BEER_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.BEER_BUCKET.get()),new ItemStack(DifModItems.XP_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.accept(DifModItems.CREMEKA.get());
+			tabData.accept(DifModItems.MATY_CREATE.get());
+			tabData.accept(DifModItems.MAYONNAISE.get());
+			tabData.accept(DifModItems.REDSTONE.get());
+			tabData.accept(DifModItems.MATY_PADA_STREAM.get());
+			tabData.accept(DifModItems.FURT_TA_STEJNA_HRA.get());
+		}else if(tabData.getTabKey().equals(CreativeModeTabs.COMBAT)){
+			tabData.getEntries().putAfter(new ItemStack(Items.STONE_SWORD),new ItemStack(DifModItems.COPPER_SWORD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(Items.NETHERITE_SWORD),new ItemStack(DifModItems.WOODEN_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.WOODEN_KATANA.get()),new ItemStack(DifModItems.STONE_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.STONE_KATANA.get()),new ItemStack(DifModItems.COPPER_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.COPPER_KATANA.get()),new ItemStack(DifModItems.IRON_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.IRON_KATANA.get()),new ItemStack(DifModItems.GOLDEN_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.GOLDEN_KATANA.get()),new ItemStack(DifModItems.DIAMOND_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.DIAMOND_KATANA.get()),new ItemStack(DifModItems.NETHERITE_KATANA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.NETHERITE_KATANA.get()),new ItemStack(DifModItems.WOODEN_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.WOODEN_BATTLE_AXE.get()),new ItemStack(DifModItems.STONE_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.STONE_BATTLE_AXE.get()),new ItemStack(DifModItems.COPPER_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.COPPER_BATTLE_AXE.get()),new ItemStack(DifModItems.IRON_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.IRON_BATTLE_AXE.get()),new ItemStack(DifModItems.GOLDEN_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.GOLDEN_BATTLE_AXE.get()),new ItemStack(DifModItems.DIAMOND_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.DIAMOND_BATTLE_AXE.get()),new ItemStack(DifModItems.NETHERITE_BATTLE_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(Items.STONE_AXE),new ItemStack(DifModItems.COPPER_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(Items.CHAINMAIL_BOOTS),new ItemStack(DifModItems.COPPER_HELMET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.COPPER_HELMET.get()),new ItemStack(DifModItems.COPPER_CHESTPLATE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.COPPER_CHESTPLATE.get()),new ItemStack(DifModItems.COPPER_LEGGINGS.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.COPPER_LEGGINGS.get()),new ItemStack(DifModItems.COPPER_BOOTS.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		}else if(tabData.getTabKey().equals(CreativeModeTabs.FOOD_AND_DRINKS)){
+			tabData.getEntries().putAfter(new ItemStack(Items.SWEET_BERRIES),new ItemStack(DifModItems.MATA.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.MATA.get()),new ItemStack(DifModItems.CHERRY.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.CHERRY.get()),new ItemStack(DifModItems.NETHER_WART_BOTTLE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(Items.POISONOUS_POTATO),new ItemStack(DifModItems.FRIES.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(Items.COOKED_CHICKEN),new ItemStack(DifModItems.KFC_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(Items.COOKED_RABBIT),new ItemStack(DifModItems.RAW_HORSE_SALAMI.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.RAW_HORSE_SALAMI.get()),new ItemStack(DifModItems.COOKED_HORSE_SALAMI.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(Items.RABBIT_STEW),new ItemStack(DifModItems.CREATE_CAN.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.CREATE_CAN.get()),new ItemStack(DifModItems.CREATE_BOWL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.CREATE_BOWL.get()),new ItemStack(DifModItems.SUPER_HEATED_CREATE_BOWL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(Items.MILK_BUCKET),new ItemStack(DifModItems.BEER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.BEER.get()),new ItemStack(DifModItems.MATY_DRINK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.MATY_DRINK.get()),new ItemStack(DifModItems.FERNET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.FERNET.get()),new ItemStack(DifModItems.WINE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.WINE.get()),new ItemStack(DifModItems.CHERRY_BOTTLE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.accept(DifModItems.BOTTLE_OF_MOLOTOVUV_KOKTEJL.get());
+			tabData.accept(DifModItems.BOTTLE_OF_URANOVEJ_KOKTEJL.get());
+		}else if(tabData.getTabKey().equals(CreativeModeTabs.INGREDIENTS)){
+			tabData.getEntries().putAfter(new ItemStack(Items.AMETHYST_SHARD),new ItemStack(DifModItems.ENERGY_SHARD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		}else if(tabData.getTabKey().equals(CreativeModeTabs.OP_BLOCKS)){
+			tabData.accept(DifModItems.EXAMPLE_ITEM.get());
+			tabData.accept(DifModItems.EXAMPLE_BLOCK.get());
+			tabData.accept(DifModItems.XP_STORAGE.get());
+			tabData.accept(DifModItems.END_PORTAL.get());
+			tabData.accept(DifModItems.END_GATEWAY.get());
+			tabData.accept(DifModItems.NETHER_PORTAL.get());
+			tabData.accept(DifModItems.WATER.get());
+			tabData.accept(DifModItems.LAVA.get());
+			tabData.accept(DifModItems.FIRE.get());
 		}
 	}
 }
