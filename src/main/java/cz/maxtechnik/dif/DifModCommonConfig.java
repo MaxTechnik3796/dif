@@ -52,7 +52,7 @@ public class DifModCommonConfig{
 		DISABLE_END=BUILDER.comment("Disable End dimension, (t/f.)\nDif-reload required!\nDefault value: false").define("disable_end",false);
 		BUILDER.pop();
 		BUILDER.push("PortalGun");
-		PORTAL_GUN_MAX_AMMO=BUILDER.comment("Maximal capacity of Portal Gun, (Shots.)\nDif-reload required!\nDefault value: 16").defineInRange("portal_gun_max_ammo",16,1,Integer.MAX_VALUE);
+		PORTAL_GUN_MAX_AMMO=BUILDER.comment("Maximal capacity of Portal Gun, (Shots.)\nDRestart required!\nDefault value: 16").defineInRange("portal_gun_max_ammo",16,1,Integer.MAX_VALUE);
 		PORTAL_GUN_MAX_RANGE=BUILDER.comment("Maximal shot power of Portal Gun, (Number.)\nDif-reload required!\nDefault value: 3").defineInRange("portal_gun_max_range",3,1,255);
 		PORTAL_GUN_COOLDOWN=BUILDER.comment("Cooldown of Portal Gun, (t.)\nDif-reload required!\nDefault value: 80").defineInRange("portal_gun_cooldown",80,0,Integer.MAX_VALUE);
 		BUILDER.pop();
