@@ -2,6 +2,7 @@
 	"replace":false,
 	"values":[
 		"dif:event_bus",
+		"dif:vent",
 		"dif:fluid_hatch",
 		"dif:the_differential",
 		"dif:washing_machine",

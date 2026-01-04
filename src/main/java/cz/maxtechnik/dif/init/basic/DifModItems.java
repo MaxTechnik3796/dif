@@ -94,6 +94,7 @@ public class DifModItems{
     public static final RegistryObject<Item>XP_STORAGE=block(DifModBlocks.XP_STORAGE);
     public static final RegistryObject<Item>THE_DIFFERENTIAL=block(DifModBlocks.THE_DIFFERENTIAL);
     public static final RegistryObject<Item>EVENT_BUS=block(DifModBlocks.EVENT_BUS);
+	public static final RegistryObject<Item>VENT=block(DifModBlocks.VENT);
 	public static final RegistryObject<Item>WASHING_MACHINE=block(DifModBlocks.WASHING_MACHINE);
     public static final RegistryObject<Item>BURNING_GENERATOR=block(DifModBlocks.BURNING_GENERATOR);
 	public static final RegistryObject<Item>FLUID_HATCH=block(DifModBlocks.FLUID_HATCH);

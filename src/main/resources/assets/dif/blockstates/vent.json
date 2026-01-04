@@ -1,0 +1,19 @@
+{
+	"variants":{
+		"facing=north":{
+			"model":"dif:block/vent"
+		},
+		"facing=east":{
+			"model":"dif:block/vent",
+			"y":90
+		},
+		"facing=south":{
+			"model":"dif:block/vent",
+			"y":180
+		},
+		"facing=west":{
+			"model":"dif:block/vent",
+			"y":270
+		}
+	}
+}

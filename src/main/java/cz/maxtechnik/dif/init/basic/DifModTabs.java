@@ -17,6 +17,7 @@ public class DifModTabs{
 		tabData.accept(DifModItems.THE_DIFFERENTIAL.get());
 		tabData.accept(DifModItems.BAN_HAMMER.get());
 		tabData.accept(DifModItems.EVENT_BUS.get());
+		tabData.accept(DifModItems.VENT.get());
 		tabData.accept(DifModItems.HOSPITAL_HANDLE.get());
 		tabData.accept(DifModItems.WASHING_MACHINE.get());
 		tabData.accept(DifModItems.BURNING_GENERATOR.get());

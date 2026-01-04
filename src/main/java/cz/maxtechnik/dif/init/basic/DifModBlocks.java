@@ -23,6 +23,7 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>THE_DIFFERENTIAL=REGISTRY.register("the_differential",()->new CustomWaterloggedHorizontalRotation(SoundType.STONE,5F,6F,true));
 	public static final RegistryObject<Block>WASHING_MACHINE=REGISTRY.register("washing_machine",WashingMachine::new);
 	public static final RegistryObject<Block>EVENT_BUS=REGISTRY.register("event_bus",()->new CustomWaterloggedHorizontalRotation(SoundType.NETHERITE_BLOCK,5F,6F,true));
+	public static final RegistryObject<Block>VENT=REGISTRY.register("vent",()->new CustomWaterloggedHorizontalRotation(SoundType.NETHERITE_BLOCK,5F,6F,true));
 	public static final RegistryObject<Block>BURNING_GENERATOR=REGISTRY.register("burning_generator",BurningGenerator::new);
 	public static final RegistryObject<Block>FLUID_HATCH=REGISTRY.register("fluid_hatch",FluidHatch::new);
 	public static final RegistryObject<Block>HOSPITAL_HANDLE=REGISTRY.register("hospital_handle",HospitalHandle::new);
