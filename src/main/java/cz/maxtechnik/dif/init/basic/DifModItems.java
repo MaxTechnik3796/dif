@@ -60,6 +60,8 @@ public class DifModItems{
 	public static final RegistryObject<Item>VHS=REGISTRY.register("vhs",()->new StackSize(16));
 	public static final RegistryObject<Item>SPRING=REGISTRY.register("spring",Basic::new);
 	public static final RegistryObject<Item>SOLDERING_IRON=REGISTRY.register("soldering_iron",()->new StackSize(1));
+	public static final RegistryObject<Item>DRILL=REGISTRY.register("drill",()->new StackSize(1));
+	public static final RegistryObject<Item>SCREWDRIVER=REGISTRY.register("screwdriver",()->new StackSize(1));
 	public static final RegistryObject<Item>INCOMPLETE_UNIVERSAL=REGISTRY.register("incomplete_universal",Basic::new);
 
 	public static final RegistryObject<Item>COIN_00=REGISTRY.register("coin_00",Basic::new);

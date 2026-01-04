@@ -44,6 +44,8 @@ public class DifModTabs{
 		tabData.accept(DifModItems.HEAVY_PLATE.get());
 		tabData.accept(DifModItems.SPRING.get());
 		tabData.accept(DifModItems.SOLDERING_IRON.get());
+		tabData.accept(DifModItems.DRILL.get());
+		tabData.accept(DifModItems.SCREWDRIVER.get());
 		tabData.accept(DifModItems.MITHRIL.get());
 		tabData.accept(DifModItems.MITHRIL_PLATE.get());
 		tabData.accept(DifModItems.BLUESTONE.get());

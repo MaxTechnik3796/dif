@@ -142,6 +142,8 @@
 	"item.dif.explosive_ram":"§cExplosive RAM§r",
 	"item.dif.spring":"Spring",
 	"item.dif.soldering_iron":"Soldering Iron",
+	"item.dif.drill":"Drill",
+	"item.dif.screwdriver":"Screwdriver",
 	"item.dif.incomplete_universal":"Incomplete Universal",
 
 	"block.dif.deepslate_bauxite_ore":"Deepslate Bauxite Ore",

@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.init.basic;
 
+import com.simibubi.create.content.decoration.slidingDoor.SlidingDoorBlock;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.block.*;
 import cz.maxtechnik.dif.fluid.block.*;
@@ -14,6 +15,8 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class DifModBlocks{
 	public static final DeferredRegister<Block>REGISTRY=DeferredRegister.create(ForgeRegistries.BLOCKS,DifMod.MODID);
+
+
 	public static final RegistryObject<Block>EXAMPLE_BLOCK=REGISTRY.register("example_block",Test::new);
 
 	public static final RegistryObject<Block>BEER_FLUID=REGISTRY.register("beer_fluid",BeerBlock::new);
