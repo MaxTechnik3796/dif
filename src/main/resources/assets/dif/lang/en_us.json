@@ -30,10 +30,11 @@
 	"item.dif.redstone":"Music Disc",
 	"item.dif.maty_pada_stream":"Music Disc",
 
-	"item.dif.beer_bucket":"Beer Bucket",
-	"block.dif.beer_fluid":"Beer",
-	"fluid.dif.beer_fluid":"Beer",
-	"fluid_type.dif.beer_fluid":"Beer",
+	"item.dif.beer_bucket":"GoldBerg Bucket",
+	"block.dif.beer_fluid":"GoldBerg",
+	"fluid.dif.beer_fluid":"GoldBerg",
+	"fluid_type.dif.beer_fluid":"GoldBerg",
+	"block.dif.beer":"GoldBerg",
 
 	"item.dif.xp_bucket":"Experience Bucket",
 	"block.dif.xp_fluid":"Experience",
@@ -139,6 +140,7 @@
 	"item.dif.ram":"RAM",
 	"item.dif.explosive_ram":"§cExplosive RAM§r",
 	"item.dif.spring":"Spring",
+	"item.dif.soldering_iron":"Soldering Iron",
 	"item.dif.incomplete_universal":"Incomplete Universal",
 
 	"block.dif.deepslate_bauxite_ore":"Deepslate Bauxite Ore",
@@ -172,7 +174,6 @@
 	"block.dif.copper_barrel":"Copper Barrel",
 	"block.dif.brass_barrel":"Brass Barrel",
 
-    "block.dif.beer":"GoldBerg",
 	"item.dif.raw_horse_salami":"§lSyrovej Koňskej Salám§r",
 	"item.dif.cooked_horse_salami":"§lVařenej Koňskej Salám§r",
 
