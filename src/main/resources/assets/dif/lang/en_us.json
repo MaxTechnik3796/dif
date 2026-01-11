@@ -178,8 +178,8 @@
 	"block.dif.copper_barrel":"Copper Barrel",
 	"block.dif.brass_barrel":"Brass Barrel",
 
-	"item.dif.raw_horse_salami":"§lSyrovej Koňskej Salám§r",
-	"item.dif.cooked_horse_salami":"§lVařenej Koňskej Salám§r",
+	"item.dif.horse_meat":"§lKoňské Maso§r",
+	"item.dif.cooked_horse_meat":"§lVařené Koňské Maso§r",
 
 	"item.dif.wooden_battle_axe":"Wooden Battle Axe",
 	"item.dif.golden_battle_axe":"Golden Battle Axe",

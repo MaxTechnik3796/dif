@@ -1,6 +1,6 @@
 {
 	"parent":"item/generated",
 	"textures":{
-		"layer0":"dif:item/cooked_horse_salami"
+		"layer0":"dif:item/cooked_horse_meat"
 	}
 }
