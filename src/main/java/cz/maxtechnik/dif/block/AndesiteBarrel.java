@@ -34,16 +34,8 @@ public class AndesiteBarrel extends Block implements EntityBlock{
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(OPEN,false));
 	}
 	@Override
-	public boolean propagatesSkylightDown(BlockState state,@NotNull BlockGetter reader,@NotNull BlockPos pos){
-		return state.getFluidState().isEmpty();
-	}
-	@Override
 	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
-		return 0;
-	}
-	@Override
-	public @NotNull VoxelShape getVisualShape(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
-		return Shapes.empty();
+		return 15;
 	}
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
