@@ -34,10 +34,6 @@ public class CopperBarrel extends Block implements EntityBlock{
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(OPEN,false));
 	}
 	@Override
-	public boolean skipRendering(@NotNull BlockState state,BlockState adjacentBlockState,@NotNull Direction side){
-		return adjacentBlockState.getBlock()==this||super.skipRendering(state,adjacentBlockState,side);
-	}
-	@Override
 	public boolean propagatesSkylightDown(BlockState state,@NotNull BlockGetter reader,@NotNull BlockPos pos){
 		return state.getFluidState().isEmpty();
 	}
