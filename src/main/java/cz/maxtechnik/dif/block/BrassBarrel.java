@@ -30,7 +30,7 @@ public class BrassBarrel extends Block implements EntityBlock{
 	public static final DirectionProperty FACING=BlockStateProperties.FACING;
 	public static final BooleanProperty OPEN=BlockStateProperties.OPEN;
 	public BrassBarrel(){
-		super(Properties.of().sound(SoundType.WOOD).strength(2.5F).noOcclusion().isRedstoneConductor((bs,br,bp)->false));
+		super(Properties.of().sound(SoundType.WOOD).strength(2.5F).isRedstoneConductor((bs,br,bp)->false));
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(OPEN,false));
 	}
 	@Override
