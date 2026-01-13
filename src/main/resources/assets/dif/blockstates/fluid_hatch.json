@@ -27,7 +27,7 @@
 			"y":180
 		},
 		"facing=west,xp=true":{
-			"model":"dif:block/fluid_hatchxp",
+			"model":"dif:block/fluid_hatch_xp",
 			"y":270
 		}
 	}
