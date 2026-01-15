@@ -186,7 +186,7 @@ public class DifModItems{
 	public static final RegistryObject<Item>COPPER_KATANA=REGISTRY.register("copper_katana",()->new SwordItem(DifModTiers.COPPER,0,-1F,new Item.Properties()));
 
 
-	//Copper Tools (use iron-equivalent stats from Copper.TIER)
+	//Copper Tools
 	public static final RegistryObject<Item>COPPER_SHOVEL=REGISTRY.register("copper_shovel",()->new ShovelItem(DifModTiers.COPPER,0.5F,-3.0F,new Item.Properties()));
 	public static final RegistryObject<Item>COPPER_PICKAXE=REGISTRY.register("copper_pickaxe",()->new PickaxeItem(DifModTiers.COPPER,0,-2.8F,new Item.Properties()));
 	public static final RegistryObject<Item>COPPER_SWORD=REGISTRY.register("copper_sword",()->new SwordItem(DifModTiers.COPPER,2,-2.4F,new Item.Properties()));

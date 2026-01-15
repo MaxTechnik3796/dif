@@ -1,0 +1,16 @@
+{
+	"replace":false,
+	"values":[
+		"dif:copper_katana",
+		"dif:copper_battle_axe",
+		"dif:copper_shovel",
+		"dif:copper_pickaxe",
+		"dif:copper_sword",
+		"dif:copper_axe",
+		"dif:copper_hoe",
+		"dif:copper_helmet",
+		"dif:copper_chestplate",
+		"dif:copper_leggings",
+		"dif:copper_boots"
+	]
+}
