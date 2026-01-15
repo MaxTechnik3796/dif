@@ -1,0 +1,19 @@
+{
+	"variants":{
+		"facing=north":{
+			"model":"dif:block/air_conditioning"
+		},
+		"facing=east":{
+			"model":"dif:block/air_conditioning",
+			"y":90
+		},
+		"facing=south":{
+			"model":"dif:block/air_conditioning",
+			"y":180
+		},
+		"facing=west":{
+			"model":"dif:block/air_conditioning",
+			"y":270
+		}
+	}
+}
