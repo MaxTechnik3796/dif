@@ -163,6 +163,9 @@ public class DifModTabs{
 			tabData.accept(DifModItems.FIRE.get());
 
 			tabData.accept(DifModItems.MODULAR_PICKAXE.get());
+			tabData.accept(DifModItems.MODULAR_AXE.get());
+			tabData.accept(DifModItems.MODULAR_SHOVEL.get());
+			tabData.accept(DifModItems.MODULAR_SWORD.get());
 		}
 	}
 }

@@ -9,7 +9,7 @@ import cz.maxtechnik.dif.item.random.*;
 import cz.maxtechnik.dif.item.tool.*;
 import cz.maxtechnik.dif.item.armor.*;
 import cz.maxtechnik.dif.init.other.DifModTiers;
-import cz.maxtechnik.dif.item.tool.modular.ModularPickaxe;
+import cz.maxtechnik.dif.item.tool.modular.*;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
@@ -24,6 +24,9 @@ public class DifModItems{
     private static RegistryObject<Item>doubleBlock(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));}
 
 	public static final RegistryObject<Item> MODULAR_PICKAXE=REGISTRY.register("modular_pickaxe",ModularPickaxe::new);
+	public static final RegistryObject<Item> MODULAR_AXE=REGISTRY.register("modular_axe",ModularAxe::new);
+	public static final RegistryObject<Item> MODULAR_SHOVEL=REGISTRY.register("modular_shovel",ModularShovel::new);
+	public static final RegistryObject<Item> MODULAR_SWORD=REGISTRY.register("modular_sword",ModularSword::new);
 
 	public static final RegistryObject<Item>EXAMPLE_BLOCK=block(DifModBlocks.EXAMPLE_BLOCK);
 
