@@ -5,6 +5,7 @@ import com.google.common.collect.Multimap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -20,6 +21,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+
+import static java.lang.Math.round;
 public class ModularPickaxe extends PickaxeItem{
 	int MINING_LEVEL=0;
 	int DURABILITY=100;
@@ -56,21 +59,15 @@ public class ModularPickaxe extends PickaxeItem{
 		},1,-2.8F,new Properties());
 	}
 	@Override
-	public boolean isCorrectToolForDrops(ItemStack itemStack,@NotNull BlockState state){
-		if(itemStack.hasTag()){
-			assert itemStack.getTag()!=null;
-			if(itemStack.getTag().contains("MiningLevel")){
-				int level=itemStack.getTag().getInt("MiningLevel");
-				// Tady by byla potřeba komplexnější logika pro porovnání s Tierem bloku,
-				// ale pro základní funkčnost stačí ověřit level.
-				return level>=0; // Zjednodušeno, Minecraft standardně používá Tier systém.
-			}else{
-				itemStack.getOrCreateTag().putInt("MiningLevel",MINING_LEVEL);
-				int level=itemStack.getTag().getInt("MiningLevel");
-				return level>=0;
-			}
-		}
-		return super.isCorrectToolForDrops(itemStack,state);
+	public boolean isCorrectToolForDrops(ItemStack itemStack,@NotNull BlockState blockState){
+		if(!itemStack.hasTag())return super.isCorrectToolForDrops(itemStack,blockState);
+		assert itemStack.getTag()!=null;
+		int level=itemStack.getTag().getInt("MiningLevel");
+		// Kontrola požadavků bloku proti úrovni v NBT
+		if (blockState.is(BlockTags.NEEDS_DIAMOND_TOOL)&&level<3)return false;
+		if (blockState.is(BlockTags.NEEDS_IRON_TOOL)&&level<2) return false;
+		if (blockState.is(BlockTags.NEEDS_STONE_TOOL)&&level<1) return false;
+		return blockState.is(BlockTags.MINEABLE_WITH_PICKAXE);
 	}
 	@Override
 	public int getMaxDamage(ItemStack stack){
