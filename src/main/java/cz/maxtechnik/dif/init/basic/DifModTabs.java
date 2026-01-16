@@ -161,6 +161,8 @@ public class DifModTabs{
 			tabData.accept(DifModItems.WATER.get());
 			tabData.accept(DifModItems.LAVA.get());
 			tabData.accept(DifModItems.FIRE.get());
+
+			tabData.accept(DifModItems.MODULAR_PICKAXE.get());
 		}
 	}
 }
