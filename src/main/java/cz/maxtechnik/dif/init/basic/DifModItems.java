@@ -100,6 +100,7 @@ public class DifModItems{
     public static final RegistryObject<Item>EVENT_BUS=block(DifModBlocks.EVENT_BUS);
 	public static final RegistryObject<Item>VENT=block(DifModBlocks.VENT);
 	public static final RegistryObject<Item>WASHING_MACHINE=block(DifModBlocks.WASHING_MACHINE);
+	public static final RegistryObject<Item>AIR_CONDITIONING=block(DifModBlocks.AIR_CONDITIONING);
     public static final RegistryObject<Item>BURNING_GENERATOR=block(DifModBlocks.BURNING_GENERATOR);
 	public static final RegistryObject<Item>FLUID_HATCH=block(DifModBlocks.FLUID_HATCH);
     public static final RegistryObject<Item>HOSPITAL_HANDLE=block(DifModBlocks.HOSPITAL_HANDLE);

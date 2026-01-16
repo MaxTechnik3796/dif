@@ -20,6 +20,7 @@ public class DifModTabs{
 		tabData.accept(DifModItems.VENT.get());
 		tabData.accept(DifModItems.HOSPITAL_HANDLE.get());
 		tabData.accept(DifModItems.WASHING_MACHINE.get());
+		tabData.accept(DifModItems.AIR_CONDITIONING.get());
 		tabData.accept(DifModItems.BURNING_GENERATOR.get());
 		tabData.accept(DifModItems.FLUID_HATCH.get());
 		tabData.accept(DifModItems.ANDESITE_LATTICE.get());
