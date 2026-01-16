@@ -1,0 +1,16 @@
+{
+	"parent":"item/handheld",
+	"textures":{
+		"layer0":"dif:item/modular_sword_handle",
+		"layer1":"dif:item/modular_sword_binding",
+		"layer2":"dif:item/modular_sword_head"
+	},
+	"overrides":[
+		{
+			"predicate":{
+				"custom_model_data":1
+			},
+			"model":"dif:item/modular_sword_broken"
+		}	
+	]
+}

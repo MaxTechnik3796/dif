@@ -1,0 +1,16 @@
+{
+	"parent":"item/handheld",
+	"textures":{
+		"layer0":"dif:item/modular_shovel_handle",
+		"layer1":"dif:item/modular_shovel_binding",
+		"layer2":"dif:item/modular_shovel_head"
+	},
+	"overrides":[
+		{
+			"predicate":{
+				"custom_model_data":1
+			},
+			"model":"dif:item/modular_shovel_broken"
+		}	
+	]
+}

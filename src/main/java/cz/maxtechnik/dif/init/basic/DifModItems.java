@@ -9,6 +9,7 @@ import cz.maxtechnik.dif.item.random.*;
 import cz.maxtechnik.dif.item.tool.*;
 import cz.maxtechnik.dif.item.armor.*;
 import cz.maxtechnik.dif.init.other.DifModTiers;
+import cz.maxtechnik.dif.item.tool.modular.ModularPickaxe;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
