@@ -61,26 +61,31 @@ public class ModularPickaxe extends PickaxeItem{
 		assert itemStack.getTag()!=null;
 		int level=itemStack.getTag().getInt("MiningLevel");
 		// Kontrola požadavků bloku proti úrovni v NBT
+		if(itemStack.getTag().getBoolean("Broken"))return false;
 		if(blockState.is(BlockTags.NEEDS_DIAMOND_TOOL)&&level<3) return false;
 		if(blockState.is(BlockTags.NEEDS_IRON_TOOL)&&level<2) return false;
 		if(blockState.is(BlockTags.NEEDS_STONE_TOOL)&&level<1) return false;
 		return blockState.is(BlockTags.MINEABLE_WITH_PICKAXE);
 	}
 	@Override
-	public int getMaxDamage(ItemStack stack){
-		if(stack.hasTag()){
-			assert stack.getTag()!=null;
-			if(!stack.getTag().contains("Durability")) stack.getOrCreateTag().putInt("Durability",DURABILITY);
-			return stack.getTag().getInt("Durability");
+	public int getMaxDamage(ItemStack itemStack){
+		if(itemStack.hasTag()){
+			assert itemStack.getTag()!=null;
+			if(!itemStack.getTag().contains("Durability"))itemStack.getOrCreateTag().putInt("Durability",DURABILITY);
+			return itemStack.getTag().getInt("Durability");
 		}
-		return super.getMaxDamage(stack);
+		return super.getMaxDamage(itemStack);
 	}
 	@Override
 	public float getDestroySpeed(ItemStack itemStack,@NotNull BlockState state){
 		if(itemStack.hasTag()){
 			assert itemStack.getTag()!=null;
 			if(!itemStack.getTag().contains("Efficiency")) itemStack.getOrCreateTag().putFloat("Efficiency",EFFICIENCY);
-			return itemStack.isCorrectToolForDrops(state)?itemStack.getTag().getFloat("Efficiency"):1F;
+			if(itemStack.getTag().getBoolean("Broken")){
+				return 1F;
+			}else{
+				return itemStack.isCorrectToolForDrops(state)?itemStack.getTag().getFloat("Efficiency"):1F;
+			}
 		}
 		return super.getDestroySpeed(itemStack,state);
 	}
@@ -94,14 +99,14 @@ public class ModularPickaxe extends PickaxeItem{
 			if(!itemStack.getTag().contains("AttackDamage"))
 				itemStack.getOrCreateTag().putFloat("AttackDamage",ATTACK_DAMAGE);
 			damage=itemStack.getTag().getFloat("AttackDamage");
-			builders.put(Attributes.ATTACK_DAMAGE,new AttributeModifier(BASE_ATTACK_DAMAGE_UUID,"Weapon modifier",damage,AttributeModifier.Operation.ADDITION));
+			if(!itemStack.getTag().getBoolean("Broken"))builders.put(Attributes.ATTACK_DAMAGE,new AttributeModifier(BASE_ATTACK_DAMAGE_UUID,"Weapon modifier",damage,AttributeModifier.Operation.ADDITION));
 			// Attack Speed
 			// Pozor: Výchozí speed je 4.0, modifikátor je záporné číslo (např. -2.8 znamená výslednou rychlost 1.2)
 			float speed;
 			if(!itemStack.getTag().contains("AttackSpeed"))
 				itemStack.getOrCreateTag().putFloat("AttackSpeed",ATTACK_SPEED);
 			speed=itemStack.getTag().getFloat("AttackSpeed");
-			builders.put(Attributes.ATTACK_SPEED,new AttributeModifier(BASE_ATTACK_SPEED_UUID,"Weapon modifier",speed,AttributeModifier.Operation.ADDITION));
+			if(!itemStack.getTag().getBoolean("Broken"))builders.put(Attributes.ATTACK_SPEED,new AttributeModifier(BASE_ATTACK_SPEED_UUID,"Weapon modifier",speed,AttributeModifier.Operation.ADDITION));
 			return builders.build();
 		}
 		return super.getAttributeModifiers(slot,itemStack);
@@ -124,7 +129,7 @@ public class ModularPickaxe extends PickaxeItem{
 				default -> miningLevelColor="#FFFFFF";
 			}
 			list.add(Component.literal("Mining Level: ").append(Component.translatable("dif.mining_level."+mLevel).withStyle(Style.EMPTY.withColor(TextColor.parseColor(miningLevelColor)))));
-			int currentDamage=itemstack.getDamageValue();
+			int currentDamage=itemstack.getDamageValue()+1;
 			int maxDurability=tag.getInt("Durability");
 			int remainingDurability=Math.max(0,maxDurability-currentDamage);
 			// Výpočet barvy od zelené (#00FF00) po červenou (#FF0000)
@@ -132,8 +137,8 @@ public class ModularPickaxe extends PickaxeItem{
 			int red=(int)(255*(1-ratio));
 			int green=(int)(255*ratio);
 			String hexColor=String.format("#%02X%02X00",red,green);
-			list.add(Component.literal("Durability: ").append(Component.literal(String.valueOf(remainingDurability)).withStyle(Style.EMPTY.withColor(TextColor.parseColor(hexColor)))).append(Component.literal(" / "+maxDurability).withStyle(Style.EMPTY.withColor(TextColor.parseColor("#AAAAAA")))));
-			list.add(Component.literal("Efficiency: ").append(Component.literal(String.valueOf(tag.getFloat("Efficiency"))).withStyle(Style.EMPTY.withColor(TextColor.parseColor("#55FF55")))));
+			list.add(Component.literal("Durability: ").append(Component.literal(String.valueOf(remainingDurability)).withStyle(Style.EMPTY.withColor(TextColor.parseColor(hexColor)))).append(Component.literal(" / "+(maxDurability-1)).withStyle(Style.EMPTY.withColor(TextColor.parseColor("#AAAAAA")))));
+			list.add(Component.literal("Efficiency: ").append(Component.literal(String.valueOf(tag.getInt("Efficiency"))).withStyle(Style.EMPTY.withColor(TextColor.parseColor("#55FF55")))));
 			float displayDamage=1.0F+tag.getFloat("AttackDamage");
 			list.add(Component.literal("Attack Damage: ").append(Component.literal(String.valueOf(displayDamage)).withStyle(Style.EMPTY.withColor(TextColor.parseColor("#FF5555")))));
 			float displaySpeed=4.0F+tag.getFloat("AttackSpeed");
@@ -150,5 +155,24 @@ public class ModularPickaxe extends PickaxeItem{
 		if(!itemStack.getTag().contains("Efficiency"))itemStack.getOrCreateTag().putFloat("Efficiency",EFFICIENCY);
 		if(!itemStack.getTag().contains("AttackDamage"))itemStack.getOrCreateTag().putFloat("AttackDamage",ATTACK_DAMAGE);
 		if(!itemStack.getTag().contains("AttackSpeed"))itemStack.getOrCreateTag().putFloat("AttackSpeed",ATTACK_SPEED);
+		if(!itemStack.getTag().contains("Broken"))itemStack.getOrCreateTag().putBoolean("Broken",false);
+		if(!itemStack.getTag().contains("Unbreakable"))itemStack.getOrCreateTag().putBoolean("Unbreakable",false);
+		if(!itemStack.getTag().contains("CustomModelData"))itemStack.getOrCreateTag().putFloat("CustomModelData",0);
+
+		if(!itemStack.getTag().contains("HeadColor"))itemStack.getOrCreateTag().putFloat("HeadColor",0xFFFFFF);
+		if(!itemStack.getTag().contains("HandleColor"))itemStack.getOrCreateTag().putFloat("HandleColor",0x915A2D);
+		if(!itemStack.getTag().contains("BindingColor"))itemStack.getOrCreateTag().putFloat("BindingColor",0xFFFF00);
+
+
+
+		if(itemStack.getMaxDamage()-itemStack.getDamageValue()==1){
+			itemStack.getOrCreateTag().putBoolean("Broken",true);
+			itemStack.getOrCreateTag().putBoolean("Unbreakable",true);
+			itemStack.getOrCreateTag().putInt("CustomModelData",1);
+		}else{
+			itemStack.getOrCreateTag().putBoolean("Broken",false);
+			itemStack.getOrCreateTag().putBoolean("Unbreakable",false);
+			itemStack.getOrCreateTag().putInt("CustomModelData",0);
+		}
 	}
 }

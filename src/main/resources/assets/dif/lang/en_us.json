@@ -212,6 +212,7 @@
 
 	"block.dif.xp_storage":"XP Storage Block",
 
+	"dif.item.modular_pickaxe":"Pickaxe",
 	"dif.mining_level.0":"Wooden",
 	"dif.mining_level.1":"Stone",
 	"dif.mining_level.2":"Iron",
