@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.block;
+package cz.maxtechnik.dif.block.barrel;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -20,16 +20,13 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("deprecation")
-public class BrassBarrel extends Block implements EntityBlock{
+public class AndesiteBarrel extends Block implements EntityBlock{
 	public static final DirectionProperty FACING=BlockStateProperties.FACING;
 	public static final BooleanProperty OPEN=BlockStateProperties.OPEN;
-	public BrassBarrel(){
+	public AndesiteBarrel(){
 		super(Properties.of().sound(SoundType.WOOD).strength(2.5F).isRedstoneConductor((bs,br,bp)->false));
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(OPEN,false));
 	}
@@ -71,7 +68,7 @@ public class BrassBarrel extends Block implements EntityBlock{
 	}
 	@Override
 	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		return new cz.maxtechnik.dif.block.entity.BrassBarrel(pos,state);
+		return new cz.maxtechnik.dif.block.entity.AndesiteBarrel(pos,state);
 	}
 	@Override
 	public boolean triggerEvent(@NotNull BlockState state,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
@@ -83,7 +80,7 @@ public class BrassBarrel extends Block implements EntityBlock{
 	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
 		if(state.getBlock()!=newState.getBlock()){
 			BlockEntity blockEntity=world.getBlockEntity(pos);
-			if(blockEntity instanceof cz.maxtechnik.dif.block.entity.BrassBarrel be){
+			if(blockEntity instanceof cz.maxtechnik.dif.block.entity.AndesiteBarrel be){
 				Containers.dropContents(world,pos,be);
 				world.updateNeighbourForOutputSignal(pos,this);
 			}
@@ -97,7 +94,7 @@ public class BrassBarrel extends Block implements EntityBlock{
 	@Override
 	public int getAnalogOutputSignal(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos){
 		BlockEntity tileentity=world.getBlockEntity(pos);
-		if(tileentity instanceof cz.maxtechnik.dif.block.entity.BrassBarrel be)
+		if(tileentity instanceof cz.maxtechnik.dif.block.entity.AndesiteBarrel be)
 			return AbstractContainerMenu.getRedstoneSignalFromContainer(be);
 		else
 			return 0;

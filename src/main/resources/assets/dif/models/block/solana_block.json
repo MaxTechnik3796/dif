@@ -1,8 +1,8 @@
 {
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "dif:block/solana_block",
-    "particle": "dif:block/solana_block"
-  },
-  "render_type": "solid"
+	"parent":"block/cube_all",
+	"textures":{
+		"all":"dif:block/solana_block",
+		"particle":"dif:block/solana_block"
+	},
+	"render_type":"solid"
 }

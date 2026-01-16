@@ -1,8 +1,8 @@
 {
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "dif:block/andesite_lattice",
-    "particle": "dif:block/andesite_lattice"
-  },
-  "render_type": "cutout"
+	"parent":"block/cube_all",
+	"textures":{
+		"all":"dif:block/andesite_lattice",
+		"particle":"dif:block/andesite_lattice"
+	},
+	"render_type":"cutout"
 }

@@ -1,5 +1,5 @@
 {
-  "textures": {
-    "particle": "dif:block/xp_fluid_still"
-  }
+	"textures":{
+		"particle":"dif:block/xp_fluid_still"
+	}
 }

@@ -1,6 +1,6 @@
 {
-  "parent": "dif:block/solar_panel_w",
-  "textures": {
-    "1": "dif:block/solar_panel_04"
-  }
+	"parent":"dif:block/solar_panel_w",
+	"textures":{
+		"1":"dif:block/solar_panel_04"
+	}
 }

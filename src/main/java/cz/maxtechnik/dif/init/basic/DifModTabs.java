@@ -73,6 +73,7 @@ public class DifModTabs{
 	public static void addCreative(BuildCreativeModeTabContentsEvent tabData){
 		if(tabData.getTabKey().equals(CreativeModeTabs.BUILDING_BLOCKS)){
 			tabData.getEntries().putAfter(new ItemStack(Items.SMOOTH_STONE),new ItemStack(DifModItems.SMOOTH_STONE_DOUBLE_SLAB.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(Items.IRON_BARS),new ItemStack(DifModItems.IRON_BARS_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.accept(DifModItems.DEEPSLATED_ARROW.get());
 			tabData.accept(DifModItems.STONED_ARROW.get());
 			tabData.accept(DifModItems.WOODED_ARROW.get());

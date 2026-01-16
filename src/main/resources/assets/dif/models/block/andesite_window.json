@@ -1,13 +1,13 @@
 {
-  "parent": "block/cube",
-  "textures": {
-    "up": "dif:block/andesite_window_top",
-    "down": "dif:block/andesite_window_top",
-    "north": "dif:block/andesite_window_side",
-    "east": "dif:block/andesite_window_side",
-    "south": "dif:block/andesite_window_side",
-    "west": "dif:block/andesite_window_side",
-    "particle": "dif:block/andesite_window_top"
-  },
-  "render_type": "cutout"
+	"parent":"block/cube",
+	"textures":{
+		"up":"dif:block/andesite_window_top",
+		"down":"dif:block/andesite_window_top",
+		"north":"dif:block/andesite_window_side",
+		"east":"dif:block/andesite_window_side",
+		"south":"dif:block/andesite_window_side",
+		"west":"dif:block/andesite_window_side",
+		"particle":"dif:block/andesite_window_top"
+	},
+	"render_type":"cutout"
 }

@@ -1,9 +1,9 @@
 {
 	"parent":"block/cube_bottom_top",
 	"textures":{
-		"top": "block/smooth_stone",
+		"top":"block/smooth_stone",
 		"side":"block/smooth_stone_slab_side",
-		"bottom": "block/smooth_stone",
+		"bottom":"block/smooth_stone",
 		"particle":"block/smooth_stone"
 	},
 	"render_type":"solid"

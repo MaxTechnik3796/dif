@@ -39,12 +39,12 @@ public class BrassBarrel extends RandomizableContainerBlockEntity implements Wor
         @Override
         protected void onOpen(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
             level.playSound(null, pos, SoundEvents.BARREL_OPEN, SoundSource.BLOCKS, 1.0F, 1.0F);
-            level.setBlock(pos, state.setValue(cz.maxtechnik.dif.block.BrassBarrel.OPEN, true), 3);
+            level.setBlock(pos, state.setValue(cz.maxtechnik.dif.block.barrel.BrassBarrel.OPEN, true), 3);
         }
         @Override
         protected void onClose(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
             level.playSound(null, pos, SoundEvents.BARREL_CLOSE, SoundSource.BLOCKS, 1.0F, 1.0F);
-            level.setBlock(pos, state.setValue(cz.maxtechnik.dif.block.BrassBarrel.OPEN, false), 3);
+            level.setBlock(pos, state.setValue(cz.maxtechnik.dif.block.barrel.BrassBarrel.OPEN, false), 3);
         }
         @Override
         protected void openerCountChanged(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, int p_155062_, int p_155063_) {

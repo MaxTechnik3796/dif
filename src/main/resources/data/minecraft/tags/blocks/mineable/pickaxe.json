@@ -46,6 +46,7 @@
 		"minecraft:redstone_lamp",
 		"minecraft:glowstone",
 		"minecraft:sea_lantern",
-		"dif:smooth_stone_double_slab"
+		"dif:smooth_stone_double_slab",
+		"dif:iron_bars_block"
 	]
 }

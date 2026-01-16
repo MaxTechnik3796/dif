@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.block;
+package cz.maxtechnik.dif.block.template;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,9 +10,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("deprecation")
-public class CustomHorizontalRotation extends Block{
-	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
-	public CustomHorizontalRotation(SoundType sound,float hardness,float resistance,boolean requiresCorrectToolForDrops){
+public class CustomFullRotation extends Block{
+	public static final DirectionProperty FACING=DirectionalBlock.FACING;
+	public CustomFullRotation(SoundType sound,float hardness,float resistance,boolean requiresCorrectToolForDrops){
 		super(requiresCorrectToolForDrops?Properties.of().strength(hardness,resistance).sound(sound).requiresCorrectToolForDrops():Properties.of().strength(hardness,resistance).sound(sound));
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH));
 	}
@@ -21,12 +21,12 @@ public class CustomHorizontalRotation extends Block{
 		return 15;
 	}
 	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState>builder){
 		builder.add(FACING);
 	}
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context){
-		return this.defaultBlockState().setValue(FACING,context.getHorizontalDirection().getOpposite());
+		return this.defaultBlockState().setValue(FACING,context.getNearestLookingDirection().getOpposite());
 	}
 	public @NotNull BlockState rotate(BlockState state,Rotation rot){
 		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));

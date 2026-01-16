@@ -1,17 +1,16 @@
-package cz.maxtechnik.dif.block;
+package cz.maxtechnik.dif.block.template;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -19,23 +18,12 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("deprecation")
-public class CustomWaterlogged extends Block implements SimpleWaterloggedBlock{
+public class CustomWaterloggedHorizontalRotation extends Block implements SimpleWaterloggedBlock{
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
-	public CustomWaterlogged(SoundType sound,float hardness,float resistance,boolean requiresCorrectToolForDrops){
-		super(requiresCorrectToolForDrops?Properties.of().strength(hardness,resistance).sound(sound).noOcclusion().isRedstoneConductor((bs,br,bp)->false).requiresCorrectToolForDrops():Properties.of().strength(hardness,resistance).sound(sound).noOcclusion().isRedstoneConductor((bs,br,bp)->false));
-		this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED,false));
-	}
-	@Override
-	public boolean skipRendering(@NotNull BlockState state,BlockState adjacentBlockState,@NotNull Direction side){
-		return adjacentBlockState.getBlock()==this||super.skipRendering(state,adjacentBlockState,side);
-	}
-	@Override
-	public boolean propagatesSkylightDown(BlockState state,@NotNull BlockGetter reader,@NotNull BlockPos pos){
-		return state.getFluidState().isEmpty();
-	}
-	@Override
-	public float getShadeBrightness(@NotNull BlockState blockState,@NotNull BlockGetter blockGetter,@NotNull BlockPos pos){
-		return 1.0f;
+	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
+	public CustomWaterloggedHorizontalRotation(SoundType sound,float hardness,float resistance,boolean requiresCorrectToolForDrops){
+		super(requiresCorrectToolForDrops?Properties.of().strength(hardness,resistance).sound(sound).requiresCorrectToolForDrops().noOcclusion().isRedstoneConductor((bs,br,bp)->false):Properties.of().strength(hardness,resistance).sound(sound).noOcclusion().isRedstoneConductor((bs,br,bp)->false));
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(WATERLOGGED,false));
 	}
 	@Override
 	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
@@ -47,12 +35,22 @@ public class CustomWaterlogged extends Block implements SimpleWaterloggedBlock{
 	}
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
-		builder.add(WATERLOGGED);
+		builder.add(FACING,WATERLOGGED);
+	}
+	@Override
+	public float getShadeBrightness(@NotNull BlockState blockState,@NotNull BlockGetter blockGetter,@NotNull BlockPos pos){
+		return 1.0f;
 	}
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context){
 		boolean flag=context.getLevel().getFluidState(context.getClickedPos()).getType()==Fluids.WATER;
-		return this.defaultBlockState().setValue(WATERLOGGED,flag);
+		return this.defaultBlockState().setValue(FACING,context.getHorizontalDirection().getOpposite()).setValue(WATERLOGGED,flag);
+	}
+	public @NotNull BlockState rotate(BlockState state,Rotation rot){
+		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));
+	}
+	public @NotNull BlockState mirror(BlockState state,Mirror mirrorIn){
+		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
 	}
 	@Override
 	public @NotNull FluidState getFluidState(BlockState state){

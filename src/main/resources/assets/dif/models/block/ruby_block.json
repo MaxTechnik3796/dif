@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "dif:block/ruby_block"
-  }
+	"parent":"minecraft:block/cube_all",
+	"textures":{
+		"all":"dif:block/ruby_block"
+	}
 }

@@ -151,6 +151,7 @@ public class DifModItems{
 	public static final RegistryObject<Item>ANDESITE_LATTICE=block(DifModBlocks.ANDESITE_LATTICE);
 	public static final RegistryObject<Item>ANDESITE_WINDOW=block(DifModBlocks.ANDESITE_WINDOW);
 	public static final RegistryObject<Item>SMOOTH_STONE_DOUBLE_SLAB=block(DifModBlocks.SMOOTH_STONE_DOUBLE_SLAB);
+	public static final RegistryObject<Item>IRON_BARS_BLOCK=block(DifModBlocks.IRON_BARS_BLOCK);
 
 	public static final RegistryObject<Item>ENERGY_BLOCK=block(DifModBlocks.ENERGY_BLOCK);
 	public static final RegistryObject<Item>BUDDING_ENERGY=block(DifModBlocks.BUDDING_ENERGY);
