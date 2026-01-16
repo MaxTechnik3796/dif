@@ -2,6 +2,7 @@ package cz.maxtechnik.dif.item;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -19,17 +20,13 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
-
-import static java.lang.Math.round;
 public class ModularPickaxe extends PickaxeItem{
 	int MINING_LEVEL=0;
 	int DURABILITY=100;
 	float EFFICIENCY=4F;
 	float ATTACK_DAMAGE=2F;
 	float ATTACK_SPEED=-2.8F;
-
 	public ModularPickaxe(){
 		super(new Tier(){
 			@Override
@@ -60,20 +57,20 @@ public class ModularPickaxe extends PickaxeItem{
 	}
 	@Override
 	public boolean isCorrectToolForDrops(ItemStack itemStack,@NotNull BlockState blockState){
-		if(!itemStack.hasTag())return super.isCorrectToolForDrops(itemStack,blockState);
+		if(!itemStack.hasTag()) return super.isCorrectToolForDrops(itemStack,blockState);
 		assert itemStack.getTag()!=null;
 		int level=itemStack.getTag().getInt("MiningLevel");
 		// Kontrola požadavků bloku proti úrovni v NBT
-		if (blockState.is(BlockTags.NEEDS_DIAMOND_TOOL)&&level<3)return false;
-		if (blockState.is(BlockTags.NEEDS_IRON_TOOL)&&level<2) return false;
-		if (blockState.is(BlockTags.NEEDS_STONE_TOOL)&&level<1) return false;
+		if(blockState.is(BlockTags.NEEDS_DIAMOND_TOOL)&&level<3) return false;
+		if(blockState.is(BlockTags.NEEDS_IRON_TOOL)&&level<2) return false;
+		if(blockState.is(BlockTags.NEEDS_STONE_TOOL)&&level<1) return false;
 		return blockState.is(BlockTags.MINEABLE_WITH_PICKAXE);
 	}
 	@Override
 	public int getMaxDamage(ItemStack stack){
 		if(stack.hasTag()){
 			assert stack.getTag()!=null;
-			if(!stack.getTag().contains("Durability"))stack.getOrCreateTag().putInt("Durability",DURABILITY);
+			if(!stack.getTag().contains("Durability")) stack.getOrCreateTag().putInt("Durability",DURABILITY);
 			return stack.getTag().getInt("Durability");
 		}
 		return super.getMaxDamage(stack);
@@ -82,12 +79,11 @@ public class ModularPickaxe extends PickaxeItem{
 	public float getDestroySpeed(ItemStack itemStack,@NotNull BlockState state){
 		if(itemStack.hasTag()){
 			assert itemStack.getTag()!=null;
-			if(!itemStack.getTag().contains("Efficiency"))itemStack.getOrCreateTag().putFloat("Efficiency",EFFICIENCY);
+			if(!itemStack.getTag().contains("Efficiency")) itemStack.getOrCreateTag().putFloat("Efficiency",EFFICIENCY);
 			return itemStack.isCorrectToolForDrops(state)?itemStack.getTag().getFloat("Efficiency"):1F;
 		}
 		return super.getDestroySpeed(itemStack,state);
 	}
-
 	@Override
 	public Multimap<Attribute,AttributeModifier> getAttributeModifiers(EquipmentSlot slot,ItemStack itemStack){
 		if(slot==EquipmentSlot.MAINHAND&&itemStack.hasTag()){
@@ -95,14 +91,15 @@ public class ModularPickaxe extends PickaxeItem{
 			ImmutableMultimap.Builder<Attribute,AttributeModifier> builders=ImmutableMultimap.builder();
 			// Attack Damage
 			float damage;
-			if(!itemStack.getTag().contains("AttackDamage"))itemStack.getOrCreateTag().putFloat("AttackDamage",ATTACK_DAMAGE);
+			if(!itemStack.getTag().contains("AttackDamage"))
+				itemStack.getOrCreateTag().putFloat("AttackDamage",ATTACK_DAMAGE);
 			damage=itemStack.getTag().getFloat("AttackDamage");
 			builders.put(Attributes.ATTACK_DAMAGE,new AttributeModifier(BASE_ATTACK_DAMAGE_UUID,"Weapon modifier",damage,AttributeModifier.Operation.ADDITION));
-
 			// Attack Speed
 			// Pozor: Výchozí speed je 4.0, modifikátor je záporné číslo (např. -2.8 znamená výslednou rychlost 1.2)
 			float speed;
-			if(!itemStack.getTag().contains("AttackSpeed"))itemStack.getOrCreateTag().putFloat("AttackSpeed",ATTACK_SPEED);
+			if(!itemStack.getTag().contains("AttackSpeed"))
+				itemStack.getOrCreateTag().putFloat("AttackSpeed",ATTACK_SPEED);
 			speed=itemStack.getTag().getFloat("AttackSpeed");
 			builders.put(Attributes.ATTACK_SPEED,new AttributeModifier(BASE_ATTACK_SPEED_UUID,"Weapon modifier",speed,AttributeModifier.Operation.ADDITION));
 			return builders.build();
@@ -110,24 +107,39 @@ public class ModularPickaxe extends PickaxeItem{
 		return super.getAttributeModifiers(slot,itemStack);
 	}
 	@Override
-	public void appendHoverText(@NotNull ItemStack itemstack,Level world,@NotNull List<Component>list,@NotNull TooltipFlag flag){
+	public void appendHoverText(@NotNull ItemStack itemstack,Level world,@NotNull List<Component> list,@NotNull TooltipFlag flag){
 		super.appendHoverText(itemstack,world,list,flag);
-		assert itemstack.getTag()!=null;
-		String MiningLevelColor;
-		switch(itemstack.getTag().getInt("MiningLevel")){
-			case 0->MiningLevelColor="#915A2D";
-			case 1->MiningLevelColor="#555555";
-			case 2->MiningLevelColor="#C6C6C6";
-			case 3->MiningLevelColor="#55FFFF";
-			case 4->MiningLevelColor="#301100";
-			default->MiningLevelColor="#FFFFFF";
+		if(!itemstack.hasTag()) return;
+		CompoundTag tag=itemstack.getTag();
+		if(tag!=null){
+			// --- Mining Level Logic ---
+			String miningLevelColor;
+			int mLevel=tag.getInt("MiningLevel");
+			switch(mLevel){
+				case 0 -> miningLevelColor="#915A2D"; // Dřevo
+				case 1 -> miningLevelColor="#555555"; // Kámen
+				case 2 -> miningLevelColor="#C6C6C6"; // Železo
+				case 3 -> miningLevelColor="#55FFFF"; // Diamant
+				case 4 -> miningLevelColor="#301100"; // Netherite
+				default -> miningLevelColor="#FFFFFF";
+			}
+			list.add(Component.literal("Mining Level: ").append(Component.translatable("dif.mining_level."+mLevel).withStyle(Style.EMPTY.withColor(TextColor.parseColor(miningLevelColor)))));
+			int currentDamage=itemstack.getDamageValue();
+			int maxDurability=tag.getInt("Durability");
+			int remainingDurability=Math.max(0,maxDurability-currentDamage);
+			// Výpočet barvy od zelené (#00FF00) po červenou (#FF0000)
+			float ratio=(float)remainingDurability/maxDurability;
+			int red=(int)(255*(1-ratio));
+			int green=(int)(255*ratio);
+			String hexColor=String.format("#%02X%02X00",red,green);
+			list.add(Component.literal("Durability: ").append(Component.literal(String.valueOf(remainingDurability)).withStyle(Style.EMPTY.withColor(TextColor.parseColor(hexColor)))).append(Component.literal(" / "+maxDurability).withStyle(Style.EMPTY.withColor(TextColor.parseColor("#AAAAAA")))));
+			list.add(Component.literal("Efficiency: ").append(Component.literal(String.valueOf(tag.getFloat("Efficiency"))).withStyle(Style.EMPTY.withColor(TextColor.parseColor("#55FF55")))));
+			float displayDamage=1.0F+tag.getFloat("AttackDamage");
+			list.add(Component.literal("Attack Damage: ").append(Component.literal(String.valueOf(displayDamage)).withStyle(Style.EMPTY.withColor(TextColor.parseColor("#FF5555")))));
+			float displaySpeed=4.0F+tag.getFloat("AttackSpeed");
+			list.add(Component.literal("Attack Speed: ").append(Component.literal(String.valueOf(displaySpeed)).withStyle(Style.EMPTY.withColor(TextColor.parseColor("#FFFF55")))));
 		}
 
-		list.add(Component.literal("MiningLevel: ").append(Component.translatable("dif.mining_level."+itemstack.getTag().getInt("MiningLevel")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(MiningLevelColor)))));
-		list.add(Component.literal("Durability: ").append(Component.literal(String.valueOf(itemstack.getTag().getInt("Durability")))));
-		list.add(Component.literal("Efficiency: ").append(Component.literal(String.valueOf(itemstack.getTag().getInt("Efficiency")))));
-		list.add(Component.literal("AttackDamage: ").append(Component.literal(String.valueOf(itemstack.getTag().getInt("AttackDamage")))));
-		list.add(Component.literal("AttackSpeed: ").append(Component.literal(String.valueOf(itemstack.getTag().getInt("AttackSpeed")))));
 	}
 	@Override
 	public void inventoryTick(@NotNull ItemStack itemStack,@NotNull Level world,@NotNull Entity entity,int slot,boolean selected){
