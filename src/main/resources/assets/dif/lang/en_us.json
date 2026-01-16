@@ -210,5 +210,12 @@
 	"item.dif.copper_chestplate":"Copper Chestplate",
 	"item.dif.copper_helmet":"Copper Helmet",
 
-	"block.dif.xp_storage":"XP Storage Block"
+	"block.dif.xp_storage":"XP Storage Block",
+
+	"dif.mining_level.0":"Wooden",
+	"dif.mining_level.1":"Stone",
+	"dif.mining_level.2":"Iron",
+	"dif.mining_level.3":"Diamond",
+	"dif.mining_level.4":"Netherite"
+
 }
