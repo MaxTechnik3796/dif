@@ -113,7 +113,7 @@ dependencies {
     //implementation fg.deobf("curse.maven:diversity-1039632:7130442")
 
 
-    runtimeOnly fg.deobf("curse.maven:mt-tools-1380280:7195314")
+    runtimeOnly fg.deobf("curse.maven:mtt-1380280:7468659")
 }
 tasks.named('processResources', ProcessResources).configure {
     var replaceProperties = [minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
