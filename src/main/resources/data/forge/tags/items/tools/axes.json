@@ -1,0 +1,14 @@
+{
+	"replace": false,
+	"values": [
+		"dif:wooden_battle_axe",
+		"dif:golden_battle_axe",
+		"dif:stone_battle_axe",
+		"dif:iron_battle_axe",
+		"dif:diamond_battle_axe",
+		"dif:netherite_battle_axe",
+		"dif:copper_battle_axe",
+		"dif:copper_axe",
+		"dif:modular_axe"
+	]
+}
