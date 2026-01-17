@@ -10,6 +10,7 @@ import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.init.other.DifModMobEffects;
+import cz.maxtechnik.dif.init.other.DifModRecipes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -51,7 +52,7 @@ public class DifMod{
 		DifModMenus.REGISTRY.register(bus);
 		DifModFluids.REGISTRY.register(bus);
 		DifModFluidTypes.REGISTRY.register(bus);
-
+		DifModRecipes.REGISTRY.register(bus);
 
 		MinecraftForge.EVENT_BUS.register(this);
 		bus.addListener(DifModTabs::addCreative);
@@ -79,6 +80,9 @@ public class DifMod{
 			LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
 		}
 	}
+
+
+
 	public static boolean rouletteBoolean(int range){
 		return 0==Mth.nextInt(RandomSource.create(),0,range);
 	}

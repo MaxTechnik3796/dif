@@ -114,6 +114,18 @@ public abstract class ModularBase extends DiggerItem{
 		return false;
 	}
 	@Override
+	public boolean isEnchantable(@NotNull ItemStack itemStack){
+		return false;
+	}
+	@Override
+	public int getEnchantmentValue(){
+		return 0;
+	}
+	@Override
+	public boolean isBookEnchantable(ItemStack itemStack,ItemStack book){
+		return false;
+	}
+	@Override
 	public void inventoryTick(@NotNull ItemStack itemStack,@NotNull Level world,@NotNull Entity entity,int slot,boolean selected){
 		if(!world.isClientSide()){
 			CompoundTag tag=itemStack.getOrCreateTag();
@@ -128,6 +140,7 @@ public abstract class ModularBase extends DiggerItem{
 			if(!tag.contains("HeadColor")) tag.putInt("HeadColor",0xFFFFFF);
 			if(!tag.contains("HandleColor")) tag.putInt("HandleColor",0x915A2D);
 			if(!tag.contains("BindingColor")) tag.putInt("BindingColor",0xFFFF00);
+			if(!tag.contains("Material")) tag.putString("Material","Wood");
 			if(itemStack.getMaxDamage()-itemStack.getDamageValue()==1){
 				tag.putBoolean("Broken",true);
 				tag.putBoolean("Unbreakable",true);

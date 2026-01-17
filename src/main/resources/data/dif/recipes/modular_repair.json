@@ -1,0 +1,15 @@
+{
+	"type":"dif:modular_repair",
+	"template":{
+		"item":"minecraft:barrier"
+	},
+	"base":{
+		"tag":"dif:modular_tools"
+	},
+	"addition":{
+		"item":"minecraft:iron_ingot"
+	},
+	"result":{
+		"item":"minecraft:barrier"
+	}
+}
