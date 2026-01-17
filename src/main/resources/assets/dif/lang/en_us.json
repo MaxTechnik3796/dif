@@ -216,6 +216,17 @@
 	"item.dif.modular_axe":"Axe",
 	"item.dif.modular_shovel":"Shovel",
 	"item.dif.modular_sword":"Sword",
+
+	"item.dif.pickaxe_head":"Pickaxe Head",
+	"item.dif.axe_head":"Axe Head",
+	"item.dif.shovel_head":"Shovel Head",
+	"item.dif.sword_head":"Sword Blade",
+
+	"item.dif.binding":"Binding",
+	"item.dif.sword_binding":"Sword Handle",
+
+	"item.dif.handle":"handle",
+
 	"dif.mining_level.0":"Wooden",
 	"dif.mining_level.1":"Stone",
 	"dif.mining_level.2":"Iron",

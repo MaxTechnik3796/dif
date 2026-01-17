@@ -1,5 +1,6 @@
-package cz.maxtechnik.dif.item.tool.modular;
+package cz.maxtechnik.dif.item.modular.tool;
 
+import cz.maxtechnik.dif.item.modular.ModularBase;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;

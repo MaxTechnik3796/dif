@@ -5,11 +5,12 @@ import cz.maxtechnik.dif.fluid.bucket.*;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
 import cz.maxtechnik.dif.item.food.create.*;
+import cz.maxtechnik.dif.item.modular.ModularPart;
+import cz.maxtechnik.dif.item.modular.tool.*;
 import cz.maxtechnik.dif.item.random.*;
 import cz.maxtechnik.dif.item.tool.*;
 import cz.maxtechnik.dif.item.armor.*;
 import cz.maxtechnik.dif.init.other.DifModTiers;
-import cz.maxtechnik.dif.item.tool.modular.*;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
@@ -23,10 +24,21 @@ public class DifModItems{
     private static RegistryObject<Item>block(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new BlockItem(block.get(),new Item.Properties()));}
     private static RegistryObject<Item>doubleBlock(RegistryObject<Block>block){assert block.getId()!=null;return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));}
 
-	public static final RegistryObject<Item> MODULAR_PICKAXE=REGISTRY.register("modular_pickaxe",ModularPickaxe::new);
-	public static final RegistryObject<Item> MODULAR_AXE=REGISTRY.register("modular_axe",ModularAxe::new);
-	public static final RegistryObject<Item> MODULAR_SHOVEL=REGISTRY.register("modular_shovel",ModularShovel::new);
-	public static final RegistryObject<Item> MODULAR_SWORD=REGISTRY.register("modular_sword",ModularSword::new);
+	public static final RegistryObject<Item>MODULAR_PICKAXE=REGISTRY.register("modular_pickaxe",ModularPickaxe::new);
+	public static final RegistryObject<Item>MODULAR_AXE=REGISTRY.register("modular_axe",ModularAxe::new);
+	public static final RegistryObject<Item>MODULAR_SHOVEL=REGISTRY.register("modular_shovel",ModularShovel::new);
+	public static final RegistryObject<Item>MODULAR_SWORD=REGISTRY.register("modular_sword",ModularSword::new);
+
+	public static final RegistryObject<Item>MODULAR_PART_PICKAXE_HEAD=REGISTRY.register("pickaxe_head",ModularPart::new);
+	public static final RegistryObject<Item>MODULAR_PART_AXE_HEAD=REGISTRY.register("axe_head",ModularPart::new);
+	public static final RegistryObject<Item>MODULAR_PART_SHOVEL_HEAD=REGISTRY.register("shovel_head",ModularPart::new);
+	public static final RegistryObject<Item>MODULAR_PART_SWORD_HEAD=REGISTRY.register("sword_head",ModularPart::new);
+
+	public static final RegistryObject<Item>MODULAR_PART_BINDING=REGISTRY.register("binding",ModularPart::new);
+	public static final RegistryObject<Item>MODULAR_PART_SWORD_BINDING=REGISTRY.register("sword_binding",ModularPart::new);
+
+	public static final RegistryObject<Item>MODULAR_PART_HANDLE=REGISTRY.register("handle",ModularPart::new);
+
 
 	public static final RegistryObject<Item>EXAMPLE_BLOCK=block(DifModBlocks.EXAMPLE_BLOCK);
 

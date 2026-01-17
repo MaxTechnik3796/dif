@@ -1,9 +1,8 @@
 package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.recipes.ModularRepairRecipe;
+import cz.maxtechnik.dif.item.modular.ModularRepairRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;

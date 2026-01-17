@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.item.tool.modular;
+package cz.maxtechnik.dif.item.modular;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;

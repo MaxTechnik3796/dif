@@ -1,8 +1,7 @@
-package cz.maxtechnik.dif.recipes;
+package cz.maxtechnik.dif.item.modular;
 
 import com.google.gson.JsonObject;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
-import cz.maxtechnik.dif.item.tool.modular.ModularBase;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +23,7 @@ public class ModularRepairRecipe implements SmithingRecipe{
 	final Ingredient addition;
 	final ItemStack result;
 	public final ResourceLocation id;
-	public boolean isTagged(ItemStack itemStack,String namespace,String path){
+	public static boolean isTagged(ItemStack itemStack,String namespace,String path){
 		return itemStack.is(ItemTags.create(ResourceLocation.fromNamespaceAndPath(namespace,path)));
 	}
 	public ModularRepairRecipe(ResourceLocation id,Ingredient template, Ingredient base, Ingredient addition, ItemStack result){

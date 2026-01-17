@@ -10,49 +10,60 @@ import net.minecraftforge.fml.common.Mod;
 public class DifMod_ModModClientEvents{
 	@SubscribeEvent
 	public static void registerItemColors(RegisterColorHandlersEvent.Item event){
-		event.register((stack,tintIndex)->{
-			if(stack.getTag()!=null){
-				return switch(tintIndex){
-					case 0 -> stack.getTag().contains("HandleColor")?stack.getTag().getInt("HandleColor"):-1;
-					case 1 -> stack.getTag().contains("BindingColor")?stack.getTag().getInt("BindingColor"):-1;
-					case 2 -> stack.getTag().contains("HeadColor")?stack.getTag().getInt("HeadColor"):-1;
-					default -> -1;
-				};
-			}
-			return -1;
+		event.register((itemStack,tintIndex)->{
+			if(itemStack.getTag()==null) return -1;
+			return switch(tintIndex){
+				case 0 -> itemStack.getTag().contains("HandleColor")?itemStack.getTag().getInt("HandleColor"):-1;
+				case 1 -> itemStack.getTag().contains("BindingColor")?itemStack.getTag().getInt("BindingColor"):-1;
+				case 2 -> itemStack.getTag().contains("HeadColor")?itemStack.getTag().getInt("HeadColor"):-1;
+				default -> -1;
+			};
 		},DifModItems.MODULAR_PICKAXE.get());
-		event.register((stack,tintIndex)->{
-			if(stack.getTag()!=null){
-				return switch(tintIndex){
-					case 0 -> stack.getTag().contains("HandleColor")?stack.getTag().getInt("HandleColor"):-1;
-					case 1 -> stack.getTag().contains("BindingColor")?stack.getTag().getInt("BindingColor"):-1;
-					case 2 -> stack.getTag().contains("HeadColor")?stack.getTag().getInt("HeadColor"):-1;
-					default -> -1;
-				};
-			}
-			return -1;
+		event.register((itemStack,tintIndex)->{
+			if(itemStack.getTag()==null) return -1;
+			return switch(tintIndex){
+				case 0 -> itemStack.getTag().contains("HandleColor")?itemStack.getTag().getInt("HandleColor"):-1;
+				case 1 -> itemStack.getTag().contains("BindingColor")?itemStack.getTag().getInt("BindingColor"):-1;
+				case 2 -> itemStack.getTag().contains("HeadColor")?itemStack.getTag().getInt("HeadColor"):-1;
+				default -> -1;
+			};
 		},DifModItems.MODULAR_AXE.get());
-		event.register((stack,tintIndex)->{
-			if(stack.getTag()!=null){
-				return switch(tintIndex){
-					case 0 -> stack.getTag().contains("HandleColor")?stack.getTag().getInt("HandleColor"):-1;
-					case 1 -> stack.getTag().contains("BindingColor")?stack.getTag().getInt("BindingColor"):-1;
-					case 2 -> stack.getTag().contains("HeadColor")?stack.getTag().getInt("HeadColor"):-1;
-					default -> -1;
-				};
-			}
-			return -1;
+		event.register((itemStack,tintIndex)->{
+			if(itemStack.getTag()==null) return -1;
+			return switch(tintIndex){
+				case 0 -> itemStack.getTag().contains("HandleColor")?itemStack.getTag().getInt("HandleColor"):-1;
+				case 1 -> itemStack.getTag().contains("BindingColor")?itemStack.getTag().getInt("BindingColor"):-1;
+				case 2 -> itemStack.getTag().contains("HeadColor")?itemStack.getTag().getInt("HeadColor"):-1;
+				default -> -1;
+			};
 		},DifModItems.MODULAR_SHOVEL.get());
-		event.register((stack,tintIndex)->{
-			if(stack.getTag()!=null){
-				return switch(tintIndex){
-					case 0 -> stack.getTag().contains("HandleColor")?stack.getTag().getInt("HandleColor"):-1;
-					case 1 -> stack.getTag().contains("BindingColor")?stack.getTag().getInt("BindingColor"):-1;
-					case 2 -> stack.getTag().contains("HeadColor")?stack.getTag().getInt("HeadColor"):-1;
-					default -> -1;
-				};
-			}
-			return -1;
+		event.register((itemStack,tintIndex)->{
+			if(itemStack.getTag()==null) return -1;
+			return switch(tintIndex){
+				case 0 -> itemStack.getTag().contains("HandleColor")?itemStack.getTag().getInt("HandleColor"):-1;
+				case 1 -> itemStack.getTag().contains("BindingColor")?itemStack.getTag().getInt("BindingColor"):-1;
+				case 2 -> itemStack.getTag().contains("HeadColor")?itemStack.getTag().getInt("HeadColor"):-1;
+				default -> -1;
+			};
 		},DifModItems.MODULAR_SWORD.get());
+		event.register((itemStack,tintIndex)->{
+					if(itemStack.getTag()==null) return -1;
+					if(itemStack.getTag().contains("HeadColor")){
+						return itemStack.getTag().getInt("HeadColor");
+					}else if(itemStack.getTag().contains("BindingColor")){
+						return itemStack.getTag().getInt("BindingColor");
+					}else if(itemStack.getTag().contains("HandleColor")){
+						return itemStack.getTag().getInt("HandleColor");
+					}else{
+						return -1;
+					}
+				},
+				DifModItems.MODULAR_PART_PICKAXE_HEAD.get(),
+				DifModItems.MODULAR_PART_AXE_HEAD.get(),
+				DifModItems.MODULAR_PART_SHOVEL_HEAD.get(),
+				DifModItems.MODULAR_PART_SWORD_HEAD.get(),
+				DifModItems.MODULAR_PART_BINDING.get(),
+				DifModItems.MODULAR_PART_SWORD_BINDING.get(),
+				DifModItems.MODULAR_PART_HANDLE.get());
 	}
 }

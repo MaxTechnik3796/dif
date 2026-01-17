@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.item.tool.modular;
+package cz.maxtechnik.dif.item.modular;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
@@ -27,6 +27,7 @@ import java.util.Locale;
  * Abstraktní základ pro všechny modulární nástroje (krumpáč, sekera, lopata...).
  */
 public abstract class ModularBase extends DiggerItem{
+	protected String defaultMaterial="Wood";
 	protected int defaultMiningLevel=0;
 	protected int defaultDurability=100;
 	protected float defaultEfficiency=4.0F;
@@ -140,7 +141,7 @@ public abstract class ModularBase extends DiggerItem{
 			if(!tag.contains("HeadColor")) tag.putInt("HeadColor",0xFFFFFF);
 			if(!tag.contains("HandleColor")) tag.putInt("HandleColor",0x915A2D);
 			if(!tag.contains("BindingColor")) tag.putInt("BindingColor",0xFFFF00);
-			if(!tag.contains("Material")) tag.putString("Material","Wood");
+			if(!tag.contains("Material")) tag.putString("Material",defaultMaterial);
 			if(itemStack.getMaxDamage()-itemStack.getDamageValue()==1){
 				tag.putBoolean("Broken",true);
 				tag.putBoolean("Unbreakable",true);
@@ -157,8 +158,7 @@ public abstract class ModularBase extends DiggerItem{
 		if(!itemStack.hasTag()) return;
 		assert itemStack.getTag()!=null;
 		CompoundTag tag=itemStack.getTag();
-		if(!tag.contains("MiningLevel")||!tag.contains("Durability")||!tag.contains("Efficiency")||!tag.contains("AttackDamage")||!tag.contains("AttackSpeed"))
-			return;
+		if(!tag.contains("MiningLevel")||!tag.contains("Durability")||!tag.contains("Efficiency")||!tag.contains("AttackDamage")||!tag.contains("AttackSpeed"))return;
 		int mLevel=tag.getInt("Mining Level");
 		String[] levelColors={"#915A2D","#555555","#C6C6C6","#55FFFF","#301100"};
 		String color=mLevel<levelColors.length?levelColors[mLevel]:"#FFFFFF";
