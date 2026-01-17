@@ -64,7 +64,7 @@ public class ModularPart extends Item{
 			case "Diamond"->mColor="#55FFFF";
 			case "Netherite"->mColor="#301100";
 		}
-		list.add(Component.literal("Material: ").append(Component.literal(defaultMaterial).withStyle(Style.EMPTY.withColor(TextColor.parseColor(mColor)))));
+		list.add(Component.literal("Material: ").append(Component.literal(tag.getString("Material")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(mColor)))));
 		list.add(Component.literal("Durability: ").append(Component.literal(String.valueOf(tag.getInt("Durability"))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(dColor)))));
 
 	}
