@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 public class Can extends Item{
 	public Can(){
-		super(new Properties().food((new FoodProperties.Builder()).nutrition(9).saturationMod(1.2F).alwaysEat().build()));
+		super(new Properties().food((new FoodProperties.Builder()).nutrition(9).saturationMod(1.2F).meat().alwaysEat().build()));
 	}
 	@Override
 	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemstack,@NotNull Level world,@NotNull LivingEntity entity){

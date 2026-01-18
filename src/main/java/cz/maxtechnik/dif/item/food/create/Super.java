@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 public class Super extends Item{
 	public Super(){
-		super(new Properties().food((new FoodProperties.Builder()).nutrition(20).saturationMod(2F).alwaysEat().build()));
+		super(new Properties().food((new FoodProperties.Builder()).nutrition(20).saturationMod(2F).meat().alwaysEat().build()));
 	}
 	@Override
 	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemstack,@NotNull Level world,@NotNull LivingEntity entity){

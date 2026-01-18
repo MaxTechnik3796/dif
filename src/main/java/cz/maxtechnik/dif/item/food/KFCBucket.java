@@ -8,7 +8,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 public class KFCBucket extends Item{
 	public KFCBucket(){
-		super(new Properties().food(new FoodProperties.Builder().nutrition(9).saturationMod(1.25F).alwaysEat().build()));
+		super(new Properties().food(new FoodProperties.Builder().nutrition(9).saturationMod(1.25F).meat().alwaysEat().build()));
 	}
 	@Override
 	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemstack,@NotNull Level world,@NotNull LivingEntity entity){
