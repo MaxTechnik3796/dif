@@ -1,6 +1,0 @@
-{
-  "type": "forge:add_features",
-  "biomes": "#dif:has_feature/mata_plant",
-  "features": "dif:mata_plant",
-  "step": "vegetal_decoration"
-}

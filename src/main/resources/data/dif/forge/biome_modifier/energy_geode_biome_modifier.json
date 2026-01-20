@@ -1,8 +1,0 @@
-{
-	"type": "forge:add_features",
-	"biomes": {
-		"type": "forge:any"
-	},
-	"features": "dif:energy_geode",
-	"step": "underground_decoration"
-}
