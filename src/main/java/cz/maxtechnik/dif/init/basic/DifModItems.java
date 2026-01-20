@@ -66,10 +66,12 @@ public class DifModItems{
     public static final RegistryObject<Item>ROTTEN_APPLE=REGISTRY.register("rotten_apple",Bad::new);
 	public static final RegistryObject<Item>BOTTLE_OF_MOLOTOVUV_KOKTEJL=REGISTRY.register("bottle_of_molotovuv_koktejl",MolotovuvKoktejl::new);
 	public static final RegistryObject<Item>BOTTLE_OF_URANOVEJ_KOKTEJL=REGISTRY.register("bottle_of_uranovej_koktejl",UranovejKoktejl::new);
-	public static final RegistryObject<Item>KFC_BUCKET=REGISTRY.register("kfc_bucket",KFCBucket::new);
+	public static final RegistryObject<Item>BUCKET_OF_CHICKEN=REGISTRY.register("bucket_of_chicken",BucketOfChicken::new);
 	public static final RegistryObject<Item>FRIES=REGISTRY.register("fries",()->new Custom(3,0.45F));
 	public static final RegistryObject<Item>HORSE_MEAT=REGISTRY.register("horse_meat",()->new CustomMeat(2,0.1F));
 	public static final RegistryObject<Item>COOKED_HORSE_MEAT=REGISTRY.register("cooked_horse_meat",()->new CustomMeat(6,0.8F));
+	public static final RegistryObject<Item>BURNED_TOAST=REGISTRY.register("burned_toast",()->new Custom(3,0.1F));
+
 
 	public static final RegistryObject<Item>CREATE_CAN=REGISTRY.register("create_can",Can::new);
 	public static final RegistryObject<Item>CREATE_BOWL=REGISTRY.register("create_bowl",Bowl::new);

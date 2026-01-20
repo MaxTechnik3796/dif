@@ -1,6 +1,6 @@
 {
 	"parent":"item/generated",
 	"textures":{
-		"layer0":"dif:item/kfc_bucket"
+		"layer0":"dif:item/burned_toast_s"
 	}
 }

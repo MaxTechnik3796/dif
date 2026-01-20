@@ -6,8 +6,8 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-public class KFCBucket extends Item{
-	public KFCBucket(){
+public class BucketOfChicken extends Item{
+	public BucketOfChicken(){
 		super(new Properties().food(new FoodProperties.Builder().nutrition(9).saturationMod(1.25F).meat().alwaysEat().build()));
 	}
 	@Override

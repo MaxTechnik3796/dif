@@ -1,0 +1,14 @@
+{
+	"parent":"item/generated",
+	"textures":{
+		"layer0":"dif:item/burned_toast"
+	},
+	"overrides":[
+		{
+			"model":"dif:item/burned_toast_s",
+			"predicate":{
+				"custom_model_data":1
+			}
+		}
+	]
+}
