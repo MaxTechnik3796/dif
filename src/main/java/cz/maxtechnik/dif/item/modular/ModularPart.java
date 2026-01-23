@@ -58,7 +58,7 @@ public class ModularPart extends Item{
 		String mColor="#FFFFFF";
 		switch(tag.getString("Material")){
 			case "Wood"->mColor="#915A2D";
-			case "Stone"->mColor="##555555";
+			case "Stone"->mColor="#555555";
 			case "Iron"->mColor="#C6C6C6";
 			case "Gold"->mColor="#D6C400";
 			case "Diamond"->mColor="#55FFFF";
