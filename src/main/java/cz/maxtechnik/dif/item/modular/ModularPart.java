@@ -11,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.stringtemplate.v4.ST;
 
 import java.util.List;
 public class ModularPart extends Item{
@@ -33,7 +32,7 @@ public class ModularPart extends Item{
 	public void inventoryTick(@NotNull ItemStack itemStack,@NotNull Level world,@NotNull Entity entity,int slot,boolean selected){
 		if(!world.isClientSide()){
 			CompoundTag tag=itemStack.getOrCreateTag();
-			if(!tag.contains("Material")) tag.putString("Material","Wood");
+			if(!tag.contains("Material")) tag.putString("Material",defaultMaterial);
 			if(!tag.contains("Durability")) tag.putInt("Durability",defaultDurability);
 			if(isHead(itemStack)&&!tag.contains("HeadColor"))tag.putInt("HeadColor",0xFFFFFF);
 			if(isBinding(itemStack)&&!tag.contains("HandleColor"))tag.putInt("HandleColor",0x915A2D);
