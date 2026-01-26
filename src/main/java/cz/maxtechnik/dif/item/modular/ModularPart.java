@@ -11,35 +11,34 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
+import static cz.maxtechnik.dif.item.modular.ModularBase.*;
 public class ModularPart extends Item{
 	protected String defaultMaterial="Wood";
 	protected int defaultDurability=3;
 	public ModularPart(){
 		super(new Properties());
 	}
-	public boolean isHead(ItemStack itemStack){
-		return ModularRepairRecipe.isTagged(itemStack,"dif","modular_tools_parts/head");
-	}
-	public boolean isBinding(ItemStack itemStack){
-		return ModularRepairRecipe.isTagged(itemStack,"dif","modular_tools_parts/binding");
-	}
-	public boolean isHandle(ItemStack itemStack){
-		return ModularRepairRecipe.isTagged(itemStack,"dif","modular_tools_parts/handle");
-	}
+
 	@Override
 	public void inventoryTick(@NotNull ItemStack itemStack,@NotNull Level world,@NotNull Entity entity,int slot,boolean selected){
 		if(!world.isClientSide()){
 			CompoundTag tag=itemStack.getOrCreateTag();
-			if(!tag.contains("Material")) tag.putString("Material",defaultMaterial);
-			if(!tag.contains("Durability")) tag.putInt("Durability",defaultDurability);
-			if(isHead(itemStack)&&!tag.contains("HeadColor"))tag.putInt("HeadColor",0xFFFFFF);
-			if(isBinding(itemStack)&&!tag.contains("HandleColor"))tag.putInt("HandleColor",0x915A2D);
-			if(isHandle(itemStack)&&!tag.contains("BindingColor"))tag.putInt("BindingColor",0xFFFF00);
-
-
-
+			if(isHead(itemStack)){
+				tag.putString("HeadMaterial",defaultMaterial);
+				tag.putInt("HeadDurability",defaultDurability);
+				tag.putInt("HeadColor",colorFromMaterial(tag.getString("HeadMaterial")));
+			}
+			if(isBinding(itemStack)){
+				tag.putString("BindingMaterial",defaultMaterial);
+				tag.putInt("BindingDurability",defaultDurability);
+				tag.putInt("BindingColor",colorFromMaterial(tag.getString("BindingMaterial")));
+			}
+			if(isHandle(itemStack)){
+				tag.putString("HandleMaterial",defaultMaterial);
+				tag.putInt("HandleDurability",defaultDurability);
+				tag.putInt("HandleColor",colorFromMaterial(tag.getString("HandleMaterial")));
+			}
 		}
 	}
 	@Override
@@ -47,15 +46,19 @@ public class ModularPart extends Item{
 		if(!itemStack.hasTag()) return;
 		assert itemStack.getTag()!=null;
 		CompoundTag tag=itemStack.getTag();
-		if(!tag.contains("Durability")||!tag.contains("Material"))return;
+		if(!isHead(itemStack)&&!isBinding(itemStack)&&!isHandle(itemStack))return;
+		if(isHead(itemStack)&&(!tag.contains("HeadDurability")||!tag.contains("HeadMaterial")))return;
+		if(isBinding(itemStack)&&(!tag.contains("BindingDurability")||!tag.contains("BindingMaterial")))return;
+		if(isHandle(itemStack)&&(!tag.contains("HandleDurability")||!tag.contains("HandleMaterial")))return;
+		String partType=getPartType(itemStack);
 		ChatFormatting dColor=ChatFormatting.DARK_AQUA;
-		if(tag.getInt("Durability")>0){
+		if(tag.getInt(partType+"Durability")>0){
 			dColor=ChatFormatting.GREEN;
-		}else if(tag.getInt("Durability")<0){
+		}else if(tag.getInt(partType+"Durability")<0){
 			dColor=ChatFormatting.RED;
 		}
 		String mColor="#FFFFFF";
-		switch(tag.getString("Material")){
+		switch(tag.getString(partType+"Material")){
 			case "Wood"->mColor="#915A2D";
 			case "Stone"->mColor="#555555";
 			case "Iron"->mColor="#C6C6C6";
@@ -63,8 +66,8 @@ public class ModularPart extends Item{
 			case "Diamond"->mColor="#55FFFF";
 			case "Netherite"->mColor="#301100";
 		}
-		list.add(Component.literal("Material: ").append(Component.literal(tag.getString("Material")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(mColor)))));
-		list.add(Component.literal("Durability: ").append(Component.literal(String.valueOf(tag.getInt("Durability"))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(dColor)))));
+		list.add(Component.literal("Material: ").append(Component.literal(tag.getString(partType+"Material")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(mColor)))));
+		list.add(Component.literal("Durability: ").append(Component.literal(String.valueOf(tag.getInt(partType+"Durability"))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(dColor)))));
 
 	}
 }

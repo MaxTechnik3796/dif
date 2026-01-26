@@ -5,7 +5,6 @@ import cz.maxtechnik.dif.init.other.DifModRecipes;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -16,6 +15,7 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import static cz.maxtechnik.dif.item.modular.ModularBase.isTagged;
 public class ModularRepairRecipe implements SmithingRecipe{
 	public static final int REPAIR_AMOUNT=3;
 	final Ingredient template;
@@ -23,9 +23,6 @@ public class ModularRepairRecipe implements SmithingRecipe{
 	final Ingredient addition;
 	final ItemStack result;
 	public final ResourceLocation id;
-	public static boolean isTagged(ItemStack itemStack,String namespace,String path){
-		return itemStack.is(ItemTags.create(ResourceLocation.fromNamespaceAndPath(namespace,path)));
-	}
 	public ModularRepairRecipe(ResourceLocation id,Ingredient template, Ingredient base, Ingredient addition, ItemStack result){
 		this.id=id;
 		this.template=template;

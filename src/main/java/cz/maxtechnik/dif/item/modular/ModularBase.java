@@ -6,7 +6,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -29,11 +31,11 @@ import java.util.Locale;
 public abstract class ModularBase extends DiggerItem{
 	protected String defaultMaterial="Wood";
 	protected int defaultMiningLevel=0;
-	protected int defaultDurability=100;
+	protected int defaultDurability=5;
 	protected float defaultEfficiency=4.0F;
 	protected float defaultAttackDamage;
 	protected float defaultAttackSpeed;
-	public ModularBase(float attackDamage,float attackSpeed,Properties properties){
+	public ModularBase(float attackDamage,float attackSpeed,Properties properties){//TODO - implement other properties
 		super(attackDamage,attackSpeed,new Tier(){
 			@Override
 			public int getUses(){
@@ -63,6 +65,38 @@ public abstract class ModularBase extends DiggerItem{
 		this.defaultAttackDamage=attackDamage;
 		this.defaultAttackSpeed=attackSpeed;
 	}
+	public static boolean isTagged(ItemStack itemStack,String namespace,String path){
+		return itemStack.is(ItemTags.create(ResourceLocation.fromNamespaceAndPath(namespace,path)));
+	}
+	public static boolean isHead(ItemStack itemStack){
+		return isTagged(itemStack,"dif","modular_tools_parts/head");
+	}
+	public static boolean isBinding(ItemStack itemStack){
+		return isTagged(itemStack,"dif","modular_tools_parts/binding");
+	}
+	public static boolean isHandle(ItemStack itemStack){
+		return isTagged(itemStack,"dif","modular_tools_parts/handle");
+	}
+	public static String getPartType(ItemStack itemStack){
+		if(isHead(itemStack))return "Head";
+		if(isBinding(itemStack))return "Binding";
+		if(isHandle(itemStack))return "Handle";
+		return "";
+	}
+	public static int colorFromMaterial(String material){
+		int color=0xFFFFFF;
+		switch(material){
+			case "Wood"->color=0x915A2D;
+			case "Stone"->color=0x6E6E6E;
+			case "Iron"->color=0xB5B5B5;
+			case "Gold"->color=0xFFCF4D;
+			case "Diamond"->color=0x00C7BA;
+			case "Netherite"->color=0x3E1504;
+		}
+		return color;
+	}
+
+
 	/**
 	 * Každý nástroj musí definovat, které bloky těží (např. BlockTags.MINEABLE_WITH_PICKAXE).
 	 */
@@ -131,17 +165,37 @@ public abstract class ModularBase extends DiggerItem{
 		if(!world.isClientSide()){
 			CompoundTag tag=itemStack.getOrCreateTag();
 			if(!tag.contains("MiningLevel")) tag.putInt("MiningLevel",defaultMiningLevel);
-			if(!tag.contains("Durability")) tag.putInt("Durability",defaultDurability);
+
 			if(!tag.contains("Efficiency")) tag.putFloat("Efficiency",defaultEfficiency);
 			if(!tag.contains("AttackDamage")) tag.putFloat("AttackDamage",defaultAttackDamage);
 			if(!tag.contains("AttackSpeed")) tag.putFloat("AttackSpeed",defaultAttackSpeed);
+
+
+
+			if(!tag.contains("HeadMaterial"))tag.putString("HeadMaterial",defaultMaterial);
+			if(!tag.contains("HeadDurability"))tag.putInt("HeadDurability",defaultDurability);
+			tag.putInt("HeadColor",colorFromMaterial(tag.getString("HeadMaterial")));
+
+			if(!tag.contains("HandleMaterial"))tag.putString("HandleMaterial",defaultMaterial);
+			if(!tag.contains("HandleDurability"))tag.putInt("HandleDurability",defaultDurability);
+			tag.putInt("HandleColor",colorFromMaterial(tag.getString("HandleMaterial")));
+
+			if(!tag.contains("BindingMaterial"))tag.putString("BindingMaterial",defaultMaterial);
+			if(!tag.contains("BindingDurability"))tag.putInt("BindingDurability",defaultDurability);
+			tag.putInt("BindingColor",colorFromMaterial(tag.getString("BindingMaterial")));
+
+
+			if(!tag.contains("SpecialDurability"))tag.putInt("SpecialDurability",0);
+			if(!tag.contains("Durability")) tag.putInt("Durability",tag.getInt("HeadDurability")+tag.getInt("HandleDurability")+tag.getInt("BindingDurability")+tag.getInt("SpecialDurability"));
+
+
+			if(!tag.contains("Material")) tag.putString("Material",tag.getString("HeadMaterial"));
+
+
+
 			if(!tag.contains("Broken")) tag.putBoolean("Broken",false);
 			if(!tag.contains("Unbreakable")) tag.putBoolean("Unbreakable",false);
 			if(!tag.contains("HideFlags")) tag.putInt("HideFlags",4);
-			if(!tag.contains("HeadColor")) tag.putInt("HeadColor",0xFFFFFF);
-			if(!tag.contains("HandleColor")) tag.putInt("HandleColor",0x915A2D);
-			if(!tag.contains("BindingColor")) tag.putInt("BindingColor",0xFFFF00);
-			if(!tag.contains("Material")) tag.putString("Material",defaultMaterial);
 			if(itemStack.getMaxDamage()-itemStack.getDamageValue()==1){
 				tag.putBoolean("Broken",true);
 				tag.putBoolean("Unbreakable",true);
@@ -151,6 +205,7 @@ public abstract class ModularBase extends DiggerItem{
 				tag.putBoolean("Unbreakable",false);
 				tag.putInt("CustomModelData",0);
 			}
+
 		}
 	}
 	@Override
