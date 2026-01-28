@@ -1,0 +1,20 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made with Blockbench",
+	"render_type": "translucent",
+	"textures": {
+		"0": "dif:block/pob",
+		"particle": "block/orange_concrete"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 15.8],
+			"to": [16, 32, 15.8],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 0, 14]},
+			"faces": {
+				"north": {"uv": [0, 0, 8, 16], "texture": "#0"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#missing"}
+			}
+		}
+	]
+}
