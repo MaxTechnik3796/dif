@@ -86,4 +86,5 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>BRASS_BARREL=REGISTRY.register("brass_barrel",BrassBarrel::new);
 
 	public static final RegistryObject<Block>XP_STORAGE=REGISTRY.register("xp_storage",XpStorage::new);
+	public static final RegistryObject<Block> PORTAL_BLOCK = REGISTRY.register("portal_block", () -> new PortalBlock(BlockBehaviour.Properties.of().noCollission().noOcclusion()));
 }

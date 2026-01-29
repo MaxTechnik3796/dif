@@ -1,0 +1,35 @@
+{
+	"variants": {
+		"half=upper": { "model": "minecraft:block/air" },
+
+		"facing=north,half=lower,is_blue=true": { "model": "dif:block/pb" },
+		"facing=south,half=lower,is_blue=true": { "model": "dif:block/pb", "y": 180 },
+		"facing=east,half=lower,is_blue=true":  { "model": "dif:block/pb", "y": 90 },
+		"facing=west,half=lower,is_blue=true":  { "model": "dif:block/pb", "y": 270 },
+
+		"facing=up,extension_dir=north,half=lower,is_blue=true": { "model": "dif:block/pb", "x": 270, "y": 180 },
+		"facing=up,extension_dir=south,half=lower,is_blue=true": { "model": "dif:block/pb", "x": 270, "y": 0 },
+		"facing=up,extension_dir=east,half=lower,is_blue=true":  { "model": "dif:block/pb", "x": 270, "y": 270 },
+		"facing=up,extension_dir=west,half=lower,is_blue=true":  { "model": "dif:block/pb", "x": 270, "y": 90 },
+
+		"facing=down,extension_dir=north,half=lower,is_blue=true": { "model": "dif:block/pb", "x": 90, "y": 0 },
+		"facing=down,extension_dir=south,half=lower,is_blue=true": { "model": "dif:block/pb", "x": 90, "y": 180 },
+		"facing=down,extension_dir=east,half=lower,is_blue=true":  { "model": "dif:block/pb", "x": 90, "y": 90 },
+		"facing=down,extension_dir=west,half=lower,is_blue=true":  { "model": "dif:block/pb", "x": 90, "y": 270 },
+
+		"facing=north,half=lower,is_blue=false": { "model": "dif:block/po" },
+		"facing=south,half=lower,is_blue=false": { "model": "dif:block/po", "y": 180 },
+		"facing=east,half=lower,is_blue=false":  { "model": "dif:block/po", "y": 90 },
+		"facing=west,half=lower,is_blue=false":  { "model": "dif:block/po", "y": 270 },
+
+		"facing=up,extension_dir=north,half=lower,is_blue=false": { "model": "dif:block/po", "x": 270, "y": 180 },
+		"facing=up,extension_dir=south,half=lower,is_blue=false": { "model": "dif:block/po", "x": 270, "y": 0 },
+		"facing=up,extension_dir=east,half=lower,is_blue=false":  { "model": "dif:block/po", "x": 270, "y": 270 },
+		"facing=up,extension_dir=west,half=lower,is_blue=false":  { "model": "dif:block/po", "x": 270, "y": 90 },
+
+		"facing=down,extension_dir=north,half=lower,is_blue=false": { "model": "dif:block/po", "x": 90, "y": 0 },
+		"facing=down,extension_dir=south,half=lower,is_blue=false": { "model": "dif:block/po", "x": 90, "y": 180 },
+		"facing=down,extension_dir=east,half=lower,is_blue=false":  { "model": "dif:block/po", "x": 90, "y": 90 },
+		"facing=down,extension_dir=west,half=lower,is_blue=false":  { "model": "dif:block/po", "x": 90, "y": 270 }
+	}
+}

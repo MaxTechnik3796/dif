@@ -1,112 +1,95 @@
 package cz.maxtechnik.dif.item.tool;
 
-import cz.maxtechnik.dif.DifModCommonConfig;
+import cz.maxtechnik.dif.block.PortalBlock;
+import cz.maxtechnik.dif.block.entity.PortalBlockEntity;
+import cz.maxtechnik.dif.init.basic.DifModBlocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.entity.projectile.ThrownEnderpearl;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-import java.util.UUID;
-public class PortalGun extends Item{
-	public PortalGun(){
-		super(new Properties().stacksTo(1));
-	}
+public class PortalGun extends Item {
+	public PortalGun() { super(new Properties().stacksTo(1).durability(24)); }
+
 	@Override
-	public void onCraftedBy(@NotNull ItemStack itemstack,@NotNull Level world,@NotNull Player player){
-		super.onCraftedBy(itemstack,world,player);
-		setCharge(itemstack,itemstack.getOrCreateTag().getInt("ammo"));
-	}
-	@Override
-	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world,@NotNull Player player,@NotNull InteractionHand hand){
-		super.use(world,player,hand);
-		ItemStack itemStack=player.getItemInHand(hand);
-		CompoundTag nbt=itemStack.getOrCreateTag();
-		if(!world.isClientSide()&&nbt.getInt("ammo")>0){
-			if(player.isShiftKeyDown()){
-				nbt.putBoolean("needReset",true);
-				itemStack.getOrCreateTag().putUUID("uuid",player.getUUID());
-			}else{
-				nbt.putInt("ammo",nbt.getInt("ammo")-1);
-				if(DifModCommonConfig.portalGunCooldown!=0)
-					player.getCooldowns().addCooldown(itemStack.getItem(),DifModCommonConfig.portalGunCooldown);
-				if(itemStack.getOrCreateTag().getBoolean("needReset")){
-					itemStack.getOrCreateTag().putUUID("uuid",player.getUUID());
-				}
-				Entity owner;
-				if(nbt.contains("uuid")){
-					UUID entityUuid=nbt.getUUID("uuid");
-					Entity potentialOwner=null;
-					if(world instanceof ServerLevel serverLevel){
-						potentialOwner=serverLevel.getEntity(entityUuid);
-					}
-					owner=Objects.requireNonNullElse(potentialOwner,player);
-				}else{
-					owner=player;
-				}
-				if(player.isShiftKeyDown()){
-					return InteractionResultHolder.fail(player.getItemInHand(hand));
-				}
-				Projectile entityToSpawn=new Object(){
-					public Projectile getProjectile(Level level){
-						Projectile entityToSpawn=new ThrownEnderpearl(EntityType.ENDER_PEARL,level);
-						entityToSpawn.setOwner(owner);
-						return entityToSpawn;
-					}
-				}.getProjectile(world);
-				entityToSpawn.setPos(player.getX(),player.getEyeY()-0.1,player.getZ());
-				entityToSpawn.shoot(player.getLookAngle().x,player.getLookAngle().y,player.getLookAngle().z,DifModCommonConfig.portalGunMaxRange,0);
-				world.addFreshEntity(entityToSpawn);
-				nbt.putBoolean("needReset",true);
-				nbt.putUUID("uuid",player.getUUID());
+	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
+		ItemStack gun = player.getItemInHand(hand);
+		CompoundTag nbt = gun.getOrCreateTag();
+		if (!nbt.contains("mode")) { nbt.putBoolean("mode", true); nbt.putInt("CustomModelData", 1); }
+
+		// Reload logic
+		ItemStack off = player.getOffhandItem();
+		if (off.is(Items.ENDER_PEARL) && gun.getDamageValue() > 0) {
+			if (!world.isClientSide) {
+				gun.setDamageValue(Math.max(0, gun.getDamageValue() - 4));
+				off.shrink(1);
+				player.displayClientMessage(Component.literal("§a[+] Energy restored"), true);
 			}
+			return InteractionResultHolder.sidedSuccess(gun, world.isClientSide());
 		}
-		if(nbt.getInt("ammo")==0){
-			nbt.putInt("CustomModelData",1);
-		}else{
-			nbt.putInt("CustomModelData",0);
+
+		// Mode switch
+		if (player.isShiftKeyDown()) {
+			if (!world.isClientSide) {
+				boolean mode = !nbt.getBoolean("mode");
+				nbt.putBoolean("mode", mode);
+				nbt.putInt("CustomModelData", mode ? 0 : 1);
+				player.displayClientMessage(Component.literal(mode ? "§bMode: Blue" : "§6Mode: Orange"), true);
+			}
+			return InteractionResultHolder.sidedSuccess(gun, world.isClientSide());
 		}
-		return InteractionResultHolder.consume(player.getItemInHand(hand));
-	}
-	@Override
-	public @NotNull InteractionResult interactLivingEntity(@NotNull ItemStack itemStack,@NotNull Player player,@NotNull LivingEntity entity,@NotNull InteractionHand hand){
-		if(!player.level().isClientSide()&&player.isShiftKeyDown()){
-			itemStack.getOrCreateTag().putUUID("uuid",entity.getUUID());
-			itemStack.getOrCreateTag().putBoolean("needReset",false);
-			player.setItemInHand(hand,itemStack);
-			return InteractionResult.SUCCESS;
+
+		// Fire portal
+		if (!world.isClientSide) {
+			if (gun.getDamageValue() < 24) {
+				if (firePortal((ServerLevel) world, player, nbt.getBoolean("mode"))) {
+					gun.setDamageValue(gun.getDamageValue() + 1);
+					player.getCooldowns().addCooldown(this, 10);
+				}
+			} else player.displayClientMessage(Component.literal("§c[!] Out of energy"), true);
 		}
-		return InteractionResult.FAIL;
+		return InteractionResultHolder.success(gun);
 	}
-	public static int getCharge(ItemStack itemStack){
-		return itemStack.getOrCreateTag().getInt("charge");
-	}
-	public static void setCharge(ItemStack itemStack,int value){
-		itemStack.getOrCreateTag().putInt("charge",Math.min(value,DifModCommonConfig.portalGunMaxAmmo));
-	}
-	@Override
-	public boolean isBarVisible(@NotNull ItemStack itemStack){
-		setCharge(itemStack,itemStack.getOrCreateTag().getInt("ammo"));
+
+	private boolean firePortal(ServerLevel world, Player player, boolean isBlue) {
+		var start = player.getEyePosition();
+		var hit = world.clip(new ClipContext(start, start.add(player.getLookAngle().scale(128.0)), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+		if (hit.getType() != HitResult.Type.BLOCK) return false;
+
+		Direction face = hit.getDirection();
+		BlockPos pos = hit.getBlockPos().relative(face);
+		Direction extDir = (face.getAxis() == Direction.Axis.Y) ? player.getDirection() : Direction.UP;
+		BlockPos extPos = pos.relative(extDir);
+
+		// Check space and solid support behind
+		boolean space = world.isEmptyBlock(pos) && world.isEmptyBlock(extPos);
+		boolean support = world.getBlockState(pos.relative(face.getOpposite())).isFaceSturdy(world, pos.relative(face.getOpposite()), face) &&
+				world.getBlockState(extPos.relative(face.getOpposite())).isFaceSturdy(world, extPos.relative(face.getOpposite()), face);
+
+		if (!space || !support) {
+			player.displayClientMessage(Component.literal("§c[!] Invalid placement"), true);
+			return false;
+		}
+
+		PortalBlockEntity.removeOldPortal(world, player.getUUID(), isBlue);
+		PortalBlockEntity.savePortal(player.getUUID(), isBlue, pos);
+
+		var state = DifModBlocks.PORTAL_BLOCK.get().defaultBlockState().setValue(PortalBlock.FACING, face).setValue(PortalBlock.EXTENSION_DIR, extDir).setValue(PortalBlock.IS_BLUE, isBlue);
+		world.setBlock(pos, state.setValue(PortalBlock.HALF, DoubleBlockHalf.LOWER), 3);
+		world.setBlock(extPos, state.setValue(PortalBlock.HALF, DoubleBlockHalf.UPPER), 3);
+		if (world.getBlockEntity(pos) instanceof PortalBlockEntity be) be.setup(player.getUUID(), isBlue, face);
 		return true;
-	}
-	@Override
-	public int getBarWidth(@NotNull ItemStack itemStack){
-		int charge=getCharge(itemStack);
-		return Math.round(13.0f*charge/DifModCommonConfig.portalGunMaxAmmo);
-	}
-	@Override
-	public int getBarColor(@NotNull ItemStack itemStack){
-		return 0x00FF00;
 	}
 }
