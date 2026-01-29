@@ -25,9 +25,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Locale;
-/**
- * Abstraktní základ pro všechny modulární nástroje (krumpáč, sekera, lopata...).
- */
 public abstract class ModularBase extends DiggerItem{
 	protected String defaultMaterial;
 	protected int defaultMiningLevel;
@@ -99,11 +96,6 @@ public abstract class ModularBase extends DiggerItem{
 		}
 		return color;
 	}
-
-
-	/**
-	 * Každý nástroj musí definovat, které bloky těží (např. BlockTags.MINEABLE_WITH_PICKAXE).
-	 */
 	protected abstract TagKey<Block> getMineableTag();
 	@Override
 	public boolean isCorrectToolForDrops(ItemStack itemStack,@NotNull BlockState blockState){
@@ -189,7 +181,7 @@ public abstract class ModularBase extends DiggerItem{
 			tag.putInt("BindingColor",colorFromMaterial(tag.getString("BindingMaterial")));
 
 
-			if(!tag.contains("SpecialDurability"))tag.putInt("SpecialDurability",0);
+			if(!tag.contains("SpecialDurability"))tag.putInt("SpecialDurability",1);
 			if(!tag.contains("Durability")) tag.putInt("Durability",tag.getInt("HeadDurability")+tag.getInt("HandleDurability")+tag.getInt("BindingDurability")+tag.getInt("SpecialDurability"));
 
 

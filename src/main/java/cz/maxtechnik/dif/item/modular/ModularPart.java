@@ -25,18 +25,18 @@ public class ModularPart extends Item{
 		if(!world.isClientSide()){
 			CompoundTag tag=itemStack.getOrCreateTag();
 			if(isHead(itemStack)){
-				tag.putString("HeadMaterial",defaultMaterial);
-				tag.putInt("HeadDurability",defaultDurability);
+				if(!tag.contains("HeadMaterial"))tag.putString("HeadMaterial",defaultMaterial);
+				if(!tag.contains("HeadDurability"))tag.putInt("HeadDurability",defaultDurability);
 				tag.putInt("HeadColor",colorFromMaterial(tag.getString("HeadMaterial")));
 			}
 			if(isBinding(itemStack)){
-				tag.putString("BindingMaterial",defaultMaterial);
-				tag.putInt("BindingDurability",defaultDurability);
+				if(!tag.contains("BindingMaterial"))tag.putString("BindingMaterial",defaultMaterial);
+				if(!tag.contains("BindingDurability"))tag.putInt("BindingDurability",defaultDurability);
 				tag.putInt("BindingColor",colorFromMaterial(tag.getString("BindingMaterial")));
 			}
 			if(isHandle(itemStack)){
-				tag.putString("HandleMaterial",defaultMaterial);
-				tag.putInt("HandleDurability",defaultDurability);
+				if(!tag.contains("HandleMaterial"))tag.putString("HandleMaterial",defaultMaterial);
+				if(!tag.contains("HandleMaterial"))tag.putInt("HandleDurability",defaultDurability);
 				tag.putInt("HandleColor",colorFromMaterial(tag.getString("HandleMaterial")));
 			}
 		}
