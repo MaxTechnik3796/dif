@@ -6,9 +6,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 public class ModularSword extends ModularBase{
 	public ModularSword(){
-		super(3.0F,-2.4F,new Properties().stacksTo(1));
-		this.defaultDurability=11;
-		this.defaultEfficiency=4.0F;
+		super(5,4F,0,3.0F,-2.4F,"Wood",new Properties().stacksTo(1));
 	}
 	@Override
 	protected TagKey<Block> getMineableTag(){

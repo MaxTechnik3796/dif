@@ -29,13 +29,13 @@ import java.util.Locale;
  * Abstraktní základ pro všechny modulární nástroje (krumpáč, sekera, lopata...).
  */
 public abstract class ModularBase extends DiggerItem{
-	protected String defaultMaterial="Wood";
-	protected int defaultMiningLevel=0;
-	protected int defaultDurability=5;
-	protected float defaultEfficiency=4.0F;
+	protected String defaultMaterial;
+	protected int defaultMiningLevel;
+	protected int defaultDurability;
+	protected float defaultEfficiency;
 	protected float defaultAttackDamage;
 	protected float defaultAttackSpeed;
-	public ModularBase(float attackDamage,float attackSpeed,Properties properties){//TODO - implement other properties
+	public ModularBase(int durability,float efficiency,int miningLevel, float attackDamage,float attackSpeed,String material,Properties properties){
 		super(attackDamage,attackSpeed,new Tier(){
 			@Override
 			public int getUses(){
@@ -62,6 +62,10 @@ public abstract class ModularBase extends DiggerItem{
 				return Ingredient.EMPTY;
 			}
 		},BlockTags.MINEABLE_WITH_PICKAXE,properties);
+		this.defaultMaterial=material;
+		this.defaultDurability=durability;
+		this.defaultEfficiency=efficiency;
+		this.defaultMiningLevel=miningLevel;
 		this.defaultAttackDamage=attackDamage;
 		this.defaultAttackSpeed=attackSpeed;
 	}

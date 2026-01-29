@@ -6,9 +6,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 public class ModularShovel extends ModularBase{
 	public ModularShovel(){
-		super(1.5F,-3.0F,new Properties().stacksTo(1));
-		this.defaultDurability=11;
-		this.defaultEfficiency=4.0F;
+		super(5,4F,0,1.5F,-3.0F,"Wood",new Properties().stacksTo(1));
 	}
 	@Override
 	protected TagKey<Block> getMineableTag(){
