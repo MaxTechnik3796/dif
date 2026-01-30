@@ -18,7 +18,6 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-
 import static cz.maxtechnik.dif.item.modular.ModularBase.*;
 public class ModularRecipes implements SmithingRecipe{
 	public static final int REPAIR_AMOUNT=3;
@@ -123,6 +122,7 @@ public class ModularRecipes implements SmithingRecipe{
 					baseTag.putInt("HandleDurability",templateTag.getInt("HandleDurability"));
 				}
 				calculateDurability(baseTag);
+				DifMod.LOGGER.debug(base.getDisplayName().toString());
 				if(!(base.getDamageValue()<baseTag.getInt("Durability"))){
 					base.setDamageValue(baseTag.getInt("Durability")-1);
 					baseTag.putBoolean("Broken",true);
@@ -131,15 +131,17 @@ public class ModularRecipes implements SmithingRecipe{
 				}
 			}
 		}else if(isTagged(template,DifMod.MODID,"modular_tools_parts/handle")&&isTagged(base,DifMod.MODID,"modular_tools_parts/head")&&isTagged(addition,DifMod.MODID,"modular_tools_parts/binding")){
+			ItemStack tool=new ItemStack(Items.AIR);
 			if(base.getItem().equals(DifModItems.MODULAR_PART_PICKAXE_HEAD.get())){
-				base=new ItemStack(DifModItems.MODULAR_PICKAXE.get(),1);
+				tool=new ItemStack(DifModItems.MODULAR_PICKAXE.get(),1);
 			}else if(base.getItem().equals(DifModItems.MODULAR_PART_AXE_HEAD.get())){
-				base=new ItemStack(DifModItems.MODULAR_AXE.get(),1);
+				tool=new ItemStack(DifModItems.MODULAR_AXE.get(),1);
 			}else if(base.getItem().equals(DifModItems.MODULAR_PART_SHOVEL_HEAD.get())){
-				base=new ItemStack(DifModItems.MODULAR_SHOVEL.get(),1);
+				tool=new ItemStack(DifModItems.MODULAR_SHOVEL.get(),1);
 			}else if(base.getItem().equals(DifModItems.MODULAR_PART_SWORD_HEAD.get())){
-				base=new ItemStack(DifModItems.MODULAR_SWORD.get(),1);
+				tool=new ItemStack(DifModItems.MODULAR_SWORD.get(),1);
 			}
+
 			CompoundTag toolTag=new CompoundTag();
 			toolTag.putString("Material",baseTag.getString("HeadMaterial"));
 			toolTag.putInt("SpecialDurability",1);
@@ -153,7 +155,7 @@ public class ModularRecipes implements SmithingRecipe{
 
 			toolTag.putString("HeadMaterial",baseTag.getString("HeadMaterial"));
 			toolTag.putString("BindingMaterial",additionTag.getString("BindingMaterial"));
-			toolTag.putString("HandleMaterial",templateTag.getString("HandleMaterial"));
+			baseTag.putString("HandleMaterial",templateTag.getString("HandleMaterial"));
 
 			toolTag.putInt("HeadDurability",baseTag.getInt("HeadDurability"));
 			toolTag.putInt("BindingDurability",additionTag.getInt("BindingDurability"));
@@ -162,7 +164,8 @@ public class ModularRecipes implements SmithingRecipe{
 			toolTag.putInt("HeadColor",baseTag.getInt("HeadColor"));
 			toolTag.putInt("BindingColor",additionTag.getInt("BindingColor"));
 			toolTag.putInt("HandleColor",templateTag.getInt("HandleColor"));
-			base.setTag(toolTag);
+			tool.setTag(toolTag);
+			return tool;
 		}
 		return base;
 	}

@@ -23,7 +23,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 import java.util.Locale;
 public abstract class ModularBase extends DiggerItem{
@@ -218,7 +217,6 @@ public abstract class ModularBase extends DiggerItem{
 				tag.putBoolean("Unbreakable",false);
 				tag.putInt("CustomModelData",0);
 			}
-
 		}
 	}
 	@Override

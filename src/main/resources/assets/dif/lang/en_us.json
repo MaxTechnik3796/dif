@@ -228,6 +228,13 @@
 
 	"item.dif.handle":"Handle",
 
+	"dif.tool_material.wood":"Wooden",
+	"dif.tool_material.stone":"Stone",
+	"dif.tool_material.iron":"Iron",
+	"dif.tool_material.gold":"Golden",
+	"dif.tool_material.diamond":"Diamond",
+	"dif.tool_material.netherite":"Netherite",
+
 	"dif.mining_level.0":"Wooden",
 	"dif.mining_level.1":"Stone",
 	"dif.mining_level.2":"Iron",
