@@ -2,6 +2,7 @@ package cz.maxtechnik.dif.item.modular;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import cz.maxtechnik.dif.DifMod;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -70,13 +71,13 @@ public abstract class ModularBase extends DiggerItem{
 		return itemStack.is(ItemTags.create(ResourceLocation.fromNamespaceAndPath(namespace,path)));
 	}
 	public static boolean isHead(ItemStack itemStack){
-		return isTagged(itemStack,"dif","modular_tools_parts/head");
+		return isTagged(itemStack,DifMod.MODID,"modular_tools_parts/head");
 	}
 	public static boolean isBinding(ItemStack itemStack){
-		return isTagged(itemStack,"dif","modular_tools_parts/binding");
+		return isTagged(itemStack,DifMod.MODID,"modular_tools_parts/binding");
 	}
 	public static boolean isHandle(ItemStack itemStack){
-		return isTagged(itemStack,"dif","modular_tools_parts/handle");
+		return isTagged(itemStack,DifMod.MODID,"modular_tools_parts/handle");
 	}
 	public static String getPartType(ItemStack itemStack){
 		if(isHead(itemStack))return "Head";
@@ -84,17 +85,34 @@ public abstract class ModularBase extends DiggerItem{
 		if(isHandle(itemStack))return "Handle";
 		return "";
 	}
+	public static boolean isReplacedPartValid(ItemStack template,ItemStack base){
+		assert template.getTag()!=null;
+		assert base.getTag()!=null;
+		if(isTagged(template,DifMod.MODID,"modular_tools_parts/head")){
+			return !template.getTag().getString("HeadMaterial").equals(base.getTag().getString("HeadMaterial"));
+		}
+		if(isTagged(template,DifMod.MODID,"modular_tools_parts/binding")){
+			return !template.getTag().getString("BindingMaterial").equals(base.getTag().getString("BindingMaterial"));
+		}
+		if(isTagged(template,DifMod.MODID,"modular_tools_parts/handle")){
+			return !template.getTag().getString("HandleMaterial").equals(base.getTag().getString("HandleMaterial"));
+		}
+		return false;
+	}
 	public static int colorFromMaterial(String material){
 		int color=0xFFFFFF;
 		switch(material){
 			case "Wood"->color=0x915A2D;
 			case "Stone"->color=0x6E6E6E;
 			case "Iron"->color=0xB5B5B5;
-			case "Gold"->color=0xFFCF4D;
+			case "Gold"->color=0xFCC200;
 			case "Diamond"->color=0x00C7BA;
 			case "Netherite"->color=0x3E1504;
 		}
 		return color;
+	}
+	public static void calculateDurability(CompoundTag tag){
+		tag.putInt("Durability",tag.getInt("HeadDurability")+tag.getInt("HandleDurability")+tag.getInt("BindingDurability")+tag.getInt("SpecialDurability"));
 	}
 	protected abstract TagKey<Block> getMineableTag();
 	@Override
@@ -182,8 +200,7 @@ public abstract class ModularBase extends DiggerItem{
 
 
 			if(!tag.contains("SpecialDurability"))tag.putInt("SpecialDurability",1);
-			if(!tag.contains("Durability")) tag.putInt("Durability",tag.getInt("HeadDurability")+tag.getInt("HandleDurability")+tag.getInt("BindingDurability")+tag.getInt("SpecialDurability"));
-
+			calculateDurability(tag);
 
 			if(!tag.contains("Material")) tag.putString("Material",tag.getString("HeadMaterial"));
 

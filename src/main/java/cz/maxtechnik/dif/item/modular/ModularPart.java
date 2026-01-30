@@ -36,7 +36,7 @@ public class ModularPart extends Item{
 			}
 			if(isHandle(itemStack)){
 				if(!tag.contains("HandleMaterial"))tag.putString("HandleMaterial",defaultMaterial);
-				if(!tag.contains("HandleMaterial"))tag.putInt("HandleDurability",defaultDurability);
+				if(!tag.contains("HandleDurability"))tag.putInt("HandleDurability",defaultDurability);
 				tag.putInt("HandleColor",colorFromMaterial(tag.getString("HandleMaterial")));
 			}
 		}

@@ -171,7 +171,7 @@ public class DifModTabs{
 			tabData.accept(DifModItems.MODULAR_PART_PICKAXE_HEAD.get());
 			tabData.accept(DifModItems.MODULAR_PART_AXE_HEAD.get());
 			tabData.accept(DifModItems.MODULAR_PART_SHOVEL_HEAD.get());
-			tabData.accept(DifModItems.MODULAR_PART_SHOVEL_HEAD.get());
+			tabData.accept(DifModItems.MODULAR_PART_SWORD_HEAD.get());
 
 			tabData.accept(DifModItems.MODULAR_PART_BINDING.get());
 			tabData.accept(DifModItems.MODULAR_PART_SWORD_BINDING.get());
