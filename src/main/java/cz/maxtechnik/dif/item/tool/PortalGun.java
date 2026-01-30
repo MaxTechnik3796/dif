@@ -29,7 +29,6 @@ public class PortalGun extends Item {
 		CompoundTag nbt = gun.getOrCreateTag();
 		if (!nbt.contains("mode")) { nbt.putBoolean("mode", true); nbt.putInt("CustomModelData", 1); }
 
-		// Reload logic
 		ItemStack off = player.getOffhandItem();
 		if (off.is(Items.ENDER_PEARL) && gun.getDamageValue() > 0) {
 			if (!world.isClientSide) {
@@ -40,7 +39,6 @@ public class PortalGun extends Item {
 			return InteractionResultHolder.sidedSuccess(gun, world.isClientSide());
 		}
 
-		// Mode switch
 		if (player.isShiftKeyDown()) {
 			if (!world.isClientSide) {
 				boolean mode = !nbt.getBoolean("mode");
@@ -51,7 +49,6 @@ public class PortalGun extends Item {
 			return InteractionResultHolder.sidedSuccess(gun, world.isClientSide());
 		}
 
-		// Fire portal
 		if (!world.isClientSide) {
 			if (gun.getDamageValue() < 24) {
 				if (firePortal((ServerLevel) world, player, nbt.getBoolean("mode"))) {
@@ -73,7 +70,6 @@ public class PortalGun extends Item {
 		Direction extDir = (face.getAxis() == Direction.Axis.Y) ? player.getDirection() : Direction.UP;
 		BlockPos extPos = pos.relative(extDir);
 
-		// Check space and solid support behind
 		boolean space = world.isEmptyBlock(pos) && world.isEmptyBlock(extPos);
 		boolean support = world.getBlockState(pos.relative(face.getOpposite())).isFaceSturdy(world, pos.relative(face.getOpposite()), face) &&
 				world.getBlockState(extPos.relative(face.getOpposite())).isFaceSturdy(world, extPos.relative(face.getOpposite()), face);
@@ -84,7 +80,7 @@ public class PortalGun extends Item {
 		}
 
 		PortalBlockEntity.removeOldPortal(world, player.getUUID(), isBlue);
-		PortalBlockEntity.savePortal(player.getUUID(), isBlue, pos);
+		PortalBlockEntity.savePortal(world, player.getUUID(), isBlue, pos);
 
 		var state = DifModBlocks.PORTAL_BLOCK.get().defaultBlockState().setValue(PortalBlock.FACING, face).setValue(PortalBlock.EXTENSION_DIR, extDir).setValue(PortalBlock.IS_BLUE, isBlue);
 		world.setBlock(pos, state.setValue(PortalBlock.HALF, DoubleBlockHalf.LOWER), 3);
