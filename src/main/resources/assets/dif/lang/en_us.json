@@ -230,9 +230,11 @@
 
 	"dif.tool_material.wood":"Wooden",
 	"dif.tool_material.stone":"Stone",
+	"dif.tool_material.copper":"Copper",
 	"dif.tool_material.iron":"Iron",
 	"dif.tool_material.gold":"Golden",
 	"dif.tool_material.diamond":"Diamond",
+	"dif.tool_matarial.obsidian":"Obsidian",
 	"dif.tool_material.netherite":"Netherite",
 
 	"dif.mining_level.0":"Wooden",

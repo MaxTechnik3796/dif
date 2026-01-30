@@ -51,23 +51,8 @@ public class ModularPart extends Item{
 		if(isBinding(itemStack)&&(!tag.contains("BindingDurability")||!tag.contains("BindingMaterial")))return;
 		if(isHandle(itemStack)&&(!tag.contains("HandleDurability")||!tag.contains("HandleMaterial")))return;
 		String partType=getPartType(itemStack);
-		ChatFormatting dColor=ChatFormatting.DARK_AQUA;
-		if(tag.getInt(partType+"Durability")>0){
-			dColor=ChatFormatting.GREEN;
-		}else if(tag.getInt(partType+"Durability")<0){
-			dColor=ChatFormatting.RED;
-		}
-		String mColor="#FFFFFF";
-		switch(tag.getString(partType+"Material")){
-			case "Wood"->mColor="#915A2D";
-			case "Stone"->mColor="#555555";
-			case "Iron"->mColor="#C6C6C6";
-			case "Gold"->mColor="#D6C400";
-			case "Diamond"->mColor="#55FFFF";
-			case "Netherite"->mColor="#301100";
-		}
-		list.add(Component.literal("Material: ").append(Component.literal(tag.getString(partType+"Material")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(mColor)))));
-		list.add(Component.literal("Durability: ").append(Component.literal(String.valueOf(tag.getInt(partType+"Durability"))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(dColor)))));
+		list.add(Component.literal("Material: ").append(Component.literal(tag.getString(partType+"Material")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(materialColor(partType,tag))))));
+		list.add(Component.literal("Durability: ").append(Component.literal(String.valueOf(tag.getInt(partType+"Durability"))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(durabilityColor(partType,tag))))));
 
 	}
 }
