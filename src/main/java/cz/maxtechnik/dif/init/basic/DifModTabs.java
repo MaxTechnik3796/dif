@@ -8,6 +8,8 @@ import net.minecraft.world.item.*;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
+
+import static cz.maxtechnik.dif.item.modular.ModularBase.*;
 public class DifModTabs{
 	public static final DeferredRegister<CreativeModeTab>REGISTER=DeferredRegister.create(Registries.CREATIVE_MODE_TAB,DifMod.MODID);
 	public static final RegistryObject<CreativeModeTab>MAIN=REGISTER.register("main",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.main")).icon(()->new ItemStack(DifModItems.THE_DIFFERENTIAL.get())).displayItems(((parameters,tabData)->{
@@ -177,6 +179,12 @@ public class DifModTabs{
 			tabData.accept(DifModItems.MODULAR_PART_SWORD_BINDING.get());
 
 			tabData.accept(DifModItems.MODULAR_PART_HANDLE.get());
+
+			ItemStack ironPickaxe=new ItemStack(DifModItems.MODULAR_PICKAXE.get());
+			ironPickaxe.setTag(newSingleMaterialPreFab(ironPickaxe,"Iron"));
+			tabData.accept(ironPickaxe);
+
+
 		}
 	}
 }

@@ -6,7 +6,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 public class ModularPickaxe extends ModularBase{
 	public ModularPickaxe(){
-		super(5,4F,0,1.0F,-2.8F,"Wood",new Properties().stacksTo(1));
+		super(5,4,0,1.0F,-2.8F,"Wood",new Properties().stacksTo(1).fireResistant());
 	}
 	@Override
 	protected TagKey<Block> getMineableTag(){

@@ -6,7 +6,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 public class ModularAxe extends ModularBase{
 	public ModularAxe(){
-		super(5,4F,0,6.0F,-3.2F,"Wood",new Properties().stacksTo(1));
+		super(5,4,0,6.0F,-3.2F,"Wood",new Properties().stacksTo(1).fireResistant());
 	}
 	@Override
 	protected TagKey<Block> getMineableTag(){

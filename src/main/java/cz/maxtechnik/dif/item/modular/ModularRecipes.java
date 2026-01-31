@@ -49,6 +49,8 @@ public class ModularRecipes implements SmithingRecipe{
 				return toolRepairCheck(template,base,addition,templateTag,baseTag,additionTag);
 			}else if(isTagged(template,DifMod.MODID,"modular_tools_parts")){
 				return toolPartReplaceCheck(template,base,addition,templateTag,baseTag,additionTag);
+			}else if(isTagged(template,DifMod.MODID,"modular_tools_modifiers")){
+				return applyModifiersCheck(template,base,addition,templateTag,baseTag,additionTag);
 			}
 		}else if(isTagged(template,DifMod.MODID,"modular_tools_parts/handle")&&isTagged(base,DifMod.MODID,"modular_tools_parts/head")&&isTagged(addition,DifMod.MODID,"modular_tools_parts/binding")){
 			return newToolCraftCheck(template,base,addition,templateTag,baseTag,additionTag);
@@ -66,30 +68,23 @@ public class ModularRecipes implements SmithingRecipe{
 		assert templateTag!=null;
 		assert baseTag!=null;
 		assert additionTag!=null;
-
 		if(base.getItem() instanceof ModularBase){
 			if(isTagged(addition,DifMod.MODID,"modular_tools_materials")){
 				toolRepair(template,base,addition,templateTag,baseTag,additionTag);
 			}else if(isTagged(template,DifMod.MODID,"modular_tools_parts")){
 				toolPartReplace(template,base,addition,templateTag,baseTag,additionTag);
+			}else if(isTagged(template,DifMod.MODID,"modular_tools_modifiers")){
+				applyModifiers(template,base,addition,templateTag,baseTag,additionTag);
 			}
 		}else if(isTagged(template,DifMod.MODID,"modular_tools_parts/handle")&&isTagged(base,DifMod.MODID,"modular_tools_parts/head")&&isTagged(addition,DifMod.MODID,"modular_tools_parts/binding")){
 			return newToolCraft(template,base,addition,templateTag,baseTag,additionTag);
 		}
 		return base;
 	}
-	public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess){
-		return this.result;
-	}
-	public boolean isTemplateIngredient(@NotNull ItemStack itemStack){
-		return this.template.test(itemStack)||isTagged(itemStack,DifMod.MODID,"modular_tools_parts");
-	}
-	public boolean isBaseIngredient(@NotNull ItemStack itemStack){
-		return this.base.test(itemStack)||isTagged(itemStack,DifMod.MODID,"modular_tools_parts");
-	}
-	public boolean isAdditionIngredient(@NotNull ItemStack itemStack){
-		return  this.addition.test(itemStack)||isTagged(itemStack,DifMod.MODID,"modular_tools_parts")||isTagged(itemStack,DifMod.MODID,"modular_tools_materials");
-	}
+	public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess){return this.result;}
+	public boolean isTemplateIngredient(@NotNull ItemStack itemStack){return this.template.test(itemStack)||isTagged(itemStack,DifMod.MODID,"modular_tools_parts")||isTagged(itemStack,DifMod.MODID,"modular_tools_modifiers");}
+	public boolean isBaseIngredient(@NotNull ItemStack itemStack){return this.base.test(itemStack)||isTagged(itemStack,DifMod.MODID,"modular_tools_parts");}
+	public boolean isAdditionIngredient(@NotNull ItemStack itemStack){return this.addition.test(itemStack)||isTagged(itemStack,DifMod.MODID,"modular_tools_parts")||isTagged(itemStack,DifMod.MODID,"modular_tools_materials");}
 	@Override
 	public @NotNull RecipeSerializer<?> getSerializer(){
 		return DifModRecipes.MODULAR_REPAIR_SERIALIZER.get();
