@@ -19,7 +19,6 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import static cz.maxtechnik.dif.item.modular.ModularBase.*;
 public class ModularRecipes implements SmithingRecipe{
-	public static final int REPAIR_AMOUNT=3;
 	final Ingredient template;
 	final Ingredient base;
 	final Ingredient addition;
