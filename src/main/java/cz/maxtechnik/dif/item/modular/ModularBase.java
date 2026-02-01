@@ -504,6 +504,10 @@ public abstract class ModularBase extends DiggerItem{
 	@Override
 	public boolean isFoil(@NotNull ItemStack stack){return false;}
 	@Override
+	public boolean isRepairable(@NotNull ItemStack itemStack){return false;}
+	@Override
+	public boolean isValidRepairItem(@NotNull ItemStack pToRepair, @NotNull ItemStack pRepair){return false;}
+	@Override
 	public @NotNull InteractionResult useOn(UseOnContext context){
 		if(!context.getItemInHand().getItem().equals(DifModItems.MODULAR_AXE.get()))return InteractionResult.PASS;
 		Level level=context.getLevel();
