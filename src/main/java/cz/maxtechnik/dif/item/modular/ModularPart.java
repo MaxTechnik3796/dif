@@ -8,6 +8,7 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +17,7 @@ import static cz.maxtechnik.dif.item.modular.ModularBase.*;
 public class ModularPart extends Item{
 	public String defaultMaterial="Wood";
 	public ModularPart(){
-		super(new Properties());
+		super(new Properties().rarity(Rarity.EPIC));
 	}
 	@Override
 	public void inventoryTick(@NotNull ItemStack itemStack,@NotNull Level world,@NotNull Entity entity,int slot,boolean selected){

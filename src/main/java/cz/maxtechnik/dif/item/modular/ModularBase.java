@@ -92,7 +92,7 @@ public abstract class ModularBase extends DiggerItem{
 			public @NotNull Ingredient getRepairIngredient(){
 				return Ingredient.EMPTY;
 			}
-		},BlockTags.MINEABLE_WITH_PICKAXE,new Properties().stacksTo(1).fireResistant().rarity(Rarity.RARE));
+		},BlockTags.MINEABLE_WITH_PICKAXE,new Properties().stacksTo(1).fireResistant().rarity(Rarity.EPIC));
 		this.defaultMaterial=material;
 		this.defaultDurability=durability;
 		this.defaultEfficiency=efficiency;
@@ -600,17 +600,16 @@ public abstract class ModularBase extends DiggerItem{
 		CompoundTag tag=itemStack.getTag();
 		if(!tag.contains("MiningLevel")||!tag.contains("Durability")||!tag.contains("Efficiency")||!tag.contains("AttackDamage")||!tag.contains("AttackSpeed"))return;
 		if(Screen.hasShiftDown()){
-			boolean ctrl=Screen.hasControlDown();
 			list.add(Component.literal("Remaining Modifiers:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("MaxModifiers"))).withStyle(ChatFormatting.YELLOW))));
 			if(tag.getInt("EfficiencyModifierProgress")>0||tag.getInt("EfficiencyModifier")>0){
-				if(tag.getInt("EfficiencyModifier")<3&&ctrl){
+				if(tag.getInt("EfficiencyModifierProgress")>0){
 					list.add(Component.literal("Efficiency:").withStyle(ChatFormatting.RED).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("EfficiencyModifier"))).append(CommonComponents.space().append(CommonComponents.space().append(Component.literal("( "+tag.getInt("EfficiencyModifierProgress")+" / "+efficiencyModifierStages[tag.getInt("EfficiencyModifier")]+" )")))))));
 				}else{
 					list.add(Component.literal("Efficiency:").withStyle(ChatFormatting.RED).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("EfficiencyModifier"))))));
 				}
 			}
 			if(tag.getInt("FortuneModifierProgress")>0||tag.getInt("FortuneModifier")>0){
-				if(tag.getInt("FortuneModifier")<3&&ctrl){
+				if(tag.getInt("FortuneModifierProgress")>0){
 					list.add(Component.literal("Fortune:").withStyle(ChatFormatting.BLUE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("FortuneModifier"))).append(CommonComponents.space().append(CommonComponents.space().append(Component.literal("( "+tag.getInt("FortuneModifierProgress")+" / "+fortuneModifierStages[tag.getInt("FortuneModifier")]+" )")))))));
 				}else{
 					list.add(Component.literal("Fortune:").withStyle(ChatFormatting.BLUE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("FortuneModifier"))))));
@@ -618,12 +617,6 @@ public abstract class ModularBase extends DiggerItem{
 			}
 			if(tag.getBoolean("SilkTouchModifier")) list.add(Component.literal("SilkTouch").withStyle(Style.EMPTY.withColor(TextColor.parseColor("#FDFD96"))));
 			if(tag.getBoolean("DiamondModifier")) list.add(Component.literal("Diamond").withStyle(Style.EMPTY.withColor(TextColor.parseColor(miningLevelColor("Diamond")))));
-			if(tag.getInt("EfficiencyModifierProgress")>0||tag.getInt("EfficiencyModifier")>0||tag.getInt("FortuneModifierProgress")>0||tag.getInt("FortuneModifier")>0){
-				list.add(CommonComponents.space());
-				ChatFormatting color=ChatFormatting.YELLOW;
-				if(ctrl)color=ChatFormatting.GOLD;
-				list.add(Component.literal("Press").withStyle(Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false)).append(CommonComponents.space().append(Component.literal("Ctrl").withStyle(Style.EMPTY.withColor(color).withItalic(true)).append(CommonComponents.space().append(Component.literal("for more modifiers info.").withStyle(Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false)))))));
-			}
 		}else if(Screen.hasControlDown()){
 			list.add(Component.literal("Tool Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("Material")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(materialColor("",tag))))));
 			list.add(Component.literal("Head:").withStyle(ChatFormatting.WHITE));
