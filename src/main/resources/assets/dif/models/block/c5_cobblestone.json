@@ -1,0 +1,8 @@
+{
+	"parent":"block/cube_all",
+	"textures":{
+		"all":"dif:block/c5_cobblestone",
+		"particle":"dif:block/c5_cobblestone"
+	},
+	"render_type":"solid"
+}

@@ -9,6 +9,7 @@ import cz.maxtechnik.dif.block.template.*;
 import cz.maxtechnik.dif.fluid.block.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.registries.DeferredRegister;
@@ -90,5 +91,16 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>PORTAL_BLOCK=REGISTRY.register("portal_block",()->new PortalBlock(BlockBehaviour.Properties.of().noCollission().noOcclusion()));
 
 
-	public static final RegistryObject<Block>C1_COBBLESTONE=REGISTRY.register("c1_cobblestone",()->new Custom(SoundType.STONE,2F,6F,true));
+	static BlockBehaviour.Properties c_cobblestone_props=BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(2.0F, 6.0F);
+	public static final RegistryObject<Block>C1_COBBLESTONE=REGISTRY.register("c1_cobblestone",()->new Block(c_cobblestone_props));
+	public static final RegistryObject<Block>C2_COBBLESTONE=REGISTRY.register("c2_cobblestone",()->new Block(c_cobblestone_props));
+	public static final RegistryObject<Block>C3_COBBLESTONE=REGISTRY.register("c3_cobblestone",()->new Block(c_cobblestone_props));
+	public static final RegistryObject<Block>C4_COBBLESTONE=REGISTRY.register("c4_cobblestone",()->new Block(c_cobblestone_props));
+	public static final RegistryObject<Block>C5_COBBLESTONE=REGISTRY.register("c5_cobblestone",()->new Block(c_cobblestone_props));
+	public static final RegistryObject<Block>C6_COBBLESTONE=REGISTRY.register("c6_cobblestone",()->new Block(c_cobblestone_props));
+	public static final RegistryObject<Block>C7_COBBLESTONE=REGISTRY.register("c7_cobblestone",()->new Block(c_cobblestone_props));
+	public static final RegistryObject<Block>C8_COBBLESTONE=REGISTRY.register("c8_cobblestone",()->new Block(c_cobblestone_props));
+	public static final RegistryObject<Block>C9_COBBLESTONE=REGISTRY.register("c9_cobblestone",()->new Block(c_cobblestone_props));
+
+
 }

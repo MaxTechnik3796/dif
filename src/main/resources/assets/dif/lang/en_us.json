@@ -248,6 +248,23 @@
 	"dif.mining_level.4":"Netherite",
 
 
-	"block.dif.c1_cobblestone":"Compressed Cobblestone"
+	"block.dif.c1_cobblestone": "Compressed Cobblestone",
+	"block.dif.c2_cobblestone": "Double Compressed Cobblestone",
+	"block.dif.c3_cobblestone": "Triple Compressed Cobblestone",
+	"block.dif.c4_cobblestone": "Quadruple Compressed Cobblestone",
+	"block.dif.c5_cobblestone": "Quintuple Compressed Cobblestone",
+	"block.dif.c6_cobblestone": "Sextuple Compressed Cobblestone",
+	"block.dif.c7_cobblestone": "Septuple Compressed Cobblestone",
+	"block.dif.c8_cobblestone": "Octuple Compressed Cobblestone",
+	"block.dif.c9_cobblestone": "Nonuple Compressed Cobblestone",
+	"block.dif.c10_cobblestone": "Decuple Compressed Cobblestone",
+	"block.dif.c11_cobblestone": "Undecuple Compressed Cobblestone",
+	"block.dif.c12_cobblestone": "Duodecuple Compressed Cobblestone",
+	"block.dif.c13_cobblestone": "Tredecuple Compressed Cobblestone",
+	"block.dif.c14_cobblestone": "Quattuordecuple Compressed Cobblestone",
+	"block.dif.c15_cobblestone": "Quindecuple Compressed Cobblestone",
+	"block.dif.c16_cobblestone": "Sedecuple Compressed Cobblestone",
+	"block.dif.c17_cobblestone": "Septendecuple Compressed Cobblestone",
+	"block.dif.c18_cobblestone": "Duodevigintuple Compressed Cobblestone"
 
 }

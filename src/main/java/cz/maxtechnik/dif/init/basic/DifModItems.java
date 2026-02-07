@@ -185,8 +185,14 @@ public class DifModItems{
 
 	//Compressed:
 	public static final RegistryObject<Item>C1_COBBLESTONE=block(DifModBlocks.C1_COBBLESTONE);
-
-
+	public static final RegistryObject<Item>C2_COBBLESTONE=block(DifModBlocks.C2_COBBLESTONE);
+	public static final RegistryObject<Item>C3_COBBLESTONE=block(DifModBlocks.C3_COBBLESTONE);
+	public static final RegistryObject<Item>C4_COBBLESTONE=block(DifModBlocks.C4_COBBLESTONE);
+	public static final RegistryObject<Item>C5_COBBLESTONE=block(DifModBlocks.C5_COBBLESTONE);
+	public static final RegistryObject<Item>C6_COBBLESTONE=block(DifModBlocks.C6_COBBLESTONE);
+	public static final RegistryObject<Item>C7_COBBLESTONE=block(DifModBlocks.C7_COBBLESTONE);
+	public static final RegistryObject<Item>C8_COBBLESTONE=block(DifModBlocks.C8_COBBLESTONE);
+	public static final RegistryObject<Item>C9_COBBLESTONE=block(DifModBlocks.C9_COBBLESTONE);
 
     //MusicDiscs:
     public static final RegistryObject<Item>CREMEKA=REGISTRY.register("cremeka",()->new MusicDiscDesc2(15,3860,DifMod.MODID,"cremeka"));
