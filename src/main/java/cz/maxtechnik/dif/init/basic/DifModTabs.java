@@ -8,6 +8,8 @@ import net.minecraft.world.item.*;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
+import vectorwing.farmersdelight.common.registry.ModCreativeTabs;
+import vectorwing.farmersdelight.common.registry.ModItems;
 
 import static cz.maxtechnik.dif.item.modular.ModularBase.*;
 public class DifModTabs{
@@ -79,6 +81,8 @@ public class DifModTabs{
 			tabData.accept(DifModItems.DEEPSLATED_ARROW.get());
 			tabData.accept(DifModItems.STONED_ARROW.get());
 			tabData.accept(DifModItems.WOODED_ARROW.get());
+			tabData.accept(DifModItems.GLITCH_BLOCK.get());
+			tabData.accept(DifModItems.C1_COBBLESTONE.get());
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.NATURAL_BLOCKS)){
 			tabData.getEntries().putAfter(new ItemStack(Items.SNOW),new ItemStack(DifModItems.MATY_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.getEntries().putAfter(new ItemStack(Items.CRYING_OBSIDIAN),new ItemStack(DifModItems.CINDER_FLOUR_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
@@ -184,7 +188,8 @@ public class DifModTabs{
 			ironPickaxe.setTag(newSingleMaterialPreFab(ironPickaxe,"Iron"));
 			tabData.accept(ironPickaxe);
 
-
+		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
+			tabData.getEntries().putAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(DifModItems.TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 		}
 	}
 }

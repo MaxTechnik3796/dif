@@ -172,6 +172,8 @@ public class DifModItems{
 	public static final RegistryObject<Item>ANDESITE_WINDOW=block(DifModBlocks.ANDESITE_WINDOW);
 	public static final RegistryObject<Item>SMOOTH_STONE_DOUBLE_SLAB=block(DifModBlocks.SMOOTH_STONE_DOUBLE_SLAB);
 	public static final RegistryObject<Item>IRON_BARS_BLOCK=block(DifModBlocks.IRON_BARS_BLOCK);
+	public static final RegistryObject<Item>GLITCH_BLOCK=block(DifModBlocks.GLITCH_BLOCK);
+	public static final RegistryObject<Item>TREE_BARK_BLOCK=block(DifModBlocks.TREE_BARK_BLOCK);
 
 	public static final RegistryObject<Item>ENERGY_BLOCK=block(DifModBlocks.ENERGY_BLOCK);
 	public static final RegistryObject<Item>BUDDING_ENERGY=block(DifModBlocks.BUDDING_ENERGY);
@@ -180,6 +182,11 @@ public class DifModItems{
 	public static final RegistryObject<Item>MEDIUM_ENERGY_BUD=block(DifModBlocks.MEDIUM_ENERGY_BUD);
 	public static final RegistryObject<Item>SMALL_ENERGY_BUD=block(DifModBlocks.SMALL_ENERGY_BUD);
 	public static final RegistryObject<Item>ENERGY_SHARD=REGISTRY.register("energy_shard",Basic::new);
+
+	//Compressed:
+	public static final RegistryObject<Item>C1_COBBLESTONE=block(DifModBlocks.C1_COBBLESTONE);
+
+
 
     //MusicDiscs:
     public static final RegistryObject<Item>CREMEKA=REGISTRY.register("cremeka",()->new MusicDiscDesc2(15,3860,DifMod.MODID,"cremeka"));

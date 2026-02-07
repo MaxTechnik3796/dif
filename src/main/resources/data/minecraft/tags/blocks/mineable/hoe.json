@@ -1,6 +1,7 @@
 {
 	"replace":false,
 	"values":[
-		"dif:maty_block"
+		"dif:maty_block",
+		"dif:tree_bark_block"
   ]
 }

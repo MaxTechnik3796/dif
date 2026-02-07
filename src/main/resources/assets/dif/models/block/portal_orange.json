@@ -3,7 +3,8 @@
 	"credit": "Made with Blockbench",
 	"render_type": "translucent",
 	"textures": {
-		"0": "dif:block/pob"
+		"0": "dif:block/portal_block",
+		"particle":"dif:block/none"
 	},
 	"elements": [
 		{

@@ -14,16 +14,7 @@
 		"dif:maty_block",
 		"dif:andesite_lattice",
 		"dif:andesite_window",
-		"dif:solar_panel_00",
-		"dif:solar_panel_01",
-		"dif:solar_panel_02",
-		"dif:solar_panel_03",
-		"dif:solar_panel_04",
-		"dif:solar_panel_00_w",
-		"dif:solar_panel_01_w",
-		"dif:solar_panel_02_w",
-		"dif:solar_panel_03_w",
-		"dif:solar_panel_04_w",
+		"#dif:solar_panels",
 		"dif:pedrock",
 		"dif:singularitator",
 		"dif:super_box",
@@ -47,6 +38,8 @@
 		"minecraft:glowstone",
 		"minecraft:sea_lantern",
 		"dif:smooth_stone_double_slab",
-		"dif:iron_bars_block"
+		"dif:iron_bars_block",
+		"dif:glitch_block",
+		"#dif:c1"
 	]
 }

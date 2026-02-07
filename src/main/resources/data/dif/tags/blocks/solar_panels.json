@@ -1,0 +1,15 @@
+{
+	"replace":false,
+	"values":[
+		"dif:solar_panel_00",
+		"dif:solar_panel_01",
+		"dif:solar_panel_02",
+		"dif:solar_panel_03",
+		"dif:solar_panel_04",
+		"dif:solar_panel_00_w",
+		"dif:solar_panel_01_w",
+		"dif:solar_panel_02_w",
+		"dif:solar_panel_03_w",
+		"dif:solar_panel_04_w"
+	]
+}

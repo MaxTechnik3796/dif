@@ -4,137 +4,137 @@
 			"model":"minecraft:block/air"
 		},
 		"facing=north,half=lower,is_blue=true":{
-			"model":"dif:block/pb"
+			"model":"dif:block/portal__blue"
 		},
 		"facing=south,half=lower,is_blue=true":{
-			"model":"dif:block/pb",
+			"model":"dif:block/portal_blue",
 			"y":180
 		},
 		"facing=east,half=lower,is_blue=true":{
-			"model":"dif:block/pb",
+			"model":"dif:block/portal_blue",
 			"y":90
 		},
 		"facing=west,half=lower,is_blue=true":{
-			"model":"dif:block/pb",
+			"model":"dif:block/portal_blue",
 			"y":270
 		},
 		"facing=up,extension_dir=north,half=lower,is_blue=true":{
-			"model":"dif:block/pb",
+			"model":"dif:block/portal_blue",
 			"x":270,
 			"y":180
 		},
 		"facing=up,extension_dir=south,half=lower,is_blue=true":{
-			"model":"dif:block/pb",
+			"model":"dif:block/portal_blue",
 			"x":270,
 			"y":0
 		},
 		"facing=up,extension_dir=east,half=lower,is_blue=true":{
-			"model":"dif:block/pb",
+			"model":"dif:block/portal_blue",
 			"x":270,
 			"y":270
 		},
 		"facing=up,extension_dir=west,half=lower,is_blue=true":{
-			"model":"dif:block/pb",
+			"model":"dif:block/portal_blue",
 			"x":270,
 			"y":90
 		},
 		"facing=down,extension_dir=north,half=lower,is_blue=true":{
-			"model":"dif:block/pb",
+			"model":"dif:block/portal_blue",
 			"x":90,
 			"y":0
 		},
 		"facing=down,extension_dir=south,half=lower,is_blue=true":{
-			"model":"dif:block/pb",
+			"model":"dif:block/portal_blue",
 			"x":90,
 			"y":180
 		},
 		"facing=down,extension_dir=east,half=lower,is_blue=true":{
-			"model":"dif:block/pb",
+			"model":"dif:block/portal_blue",
 			"x":90,
 			"y":90
 		},
 		"facing=down,extension_dir=west,half=lower,is_blue=true":{
-			"model":"dif:block/pb",
+			"model":"dif:block/portal_blue",
 			"x":90,
 			"y":270
 		},
 		"facing=north,half=lower,is_blue=false":{
-			"model":"dif:block/po"
+			"model":"dif:block/portal_orange"
 		},
 		"facing=south,half=lower,is_blue=false":{
-			"model":"dif:block/po",
+			"model":"dif:block/portal_orange",
 			"y":180
 		},
 		"facing=east,half=lower,is_blue=false":{
-			"model":"dif:block/po",
+			"model":"dif:block/portal_orange",
 			"y":90
 		},
 		"facing=west,half=lower,is_blue=false":{
-			"model":"dif:block/po",
+			"model":"dif:block/portal_orange",
 			"y":270
 		},
 		"facing=up,extension_dir=north,half=lower,is_blue=false":{
-			"model":"dif:block/po",
+			"model":"dif:block/portal_orange",
 			"x":270,
 			"y":180
 		},
 		"facing=up,extension_dir=south,half=lower,is_blue=false":{
-			"model":"dif:block/po",
+			"model":"dif:block/portal_orange",
 			"x":270,
 			"y":0
 		},
 		"facing=up,extension_dir=east,half=lower,is_blue=false":{
-			"model":"dif:block/po",
+			"model":"dif:block/portal_orange",
 			"x":270,
 			"y":270
 		},
 		"facing=up,extension_dir=west,half=lower,is_blue=false":{
-			"model":"dif:block/po",
+			"model":"dif:block/portal_orange",
 			"x":270,
 			"y":90
 		},
 		"facing=down,extension_dir=north,half=lower,is_blue=false":{
-			"model":"dif:block/po",
+			"model":"dif:block/portal_orange",
 			"x":90,
 			"y":0
 		},
 		"facing=down,extension_dir=south,half=lower,is_blue=false":{
-			"model":"dif:block/po",
+			"model":"dif:block/portal_orange",
 			"x":90,
 			"y":180
 		},
 		"facing=down,extension_dir=east,half=lower,is_blue=false":{
-			"model":"dif:block/po",
+			"model":"dif:block/portal_orange",
 			"x":90,
 			"y":90
 		},
 		"facing=down,extension_dir=west,half=lower,is_blue=false":{
-			"model":"dif:block/po",
+			"model":"dif:block/portal_orange",
 			"x":90,
 			"y":270
 		},
-		"dif:portal_block#extension_dir=up,facing=up,half=lower,is_blue=false":{
+		"extension_dir=up,facing=up,half=lower,is_blue=false":{
 			"model":"minecraft:block/air"
 		},
-		"dif:portal_block#extension_dir=down,facing=up,half=lower,is_blue=true":{
+		"extension_dir=down,facing=up,half=lower,is_blue=true":{
 			"model":"minecraft:block/air"
 		},
-		"dif:portal_block#extension_dir=down,facing=down,half=lower,is_blue=false":{
+		"extension_dir=down,facing=down,half=lower,is_blue=false":{
 			"model":"minecraft:block/air"
 		},
-		"dif:portal_block#extension_dir=down,facing=up,half=lower,is_blue=false":{
+		"extension_dir=down,facing=up,half=lower,is_blue=false":{
 			"model":"minecraft:block/air"
 		},
-		"dif:portal_block#extension_dir=down,facing=down,half=lower,is_blue=true":{
+		"extension_dir=down,facing=down,half=lower,is_blue=true":{
 			"model":"minecraft:block/air"
 		},
-		"dif:portal_block#extension_dir=up,facing=up,half=lower,is_blue=true":{
+		"extension_dir=up,facing=up,half=lower,is_blue=true":{
 			"model":"minecraft:block/air"
 		},
-		"dif:portal_block#extension_dir=up,facing=down,half=lower,is_blue=false":{
+		"extension_dir=up,facing=down,half=lower,is_blue=false":{
 			"model":"minecraft:block/air"
 		},
-		"dif:portal_block#extension_dir=up,facing=down,half=lower,is_blue=true":{
+		"extension_dir=up,facing=down,half=lower,is_blue=true":{
 			"model":"minecraft:block/air"
 		}
 	}

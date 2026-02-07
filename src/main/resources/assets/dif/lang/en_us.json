@@ -141,6 +141,8 @@
 	"block.dif.stoned_arrow":"Stoned Arrow",
 	"block.dif.deepslated_arrow":"Deepslated Arrow",
 
+	"block.dif.portal_block":"Portal",
+
 	"item.dif.ram":"RAM",
 	"item.dif.explosive_ram":"§cExplosive RAM§r",
 	"item.dif.spring":"Spring",
@@ -166,6 +168,8 @@
 	"block.dif.old_chest":"Alpha Chest",
 	"block.dif.smooth_stone_double_slab":"Smooth Stone Double Slab",
 	"block.dif.iron_bars_block":"Iron Bars Block",
+	"block.dif.glitch_block":"Glitch Block",
+	"block.dif.tree_bark_block":"Block of Tree Bark",
 
 	"block.dif.fluid_hatch":"Fluid Hatch",
 
@@ -241,6 +245,9 @@
 	"dif.mining_level.1":"Stone",
 	"dif.mining_level.2":"Iron",
 	"dif.mining_level.3":"Diamond",
-	"dif.mining_level.4":"Netherite"
+	"dif.mining_level.4":"Netherite",
+
+
+	"block.dif.c1_cobblestone":"Compressed Cobblestone"
 
 }

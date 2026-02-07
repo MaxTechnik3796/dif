@@ -95,7 +95,7 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
-    runtimeOnly fg.deobf("curse.maven:worldedit-225608:4586218")
+    implementation fg.deobf("curse.maven:farmers-delight-398521:6917255")
     implementation fg.deobf("curse.maven:create-328085:7178761")
     runtimeOnly fg.deobf("curse.maven:createaddition-439890:6901922")
     runtimeOnly fg.deobf("curse.maven:jade-324717:6855440")
@@ -105,14 +105,14 @@ dependencies {
     //runtimeOnly fg.deobf("curse.maven:configured-457570:5180900")
     runtimeOnly fg.deobf("curse.maven:crafting-tweaks-233071:6784525")
     runtimeOnly fg.deobf("curse.maven:balm-531761:7087245")
-    runtimeOnly fg.deobf("curse.maven:farmers-delight-398521:6917255")
+
     runtimeOnly fg.deobf("curse.maven:create-deco-509285:6373226")
     runtimeOnly fg.deobf("curse.maven:slice-and-dice-659674:7184951")
     runtimeOnly fg.deobf("curse.maven:kotlin-for-forge-351264:7291067")
 
     //implementation fg.deobf("curse.maven:diversity-1039632:7130442")
 
-
+    runtimeOnly fg.deobf("curse.maven:worldedit-225608:4586218")
     runtimeOnly fg.deobf("curse.maven:mtt-1380280:7468659")
 }
 tasks.named('processResources', ProcessResources).configure {
