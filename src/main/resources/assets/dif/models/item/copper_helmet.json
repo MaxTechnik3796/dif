@@ -44,7 +44,7 @@
 			}
 		},
 		{
-			"model":"dif:item/copper_helmet_copper_darker_trim",
+			"model":"dif:item/copper_helmet_diamond_trim",
 			"predicate":{
 				"trim_type":0.8
 			}

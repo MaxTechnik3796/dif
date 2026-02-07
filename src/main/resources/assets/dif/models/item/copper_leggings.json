@@ -44,7 +44,7 @@
 			}
 		},
 		{
-			"model":"dif:item/copper_leggings_copper_darker_trim",
+			"model":"dif:item/copper_leggings_diamond_trim",
 			"predicate":{
 				"trim_type":0.8
 			}
