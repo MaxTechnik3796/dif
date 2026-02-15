@@ -38,35 +38,34 @@ public class SpaceCrate extends BaseEntityBlock{
 		this.registerDefaultState(this.stateDefinition.any().setValue(OPEN, Boolean.valueOf(false)));
 	}
 
-	public @NotNull InteractionResult use(@NotNull BlockState p_49069_,Level p_49070_,@NotNull BlockPos p_49071_,@NotNull Player p_49072_,@NotNull InteractionHand p_49073_,@NotNull BlockHitResult hit) {
-		if (p_49070_.isClientSide) {
+	public @NotNull InteractionResult use(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand p_49073_,@NotNull BlockHitResult hit) {
+		if (world.isClientSide) {
 			return InteractionResult.SUCCESS;
 		} else {
-			BlockEntity blockentity = p_49070_.getBlockEntity(p_49071_);
+			BlockEntity blockentity = world.getBlockEntity(pos);
 			if (blockentity instanceof BarrelBlockEntity) {
-				p_49072_.openMenu((BarrelBlockEntity)blockentity);
-				p_49072_.awardStat(Stats.OPEN_BARREL);
-				PiglinAi.angerNearbyPiglins(p_49072_, true);
+				player.openMenu((BarrelBlockEntity)blockentity);
+				player.awardStat(Stats.OPEN_BARREL);
+				PiglinAi.angerNearbyPiglins(player,true);
 			}
 
 			return InteractionResult.CONSUME;
 		}
 	}
 
-	public void onRemove(BlockState p_49076_,@NotNull Level p_49077_,@NotNull BlockPos p_49078_,BlockState p_49079_,boolean p_49080_) {
-		if (!p_49076_.is(p_49079_.getBlock())) {
-			BlockEntity blockentity = p_49077_.getBlockEntity(p_49078_);
+	public void onRemove(BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,BlockState state,boolean var0) {
+		if (!blockState.is(state.getBlock())) {
+			BlockEntity blockentity = world.getBlockEntity(pos);
 			if (blockentity instanceof Container) {
-				Containers.dropContents(p_49077_, p_49078_, (Container)blockentity);
-				p_49077_.updateNeighbourForOutputSignal(p_49078_, this);
+				Containers.dropContents(world, pos, (Container)blockentity);
+				world.updateNeighbourForOutputSignal(pos, this);
 			}
-
-			super.onRemove(p_49076_, p_49077_, p_49078_, p_49079_, p_49080_);
+			super.onRemove(blockState, world, pos, state, var0);
 		}
 	}
 
-	public void tick(@NotNull BlockState p_220758_,ServerLevel p_220759_,@NotNull BlockPos p_220760_,@NotNull RandomSource p_220761_) {
-		BlockEntity blockentity = p_220759_.getBlockEntity(p_220760_);
+	public void tick(@NotNull BlockState blockState,ServerLevel world,@NotNull BlockPos pos,@NotNull RandomSource source) {
+		BlockEntity blockentity = world.getBlockEntity(pos);
 		if (blockentity instanceof BarrelBlockEntity) {
 			((BarrelBlockEntity)blockentity).recheckOpen();
 		}
@@ -74,30 +73,30 @@ public class SpaceCrate extends BaseEntityBlock{
 	}
 
 	@Nullable
-	public BlockEntity newBlockEntity(@NotNull BlockPos p_152102_,@NotNull BlockState p_152103_) {
-		return new BarrelBlockEntity(p_152102_, p_152103_);
+	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState) {
+		return new BarrelBlockEntity(pos, blockState);
 	}
 
-	public @NotNull RenderShape getRenderShape(@NotNull BlockState p_49090_) {
+	public @NotNull RenderShape getRenderShape(@NotNull BlockState blockState) {
 		return RenderShape.MODEL;
 	}
 
-	public void setPlacedBy(@NotNull Level p_49052_,@NotNull BlockPos p_49053_,@NotNull BlockState p_49054_,@Nullable LivingEntity p_49055_,ItemStack p_49056_) {
-		if (p_49056_.hasCustomHoverName()) {
-			BlockEntity blockentity = p_49052_.getBlockEntity(p_49053_);
+	public void setPlacedBy(@NotNull Level world,@NotNull BlockPos pos,@NotNull BlockState state,@Nullable LivingEntity entity,ItemStack itemStack) {
+		if (itemStack.hasCustomHoverName()) {
+			BlockEntity blockentity = world.getBlockEntity(pos);
 			if (blockentity instanceof BarrelBlockEntity) {
-				((BarrelBlockEntity)blockentity).setCustomName(p_49056_.getHoverName());
+				((BarrelBlockEntity)blockentity).setCustomName(itemStack.getHoverName());
 			}
 		}
 
 	}
 
-	public boolean hasAnalogOutputSignal(@NotNull BlockState p_49058_) {
+	public boolean hasAnalogOutputSignal(@NotNull BlockState blockState) {
 		return true;
 	}
 
-	public int getAnalogOutputSignal(@NotNull BlockState p_49065_,Level p_49066_,@NotNull BlockPos p_49067_) {
-		return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(p_49066_.getBlockEntity(p_49067_));
+	public int getAnalogOutputSignal(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos) {
+		return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(world.getBlockEntity(pos));
 	}
 
 	public @NotNull BlockState rotate(@NotNull BlockState blockState,@NotNull Rotation rotation) {
