@@ -229,7 +229,12 @@ public class DifModTabs{
 			tabData.accept(DifModItems.SPACE_DOOR.get());
 			tabData.accept(DifModItems.FUEL_BUCKET.get());
 
+			tabData.accept(DifModItems.MOON_STONE.get());
+			tabData.accept(DifModItems.MARS_STONE.get());
 
+			tabData.accept(DifModItems.BROKEN_TRACK00.get());
+			tabData.accept(DifModItems.BROKEN_TRACK01.get());
+			tabData.accept(DifModItems.BROKEN_TRACK02.get());
 
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){

@@ -1,6 +1,6 @@
 {
 	"type":"minecraft:block",
-	"random_sequence":"dif:blocks/space_caing_metal",
+	"random_sequence":"dif:blocks/glitch_block",
 	"pools":[
 		{
 			"rolls":1.0,
@@ -12,7 +12,7 @@
 			"entries":[
 				{
 					"type":"minecraft:item",
-					"name":"dif:space_caing_metal"
+					"name":"dif:glitch_block"
 				}
 			]
 		}

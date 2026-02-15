@@ -120,5 +120,11 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>SPACE_CRATE=REGISTRY.register("space_crate",Basic::new);
 	public static final RegistryObject<Block>SOLAR_PANEL_BLOCK=REGISTRY.register("solar_panel_block",Basic::new);
 
+	public static final RegistryObject<Block>MOON_STONE=REGISTRY.register("moon_stone",Basic::new);
+	public static final RegistryObject<Block>MARS_STONE=REGISTRY.register("mars_stone",Basic::new);
+
+	public static final RegistryObject<Block>BROKEN_TRACK00=REGISTRY.register("broken_track00",()->new CustomHorizontalRotation(SoundType.NETHERITE_BLOCK,5F,6F,false));
+	public static final RegistryObject<Block>BROKEN_TRACK01=REGISTRY.register("broken_track01",()->new CustomHorizontalRotation(SoundType.NETHERITE_BLOCK,5F,6F,false));
+	public static final RegistryObject<Block>BROKEN_TRACK02=REGISTRY.register("broken_track02",()->new CustomHorizontalRotation(SoundType.NETHERITE_BLOCK,5F,6F,false));
 
 }

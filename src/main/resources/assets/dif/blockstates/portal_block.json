@@ -1,7 +1,7 @@
 {
 	"variants":{
 		"half=upper":{
-			"model":"minecraft:block/air"
+			"model":"dif:block/none"
 		},
 		"facing=north,half=lower,is_blue=true":{
 			"model":"dif:block/portal_blue"
@@ -114,28 +114,28 @@
 			"y":270
 		},
 		"extension_dir=up,facing=up,half=lower,is_blue=false":{
-			"model":"minecraft:block/air"
+			"model":"dif:block/none"
 		},
 		"extension_dir=down,facing=up,half=lower,is_blue=true":{
-			"model":"minecraft:block/air"
+			"model":"dif:block/none"
 		},
 		"extension_dir=down,facing=down,half=lower,is_blue=false":{
-			"model":"minecraft:block/air"
+			"model":"dif:block/none"
 		},
 		"extension_dir=down,facing=up,half=lower,is_blue=false":{
-			"model":"minecraft:block/air"
+			"model":"dif:block/none"
 		},
 		"extension_dir=down,facing=down,half=lower,is_blue=true":{
-			"model":"minecraft:block/air"
+			"model":"dif:block/none"
 		},
 		"extension_dir=up,facing=up,half=lower,is_blue=true":{
-			"model":"minecraft:block/air"
+			"model":"dif:block/none"
 		},
 		"extension_dir=up,facing=down,half=lower,is_blue=false":{
-			"model":"minecraft:block/air"
+			"model":"dif:block/none"
 		},
 		"extension_dir=up,facing=down,half=lower,is_blue=true":{
-			"model":"minecraft:block/air"
+			"model":"dif:block/none"
 		}
 	}
 }

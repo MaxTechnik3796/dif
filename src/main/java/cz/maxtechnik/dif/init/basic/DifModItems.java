@@ -266,5 +266,10 @@ public class DifModItems{
 	public static final RegistryObject<Item>SOLAR_PANEL_BLOCK=block(DifModBlocks.SOLAR_PANEL_BLOCK);
 
 
+	public static final RegistryObject<Item>MOON_STONE=block(DifModBlocks.MOON_STONE);
+	public static final RegistryObject<Item>MARS_STONE=block(DifModBlocks.MARS_STONE);
 
+	public static final RegistryObject<Item>BROKEN_TRACK00=block(DifModBlocks.BROKEN_TRACK00);
+	public static final RegistryObject<Item>BROKEN_TRACK01=block(DifModBlocks.BROKEN_TRACK01);
+	public static final RegistryObject<Item>BROKEN_TRACK02=block(DifModBlocks.BROKEN_TRACK02);
 }

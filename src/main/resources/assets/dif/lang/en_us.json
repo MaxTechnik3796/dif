@@ -41,6 +41,11 @@
 	"fluid.dif.xp_fluid":"Experience",
 	"fluid_type.dif.xp_fluid":"Experience",
 
+	"item.dif.fuel_bucket":"Fuel Bucket",
+	"block.dif.fuel_fluid":"Fuel",
+	"fluid.dif.fuel_fluid":"Fuel",
+	"fluid_type.dif.fuel_fluid":"Fuel",
+
 	"item.dif.mayonnaise.desc":"§7Mayonnaise on an escalator! - Harry Arbuckle§r",
 	"item.dif.cremeka.desc":"§7Cremeka song! - CZ|Ted<3 & AI§r",
 	"item.dif.maty_create.desc":"§7Maty Create Song - Matrixgold§r",
@@ -294,10 +299,10 @@
 	"item.dif.carbon_suit_leggings":"Carbon Suit Leggings",
 	"item.dif.empty_rocket_fuel":"Empty Rocket Fuel",
 	"item.dif.rocket_fuel":"Rocket Fuel",
-	"item.dif.space_boots":"Space Boots",
-	"item.dif.space_helmet":"Space Helmet",
-	"item.dif.space_leggings":"Space Leggings",
-	"item.dif.space_chestplate":"Space Chestplate",
+	"item.dif.space_suit_boots":"Space Suit Boots",
+	"item.dif.space_suit_helmet":"Space Suit Helmet",
+	"item.dif.space_suit_leggings":"Space Suit Leggings",
+	"item.dif.space_suit_chestplate":"Space Suit Chestplate",
 	"item.dif.tier_upgrade":"Tier Upgrade"
 
 
