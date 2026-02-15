@@ -65,7 +65,7 @@ public abstract class CarbonSuit extends ArmorItem {
 
 		@Override
 		public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-			return "mcc:textures/models/armor/carbon_suit_layer_1.png";
+			return "dif:textures/models/armor/carbon_suit_layer_1.png";
 		}
 	}
 
@@ -76,7 +76,7 @@ public abstract class CarbonSuit extends ArmorItem {
 
 		@Override
 		public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-			return "mcc:textures/models/armor/carbon_suit_layer_1.png";
+			return "dif:textures/models/armor/carbon_suit_layer_1.png";
 		}
 	}
 
@@ -87,7 +87,7 @@ public abstract class CarbonSuit extends ArmorItem {
 
 		@Override
 		public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-			return "mcc:textures/models/armor/carbon_suit_layer_2.png";
+			return "dif:textures/models/armor/carbon_suit_layer_2.png";
 		}
 	}
 
@@ -98,7 +98,7 @@ public abstract class CarbonSuit extends ArmorItem {
 
 		@Override
 		public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-			return "mcc:textures/models/armor/carbon_suit_layer_1.png";
+			return "dif:textures/models/armor/carbon_suit_layer_1.png";
 		}
 	}
 }
