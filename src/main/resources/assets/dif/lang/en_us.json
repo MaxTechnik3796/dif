@@ -283,7 +283,22 @@
 	"block.dif.space_door":"Space Door",
 	"block.dif.space_scaffolding":"Space Scaffolding",
 	"block.dif.spaceship":"Spaceship",
-	"block.dif.space_engine":"Space Engine"
+	"block.dif.space_engine":"Space Engine",
+
+
+	"item.dif.aurora_ingot":"Aurora Ingot",
+	"item.dif.biogenetic_capsule":"Biogenetic Capsule",
+	"item.dif.carbon_suit_boots":"Carbon Suit Boots",
+	"item.dif.carbon_suit_chestplate":"Carbon Suit Chestplate",
+	"item.dif.carbon_suit_helmet":"Carbon Suit Helmet",
+	"item.dif.carbon_suit_leggings":"Carbon Suit Leggings",
+	"item.dif.empty_rocket_fuel":"Empty Rocket Fuel",
+	"item.dif.rocket_fuel":"Rocket Fuel",
+	"item.dif.space_boots":"Space Boots",
+	"item.dif.space_helmet":"Space Helmet",
+	"item.dif.space_leggings":"Space Leggings",
+	"item.dif.space_chestplate":"Space Chestplate",
+	"item.dif.tier_upgrade":"Tier Upgrade"
 
 
 
