@@ -2,7 +2,6 @@ package cz.maxtechnik.dif.block;
 
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.RandomSource;
@@ -28,20 +27,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("deprecation")
 public class SpaceCrate extends BaseEntityBlock{
-	public static final DirectionProperty FACING = BlockStateProperties.FACING;
 	public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
 
 	public SpaceCrate(BlockBehaviour.Properties p_49046_) {
 		super(p_49046_);
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, Boolean.valueOf(false)));
+		this.registerDefaultState(this.stateDefinition.any().setValue(OPEN, Boolean.valueOf(false)));
 	}
 
-	public @NotNull InteractionResult use(@NotNull BlockState p_49069_,Level p_49070_,@NotNull BlockPos p_49071_,@NotNull Player p_49072_,@NotNull InteractionHand p_49073_,BlockHitResult p_49074_) {
+	public @NotNull InteractionResult use(@NotNull BlockState p_49069_,Level p_49070_,@NotNull BlockPos p_49071_,@NotNull Player p_49072_,@NotNull InteractionHand p_49073_,@NotNull BlockHitResult hit) {
 		if (p_49070_.isClientSide) {
 			return InteractionResult.SUCCESS;
 		} else {
@@ -81,7 +78,7 @@ public class SpaceCrate extends BaseEntityBlock{
 		return new BarrelBlockEntity(p_152102_, p_152103_);
 	}
 
-	public RenderShape getRenderShape(@NotNull BlockState p_49090_) {
+	public @NotNull RenderShape getRenderShape(@NotNull BlockState p_49090_) {
 		return RenderShape.MODEL;
 	}
 
@@ -103,19 +100,19 @@ public class SpaceCrate extends BaseEntityBlock{
 		return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(p_49066_.getBlockEntity(p_49067_));
 	}
 
-	public @NotNull BlockState rotate(BlockState p_49085_,Rotation p_49086_) {
-		return p_49085_.setValue(FACING, p_49086_.rotate(p_49085_.getValue(FACING)));
+	public @NotNull BlockState rotate(@NotNull BlockState blockState,@NotNull Rotation rotation) {
+		return blockState;
 	}
 
-	public @NotNull BlockState mirror(BlockState p_49082_,Mirror p_49083_) {
-		return p_49082_.rotate(p_49083_.getRotation(p_49082_.getValue(FACING)));
+	public @NotNull BlockState mirror(@NotNull BlockState blockState,@NotNull Mirror mirror) {
+		return blockState;
 	}
 
-	protected void createBlockStateDefinition(StateDefinition.Builder<net.minecraft.world.level.block.Block,BlockState> p_49088_) {
-		p_49088_.add(FACING, OPEN);
+	protected void createBlockStateDefinition(StateDefinition.Builder<net.minecraft.world.level.block.Block,BlockState> builder) {
+		builder.add(OPEN);
 	}
 
-	public BlockState getStateForPlacement(BlockPlaceContext p_49048_) {
-		return this.defaultBlockState().setValue(FACING, p_49048_.getNearestLookingDirection().getOpposite());
+	public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
+		return this.defaultBlockState();
 	}
 }
