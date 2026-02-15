@@ -1,7 +1,10 @@
 {
 	"variants":{
-		"":{
+		"open=false":{
 			"model":"dif:block/space_crate"
+		},
+		"open=true":{
+			"model":"dif:block/space_crate_open"
 		}
 	}
 }

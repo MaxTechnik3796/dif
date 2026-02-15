@@ -24,6 +24,6 @@
 		"dif:spaceship",
 		"dif:aurora_casing",
 		"#dif:broken_tracks",
-		"#dif:space_industrial_blocks.json"
+		"#dif:space_industrial_blocks"
 	]
 }
