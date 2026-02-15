@@ -8,11 +8,28 @@
 		"water_color": 4159204,
 		"water_fog_color": 329011,
 		"grass_color": 10526880,
-		"foliage_color": 10526880,
-		"ambient_sound": "minecraft:ambient.cave"
+		"foliage_color": 10526880
 	},
-	"carvers": {},
-	"features": [],
+	"carvers": {
+		"air": [
+			"minecraft:cave",
+			"minecraft:cave_extra_underground",
+			"minecraft:canyon"
+		]
+	},
+	"features": [
+		[], [], [], [], [], [],
+		[
+			"minecraft:ore_iron_small",
+			"minecraft:ore_gold_lower",
+			"minecraft:ore_redstone_lower",
+			"minecraft:ore_diamond",
+			"minecraft:ore_diamond_large",
+			"minecraft:ore_diamond_buried",
+			"minecraft:ore_lapis_buried"
+		],
+		[], [], [], []
+	],
 	"spawners": {},
 	"spawn_costs": {}
 }

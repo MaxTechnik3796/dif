@@ -8,8 +8,7 @@
 		"water_color": 0,
 		"water_fog_color": 0,
 		"grass_color": 0,
-		"foliage_color": 0,
-		"ambient_sound": "minecraft:ambient.cave"
+		"foliage_color": 0
 	},
 	"carvers": {},
 	"features": [],
