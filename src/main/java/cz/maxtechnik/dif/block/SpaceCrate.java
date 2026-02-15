@@ -35,7 +35,7 @@ public class SpaceCrate extends BaseEntityBlock{
 
 	public SpaceCrate(BlockBehaviour.Properties p_49046_) {
 		super(p_49046_);
-		this.registerDefaultState(this.stateDefinition.any().setValue(OPEN, Boolean.valueOf(false)));
+		this.registerDefaultState(this.stateDefinition.any().setValue(OPEN,Boolean.FALSE));
 	}
 
 	public @NotNull InteractionResult use(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand p_49073_,@NotNull BlockHitResult hit) {
