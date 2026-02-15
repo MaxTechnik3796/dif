@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class FuelFluid extends ForgeFlowingFluid {
 	public static final ForgeFlowingFluid.Properties PROPERTIES = new ForgeFlowingFluid.Properties(DifModFluidTypes.FUEL_TYPE, DifModFluids.FUEL,DifModFluids.FLOWING_FUEL)
-			.explosionResistance(100f).bucket(DifModItems.ROCKET_FUEL_FLUID_BUCKET).block(() -> (LiquidBlock) DifModBlocks.FUEL_FLUID.get());
+			.explosionResistance(100f).bucket(DifModItems.FUEL_BUCKET).block(() -> (LiquidBlock) DifModBlocks.FUEL_FLUID.get());
 
 	private FuelFluid() {
 		super(PROPERTIES);

@@ -44,6 +44,7 @@ public class DifModItems{
 
 	public static final RegistryObject<Item>BEER_BUCKET=REGISTRY.register("beer_bucket",BeerBucket::new);
 	public static final RegistryObject<Item>XP_BUCKET=REGISTRY.register("xp_bucket",XpBucket::new);
+	public static final RegistryObject<Item>FUEL_BUCKET=REGISTRY.register("fuel_bucket",FuelBucket::new);
 
 	public static final RegistryObject<Item>END_PORTAL=V_REGISTRY.register("end_portal",()->new BlockItem(Blocks.END_PORTAL,new Item.Properties()));
 	public static final RegistryObject<Item>END_GATEWAY=V_REGISTRY.register("end_gateway",()->new BlockItem(Blocks.END_GATEWAY,new Item.Properties()));
@@ -239,7 +240,6 @@ public class DifModItems{
 
 	public static final RegistryObject<Item>ROCKET_FUEL=REGISTRY.register("rocket_fuel",()->new StackSize(16));
 	public static final RegistryObject<Item>EMPTY_ROCKET_FUEL=REGISTRY.register("empty_rocket_fuel",()->new StackSize(16));
-	public static final RegistryObject<Item>ROCKET_FUEL_FLUID_BUCKET=REGISTRY.register("rocket_fuel_fluid_bucket",FuelBucket::new);
 
 	public static final RegistryObject<Item>SPACE_SUIT_HELMET=REGISTRY.register("space_suit_helmet",SpaceSuit.Helmet::new);
 	public static final RegistryObject<Item>SPACE_SUIT_CHESTPLATE=REGISTRY.register("space_suit_chestplate",SpaceSuit.Chestplate::new);

@@ -4,7 +4,7 @@
 			"model":"minecraft:block/air"
 		},
 		"facing=north,half=lower,is_blue=true":{
-			"model":"dif:block/portal__blue"
+			"model":"dif:block/portal_blue"
 		},
 		"facing=south,half=lower,is_blue=true":{
 			"model":"dif:block/portal_blue",

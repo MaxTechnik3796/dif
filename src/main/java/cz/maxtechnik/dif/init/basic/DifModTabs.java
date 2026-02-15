@@ -227,6 +227,7 @@ public class DifModTabs{
 			tabData.accept(DifModItems.SPACE_CRATE.get());
 			tabData.accept(DifModItems.SOLAR_PANEL_BLOCK.get());
 			tabData.accept(DifModItems.SPACE_DOOR.get());
+			tabData.accept(DifModItems.FUEL_BUCKET.get());
 
 
 

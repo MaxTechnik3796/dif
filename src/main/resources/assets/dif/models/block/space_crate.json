@@ -1,7 +1,7 @@
 {
   "parent": "block/cube",
   "textures": {
-    "down": "dif:block/space_crate_top_",
+    "down": "dif:block/space_crate_top",
     "up": "dif:block/space_crate_top",
     "north": "dif:block/space_crate_side",
     "east": "dif:block/space_crate_side",
