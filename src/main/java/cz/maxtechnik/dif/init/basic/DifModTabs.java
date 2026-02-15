@@ -180,6 +180,8 @@ public class DifModTabs{
 			tabData.accept(DifModItems.LAVA.get());
 			tabData.accept(DifModItems.FIRE.get());
 
+			tabData.accept(DifModItems.PORTAL_GUN.get());
+
 			tabData.accept(DifModItems.MODULAR_PICKAXE.get());
 			tabData.accept(DifModItems.MODULAR_AXE.get());
 			tabData.accept(DifModItems.MODULAR_SHOVEL.get());
@@ -209,29 +211,23 @@ public class DifModTabs{
 			tabData.accept(DifModItems.SPACE_SUIT_CHESTPLATE.get());
 			tabData.accept(DifModItems.SPACE_SUIT_LEGGINGS.get());
 			tabData.accept(DifModItems.SPACE_SUIT_BOOTS.get());
-
 			tabData.accept(DifModItems.CARBON_SUIT_HELMET.get());
 			tabData.accept(DifModItems.CARBON_SUIT_CHESTPLATE.get());
 			tabData.accept(DifModItems.CARBON_SUIT_LEGGINGS.get());
 			tabData.accept(DifModItems.CARBON_SUIT_BOOTS.get());
-
 			tabData.accept(DifModItems.SPACESHIP.get());
 			tabData.accept(DifModItems.SPACE_ENGINE.get());
-
 			tabData.accept(DifModItems.SPACE_SCAFFOLDING.get());
 			tabData.accept(DifModItems.SPACE_CASING.get());
 			tabData.accept(DifModItems.SPACE_CASING_METAL.get());
 			tabData.accept(DifModItems.SPACE_CASING_REINFORCED.get());
-
 			tabData.accept(DifModItems.SPACE_CORRIDOR.get());
 			tabData.accept(DifModItems.SPACE_CRATE.get());
 			tabData.accept(DifModItems.SOLAR_PANEL_BLOCK.get());
 			tabData.accept(DifModItems.SPACE_DOOR.get());
 			tabData.accept(DifModItems.FUEL_BUCKET.get());
-
 			tabData.accept(DifModItems.MOON_STONE.get());
 			tabData.accept(DifModItems.MARS_STONE.get());
-
 			tabData.accept(DifModItems.BROKEN_TRACK00.get());
 			tabData.accept(DifModItems.BROKEN_TRACK01.get());
 			tabData.accept(DifModItems.BROKEN_TRACK02.get());
