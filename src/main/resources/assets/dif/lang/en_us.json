@@ -265,6 +265,24 @@
 	"block.dif.c15_cobblestone": "Quindecuple Compressed Cobblestone",
 	"block.dif.c16_cobblestone": "Sedecuple Compressed Cobblestone",
 	"block.dif.c17_cobblestone": "Septendecuple Compressed Cobblestone",
-	"block.dif.c18_cobblestone": "Duodevigintuple Compressed Cobblestone"
+	"block.dif.c18_cobblestone": "Duodevigintuple Compressed Cobblestone",
+
+
+	"block.dif.aurora_casing":"Aurora Casing",
+	"block.dif.broken_track00":"Broken Track (1)",
+	"block.dif.broken_track01":"Broken Track (2)",
+	"block.dif.broken_track02":"Broken Track (3)",
+	"block.dif.mars_stone":"Mars Stone",
+	"block.dif.moon_stone":"Moon Stone",
+	"block.dif.solar_panel_block":"Solar Panel Block",
+	"block.dif.space_casing_metal":"Space Casing Metal",
+	"block.dif.space_casing":"Space Casing",
+	"block.dif.space_casing_reinforced":"Space Casing Reinforced",
+	"block.dif.space_corridor":"Space Corridor",
+	"block.dif.space_crate":"Space Crate",
+	"block.dif.space_door":"Space Door",
+	"block.dif.space_scaffolding":"Space Scaffolding",
+	"block.dif.spaceship":"Spaceship",
+	"block.dif.space_engine":"Space Engine"
 
 }
