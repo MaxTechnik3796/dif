@@ -1,0 +1,8 @@
+{
+	"parent":"block/cube_all",
+	"textures":{
+		"all":"dif:block/space_casing_metal",
+		"particle":"dif:block/space_casing_metal"
+	},
+	"render_type":"solid"
+}

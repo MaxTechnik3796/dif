@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "dif:block/space_crate_top_",
+    "up": "dif:block/space_crate_top",
+    "north": "dif:block/space_crate_side",
+    "east": "dif:block/space_crate_side",
+    "south": "dif:block/space_crate_side",
+    "west": "dif:block/space_crate_side",
+    "particle": "dif:block/space_crate_top"
+  },
+  "render_type": "solid"
+}

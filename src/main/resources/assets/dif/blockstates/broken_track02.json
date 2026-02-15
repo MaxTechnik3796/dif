@@ -1,0 +1,19 @@
+{
+	"variants":{
+		"facing=north":{
+			"model":"dif:block/broken_track02"
+		},
+		"facing=east":{
+			"model":"dif:block/broken_track02",
+			"y":90
+		},
+		"facing=south":{
+			"model":"dif:block/broken_track02",
+			"y":180
+		},
+		"facing=west":{
+			"model":"dif:block/broken_track02",
+			"y":270
+		}
+	}
+}

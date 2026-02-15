@@ -1,0 +1,19 @@
+{
+	"variants":{
+		"facing=north":{
+			"model":"dif:block/spaceship"
+		},
+		"facing=east":{
+			"model":"dif:block/spaceship",
+			"y":90
+		},
+		"facing=south":{
+			"model":"dif:block/spaceship",
+			"y":180
+		},
+		"facing=west":{
+			"model":"dif:block/spaceship",
+			"y":270
+		}
+	}
+}
