@@ -1,0 +1,8 @@
+{
+	"replace":false,
+	"values":[
+		"dif:space_casing_reinforced",
+		"dif:space_casing_metal",
+		"dif:space_casing"
+	]
+}

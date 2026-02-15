@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.block.entity;
+package cz.maxtechnik.dif.block.entity.dev;
 
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;

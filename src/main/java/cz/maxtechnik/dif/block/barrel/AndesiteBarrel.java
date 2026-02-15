@@ -68,7 +68,7 @@ public class AndesiteBarrel extends Block implements EntityBlock{
 	}
 	@Override
 	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		return new cz.maxtechnik.dif.block.entity.AndesiteBarrel(pos,state);
+		return new cz.maxtechnik.dif.block.entity.barrel.AndesiteBarrel(pos,state);
 	}
 	@Override
 	public boolean triggerEvent(@NotNull BlockState state,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
@@ -80,7 +80,7 @@ public class AndesiteBarrel extends Block implements EntityBlock{
 	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
 		if(state.getBlock()!=newState.getBlock()){
 			BlockEntity blockEntity=world.getBlockEntity(pos);
-			if(blockEntity instanceof cz.maxtechnik.dif.block.entity.AndesiteBarrel be){
+			if(blockEntity instanceof cz.maxtechnik.dif.block.entity.barrel.AndesiteBarrel be){
 				Containers.dropContents(world,pos,be);
 				world.updateNeighbourForOutputSignal(pos,this);
 			}
@@ -94,7 +94,7 @@ public class AndesiteBarrel extends Block implements EntityBlock{
 	@Override
 	public int getAnalogOutputSignal(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos){
 		BlockEntity tileentity=world.getBlockEntity(pos);
-		if(tileentity instanceof cz.maxtechnik.dif.block.entity.AndesiteBarrel be)
+		if(tileentity instanceof cz.maxtechnik.dif.block.entity.barrel.AndesiteBarrel be)
 			return AbstractContainerMenu.getRedstoneSignalFromContainer(be);
 		else
 			return 0;

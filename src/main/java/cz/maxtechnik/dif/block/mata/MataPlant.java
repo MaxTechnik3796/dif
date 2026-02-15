@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.block;
+package cz.maxtechnik.dif.block.mata;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.DifModCommonConfig;

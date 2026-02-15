@@ -1,6 +1,6 @@
-package cz.maxtechnik.dif.block.entity;
+package cz.maxtechnik.dif.block.entity.barrel;
 
-import cz.maxtechnik.dif.gui.menu.CopperBarrelMenu;
+import cz.maxtechnik.dif.gui.menu.BrassBarrelMenu; // Důležitý import
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
@@ -18,7 +18,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.Level; // Důležitý import
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -31,33 +31,34 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.stream.IntStream;
-public class CopperBarrel extends RandomizableContainerBlockEntity implements WorldlyContainer {
-    private NonNullList<ItemStack> stacks = NonNullList.withSize(45, ItemStack.EMPTY);
+
+public class BrassBarrel extends RandomizableContainerBlockEntity implements WorldlyContainer {
+    private NonNullList<ItemStack> stacks = NonNullList.withSize(54, ItemStack.EMPTY);
     private final LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper.create(this, Direction.values());
     private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
         @Override
         protected void onOpen(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
             level.playSound(null, pos, SoundEvents.BARREL_OPEN, SoundSource.BLOCKS, 1.0F, 1.0F);
-            level.setBlock(pos, state.setValue(cz.maxtechnik.dif.block.barrel.CopperBarrel.OPEN, true), 3);
+            level.setBlock(pos, state.setValue(cz.maxtechnik.dif.block.barrel.BrassBarrel.OPEN, true), 3);
         }
         @Override
         protected void onClose(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
             level.playSound(null, pos, SoundEvents.BARREL_CLOSE, SoundSource.BLOCKS, 1.0F, 1.0F);
-            level.setBlock(pos, state.setValue(cz.maxtechnik.dif.block.barrel.CopperBarrel.OPEN, false), 3);
+            level.setBlock(pos, state.setValue(cz.maxtechnik.dif.block.barrel.BrassBarrel.OPEN, false), 3);
         }
         @Override
         protected void openerCountChanged(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, int p_155062_, int p_155063_) {
         }
         @Override
         protected boolean isOwnContainer(Player player) {
-            if (player.containerMenu instanceof CopperBarrelMenu menu) {
-                return menu.getBlockEntity() == CopperBarrel.this;
+            if (player.containerMenu instanceof BrassBarrelMenu menu) {
+                return menu.getBlockEntity() == BrassBarrel.this;
             }
             return false;
         }
     };
-    public CopperBarrel(BlockPos position,BlockState state) {
-        super(DifModBlockEntities.COPPER_BARREL.get(), position, state);
+    public BrassBarrel(BlockPos position,BlockState state) {
+        super(DifModBlockEntities.BRASS_BARREL.get(), position, state);
     }
     @Override
     public void startOpen(@NotNull Player player) {
@@ -110,15 +111,15 @@ public class CopperBarrel extends RandomizableContainerBlockEntity implements Wo
     }
     @Override
     public @NotNull Component getDefaultName() {
-        return Component.translatable("container.dif.copper_barrel");
+        return Component.translatable("container.dif.brass_barrel");
     }
     @Override
     public @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory) {
-        return new CopperBarrelMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(this.worldPosition));
+        return new BrassBarrelMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(this.worldPosition));
     }
     @Override
     public @NotNull Component getDisplayName() {
-        return Component.translatable("container.dif.copper_barrel");
+        return Component.translatable("container.dif.brass_barrel");
     }
     @Override
     protected @NotNull NonNullList<ItemStack> getItems() {

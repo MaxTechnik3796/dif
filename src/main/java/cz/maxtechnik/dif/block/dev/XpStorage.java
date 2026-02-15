@@ -1,6 +1,6 @@
-package cz.maxtechnik.dif.block;
+package cz.maxtechnik.dif.block.dev;
 
-import cz.maxtechnik.dif.block.entity.XpStorageBlockEntity;
+import cz.maxtechnik.dif.block.entity.dev.XpStorageBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;

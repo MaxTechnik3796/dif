@@ -10,16 +10,7 @@
 		"minecraft:jukebox",
 		"dif:andesite_lattice",
 		"dif:andesite_window",
-		"dif:solar_panel_00",
-		"dif:solar_panel_01",
-		"dif:solar_panel_02",
-		"dif:solar_panel_03",
-		"dif:solar_panel_04",
-		"dif:solar_panel_00_w",
-		"dif:solar_panel_01_w",
-		"dif:solar_panel_02_w",
-		"dif:solar_panel_03_w",
-		"dif:solar_panel_04_w",
+		"#dif:solar_panels",
 		"minecraft:crafting_table",
 		"dif:canola_plant",
 		"dif:mata_plant",
@@ -28,6 +19,11 @@
 		"dif:hospital_handle",
 		"dif:burning_generator",
 		"dif:singularitator",
-		"dif:fluid_hatch"
+		"dif:fluid_hatch",
+		"dif:space_engine",
+		"dif:spaceship",
+		"dif:aurora_casing",
+		"#dif:broken_tracks",
+		"#dif:space_industrial_blocks.json"
 	]
 }

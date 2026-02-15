@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.gui.menu;
 
-import cz.maxtechnik.dif.block.entity.CopperBarrel;
+import cz.maxtechnik.dif.block.entity.barrel.CopperBarrel;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;

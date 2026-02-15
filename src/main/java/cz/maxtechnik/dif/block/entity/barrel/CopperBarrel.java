@@ -1,6 +1,6 @@
-package cz.maxtechnik.dif.block.entity;
+package cz.maxtechnik.dif.block.entity.barrel;
 
-import cz.maxtechnik.dif.gui.menu.AndesiteBarrelMenu;
+import cz.maxtechnik.dif.gui.menu.CopperBarrelMenu;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
@@ -31,33 +31,33 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.stream.IntStream;
-public class AndesiteBarrel extends RandomizableContainerBlockEntity implements WorldlyContainer {
-    private NonNullList<ItemStack> stacks = NonNullList.withSize(36, ItemStack.EMPTY);
+public class CopperBarrel extends RandomizableContainerBlockEntity implements WorldlyContainer {
+    private NonNullList<ItemStack> stacks = NonNullList.withSize(45, ItemStack.EMPTY);
     private final LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper.create(this, Direction.values());
     private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
         @Override
         protected void onOpen(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
             level.playSound(null, pos, SoundEvents.BARREL_OPEN, SoundSource.BLOCKS, 1.0F, 1.0F);
-            level.setBlock(pos, state.setValue(cz.maxtechnik.dif.block.barrel.AndesiteBarrel.OPEN, true), 3);
+            level.setBlock(pos, state.setValue(cz.maxtechnik.dif.block.barrel.CopperBarrel.OPEN, true), 3);
         }
         @Override
         protected void onClose(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
             level.playSound(null, pos, SoundEvents.BARREL_CLOSE, SoundSource.BLOCKS, 1.0F, 1.0F);
-            level.setBlock(pos, state.setValue(cz.maxtechnik.dif.block.barrel.AndesiteBarrel.OPEN, false), 3);
+            level.setBlock(pos, state.setValue(cz.maxtechnik.dif.block.barrel.CopperBarrel.OPEN, false), 3);
         }
         @Override
         protected void openerCountChanged(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, int p_155062_, int p_155063_) {
         }
         @Override
         protected boolean isOwnContainer(Player player) {
-            if (player.containerMenu instanceof AndesiteBarrelMenu menu) {
-                return menu.getBlockEntity() == AndesiteBarrel.this;
+            if (player.containerMenu instanceof CopperBarrelMenu menu) {
+                return menu.getBlockEntity() == CopperBarrel.this;
             }
             return false;
         }
     };
-    public AndesiteBarrel(BlockPos position,BlockState state) {
-        super(DifModBlockEntities.ANDESITE_BARREL.get(), position, state);
+    public CopperBarrel(BlockPos position,BlockState state) {
+        super(DifModBlockEntities.COPPER_BARREL.get(), position, state);
     }
     @Override
     public void startOpen(@NotNull Player player) {
@@ -110,15 +110,15 @@ public class AndesiteBarrel extends RandomizableContainerBlockEntity implements 
     }
     @Override
     public @NotNull Component getDefaultName() {
-        return Component.translatable("container.dif.andesite_barrel");
+        return Component.translatable("container.dif.copper_barrel");
     }
     @Override
     public @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory) {
-        return new AndesiteBarrelMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(this.worldPosition));
+        return new CopperBarrelMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(this.worldPosition));
     }
     @Override
     public @NotNull Component getDisplayName() {
-        return Component.translatable("container.dif.andesite_barrel");
+        return Component.translatable("container.dif.copper_barrel");
     }
     @Override
     protected @NotNull NonNullList<ItemStack> getItems() {

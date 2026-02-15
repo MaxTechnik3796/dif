@@ -2,6 +2,11 @@ package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.block.entity.*;
+import cz.maxtechnik.dif.block.entity.barrel.AndesiteBarrel;
+import cz.maxtechnik.dif.block.entity.barrel.BrassBarrel;
+import cz.maxtechnik.dif.block.entity.barrel.CopperBarrel;
+import cz.maxtechnik.dif.block.entity.dev.SpecialCrafting;
+import cz.maxtechnik.dif.block.entity.dev.XpStorageBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;

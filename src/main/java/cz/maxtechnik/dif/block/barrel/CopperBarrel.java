@@ -68,7 +68,7 @@ public class CopperBarrel extends Block implements EntityBlock{
 	}
 	@Override
 	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		return new cz.maxtechnik.dif.block.entity.CopperBarrel(pos,state);
+		return new cz.maxtechnik.dif.block.entity.barrel.CopperBarrel(pos,state);
 	}
 	@Override
 	public boolean triggerEvent(@NotNull BlockState state,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
@@ -80,7 +80,7 @@ public class CopperBarrel extends Block implements EntityBlock{
 	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
 		if(state.getBlock()!=newState.getBlock()){
 			BlockEntity blockEntity=world.getBlockEntity(pos);
-			if(blockEntity instanceof cz.maxtechnik.dif.block.entity.CopperBarrel be){
+			if(blockEntity instanceof cz.maxtechnik.dif.block.entity.barrel.CopperBarrel be){
 				Containers.dropContents(world,pos,be);
 				world.updateNeighbourForOutputSignal(pos,this);
 			}
@@ -94,7 +94,7 @@ public class CopperBarrel extends Block implements EntityBlock{
 	@Override
 	public int getAnalogOutputSignal(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos){
 		BlockEntity tileentity=world.getBlockEntity(pos);
-		if(tileentity instanceof cz.maxtechnik.dif.block.entity.CopperBarrel be)
+		if(tileentity instanceof cz.maxtechnik.dif.block.entity.barrel.CopperBarrel be)
 			return AbstractContainerMenu.getRedstoneSignalFromContainer(be);
 		else
 			return 0;

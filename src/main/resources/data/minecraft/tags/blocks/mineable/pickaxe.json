@@ -40,6 +40,11 @@
 		"dif:smooth_stone_double_slab",
 		"dif:iron_bars_block",
 		"dif:glitch_block",
-		"#dif:compressed"
+		"#dif:compressed",
+		"dif:space_engine",
+		"dif:spaceship",
+		"dif:aurora_casing",
+		"#dif:broken_tracks",
+		"#dif:space_industrial_blocks.json"
 	]
 }

@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.block;
+package cz.maxtechnik.dif.block.dev;
 
 import net.minecraft.world.level.block.Block;
 public class Test extends Block{

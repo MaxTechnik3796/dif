@@ -1,0 +1,11 @@
+{
+	"replace":false,
+	"values":[
+		"#dif:space_casings",
+		"dif:space_scaffolding",
+		"dif:space_door",
+		"dif:space_corridor",
+		"dif:space_crate",
+		"dif:solar_panel_block"
+	]
+}

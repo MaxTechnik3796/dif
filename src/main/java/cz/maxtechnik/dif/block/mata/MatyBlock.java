@@ -1,5 +1,5 @@
 
-package cz.maxtechnik.dif.block;
+package cz.maxtechnik.dif.block.mata;
 
 import cz.maxtechnik.dif.init.other.DifModMobEffects;
 import net.minecraft.core.BlockPos;

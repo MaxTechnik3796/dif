@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.gui.menu;
 
-import cz.maxtechnik.dif.block.entity.AndesiteBarrel;
+import cz.maxtechnik.dif.block.entity.barrel.AndesiteBarrel;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;

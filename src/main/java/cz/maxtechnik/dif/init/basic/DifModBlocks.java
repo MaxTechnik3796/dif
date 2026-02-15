@@ -5,6 +5,10 @@ import cz.maxtechnik.dif.block.*;
 import cz.maxtechnik.dif.block.barrel.AndesiteBarrel;
 import cz.maxtechnik.dif.block.barrel.BrassBarrel;
 import cz.maxtechnik.dif.block.barrel.CopperBarrel;
+import cz.maxtechnik.dif.block.dev.Test;
+import cz.maxtechnik.dif.block.dev.XpStorage;
+import cz.maxtechnik.dif.block.mata.MataPlant;
+import cz.maxtechnik.dif.block.mata.MatyBlock;
 import cz.maxtechnik.dif.block.template.*;
 import cz.maxtechnik.dif.fluid.block.*;
 import net.minecraft.world.level.block.*;
@@ -108,23 +112,23 @@ public class DifModBlocks{
 
 
 	public static final RegistryObject<Block>AURORA_CASING=REGISTRY.register("aurora_casing",Basic::new);
-	public static final RegistryObject<Block>SPACESHIP=REGISTRY.register("spaceship",()->new CustomHorizontalRotation(SoundType.NETHERITE_BLOCK,5F,6F,false));
-	public static final RegistryObject<Block>SPACE_ENGINE=REGISTRY.register("space_engine",()->new CustomHorizontalRotation(SoundType.NETHERITE_BLOCK,5F,6F,false));
+	public static final RegistryObject<Block>SPACESHIP=REGISTRY.register("spaceship",()->new CustomHorizontalRotation(SoundType.NETHERITE_BLOCK,5F,6F,true));
+	public static final RegistryObject<Block>SPACE_ENGINE=REGISTRY.register("space_engine",SpaceEngine::new);
 
-	public static final RegistryObject<Block>SPACE_SCAFFOLDING=REGISTRY.register("space_scaffolding",Basic::new);
-	public static final RegistryObject<Block>SPACE_CASING=REGISTRY.register("space_casing",Basic::new);
-	public static final RegistryObject<Block>SPACE_CASING_REINFORCED=REGISTRY.register("space_casing_reinforced",Basic::new);
-	public static final RegistryObject<Block>SPACE_CASING_METAL=REGISTRY.register("space_casing_metal",Basic::new);
+	public static final RegistryObject<Block>SPACE_SCAFFOLDING=REGISTRY.register("space_scaffolding",()->new BarrelBlock(BlockBehaviour.Properties.of().strength(5F,6F).sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block>SPACE_CASING=REGISTRY.register("space_casing",()->new Custom(SoundType.NETHERITE_BLOCK,5F,6F,true));
+	public static final RegistryObject<Block>SPACE_CASING_REINFORCED=REGISTRY.register("space_casing_reinforced",()->new Custom(SoundType.NETHERITE_BLOCK,5F,6F,true));
+	public static final RegistryObject<Block>SPACE_CASING_METAL=REGISTRY.register("space_casing_metal",()->new Custom(SoundType.NETHERITE_BLOCK,5F,6F,true));
 	public static final RegistryObject<Block>SPACE_DOOR=REGISTRY.register("space_door",SpaceDoor::new);
-	public static final RegistryObject<Block>SPACE_CORRIDOR=REGISTRY.register("space_corridor",Basic::new);
+	public static final RegistryObject<Block>SPACE_CORRIDOR=REGISTRY.register("space_corridor",()->new Custom(SoundType.GLASS,5F,6F,true));
 	public static final RegistryObject<Block>SPACE_CRATE=REGISTRY.register("space_crate",Basic::new);
-	public static final RegistryObject<Block>SOLAR_PANEL_BLOCK=REGISTRY.register("solar_panel_block",Basic::new);
+	public static final RegistryObject<Block>SOLAR_PANEL_BLOCK=REGISTRY.register("solar_panel_block",()->new Custom(SoundType.STONE,5F,6F,true));
 
-	public static final RegistryObject<Block>MOON_STONE=REGISTRY.register("moon_stone",Basic::new);
-	public static final RegistryObject<Block>MARS_STONE=REGISTRY.register("mars_stone",Basic::new);
+	public static final RegistryObject<Block>MOON_STONE=REGISTRY.register("moon_stone",()->new Custom(SoundType.STONE,3F,4F,true));
+	public static final RegistryObject<Block>MARS_STONE=REGISTRY.register("mars_stone",()->new Custom(SoundType.STONE,3F,4F,true));
 
-	public static final RegistryObject<Block>BROKEN_TRACK00=REGISTRY.register("broken_track00",()->new CustomHorizontalRotation(SoundType.NETHERITE_BLOCK,5F,6F,false));
-	public static final RegistryObject<Block>BROKEN_TRACK01=REGISTRY.register("broken_track01",()->new CustomHorizontalRotation(SoundType.NETHERITE_BLOCK,5F,6F,false));
-	public static final RegistryObject<Block>BROKEN_TRACK02=REGISTRY.register("broken_track02",()->new CustomHorizontalRotation(SoundType.NETHERITE_BLOCK,5F,6F,false));
+	public static final RegistryObject<Block>BROKEN_TRACK00=REGISTRY.register("broken_track00",()->new CustomHorizontalRotation(SoundType.METAL,5F,6F,true));
+	public static final RegistryObject<Block>BROKEN_TRACK01=REGISTRY.register("broken_track01",()->new CustomHorizontalRotation(SoundType.METAL,5F,6F,true));
+	public static final RegistryObject<Block>BROKEN_TRACK02=REGISTRY.register("broken_track02",()->new CustomHorizontalRotation(SoundType.METAL,5F,6F,true));
 
 }
