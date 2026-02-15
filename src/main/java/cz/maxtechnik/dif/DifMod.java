@@ -11,6 +11,7 @@ import cz.maxtechnik.dif.init.gui.DifModMenus;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.init.other.DifModMobEffects;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
+import cz.maxtechnik.dif.init.other.ModDimensions; // <--- PŘIDÁNO
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -32,15 +33,19 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
+
 @SuppressWarnings("removal")
 @Mod(DifMod.MODID)
-public class DifMod{
-	public static final String MODID="dif";
-	public static final Logger LOGGER=LogUtils.getLogger();
-	public DifMod(){
-		IEventBus bus=FMLJavaModLoadingContext.get().getModEventBus();
+public class DifMod {
+	public static final String MODID = "dif";
+	public static final Logger LOGGER = LogUtils.getLogger();
+
+	public DifMod() {
+		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		bus.addListener(this::commonSetup);
 
+		// --- REGISTRACE DIMENZÍ ---
+		ModDimensions.register();
 
 		DifModBlocks.REGISTRY.register(bus);
 		DifModItems.REGISTRY.register(bus);
@@ -57,46 +62,44 @@ public class DifMod{
 		MinecraftForge.EVENT_BUS.register(this);
 		bus.addListener(DifModTabs::addCreative);
 
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, DifModCommonConfig.SPEC);
+	}
 
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON,DifModCommonConfig.SPEC);
+	private void commonSetup(final FMLCommonSetupEvent event) {
+		LOGGER.info("HELLO FROM COMMON SETUP - DIF MOD");
 	}
-	private void commonSetup(final FMLCommonSetupEvent event){
-		LOGGER.info("HELLO FROM COMMON SETUP");
-		/*LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
-		//if (DifModConfig.logDirtBlock) LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
-		//LOGGER.info(DifModConfig.magicNumberIntroduction + DifModConfig.magicNumber);
-		DifModConfig.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));*/
-	}
+
 	@SubscribeEvent
-	public void onServerStarting(ServerStartingEvent event){
+	public void onServerStarting(ServerStartingEvent event) {
 		LOGGER.info("HELLO from server starting");
 	}
 
-	@Mod.EventBusSubscriber(modid=MODID,bus=Mod.EventBusSubscriber.Bus.MOD,value=Dist.CLIENT)
+	@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 	public static class ClientModEvents {
 		@SubscribeEvent
-		public static void onClientSetup(FMLClientSetupEvent event){
+		public static void onClientSetup(FMLClientSetupEvent event) {
 			LOGGER.info("HELLO FROM CLIENT SETUP");
 			LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
 		}
 	}
 
-
-
-	public static boolean rouletteBoolean(int range){
-		return 0==Mth.nextInt(RandomSource.create(),0,range);
+	public static boolean rouletteBoolean(int range) {
+		return 0 == Mth.nextInt(RandomSource.create(), 0, range);
 	}
-	public static boolean mouseIn(int mouseX,int mouseY,int x,int y,int w,int h){
-		return mouseX>=x&&mouseX<x+w&&mouseY>=y&&mouseY<y+h;
+
+	public static boolean mouseIn(int mouseX, int mouseY, int x, int y, int w, int h) {
+		return mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + h;
 	}
-	public static void sendMessageToPlayer(Player player,MutableComponent message){
-		MutableComponent messageTemplate=Component.empty();
+
+	public static void sendMessageToPlayer(Player player, MutableComponent message) {
+		MutableComponent messageTemplate = Component.empty();
 		messageTemplate.append(Component.translatable("chat.dif.mod_prefix"));
 		messageTemplate.append(CommonComponents.space());
 		messageTemplate.append(message);
 		player.sendSystemMessage(messageTemplate);
 	}
-	public static boolean playerGameModeIsCreativeCategory(ServerPlayer player){
-		return player.gameMode.isCreative()||player.gameMode.getGameModeForPlayer().equals(GameType.SPECTATOR);
+
+	public static boolean playerGameModeIsCreativeCategory(ServerPlayer player) {
+		return player.gameMode.isCreative() || player.gameMode.getGameModeForPlayer().equals(GameType.SPECTATOR);
 	}
 }

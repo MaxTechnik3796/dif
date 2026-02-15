@@ -1,0 +1,15 @@
+{
+	"type": "dif:orbit_type",
+	"generator": {
+		"type": "minecraft:flat",
+		"settings": {
+			"layers": [
+				{ "block": "minecraft:air", "height": 1 }
+			],
+			"biome": "dif:orbit_void",
+			"lakes": false,
+			"features": false,
+			"structure_overrides": []
+		}
+	}
+}
