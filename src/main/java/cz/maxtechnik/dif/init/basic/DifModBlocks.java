@@ -22,6 +22,7 @@ public class DifModBlocks{
 
 	public static final RegistryObject<Block>EXAMPLE_BLOCK=REGISTRY.register("example_block",Test::new);
 
+	public static final RegistryObject<Block>FUEL_FLUID=REGISTRY.register("fuel_fluid",FuelBlock::new);
 	public static final RegistryObject<Block>BEER_FLUID=REGISTRY.register("beer_fluid",BeerBlock::new);
 	public static final RegistryObject<Block>XP_FLUID=REGISTRY.register("xp_fluid",XpBlock::new);
 
@@ -101,6 +102,23 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>C7_COBBLESTONE=REGISTRY.register("c7_cobblestone",()->new Block(c_cobblestone_props));
 	public static final RegistryObject<Block>C8_COBBLESTONE=REGISTRY.register("c8_cobblestone",()->new Block(c_cobblestone_props));
 	public static final RegistryObject<Block>C9_COBBLESTONE=REGISTRY.register("c9_cobblestone",()->new Block(c_cobblestone_props));
+
+
+
+
+
+	public static final RegistryObject<Block>AURORA_CASING=REGISTRY.register("aurora_casing",Basic::new);
+	public static final RegistryObject<Block>SPACESHIP=REGISTRY.register("spaceship",()->new CustomHorizontalRotation(SoundType.NETHERITE_BLOCK,5F,6F,false));
+	public static final RegistryObject<Block>SPACE_ENGINE=REGISTRY.register("space_engine",()->new CustomHorizontalRotation(SoundType.NETHERITE_BLOCK,5F,6F,false));
+
+	public static final RegistryObject<Block>SPACE_SCAFFOLDING=REGISTRY.register("space_scaffolding",Basic::new);
+	public static final RegistryObject<Block>SPACE_CASING=REGISTRY.register("space_casing",Basic::new);
+	public static final RegistryObject<Block>SPACE_CASING_REINFORCED=REGISTRY.register("space_casing_reinforced",Basic::new);
+	public static final RegistryObject<Block>SPACE_CASING_METAL=REGISTRY.register("space_casing_metal",Basic::new);
+	public static final RegistryObject<Block>SPACE_DOOR=REGISTRY.register("space_door",SpaceDoor::new);
+	public static final RegistryObject<Block>SPACE_CORRIDOR=REGISTRY.register("space_corridor",Basic::new);
+	public static final RegistryObject<Block>SPACE_CRATE=REGISTRY.register("space_crate",Basic::new);
+	public static final RegistryObject<Block>SOLAR_PANEL_BLOCK=REGISTRY.register("solar_panel_block",Basic::new);
 
 
 }

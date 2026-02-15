@@ -1,6 +1,8 @@
 {
 	"replace":false,
 	"values":[
-		"dif:copper_boots"
+		"dif:copper_boots",
+		"dif:carbon_suit_boots",
+		"dif:space_suit_boots"
   ]
 }

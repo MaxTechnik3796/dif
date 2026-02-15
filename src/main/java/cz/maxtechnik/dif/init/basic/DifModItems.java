@@ -221,7 +221,7 @@ public class DifModItems{
 	public static final RegistryObject<Item>COPPER_KATANA=REGISTRY.register("copper_katana",()->new SwordItem(DifModTiers.COPPER,0,-1F,new Item.Properties()));
 
 
-	//Copper Tools
+	//Copper Tools:
 	public static final RegistryObject<Item>COPPER_SHOVEL=REGISTRY.register("copper_shovel",()->new ShovelItem(DifModTiers.COPPER,0.5F,-3.0F,new Item.Properties()));
 	public static final RegistryObject<Item>COPPER_PICKAXE=REGISTRY.register("copper_pickaxe",()->new PickaxeItem(DifModTiers.COPPER,0,-2.8F,new Item.Properties()));
 	public static final RegistryObject<Item>COPPER_SWORD=REGISTRY.register("copper_sword",()->new SwordItem(DifModTiers.COPPER,2,-2.4F,new Item.Properties()));
@@ -232,6 +232,39 @@ public class DifModItems{
 	public static final RegistryObject<Item>COPPER_CHESTPLATE=REGISTRY.register("copper_chestplate",CopperArmor.Chestplate::new);
 	public static final RegistryObject<Item>COPPER_LEGGINGS=REGISTRY.register("copper_leggings",CopperArmor.Leggings::new);
 	public static final RegistryObject<Item>COPPER_BOOTS=REGISTRY.register("copper_boots",CopperArmor.Boots::new);
+
+	//Space:
+	public static final RegistryObject<Item>AURORA_CASING=block(DifModBlocks.AURORA_CASING);
+	public static final RegistryObject<Item>AURORA_INGOT=REGISTRY.register("aurora_ingot",Basic::new);
+
+	public static final RegistryObject<Item>ROCKET_FUEL=REGISTRY.register("rocket_fuel",()->new StackSize(16));
+	public static final RegistryObject<Item>EMPTY_ROCKET_FUEL=REGISTRY.register("empty_rocket_fuel",()->new StackSize(16));
+	public static final RegistryObject<Item>ROCKET_FUEL_FLUID_BUCKET=REGISTRY.register("rocket_fuel_fluid_bucket",FuelBucket::new);
+
+	public static final RegistryObject<Item>SPACE_SUIT_HELMET=REGISTRY.register("space_suit_helmet",SpaceSuit.Helmet::new);
+	public static final RegistryObject<Item>SPACE_SUIT_CHESTPLATE=REGISTRY.register("space_suit_chestplate",SpaceSuit.Chestplate::new);
+	public static final RegistryObject<Item>SPACE_SUIT_LEGGINGS=REGISTRY.register("space_suit_leggings",SpaceSuit.Leggings::new);
+	public static final RegistryObject<Item>SPACE_SUIT_BOOTS=REGISTRY.register("space_suit_boots",SpaceSuit.Boots::new);
+
+	public static final RegistryObject<Item>CARBON_SUIT_HELMET=REGISTRY.register("carbon_suit_helmet",CarbonSuit.Helmet::new);
+	public static final RegistryObject<Item>CARBON_SUIT_CHESTPLATE=REGISTRY.register("carbon_suit_chestplate",CarbonSuit.Chestplate::new);
+	public static final RegistryObject<Item>CARBON_SUIT_LEGGINGS=REGISTRY.register("carbon_suit_leggings",CarbonSuit.Leggings::new);
+	public static final RegistryObject<Item>CARBON_SUIT_BOOTS=REGISTRY.register("carbon_suit_boots",CarbonSuit.Boots::new);
+
+
+
+	public static final RegistryObject<Item>SPACESHIP=block(DifModBlocks.SPACESHIP);
+	public static final RegistryObject<Item>SPACE_ENGINE=block(DifModBlocks.SPACE_ENGINE);
+
+	public static final RegistryObject<Item>SPACE_SCAFFOLDING=block(DifModBlocks.SPACE_SCAFFOLDING);
+	public static final RegistryObject<Item>SPACE_CASING=block(DifModBlocks.SPACE_CASING);
+	public static final RegistryObject<Item>SPACE_CASING_REINFORCED=block(DifModBlocks.SPACE_CASING_REINFORCED);
+	public static final RegistryObject<Item>SPACE_CASING_METAL=block(DifModBlocks.SPACE_CASING_METAL);
+	public static final RegistryObject<Item>SPACE_DOOR=doubleBlock(DifModBlocks.SPACE_DOOR);
+	public static final RegistryObject<Item>SPACE_CORRIDOR=block(DifModBlocks.SPACE_CORRIDOR);
+	public static final RegistryObject<Item>SPACE_CRATE=block(DifModBlocks.SPACE_CRATE);
+	public static final RegistryObject<Item>SOLAR_PANEL_BLOCK=block(DifModBlocks.SOLAR_PANEL_BLOCK);
+
 
 
 }

@@ -199,8 +199,41 @@ public class DifModTabs{
 			ironPickaxe.setTag(newSingleMaterialPreFab(ironPickaxe,"Iron"));
 			tabData.accept(ironPickaxe);
 
+
+
+			tabData.accept(DifModItems.AURORA_CASING.get());
+			tabData.accept(DifModItems.AURORA_INGOT.get());
+			tabData.accept(DifModItems.ROCKET_FUEL.get());
+			tabData.accept(DifModItems.EMPTY_ROCKET_FUEL.get());
+			tabData.accept(DifModItems.SPACE_SUIT_HELMET.get());
+			tabData.accept(DifModItems.SPACE_SUIT_CHESTPLATE.get());
+			tabData.accept(DifModItems.SPACE_SUIT_LEGGINGS.get());
+			tabData.accept(DifModItems.SPACE_SUIT_BOOTS.get());
+
+			tabData.accept(DifModItems.CARBON_SUIT_HELMET.get());
+			tabData.accept(DifModItems.CARBON_SUIT_CHESTPLATE.get());
+			tabData.accept(DifModItems.CARBON_SUIT_LEGGINGS.get());
+			tabData.accept(DifModItems.CARBON_SUIT_BOOTS.get());
+
+			tabData.accept(DifModItems.SPACESHIP.get());
+			tabData.accept(DifModItems.SPACE_ENGINE.get());
+
+			tabData.accept(DifModItems.SPACE_SCAFFOLDING.get());
+			tabData.accept(DifModItems.SPACE_CASING.get());
+			tabData.accept(DifModItems.SPACE_CASING_METAL.get());
+			tabData.accept(DifModItems.SPACE_CASING_REINFORCED.get());
+
+			tabData.accept(DifModItems.SPACE_CORRIDOR.get());
+			tabData.accept(DifModItems.SPACE_CRATE.get());
+			tabData.accept(DifModItems.SOLAR_PANEL_BLOCK.get());
+			tabData.accept(DifModItems.SPACE_DOOR.get());
+
+
+
+
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
 			tabData.getEntries().putAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(DifModItems.TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 		}
 	}
 }
+
