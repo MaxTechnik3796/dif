@@ -55,7 +55,7 @@ public class Rocketg00Screen extends AbstractContainerScreen<Rocketg00Menu>{
 					btnX,this.topPos+20,44,73,
 					getTextureUV(world,x,y,z,0,i),
 					getTextureUV(world,x,y,z,1,i),
-					73,PLANETS_TEX,176,584, // Opraveno V-offset na 73 pro správný hover
+					292,PLANETS_TEX,176,584, // Opraveno V-offset na 73 pro správný hover
 					e->sendButtonPacket(buttonId)
 			));
 		}
