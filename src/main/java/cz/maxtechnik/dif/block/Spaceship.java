@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +31,7 @@ import java.util.Set;
 public class Spaceship extends Block implements EntityBlock{
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
 	public Spaceship(){
-		super(Properties.of().strength(5F,6F).sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops().noOcclusion());
+		super(Properties.of().strength(5F,6F).sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops().noOcclusion().pushReaction(PushReaction.BLOCK));
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH));
 	}
 	public Set<BlockPos> getGhostPositions(BlockPos masterPos){

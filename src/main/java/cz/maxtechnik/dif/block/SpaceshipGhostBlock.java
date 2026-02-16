@@ -10,12 +10,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("deprecation")
 public class SpaceshipGhostBlock extends Block{
 	public SpaceshipGhostBlock(){
-		super(Properties.of().strength(5F,6F).noOcclusion().noLootTable().requiresCorrectToolForDrops());
+		super(Properties.of().strength(5F,6F).noOcclusion().noLootTable().requiresCorrectToolForDrops().pushReaction(PushReaction.BLOCK));
 	}
 	@Override
 	public boolean skipRendering(@NotNull BlockState state,BlockState adjacentBlockState,@NotNull Direction side){
