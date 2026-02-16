@@ -117,7 +117,7 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>SPACE_ENGINE=REGISTRY.register("space_engine",SpaceEngine::new);
 
 
-	public static final RegistryObject<Block>SPACE_SCAFFOLDING=REGISTRY.register("space_scaffolding",()->new CustomTransparent(SoundType.COPPER,0F,0F,false));
+	public static final RegistryObject<Block>SPACE_SCAFFOLDING=REGISTRY.register("space_scaffolding",SpaceScaffolding::new);
 	public static final RegistryObject<Block>SPACE_CASING=REGISTRY.register("space_casing",()->new Custom(SoundType.NETHERITE_BLOCK,5F,6F,true));
 	public static final RegistryObject<Block>SPACE_CASING_REINFORCED=REGISTRY.register("space_casing_reinforced",()->new Custom(SoundType.NETHERITE_BLOCK,5F,6F,true));
 	public static final RegistryObject<Block>SPACE_CASING_METAL=REGISTRY.register("space_casing_metal",()->new Custom(SoundType.NETHERITE_BLOCK,5F,6F,true));

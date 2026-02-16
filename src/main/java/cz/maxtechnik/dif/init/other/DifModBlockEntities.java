@@ -20,10 +20,10 @@ public class DifModBlockEntities{
 	public static final RegistryObject<BlockEntityType<?>>COPPER_BARREL=register("copper_barrel",DifModBlocks.COPPER_BARREL,CopperBarrel::new);
 	public static final RegistryObject<BlockEntityType<?>>BRASS_BARREL=register("brass_barrel",DifModBlocks.BRASS_BARREL,BrassBarrel::new);
 	public static final RegistryObject<BlockEntityType<?>>OLD_CHEST=register("old_chest",DifModBlocks.OLD_CHEST,OldChest::new);
-	public static final RegistryObject<BlockEntityType<?>> PORTAL = register("portal", DifModBlocks.PORTAL_BLOCK, PortalBlockEntity::new);
-	public static final RegistryObject<BlockEntityType<?>> SPACESHIP = register("spaceship", DifModBlocks.SPACESHIP, SpaceShipBE::new);
+	public static final RegistryObject<BlockEntityType<?>>PORTAL=register("portal",DifModBlocks.PORTAL_BLOCK,PortalBlockEntity::new);
+	public static final RegistryObject<BlockEntityType<?>>SPACESHIP=register("spaceship",DifModBlocks.SPACESHIP,SpaceShipBE::new);
 
-
+	public static final RegistryObject<BlockEntityType<?>>SPACE_SCAFFOLDING=REGISTRY.register("space_scaffolding",()->BlockEntityType.Builder.of(SpaceScaffolding::new,DifModBlocks.SPACE_CASING.get()).build(null));
 	public static final RegistryObject<BlockEntityType<?>>XP_STORAGE=REGISTRY.register("xp_storage",()->BlockEntityType.Builder.of(XpStorageBlockEntity::new,DifModBlocks.XP_STORAGE.get()).build(null));
 
 	public static final RegistryObject<BlockEntityType<BurningGenerator>> BURNING_GENERATOR=REGISTRY.register("generator_be",()->BlockEntityType.Builder.of(BurningGenerator::new,DifModBlocks.BURNING_GENERATOR.get()).build(null));
