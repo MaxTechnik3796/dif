@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.fluid.bucket;
 
-import cz.maxtechnik.dif.init.fluid.DifModFluids;
+import cz.maxtechnik.dif.fluid.DifModFluids;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Item;

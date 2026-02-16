@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.item.food;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.init.other.DifModMobEffects;
+import cz.maxtechnik.dif.effect.DifModMobEffects;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;

@@ -1,8 +1,6 @@
 package cz.maxtechnik.dif.block;
 
-import cz.maxtechnik.dif.block.entity.SpaceShipBE;
-import cz.maxtechnik.dif.gui.menu.Rocketg00Menu;
-import cz.maxtechnik.dif.init.basic.DifModBlocks;
+import cz.maxtechnik.dif.gui.menu.SpaceshipMenu;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -87,7 +85,7 @@ public class Spaceship extends Block implements EntityBlock{
 					world.setBlock(ghostPos,Blocks.AIR.defaultBlockState(),3);
 				}
 			}
-			if(world.getBlockEntity(pos) instanceof SpaceShipBE be) be.drops();
+			if(world.getBlockEntity(pos) instanceof cz.maxtechnik.dif.block.entity.Spaceship be) be.drops();
 			super.onRemove(state,world,pos,newState,isMoving);
 		}
 	}
@@ -102,7 +100,7 @@ public class Spaceship extends Block implements EntityBlock{
 				}
 				@Override
 				public AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory, @NotNull Player player) {
-					return new Rocketg00Menu(id,inventory,new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos));
+					return new SpaceshipMenu(id,inventory,new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos));
 				}
 			},pos);
 		}
@@ -110,7 +108,7 @@ public class Spaceship extends Block implements EntityBlock{
 	}
 	@Override
 	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
-		return new SpaceShipBE(pos,blockState);
+		return new cz.maxtechnik.dif.block.entity.Spaceship(pos,blockState);
 	}
 	@Override
 	public MenuProvider getMenuProvider(@NotNull BlockState state, Level worldIn, @NotNull BlockPos pos) {

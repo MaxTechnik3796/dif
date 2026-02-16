@@ -1,9 +1,8 @@
 package cz.maxtechnik.dif.fluid;
 
-import cz.maxtechnik.dif.init.basic.DifModBlocks;
-import cz.maxtechnik.dif.init.basic.DifModItems;
-import cz.maxtechnik.dif.init.fluid.DifModFluidTypes;
-import cz.maxtechnik.dif.init.fluid.DifModFluids;
+import cz.maxtechnik.dif.block.DifModBlocks;
+import cz.maxtechnik.dif.item.DifModItems;
+import cz.maxtechnik.dif.fluid.types.DifModFluidTypes;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 import net.minecraft.world.level.material.FluidState;

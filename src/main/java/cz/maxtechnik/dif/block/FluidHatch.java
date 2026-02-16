@@ -3,7 +3,7 @@ package cz.maxtechnik.dif.block;
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.Create;
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.init.fluid.DifModFluids;
+import cz.maxtechnik.dif.fluid.DifModFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;

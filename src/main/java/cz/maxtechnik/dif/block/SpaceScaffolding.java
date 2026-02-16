@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.block;
 
+import cz.maxtechnik.dif.block.entity.SpaceScaffoldingBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -45,7 +46,7 @@ public class SpaceScaffolding extends Block implements EntityBlock{
 	}
 	@Override
 	public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
-		return new cz.maxtechnik.dif.block.entity.SpaceScaffolding(pos,blockState);
+		return new SpaceScaffoldingBlockEntity(pos,blockState);
 	}
 	@Override
 	public boolean triggerEvent(@NotNull BlockState state,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
@@ -70,7 +71,7 @@ public class SpaceScaffolding extends Block implements EntityBlock{
 		if(!world.isClientSide()){
 			BlockEntity blockEntity=world.getBlockEntity(pos);
 			if(blockEntity!=null){
-				if(blockEntity instanceof cz.maxtechnik.dif.block.entity.SpaceScaffolding scaffolding){
+				if(blockEntity instanceof SpaceScaffoldingBlockEntity scaffolding){
 					if(scaffolding.lifeTime>300){
 						world.setBlock(pos,Blocks.AIR.defaultBlockState(),3);
 					}else{

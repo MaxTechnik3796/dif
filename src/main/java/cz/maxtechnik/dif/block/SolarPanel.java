@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.block;
 
 import cz.maxtechnik.dif.DifModCommonConfig;
-import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;

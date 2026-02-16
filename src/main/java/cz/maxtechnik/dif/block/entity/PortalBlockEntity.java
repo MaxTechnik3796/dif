@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.block.entity;
 
 import cz.maxtechnik.dif.block.PortalBlock;
-import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

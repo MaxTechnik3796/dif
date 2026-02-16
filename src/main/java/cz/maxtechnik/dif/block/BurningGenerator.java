@@ -1,7 +1,8 @@
 package cz.maxtechnik.dif.block;
 
+import cz.maxtechnik.dif.block.entity.BurningGeneratorBlockEntity;
 import cz.maxtechnik.dif.gui.menu.BurningGeneratorMenu;
-import cz.maxtechnik.dif.init.other.DifModBlockEntities;
+import cz.maxtechnik.dif.block.entity.DifModBlockEntities;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -94,11 +95,11 @@ public class BurningGenerator extends Block implements SimpleWaterloggedBlock, E
 		return level.isClientSide?createClientTicker(type,DifModBlockEntities.BURNING_GENERATOR.get()):createServerTicker(type,DifModBlockEntities.BURNING_GENERATOR.get());
 	}
 	@Nullable
-	protected static <T extends BlockEntity> BlockEntityTicker<T> createServerTicker(BlockEntityType<T> type,BlockEntityType<? extends cz.maxtechnik.dif.block.entity.BurningGenerator> expectedType){
-		return type==expectedType?(lvl,pos,state,blockEntity)->cz.maxtechnik.dif.block.entity.BurningGenerator.serverTick(lvl,pos,state,(cz.maxtechnik.dif.block.entity.BurningGenerator)blockEntity):null;
+	protected static <T extends BlockEntity> BlockEntityTicker<T> createServerTicker(BlockEntityType<T> type,BlockEntityType<? extends BurningGeneratorBlockEntity> expectedType){
+		return type==expectedType?(lvl,pos,state,blockEntity)->BurningGeneratorBlockEntity.serverTick(lvl,pos,state,(BurningGeneratorBlockEntity)blockEntity):null;
 	}
-	protected static <T extends BlockEntity> BlockEntityTicker<T> createClientTicker(BlockEntityType<T> type,BlockEntityType<? extends cz.maxtechnik.dif.block.entity.BurningGenerator> expectedType){
-		return type==expectedType?(lvl,pos,state,blockEntity)->cz.maxtechnik.dif.block.entity.BurningGenerator.clientTick(lvl,pos,state):null;
+	protected static <T extends BlockEntity> BlockEntityTicker<T> createClientTicker(BlockEntityType<T> type,BlockEntityType<? extends BurningGeneratorBlockEntity> expectedType){
+		return type==expectedType?(lvl,pos,state,blockEntity)->BurningGeneratorBlockEntity.clientTick(lvl,pos,state):null;
 	}
 	@Override
 	public @NotNull InteractionResult use(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player entity,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
@@ -124,7 +125,7 @@ public class BurningGenerator extends Block implements SimpleWaterloggedBlock, E
 	}
 	@Override
 	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		return new cz.maxtechnik.dif.block.entity.BurningGenerator(pos,state);
+		return new BurningGeneratorBlockEntity(pos,state);
 	}
 	@Override
 	public boolean triggerEvent(@NotNull BlockState state,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
@@ -136,7 +137,7 @@ public class BurningGenerator extends Block implements SimpleWaterloggedBlock, E
 	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
 		if(state.getBlock()!=newState.getBlock()){
 			BlockEntity blockEntity=world.getBlockEntity(pos);
-			if(blockEntity instanceof cz.maxtechnik.dif.block.entity.BurningGenerator be){
+			if(blockEntity instanceof BurningGeneratorBlockEntity be){
 				Containers.dropContents(world,pos,be);
 				world.updateNeighbourForOutputSignal(pos,this);
 			}
@@ -150,7 +151,7 @@ public class BurningGenerator extends Block implements SimpleWaterloggedBlock, E
 	@Override
 	public int getAnalogOutputSignal(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos){
 		BlockEntity tileentity=world.getBlockEntity(pos);
-		if(tileentity instanceof cz.maxtechnik.dif.block.entity.BurningGenerator be)
+		if(tileentity instanceof BurningGeneratorBlockEntity be)
 			return AbstractContainerMenu.getRedstoneSignalFromContainer(be);
 		else
 			return 0;

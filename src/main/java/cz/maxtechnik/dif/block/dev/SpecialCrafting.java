@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.block.dev;
 
+import cz.maxtechnik.dif.block.entity.dev.SpecialCraftingBlockEntity;
 import cz.maxtechnik.dif.gui.menu.SpecialCraftingMenu;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
@@ -51,13 +52,13 @@ public class SpecialCrafting extends Block implements EntityBlock{
 	}
 	@Override
 	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		return new cz.maxtechnik.dif.block.entity.dev.SpecialCrafting(pos,state);
+		return new SpecialCraftingBlockEntity(pos,state);
 	}
 	@Override
 	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
 		if(state.getBlock()!=newState.getBlock()){
 			BlockEntity blockEntity=world.getBlockEntity(pos);
-			if(blockEntity instanceof cz.maxtechnik.dif.block.entity.dev.SpecialCrafting be){
+			if(blockEntity instanceof SpecialCraftingBlockEntity be){
 				Containers.dropContents(world,pos,be);
 				world.updateNeighbourForOutputSignal(pos,this);
 			}

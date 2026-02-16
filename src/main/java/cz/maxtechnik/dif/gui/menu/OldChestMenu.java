@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.gui.menu;
 
-import cz.maxtechnik.dif.block.entity.OldChest;
-import cz.maxtechnik.dif.init.gui.DifModMenus;
+import cz.maxtechnik.dif.block.entity.OldChestBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -66,7 +65,7 @@ public class OldChestMenu extends AbstractContainerMenu implements Supplier<Map<
 			checkNeighbor(pos.south());
 			checkNeighbor(pos.west());
 			// Spustíme animaci otevření pro hlavní blok
-			if(this.boundBlockEntity instanceof OldChest blockEntity){
+			if(this.boundBlockEntity instanceof OldChestBlockEntity blockEntity){
 				blockEntity.startOpen(inv.player);
 			}
 		}
@@ -180,7 +179,7 @@ public class OldChestMenu extends AbstractContainerMenu implements Supplier<Map<
 	}
 	@Override
 	public void removed(@NotNull Player playerIn){
-		if(this.boundBlockEntity instanceof OldChest blockEntity){
+		if(this.boundBlockEntity instanceof OldChestBlockEntity blockEntity){
 			blockEntity.stopOpen(playerIn);
 		}
 		super.removed(playerIn);

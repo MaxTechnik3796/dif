@@ -1,17 +1,17 @@
 package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
-import cz.maxtechnik.dif.init.basic.DifModBlocks;
-import cz.maxtechnik.dif.init.basic.DifModItems;
-import cz.maxtechnik.dif.init.basic.DifModSounds;
-import cz.maxtechnik.dif.init.basic.DifModTabs;
-import cz.maxtechnik.dif.init.fluid.DifModFluidTypes;
-import cz.maxtechnik.dif.init.fluid.DifModFluids;
-import cz.maxtechnik.dif.init.gui.DifModMenus;
-import cz.maxtechnik.dif.init.other.DifModBlockEntities;
-import cz.maxtechnik.dif.init.other.DifModMobEffects;
-import cz.maxtechnik.dif.init.other.DifModRecipes;
-import cz.maxtechnik.dif.init.other.ModDimensions;
+import cz.maxtechnik.dif.block.DifModBlocks;
+import cz.maxtechnik.dif.item.DifModItems;
+import cz.maxtechnik.dif.init.DifModSounds;
+import cz.maxtechnik.dif.init.DifModTabs;
+import cz.maxtechnik.dif.fluid.types.DifModFluidTypes;
+import cz.maxtechnik.dif.fluid.DifModFluids;
+import cz.maxtechnik.dif.gui.menu.DifModMenus;
+import cz.maxtechnik.dif.block.entity.DifModBlockEntities;
+import cz.maxtechnik.dif.effect.DifModMobEffects;
+import cz.maxtechnik.dif.init.DifModRecipes;
+import cz.maxtechnik.dif.init.DifModDimensions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -71,7 +71,7 @@ public class DifMod {
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		bus.addListener(this::commonSetup);
 
-		ModDimensions.register();
+		DifModDimensions.register();
 
 		DifModBlocks.REGISTRY.register(bus);
 		DifModItems.REGISTRY.register(bus);

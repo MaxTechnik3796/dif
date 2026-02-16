@@ -2,7 +2,7 @@ package cz.maxtechnik.dif.item.modular;
 
 import com.google.gson.JsonObject;
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.init.other.DifModRecipes;
+import cz.maxtechnik.dif.init.DifModRecipes;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;

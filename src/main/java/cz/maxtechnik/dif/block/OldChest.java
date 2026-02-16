@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.block;
 
+import cz.maxtechnik.dif.block.entity.OldChestBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -51,7 +52,7 @@ public class OldChest extends Block implements EntityBlock{
 	}
 	@Override
 	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		return new cz.maxtechnik.dif.block.entity.OldChest(pos,state);
+		return new OldChestBlockEntity(pos,state);
 	}
 	@Override
 	public boolean triggerEvent(@NotNull BlockState state,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
@@ -63,7 +64,7 @@ public class OldChest extends Block implements EntityBlock{
 	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
 		if(state.getBlock()!=newState.getBlock()){
 			BlockEntity blockEntity=world.getBlockEntity(pos);
-			if(blockEntity instanceof cz.maxtechnik.dif.block.entity.OldChest validBlockEntity){
+			if(blockEntity instanceof OldChestBlockEntity validBlockEntity){
 				Containers.dropContents(world,pos,validBlockEntity);
 				world.updateNeighbourForOutputSignal(pos,this);
 			}
@@ -77,7 +78,7 @@ public class OldChest extends Block implements EntityBlock{
 	@Override
 	public int getAnalogOutputSignal(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos){
 		BlockEntity tileentity=world.getBlockEntity(pos);
-		if(tileentity instanceof cz.maxtechnik.dif.block.entity.OldChest validBlockEntity)
+		if(tileentity instanceof OldChestBlockEntity validBlockEntity)
 			return AbstractContainerMenu.getRedstoneSignalFromContainer(validBlockEntity);
 		else
 			return 0;

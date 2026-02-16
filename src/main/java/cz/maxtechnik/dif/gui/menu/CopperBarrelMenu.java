@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.gui.menu;
 
-import cz.maxtechnik.dif.block.entity.barrel.CopperBarrel;
-import cz.maxtechnik.dif.init.gui.DifModMenus;
+import cz.maxtechnik.dif.block.entity.barrel.CopperBarrelBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -55,7 +54,7 @@ public class CopperBarrelMenu extends AbstractContainerMenu implements Supplier<
 					this.internal=capability;
 					this.bound=true;
 				});
-				if(boundBlockEntity instanceof CopperBarrel be){
+				if(boundBlockEntity instanceof CopperBarrelBlockEntity be){
 					be.startOpen(inv.player);
 				}
 			}
@@ -135,7 +134,7 @@ public class CopperBarrelMenu extends AbstractContainerMenu implements Supplier<
 	// ... (moveItemStackTo, removed, get, getBlockEntity zůstávají stejné)
 	@Override
 	public void removed(@NotNull Player playerIn){
-		if(this.boundBlockEntity instanceof CopperBarrel be){
+		if(this.boundBlockEntity instanceof CopperBarrelBlockEntity be){
 			be.stopOpen(playerIn);
 		}
 		super.removed(playerIn);

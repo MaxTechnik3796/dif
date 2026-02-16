@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.block;
 
+import cz.maxtechnik.dif.block.entity.SuperBoxBlockEntity;
 import cz.maxtechnik.dif.gui.menu.SuperBoxMenu;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
@@ -108,7 +109,7 @@ public class SuperBox extends Block implements SimpleWaterloggedBlock,EntityBloc
 	}
 	@Override
 	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		return new cz.maxtechnik.dif.block.entity.SuperBox(pos,state);
+		return new SuperBoxBlockEntity(pos,state);
 	}
 	@Override
 	public boolean triggerEvent(@NotNull BlockState state,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
@@ -120,7 +121,7 @@ public class SuperBox extends Block implements SimpleWaterloggedBlock,EntityBloc
 	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
 		if(state.getBlock()!=newState.getBlock()){
 			BlockEntity blockEntity=world.getBlockEntity(pos);
-			if(blockEntity instanceof cz.maxtechnik.dif.block.entity.SuperBox be){
+			if(blockEntity instanceof SuperBoxBlockEntity be){
 				Containers.dropContents(world,pos,be);
 				world.updateNeighbourForOutputSignal(pos,this);
 			}
@@ -134,7 +135,7 @@ public class SuperBox extends Block implements SimpleWaterloggedBlock,EntityBloc
 	@Override
 	public int getAnalogOutputSignal(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos){
 		BlockEntity tileentity=world.getBlockEntity(pos);
-		if(tileentity instanceof cz.maxtechnik.dif.block.entity.SuperBox be)
+		if(tileentity instanceof SuperBoxBlockEntity be)
 			return AbstractContainerMenu.getRedstoneSignalFromContainer(be);
 		else
 			return 0;

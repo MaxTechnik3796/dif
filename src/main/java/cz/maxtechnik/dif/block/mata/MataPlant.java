@@ -2,7 +2,7 @@ package cz.maxtechnik.dif.block.mata;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.DifModCommonConfig;
-import cz.maxtechnik.dif.init.basic.DifModBlocks;
+import cz.maxtechnik.dif.block.DifModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;

@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.init.basic.DifModItems;
+import cz.maxtechnik.dif.item.DifModItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;

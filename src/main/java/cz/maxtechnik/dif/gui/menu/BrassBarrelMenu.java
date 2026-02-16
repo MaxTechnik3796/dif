@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.gui.menu;
 
-import cz.maxtechnik.dif.block.entity.barrel.BrassBarrel;
-import cz.maxtechnik.dif.init.gui.DifModMenus;
+import cz.maxtechnik.dif.block.entity.barrel.BrassBarrelBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -51,7 +50,7 @@ public class BrassBarrelMenu extends AbstractContainerMenu implements Supplier<M
 					this.internal=capability;
 					this.bound=true;
 				});
-				if(boundBlockEntity instanceof BrassBarrel be){
+				if(boundBlockEntity instanceof BrassBarrelBlockEntity be){
 					be.startOpen(inv.player);
 				}
 			}
@@ -191,7 +190,7 @@ public class BrassBarrelMenu extends AbstractContainerMenu implements Supplier<M
 	}
 	@Override
 	public void removed(@NotNull Player playerIn){
-		if(this.boundBlockEntity instanceof BrassBarrel be){
+		if(this.boundBlockEntity instanceof BrassBarrelBlockEntity be){
 			be.stopOpen(playerIn);
 		}
 		super.removed(playerIn);

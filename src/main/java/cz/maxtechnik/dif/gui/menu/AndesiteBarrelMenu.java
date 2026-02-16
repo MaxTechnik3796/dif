@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.gui.menu;
 
-import cz.maxtechnik.dif.block.entity.barrel.AndesiteBarrel;
-import cz.maxtechnik.dif.init.gui.DifModMenus;
+import cz.maxtechnik.dif.block.entity.barrel.AndesiteBarrelBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -55,7 +54,7 @@ public class AndesiteBarrelMenu extends AbstractContainerMenu implements Supplie
 					this.internal=capability;
 					this.bound=true;
 				});
-				if(boundBlockEntity instanceof AndesiteBarrel be){
+				if(boundBlockEntity instanceof AndesiteBarrelBlockEntity be){
 					be.startOpen(inv.player);
 				}
 			}
@@ -135,7 +134,7 @@ public class AndesiteBarrelMenu extends AbstractContainerMenu implements Supplie
 	// ... (moveItemStackTo, removed, get, getBlockEntity zůstávají stejné)
 	@Override
 	public void removed(@NotNull Player playerIn){
-		if(this.boundBlockEntity instanceof AndesiteBarrel be){
+		if(this.boundBlockEntity instanceof AndesiteBarrelBlockEntity be){
 			be.stopOpen(playerIn);
 		}
 		super.removed(playerIn);

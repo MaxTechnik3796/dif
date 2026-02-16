@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.item.tool;
 
-import cz.maxtechnik.dif.init.basic.DifModItems;
+import cz.maxtechnik.dif.item.DifModItems;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.Tier;
