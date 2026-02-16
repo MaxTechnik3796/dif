@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.network;
 
-import cz.maxtechnik.dif.events.SpaceshipControl;
+import cz.maxtechnik.dif.init.events.SpaceshipControl;
 import cz.maxtechnik.dif.DifMod;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.network.NetworkEvent;

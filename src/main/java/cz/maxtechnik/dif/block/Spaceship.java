@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.block;
 
 import cz.maxtechnik.dif.gui.menu.SpaceshipMenu;
+import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

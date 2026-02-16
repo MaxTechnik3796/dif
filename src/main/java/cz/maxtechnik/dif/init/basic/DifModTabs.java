@@ -1,8 +1,7 @@
-package cz.maxtechnik.dif.init;
+package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.DifModCommonConfig;
-import cz.maxtechnik.dif.item.DifModItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;

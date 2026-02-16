@@ -1,6 +1,9 @@
-package cz.maxtechnik.dif.fluid;
+package cz.maxtechnik.dif.init.fluid;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.fluid.BeerFluid;
+import cz.maxtechnik.dif.fluid.FuelFluid;
+import cz.maxtechnik.dif.fluid.XpFluid;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.material.FlowingFluid;

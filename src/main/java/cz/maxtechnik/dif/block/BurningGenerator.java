@@ -2,7 +2,7 @@ package cz.maxtechnik.dif.block;
 
 import cz.maxtechnik.dif.block.entity.BurningGeneratorBlockEntity;
 import cz.maxtechnik.dif.gui.menu.BurningGeneratorMenu;
-import cz.maxtechnik.dif.block.entity.DifModBlockEntities;
+import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

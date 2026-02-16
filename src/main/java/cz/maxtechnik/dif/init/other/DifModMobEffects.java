@@ -1,6 +1,10 @@
-package cz.maxtechnik.dif.effect;
+package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.effect.DrankMobEffect;
+import cz.maxtechnik.dif.effect.RedstoneIQMobEffect;
+import cz.maxtechnik.dif.effect.RedstoneNotIQMobEffect;
+import cz.maxtechnik.dif.effect.WTFMobEffect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;

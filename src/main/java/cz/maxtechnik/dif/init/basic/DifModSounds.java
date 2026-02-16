@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.init;
+package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
 import net.minecraft.resources.ResourceLocation;

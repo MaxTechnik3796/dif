@@ -1,12 +1,13 @@
-package cz.maxtechnik.dif.block.entity;
+package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.block.entity.*;
 import cz.maxtechnik.dif.block.entity.barrel.AndesiteBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.barrel.BrassBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.barrel.CopperBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.dev.SpecialCraftingBlockEntity;
 import cz.maxtechnik.dif.block.entity.dev.XpStorageBlockEntity;
-import cz.maxtechnik.dif.block.DifModBlocks;
+import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -25,7 +26,7 @@ public class DifModBlockEntities{
 	public static final RegistryObject<BlockEntityType<?>>SPACE_SCAFFOLDING=REGISTRY.register("space_scaffolding",()->BlockEntityType.Builder.of(SpaceScaffoldingBlockEntity::new,DifModBlocks.SPACE_CASING.get()).build(null));
 	public static final RegistryObject<BlockEntityType<?>>XP_STORAGE=REGISTRY.register("xp_storage",()->BlockEntityType.Builder.of(XpStorageBlockEntity::new,DifModBlocks.XP_STORAGE.get()).build(null));
 
-	public static final RegistryObject<BlockEntityType<BurningGeneratorBlockEntity>> BURNING_GENERATOR=REGISTRY.register("generator_be",()->BlockEntityType.Builder.of(BurningGeneratorBlockEntity::new,DifModBlocks.BURNING_GENERATOR.get()).build(null));
+	public static final RegistryObject<BlockEntityType<BurningGeneratorBlockEntity>> BURNING_GENERATOR=REGISTRY.register("burning_generator",()->BlockEntityType.Builder.of(BurningGeneratorBlockEntity::new,DifModBlocks.BURNING_GENERATOR.get()).build(null));
 	public static final RegistryObject<BlockEntityType<?>>SPECIAL_CRAFTING=register("special_crafting",DifModBlocks.XP_STORAGE,SpecialCraftingBlockEntity::new);
 	private static RegistryObject<BlockEntityType<?>>register(String registryname,RegistryObject<Block> block,BlockEntityType.BlockEntitySupplier<?> supplier){
 		return REGISTRY.register(registryname,()->BlockEntityType.Builder.of(supplier,block.get()).build(null));

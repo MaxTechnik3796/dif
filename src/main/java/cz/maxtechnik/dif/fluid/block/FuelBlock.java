@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.fluid.block;
 
-import cz.maxtechnik.dif.fluid.DifModFluids;
+import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.block.state.BlockBehaviour;

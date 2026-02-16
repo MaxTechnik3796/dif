@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.gui.menu;
 
 import cz.maxtechnik.dif.block.entity.barrel.BrassBarrelBlockEntity;
+import cz.maxtechnik.dif.init.gui.DifModMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,7 +32,7 @@ public class BrassBarrelMenu extends AbstractContainerMenu implements Supplier<M
 	private boolean bound=false;
 	private BlockEntity boundBlockEntity=null;
 	public BrassBarrelMenu(int id,Inventory inv,FriendlyByteBuf extraData){
-		super(DifModMenus.BRASS_BARREL_MENU.get(),id);
+		super(DifModMenus.BRASS_BARREL.get(),id);
 		this.entity=inv.player;
 		this.world=inv.player.level();
 		this.internal=new ItemStackHandler(54);

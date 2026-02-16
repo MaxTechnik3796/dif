@@ -1,6 +1,9 @@
-package cz.maxtechnik.dif.fluid.types;
+package cz.maxtechnik.dif.init.fluid;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.fluid.types.BeerFluidType;
+import cz.maxtechnik.dif.fluid.types.FuelFluidType;
+import cz.maxtechnik.dif.fluid.types.XpFluidType;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;

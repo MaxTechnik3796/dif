@@ -1,7 +1,7 @@
 
 package cz.maxtechnik.dif.block.mata;
 
-import cz.maxtechnik.dif.effect.DifModMobEffects;
+import cz.maxtechnik.dif.init.other.DifModMobEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.effect.MobEffectInstance;

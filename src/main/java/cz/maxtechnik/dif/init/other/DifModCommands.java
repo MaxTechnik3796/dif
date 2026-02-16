@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.init;
+package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.DifModCommonConfig;

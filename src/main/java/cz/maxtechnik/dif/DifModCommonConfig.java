@@ -20,6 +20,7 @@ public class DifModCommonConfig{
 
 	private static final ForgeConfigSpec.IntValue MATA_PLANT_MAX_HEIGHT;
 	private static final ForgeConfigSpec.BooleanValue DISABLE_END;
+	private static final ForgeConfigSpec.IntValue SPACE_SCAFFOLDING_LIFE_TIME;
 
 	private static final ForgeConfigSpec.IntValue PORTAL_GUN_MAX_AMMO;
 	private static final ForgeConfigSpec.IntValue PORTAL_GUN_MAX_RANGE;
@@ -50,6 +51,7 @@ public class DifModCommonConfig{
 		BUILDER.push("GeneralSettings");
 		MATA_PLANT_MAX_HEIGHT=BUILDER.comment("Maximal height of Mata Plant, (Blocks.)\nDif-reload required!\nDefault value: 2").defineInRange("mata_plant_max_height",2,1,Integer.MAX_VALUE);
 		DISABLE_END=BUILDER.comment("Disable End dimension, (t/f.)\nDif-reload required!\nDefault value: false").define("disable_end",false);
+		SPACE_SCAFFOLDING_LIFE_TIME=BUILDER.comment("Life Time of Space Scaffolding, (t.)\nDif-reload required!\nDefault value: 300").defineInRange("space_scaffolding_life_time",300,1,Integer.MAX_VALUE);
 		BUILDER.pop();
 		BUILDER.push("PortalGun");
 		PORTAL_GUN_MAX_AMMO=BUILDER.comment("Maximal capacity of Portal Gun, (Shots.)\nDRestart required!\nDefault value: 16").defineInRange("portal_gun_max_ammo",16,1,Integer.MAX_VALUE);
@@ -76,6 +78,7 @@ public class DifModCommonConfig{
 
 	public static int mataPlantMaxHeight;
 	public static boolean disableEnd;
+	public static int spaceScaffoldingLifeTime;
 
 	public static int portalGunMaxAmmo;
 	public static int portalGunMaxRange;
@@ -107,6 +110,7 @@ public class DifModCommonConfig{
 
 		mataPlantMaxHeight=MATA_PLANT_MAX_HEIGHT.get();
 		disableEnd=DISABLE_END.get();
+		spaceScaffoldingLifeTime=SPACE_SCAFFOLDING_LIFE_TIME.get();
 
 		portalGunMaxAmmo=PORTAL_GUN_MAX_AMMO.get();
 		portalGunMaxRange=PORTAL_GUN_MAX_RANGE.get();

@@ -1,7 +1,7 @@
-package cz.maxtechnik.dif.events;
+package cz.maxtechnik.dif.init.events;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.item.DifModItems;
+import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

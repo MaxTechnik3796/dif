@@ -1,7 +1,7 @@
-package cz.maxtechnik.dif.events;
+package cz.maxtechnik.dif.init.events;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.item.DifModItems;
+import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;

@@ -1,8 +1,9 @@
 package cz.maxtechnik.dif.fluid;
 
-import cz.maxtechnik.dif.block.DifModBlocks;
-import cz.maxtechnik.dif.item.DifModItems;
-import cz.maxtechnik.dif.fluid.types.DifModFluidTypes;
+import cz.maxtechnik.dif.init.basic.DifModBlocks;
+import cz.maxtechnik.dif.init.fluid.DifModFluids;
+import cz.maxtechnik.dif.init.basic.DifModItems;
+import cz.maxtechnik.dif.init.fluid.DifModFluidTypes;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;

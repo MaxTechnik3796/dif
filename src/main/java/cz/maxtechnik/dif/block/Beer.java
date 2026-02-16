@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.block;
 
-import cz.maxtechnik.dif.item.DifModItems;
+import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;

@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.gui.menu;
 
-import cz.maxtechnik.dif.item.DifModItems;
+import cz.maxtechnik.dif.init.basic.DifModItems;
+import cz.maxtechnik.dif.init.gui.DifModMenus;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -22,7 +23,7 @@ public class SpaceshipMenu extends AbstractContainerMenu{
 		this(id,inv,extraData.readBlockPos());
 	}
 	public SpaceshipMenu(int id,Inventory inv,BlockPos pos){
-		super(DifModMenus.ROCKETG_00.get(),id);
+		super(DifModMenus.SPACESHIP.get(),id);
 		this.entity=inv.player;
 		this.world=inv.player.level();
 		this.x=pos.getX();

@@ -1,6 +1,7 @@
-package cz.maxtechnik.dif.block;
+package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.block.*;
 import cz.maxtechnik.dif.block.barrel.AndesiteBarrel;
 import cz.maxtechnik.dif.block.barrel.BrassBarrel;
 import cz.maxtechnik.dif.block.barrel.CopperBarrel;

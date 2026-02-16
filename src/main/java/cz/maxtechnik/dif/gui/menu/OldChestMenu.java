@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.gui.menu;
 
 import cz.maxtechnik.dif.block.entity.OldChestBlockEntity;
+import cz.maxtechnik.dif.init.gui.DifModMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -43,7 +44,7 @@ public class OldChestMenu extends AbstractContainerMenu implements Supplier<Map<
 	// Počet řádků beden (pro GUI renderování)
 	private int chestRows=0;
 	public OldChestMenu(int id,Inventory inv,FriendlyByteBuf extraData){
-		super(DifModMenus.OLD_CHEST_MENU.get(),id);
+		super(DifModMenus.OLD_CHEST.get(),id);
 		this.entity=inv.player;
 		this.world=inv.player.level();
 		BlockPos pos=null;

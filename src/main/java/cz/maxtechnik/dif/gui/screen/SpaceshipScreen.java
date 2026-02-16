@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.gui.screen;
 
-import cz.maxtechnik.dif.events.SpaceshipControl;
+import cz.maxtechnik.dif.init.events.SpaceshipControl;
 import cz.maxtechnik.dif.gui.menu.SpaceshipMenu;
 import cz.maxtechnik.dif.network.SpaceshipScreenButtonMessage;
 import cz.maxtechnik.dif.DifMod;

@@ -3,6 +3,7 @@ package cz.maxtechnik.dif.block.entity;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.DifModCommonConfig;
 import cz.maxtechnik.dif.gui.menu.BurningGeneratorMenu;
+import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;

@@ -1,6 +1,7 @@
-package cz.maxtechnik.dif.gui.menu;
+package cz.maxtechnik.dif.init.gui;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.gui.menu.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.player.Inventory;
@@ -18,14 +19,14 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("deprecation")
 public class DifModMenus<T extends AbstractContainerMenu> implements FeatureElement, net.minecraftforge.common.extensions.IForgeMenuType<T>{
 	public static final DeferredRegister<MenuType<?>>REGISTRY=DeferredRegister.create(ForgeRegistries.MENU_TYPES,DifMod.MODID);
-	public static final RegistryObject<MenuType<SuperBoxMenu>>SUPER_BOX_MENU=REGISTRY.register("super_box_menu",()->IForgeMenuType.create(SuperBoxMenu::new));
-	public static final RegistryObject<MenuType<AndesiteBarrelMenu>>ANDESITE_BARREL_MENU=REGISTRY.register("andesite_barrel_menu",()->IForgeMenuType.create(AndesiteBarrelMenu::new));
-	public static final RegistryObject<MenuType<CopperBarrelMenu>>COPPER_BARREL_MENU=REGISTRY.register("copper_barrel_menu",()->IForgeMenuType.create(CopperBarrelMenu::new));
-	public static final RegistryObject<MenuType<BrassBarrelMenu>>BRASS_BARREL_MENU=REGISTRY.register("brass_barrel_menu",()->IForgeMenuType.create(BrassBarrelMenu::new));
-	public static final RegistryObject<MenuType<OldChestMenu>>OLD_CHEST_MENU=REGISTRY.register("old_chest_menu",()->IForgeMenuType.create(OldChestMenu::new));
-	public static final RegistryObject<MenuType<BurningGeneratorMenu>>GENERATOR_MENU=REGISTRY.register("generator_menu",()->IForgeMenuType.create(BurningGeneratorMenu::new));
-	public static final RegistryObject<MenuType<SpecialCraftingMenu>>SPECIAL_CRAFTING_MENU=REGISTRY.register("special_crafting_menu",()->IForgeMenuType.create(SpecialCraftingMenu::new));
-	public static final RegistryObject<MenuType<SpaceshipMenu>>ROCKETG_00=REGISTRY.register("rocketg00menu",()->IForgeMenuType.create(SpaceshipMenu::new));
+	public static final RegistryObject<MenuType<SuperBoxMenu>> SUPER_BOX=REGISTRY.register("super_box",()->IForgeMenuType.create(SuperBoxMenu::new));
+	public static final RegistryObject<MenuType<AndesiteBarrelMenu>> ANDESITE_BARREL=REGISTRY.register("andesite_barrel",()->IForgeMenuType.create(AndesiteBarrelMenu::new));
+	public static final RegistryObject<MenuType<CopperBarrelMenu>> COPPER_BARREL=REGISTRY.register("copper_barrel",()->IForgeMenuType.create(CopperBarrelMenu::new));
+	public static final RegistryObject<MenuType<BrassBarrelMenu>> BRASS_BARREL=REGISTRY.register("brass_barrel",()->IForgeMenuType.create(BrassBarrelMenu::new));
+	public static final RegistryObject<MenuType<OldChestMenu>> OLD_CHEST=REGISTRY.register("old_chest",()->IForgeMenuType.create(OldChestMenu::new));
+	public static final RegistryObject<MenuType<BurningGeneratorMenu>> GENERATOR=REGISTRY.register("generator",()->IForgeMenuType.create(BurningGeneratorMenu::new));
+	public static final RegistryObject<MenuType<SpecialCraftingMenu>> SPECIAL_CRAFTING=REGISTRY.register("special_crafting",()->IForgeMenuType.create(SpecialCraftingMenu::new));
+	public static final RegistryObject<MenuType<SpaceshipMenu>> SPACESHIP=REGISTRY.register("spaceship",()->IForgeMenuType.create(SpaceshipMenu::new));
 
 
 

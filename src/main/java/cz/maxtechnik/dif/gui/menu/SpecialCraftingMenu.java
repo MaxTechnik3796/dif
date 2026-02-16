@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.gui.menu;
 
+import cz.maxtechnik.dif.init.gui.DifModMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,7 +38,7 @@ public class SpecialCraftingMenu extends AbstractContainerMenu implements Suppli
 	public final CraftingContainer craftSlots=new TransientCraftingContainer(this,3,3);
 	public final ResultContainer resultSlots=new ResultContainer();
 	public SpecialCraftingMenu(int id,Inventory inv,FriendlyByteBuf extraData){
-		super(DifModMenus.SPECIAL_CRAFTING_MENU.get(),id);
+		super(DifModMenus.SPECIAL_CRAFTING.get(),id);
 		this.entity=inv.player;
 		this.world=inv.player.level();
 		this.internal=new ItemStackHandler(10);

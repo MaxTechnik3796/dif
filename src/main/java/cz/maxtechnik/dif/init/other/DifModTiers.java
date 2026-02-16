@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.init;
+package cz.maxtechnik.dif.init.other;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;

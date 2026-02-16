@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.gui.menu;
 
 import cz.maxtechnik.dif.block.entity.BurningGeneratorBlockEntity;
+import cz.maxtechnik.dif.init.gui.DifModMenus;
 import net.minecraft.world.inventory.*;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -31,7 +32,7 @@ public class BurningGeneratorMenu extends AbstractContainerMenu implements Suppl
 	private BlockEntity boundBlockEntity=null;
 	private final ContainerData data;
 	public BurningGeneratorMenu(int id,Inventory inv,FriendlyByteBuf extraData){
-		super(DifModMenus.GENERATOR_MENU.get(),id);
+		super(DifModMenus.GENERATOR.get(),id);
 		this.entity=inv.player;
 		this.world=inv.player.level();
 		this.internal=new ItemStackHandler(1);

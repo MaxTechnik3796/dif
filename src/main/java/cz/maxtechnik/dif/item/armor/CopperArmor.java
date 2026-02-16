@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.item.armor;
 
-import cz.maxtechnik.dif.init.DifModTiers;
+import cz.maxtechnik.dif.init.other.DifModTiers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
