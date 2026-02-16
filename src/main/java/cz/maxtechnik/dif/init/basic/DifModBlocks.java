@@ -113,8 +113,9 @@ public class DifModBlocks{
 
 	public static final RegistryObject<Block>AURORA_CASING=REGISTRY.register("aurora_casing",()->new Custom(SoundType.NETHERITE_BLOCK,4F,4F,true));
 	public static final RegistryObject<Block>SPACESHIP=REGISTRY.register("spaceship",Spaceship::new);
+	public static final RegistryObject<Block>SPACESHIP_GHOST_BLOCK=REGISTRY.register("spaceship_ghost_block",SpaceshipGhostBlock::new);
 	public static final RegistryObject<Block>SPACE_ENGINE=REGISTRY.register("space_engine",SpaceEngine::new);
-	public static final RegistryObject<Block>SPACESHIP_GHOSTBLOCK=REGISTRY.register("spaceshipghostblock",Spaceship::new);
+
 
 	public static final RegistryObject<Block>SPACE_SCAFFOLDING=REGISTRY.register("space_scaffolding",()->new CustomTransparent(SoundType.COPPER,0F,0F,false));
 	public static final RegistryObject<Block>SPACE_CASING=REGISTRY.register("space_casing",()->new Custom(SoundType.NETHERITE_BLOCK,5F,6F,true));
