@@ -18,34 +18,11 @@ public class ModularToolsColorRenderer{
 				case 2 -> itemStack.getTag().contains("HeadColor")?itemStack.getTag().getInt("HeadColor"):-1;
 				default -> -1;
 			};
-		},DifModItems.MODULAR_PICKAXE.get());
-		event.register((itemStack,tintIndex)->{
-			if(itemStack.getTag()==null) return -1;
-			return switch(tintIndex){
-				case 0 -> itemStack.getTag().contains("HandleColor")?itemStack.getTag().getInt("HandleColor"):-1;
-				case 1 -> itemStack.getTag().contains("BindingColor")?itemStack.getTag().getInt("BindingColor"):-1;
-				case 2 -> itemStack.getTag().contains("HeadColor")?itemStack.getTag().getInt("HeadColor"):-1;
-				default -> -1;
-			};
-		},DifModItems.MODULAR_AXE.get());
-		event.register((itemStack,tintIndex)->{
-			if(itemStack.getTag()==null) return -1;
-			return switch(tintIndex){
-				case 0 -> itemStack.getTag().contains("HandleColor")?itemStack.getTag().getInt("HandleColor"):-1;
-				case 1 -> itemStack.getTag().contains("BindingColor")?itemStack.getTag().getInt("BindingColor"):-1;
-				case 2 -> itemStack.getTag().contains("HeadColor")?itemStack.getTag().getInt("HeadColor"):-1;
-				default -> -1;
-			};
-		},DifModItems.MODULAR_SHOVEL.get());
-		event.register((itemStack,tintIndex)->{
-			if(itemStack.getTag()==null) return -1;
-			return switch(tintIndex){
-				case 0 -> itemStack.getTag().contains("HandleColor")?itemStack.getTag().getInt("HandleColor"):-1;
-				case 1 -> itemStack.getTag().contains("BindingColor")?itemStack.getTag().getInt("BindingColor"):-1;
-				case 2 -> itemStack.getTag().contains("HeadColor")?itemStack.getTag().getInt("HeadColor"):-1;
-				default -> -1;
-			};
-		},DifModItems.MODULAR_SWORD.get());
+		},
+				DifModItems.MODULAR_PICKAXE.get(),
+				DifModItems.MODULAR_SWORD.get(),
+				DifModItems.MODULAR_SHOVEL.get(),
+				DifModItems.MODULAR_AXE.get());
 		event.register((itemStack,tintIndex)->{
 					if(itemStack.getTag()==null) return -1;
 					if(itemStack.getTag().contains("HeadColor")){

@@ -31,9 +31,9 @@ public class VisualEffectsRenderer{
 			if(playingWTFSound==null){
 				playingWTFSound=new SimpleSoundInstance(
 						DifModSounds.FURT_TA_STEJNA_HRA.get().getLocation(),
-						SoundSource.PLAYERS,1.0F,1.0F,
+						SoundSource.PLAYERS,1F,1F,
 						player.getRandom(),true,0,SoundInstance.Attenuation.NONE,
-						0.0,0.0,0.0,true
+						0F,0F,0F,true
 				);
 				mc.getSoundManager().play(playingWTFSound);
 			}
@@ -52,9 +52,9 @@ public class VisualEffectsRenderer{
 		if(player==null)return;
 		if(player.hasEffect(DifModMobEffects.WTF.get())){
 			float t=player.tickCount;
-			float yaw=(t*5.0f)%360.0f;
-			float pitch=(float)(Math.sin(t*0.125f)*45.0f)+(float)(Math.cos(t*0.1875f)*45.0f);
-			float roll=(t*5.0f)%360.0f;
+			float yaw=(t*5F)%360F;
+			float pitch=(float)(Math.sin(t*0.125F)*45F)+(float)(Math.cos(t*0.1875F)*45F);
+			float roll=(t*5F)%360F;
 			event.setYaw(yaw);
 			event.setPitch(pitch);
 			event.setRoll(roll);
@@ -69,18 +69,18 @@ public class VisualEffectsRenderer{
 		int w=event.getWindow().getGuiScaledWidth();
 		int h=event.getWindow().getGuiScaledHeight();
 		if(player.hasEffect(DifModMobEffects.WTF.get())){
-			float hue=(player.tickCount*3.75f%100)/100.0f;
-			int rgb=Color.getHSBColor(hue,1.0f,1.0f).getRGB();
-			float alpha=0.2f+(float)(Math.sin(player.tickCount*0.75f)+1.0)/2.0f*0.5f;
+			float hue=(player.tickCount*3.75F%100)/100F;
+			int rgb=Color.getHSBColor(hue,1F,1F).getRGB();
+			float alpha=0.2F+(float)(Math.sin(player.tickCount*0.75F)+1F)/2F*0.5F;
 			int color=((int)(alpha*255)<<24)|(rgb&0xFFFFFF);
 			gg.fill(0,0,w,h,color);
 		}
 		if(player.hasEffect(DifModMobEffects.DRANK.get())){
-			float time=player.tickCount*0.02f;
-			float hue=0.30f+0.06f*(float)Math.sin(time); // plynule mezi žlutou a zelenou
-			int rgb=Color.getHSBColor(hue,0.9f,0.95f).getRGB();
-			float pulse=(float)(Math.sin(player.tickCount*0.05f)+1.0)*0.5f;
-			float alpha=0.18f+pulse*0.25f; // od 18% do 43% průhlednosti
+			float time=player.tickCount*0.02F;
+			float hue=0.3F+0.06F*(float)Math.sin(time); // plynule mezi žlutou a zelenou
+			int rgb=Color.getHSBColor(hue,0.9F,0.95F).getRGB();
+			float pulse=(float)(Math.sin(player.tickCount*0.05F)+1F)*0.5F;
+			float alpha=0.18F+pulse*0.25F; // od 18% do 43% průhlednosti
 			int color=((int)(alpha*255)<<24)|(rgb&0xFFFFFF);
 			gg.fill(0,0,w,h,color);
 		}

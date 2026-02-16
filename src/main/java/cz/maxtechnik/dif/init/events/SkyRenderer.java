@@ -23,12 +23,12 @@ public class SkyRenderer{
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 			RenderSystem.setShaderTexture(0,EARTH_TEXTURE);
 			Matrix4f matrix=poseStack.last().pose();
-			float planetSize=250.0F;
+			float planetSize=250F;
 			bufferbuilder.begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_TEX);
-			bufferbuilder.vertex(matrix,-planetSize,-100.0F,planetSize).uv(0,1).endVertex();
-			bufferbuilder.vertex(matrix,planetSize,-100.0F,planetSize).uv(1,1).endVertex();
-			bufferbuilder.vertex(matrix,planetSize,-100.0F,-planetSize).uv(1,0).endVertex();
-			bufferbuilder.vertex(matrix,-planetSize,-100.0F,-planetSize).uv(0,0).endVertex();
+			bufferbuilder.vertex(matrix,-planetSize,-100F,planetSize).uv(0,1).endVertex();
+			bufferbuilder.vertex(matrix,planetSize,-100F,planetSize).uv(1,1).endVertex();
+			bufferbuilder.vertex(matrix,planetSize,-100F,-planetSize).uv(1,0).endVertex();
+			bufferbuilder.vertex(matrix,-planetSize,-100F,-planetSize).uv(0,0).endVertex();
 			tesselator.end();
 			poseStack.popPose();
 		}else if(mode.equals("moon")){
@@ -36,16 +36,16 @@ public class SkyRenderer{
 			poseStack.pushPose();
 			// Synchronizace s měsícem (+ 0.5F otočí masku proti slunci)
 			float moonAngle=level.getTimeOfDay(partialTick)+0.5F;
-			poseStack.mulPose(Axis.ZP.rotationDegrees(moonAngle*360.0F));
+			poseStack.mulPose(Axis.ZP.rotationDegrees(moonAngle*360F));
 			RenderSystem.setShader(GameRenderer::getPositionColorShader);
 			bufferbuilder.begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_COLOR);
 			Matrix4f maskMatrix=poseStack.last().pose();
-			float maskSize=16.0F;
+			float maskSize=16F;
 			// Výška 98.0F (blíže k hráči než nebe)
-			bufferbuilder.vertex(maskMatrix,-maskSize,98.0F,-maskSize).color(0,0,0,255).endVertex();
-			bufferbuilder.vertex(maskMatrix,maskSize,98.0F,-maskSize).color(0,0,0,255).endVertex();
-			bufferbuilder.vertex(maskMatrix,maskSize,98.0F,maskSize).color(0,0,0,255).endVertex();
-			bufferbuilder.vertex(maskMatrix,-maskSize,98.0F,maskSize).color(0,0,0,255).endVertex();
+			bufferbuilder.vertex(maskMatrix,-maskSize,98F,-maskSize).color(0,0,0,255).endVertex();
+			bufferbuilder.vertex(maskMatrix,maskSize,98F,-maskSize).color(0,0,0,255).endVertex();
+			bufferbuilder.vertex(maskMatrix,maskSize,98F,maskSize).color(0,0,0,255).endVertex();
+			bufferbuilder.vertex(maskMatrix,-maskSize,98F,maskSize).color(0,0,0,255).endVertex();
 			tesselator.end();
 			poseStack.popPose();
 			// --- 2. STATICKÁ ZEMĚ NA SEVERU ---
@@ -53,15 +53,15 @@ public class SkyRenderer{
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 			RenderSystem.setShaderTexture(0,EARTH_TEXTURE);
 			// Polohování: 15° na sever (osa Z) a -20° sklon (osa X)
-			poseStack.mulPose(Axis.ZP.rotationDegrees(10.0F));
-			poseStack.mulPose(Axis.XP.rotationDegrees(-15.0F));
+			poseStack.mulPose(Axis.ZP.rotationDegrees(10F));
+			poseStack.mulPose(Axis.XP.rotationDegrees(-15F));
 			Matrix4f earthMatrix=poseStack.last().pose();
-			float earthSize=10.0F;
+			float earthSize=10F;
 			bufferbuilder.begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_TEX);
-			bufferbuilder.vertex(earthMatrix,-earthSize,100.0F,-earthSize).uv(0,1).endVertex();
-			bufferbuilder.vertex(earthMatrix,earthSize,100.0F,-earthSize).uv(1,1).endVertex();
-			bufferbuilder.vertex(earthMatrix,earthSize,100.0F,earthSize).uv(1,0).endVertex();
-			bufferbuilder.vertex(earthMatrix,-earthSize,100.0F,earthSize).uv(0,0).endVertex();
+			bufferbuilder.vertex(earthMatrix,-earthSize,100F,-earthSize).uv(0,1).endVertex();
+			bufferbuilder.vertex(earthMatrix,earthSize,100F,-earthSize).uv(1,1).endVertex();
+			bufferbuilder.vertex(earthMatrix,earthSize,100F,earthSize).uv(1,0).endVertex();
+			bufferbuilder.vertex(earthMatrix,-earthSize,100F,earthSize).uv(0,0).endVertex();
 			tesselator.end();
 			poseStack.popPose();
 		}
