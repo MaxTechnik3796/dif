@@ -25,7 +25,7 @@ public class CustomTransparent extends Block{
 	}
 	@Override
 	public float getShadeBrightness(@NotNull BlockState blockState,@NotNull BlockGetter blockGetter,@NotNull BlockPos pos){
-		return 1.0f;
+		return 1F;
 	}
 	@Override
 	public @NotNull VoxelShape getVisualShape(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
