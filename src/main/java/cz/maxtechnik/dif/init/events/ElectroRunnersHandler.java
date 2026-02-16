@@ -25,7 +25,7 @@ public class ElectroRunnersHandler {
                 // Přidání síly k vertikálnímu pohybu pro dosažení 2 bloků
                 player.setDeltaMovement(motion.x, motion.y + 0.255, motion.z);
                 
-                ElectroRunnersItem.extractEnergy(boots, 5);
+                ElectroRunnersItem.extractEnergy(boots, 2);
             }
         }
     }
@@ -37,7 +37,7 @@ public class ElectroRunnersHandler {
             ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
             if (boots.getItem() instanceof ElectroRunnersItem) {
                 // Každý zásah (kromě pádu, který teď ignorujeme) odebere 5 EU
-                ElectroRunnersItem.extractEnergy(boots, 5);
+                ElectroRunnersItem.extractEnergy(boots, 10);
             }
         }
     }
