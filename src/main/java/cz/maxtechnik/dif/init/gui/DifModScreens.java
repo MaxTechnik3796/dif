@@ -18,6 +18,7 @@ public class DifModScreens{
 			MenuScreens.register(DifModMenus.GENERATOR_MENU.get(),BurningGeneratorScreen::new);
 			MenuScreens.register(DifModMenus.SPECIAL_CRAFTING_MENU.get(),SpecialCraftingScreen::new);
 			MenuScreens.register(DifModMenus.OLD_CHEST_MENU.get(),OldChestScreen::new);
+			MenuScreens.register(DifModMenus.ROCKETG_00.get(),Rocketg00Screen::new);
 		});
 	}
 }

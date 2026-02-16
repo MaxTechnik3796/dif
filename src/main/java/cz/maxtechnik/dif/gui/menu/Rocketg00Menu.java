@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 public class Rocketg00Menu extends AbstractContainerMenu {
     public final int x, y, z;
     public final Player entity;
@@ -30,26 +31,26 @@ public class Rocketg00Menu extends AbstractContainerMenu {
 
         // Přidání slotů inventáře hráče (hotbar)
         for (int i = 0; i < 9; i++) {
-            this.addSlot(new Slot(inv, i, 39 + i * 18, 194));
+            this.addSlot(new Slot(inv, i, 44 + i * 18, 200));
         }
         // Přidání slotů inventáře hráče (batoh)
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                this.addSlot(new Slot(inv, j + (i + 1) * 9, 39 + j * 18, 136 + i * 18));
+                this.addSlot(new Slot(inv, j + (i + 1) * 9, 44 + j * 18, 142 + i * 18));
             }
         }
     }
 
     @Override
-    public boolean stillValid(Player player) {
+    public boolean stillValid(@NotNull Player player) {
         return true; // Zde můžeš přidat kontrolu vzdálenosti od rakety
     }
 
     @Override
-    public ItemStack quickMoveStack(Player player, int index) {
+    public @NotNull ItemStack quickMoveStack(@NotNull Player player,int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
+        if (slot.hasItem()) {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
             if (index < 36) {

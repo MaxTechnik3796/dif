@@ -1,18 +1,23 @@
 package cz.maxtechnik.dif.block;
 
 import cz.maxtechnik.dif.block.entity.SpaceShipBE;
+import cz.maxtechnik.dif.gui.menu.Rocketg00Menu;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
+import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -86,16 +91,30 @@ public class Spaceship extends Block implements EntityBlock{
 		}
 	}
 	@Override
-	public @NotNull InteractionResult use(@NotNull BlockState blockState,Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
-		if(!level.isClientSide()&&level.getBlockEntity(pos) instanceof SpaceShipBE be){
-			NetworkHooks.openScreen(((ServerPlayer)player),be,pos);
+	public @NotNull InteractionResult use(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player entity,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
+		super.use(blockState,world,pos,entity,hand,hit);
+		if(entity instanceof ServerPlayer player){
+			NetworkHooks.openScreen(player,new MenuProvider(){
+				@Override
+				public @NotNull Component getDisplayName(){
+					return Component.literal("Spaceship");
+				}
+				@Override
+				public AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory, @NotNull Player player) {
+					return new Rocketg00Menu(id,inventory,new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos));
+				}
+			},pos);
 		}
-		return InteractionResult.sidedSuccess(level.isClientSide());
+		return InteractionResult.SUCCESS;
 	}
-	@Nullable
 	@Override
 	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
 		return new SpaceShipBE(pos,blockState);
+	}
+	@Override
+	public MenuProvider getMenuProvider(@NotNull BlockState state, Level worldIn, @NotNull BlockPos pos) {
+		BlockEntity tileEntity = worldIn.getBlockEntity(pos);
+		return tileEntity instanceof MenuProvider menuProvider ? menuProvider : null;
 	}
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
