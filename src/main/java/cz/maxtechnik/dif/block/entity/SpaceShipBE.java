@@ -20,6 +20,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import cz.maxtechnik.dif.gui.menu.Rocketg00Menu;
 
 public class SpaceShipBE extends BlockEntity implements MenuProvider {
 
@@ -44,7 +45,8 @@ public class SpaceShipBE extends BlockEntity implements MenuProvider {
 	@Nullable
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-		return null; // Zde později doplň svůj Menu typ
+		// Toto propojí tvůj BlockEntity s GUI menu
+		return new Rocketg00Menu(id, inventory, this.worldPosition);
 	}
 
 	@Override

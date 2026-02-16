@@ -56,7 +56,7 @@ public class OrbitSkyRenderer{
 			poseStack.mulPose(Axis.ZP.rotationDegrees(10.0F));
 			poseStack.mulPose(Axis.XP.rotationDegrees(-15.0F));
 			Matrix4f earthMatrix=poseStack.last().pose();
-			float earthSize=12.0F;
+			float earthSize=10.0F;
 			bufferbuilder.begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_TEX);
 			bufferbuilder.vertex(earthMatrix,-earthSize,100.0F,-earthSize).uv(0,1).endVertex();
 			bufferbuilder.vertex(earthMatrix,earthSize,100.0F,-earthSize).uv(1,1).endVertex();

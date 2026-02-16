@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.init.gui;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.gui.menu.Rocketg00Menu;
 import cz.maxtechnik.dif.gui.menu.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -26,7 +27,7 @@ public class DifModMenus<T extends AbstractContainerMenu> implements FeatureElem
 	public static final RegistryObject<MenuType<OldChestMenu>>OLD_CHEST_MENU=REGISTRY.register("old_chest_menu",()->IForgeMenuType.create(OldChestMenu::new));
 	public static final RegistryObject<MenuType<BurningGeneratorMenu>>GENERATOR_MENU=REGISTRY.register("generator_menu",()->IForgeMenuType.create(BurningGeneratorMenu::new));
 	public static final RegistryObject<MenuType<SpecialCraftingMenu>>SPECIAL_CRAFTING_MENU=REGISTRY.register("special_crafting_menu",()->IForgeMenuType.create(SpecialCraftingMenu::new));
-
+	public static final RegistryObject<MenuType<Rocketg00Menu>>ROCKETG_00=REGISTRY.register("rocketg00menu",()->IForgeMenuType.create(Rocketg00Menu::new));
 
 
 

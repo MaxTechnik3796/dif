@@ -11,7 +11,7 @@ import cz.maxtechnik.dif.init.gui.DifModMenus;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.init.other.DifModMobEffects;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
-import cz.maxtechnik.dif.init.other.ModDimensions; // <--- PŘIDÁNO
+import cz.maxtechnik.dif.init.other.ModDimensions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -34,17 +34,43 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
+// Importy pro Networking
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
+import java.util.function.Supplier;
+import java.util.function.Function;
+import java.util.function.BiConsumer;
+
 @SuppressWarnings("removal")
 @Mod(DifMod.MODID)
 public class DifMod {
 	public static final String MODID = "dif";
 	public static final Logger LOGGER = LogUtils.getLogger();
 
+	// --- PACKET HANDLER DEFINICE ---
+	public static final String PROTOCOL_VERSION = "1";
+	public static final SimpleChannel PACKET_HANDLER = NetworkRegistry.newSimpleChannel(
+			new ResourceLocation(MODID, "main"),
+			() -> PROTOCOL_VERSION,
+			PROTOCOL_VERSION::equals,
+			PROTOCOL_VERSION::equals
+	);
+
+	private static int messageID = 0;
+
+	// Metoda pro registraci packetů
+	public static <T> void addNetworkMessage(Class<T> messageType, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<NetworkEvent.Context>> messageConsumer) {
+		PACKET_HANDLER.registerMessage(messageID, messageType, encoder, decoder, messageConsumer);
+		messageID++;
+	}
+
 	public DifMod() {
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		bus.addListener(this::commonSetup);
 
-		// --- REGISTRACE DIMENZÍ ---
 		ModDimensions.register();
 
 		DifModBlocks.REGISTRY.register(bus);
