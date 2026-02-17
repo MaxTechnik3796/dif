@@ -24,6 +24,8 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
@@ -36,9 +38,10 @@ import java.util.Set;
 @SuppressWarnings("deprecation")
 public class Spaceship extends Block implements EntityBlock{
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
+	public static final BooleanProperty MOVED=BooleanProperty.create("moved");
 	public Spaceship(){
 		super(Properties.of().strength(5F,6F).sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops().noOcclusion().pushReaction(PushReaction.BLOCK));
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH));
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(MOVED,false));
 	}
 	public Set<BlockPos> getGhostPositions(BlockPos masterPos){
 		Set<BlockPos> positions=new HashSet<>();
@@ -57,7 +60,7 @@ public class Spaceship extends Block implements EntityBlock{
 	}
 	@Override
 	public boolean canSurvive(@NotNull BlockState blockState,@NotNull LevelReader level,@NotNull BlockPos pos){
-		if(pos.getY()==318)return false;
+		if(pos.getY()==318) return false;
 		BlockPos finalMasterPos=pos.above();
 		boolean blocked=!level.getBlockState(finalMasterPos).canBeReplaced();
 		for(BlockPos ghostPos: getGhostPositions(finalMasterPos)){
@@ -74,7 +77,7 @@ public class Spaceship extends Block implements EntityBlock{
 		if(!level.isClientSide()){
 			BlockPos finalMasterPos=pos.above();
 			level.setBlock(pos,Blocks.AIR.defaultBlockState(),3);
-			level.setBlock(finalMasterPos,blockState,3);
+			level.setBlock(finalMasterPos,blockState.setValue(MOVED,true),3);
 			for(BlockPos ghostPos: getGhostPositions(finalMasterPos)){
 				level.setBlock(ghostPos,DifModBlocks.SPACESHIP_GHOST_BLOCK.get().defaultBlockState(),3);
 			}
@@ -82,7 +85,7 @@ public class Spaceship extends Block implements EntityBlock{
 	}
 	@Override
 	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
-		if(!state.is(newState.getBlock())&&!world.isClientSide()){
+		if(!state.is(newState.getBlock())&&!world.isClientSide()&&state.getValue(MOVED)){
 			for(BlockPos ghostPos: getGhostPositions(pos)){
 				if(world.getBlockState(ghostPos).is(DifModBlocks.SPACESHIP_GHOST_BLOCK.get())){
 					world.setBlock(ghostPos,Blocks.AIR.defaultBlockState(),3);
@@ -102,7 +105,7 @@ public class Spaceship extends Block implements EntityBlock{
 					return Component.literal("Spaceship");
 				}
 				@Override
-				public AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory, @NotNull Player player) {
+				public AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory,@NotNull Player player){
 					return new SpaceshipMenu(id,inventory,new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos));
 				}
 			},pos);
@@ -114,13 +117,13 @@ public class Spaceship extends Block implements EntityBlock{
 		return new SpaceshipBlockEntity(pos,blockState);
 	}
 	@Override
-	public MenuProvider getMenuProvider(@NotNull BlockState state, Level worldIn, @NotNull BlockPos pos) {
-		BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-		return tileEntity instanceof MenuProvider menuProvider ? menuProvider : null;
+	public MenuProvider getMenuProvider(@NotNull BlockState state,Level worldIn,@NotNull BlockPos pos){
+		BlockEntity tileEntity=worldIn.getBlockEntity(pos);
+		return tileEntity instanceof MenuProvider menuProvider?menuProvider:null;
 	}
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
-		builder.add(FACING);
+		builder.add(FACING,MOVED);
 	}
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context){
