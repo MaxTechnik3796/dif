@@ -23,7 +23,7 @@ public class ComposterFurnaceInjector{
 		ComposterBlock.COMPOSTABLES.put(DifModItems.CHERRY.get(),0.6F);
 	}
 	@SubscribeEvent
-	public static void furnaceFuelBurnTimeEvent(FurnaceFuelBurnTimeEvent event) {
+	public static void furnaceFuelBurnTimeEvent(FurnaceFuelBurnTimeEvent event){
 		ItemStack itemstack=event.getItemStack();
 		if(itemstack.getItem().equals(Items.PAPER))event.setBurnTime(5);
 	}

@@ -18,10 +18,8 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.Set;
 @Mod.EventBusSubscriber(modid=DifMod.MODID,bus=Mod.EventBusSubscriber.Bus.FORGE)
 public class SpaceSurvivalHandler{
-	private static final TagKey<Item> SPACE_SUIT_TAG=TagKey.create(Registries.ITEM,
-			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"space_suit"));
-	private static final ResourceKey<DamageType> OXYGEN_DAMAGE=ResourceKey.create(Registries.DAMAGE_TYPE,
-			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"oxygen_suffocation"));
+	private static final TagKey<Item> SPACE_SUIT_TAG=TagKey.create(Registries.ITEM,ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"space_suit"));
+	private static final ResourceKey<DamageType> OXYGEN_DAMAGE=ResourceKey.create(Registries.DAMAGE_TYPE,ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"oxygen_suffocation"));
 	private static final Set<ResourceKey<Level>> DANGEROUS_DIMENSIONS=Set.of(
 			ResourceKey.create(Registries.DIMENSION,ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"orbit")),
 			ResourceKey.create(Registries.DIMENSION,ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"moon"))

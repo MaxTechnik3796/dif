@@ -1,15 +1,22 @@
 package cz.maxtechnik.dif.init.basic;
 
+import com.simibubi.create.AllBlocks;
+import com.simibubi.create.AllCreativeModeTabs;
+import com.simibubi.create.AllItems;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.DifModCommonConfig;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import vectorwing.farmersdelight.common.registry.ModCreativeTabs;
 import vectorwing.farmersdelight.common.registry.ModItems;
+
+import java.util.Objects;
 
 import static cz.maxtechnik.dif.item.modular.ModularBase.*;
 public class DifModTabs{
@@ -26,7 +33,7 @@ public class DifModTabs{
 		tabData.accept(DifModItems.WASHING_MACHINE.get());
 		tabData.accept(DifModItems.AIR_CONDITIONING.get());
 		tabData.accept(DifModItems.BURNING_GENERATOR.get());
-		tabData.accept(DifModItems.FLUID_HATCH.get());
+		//tabData.accept(DifModItems.FLUID_HATCH.get());
 		tabData.accept(DifModItems.ANDESITE_LATTICE.get());
 		tabData.accept(DifModItems.ANDESITE_WINDOW.get());
 		tabData.accept(DifModItems.SUPER_BOX.get());
@@ -74,6 +81,40 @@ public class DifModTabs{
 
 		tabData.accept(DifModItems.INCOMPLETE_UNIVERSAL.get());
 	})).build());
+	public static final RegistryObject<CreativeModeTab>SPACE=REGISTER.register("space",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.space")).icon(()->new ItemStack(DifModItems.SPACESHIP.get())).displayItems(((parameters,tabData)->{
+		tabData.accept(DifModItems.SPACESHIP.get());
+		tabData.accept(DifModItems.SPACE_ENGINE.get());
+		tabData.accept(DifModItems.SPACE_SCAFFOLDING.get());
+
+		tabData.accept(DifModItems.FUEL_BUCKET.get());
+		tabData.accept(DifModItems.ROCKET_FUEL.get());
+		tabData.accept(DifModItems.EMPTY_ROCKET_FUEL.get());
+
+		tabData.accept(DifModItems.AURORA_CASING.get());
+		tabData.accept(DifModItems.AURORA_INGOT.get());
+
+		tabData.accept(DifModItems.SPACE_CASING.get());
+		tabData.accept(DifModItems.SPACE_CASING_METAL.get());
+		tabData.accept(DifModItems.SPACE_CASING_REINFORCED.get());
+		tabData.accept(DifModItems.SPACE_DOOR.get());
+		tabData.accept(DifModItems.SPACE_CORRIDOR.get());
+		tabData.accept(DifModItems.SPACE_CRATE.get());
+		tabData.accept(DifModItems.SOLAR_PANEL_BLOCK.get());
+
+		tabData.accept(DifModItems.SPACE_SUIT_HELMET.get());
+		tabData.accept(DifModItems.SPACE_SUIT_CHESTPLATE.get());
+		tabData.accept(DifModItems.SPACE_SUIT_LEGGINGS.get());
+		tabData.accept(DifModItems.SPACE_SUIT_BOOTS.get());
+		tabData.accept(DifModItems.CARBON_SUIT_HELMET.get());
+		tabData.accept(DifModItems.CARBON_SUIT_CHESTPLATE.get());
+		tabData.accept(DifModItems.CARBON_SUIT_LEGGINGS.get());
+		tabData.accept(DifModItems.CARBON_SUIT_BOOTS.get());
+
+		tabData.accept(DifModItems.MOON_STONE.get());
+		tabData.accept(DifModItems.MARS_STONE.get());
+	})).build());
+
+
 	public static void addCreative(BuildCreativeModeTabContentsEvent tabData){
 		if(tabData.getTabKey().equals(CreativeModeTabs.BUILDING_BLOCKS)){
 			tabData.getEntries().putAfter(new ItemStack(Items.SMOOTH_STONE),new ItemStack(DifModItems.SMOOTH_STONE_DOUBLE_SLAB.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
@@ -202,39 +243,14 @@ public class DifModTabs{
 			tabData.accept(ironPickaxe);
 
 
-
-			tabData.accept(DifModItems.AURORA_CASING.get());
-			tabData.accept(DifModItems.AURORA_INGOT.get());
-			tabData.accept(DifModItems.ROCKET_FUEL.get());
-			tabData.accept(DifModItems.EMPTY_ROCKET_FUEL.get());
-			tabData.accept(DifModItems.SPACE_SUIT_HELMET.get());
-			tabData.accept(DifModItems.SPACE_SUIT_CHESTPLATE.get());
-			tabData.accept(DifModItems.SPACE_SUIT_LEGGINGS.get());
-			tabData.accept(DifModItems.SPACE_SUIT_BOOTS.get());
-			tabData.accept(DifModItems.CARBON_SUIT_HELMET.get());
-			tabData.accept(DifModItems.CARBON_SUIT_CHESTPLATE.get());
-			tabData.accept(DifModItems.CARBON_SUIT_LEGGINGS.get());
-			tabData.accept(DifModItems.CARBON_SUIT_BOOTS.get());
-			tabData.accept(DifModItems.SPACESHIP.get());
-			tabData.accept(DifModItems.SPACE_ENGINE.get());
-			tabData.accept(DifModItems.SPACE_SCAFFOLDING.get());
-			tabData.accept(DifModItems.SPACE_CASING.get());
-			tabData.accept(DifModItems.SPACE_CASING_METAL.get());
-			tabData.accept(DifModItems.SPACE_CASING_REINFORCED.get());
-			tabData.accept(DifModItems.SPACE_CORRIDOR.get());
-			tabData.accept(DifModItems.SPACE_CRATE.get());
-			tabData.accept(DifModItems.SOLAR_PANEL_BLOCK.get());
-			tabData.accept(DifModItems.SPACE_DOOR.get());
-			tabData.accept(DifModItems.FUEL_BUCKET.get());
-			tabData.accept(DifModItems.MOON_STONE.get());
-			tabData.accept(DifModItems.MARS_STONE.get());
-			tabData.accept(DifModItems.BROKEN_TRACK00.get());
-			tabData.accept(DifModItems.BROKEN_TRACK01.get());
-			tabData.accept(DifModItems.BROKEN_TRACK02.get());
-
-
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
 			tabData.getEntries().putAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(DifModItems.TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		}else if(tabData.getTab().equals(AllCreativeModeTabs.BASE_CREATIVE_TAB.get())){
+			tabData.getEntries().putAfter(new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("create","item_hatch")))),new ItemStack(DifModItems.FLUID_HATCH.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		}else if(tabData.getTab().equals(AllCreativeModeTabs.PALETTES_CREATIVE_TAB.get())){
+			tabData.getEntries().putAfter(new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("create","framed_glass_trapdoor")))),new ItemStack(DifModItems.BROKEN_TRACK00.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.BROKEN_TRACK00.get()),new ItemStack(DifModItems.BROKEN_TRACK01.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.BROKEN_TRACK01.get()),new ItemStack(DifModItems.BROKEN_TRACK02.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 		}
 	}
 }

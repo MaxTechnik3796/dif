@@ -5,6 +5,10 @@
 	"effect.dif.drank":"Drank",
 	"effect.dif.wtf":"WTF",
 
+	"death.attack.oxygen_suffocation":"%1$s suffocated",
+	"death.attack.oxygen_suffocation.item":"%1$s was suffocated by %2$s using %3$s",
+	"death.attack.oxygen_suffocation.player":"%1$s suffocated whilst trying to escape %2$s",
+	
 	"gui.dif.inventory":"Inventory",
 	"gui.dif.burning_generator":"Burning Generator",
 	"gui.dif.invalid_fuel0":"This is not",
@@ -62,6 +66,7 @@
 
 
 	"creative_tab.dif.main":"TheDifferential: Main",
+	"creative_tab.dif.space":"TheDifferential: Space & Tech",
 
 	"item.dif.example_item":"Example Item",
 	"item.dif.question_mark":"Question Mark",
