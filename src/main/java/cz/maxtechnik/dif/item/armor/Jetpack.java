@@ -9,11 +9,11 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
-public class JetpackItem extends ArmorItem {
+public class Jetpack extends ArmorItem {
 	public static final int MAX_MAIN = 100;
 	public static final int MAX_TANK = 20;
 
-	public JetpackItem(ArmorMaterial mat, Properties props) {
+	public Jetpack(ArmorMaterial mat,Properties props) {
 		super(mat, Type.CHESTPLATE, props.defaultDurability(MAX_MAIN).setNoRepair());
 	}
 

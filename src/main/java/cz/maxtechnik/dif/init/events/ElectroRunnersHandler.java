@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.init.events;
 
-import cz.maxtechnik.dif.item.armor.ElectroRunnersItem;
+import cz.maxtechnik.dif.item.armor.ElectroRunners;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +17,7 @@ public class ElectroRunnersHandler {
 	public static void onJump(LivingEvent.LivingJumpEvent event) {
 		if (event.getEntity() instanceof Player player) {
 			ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-			if (boots.getItem() instanceof ElectroRunnersItem && ElectroRunnersItem.getEnergy(boots) > 0) {
+			if (boots.getItem() instanceof ElectroRunners&& ElectroRunners.getEnergy(boots) > 0) {
 				// Skok na 2 bloky bez spotřeby energie
 				player.setDeltaMovement(player.getDeltaMovement().x, 0.6D, player.getDeltaMovement().z);
 			}
@@ -27,7 +27,7 @@ public class ElectroRunnersHandler {
 	public static void onFall(LivingFallEvent event) {
 		if (event.getEntity() instanceof Player player) {
 			ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-			if (boots.getItem() instanceof ElectroRunnersItem && ElectroRunnersItem.getEnergy(boots) > 0) {
+			if (boots.getItem() instanceof ElectroRunners&& ElectroRunners.getEnergy(boots) > 0) {
 				// Pokud je pád z 5 a méně bloků, zrušíme poškození
 				if (event.getDistance() <= 5.0F) {
 					event.setDistance(0);
@@ -40,9 +40,9 @@ public class ElectroRunnersHandler {
 	public static void onHurt(LivingHurtEvent event) {
 		if (event.getEntity() instanceof Player player) {
 			ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-			if (boots.getItem() instanceof ElectroRunnersItem) {
+			if (boots.getItem() instanceof ElectroRunners) {
 				// Jakýkoliv damage (včetně pádu nad 5 bloků) ubere 10 EU
-				ElectroRunnersItem.extract(boots, 10);
+				ElectroRunners.extract(boots, 10);
 			}
 		}
 	}

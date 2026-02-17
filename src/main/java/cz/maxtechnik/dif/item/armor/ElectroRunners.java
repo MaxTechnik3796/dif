@@ -25,12 +25,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-public class ElectroRunnersItem extends ArmorItem {
+public class ElectroRunners extends ArmorItem {
 	public static final int MAX = 1000;
 	private static final UUID S_MOD = UUID.fromString("a4e29252-1234-4567-890a-1234567890ab");
 	private static final UUID H_MOD = UUID.fromString("b5f39363-1234-4567-890a-1234567890ac");
 	private static final UUID A_MOD = UUID.fromString("c6d49474-1234-4567-890a-1234567890ad");
-	public ElectroRunnersItem(ArmorMaterial mat, Properties props) {
+	public ElectroRunners(ArmorMaterial mat,Properties props) {
 		super(mat, Type.BOOTS, props.defaultDurability(0).setNoRepair());
 	}
 	@Override public boolean isEnchantable(ItemStack s) { return false; }

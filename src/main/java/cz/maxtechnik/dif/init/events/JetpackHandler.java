@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.init.events;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.item.armor.JetpackItem;
+import cz.maxtechnik.dif.item.armor.Jetpack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -36,7 +36,7 @@ public class JetpackHandler {
 		// Na konci metody aktualizujeme mapu pro příští tick
 		wasOnGround.put(player.getUUID(), player.onGround());
 
-		if (!(chest.getItem() instanceof JetpackItem)) return;
+		if (!(chest.getItem() instanceof Jetpack)) return;
 
 		// --- DETEKCE SKOKU (Reflection) ---
 		boolean isJumping;
@@ -54,8 +54,8 @@ public class JetpackHandler {
 			return;
 		}
 
-		int tank = JetpackItem.getTankFuel(chest);
-		int main = JetpackItem.getMainFuel(chest);
+		int tank = Jetpack.getTankFuel(chest);
+		int main = Jetpack.getMainFuel(chest);
 
 		// --- LOGIKA LETU ---
 		// Podmínka: Hráč skáče, není na zemi, neletí creativně...
@@ -67,7 +67,7 @@ public class JetpackHandler {
 				player.setDeltaMovement(v.x, 0.4, v.z);
 				player.fallDistance = 0;
 
-				JetpackItem.setTankFuel(chest, tank - 1);
+				Jetpack.setTankFuel(chest, tank - 1);
 				showOverlay(player, tank - 1, false);
 			}
 		}
@@ -75,21 +75,21 @@ public class JetpackHandler {
 		else if (player.onGround()) {
 
 			// 1. Doplnění operační nádrže z hlavní nádrže
-			if (tank < JetpackItem.MAX_TANK && main > 0) {
-				int toAdd = Math.min(1, JetpackItem.MAX_TANK - tank);
+			if (tank < Jetpack.MAX_TANK && main > 0) {
+				int toAdd = Math.min(1, Jetpack.MAX_TANK - tank);
 				toAdd = Math.min(toAdd, main);
 
 				if (toAdd > 0) {
 					if (!player.level().isClientSide()) {
 						// SERVER: Skutečná změna dat
-						JetpackItem.setMainFuel(chest, main - toAdd);
-						JetpackItem.setTankFuel(chest, tank + toAdd);
+						Jetpack.setMainFuel(chest, main - toAdd);
+						Jetpack.setTankFuel(chest, tank + toAdd);
 						player.getInventory().setChanged();
 					} else {
 						// KLIENT: Vizuální simulace (aby se odečítal i Main Bar plynule)
 						// Tím se opraví ten bug, že to vypadá, že se nedoplňuje
-						JetpackItem.setMainFuel(chest, main - toAdd);
-						JetpackItem.setTankFuel(chest, tank + toAdd);
+						Jetpack.setMainFuel(chest, main - toAdd);
+						Jetpack.setTankFuel(chest, tank + toAdd);
 					}
 					showOverlay(player, tank + toAdd, true);
 				}
@@ -100,10 +100,10 @@ public class JetpackHandler {
 				if (player.level().getGameTime() % 40 == 0) {
 					for (int i = 0; i < 9; i++) {
 						ItemStack fuelStack = player.getInventory().getItem(i);
-						if (JetpackItem.isFuel(fuelStack)) {
+						if (Jetpack.isFuel(fuelStack)) {
 							if (!player.level().isClientSide()) {
 								fuelStack.shrink(1);
-								JetpackItem.setMainFuel(chest, 100);
+								Jetpack.setMainFuel(chest, 100);
 								player.getInventory().setChanged();
 								player.displayClientMessage(Component.literal("§aPalivo doplněno z hotbaru!"), true);
 							}
@@ -116,11 +116,11 @@ public class JetpackHandler {
 	}
 
 	private static void showOverlay(Player player, int tank, boolean recharging) {
-		if (tank < JetpackItem.MAX_TANK || recharging) {
+		if (tank < Jetpack.MAX_TANK || recharging) {
 			String icon = recharging ? "⚡ " : "🚀 ";
 			ChatFormatting color = recharging ? ChatFormatting.YELLOW : ChatFormatting.AQUA;
 
-			int percent = (int) ((tank / (float) JetpackItem.MAX_TANK) * 100);
+			int percent = (int) ((tank / (float) Jetpack.MAX_TANK) * 100);
 			int filledBlocks = tank / 2;
 
 			String bar = "■".repeat(Math.max(0, filledBlocks)) + "□".repeat(Math.max(0, 10 - filledBlocks));

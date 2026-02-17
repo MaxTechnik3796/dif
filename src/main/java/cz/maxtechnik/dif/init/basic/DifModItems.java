@@ -42,8 +42,8 @@ public class DifModItems{
 
 	public static final RegistryObject<Item>MODULAR_PART_HANDLE=REGISTRY.register("handle",ModularPart::new);
 
-	public static final RegistryObject<Item> ELECTRO_RUNNERS = REGISTRY.register("electro_runners",() -> new ElectroRunnersItem(ArmorMaterials.NETHERITE, new Item.Properties().stacksTo(1)));
-	public static final RegistryObject<Item> JETPACK = REGISTRY.register("jetpack",() -> new JetpackItem(ArmorMaterials.IRON, new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<Item> ELECTRO_RUNNERS = REGISTRY.register("electro_runners",() -> new ElectroRunners(ArmorMaterials.NETHERITE, new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<Item> JETPACK = REGISTRY.register("jetpack",() -> new Jetpack(ArmorMaterials.IRON, new Item.Properties().stacksTo(1)));
 
 	public static final RegistryObject<Item>EXAMPLE_BLOCK=block(DifModBlocks.EXAMPLE_BLOCK);
 
