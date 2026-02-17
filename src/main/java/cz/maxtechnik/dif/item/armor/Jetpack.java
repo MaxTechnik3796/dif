@@ -43,7 +43,7 @@ public abstract class Jetpack extends ArmorItem{
 			}
 			@Override
 			public int getEnchantmentValue(){
-				return 12;
+				return 0;
 			}
 			@Override
 			public @NotNull SoundEvent getEquipSound(){
