@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.fluid.types;
+package cz.maxtechnik.dif.fluid.type;
 
 import cz.maxtechnik.dif.DifMod;
 import net.minecraftforge.fluids.FluidType;

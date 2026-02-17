@@ -1,5 +1,5 @@
 
-package cz.maxtechnik.dif.fluid.types;
+package cz.maxtechnik.dif.fluid.type;
 
 import cz.maxtechnik.dif.DifMod;
 import net.minecraft.resources.ResourceLocation;
@@ -9,14 +9,14 @@ import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fluids.FluidType;
 
 import java.util.function.Consumer;
-public class BeerFluidType extends FluidType{
-	public BeerFluidType(){
+public class XpFluidType extends FluidType{
+	public XpFluidType(){
 		super(Properties.create().fallDistanceModifier(0F).canExtinguish(true).supportsBoating(true).canHydrate(true).motionScale(0.007D).sound(SoundActions.BUCKET_FILL,SoundEvents.BUCKET_FILL).sound(SoundActions.BUCKET_EMPTY,SoundEvents.BUCKET_EMPTY).sound(SoundActions.FLUID_VAPORIZE,SoundEvents.FIRE_EXTINGUISH));
 	}
 	@Override
 	public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer){
 		consumer.accept(new IClientFluidTypeExtensions(){
-			private static final ResourceLocation STILL_TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/beer_fluid_still"),FLOWING_TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/beer_fluid_flow");
+			private static final ResourceLocation STILL_TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/xp_fluid_still"),FLOWING_TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/xp_fluid_flow");
 			@Override
 			public ResourceLocation getStillTexture(){
 				return STILL_TEXTURE;

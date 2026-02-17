@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.fluid;
+package cz.maxtechnik.dif.fluid.fluid;
 
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;

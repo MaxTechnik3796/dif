@@ -68,6 +68,7 @@ public class DifModItems{
 	public static final RegistryObject<Item> BEER_BUCKET=REGISTRY.register("beer_bucket",BeerBucket::new);
 	public static final RegistryObject<Item> XP_BUCKET=REGISTRY.register("xp_bucket",XpBucket::new);
 	public static final RegistryObject<Item> FUEL_BUCKET=REGISTRY.register("fuel_bucket",FuelBucket::new);
+	public static final RegistryObject<Item>CIDER_BUCKET=REGISTRY.register("cider_bucket",CiderBucket::new);
 
 	//Vanilla + :
 	public static final RegistryObject<Item> END_PORTAL=V_REGISTRY.register("end_portal",()->new BlockItem(Blocks.END_PORTAL,new Item.Properties()));
@@ -98,6 +99,7 @@ public class DifModItems{
 	public static final RegistryObject<Item> HORSE_MEAT=REGISTRY.register("horse_meat",()->new CustomMeat(2,0.1F));
 	public static final RegistryObject<Item> COOKED_HORSE_MEAT=REGISTRY.register("cooked_horse_meat",()->new CustomMeat(6,0.8F));
 
+	public static final RegistryObject<Item>CIDER_BOTTLE=REGISTRY.register("cider_bottle",CiderBottle::new);
 	public static final RegistryObject<Item> BURNED_TOAST=REGISTRY.register("burned_toast",()->new Custom(3,0.1F));
 
 	public static final RegistryObject<Item> CREATE_CAN=REGISTRY.register("create_can",Can::new);

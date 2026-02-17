@@ -46,6 +46,11 @@
 	"fluid.dif.fuel_fluid":"Fuel",
 	"fluid_type.dif.fuel_fluid":"Fuel",
 
+	"item.dif.cider_bucket":"Cider Bucket",
+	"block.dif.cider_fluid":"Cider",
+	"fluid.dif.cider_fluid":"Cider",
+	"fluid_type.dif.cider_fluid":"Cider",
+
 	"item.dif.mayonnaise.desc":"§7Mayonnaise on an escalator! - Harry Arbuckle§r",
 	"item.dif.cremeka.desc":"§7Cremeka song! - CZ|Ted<3 & AI§r",
 	"item.dif.maty_create.desc":"§7Maty Create Song - Matrixgold§r",
@@ -113,6 +118,8 @@
 	"item.dif.mata":"Máta",
 	"block.dif.mata_plant":"Mátová Rostlina",
 	"block.dif.maty_block":"Máty Block",
+
+	"item.dif.cider_bottle":"Cider Bottle",
 
 	"item.dif.mithril_plate":"Mithril Plate",
 	"item.dif.mithril":"Mithril",
@@ -307,7 +314,7 @@
 	"item.dif.space_suit_chestplate":"Space Suit Chestplate",
 	"item.dif.tier_upgrade":"Tier Upgrade",
 
-	"ietm.dif.electro_runners":"Electro Runners",
+	"item.dif.electro_runners":"Electro Runners",
 	"item.dif.jetpack":"Jetpack",
 	"item.dif.jetpack_fuel":"Jetpack Fuel",
 	"item.dif.jetpack_turbo_fuel":"Jetpack TURBO Fuel",

@@ -1,9 +1,7 @@
 package cz.maxtechnik.dif.init.fluid;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.fluid.types.BeerFluidType;
-import cz.maxtechnik.dif.fluid.types.FuelFluidType;
-import cz.maxtechnik.dif.fluid.types.XpFluidType;
+import cz.maxtechnik.dif.fluid.type.*;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -13,4 +11,5 @@ public class DifModFluidTypes{
 	public static final RegistryObject<FluidType>BEER_TYPE=REGISTRY.register("beer_fluid",BeerFluidType::new);
 	public static final RegistryObject<FluidType>XP_TYPE=REGISTRY.register("xp_fluid",XpFluidType::new);
 	public static final RegistryObject<FluidType>FUEL_TYPE=REGISTRY.register("fuel_fluid",FuelFluidType::new);
+	public static final RegistryObject<FluidType>CIDER_TYPE=REGISTRY.register("cider_fluid",CiderFluidType::new);
 }

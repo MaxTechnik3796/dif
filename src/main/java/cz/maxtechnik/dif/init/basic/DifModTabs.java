@@ -86,7 +86,6 @@ public class DifModTabs{
 		tabData.accept(DifModItems.SPACE_ENGINE.get());
 		tabData.accept(DifModItems.SPACE_SCAFFOLDING.get());
 
-		tabData.accept(DifModItems.FUEL_BUCKET.get());
 		tabData.accept(DifModItems.ROCKET_FUEL.get());
 		tabData.accept(DifModItems.EMPTY_ROCKET_FUEL.get());
 
@@ -169,6 +168,8 @@ public class DifModTabs{
 			tabData.getEntries().putBefore(new ItemStack(Items.BUCKET),new ItemStack(DifModItems.ELECTRUM_DESTROYER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.getEntries().putAfter(new ItemStack(Items.LAVA_BUCKET),new ItemStack(DifModItems.BEER_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.getEntries().putAfter(new ItemStack(DifModItems.BEER_BUCKET.get()),new ItemStack(DifModItems.XP_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.XP_BUCKET.get()),new ItemStack(DifModItems.CIDER_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.CIDER_BUCKET.get()),new ItemStack(DifModItems.FUEL_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.accept(DifModItems.CREMEKA.get());
 			tabData.accept(DifModItems.MATY_CREATE.get());
 			tabData.accept(DifModItems.MAYONNAISE.get());
@@ -213,6 +214,7 @@ public class DifModTabs{
 			tabData.getEntries().putAfter(new ItemStack(DifModItems.MATY_DRINK.get()),new ItemStack(DifModItems.FERNET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.getEntries().putAfter(new ItemStack(DifModItems.FERNET.get()),new ItemStack(DifModItems.WINE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.getEntries().putAfter(new ItemStack(DifModItems.WINE.get()),new ItemStack(DifModItems.CHERRY_BOTTLE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.CHERRY_BOTTLE.get()),new ItemStack(DifModItems.CIDER_BOTTLE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.accept(DifModItems.BOTTLE_OF_MOLOTOVUV_KOKTEJL.get());
 			tabData.accept(DifModItems.BOTTLE_OF_URANOVEJ_KOKTEJL.get());
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.INGREDIENTS)){
