@@ -9,69 +9,58 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
-public class Jetpack extends ArmorItem {
+public class JetpackItem extends ArmorItem {
 	public static final int MAX_MAIN = 100;
-	public static final int MAX_TANK = 20;
+	public static final int MAX_THRUST = 20;
 
-	public Jetpack(ArmorMaterial mat,Properties props) {
-		super(mat, Type.CHESTPLATE, props.defaultDurability(MAX_MAIN).setNoRepair());
+	public JetpackItem(ArmorMaterial mat, Properties props) {
+		// Používáme stacksTo(1), ale NEDÁVÁME durability, aby se to nebilo s NBT
+		super(mat, Type.CHESTPLATE, props.stacksTo(1).setNoRepair());
 	}
 
-	// --- NBT POMOCNÉ METODY ---
 	public static int getMainFuel(ItemStack s) {
-		CompoundTag tag = s.getTag();
-		return tag != null ? tag.getInt("MainFuel") : 0;
+		return (s.hasTag() && s.getTag().contains("MainFuel")) ? s.getTag().getInt("MainFuel") : 0;
 	}
 
 	public static void setMainFuel(ItemStack s, int v) {
-		s.getOrCreateTag().putInt("MainFuel", Math.max(0, Math.min(v, MAX_MAIN)));
+		s.getOrCreateTag().putInt("MainFuel", Mth.clamp(v, 0, MAX_MAIN));
 	}
 
-	public static int getTankFuel(ItemStack s) {
-		CompoundTag tag = s.getTag();
-		return tag != null ? tag.getInt("TankFuel") : 0;
+	public static int getThrustFuel(ItemStack s) {
+		return (s.hasTag() && s.getTag().contains("ThrustFuel")) ? s.getTag().getInt("ThrustFuel") : 0;
 	}
 
-	public static void setTankFuel(ItemStack s, int v) {
-		s.getOrCreateTag().putInt("TankFuel", Math.max(0, Math.min(v, MAX_TANK)));
+	public static void setThrustFuel(ItemStack s, int v) {
+		s.getOrCreateTag().putInt("ThrustFuel", Mth.clamp(v, 0, MAX_THRUST));
 	}
 
-	// --- LOGIKA PALIVA (HOTBAR REFILL) ---
 	public static boolean isFuel(ItemStack stack) {
 		return !stack.isEmpty() && stack.hasTag() && stack.getTag().getBoolean("JetpackFuel");
 	}
 
-	// --- ZÁKAZ ENCHANTU ---
+	@Override public boolean isEnchantable(ItemStack s) { return false; }
+	@Override public boolean isBookEnchantable(ItemStack s, ItemStack b) { return false; }
+
+	// --- VIZUÁLNÍ BAR (Main Fuel) ---
 	@Override
-	public boolean isEnchantable(ItemStack stack) {
-		return false;
+	public boolean isBarVisible(ItemStack s) {
+		return true; // Bar chceme vidět pořád
 	}
 
 	@Override
-	public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-		return false;
-	}
-
-	// --- DAMAGE BAR (Main Storage) ---
-	@Override
-	public boolean isBarVisible(ItemStack stack) {
-		return getMainFuel(stack) < MAX_MAIN;
+	public int getBarWidth(ItemStack s) {
+		return Math.round(13.0F * (float) getMainFuel(s) / (float) MAX_MAIN);
 	}
 
 	@Override
-	public int getBarWidth(ItemStack stack) {
-		return Math.round(13.0F * (float) getMainFuel(stack) / (float) MAX_MAIN);
-	}
-
-	@Override
-	public int getBarColor(ItemStack stack) {
-		float f = (float) getMainFuel(stack) / (float) MAX_MAIN;
-		return Mth.hsvToRgb(f * 0.6F, 1.0F, 1.0F);
+	public int getBarColor(ItemStack s) {
+		float f = Math.max(0.0F, (float) getMainFuel(s) / (float) MAX_MAIN);
+		return Mth.hsvToRgb(f * 0.33F, 1.0F, 1.0F); // Červená -> Zelená
 	}
 
 	@Override
 	public void appendHoverText(ItemStack s, @Nullable Level l, List<Component> t, TooltipFlag f) {
-		t.add(Component.literal("Main Tank: " + getMainFuel(s) + " / " + MAX_MAIN).withStyle(ChatFormatting.GRAY));
-		t.add(Component.literal("Thruster: " + getTankFuel(s) + " / " + MAX_TANK).withStyle(ChatFormatting.AQUA));
+		t.add(Component.literal("Main Storage: " + getMainFuel(s) + " / " + MAX_MAIN).withStyle(ChatFormatting.GRAY));
+		t.add(Component.literal("Thrust Tank: " + getThrustFuel(s) + " / " + MAX_THRUST).withStyle(ChatFormatting.AQUA));
 	}
 }
