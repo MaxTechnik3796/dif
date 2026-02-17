@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.item.armor;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.*;
@@ -14,12 +13,12 @@ public class JetpackItem extends ArmorItem {
 	public static final int MAX_THRUST = 20;
 
 	public JetpackItem(ArmorMaterial mat, Properties props) {
-		// Používáme stacksTo(1), ale NEDÁVÁME durability, aby se to nebilo s NBT
 		super(mat, Type.CHESTPLATE, props.stacksTo(1).setNoRepair());
 	}
 
 	public static int getMainFuel(ItemStack s) {
-		return (s.hasTag() && s.getTag().contains("MainFuel")) ? s.getTag().getInt("MainFuel") : 0;
+		if (!s.hasTag() || !s.getTag().contains("MainFuel")) return 0;
+		return s.getTag().getInt("MainFuel");
 	}
 
 	public static void setMainFuel(ItemStack s, int v) {
@@ -27,7 +26,8 @@ public class JetpackItem extends ArmorItem {
 	}
 
 	public static int getThrustFuel(ItemStack s) {
-		return (s.hasTag() && s.getTag().contains("ThrustFuel")) ? s.getTag().getInt("ThrustFuel") : 0;
+		if (!s.hasTag() || !s.getTag().contains("ThrustFuel")) return 0;
+		return s.getTag().getInt("ThrustFuel");
 	}
 
 	public static void setThrustFuel(ItemStack s, int v) {
@@ -41,11 +41,13 @@ public class JetpackItem extends ArmorItem {
 	@Override public boolean isEnchantable(ItemStack s) { return false; }
 	@Override public boolean isBookEnchantable(ItemStack s, ItemStack b) { return false; }
 
-	// --- VIZUÁLNÍ BAR (Main Fuel) ---
 	@Override
-	public boolean isBarVisible(ItemStack s) {
-		return true; // Bar chceme vidět pořád
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+		return slotChanged || oldStack.getItem() != newStack.getItem();
 	}
+
+	@Override
+	public boolean isBarVisible(ItemStack s) { return true; }
 
 	@Override
 	public int getBarWidth(ItemStack s) {
@@ -55,7 +57,7 @@ public class JetpackItem extends ArmorItem {
 	@Override
 	public int getBarColor(ItemStack s) {
 		float f = Math.max(0.0F, (float) getMainFuel(s) / (float) MAX_MAIN);
-		return Mth.hsvToRgb(f * 0.33F, 1.0F, 1.0F); // Červená -> Zelená
+		return Mth.hsvToRgb(f * 0.33F, 1.0F, 1.0F);
 	}
 
 	@Override
