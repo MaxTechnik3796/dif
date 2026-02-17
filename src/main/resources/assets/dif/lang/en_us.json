@@ -305,8 +305,11 @@
 	"item.dif.space_suit_helmet":"Space Suit Helmet",
 	"item.dif.space_suit_leggings":"Space Suit Leggings",
 	"item.dif.space_suit_chestplate":"Space Suit Chestplate",
-	"item.dif.tier_upgrade":"Tier Upgrade"
+	"item.dif.tier_upgrade":"Tier Upgrade",
 
-
+	"item.dif.jetpack":"Jetpack",
+	"item.dif.jetpack_fuel":"Jetpack Fuel",
+	"item.dif.jetpack_turbo_fuel":"Jetpack TURBO Fuel",
+	"item.dif.cell":"Cell"
 
 }

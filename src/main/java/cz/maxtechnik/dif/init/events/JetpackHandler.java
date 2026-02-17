@@ -1,7 +1,8 @@
 package cz.maxtechnik.dif.init.events;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.item.armor.JetpackItem;
+import cz.maxtechnik.dif.DifModCommonConfig;
+import cz.maxtechnik.dif.item.armor.Jetpack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -22,31 +23,42 @@ public class JetpackHandler{
 		if(event.phase!=TickEvent.Phase.END) return;
 		Player player=event.player;
 		ItemStack chest=player.getItemBySlot(EquipmentSlot.CHEST);
-		if(!(chest.getItem() instanceof JetpackItem)) return;
-		int main=JetpackItem.getMainFuel(chest);
-		int thrust=JetpackItem.getThrustFuel(chest);
+		if(!(chest.getItem() instanceof Jetpack)) return;
+		int main=Jetpack.Chestplate.getMainFuel(chest);
+		int thrust=Jetpack.Chestplate.getThrustFuel(chest);
+		boolean turbo=Jetpack.Chestplate.getTurbo(chest);
 		// --- 1. REFUEL (Main z Inventáře) ---
-		if(main<=0){
-			for(int i=0;i<player.getInventory().getContainerSize();i++){
+		if(main<=0){//player.getInventory().getContainerSize()
+			for(int i=0;i<9;i++){
 				ItemStack fuelStack=player.getInventory().getItem(i);
-				if(JetpackItem.isFuel(fuelStack)){
-					if(!player.level().isClientSide){
+				if(!player.level().isClientSide){
+					if(Jetpack.Chestplate.isTurboFuel(fuelStack)){
 						fuelStack.shrink(1);
-						JetpackItem.setMainFuel(chest,JetpackItem.MAX_MAIN);
+						Jetpack.Chestplate.setMainFuel(chest,DifModCommonConfig.jetpackMaxBasic);
+						Jetpack.Chestplate.setTurbo(chest,true);
+						player.displayClientMessage(Component.literal("Jetpack refueled with TURBO!").withStyle(ChatFormatting.RED),true);
+						main=DifModCommonConfig.jetpackMaxBasic;
+						turbo=true;
+						break;
+					}else if(Jetpack.Chestplate.isFuel(fuelStack)){
+						fuelStack.shrink(1);
+						Jetpack.Chestplate.setMainFuel(chest,DifModCommonConfig.jetpackMaxBasic);
+						Jetpack.Chestplate.setTurbo(chest,false);
 						player.displayClientMessage(Component.literal("Jetpack refueled!").withStyle(ChatFormatting.GREEN),true);
-						main=JetpackItem.MAX_MAIN;
+						main=DifModCommonConfig.jetpackMaxBasic;
+						turbo=false;
+						break;
 					}
-					break;
 				}
 			}
 		}
 		// --- 2. DOBÍJENÍ THRUSTU (Na zemi) ---
 		if(player.onGround()){
-			if(thrust<JetpackItem.MAX_THRUST&&main>0){
-				int toAdd=Math.min(1,Math.min(main,JetpackItem.MAX_THRUST-thrust));
-				JetpackItem.setMainFuel(chest,main-toAdd);
-				JetpackItem.setThrustFuel(chest,thrust+toAdd);
-				showOverlay(player,thrust+toAdd,true);
+			if(thrust<(turbo?DifModCommonConfig.jetpackMaxTurbo:DifModCommonConfig.jetpackMaxThrust)&&main>0){
+				int toAdd=Math.min(1,Math.min(main,(turbo?DifModCommonConfig.jetpackMaxTurbo:DifModCommonConfig.jetpackMaxThrust)-thrust));
+				Jetpack.Chestplate.setMainFuel(chest,main-toAdd);
+				Jetpack.Chestplate.setThrustFuel(chest,thrust+toAdd);
+				showOverlay(player,thrust+toAdd,true,turbo);
 			}
 		}
 		// --- 3. LET (Ve vzduchu) ---
@@ -59,18 +71,18 @@ public class JetpackHandler{
 			if(isJumping&&thrust>0&&!player.getAbilities().flying){
 				player.setDeltaMovement(player.getDeltaMovement().x,0.45,player.getDeltaMovement().z);
 				player.fallDistance=0;
-				JetpackItem.setThrustFuel(chest,thrust-1);
-				showOverlay(player,thrust-1,false);
+				Jetpack.Chestplate.setThrustFuel(chest,thrust-1);
+				showOverlay(player,thrust-1,false,turbo);
 			}
 		}
 	}
-	private static void showOverlay(Player player,int thrust,boolean charging){
+	private static void showOverlay(Player player,int thrust,boolean charging,boolean turbo){
 		String icon=charging?"⚡ ":"🚀 ";
-		ChatFormatting color=charging?ChatFormatting.YELLOW:ChatFormatting.AQUA;
-		int filled=thrust/2;
+		ChatFormatting color=charging?turbo?ChatFormatting.RED:ChatFormatting.YELLOW:ChatFormatting.AQUA;
+		int filled=thrust/(turbo?10:5);
 		String bar="■".repeat(Math.max(0,filled))+"□".repeat(Math.max(0,10-filled));
 		player.displayClientMessage(
-				Component.literal(icon+"THRUST: ["+bar+"] "+(thrust*5)+"%").withStyle(color),
+				Component.literal(icon+"THRUST: ["+bar+"] "+(thrust*2)+"%").withStyle(color),
 				true
 		);
 	}

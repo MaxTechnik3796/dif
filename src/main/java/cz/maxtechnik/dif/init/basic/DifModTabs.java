@@ -114,6 +114,10 @@ public class DifModTabs{
 		tabData.accept(DifModItems.MARS_STONE.get());
 
 		tabData.accept(DifModItems.JETPACK.get());
+		tabData.accept(DifModItems.JETPACK_FUEL.get());
+		tabData.accept(DifModItems.JETPACK_TURBO_FUEL.get());
+		tabData.accept(DifModItems.CELL.get());
+
 		tabData.accept(DifModItems.ELECTRO_RUNNERS.get());
 	})).build());
 

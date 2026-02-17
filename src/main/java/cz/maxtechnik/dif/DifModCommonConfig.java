@@ -22,6 +22,10 @@ public class DifModCommonConfig{
 	private static final ForgeConfigSpec.BooleanValue DISABLE_END;
 	private static final ForgeConfigSpec.IntValue SPACE_SCAFFOLDING_LIFE_TIME;
 
+	private static final ForgeConfigSpec.IntValue JETPACK_MAX_BASIC;
+	private static final ForgeConfigSpec.IntValue JETPACK_MAX_TURBO;
+	private static final ForgeConfigSpec.IntValue JETPACK_MAX_THRUST;
+
 	private static final ForgeConfigSpec.IntValue PORTAL_GUN_MAX_AMMO;
 	private static final ForgeConfigSpec.IntValue PORTAL_GUN_MAX_RANGE;
 	private static final ForgeConfigSpec.IntValue PORTAL_GUN_COOLDOWN;
@@ -53,6 +57,11 @@ public class DifModCommonConfig{
 		DISABLE_END=BUILDER.comment("Disable End dimension, (t/f.)\nDif-reload required!\nDefault value: false").define("disable_end",false);
 		SPACE_SCAFFOLDING_LIFE_TIME=BUILDER.comment("Life Time of Space Scaffolding, (t.)\nDif-reload required!\nDefault value: 300").defineInRange("space_scaffolding_life_time",300,1,Integer.MAX_VALUE);
 		BUILDER.pop();
+		BUILDER.push("Jetpack");
+		JETPACK_MAX_BASIC=BUILDER.comment("Max Basic of Jetpack, (Number.)\nDif-reload required!\nDefault value: 200").defineInRange("jetpack_max_basic",200,1,Integer.MAX_VALUE);
+		JETPACK_MAX_TURBO=BUILDER.comment("Max Turbo of Jetpack, (Number.)\nDif-reload required!\nDefault value: 100").defineInRange("jetpack_max_turbo",100,1,Integer.MAX_VALUE);
+		JETPACK_MAX_THRUST=BUILDER.comment("Max Thrust of Jetpack, (Number.)\nDif-reload required!\nDefault value: 50").defineInRange("jetpack_max_thrust",50,1,Integer.MAX_VALUE);
+		BUILDER.pop();
 		BUILDER.push("PortalGun");
 		PORTAL_GUN_MAX_AMMO=BUILDER.comment("Maximal capacity of Portal Gun, (Shots.)\nDRestart required!\nDefault value: 16").defineInRange("portal_gun_max_ammo",16,1,Integer.MAX_VALUE);
 		PORTAL_GUN_MAX_RANGE=BUILDER.comment("Maximal shot power of Portal Gun, (Number.)\nDif-reload required!\nDefault value: 3").defineInRange("portal_gun_max_range",3,1,255);
@@ -80,6 +89,10 @@ public class DifModCommonConfig{
 	public static boolean disableEnd;
 	public static int spaceScaffoldingLifeTime;
 
+	public static int jetpackMaxBasic;
+	public static int jetpackMaxTurbo;
+	public static int jetpackMaxThrust;
+
 	public static int portalGunMaxAmmo;
 	public static int portalGunMaxRange;
 	public static int portalGunCooldown;
@@ -97,7 +110,7 @@ public class DifModCommonConfig{
 		load();
 	}
 	public static void load(){
-		DifMod.LOGGER.debug("Configuration loaded!");
+		DifMod.LOGGER.info("Configuration loaded!");
 		solarPanel_00=SOLAR_PANEL_00.get();
 		solarPanel_01=SOLAR_PANEL_01.get();
 		solarPanel_02=SOLAR_PANEL_02.get();
@@ -111,6 +124,10 @@ public class DifModCommonConfig{
 		mataPlantMaxHeight=MATA_PLANT_MAX_HEIGHT.get();
 		disableEnd=DISABLE_END.get();
 		spaceScaffoldingLifeTime=SPACE_SCAFFOLDING_LIFE_TIME.get();
+
+		jetpackMaxBasic=JETPACK_MAX_BASIC.get();
+		jetpackMaxTurbo=JETPACK_MAX_TURBO.get();
+		jetpackMaxThrust=JETPACK_MAX_THRUST.get();
 
 		portalGunMaxAmmo=PORTAL_GUN_MAX_AMMO.get();
 		portalGunMaxRange=PORTAL_GUN_MAX_RANGE.get();
