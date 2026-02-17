@@ -1,7 +1,8 @@
 package cz.maxtechnik.dif.init.events;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.block.entity.Spaceship;
+import cz.maxtechnik.dif.block.Spaceship;
+import cz.maxtechnik.dif.block.entity.SpaceshipBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraft.core.BlockPos;
@@ -27,7 +28,7 @@ public class SpaceshipControl{
 		ServerLevel serverWorld=(ServerLevel)world;
 		BlockPos rocketPos=new BlockPos(x,y,z);
 		BlockEntity be=world.getBlockEntity(rocketPos);
-		if(!(be instanceof Spaceship)) return;
+		if(!(be instanceof SpaceshipBlockEntity)) return;
 		IItemHandler inventory=be.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(null);
 		// 1. KONTROLA PALIVA
 		ItemStack fuelStack=inventory.getStackInSlot(0);
@@ -67,21 +68,35 @@ public class SpaceshipControl{
 		int maxY=destWorld.getMaxBuildHeight();
 		int minY=destWorld.getMinBuildHeight();
 		int foundY=-999;
-		BlockPos.MutableBlockPos scanPos=new BlockPos.MutableBlockPos(x,maxY-1,z);
+		BlockPos.MutableBlockPos scanPos=new BlockPos.MutableBlockPos();
+		// Skenujeme odshora dolů (od limitu k bedrocku)
+		outerLoop:
 		for(int h=maxY-1;h>minY;h--){
-			scanPos.setY(h);
-			BlockState state=destWorld.getBlockState(scanPos);
-			// Najde první blok, který není vzduch ani ghost rakety
-			if(!state.isAir()&&!(state.getBlock() instanceof cz.maxtechnik.dif.block.SpaceshipGhostBlock)){
-				foundY=h;
-				break;
+			// Kontrola oblasti 3x3 kolem středu
+			for(int dx=-1;dx<=1;dx++){
+				for(int dz=-1;dz<=1;dz++){
+					scanPos.set(x+dx,h,z+dz);
+					BlockState state=destWorld.getBlockState(scanPos);
+					// !!! ZDE JE ZMĚNA PRO PŘISTÁNÍ NA LODI !!!
+					// Odstranil jsem "state.getBlock() instanceof SpaceshipGhostBlock" z podmínky.
+					// Teď kód považuje jakýkoliv ne-vzduchový blok (včetně lodi) za pevnou zem.
+					if(!state.isAir()){
+						foundY=h;
+						break outerLoop; // Našli jsme nejvyšší pevný bod, končíme
+					}
+				}
 			}
 		}
 		int landingY=(foundY==-999)?64:foundY;
-		// 5. KONTROLA PROSTORU PRO PŘISTÁNÍ (3x3x6 nad povrchem)
-		// Kontrolujeme, zda je nad nalezeným povrchem dost místa
+		// 5. KONTROLA LIMITU PRO PŘISTÁNÍ (Y=314) A PROSTORU (3x3x5)
+		// Pokud je nalezená podlaha ve výšce 314 nebo výše, nelze přistát (narazili bychom do limitu světa)
+		if(landingY>=314){
+			entity.displayClientMessage(Component.literal("§cCannot land! Target height ("+landingY+") is too close to the build limit!"),false);
+			return;
+		}
+		// Kontrola prostoru nad nalezeným povrchem (nyní výška 5 bloků)
 		if(!isAreaClear(destWorld,x,landingY+1,z)){
-			entity.displayClientMessage(Component.literal("§eLanding site obstructed! Please clear a 3x3x6 area or move the spaceship!"),false);
+			entity.displayClientMessage(Component.literal("§eLanding site obstructed! Please clear area or move the spaceship!"),false);
 			return;
 		}
 		// --- VŠE JE V POŘÁDKU, PROVEDEME LET ---
@@ -114,25 +129,26 @@ public class SpaceshipControl{
 			sp.teleportTo(destWorld,x+0.5,newMasterPos.getY()+2.0,z+0.5,entity.getYRot(),entity.getXRot());
 		}
 		destWorld.setBlock(newMasterPos,rocketState,3);
-		if(rocketState.getBlock() instanceof cz.maxtechnik.dif.block.Spaceship spaceship){
+		if(rocketState.getBlock() instanceof Spaceship spaceship){
 			for(BlockPos gp: spaceship.getGhostPositions(newMasterPos)){
 				destWorld.setBlock(gp,DifModBlocks.SPACESHIP_GHOST_BLOCK.get().defaultBlockState(),3);
 			}
 		}
 		BlockEntity newBe=destWorld.getBlockEntity(newMasterPos);
-		if(newBe instanceof Spaceship){
+		if(newBe instanceof SpaceshipBlockEntity){
 			newBe.load(rocketData);
 			newBe.setChanged();
 		}
 		entity.displayClientMessage(Component.literal("§aYou have successfully landed on "+pName),true);
 	}
-	// Pomocná metoda pro kontrolu volného prostoru
+	// Pomocná metoda pro kontrolu volného prostoru (3x3x5)
 	private static boolean isAreaClear(Level world,int centerX,int startY,int centerZ){
-		int radius=3/2;
+		int radius=1; // 3x3 area (radius 1 = -1, 0, 1)
 		BlockPos.MutableBlockPos checkPos=new BlockPos.MutableBlockPos();
 		for(int dx=-radius;dx<=radius;dx++){
 			for(int dz=-radius;dz<=radius;dz++){
-				for(int dy=0;dy<6;dy++){
+				// Kontrola výšky 5 bloků (0 až 4)
+				for(int dy=0;dy<5;dy++){
 					checkPos.set(centerX+dx,startY+dy,centerZ+dz);
 					if(!world.isEmptyBlock(checkPos)){
 						return false;

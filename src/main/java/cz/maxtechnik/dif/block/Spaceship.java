@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.block;
 
+import cz.maxtechnik.dif.block.entity.SpaceshipBlockEntity;
 import cz.maxtechnik.dif.gui.menu.SpaceshipMenu;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import io.netty.buffer.Unpooled;
@@ -56,6 +57,7 @@ public class Spaceship extends Block implements EntityBlock{
 	}
 	@Override
 	public boolean canSurvive(@NotNull BlockState blockState,@NotNull LevelReader level,@NotNull BlockPos pos){
+		if(pos.getY()==318)return false;
 		BlockPos finalMasterPos=pos.above();
 		boolean blocked=!level.getBlockState(finalMasterPos).canBeReplaced();
 		for(BlockPos ghostPos: getGhostPositions(finalMasterPos)){
@@ -86,7 +88,7 @@ public class Spaceship extends Block implements EntityBlock{
 					world.setBlock(ghostPos,Blocks.AIR.defaultBlockState(),3);
 				}
 			}
-			if(world.getBlockEntity(pos) instanceof cz.maxtechnik.dif.block.entity.Spaceship be) be.drops();
+			if(world.getBlockEntity(pos) instanceof SpaceshipBlockEntity be) be.drops();
 			super.onRemove(state,world,pos,newState,isMoving);
 		}
 	}
@@ -109,7 +111,7 @@ public class Spaceship extends Block implements EntityBlock{
 	}
 	@Override
 	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
-		return new cz.maxtechnik.dif.block.entity.Spaceship(pos,blockState);
+		return new SpaceshipBlockEntity(pos,blockState);
 	}
 	@Override
 	public MenuProvider getMenuProvider(@NotNull BlockState state, Level worldIn, @NotNull BlockPos pos) {

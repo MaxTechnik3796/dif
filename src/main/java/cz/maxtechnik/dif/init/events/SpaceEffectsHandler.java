@@ -4,11 +4,11 @@ import cz.maxtechnik.dif.DifMod;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -20,14 +20,12 @@ public class SpaceEffectsHandler{
 			ResourceKey.create(Registries.DIMENSION,ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"moon"))
 	);
 	@SubscribeEvent
-	public static void onPlayerTick(TickEvent.PlayerTickEvent event){
-		if(event.phase!=TickEvent.Phase.END||event.player.level().isClientSide()) return;
-		if(event.player.tickCount%20!=0) return;
-		ServerPlayer player=(ServerPlayer)event.player;
-		if(LOW_GRAVITY_DIMENSIONS.contains(player.level().dimension())) applyEffects(player);
-	}
-	private static void applyEffects(ServerPlayer player){
-		player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,40,0,true,false));
-		player.addEffect(new MobEffectInstance(MobEffects.JUMP,40,0,true,false));
+	public static void onEntityTick(LivingEvent.LivingTickEvent event){
+		LivingEntity entity=event.getEntity();
+		if(event.getEntity().tickCount%20!=0) return;
+		if(LOW_GRAVITY_DIMENSIONS.contains(entity.level().dimension())){
+			entity.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,40,1,true,false));
+			entity.addEffect(new MobEffectInstance(MobEffects.JUMP,40,1,true,false));
+		}
 	}
 }

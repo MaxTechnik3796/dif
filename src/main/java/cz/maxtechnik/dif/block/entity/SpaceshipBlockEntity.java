@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import cz.maxtechnik.dif.gui.menu.SpaceshipMenu;
 
-public class Spaceship extends BlockEntity implements MenuProvider {
+public class SpaceshipBlockEntity extends BlockEntity implements MenuProvider {
 
 	private final ItemStackHandler itemHandler = new ItemStackHandler(9) {
 		@Override
@@ -33,7 +33,7 @@ public class Spaceship extends BlockEntity implements MenuProvider {
 
 	private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
 
-	public Spaceship(BlockPos pos,BlockState state) {
+	public SpaceshipBlockEntity(BlockPos pos,BlockState state) {
 		super(DifModBlockEntities.SPACESHIP.get(), pos, state);
 	}
 
