@@ -8,126 +8,86 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = DifMod.MODID)
 public class JetpackHandler {
 	private static Field jumpingField;
-	// Mapa pro sledování, zda byl hráč v minulém ticku na zemi
-	private static final Map<UUID, Boolean> wasOnGround = new HashMap<>();
 
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+		// Logiku provádíme pouze na konci ticku a pouze na serveru (kvůli manipulaci s itemy)
 		if (event.phase != TickEvent.Phase.END) return;
+
 		Player player = event.player;
 		ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 
-		// Uložíme si stav 'na zemi' z minulého ticku (default true, pokud neexistuje)
-		boolean previousOnGround = wasOnGround.getOrDefault(player.getUUID(), true);
-
-		// Na konci metody aktualizujeme mapu pro příští tick
-		wasOnGround.put(player.getUUID(), player.onGround());
-
 		if (!(chest.getItem() instanceof JetpackItem)) return;
 
-		// --- DETEKCE SKOKU (Reflection) ---
-		boolean isJumping;
-		try {
-			if (jumpingField == null) {
-				try {
-					jumpingField = LivingEntity.class.getDeclaredField("jumping");
-				} catch (NoSuchFieldException e) {
-					jumpingField = LivingEntity.class.getDeclaredField("f_20899_");
-				}
-				jumpingField.setAccessible(true);
-			}
-			isJumping = jumpingField.getBoolean(player);
-		} catch (Exception e) {
-			return;
-		}
-
-		int tank = JetpackItem.getTankFuel(chest);
+		// Načteme hodnoty
 		int main = JetpackItem.getMainFuel(chest);
+		int thrust = JetpackItem.getThrustFuel(chest);
 
-		// --- LOGIKA LETU ---
-		// Podmínka: Hráč skáče, není na zemi, neletí creativně...
-		// A HLAVNĚ: V minulém ticku NESMĚL být na zemi.
-		// To zajistí, že první stisk mezerníku je jen výskok, a let začne až ve vzduchu.
-		if (isJumping && !player.onGround() && !player.getAbilities().flying && !previousOnGround) {
-			if (tank > 0) {
-				Vec3 v = player.getDeltaMovement();
-				player.setDeltaMovement(v.x, 0.4, v.z);
-				player.fallDistance = 0;
-
-				JetpackItem.setTankFuel(chest, tank - 1);
-				showOverlay(player, tank - 1, false);
+		// --- 1. DOPLNĚNÍ MAINU Z HOTBARU ---
+		// Pokud je v mainu 0, zkusíme najít uhlí v hotbaru
+		if (main <= 0) {
+			for (int i = 0; i < 9; i++) {
+				ItemStack fuelStack = player.getInventory().getItem(i);
+				if (JetpackItem.isFuel(fuelStack)) {
+					if (!player.level().isClientSide) {
+						fuelStack.shrink(1);
+						JetpackItem.setMainFuel(chest, JetpackItem.MAX_MAIN);
+						player.displayClientMessage(Component.literal("Jetpack refueled!").withStyle(ChatFormatting.GREEN), true);
+					}
+					return; // V tomto ticku už nic víc neděláme, aby se data stačila zapsat
+				}
 			}
 		}
-		// --- LOGIKA DOPLŇOVÁNÍ (Na zemi) ---
-		else if (player.onGround()) {
 
-			// 1. Doplnění operační nádrže z hlavní nádrže
-			if (tank < JetpackItem.MAX_TANK && main > 0) {
-				int toAdd = Math.min(1, JetpackItem.MAX_TANK - tank);
-				toAdd = Math.min(toAdd, main);
-
-				if (toAdd > 0) {
-					if (!player.level().isClientSide()) {
-						// SERVER: Skutečná změna dat
-						JetpackItem.setMainFuel(chest, main - toAdd);
-						JetpackItem.setTankFuel(chest, tank + toAdd);
-						player.getInventory().setChanged();
-					} else {
-						// KLIENT: Vizuální simulace (aby se odečítal i Main Bar plynule)
-						// Tím se opraví ten bug, že to vypadá, že se nedoplňuje
-						JetpackItem.setMainFuel(chest, main - toAdd);
-						JetpackItem.setTankFuel(chest, tank + toAdd);
-					}
-					showOverlay(player, tank + toAdd, true);
-				}
+		// --- 2. DOBÍJENÍ THRUSTU Z MAINU (Na zemi) ---
+		if (player.onGround()) {
+			if (thrust < JetpackItem.MAX_THRUST && main > 0) {
+				// Přeléváme 2 fuel za tick
+				int toAdd = Math.min(2, Math.min(main, JetpackItem.MAX_THRUST - thrust));
+				JetpackItem.setMainFuel(chest, main - toAdd);
+				JetpackItem.setThrustFuel(chest, thrust + toAdd);
+				showOverlay(player, thrust + toAdd, true);
 			}
-
-			// 2. Automatické doplnění hlavní nádrže z hotbaru (každé 2 vteřiny)
-			if (main == 0) {
-				if (player.level().getGameTime() % 40 == 0) {
-					for (int i = 0; i < 9; i++) {
-						ItemStack fuelStack = player.getInventory().getItem(i);
-						if (JetpackItem.isFuel(fuelStack)) {
-							if (!player.level().isClientSide()) {
-								fuelStack.shrink(1);
-								JetpackItem.setMainFuel(chest, 100);
-								player.getInventory().setChanged();
-								player.displayClientMessage(Component.literal("§aPalivo doplněno z hotbaru!"), true);
-							}
-							break;
-						}
-					}
+		}
+		// --- 3. LET (Ve vzduchu) ---
+		else {
+			boolean isJumping = false;
+			try {
+				if (jumpingField == null) {
+					try { jumpingField = LivingEntity.class.getDeclaredField("jumping"); }
+					catch (NoSuchFieldException e) { jumpingField = LivingEntity.class.getDeclaredField("f_20899_"); }
+					jumpingField.setAccessible(true);
 				}
+				isJumping = jumpingField.getBoolean(player);
+			} catch (Exception ignored) {}
+
+			if (isJumping && thrust > 0 && !player.getAbilities().flying) {
+				player.setDeltaMovement(player.getDeltaMovement().x, 0.42, player.getDeltaMovement().z);
+				player.fallDistance = 0;
+				JetpackItem.setThrustFuel(chest, thrust - 1);
+				showOverlay(player, thrust - 1, false);
 			}
 		}
 	}
 
-	private static void showOverlay(Player player, int tank, boolean recharging) {
-		if (tank < JetpackItem.MAX_TANK || recharging) {
-			String icon = recharging ? "⚡ " : "🚀 ";
-			ChatFormatting color = recharging ? ChatFormatting.YELLOW : ChatFormatting.AQUA;
+	private static void showOverlay(Player player, int thrust, boolean charging) {
+		// Zobrazujeme pouze pokud se něco děje (let nebo nabíjení)
+		String icon = charging ? "⚡ " : "🚀 ";
+		ChatFormatting color = charging ? ChatFormatting.YELLOW : ChatFormatting.AQUA;
+		int filled = thrust / 2;
+		String bar = "■".repeat(Math.max(0, filled)) + "□".repeat(Math.max(0, 10 - filled));
 
-			int percent = (int) ((tank / (float) JetpackItem.MAX_TANK) * 100);
-			int filledBlocks = tank / 2;
-
-			String bar = "■".repeat(Math.max(0, filledBlocks)) + "□".repeat(Math.max(0, 10 - filledBlocks));
-			player.displayClientMessage(
-					Component.literal(icon + "THRUST: [" + bar + "] " + percent + "%").withStyle(color),
-					true
-			);
-		}
+		player.displayClientMessage(
+				Component.literal(icon + "THRUST: [" + bar + "] " + (thrust * 5) + "%").withStyle(color),
+				true
+		);
 	}
 }
