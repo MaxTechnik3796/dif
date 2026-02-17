@@ -1,5 +1,6 @@
-package cz.maxtechnik.dif.model;
+package cz.maxtechnik.dif.init.other;
 
+import cz.maxtechnik.dif.model.*;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -14,5 +15,6 @@ public class DifModModels{
 		event.registerLayerDefinition(ModelSpaceBoots.LAYER_LOCATION, ModelSpaceBoots::createBodyLayer);
 		event.registerLayerDefinition(ModelSpaceLeggings.LAYER_LOCATION, ModelSpaceLeggings::createBodyLayer);
 		event.registerLayerDefinition(ModelSpaceChestplate.LAYER_LOCATION, ModelSpaceChestplate::createBodyLayer);
+		event.registerLayerDefinition(ModelJetpack.LAYER_LOCATION, ModelJetpack::createBodyLayer);
 	}
 }
