@@ -19,43 +19,25 @@ import java.util.Set;
 @Mod.EventBusSubscriber(modid=DifMod.MODID,bus=Mod.EventBusSubscriber.Bus.FORGE)
 public class SpaceSurvivalHandler{
 	private static final TagKey<Item> SPACE_SUIT_TAG=TagKey.create(Registries.ITEM,ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"space_suit"));
-	private static final ResourceKey<DamageType> OXYGEN_DAMAGE=ResourceKey.create(Registries.DAMAGE_TYPE,ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"oxygen_suffocation"));
 	private static final Set<ResourceKey<Level>> DANGEROUS_DIMENSIONS=Set.of(
 			ResourceKey.create(Registries.DIMENSION,ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"orbit")),
 			ResourceKey.create(Registries.DIMENSION,ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"moon"))
 	);
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event){
-		if(event.phase!=TickEvent.Phase.END||event.player.level().isClientSide) return;
-		// Běží každých 10 ticků (0.5s)
+		if(event.phase!=TickEvent.Phase.END||event.player.level().isClientSide()) return;
 		if(event.player.tickCount%20!=0) return;
 		ServerPlayer player=(ServerPlayer)event.player;
-		// Ignorování Creative, Spectator a Invulnerable hráčů
-		if(player.isCreative()||player.isSpectator()||player.isInvulnerable()){
-			return;
-		}
-		// Kontrola dimenze
-		if(!DANGEROUS_DIMENSIONS.contains(player.level().dimension())){
-			return;
-		}
-		// Kontrola kompletního setu armoru s tagem
+		if(player.isCreative()||player.isSpectator()||player.isInvulnerable()) return;
+		if(!DANGEROUS_DIMENSIONS.contains(player.level().dimension())) return;
 		boolean isProtected=
 				player.getItemBySlot(EquipmentSlot.HEAD).is(SPACE_SUIT_TAG)&&
 						player.getItemBySlot(EquipmentSlot.CHEST).is(SPACE_SUIT_TAG)&&
 						player.getItemBySlot(EquipmentSlot.LEGS).is(SPACE_SUIT_TAG)&&
 						player.getItemBySlot(EquipmentSlot.FEET).is(SPACE_SUIT_TAG);
-		if(!isProtected){
-			applySpaceDamage(player);
-		}
+		if(!isProtected) applySpaceDamage(player);
 	}
 	private static void applySpaceDamage(ServerPlayer player){
-		// Správný způsob získání DamageSource z ResourceKey v 1.20.1:
-		DamageSource spaceDamage=new DamageSource(
-				player.level().registryAccess()
-						.registryOrThrow(Registries.DAMAGE_TYPE)
-						.getHolderOrThrow(OXYGEN_DAMAGE)
-		);
-		// Aplikace poškození (0.5f = půl srdíčka)
-		player.hurt(spaceDamage,0.5F);
+		player.kill();
 	}
 }
