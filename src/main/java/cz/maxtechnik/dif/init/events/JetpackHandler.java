@@ -11,15 +11,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+
 import java.lang.reflect.Field;
 
 @Mod.EventBusSubscriber(modid = DifMod.MODID)
 public class JetpackHandler {
-	private static Field jumpingField;
+	// Uložíme si pole pro rychlý přístup
+	private static final Field JUMPING_FIELD = ObfuscationReflectionHelper.findField(LivingEntity.class, "f_20899_"); // SRG název pro 'jumping'
 
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-		// Logiku provádíme pouze na konci ticku a pouze na serveru (kvůli manipulaci s itemy)
 		if (event.phase != TickEvent.Phase.END) return;
 
 		Player player = event.player;
@@ -27,31 +29,29 @@ public class JetpackHandler {
 
 		if (!(chest.getItem() instanceof JetpackItem)) return;
 
-		// Načteme hodnoty
 		int main = JetpackItem.getMainFuel(chest);
 		int thrust = JetpackItem.getThrustFuel(chest);
 
-		// --- 1. DOPLNĚNÍ MAINU Z HOTBARU ---
-		// Pokud je v mainu 0, zkusíme najít uhlí v hotbaru
+		// --- 1. REFUEL (Main z Inventáře) ---
 		if (main <= 0) {
-			for (int i = 0; i < 9; i++) {
+			for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
 				ItemStack fuelStack = player.getInventory().getItem(i);
 				if (JetpackItem.isFuel(fuelStack)) {
 					if (!player.level().isClientSide) {
 						fuelStack.shrink(1);
 						JetpackItem.setMainFuel(chest, JetpackItem.MAX_MAIN);
 						player.displayClientMessage(Component.literal("Jetpack refueled!").withStyle(ChatFormatting.GREEN), true);
+						main = JetpackItem.MAX_MAIN;
 					}
-					return; // V tomto ticku už nic víc neděláme, aby se data stačila zapsat
+					break;
 				}
 			}
 		}
 
-		// --- 2. DOBÍJENÍ THRUSTU Z MAINU (Na zemi) ---
+		// --- 2. DOBÍJENÍ THRUSTU (Na zemi) ---
 		if (player.onGround()) {
 			if (thrust < JetpackItem.MAX_THRUST && main > 0) {
-				// Přeléváme 2 fuel za tick
-				int toAdd = Math.min(2, Math.min(main, JetpackItem.MAX_THRUST - thrust));
+				int toAdd = Math.min(1, Math.min(main, JetpackItem.MAX_THRUST - thrust));
 				JetpackItem.setMainFuel(chest, main - toAdd);
 				JetpackItem.setThrustFuel(chest, thrust + toAdd);
 				showOverlay(player, thrust + toAdd, true);
@@ -61,17 +61,13 @@ public class JetpackHandler {
 		else {
 			boolean isJumping = false;
 			try {
-				if (jumpingField == null) {
-					try { jumpingField = LivingEntity.class.getDeclaredField("jumping"); }
-					catch (NoSuchFieldException e) { jumpingField = LivingEntity.class.getDeclaredField("f_20899_"); }
-					jumpingField.setAccessible(true);
-				}
-				isJumping = jumpingField.getBoolean(player);
-			} catch (Exception ignored) {}
+				isJumping = JUMPING_FIELD.getBoolean(player);
+			} catch (IllegalAccessException ignored) {}
 
 			if (isJumping && thrust > 0 && !player.getAbilities().flying) {
-				player.setDeltaMovement(player.getDeltaMovement().x, 0.42, player.getDeltaMovement().z);
+				player.setDeltaMovement(player.getDeltaMovement().x, 0.45, player.getDeltaMovement().z);
 				player.fallDistance = 0;
+
 				JetpackItem.setThrustFuel(chest, thrust - 1);
 				showOverlay(player, thrust - 1, false);
 			}
@@ -79,7 +75,6 @@ public class JetpackHandler {
 	}
 
 	private static void showOverlay(Player player, int thrust, boolean charging) {
-		// Zobrazujeme pouze pokud se něco děje (let nebo nabíjení)
 		String icon = charging ? "⚡ " : "🚀 ";
 		ChatFormatting color = charging ? ChatFormatting.YELLOW : ChatFormatting.AQUA;
 		int filled = thrust / 2;
