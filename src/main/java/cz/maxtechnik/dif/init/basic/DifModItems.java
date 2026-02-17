@@ -43,7 +43,7 @@ public class DifModItems{
 	public static final RegistryObject<Item> MODULAR_PART_BINDING=REGISTRY.register("binding",ModularPart::new);
 	public static final RegistryObject<Item> MODULAR_PART_SWORD_BINDING=REGISTRY.register("sword_binding",ModularPart::new);
 	public static final RegistryObject<Item> MODULAR_PART_HANDLE=REGISTRY.register("handle",ModularPart::new);
-	public static final RegistryObject<Item> ELECTRO_RUNNERS=REGISTRY.register("electro_runners",()->new ElectroRunners(ArmorMaterials.NETHERITE,new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<Item> ELECTRO_RUNNERS=REGISTRY.register("electro_runners",ElectroRunners.Boots::new);
 	public static final RegistryObject<Item> JETPACK=REGISTRY.register("jetpack",Jetpack.Chestplate::new);
 	public static final RegistryObject<Item> JETPACK_FUEL=REGISTRY.register("jetpack_fuel",Basic::new);
 	public static final RegistryObject<Item> JETPACK_TURBO_FUEL=REGISTRY.register("jetpack_turbo_fuel",Basic::new);
