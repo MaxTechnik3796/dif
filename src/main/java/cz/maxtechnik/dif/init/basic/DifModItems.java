@@ -69,6 +69,8 @@ public class DifModItems{
 	public static final RegistryObject<Item> XP_BUCKET=REGISTRY.register("xp_bucket",XpBucket::new);
 	public static final RegistryObject<Item> FUEL_BUCKET=REGISTRY.register("fuel_bucket",FuelBucket::new);
 	public static final RegistryObject<Item>CIDER_BUCKET=REGISTRY.register("cider_bucket",CiderBucket::new);
+	public static final RegistryObject<Item>JETPACK_FUEL_BUCKET=REGISTRY.register("jetpack_fuel_bucket",JetpackFuelBucket::new);
+	public static final RegistryObject<Item>JETPACK_TURBO_FUEL_BUCKET=REGISTRY.register("jetpack_turbo_fuel_bucket",JetpackTurboFuelBucket::new);
 
 	//Vanilla + :
 	public static final RegistryObject<Item> END_PORTAL=V_REGISTRY.register("end_portal",()->new BlockItem(Blocks.END_PORTAL,new Item.Properties()));

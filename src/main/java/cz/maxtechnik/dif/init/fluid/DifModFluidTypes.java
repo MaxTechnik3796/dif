@@ -12,4 +12,6 @@ public class DifModFluidTypes{
 	public static final RegistryObject<FluidType>XP_TYPE=REGISTRY.register("xp_fluid",XpFluidType::new);
 	public static final RegistryObject<FluidType>FUEL_TYPE=REGISTRY.register("fuel_fluid",FuelFluidType::new);
 	public static final RegistryObject<FluidType>CIDER_TYPE=REGISTRY.register("cider_fluid",CiderFluidType::new);
+	public static final RegistryObject<FluidType>JETPACK_FUEL_TYPE=REGISTRY.register("jetpack_fuel_fluid",JetpackFuelFluidType::new);
+	public static final RegistryObject<FluidType>JETPACK_TURBO_FUEL_TYPE=REGISTRY.register("jetpack_turbo_fuel_fluid",JetpackTurboFuelFluidType::new);
 }

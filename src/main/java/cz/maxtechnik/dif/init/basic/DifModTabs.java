@@ -33,7 +33,6 @@ public class DifModTabs{
 		tabData.accept(DifModItems.WASHING_MACHINE.get());
 		tabData.accept(DifModItems.AIR_CONDITIONING.get());
 		tabData.accept(DifModItems.BURNING_GENERATOR.get());
-		//tabData.accept(DifModItems.FLUID_HATCH.get());
 		tabData.accept(DifModItems.ANDESITE_LATTICE.get());
 		tabData.accept(DifModItems.ANDESITE_WINDOW.get());
 		tabData.accept(DifModItems.SUPER_BOX.get());
@@ -170,6 +169,8 @@ public class DifModTabs{
 			tabData.getEntries().putAfter(new ItemStack(DifModItems.BEER_BUCKET.get()),new ItemStack(DifModItems.XP_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.getEntries().putAfter(new ItemStack(DifModItems.XP_BUCKET.get()),new ItemStack(DifModItems.CIDER_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.getEntries().putAfter(new ItemStack(DifModItems.CIDER_BUCKET.get()),new ItemStack(DifModItems.FUEL_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.FUEL_BUCKET.get()),new ItemStack(DifModItems.JETPACK_FUEL_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.JETPACK_FUEL_BUCKET.get()),new ItemStack(DifModItems.JETPACK_TURBO_FUEL_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.accept(DifModItems.CREMEKA.get());
 			tabData.accept(DifModItems.MATY_CREATE.get());
 			tabData.accept(DifModItems.MAYONNAISE.get());

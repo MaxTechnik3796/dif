@@ -30,6 +30,8 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>BEER_FLUID=REGISTRY.register("beer_fluid",BeerBlock::new);
 	public static final RegistryObject<Block>XP_FLUID=REGISTRY.register("xp_fluid",XpBlock::new);
 	public static final RegistryObject<Block>CIDER_FLUID=REGISTRY.register("cider_fluid",CiderBlock::new);
+	public static final RegistryObject<Block>JETPACK_FUEL_FLUID=REGISTRY.register("jetpack_fuel_fluid",JetpackFuelBlock::new);
+	public static final RegistryObject<Block>JETPACK_TURBO_FUEL_FLUID=REGISTRY.register("jetpack_turbo_fuel_fluid",JetpackTurboFuelBlock::new);
 
 	public static final RegistryObject<Block>BEER=REGISTRY.register("beer",Beer::new);
 	public static final RegistryObject<Block>THE_DIFFERENTIAL=REGISTRY.register("the_differential",()->new CustomWaterloggedHorizontalRotation(SoundType.STONE,5F,6F,true));
