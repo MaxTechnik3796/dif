@@ -54,11 +54,17 @@ public abstract class Jetpack extends ArmorItem{
 				return Ingredient.of();
 			}
 			@Override
-			public @NotNull String getName(){return "jetpack";}
+			public @NotNull String getName(){
+				return "jetpack";
+			}
 			@Override
-			public float getToughness(){return 2F;}
+			public float getToughness(){
+				return 2F;
+			}
 			@Override
-			public float getKnockbackResistance(){return 0F;}
+			public float getKnockbackResistance(){
+				return 0F;
+			}
 		},type,properties);
 	}
 	public static class Chestplate extends Jetpack{
@@ -66,32 +72,32 @@ public abstract class Jetpack extends ArmorItem{
 			super(Type.CHESTPLATE,new Item.Properties().stacksTo(1));
 		}
 		@Override
-		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-			consumer.accept(new IClientItemExtensions() {
+		public void initializeClient(Consumer<IClientItemExtensions> consumer){
+			consumer.accept(new IClientItemExtensions(){
 				@Override
 				@OnlyIn(Dist.CLIENT)
-				public HumanoidModel getHumanoidArmorModel(LivingEntity living,ItemStack stack,EquipmentSlot slot,HumanoidModel defaultModel) {
-					HumanoidModel armorModel = new HumanoidModel(new ModelPart(Collections.emptyList(),
-							Map.of("body", new ModelJetpack(Minecraft.getInstance().getEntityModels().bakeLayer(ModelJetpack.LAYER_LOCATION)).Body,
-									"left_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
-									"right_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
-									"head", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
-									"hat", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
-									"right_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
-									"left_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()))));
-					armorModel.crouching = living.isShiftKeyDown();
-					armorModel.riding = defaultModel.riding;
-					armorModel.young = living.isBaby();
+				public @NotNull HumanoidModel getHumanoidArmorModel(LivingEntity living,ItemStack stack,EquipmentSlot slot,HumanoidModel defaultModel){
+					HumanoidModel armorModel=new HumanoidModel(new ModelPart(Collections.emptyList(),
+							Map.of("body",new ModelJetpack(Minecraft.getInstance().getEntityModels().bakeLayer(ModelJetpack.LAYER_LOCATION)).Body,
+									"left_arm",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
+									"right_arm",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
+									"head",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
+									"hat",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
+									"right_leg",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
+									"left_leg",new ModelPart(Collections.emptyList(),Collections.emptyMap()))));
+					armorModel.crouching=living.isShiftKeyDown();
+					armorModel.riding=defaultModel.riding;
+					armorModel.young=living.isBaby();
 					return armorModel;
 				}
 			});
 		}
 		@Override
-		public String getArmorTexture(ItemStack stack,Entity entity,EquipmentSlot slot,String type) {
+		public String getArmorTexture(ItemStack stack,Entity entity,EquipmentSlot slot,String type){
 			return texture;
 		}
 		@Override
-		public @Nullable SoundEvent getEquipSound() {
+		public @Nullable SoundEvent getEquipSound(){
 			return null;
 		}
 		public static int getMainFuel(ItemStack itemStack){

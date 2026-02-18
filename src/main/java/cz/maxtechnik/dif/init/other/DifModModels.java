@@ -16,5 +16,6 @@ public class DifModModels{
 		event.registerLayerDefinition(ModelSpaceLeggings.LAYER_LOCATION, ModelSpaceLeggings::createBodyLayer);
 		event.registerLayerDefinition(ModelSpaceChestplate.LAYER_LOCATION, ModelSpaceChestplate::createBodyLayer);
 		event.registerLayerDefinition(ModelJetpack.LAYER_LOCATION, ModelJetpack::createBodyLayer);
+		event.registerLayerDefinition(ModelElectroRunners.LAYER_LOCATION,ModelElectroRunners::createBodyLayer);
 	}
 }
