@@ -7,6 +7,6 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 public class CiderBlock extends LiquidBlock{
 	public CiderBlock(){
-		super(DifModFluids.CIDER,Properties.of().mapColor(MapColor.WATER).strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable().lightLevel(s->15));
+		super(DifModFluids.CIDER,Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable().lightLevel(s->15));
 	}
 }

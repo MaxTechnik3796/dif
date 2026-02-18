@@ -9,6 +9,6 @@ import net.minecraft.world.level.block.LiquidBlock;
 
 public class FuelBlock extends LiquidBlock {
 	public FuelBlock() {
-		super(DifModFluids.FUEL, BlockBehaviour.Properties.of().mapColor(MapColor.WATER).strength(100f).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable());
+		super(DifModFluids.FUEL, BlockBehaviour.Properties.of().strength(100f).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable());
 	}
 }

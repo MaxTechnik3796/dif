@@ -7,6 +7,6 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 public class XpBlock extends LiquidBlock{
 	public XpBlock(){
-		super(DifModFluids.XP,Properties.of().mapColor(MapColor.WATER).strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable().lightLevel(s->15));
+		super(DifModFluids.XP,Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable().lightLevel(s->15));
 	}
 }

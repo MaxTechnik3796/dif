@@ -7,6 +7,6 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 public class BeerBlock extends LiquidBlock{
 	public BeerBlock(){
-		super(DifModFluids.BEER,Properties.of().mapColor(MapColor.WATER).strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable());
+		super(DifModFluids.BEER,Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable());
 	}
 }
