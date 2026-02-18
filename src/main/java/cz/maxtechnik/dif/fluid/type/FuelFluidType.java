@@ -19,7 +19,7 @@ public class FuelFluidType extends FluidType {
 	@Override
 	public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
 		consumer.accept(new IClientFluidTypeExtensions() {
-			private static final ResourceLocation STILL_TEXTURE = ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/fuel_still"), FLOWING_TEXTURE = ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/fuel_flow");
+			private static final ResourceLocation STILL_TEXTURE = ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/fuel_fluid_still"), FLOWING_TEXTURE = ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/fuel_fluid_flow");
 
 			@Override
 			public ResourceLocation getStillTexture() {
