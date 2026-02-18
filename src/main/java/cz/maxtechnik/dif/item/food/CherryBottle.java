@@ -8,9 +8,10 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+@SuppressWarnings("deprecation")
 public class CherryBottle extends Item{
 	public CherryBottle(){
-		super(new Properties().rarity(Rarity.UNCOMMON).food(new FoodProperties.Builder().nutrition(5).saturationMod(1.3F).alwaysEat().build()));
+		super(new Properties().rarity(Rarity.UNCOMMON).food(new FoodProperties.Builder().nutrition(5).saturationMod(1.3F).effect(new MobEffectInstance(MobEffects.HEAL,1,0),1F).alwaysEat().build()));
 	}
 	@Override
 	public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemstack){
@@ -20,9 +21,6 @@ public class CherryBottle extends Item{
 	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemstack,@NotNull Level world,@NotNull LivingEntity entity){
 		ItemStack retval=new ItemStack(Items.GLASS_BOTTLE);
 		super.finishUsingItem(itemstack,world,entity);
-		if(!world.isClientSide()){
-			entity.addEffect(new MobEffectInstance(MobEffects.HEAL,1,0));
-		}
 		if(itemstack.isEmpty()){
 			return retval;
 		}else{

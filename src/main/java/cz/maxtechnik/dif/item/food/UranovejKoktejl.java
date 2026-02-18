@@ -11,9 +11,10 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+@SuppressWarnings("deprecation")
 public class UranovejKoktejl extends Item{
 	public UranovejKoktejl(){
-		super(new Properties().food((new FoodProperties.Builder()).nutrition(4).saturationMod(3f).alwaysEat().build()));
+		super(new Properties().food((new FoodProperties.Builder()).nutrition(4).saturationMod(3f).effect(new MobEffectInstance(DifModMobEffects.WTF.get(),1200,0),1F).alwaysEat().build()));
 	}
 	@Override
 	public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemstack){
@@ -29,9 +30,6 @@ public class UranovejKoktejl extends Item{
 	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemstack,@NotNull Level world,@NotNull LivingEntity entity){
 		ItemStack retval=new ItemStack(Items.GLASS_BOTTLE);
 		super.finishUsingItem(itemstack,world,entity);
-		if(!world.isClientSide()){
-			entity.addEffect(new MobEffectInstance(DifModMobEffects.WTF.get(),1200,0));
-		}
 		if(itemstack.isEmpty()){
 			return retval;
 		}else{
