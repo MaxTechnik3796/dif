@@ -1,6 +1,7 @@
 {
-	"parent":"item/generated",
+	"parent":"dif:item/canister",
 	"textures":{
-		"layer0":"dif:item/jetpack_turbo_fuel"
+		"0":"dif:item/jetpack_turbo_fuel",
+		"particle":"dif:item/jetpack_turbo_fuel"
 	}
 }

@@ -57,7 +57,7 @@ public class DifModItems{
 	public static final RegistryObject<Item> JETPACK=REGISTRY.register("jetpack",Jetpack.Chestplate::new);
 	public static final RegistryObject<Item> JETPACK_FUEL=REGISTRY.register("jetpack_fuel",Basic::new);
 	public static final RegistryObject<Item> JETPACK_TURBO_FUEL=REGISTRY.register("jetpack_turbo_fuel",Basic::new);
-	public static final RegistryObject<Item> CELL=REGISTRY.register("cell",Basic::new);
+	public static final RegistryObject<Item> JETPACK_CANISTER=REGISTRY.register("jetpack_canister",Basic::new);
 
 	//DEV:
 	public static final RegistryObject<Item> EXAMPLE_BLOCK=block(DifModBlocks.EXAMPLE_BLOCK);

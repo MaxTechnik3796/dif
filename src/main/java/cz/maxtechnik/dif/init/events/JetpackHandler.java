@@ -2,6 +2,7 @@ package cz.maxtechnik.dif.init.events;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.DifModCommonConfig;
+import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.item.armor.Jetpack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -34,6 +35,7 @@ public class JetpackHandler{
 				if(!player.level().isClientSide){
 					if(Jetpack.Chestplate.isTurboFuel(fuelStack)){
 						fuelStack.shrink(1);
+						player.addItem(new ItemStack(DifModItems.JETPACK_CANISTER.get()));
 						Jetpack.Chestplate.setMainFuel(chest,DifModCommonConfig.jetpackMaxBasic);
 						Jetpack.Chestplate.setTurbo(chest,true);
 						player.displayClientMessage(Component.literal("Jetpack refueled with TURBO!").withStyle(ChatFormatting.RED),true);
@@ -42,6 +44,7 @@ public class JetpackHandler{
 						break;
 					}else if(Jetpack.Chestplate.isFuel(fuelStack)){
 						fuelStack.shrink(1);
+						player.addItem(new ItemStack(DifModItems.JETPACK_CANISTER.get()));
 						Jetpack.Chestplate.setMainFuel(chest,DifModCommonConfig.jetpackMaxBasic);
 						Jetpack.Chestplate.setTurbo(chest,false);
 						player.displayClientMessage(Component.literal("Jetpack refueled!").withStyle(ChatFormatting.GREEN),true);
