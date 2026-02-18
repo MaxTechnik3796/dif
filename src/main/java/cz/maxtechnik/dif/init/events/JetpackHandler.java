@@ -6,7 +6,6 @@ import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.item.armor.Jetpack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
