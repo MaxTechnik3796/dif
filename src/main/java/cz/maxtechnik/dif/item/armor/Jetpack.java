@@ -96,10 +96,6 @@ public abstract class Jetpack extends ArmorItem{
 		public String getArmorTexture(ItemStack stack,Entity entity,EquipmentSlot slot,String type){
 			return texture;
 		}
-		@Override
-		public @Nullable SoundEvent getEquipSound(){
-			return null;
-		}
 		public static int getMainFuel(ItemStack itemStack){
 			if(!itemStack.hasTag()||!Objects.requireNonNull(itemStack.getTag()).contains("MainFuel")) return 0;
 			return itemStack.getTag().getInt("MainFuel");

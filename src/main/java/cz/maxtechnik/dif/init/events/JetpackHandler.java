@@ -33,7 +33,6 @@ public class JetpackHandler{
 			for(int i=0;i<9;i++){
 				ItemStack fuelStack=player.getInventory().getItem(i);
 				if(!player.level().isClientSide()){
-
 					if(Jetpack.Chestplate.isTurboFuel(fuelStack)){
 						fuelStack.shrink(1);
 						player.addItem(new ItemStack(DifModItems.JETPACK_CANISTER.get()));
@@ -81,6 +80,7 @@ public class JetpackHandler{
 		}
 	}
 	private static void showOverlay(Player player,int thrust,boolean charging,boolean turbo){
+		if(!player.level().isClientSide())return;
 		String icon=charging?"⚡ ":"🚀 ";
 		ChatFormatting color=charging?turbo?ChatFormatting.RED:ChatFormatting.YELLOW:ChatFormatting.AQUA;
 		int filled=thrust/(turbo?10:5);
