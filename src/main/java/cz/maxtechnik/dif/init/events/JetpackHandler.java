@@ -29,7 +29,7 @@ public class JetpackHandler{
 		if(player.onGround())handleCharging(player,chest,main,thrust,turbo);
 	}
 	private static void handleRefuel(Player player,ItemStack chest){
-		for(int i=0;i<9;i++){
+		for(int i=0;i<player.getInventory().getContainerSize();i++){
 			ItemStack fuelStack=player.getInventory().getItem(i);
 			if(Jetpack.Chestplate.isTurboFuel(fuelStack)){
 				fuelStack.shrink(1);
