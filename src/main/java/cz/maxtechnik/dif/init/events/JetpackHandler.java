@@ -36,21 +36,6 @@ public class JetpackHandler {
 		if (player.onGround()) {
 			handleCharging(player, chest, main, thrust, turbo);
 		}
-		// 3. FLIGHT
-		else {
-			// Čteme stav naší custom klávesy z NBT dat hráče
-			boolean isFlying = player.getPersistentData().getBoolean("isJetpackKeyPressed");
-
-			if (isFlying && thrust > 0 && !player.getAbilities().flying) {
-				player.setDeltaMovement(player.getDeltaMovement().x, 0.45, player.getDeltaMovement().z);
-				player.fallDistance = 0;
-
-				if (!player.level().isClientSide()) {
-					Jetpack.Chestplate.setThrustFuel(chest, thrust - 1);
-				}
-				showOverlay(player, thrust - 1, false, turbo);
-			}
-		}
 	}
 
 	private static void handleRefuel(Player player, ItemStack chest) {
@@ -99,4 +84,24 @@ public class JetpackHandler {
 			);
 		}
 	}
+
+	public static void fly(Player player) {
+		ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+		int thrust = Jetpack.Chestplate.getThrustFuel(chest);
+		boolean turbo = Jetpack.Chestplate.getTurbo(chest);
+		if(!player.onGround()){
+			if (thrust > 0 && !player.getAbilities().flying) {
+				DifMod.LOGGER.debug("Flying!");
+				player.setDeltaMovement(player.getDeltaMovement().x, 0.45, player.getDeltaMovement().z);
+				player.fallDistance = 0;
+				if (!player.level().isClientSide()) {
+					Jetpack.Chestplate.setThrustFuel(chest, thrust - 1);
+				}
+				showOverlay(player, thrust - 1, false, turbo);
+			}
+		}
+	}
+
+
+
 }
