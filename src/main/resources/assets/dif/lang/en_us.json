@@ -1,5 +1,7 @@
 {
 	"chat.dif.mod_prefix":"§f§l[§e§lTheDifferential§f§l]§r",
+	"key.categories.dif":"TheDifferential",
+	"key.dif.jetpack_fly":"Jetpack Fly",
 	"effect.dif.redstone_iq":"Redstone Boost",
 	"effect.dif.redstone_not_iq":"Redstonenot Anti-Boost",
 	"effect.dif.drank":"Drank",
