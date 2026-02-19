@@ -101,7 +101,9 @@ public abstract class Jetpack extends ArmorItem{
 			return itemStack.getTag().getInt("MainFuel");
 		}
 		public static void setMainFuel(ItemStack itemStack,int value){
-			assert itemStack.getTag()!=null;
+			if (itemStack.getTag() == null) {
+				itemStack.setTag(new net.minecraft.nbt.CompoundTag());
+			}
 			itemStack.getTag().putInt("MainFuel",value);
 		}
 		public static int getThrustFuel(ItemStack itemStack){
@@ -109,7 +111,9 @@ public abstract class Jetpack extends ArmorItem{
 			return itemStack.getTag().getInt("ThrustFuel");
 		}
 		public static void setThrustFuel(ItemStack itemStack,int value){
-			assert itemStack.getTag()!=null;
+			if (itemStack.getTag() == null) {
+				itemStack.setTag(new net.minecraft.nbt.CompoundTag());
+			}
 			itemStack.getTag().putInt("ThrustFuel",value);
 		}
 		public static boolean getTurbo(ItemStack itemStack){
@@ -117,7 +121,9 @@ public abstract class Jetpack extends ArmorItem{
 			return itemStack.getTag().getBoolean("Turbo");
 		}
 		public static void setTurbo(ItemStack itemStack,boolean value){
-			assert itemStack.getTag()!=null;
+			if (itemStack.getTag() == null) {
+				itemStack.setTag(new net.minecraft.nbt.CompoundTag());
+			}
 			itemStack.getTag().putBoolean("Turbo",value);
 		}
 		@Override
@@ -161,7 +167,3 @@ public abstract class Jetpack extends ArmorItem{
 		}
 	}
 }
-
-
-
-
