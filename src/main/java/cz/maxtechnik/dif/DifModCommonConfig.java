@@ -13,6 +13,7 @@ public class DifModCommonConfig{
 	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_02;
 	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_03;
 	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_04;
+	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_ORBIT_MULTIPLIER;
 
 	private static final ForgeConfigSpec.IntValue BURNING_GENERATOR_ENERGY_PER_TICK;
 	private static final ForgeConfigSpec.IntValue BURNING_GENERATOR_MAX_ENERGY;
@@ -46,6 +47,7 @@ public class DifModCommonConfig{
 		SOLAR_PANEL_02=BUILDER.comment("Production of Solar Panel 02, (Fe/t.)\nDif-reload required!\nDefault value: 20").defineInRange("solar_panel_02",20,0,Integer.MAX_VALUE);
 		SOLAR_PANEL_03=BUILDER.comment("Production of Solar Panel 03, (Fe/t.)\nDif-reload required!\nDefault value: 50").defineInRange("solar_panel_03",50,0,Integer.MAX_VALUE);
 		SOLAR_PANEL_04=BUILDER.comment("Production of Solar Panel 04, (Fe/t.)\nDif-reload required!\nDefault value: 100").defineInRange("solar_panel_04",100,0,Integer.MAX_VALUE);
+		SOLAR_PANEL_ORBIT_MULTIPLIER=BUILDER.comment("Production multiplier of Solar Panels on Orbit, (Number.)\nDif-reload required!\nDefault value: 2").defineInRange("solar_panel_orbit_multiplier",2,1,Integer.MAX_VALUE);
 		BUILDER.pop();
 		BUILDER.push("BurningGenerator");
 		BURNING_GENERATOR_ENERGY_PER_TICK=BUILDER.comment("Production of Burning Generator, (Fe/t.)\nRestart required!\nDefault value: 20").defineInRange("burning_generator_energy_per_tick",20,0,Integer.MAX_VALUE);
@@ -80,6 +82,7 @@ public class DifModCommonConfig{
 	public static int solarPanel_02;
 	public static int solarPanel_03;
 	public static int solarPanel_04;
+	public static int solarPanel_orbit_multiplier;
 
 	public static int burningGeneratorEnergyPerTick;
 	public static int burningGeneratorMaxEnergy;
@@ -116,6 +119,7 @@ public class DifModCommonConfig{
 		solarPanel_02=SOLAR_PANEL_02.get();
 		solarPanel_03=SOLAR_PANEL_03.get();
 		solarPanel_04=SOLAR_PANEL_04.get();
+		solarPanel_orbit_multiplier=SOLAR_PANEL_ORBIT_MULTIPLIER.get();
 
 		burningGeneratorEnergyPerTick=BURNING_GENERATOR_ENERGY_PER_TICK.get();
 		burningGeneratorMaxEnergy=BURNING_GENERATOR_MAX_ENERGY.get();

@@ -15,11 +15,11 @@ public class DifModDimensions{
 			Registries.DIMENSION_TYPE,
 			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"orbit_type")
 	);
-	public static final ResourceKey<Level> MOON_KEY=ResourceKey.create(
+	public static final ResourceKey<Level> MOON=ResourceKey.create(
 			Registries.DIMENSION,
 			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"moon")
 	);
-	public static final ResourceKey<Level> ORBIT_KEY=ResourceKey.create(
+	public static final ResourceKey<Level> ORBIT=ResourceKey.create(
 			Registries.DIMENSION,
 			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"orbit")
 	);
