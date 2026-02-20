@@ -255,7 +255,7 @@ public class DifModItems{
 	public static final RegistryObject<Item> STONE_BATTLE_AXE=REGISTRY.register("stone_battle_axe",()->new BattleAxeItem(Tiers.STONE,7,-3.4F,new Item.Properties()));
 	public static final RegistryObject<Item> IRON_BATTLE_AXE=REGISTRY.register("iron_battle_axe",()->new BattleAxeItem(Tiers.IRON,7,-3.3F,new Item.Properties()));
 	public static final RegistryObject<Item> DIAMOND_BATTLE_AXE=REGISTRY.register("diamond_battle_axe",()->new BattleAxeItem(Tiers.DIAMOND,7,-3.3F,new Item.Properties()));
-	public static final RegistryObject<Item> NETHERITE_BATTLE_AXE=REGISTRY.register("netherite_battle_axe",()->new BattleAxeItem(Tiers.NETHERITE,7,-3.3F,new Item.Properties()));
+	public static final RegistryObject<Item> NETHERITE_BATTLE_AXE=REGISTRY.register("netherite_battle_axe",()->new BattleAxeItem(Tiers.NETHERITE,7,-3.3F,new Item.Properties().fireResistant()));
 	public static final RegistryObject<Item> COPPER_BATTLE_AXE=REGISTRY.register("copper_battle_axe",()->new BattleAxeItem(DifModTiers.COPPER,6,-3.3F,new Item.Properties()));
 
 	public static final RegistryObject<Item> WOODEN_KATANA=REGISTRY.register("wooden_katana",()->new SwordItem(Tiers.WOOD,1,-1F,new Item.Properties()));
@@ -263,7 +263,7 @@ public class DifModItems{
 	public static final RegistryObject<Item> STONE_KATANA=REGISTRY.register("stone_katana",()->new SwordItem(Tiers.STONE,1,-1F,new Item.Properties()));
 	public static final RegistryObject<Item> IRON_KATANA=REGISTRY.register("iron_katana",()->new SwordItem(Tiers.IRON,1,-1F,new Item.Properties()));
 	public static final RegistryObject<Item> DIAMOND_KATANA=REGISTRY.register("diamond_katana",()->new SwordItem(Tiers.DIAMOND,1,-1F,new Item.Properties()));
-	public static final RegistryObject<Item> NETHERITE_KATANA=REGISTRY.register("netherite_katana",()->new SwordItem(Tiers.NETHERITE,1,-1F,new Item.Properties()));
+	public static final RegistryObject<Item> NETHERITE_KATANA=REGISTRY.register("netherite_katana",()->new SwordItem(Tiers.NETHERITE,1,-1F,new Item.Properties().fireResistant()));
 	public static final RegistryObject<Item> COPPER_KATANA=REGISTRY.register("copper_katana",()->new SwordItem(DifModTiers.COPPER,0,-1F,new Item.Properties()));
 
 	//Copper Tools:
