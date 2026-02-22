@@ -110,8 +110,40 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>C8_COBBLESTONE=REGISTRY.register("c8_cobblestone",()->new Block(c_cobblestone_props));
 	public static final RegistryObject<Block>C9_COBBLESTONE=REGISTRY.register("c9_cobblestone",()->new Block(c_cobblestone_props));
 
+	static BlockBehaviour.Properties c_dirt_props=BlockBehaviour.Properties.of().mapColor(MapColor.DIRT).strength(0.5F).sound(SoundType.GRAVEL);
+	public static final RegistryObject<Block>C1_DIRT=REGISTRY.register("c1_dirt",()->new Block(c_dirt_props));
+	public static final RegistryObject<Block>C2_DIRT=REGISTRY.register("c2_dirt",()->new Block(c_dirt_props));
+	public static final RegistryObject<Block>C3_DIRT=REGISTRY.register("c3_dirt",()->new Block(c_dirt_props));
+	public static final RegistryObject<Block>C4_DIRT=REGISTRY.register("c4_dirt",()->new Block(c_dirt_props));
+	public static final RegistryObject<Block>C5_DIRT=REGISTRY.register("c5_dirt",()->new Block(c_dirt_props));
+	public static final RegistryObject<Block>C6_DIRT=REGISTRY.register("c6_dirt",()->new Block(c_dirt_props));
+	public static final RegistryObject<Block>C7_DIRT=REGISTRY.register("c7_dirt",()->new Block(c_dirt_props));
+	public static final RegistryObject<Block>C8_DIRT=REGISTRY.register("c8_dirt",()->new Block(c_dirt_props));
+	public static final RegistryObject<Block>C9_DIRT=REGISTRY.register("c9_dirt",()->new Block(c_dirt_props));
 
 
+	static BlockBehaviour.Properties c_gravel_props=BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.SNARE).strength(0.6F).sound(SoundType.GRAVEL);
+	public static final RegistryObject<Block>C1_GRAVEL=REGISTRY.register("c1_gravel",()->new Block(c_gravel_props));
+	public static final RegistryObject<Block>C2_GRAVEL=REGISTRY.register("c2_gravel",()->new Block(c_gravel_props));
+	public static final RegistryObject<Block>C3_GRAVEL=REGISTRY.register("c3_gravel",()->new Block(c_gravel_props));
+	public static final RegistryObject<Block>C4_GRAVEL=REGISTRY.register("c4_gravel",()->new Block(c_gravel_props));
+	public static final RegistryObject<Block>C5_GRAVEL=REGISTRY.register("c5_gravel",()->new Block(c_gravel_props));
+	public static final RegistryObject<Block>C6_GRAVEL=REGISTRY.register("c6_gravel",()->new Block(c_gravel_props));
+	public static final RegistryObject<Block>C7_GRAVEL=REGISTRY.register("c7_gravel",()->new Block(c_gravel_props));
+	public static final RegistryObject<Block>C8_GRAVEL=REGISTRY.register("c8_gravel",()->new Block(c_gravel_props));
+	public static final RegistryObject<Block>C9_GRAVEL=REGISTRY.register("c9_gravel",()->new Block(c_gravel_props));
+
+
+	static BlockBehaviour.Properties c_deepslate_props=BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(3.0F, 6.0F).sound(SoundType.DEEPSLATE);
+	public static final RegistryObject<Block>C1_DEEPSLATE=REGISTRY.register("c1_deepslate",()->new RotatedPillarBlock(c_deepslate_props));
+	public static final RegistryObject<Block>C2_DEEPSLATE=REGISTRY.register("c2_deepslate",()->new RotatedPillarBlock(c_deepslate_props));
+	public static final RegistryObject<Block>C3_DEEPSLATE=REGISTRY.register("c3_deepslate",()->new RotatedPillarBlock(c_deepslate_props));
+	public static final RegistryObject<Block>C4_DEEPSLATE=REGISTRY.register("c4_deepslate",()->new RotatedPillarBlock(c_deepslate_props));
+	public static final RegistryObject<Block>C5_DEEPSLATE=REGISTRY.register("c5_deepslate",()->new RotatedPillarBlock(c_deepslate_props));
+	public static final RegistryObject<Block>C6_DEEPSLATE=REGISTRY.register("c6_deepslate",()->new RotatedPillarBlock(c_deepslate_props));
+	public static final RegistryObject<Block>C7_DEEPSLATE=REGISTRY.register("c7_deepslate",()->new RotatedPillarBlock(c_deepslate_props));
+	public static final RegistryObject<Block>C8_DEEPSLATE=REGISTRY.register("c8_deepslate",()->new RotatedPillarBlock(c_deepslate_props));
+	public static final RegistryObject<Block>C9_DEEPSLATE=REGISTRY.register("c9_deepslate",()->new RotatedPillarBlock(c_deepslate_props));
 
 
 	public static final RegistryObject<Block>AURORA_CASING=REGISTRY.register("aurora_casing",()->new Custom(SoundType.NETHERITE_BLOCK,4F,4F,true));

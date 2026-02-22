@@ -1,0 +1,8 @@
+{
+	"parent": "block/cube_all",
+	"textures": {
+		"all": "dif:block/c3_gravel",
+		"particle": "dif:block/c3_gravel"
+	},
+	"render_type": "solid"
+}

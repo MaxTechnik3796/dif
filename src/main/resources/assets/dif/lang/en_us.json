@@ -282,6 +282,7 @@
 	"block.dif.c7_cobblestone": "Septuple Compressed Cobblestone",
 	"block.dif.c8_cobblestone": "Octuple Compressed Cobblestone",
 	"block.dif.c9_cobblestone": "Nonuple Compressed Cobblestone",
+
 	"block.dif.c10_cobblestone": "Decuple Compressed Cobblestone",
 	"block.dif.c11_cobblestone": "Undecuple Compressed Cobblestone",
 	"block.dif.c12_cobblestone": "Duodecuple Compressed Cobblestone",
@@ -291,6 +292,37 @@
 	"block.dif.c16_cobblestone": "Sedecuple Compressed Cobblestone",
 	"block.dif.c17_cobblestone": "Septendecuple Compressed Cobblestone",
 	"block.dif.c18_cobblestone": "Duodevigintuple Compressed Cobblestone",
+
+
+	"block.dif.c1_gravel": "Compressed Gravel",
+	"block.dif.c2_gravel": "Double Compressed Gravel",
+	"block.dif.c3_gravel": "Triple Compressed Gravel",
+	"block.dif.c4_gravel": "Quadruple Compressed Gravel",
+	"block.dif.c5_gravel": "Quintuple Compressed Gravel",
+	"block.dif.c6_gravel": "Sextuple Compressed Gravel",
+	"block.dif.c7_gravel": "Septuple Compressed Gravel",
+	"block.dif.c8_gravel": "Octuple Compressed Gravel",
+	"block.dif.c9_gravel": "Nonuple Compressed Gravel",
+
+	"block.dif.c1_dirt": "Compressed Dirt",
+	"block.dif.c2_dirt": "Double Compressed Dirt",
+	"block.dif.c3_dirt": "Triple Compressed Dirt",
+	"block.dif.c4_dirt": "Quadruple Compressed Dirt",
+	"block.dif.c5_dirt": "Quintuple Compressed Dirt",
+	"block.dif.c6_dirt": "Sextuple Compressed Dirt",
+	"block.dif.c7_dirt": "Septuple Compressed Dirt",
+	"block.dif.c8_dirt": "Octuple Compressed Dirt",
+	"block.dif.c9_dirt": "Nonuple Compressed Dirt",
+
+	"block.dif.c1_deepslate": "Compressed Deepslate",
+	"block.dif.c2_deepslate": "Double Compressed Deepslate",
+	"block.dif.c3_deepslate": "Triple Compressed Deepslate",
+	"block.dif.c4_deepslate": "Quadruple Compressed Deepslate",
+	"block.dif.c5_deepslate": "Quintuple Compressed Deepslate",
+	"block.dif.c6_deepslate": "Sextuple Compressed Deepslate",
+	"block.dif.c7_deepslate": "Septuple Compressed Deepslate",
+	"block.dif.c8_deepslate": "Octuple Compressed Deepslate",
+	"block.dif.c9_deepslate": "Nonuple Compressed Deepslate",
 
 
 	"block.dif.aurora_casing":"Aurora Casing",

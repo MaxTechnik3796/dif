@@ -1,0 +1,22 @@
+{
+	"variants": {
+		"axis=x": [
+			{
+				"model": "dif:block/c4_deepslate",
+				"x": 90,
+				"y": 90
+			}
+		],
+		"axis=y": [
+			{
+				"model": "dif:block/c4_deepslate"
+			}
+		],
+		"axis=z": [
+			{
+				"model": "dif:block/c4_deepslate",
+				"x": 90
+			}
+		]
+	}
+}

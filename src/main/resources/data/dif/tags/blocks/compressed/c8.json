@@ -1,6 +1,9 @@
 {
 	"replace":false,
 	"values":[
-		"dif:c8_cobblestone"
+		"dif:c8_cobblestone",
+		"dif:c8_dirt",
+		"dif:c8_gravel",
+		"dif:c8_deepslate"
 	]
 }
