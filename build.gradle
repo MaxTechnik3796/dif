@@ -12,6 +12,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
+    id 'org.parchmentmc.librarian.forgegradle'version'1.+'
 }
 
 apply plugin: 'org.spongepowered.mixin'
@@ -105,7 +106,7 @@ dependencies {
     //runtimeOnly fg.deobf("curse.maven:configured-457570:5180900")
     runtimeOnly fg.deobf("curse.maven:crafting-tweaks-233071:6784525")
     runtimeOnly fg.deobf("curse.maven:balm-531761:7087245")
-
+    implementation fg.deobf("curse.maven:curios-309927:6418456")
     runtimeOnly fg.deobf("curse.maven:create-deco-509285:6373226")
     runtimeOnly fg.deobf("curse.maven:slice-and-dice-659674:7184951")
     runtimeOnly fg.deobf("curse.maven:kotlin-for-forge-351264:7291067")
