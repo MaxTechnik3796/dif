@@ -22,6 +22,7 @@ public class DifModCommonConfig{
 	private static final ForgeConfigSpec.IntValue MATA_PLANT_MAX_HEIGHT;
 	private static final ForgeConfigSpec.BooleanValue DISABLE_END;
 	private static final ForgeConfigSpec.IntValue SPACE_SCAFFOLDING_LIFE_TIME;
+	private static final ForgeConfigSpec.IntValue MEGA_TORCH_RADIUS;
 
 	private static final ForgeConfigSpec.IntValue JETPACK_MAX_BASIC;
 	private static final ForgeConfigSpec.IntValue JETPACK_MAX_TURBO;
@@ -58,6 +59,7 @@ public class DifModCommonConfig{
 		MATA_PLANT_MAX_HEIGHT=BUILDER.comment("Maximal height of Mata Plant, (Blocks.)\nDif-reload required!\nDefault value: 2").defineInRange("mata_plant_max_height",2,1,Integer.MAX_VALUE);
 		DISABLE_END=BUILDER.comment("Disable End dimension, (t/f.)\nDif-reload required!\nDefault value: false").define("disable_end",false);
 		SPACE_SCAFFOLDING_LIFE_TIME=BUILDER.comment("Life Time of Space Scaffolding, (t.)\nDif-reload required!\nDefault value: 300").defineInRange("space_scaffolding_life_time",300,1,Integer.MAX_VALUE);
+		MEGA_TORCH_RADIUS=BUILDER.comment("Radius of MEGA TORCH, (Blocks.)\nDif-reload required!\nDefault value: 128").defineInRange("mega_torch_radius",128,32,8192);
 		BUILDER.pop();
 		BUILDER.push("Jetpack");
 		JETPACK_MAX_BASIC=BUILDER.comment("Max Basic of Jetpack, (Number.)\nDif-reload required!\nDefault value: 200").defineInRange("jetpack_max_basic",200,1,Integer.MAX_VALUE);
@@ -91,6 +93,7 @@ public class DifModCommonConfig{
 	public static int mataPlantMaxHeight;
 	public static boolean disableEnd;
 	public static int spaceScaffoldingLifeTime;
+	public static int megaTorchRadius;
 
 	public static int jetpackMaxBasic;
 	public static int jetpackMaxTurbo;
@@ -128,6 +131,7 @@ public class DifModCommonConfig{
 		mataPlantMaxHeight=MATA_PLANT_MAX_HEIGHT.get();
 		disableEnd=DISABLE_END.get();
 		spaceScaffoldingLifeTime=SPACE_SCAFFOLDING_LIFE_TIME.get();
+		megaTorchRadius=MEGA_TORCH_RADIUS.get();
 
 		jetpackMaxBasic=JETPACK_MAX_BASIC.get();
 		jetpackMaxTurbo=JETPACK_MAX_TURBO.get();
