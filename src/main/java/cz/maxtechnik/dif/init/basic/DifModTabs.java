@@ -26,6 +26,7 @@ public class DifModTabs{
 		ItemStack PORTAL_GUN=new ItemStack(DifModItems.PORTAL_GUN.get());PORTAL_GUN.getOrCreateTag().putInt("ammo",DifModCommonConfig.portalGunMaxAmmo);
 
 		tabData.accept(DifModItems.THE_DIFFERENTIAL.get());
+		tabData.accept(DifModItems.MEGA_TORCH.get());
 		tabData.accept(DifModItems.BAN_HAMMER.get());
 		tabData.accept(DifModItems.EVENT_BUS.get());
 		tabData.accept(DifModItems.VENT.get());

@@ -32,6 +32,7 @@ public class DifModItems{
 		assert block.getId()!=null;
 		return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));
 	}
+	public static final RegistryObject<Item> MEGA_TORCH = block(DifModBlocks.MEGA_TORCH);
 
 	//Modular Tools:
 	public static final RegistryObject<Item> MODULAR_PICKAXE=REGISTRY.register("modular_pickaxe",ModularPickaxe::new);
