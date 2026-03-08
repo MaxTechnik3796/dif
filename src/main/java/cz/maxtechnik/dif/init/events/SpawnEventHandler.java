@@ -2,7 +2,7 @@ package cz.maxtechnik.dif.init.events;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.DifModCommonConfig;
-import cz.maxtechnik.dif.block.MegaTorchRegistry;
+import cz.maxtechnik.dif.block.MegaTorch;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
@@ -15,11 +15,11 @@ import java.util.Set;
 public class SpawnEventHandler{
 	@SubscribeEvent
 	public static void onCheckSpawn(MobSpawnEvent.PositionCheck event){
-		if(!event.getEntity().getType().is(MegaTorchRegistry.BLOCKED_MOBS))return;
+		if(!event.getEntity().getType().is(MegaTorch.BLOCKED_MOBS))return;
 		MobSpawnType spawnType=event.getSpawnType();
 		if(spawnType!=MobSpawnType.NATURAL&&spawnType!=MobSpawnType.CHUNK_GENERATION&&spawnType!=MobSpawnType.PATROL&&spawnType!=MobSpawnType.STRUCTURE)return;
 		BlockPos spawnPos=BlockPos.containing(event.getX(),event.getY(),event.getZ());
-		Set<BlockPos> torches=MegaTorchRegistry.getTorches(event.getLevel().getLevel());
+		Set<BlockPos> torches=MegaTorch.getTorches(event.getLevel().getLevel());
 		for(BlockPos torchPos: torches){
 			int dx=Math.abs(torchPos.getX()-spawnPos.getX());
 			int dz=Math.abs(torchPos.getZ()-spawnPos.getZ());

@@ -33,7 +33,7 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>JETPACK_FUEL_FLUID=REGISTRY.register("jetpack_fuel_fluid",JetpackFuelBlock::new);
 	public static final RegistryObject<Block>JETPACK_TURBO_FUEL_FLUID=REGISTRY.register("jetpack_turbo_fuel_fluid",JetpackTurboFuelBlock::new);
 
-	public static final RegistryObject<Block> MEGA_TORCH = REGISTRY.register("mega_torch", () -> new MegaTorchBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(2.0F, 3.0F).sound(SoundType.WOOD).noOcclusion()));
+	public static final RegistryObject<Block> MEGA_TORCH = REGISTRY.register("mega_torch", () -> new MegaTorch(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(2.0F, 3.0F).sound(SoundType.WOOD).noOcclusion()));
 
 	public static final RegistryObject<Block>BEER=REGISTRY.register("beer",Beer::new);
 	public static final RegistryObject<Block>THE_DIFFERENTIAL=REGISTRY.register("the_differential",()->new CustomWaterloggedHorizontalRotation(SoundType.STONE,5F,6F,true));

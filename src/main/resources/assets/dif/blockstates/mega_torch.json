@@ -1,0 +1,22 @@
+{
+	"variants":{
+		"formed=false":{
+			"model":"dif:block/mega_torch_base"
+		},
+		"formed=true,part=0":{
+			"model":"dif:block/mega_torch_part0"
+		},
+		"formed=true,part=1":{
+			"model":"dif:block/mega_torch_part1"
+		},
+		"formed=true,part=2":{
+			"model":"dif:block/mega_torch_part2"
+		},
+		"formed=true,part=3":{
+			"model":"dif:block/mega_torch_part3"
+		},
+		"formed=true,part=4":{
+			"model":"dif:block/mega_torch_part4"
+		}
+	}
+}
