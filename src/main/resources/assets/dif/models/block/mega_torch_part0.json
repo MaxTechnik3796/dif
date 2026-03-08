@@ -1,7 +1,7 @@
 {
 	"parent":"minecraft:block/cube_bottom_top",
 	"textures":{
-		"top":"dif:block/mega_torch_base",
+		"top":"dif:block/mega_torch_base_top",
 		"bottom":"dif:block/mega_torch_part0",
 		"side":"dif:block/mega_torch_part0"
 	},
