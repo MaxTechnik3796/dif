@@ -59,7 +59,7 @@ public class DifModCommonConfig{
 		MATA_PLANT_MAX_HEIGHT=BUILDER.comment("Maximal height of Mata Plant, (Blocks.)\nDif-reload required!\nDefault value: 2").defineInRange("mata_plant_max_height",2,1,Integer.MAX_VALUE);
 		DISABLE_END=BUILDER.comment("Disable End dimension, (t/f.)\nDif-reload required!\nDefault value: false").define("disable_end",false);
 		SPACE_SCAFFOLDING_LIFE_TIME=BUILDER.comment("Life Time of Space Scaffolding, (t.)\nDif-reload required!\nDefault value: 300").defineInRange("space_scaffolding_life_time",300,1,Integer.MAX_VALUE);
-		MEGA_TORCH_RADIUS=BUILDER.comment("Radius of MEGA TORCH, (Blocks.)\nDif-reload required!\nDefault value: 128").defineInRange("mega_torch_radius",128,32,8192);
+		MEGA_TORCH_RADIUS=BUILDER.comment("Radius of MEGA Torch, (Blocks.)\nDif-reload required!\nDefault value: 128").defineInRange("mega_torch_radius",128,32,8192);
 		BUILDER.pop();
 		BUILDER.push("Jetpack");
 		JETPACK_MAX_BASIC=BUILDER.comment("Max Basic of Jetpack, (Number.)\nDif-reload required!\nDefault value: 200").defineInRange("jetpack_max_basic",200,1,Integer.MAX_VALUE);
