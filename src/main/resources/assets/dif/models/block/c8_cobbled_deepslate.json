@@ -1,0 +1,8 @@
+{
+	"parent": "block/cube_all",
+	"textures": {
+		"all": "dif:block/c8_cobbled_deepslate",
+		"particle": "dif:block/c8_cobbled_deepslate"
+	},
+	"render_type": "solid"
+}

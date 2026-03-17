@@ -170,6 +170,16 @@ public class DifModTabs{
 			tabData.accept(DifModItems.C8_DEEPSLATE.get());
 			tabData.accept(DifModItems.C9_DEEPSLATE.get());
 
+			tabData.accept(DifModItems.C1_COBBLED_DEEPSLATE.get());
+			tabData.accept(DifModItems.C2_COBBLED_DEEPSLATE.get());
+			tabData.accept(DifModItems.C3_COBBLED_DEEPSLATE.get());
+			tabData.accept(DifModItems.C4_COBBLED_DEEPSLATE.get());
+			tabData.accept(DifModItems.C5_COBBLED_DEEPSLATE.get());
+			tabData.accept(DifModItems.C6_COBBLED_DEEPSLATE.get());
+			tabData.accept(DifModItems.C7_COBBLED_DEEPSLATE.get());
+			tabData.accept(DifModItems.C8_COBBLED_DEEPSLATE.get());
+			tabData.accept(DifModItems.C9_COBBLED_DEEPSLATE.get());
+
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.NATURAL_BLOCKS)){
 			tabData.getEntries().putAfter(new ItemStack(Items.SNOW),new ItemStack(DifModItems.MATY_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.getEntries().putAfter(new ItemStack(Items.CRYING_OBSIDIAN),new ItemStack(DifModItems.CINDER_FLOUR_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);

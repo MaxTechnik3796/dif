@@ -325,6 +325,15 @@
 	"block.dif.c8_deepslate": "Octuple Compressed Deepslate",
 	"block.dif.c9_deepslate": "Nonuple Compressed Deepslate",
 
+	"block.dif.c1_cobbled_deepslate": "Compressed Cobbled Deepslate",
+	"block.dif.c2_cobbled_deepslate": "Double Compressed Cobbled Deepslate",
+	"block.dif.c3_cobbled_deepslate": "Triple Compressed Cobbled Deepslate",
+	"block.dif.c4_cobbled_deepslate": "Quadruple Compressed Cobbled Deepslate",
+	"block.dif.c5_cobbled_deepslate": "Quintuple Compressed Cobbled Deepslate",
+	"block.dif.c6_cobbled_deepslate": "Sextuple Compressed Cobbled Deepslate",
+	"block.dif.c7_cobbled_deepslate": "Septuple Compressed Cobbled Deepslate",
+	"block.dif.c8_cobbled_deepslate": "Octuple Compressed Cobbled Deepslate",
+	"block.dif.c9_cobbled_deepslate": "Nonuple Compressed Cobbled Deepslate",
 
 	"block.dif.aurora_casing":"Aurora Casing",
 	"block.dif.broken_track00":"Broken Track (1)",

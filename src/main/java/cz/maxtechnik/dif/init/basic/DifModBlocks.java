@@ -20,6 +20,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import static net.minecraft.world.level.block.Blocks.DEEPSLATE;
 public class DifModBlocks{
 	public static final DeferredRegister<Block>REGISTRY=DeferredRegister.create(ForgeRegistries.BLOCKS,DifMod.MODID);
 
@@ -146,6 +147,18 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>C7_DEEPSLATE=REGISTRY.register("c7_deepslate",()->new RotatedPillarBlock(c_deepslate_props));
 	public static final RegistryObject<Block>C8_DEEPSLATE=REGISTRY.register("c8_deepslate",()->new RotatedPillarBlock(c_deepslate_props));
 	public static final RegistryObject<Block>C9_DEEPSLATE=REGISTRY.register("c9_deepslate",()->new RotatedPillarBlock(c_deepslate_props));
+
+
+	static BlockBehaviour.Properties c_cobbled_deepslate_props=BlockBehaviour.Properties.copy(DEEPSLATE).strength(3.5F, 6.0F);
+	public static final RegistryObject<Block>C1_COBBLED_DEEPSLATE=REGISTRY.register("c1_cobbled_deepslate",()->new Block(c_cobbled_deepslate_props));
+	public static final RegistryObject<Block>C2_COBBLED_DEEPSLATE=REGISTRY.register("c2_cobbled_deepslate",()->new Block(c_cobbled_deepslate_props));
+	public static final RegistryObject<Block>C3_COBBLED_DEEPSLATE=REGISTRY.register("c3_cobbled_deepslate",()->new Block(c_cobbled_deepslate_props));
+	public static final RegistryObject<Block>C4_COBBLED_DEEPSLATE=REGISTRY.register("c4_cobbled_deepslate",()->new Block(c_cobbled_deepslate_props));
+	public static final RegistryObject<Block>C5_COBBLED_DEEPSLATE=REGISTRY.register("c5_cobbled_deepslate",()->new Block(c_cobbled_deepslate_props));
+	public static final RegistryObject<Block>C6_COBBLED_DEEPSLATE=REGISTRY.register("c6_cobbled_deepslate",()->new Block(c_cobbled_deepslate_props));
+	public static final RegistryObject<Block>C7_COBBLED_DEEPSLATE=REGISTRY.register("c7_cobbled_deepslate",()->new Block(c_cobbled_deepslate_props));
+	public static final RegistryObject<Block>C8_COBBLED_DEEPSLATE=REGISTRY.register("c8_cobbled_deepslate",()->new Block(c_cobbled_deepslate_props));
+	public static final RegistryObject<Block>C9_COBBLED_DEEPSLATE=REGISTRY.register("c9_cobbled_deepslate",()->new Block(c_cobbled_deepslate_props));
 
 
 	public static final RegistryObject<Block>AURORA_CASING=REGISTRY.register("aurora_casing",()->new Custom(SoundType.NETHERITE_BLOCK,4F,4F,true));

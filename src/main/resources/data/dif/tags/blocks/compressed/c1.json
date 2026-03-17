@@ -4,6 +4,7 @@
 		"dif:c1_cobblestone",
 		"dif:c1_dirt",
 		"dif:c1_gravel",
-		"dif:c1_deepslate"
+		"dif:c1_deepslate",
+		"dif:c1_cobbled_deepslate"
 	]
 }
