@@ -26,6 +26,7 @@
 		"dif:spaceship_ghost_block",
 		"dif:aurora_casing",
 		"#dif:broken_tracks",
-		"#dif:space_industrial_blocks"
+		"#dif:space_industrial_blocks",
+		"dif:frying_table"
 	]
 }

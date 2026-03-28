@@ -10,35 +10,29 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import org.jetbrains.annotations.NotNull;
-public abstract class JetpackTurboFuelFluid extends ForgeFlowingFluid {
-	public static final Properties PROPERTIES = new Properties(DifModFluidTypes.JETPACK_TURBO_FUEL_TYPE, DifModFluids.JETPACK_TURBO_FUEL,DifModFluids.FLOWING_JETPACK_TURBO_FUEL)
-			.explosionResistance(100f).bucket(DifModItems.JETPACK_TURBO_FUEL_BUCKET).block(() -> (LiquidBlock) DifModBlocks.JETPACK_TURBO_FUEL_FLUID.get());
-
-	private JetpackTurboFuelFluid() {
+public abstract class JetpackTurboFuelFluid extends ForgeFlowingFluid{
+	public static final Properties PROPERTIES=new Properties(DifModFluidTypes.JETPACK_TURBO_FUEL_TYPE,DifModFluids.JETPACK_TURBO_FUEL,DifModFluids.FLOWING_JETPACK_TURBO_FUEL)
+			.explosionResistance(100f).bucket(DifModItems.JETPACK_TURBO_FUEL_BUCKET).block(()->(LiquidBlock)DifModBlocks.JETPACK_TURBO_FUEL_FLUID.get());
+	private JetpackTurboFuelFluid(){
 		super(PROPERTIES);
 	}
-
 	public static class Source extends JetpackTurboFuelFluid{
-		public int getAmount(@NotNull FluidState state) {
+		public int getAmount(@NotNull FluidState state){
 			return 8;
 		}
-
-		public boolean isSource(@NotNull FluidState state) {
+		public boolean isSource(@NotNull FluidState state){
 			return true;
 		}
 	}
-
 	public static class Flowing extends JetpackTurboFuelFluid{
-		protected void createFluidStateDefinition(StateDefinition.@NotNull Builder<Fluid, FluidState> builder) {
+		protected void createFluidStateDefinition(StateDefinition.@NotNull Builder<Fluid,FluidState> builder){
 			super.createFluidStateDefinition(builder);
 			builder.add(LEVEL);
 		}
-
-		public int getAmount(FluidState state) {
+		public int getAmount(FluidState state){
 			return state.getValue(LEVEL);
 		}
-
-		public boolean isSource(@NotNull FluidState state) {
+		public boolean isSource(@NotNull FluidState state){
 			return false;
 		}
 	}

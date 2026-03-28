@@ -35,7 +35,7 @@ public class CustomWaterlogged extends Block implements SimpleWaterloggedBlock{
 	}
 	@Override
 	public float getShadeBrightness(@NotNull BlockState blockState,@NotNull BlockGetter blockGetter,@NotNull BlockPos pos){
-		return 1.0f;
+		return 1F;
 	}
 	@Override
 	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){

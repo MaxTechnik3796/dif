@@ -211,6 +211,7 @@ public class DifModTabs{
 			tabData.getEntries().putAfter(new ItemStack(DifModItems.CIDER_BUCKET.get()),new ItemStack(DifModItems.FUEL_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.getEntries().putAfter(new ItemStack(DifModItems.FUEL_BUCKET.get()),new ItemStack(DifModItems.JETPACK_FUEL_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.getEntries().putAfter(new ItemStack(DifModItems.JETPACK_FUEL_BUCKET.get()),new ItemStack(DifModItems.JETPACK_TURBO_FUEL_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(DifModItems.JETPACK_TURBO_FUEL_BUCKET.get()),new ItemStack(DifModItems.SUNFLOWER_OIL_BUCKET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.accept(DifModItems.CREMEKA.get());
 			tabData.accept(DifModItems.MATY_CREATE.get());
 			tabData.accept(DifModItems.MAYONNAISE.get());
@@ -291,6 +292,8 @@ public class DifModTabs{
 			ItemStack ironPickaxe=new ItemStack(DifModItems.MODULAR_PICKAXE.get());
 			ironPickaxe.setTag(newSingleMaterialPreFab(ironPickaxe,"Iron"));
 			tabData.accept(ironPickaxe);
+
+			tabData.accept(DifModItems.FRYING_TABLE.get());
 
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){

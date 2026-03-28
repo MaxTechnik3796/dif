@@ -4,8 +4,8 @@ import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
-public class CiderBucket extends BucketItem{
-	public CiderBucket(){
-		super(DifModFluids.CIDER,new Properties().craftRemainder(Items.BUCKET).stacksTo(1).rarity(Rarity.COMMON));
+public class SunflowerOilBucket extends BucketItem{
+	public SunflowerOilBucket(){
+		super(DifModFluids.SUNFLOWER_OIL,new Properties().craftRemainder(Items.BUCKET).stacksTo(1).rarity(Rarity.COMMON));
 	}
 }

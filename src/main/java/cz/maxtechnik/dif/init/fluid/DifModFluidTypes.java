@@ -14,4 +14,5 @@ public class DifModFluidTypes{
 	public static final RegistryObject<FluidType>CIDER_TYPE=REGISTRY.register("cider_fluid",CiderFluidType::new);
 	public static final RegistryObject<FluidType>JETPACK_FUEL_TYPE=REGISTRY.register("jetpack_fuel_fluid",JetpackFuelFluidType::new);
 	public static final RegistryObject<FluidType>JETPACK_TURBO_FUEL_TYPE=REGISTRY.register("jetpack_turbo_fuel_fluid",JetpackTurboFuelFluidType::new);
+	public static final RegistryObject<FluidType>SUNFLOWER_OIL_TYPE=REGISTRY.register("sunflower_oil_fluid",SunflowerOilFluidType::new);
 }

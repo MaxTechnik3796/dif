@@ -16,7 +16,7 @@ public class XpFluidType extends FluidType{
 	@Override
 	public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer){
 		consumer.accept(new IClientFluidTypeExtensions(){
-			private static final ResourceLocation STILL_TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/xp_fluid_still"),FLOWING_TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/xp_fluid_flow");
+			private static final ResourceLocation STILL_TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/xp_fluid_still"), FLOWING_TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/xp_fluid_flow");
 			@Override
 			public ResourceLocation getStillTexture(){
 				return STILL_TEXTURE;

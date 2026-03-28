@@ -33,6 +33,7 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>CIDER_FLUID=REGISTRY.register("cider_fluid",CiderBlock::new);
 	public static final RegistryObject<Block>JETPACK_FUEL_FLUID=REGISTRY.register("jetpack_fuel_fluid",JetpackFuelBlock::new);
 	public static final RegistryObject<Block>JETPACK_TURBO_FUEL_FLUID=REGISTRY.register("jetpack_turbo_fuel_fluid",JetpackTurboFuelBlock::new);
+	public static final RegistryObject<Block>SUNFLOWER_OIL_FLUID=REGISTRY.register("sunflower_oil_fluid",SunflowerOilBlock::new);
 
 	public static final RegistryObject<Block> MEGA_TORCH = REGISTRY.register("mega_torch", () -> new MegaTorch(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(2F,3F).sound(SoundType.WOOD).lightLevel(state->15)));
 
@@ -100,7 +101,7 @@ public class DifModBlocks{
 
 	public static final RegistryObject<Block>XP_STORAGE=REGISTRY.register("xp_storage",XpStorage::new);
 	public static final RegistryObject<Block>PORTAL_BLOCK=REGISTRY.register("portal_block",()->new PortalBlock(BlockBehaviour.Properties.of().noCollission().noOcclusion().pushReaction(PushReaction.BLOCK)));
-
+	public static final RegistryObject<Block>FRYING_TABLE=REGISTRY.register("frying_table",FryingTable::new);
 
 	static BlockBehaviour.Properties c_cobblestone_props=BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(2.0F, 6.0F);
 	public static final RegistryObject<Block>C1_COBBLESTONE=REGISTRY.register("c1_cobblestone",()->new Block(c_cobblestone_props));

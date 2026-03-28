@@ -49,6 +49,11 @@
 	"fluid.dif.fuel_fluid":"Fuel",
 	"fluid_type.dif.fuel_fluid":"Fuel",
 
+	"item.dif.sunflower_oil_bucket":"Sunflower Oil Bucket",
+	"block.dif.sunflower_oil_fluid":"Sunflower Oil",
+	"fluid.dif.sunflower_oil_fluid":"Sunflower Oil",
+	"fluid_type.dif.sunflower_oil_fluid":"Sunflower Oil",
+
 	"item.dif.jetpack_fuel_bucket":"Jetpack Fuel Bucket",
 	"block.dif.jetpack_fuel_fluid":"Jetpack Fuel",
 	"fluid.dif.jetpack_fuel_fluid":"Jetpack Fuel",
@@ -374,6 +379,7 @@
 	"item.dif.jetpack_turbo_fuel":"Jetpack TURBO Fuel",
 	"item.dif.jetpack_canister":"Canister",
 
-	"block.dif.mega_torch":"MEGA Torch"
+	"block.dif.mega_torch":"MEGA Torch",
+	"block.dif.frying_table":"Frying Table"
 
 }

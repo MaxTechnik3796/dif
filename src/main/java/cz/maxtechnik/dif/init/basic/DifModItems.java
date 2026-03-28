@@ -72,6 +72,7 @@ public class DifModItems{
 	public static final RegistryObject<Item>CIDER_BUCKET=REGISTRY.register("cider_bucket",CiderBucket::new);
 	public static final RegistryObject<Item>JETPACK_FUEL_BUCKET=REGISTRY.register("jetpack_fuel_bucket",JetpackFuelBucket::new);
 	public static final RegistryObject<Item>JETPACK_TURBO_FUEL_BUCKET=REGISTRY.register("jetpack_turbo_fuel_bucket",JetpackTurboFuelBucket::new);
+	public static final RegistryObject<Item>SUNFLOWER_OIL_BUCKET=REGISTRY.register("sunflower_oil_bucket",SunflowerOilBucket::new);
 
 	//Vanilla + :
 	public static final RegistryObject<Item> END_PORTAL=V_REGISTRY.register("end_portal",()->new BlockItem(Blocks.END_PORTAL,new Item.Properties()));
@@ -221,6 +222,7 @@ public class DifModItems{
 	public static final RegistryObject<Item> IRON_BARS_BLOCK=block(DifModBlocks.IRON_BARS_BLOCK);
 
 	public static final RegistryObject<Item> TREE_BARK_BLOCK=block(DifModBlocks.TREE_BARK_BLOCK);
+	public static final RegistryObject<Item>FRYING_TABLE=block(DifModBlocks.FRYING_TABLE);
 
 	//Energy:
 	public static final RegistryObject<Item> ENERGY_BLOCK=block(DifModBlocks.ENERGY_BLOCK);

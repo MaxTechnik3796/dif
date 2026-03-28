@@ -1,0 +1,35 @@
+{
+	"variants":{
+		"facing=north,oil=false":{
+			"model":"dif:block/frying_table"
+		},
+		"facing=east,oil=false":{
+			"model":"dif:block/frying_table",
+			"y":90
+		},
+		"facing=south,oil=false":{
+			"model":"dif:block/frying_table",
+			"y":180
+		},
+		"facing=west,oil=false":{
+			"model":"dif:block/frying_table",
+			"y":270
+		},
+
+		"facing=north,oil=true":{
+			"model":"dif:block/frying_table_oil"
+		},
+		"facing=east,oil=true":{
+			"model":"dif:block/frying_table_oil",
+			"y":90
+		},
+		"facing=south,oil=true":{
+			"model":"dif:block/frying_table_oil",
+			"y":180
+		},
+		"facing=west,oil=true":{
+			"model":"dif:block/frying_table_oil",
+			"y":270
+		}
+	}
+}

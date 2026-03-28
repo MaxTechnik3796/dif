@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.block.template;
+package cz.maxtechnik.dif.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,12 +18,13 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("deprecation")
-public class CustomWaterloggedHorizontalRotation extends Block implements SimpleWaterloggedBlock{
+public class FryingTable extends Block implements SimpleWaterloggedBlock{
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
-	public CustomWaterloggedHorizontalRotation(SoundType sound,float hardness,float resistance,boolean requiresCorrectToolForDrops){
-		super(requiresCorrectToolForDrops?Properties.of().strength(hardness,resistance).sound(sound).requiresCorrectToolForDrops().noOcclusion().isRedstoneConductor((bs,br,bp)->false):Properties.of().strength(hardness,resistance).sound(sound).noOcclusion().isRedstoneConductor((bs,br,bp)->false));
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(WATERLOGGED,false));
+	public static final BooleanProperty OIL=BooleanProperty.create("oil");
+	public FryingTable(){
+		super(Properties.of().strength(0.5F,6F).sound(SoundType.LANTERN).requiresCorrectToolForDrops().noOcclusion().isRedstoneConductor((bs,br,bp)->false).lightLevel(state->15));
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(WATERLOGGED,false).setValue(OIL,false));
 	}
 	@Override
 	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
@@ -34,8 +35,12 @@ public class CustomWaterloggedHorizontalRotation extends Block implements Simple
 		return Shapes.empty();
 	}
 	@Override
+	public @NotNull VoxelShape getShape(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
+		return box(0,0,0,16,13,16);
+	}
+	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
-		builder.add(FACING,WATERLOGGED);
+		builder.add(FACING,WATERLOGGED,OIL);
 	}
 	@Override
 	public float getShadeBrightness(@NotNull BlockState blockState,@NotNull BlockGetter blockGetter,@NotNull BlockPos pos){

@@ -35,12 +35,17 @@ public class DifModFluids{
 	public static final RegistryObject<FlowingFluid>XP=REGISTRY.register("xp_fluid",XpFluid.Source::new);
 	public static final RegistryObject<FlowingFluid>FLOWING_XP=REGISTRY.register("flowing_xp_fluid",XpFluid.Flowing::new);
 
+	public static final RegistryObject<FlowingFluid>SUNFLOWER_OIL=REGISTRY.register("sunflower_oil_fluid",SunflowerOilFluid.Source::new);
+	public static final RegistryObject<FlowingFluid>FLOWING_SUNFLOWER_OIL=REGISTRY.register("flowing_sunflower_oil_fluid",SunflowerOilFluid.Flowing::new);
+
 	@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD,value=Dist.CLIENT)
 	public static class FluidsClientSideHandler{
 		@SubscribeEvent
 		public static void clientSetup(FMLClientSetupEvent event) {
 			ItemBlockRenderTypes.setRenderLayer(CIDER.get(),RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(FLOWING_CIDER.get(),RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(SUNFLOWER_OIL.get(),RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(FLOWING_SUNFLOWER_OIL.get(),RenderType.translucent());
 		}
 	}
 }
