@@ -25,6 +25,7 @@ public class DifModBlockEntities{
 
 	public static final RegistryObject<BlockEntityType<?>>SPACE_SCAFFOLDING=REGISTRY.register("space_scaffolding",()->BlockEntityType.Builder.of(SpaceScaffoldingBlockEntity::new,DifModBlocks.SPACE_CASING.get()).build(null));
 	public static final RegistryObject<BlockEntityType<?>>XP_STORAGE=REGISTRY.register("xp_storage",()->BlockEntityType.Builder.of(XpStorageBlockEntity::new,DifModBlocks.XP_STORAGE.get()).build(null));
+	public static final RegistryObject<BlockEntityType<FryingTableBlockEntity>>FRYING_TABLE=REGISTRY.register("frying_table",()->BlockEntityType.Builder.of(FryingTableBlockEntity::new,DifModBlocks.FRYING_TABLE.get()).build(null));
 
 	public static final RegistryObject<BlockEntityType<BurningGeneratorBlockEntity>> BURNING_GENERATOR=REGISTRY.register("burning_generator",()->BlockEntityType.Builder.of(BurningGeneratorBlockEntity::new,DifModBlocks.BURNING_GENERATOR.get()).build(null));
 	public static final RegistryObject<BlockEntityType<?>>SPECIAL_CRAFTING=register("special_crafting",DifModBlocks.XP_STORAGE,SpecialCraftingBlockEntity::new);

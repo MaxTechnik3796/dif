@@ -13,7 +13,7 @@ import cz.maxtechnik.dif.init.other.DifModMobEffects;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
 import cz.maxtechnik.dif.init.other.DifModDimensions;
 import cz.maxtechnik.dif.init.events.JetpackHandler;
-import net.minecraft.client.Minecraft;
+import cz.maxtechnik.dif.renderer.FryingTableRenderer;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -23,6 +23,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -43,31 +44,26 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 import java.util.function.Function;
 import java.util.function.BiConsumer;
-
 @SuppressWarnings("removal")
 @Mod(DifMod.MODID)
-public class DifMod {
-	public static final String MODID = "dif";
-	public static final Logger LOGGER = LogUtils.getLogger();
-	public static final String PROTOCOL_VERSION = "1";
-	public static final SimpleChannel PACKET_HANDLER = NetworkRegistry.newSimpleChannel(
-			new ResourceLocation(MODID, "main"),
-			() -> PROTOCOL_VERSION,
+public class DifMod{
+	public static final String MODID="dif";
+	public static final Logger LOGGER=LogUtils.getLogger();
+	public static final String PROTOCOL_VERSION="1";
+	public static final SimpleChannel PACKET_HANDLER=NetworkRegistry.newSimpleChannel(
+			new ResourceLocation(MODID,"main"),
+			()->PROTOCOL_VERSION,
 			PROTOCOL_VERSION::equals,
 			PROTOCOL_VERSION::equals
 	);
-	private static int messageID = 0;
-
-	public static <T> void addNetworkMessage(Class<T> messageType, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<NetworkEvent.Context>> messageConsumer) {
-		PACKET_HANDLER.registerMessage(messageID, messageType, encoder, decoder, messageConsumer);
+	private static int messageID=0;
+	public static <T> void addNetworkMessage(Class<T> messageType,BiConsumer<T,FriendlyByteBuf> encoder,Function<FriendlyByteBuf,T> decoder,BiConsumer<T,Supplier<NetworkEvent.Context>> messageConsumer){
+		PACKET_HANDLER.registerMessage(messageID,messageType,encoder,decoder,messageConsumer);
 		messageID++;
 	}
-
-	public DifMod() {
-		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-
+	public DifMod(){
+		IEventBus bus=FMLJavaModLoadingContext.get().getModEventBus();
 		bus.addListener(this::commonSetup);
-
 		// Registrace modulů
 		DifModDimensions.register();
 		DifModBlocks.REGISTRY.register(bus);
@@ -81,55 +77,64 @@ public class DifMod {
 		DifModFluids.REGISTRY.register(bus);
 		DifModFluidTypes.REGISTRY.register(bus);
 		DifModRecipes.REGISTRY.register(bus);
-
+		DifModRecipes.TYPE_REGISTRY.register(bus);
 		// REGISTRACE EVENTŮ
 		MinecraftForge.EVENT_BUS.register(this);
 		// Registrujeme JetpackHandler, aby fungoval let
 		MinecraftForge.EVENT_BUS.register(JetpackHandler.class);
-
 		bus.addListener(DifModTabs::addCreative);
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, DifModCommonConfig.SPEC);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON,DifModCommonConfig.SPEC);
 	}
-
-	private void commonSetup(final FMLCommonSetupEvent event) {
+	private void commonSetup(final FMLCommonSetupEvent event){
 		LOGGER.info("DIF MOD: Common Setup");
 	}
-
 	@SubscribeEvent
-	public void onServerStarting(ServerStartingEvent event) {
+	public void onServerStarting(ServerStartingEvent event){
 		LOGGER.info("DIF MOD: Server Starting");
 	}
-
-	@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-	public static class ClientModEvents {
+	@Mod.EventBusSubscriber(modid=MODID, bus=Mod.EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
+	public static class ClientModEvents{
 		@SubscribeEvent
-		public static void onClientSetup(FMLClientSetupEvent event) {
+		public static void onClientSetup(FMLClientSetupEvent event){
 			LOGGER.info("DIF MOD: Client Setup");
 		}
+		@SubscribeEvent
+		public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event){
+			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(),FryingTableRenderer::new);
+		}
 	}
-
-	// --- POMOCNÉ METODY (Navráceny zpět) ---
-
-	public static boolean rouletteBoolean(int range) {
-		return 0 == Mth.nextInt(RandomSource.create(), 0, range);
-	}
-
 	/**
-	 * Metoda pro detekci myši v určité oblasti (používá se v GUI/Screenu)
+	 * Fixing space in goggle tooltip
 	 */
-	public static boolean mouseIn(int mouseX, int mouseY, int x, int y, int w, int h) {
-		return mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + h;
+	public static String goggleTooltipFix="    ";
+	/**
+	 * Radom chance generator
+	 */
+	public static boolean rouletteBoolean(int range){
+		return 0==Mth.nextInt(RandomSource.create(),0,range);
 	}
-
-	public static void sendMessageToPlayer(Player player, MutableComponent message) {
-		MutableComponent messageTemplate = Component.empty();
+	/**
+	 * Method for detecting mouse in a specific area (used in GUI/Screen)
+	 */
+	public static boolean mouseIn(int mouseX,int mouseY,int x,int y,int w,int h){
+		return mouseX>=x&&mouseX<x+w&&mouseY>=y&&mouseY<y+h;
+	}
+	/**
+	 *
+	 * Send message to player with mod prefix
+	 */
+	public static void sendMessageToPlayer(Player player,MutableComponent message){
+		MutableComponent messageTemplate=Component.empty();
 		messageTemplate.append(Component.translatable("chat.dif.mod_prefix"));
 		messageTemplate.append(CommonComponents.space());
 		messageTemplate.append(message);
 		player.sendSystemMessage(messageTemplate);
 	}
-
-	public static boolean playerGameModeIsCreativeCategory(ServerPlayer player) {
-		return player.gameMode.isCreative() || player.gameMode.getGameModeForPlayer().equals(GameType.SPECTATOR);
+	/**
+	 *
+	 * Check if is player in creative based gamemode
+	 */
+	public static boolean playerGameModeIsCreativeCategory(ServerPlayer player){
+		return player.gameMode.isCreative()||player.gameMode.getGameModeForPlayer().equals(GameType.SPECTATOR);
 	}
 }
