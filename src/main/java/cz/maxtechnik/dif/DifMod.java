@@ -103,7 +103,7 @@ public class DifMod{
 		}
 		@SubscribeEvent
 		public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event){
-			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(),FryingTableRenderer::new);
+			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(),context->new FryingTableRenderer());
 		}
 	}
 	/**
