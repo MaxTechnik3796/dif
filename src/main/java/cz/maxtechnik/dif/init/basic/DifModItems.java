@@ -81,7 +81,7 @@ public class DifModItems{
 	public static final RegistryObject<Item> WATER=V_REGISTRY.register("water",()->new BlockItem(Blocks.WATER,new Item.Properties()));
 	public static final RegistryObject<Item> LAVA=V_REGISTRY.register("lava",()->new BlockItem(Blocks.LAVA,new Item.Properties().fireResistant()));
 	public static final RegistryObject<Item> FIRE=V_REGISTRY.register("fire",()->new BlockItem(Blocks.FIRE,new Item.Properties().fireResistant()));
-
+	//Food:
 	public static final RegistryObject<Item> BEER=REGISTRY.register("beer",()->new Beer(DifModBlocks.BEER.get(),new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationMod(1F).alwaysEat().build())));
 
 	public static final RegistryObject<Item> CHERRY_BOTTLE=REGISTRY.register("cherry_bottle",CherryBottle::new);
@@ -99,11 +99,12 @@ public class DifModItems{
 
 	public static final RegistryObject<Item> BUCKET_OF_CHICKEN=REGISTRY.register("bucket_of_chicken",BucketOfChicken::new);
 	public static final RegistryObject<Item> FRIES=REGISTRY.register("fries",()->new Custom(3,0.45F));
+	public static final RegistryObject<Item> RIZEK=REGISTRY.register("rizek",()->new CustomMeat(5,0.4F));
 
 	public static final RegistryObject<Item> HORSE_MEAT=REGISTRY.register("horse_meat",()->new CustomMeat(2,0.1F));
 	public static final RegistryObject<Item> COOKED_HORSE_MEAT=REGISTRY.register("cooked_horse_meat",()->new CustomMeat(6,0.8F));
 
-	public static final RegistryObject<Item>CIDER_BOTTLE=REGISTRY.register("cider_bottle",CiderBottle::new);
+	public static final RegistryObject<Item> CIDER_BOTTLE=REGISTRY.register("cider_bottle",CiderBottle::new);
 	public static final RegistryObject<Item> BURNED_TOAST=REGISTRY.register("burned_toast",()->new Custom(3,0.1F));
 
 	public static final RegistryObject<Item> CREATE_CAN=REGISTRY.register("create_can",Can::new);
@@ -222,7 +223,7 @@ public class DifModItems{
 	public static final RegistryObject<Item> IRON_BARS_BLOCK=block(DifModBlocks.IRON_BARS_BLOCK);
 
 	public static final RegistryObject<Item> TREE_BARK_BLOCK=block(DifModBlocks.TREE_BARK_BLOCK);
-	public static final RegistryObject<Item>FRYING_TABLE=block(DifModBlocks.FRYING_TABLE);
+	public static final RegistryObject<Item> FRYING_TABLE=block(DifModBlocks.FRYING_TABLE);
 
 	//Energy:
 	public static final RegistryObject<Item> ENERGY_BLOCK=block(DifModBlocks.ENERGY_BLOCK);

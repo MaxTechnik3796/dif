@@ -21,10 +21,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -136,5 +139,17 @@ public class DifMod{
 	 */
 	public static boolean playerGameModeIsCreativeCategory(ServerPlayer player){
 		return player.gameMode.isCreative()||player.gameMode.getGameModeForPlayer().equals(GameType.SPECTATOR);
+	}
+	/**
+	 *Insert several ItemStacks in a row in one creative tab behind an ItemStack without much code.
+	 *@param tabData Tab builder. (event)
+	 *@param startStack Stack after which insertion will begin.
+	 *@param addStacks List of ItemStacks you want to insert.
+	 */
+	public static void addItemStacksBehind(BuildCreativeModeTabContentsEvent tabData,ItemStack startStack,ItemStack[] addStacks){
+		for(int i=0;i<addStacks.length;i++){
+			if(i==0) tabData.getEntries().putAfter(startStack,addStacks[i],CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			else tabData.getEntries().putAfter(addStacks[i-1],addStacks[i],CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		}
 	}
 }
