@@ -10,7 +10,7 @@ import net.minecraftforge.fluids.FluidType;
 import java.util.function.Consumer;
 public class SunflowerOilFluidType extends FluidType{
 	public SunflowerOilFluidType(){
-		super(Properties.create().fallDistanceModifier(0F).canExtinguish(true).supportsBoating(true).canHydrate(true).motionScale(0.05D).sound(SoundActions.BUCKET_FILL,SoundEvents.BUCKET_FILL)
+		super(Properties.create().fallDistanceModifier(0F).canExtinguish(true).supportsBoating(true).canHydrate(true).motionScale(0.007D).sound(SoundActions.BUCKET_FILL,SoundEvents.BUCKET_FILL)
 				.sound(SoundActions.BUCKET_EMPTY,SoundEvents.BUCKET_EMPTY).sound(SoundActions.FLUID_VAPORIZE,SoundEvents.FIRE_EXTINGUISH));
 	}
 	@Override
