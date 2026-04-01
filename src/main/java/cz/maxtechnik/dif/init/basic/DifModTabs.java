@@ -25,6 +25,7 @@ public class DifModTabs{
 		tabData.accept(DifModItems.THE_DIFFERENTIAL.get());
 		tabData.accept(DifModItems.MEGA_TORCH.get());
 		tabData.accept(DifModItems.BAN_HAMMER.get());
+		tabData.accept(DifModItems.PORTAL_GUN.get());
 		tabData.accept(DifModItems.EVENT_BUS.get());
 		tabData.accept(DifModItems.VENT.get());
 		tabData.accept(DifModItems.HOSPITAL_HANDLE.get());
@@ -302,7 +303,6 @@ public class DifModTabs{
 			tabData.accept(DifModItems.LAVA.get());
 			tabData.accept(DifModItems.FIRE.get());
 
-			tabData.accept(DifModItems.PORTAL_GUN.get());
 
 			tabData.accept(DifModItems.MODULAR_PICKAXE.get());
 			tabData.accept(DifModItems.MODULAR_AXE.get());
