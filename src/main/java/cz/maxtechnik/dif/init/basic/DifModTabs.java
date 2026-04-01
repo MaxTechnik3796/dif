@@ -2,7 +2,6 @@ package cz.maxtechnik.dif.init.basic;
 
 import com.simibubi.create.AllCreativeModeTabs;
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.DifModCommonConfig;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -19,9 +18,6 @@ import static cz.maxtechnik.dif.item.modular.ModularBase.*;
 public class DifModTabs{
 	public static final DeferredRegister<CreativeModeTab>REGISTER=DeferredRegister.create(Registries.CREATIVE_MODE_TAB,DifMod.MODID);
 	public static final RegistryObject<CreativeModeTab>MAIN=REGISTER.register("main",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.main")).icon(()->new ItemStack(DifModItems.THE_DIFFERENTIAL.get())).displayItems(((parameters,tabData)->{
-
-		ItemStack PORTAL_GUN=new ItemStack(DifModItems.PORTAL_GUN.get());PORTAL_GUN.getOrCreateTag().putInt("ammo",DifModCommonConfig.portalGunMaxAmmo);
-
 		tabData.accept(DifModItems.THE_DIFFERENTIAL.get());
 		tabData.accept(DifModItems.MEGA_TORCH.get());
 		tabData.accept(DifModItems.BAN_HAMMER.get());
@@ -70,7 +66,6 @@ public class DifModTabs{
 		tabData.accept(DifModItems.ROTTEN_APPLE.get());
 		tabData.accept(DifModItems.QUESTION_MARK.get());
 		tabData.accept(DifModItems.LASER_HOOKAH.get());
-		tabData.accept(PORTAL_GUN);
 
 
 		tabData.accept(DifModItems.INCOMPLETE_CPU_SINGULARITY.get());
