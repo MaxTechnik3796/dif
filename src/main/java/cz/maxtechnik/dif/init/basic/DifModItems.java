@@ -34,6 +34,9 @@ public class DifModItems{
 	}
 	public static final RegistryObject<Item> MEGA_TORCH = block(DifModBlocks.MEGA_TORCH);
 
+	public static final RegistryObject<Item>FAST_POWERED_RAIL=block(DifModBlocks.FAST_POWERED_RAIL);
+	public static final RegistryObject<Item>FAST_RAIL=block(DifModBlocks.FAST_RAIL);
+
 	//Modular Tools:
 	public static final RegistryObject<Item> MODULAR_PICKAXE=REGISTRY.register("modular_pickaxe",ModularPickaxe::new);
 	public static final RegistryObject<Item> MODULAR_AXE=REGISTRY.register("modular_axe",ModularAxe::new);

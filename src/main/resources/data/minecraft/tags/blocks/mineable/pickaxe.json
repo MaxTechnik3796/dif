@@ -49,6 +49,8 @@
 		"#dif:space_industrial_blocks",
 		"dif:moon_stone",
 		"dif:mars_stone",
-		"dif:frying_table"
+		"dif:frying_table",
+		"dif:fast_powered_rail",
+		"dif:fast_rail"
 	]
 }

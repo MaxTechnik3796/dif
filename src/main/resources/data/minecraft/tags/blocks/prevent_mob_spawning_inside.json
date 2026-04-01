@@ -1,0 +1,7 @@
+{
+	"replace": false,
+	"values": [
+		"dif:fast_powered_rail",
+		"dif:fast_rail"
+	]
+}

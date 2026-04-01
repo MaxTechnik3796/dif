@@ -324,6 +324,8 @@ public class DifModTabs{
 			tabData.accept(ironPickaxe);
 
 			tabData.accept(DifModItems.FRYING_TABLE.get());
+			tabData.accept(DifModItems.FAST_POWERED_RAIL.get());
+			tabData.accept(DifModItems.FAST_RAIL.get());
 
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){

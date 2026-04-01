@@ -381,6 +381,8 @@
 	"item.dif.jetpack_canister":"Canister",
 
 	"block.dif.mega_torch":"MEGA Torch",
-	"block.dif.frying_table":"Frying Table"
+	"block.dif.frying_table":"Frying Table",
+	"block.dif.fast_powered_rail":"Fast Powered Rail",
+	"block.dif.fast_rail":"Fast Rail"
 
 }
