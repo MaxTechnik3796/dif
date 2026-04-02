@@ -6,6 +6,14 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 @Mod.EventBusSubscriber(modid=DifMod.MODID,bus=Mod.EventBusSubscriber.Bus.MOD)
 public class DifModCommonConfig{
+	@SubscribeEvent
+	static void onLoad(final ModConfigEvent event) {
+		load();
+	}
+	@SubscribeEvent
+	public static void onReload(ModConfigEvent.Reloading event){
+		load();
+	}
 	private static final ForgeConfigSpec.Builder BUILDER=new ForgeConfigSpec.Builder();
 
 	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_00;
@@ -107,14 +115,6 @@ public class DifModCommonConfig{
 	public static int magicNumber;
 	public static String magicNumberIntroduction;
 
-	@SubscribeEvent
-	static void onLoad(final ModConfigEvent event) {
-		load();
-	}
-	@SubscribeEvent
-	public static void onReload(ModConfigEvent.Reloading event){
-		load();
-	}
 	public static void load(){
 		DifMod.LOGGER.info("Configuration loaded!");
 		solarPanel_00=SOLAR_PANEL_00.get();
