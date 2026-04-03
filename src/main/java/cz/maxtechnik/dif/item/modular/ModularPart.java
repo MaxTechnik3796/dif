@@ -52,7 +52,7 @@ public class ModularPart extends Item{
 		String partType=getPartType(itemStack);
 		list.add(Component.literal("Material:").append(CommonComponents.space()).append(Component.literal(tag.getString(partType+"Material")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial(tag.getString(partType+"Material")))))));
 		list.add(Component.literal("Durability:").append(CommonComponents.space()).append(Component.literal(String.valueOf(tag.getInt(partType+"Durability"))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(durabilityColor(partType,tag))))));
-		list.add(Component.literal(""));
+		list.add(CommonComponents.EMPTY);
 		list.add(modifierTipFormMaterial(tag.getString(partType+"Material")));
 	}
 }

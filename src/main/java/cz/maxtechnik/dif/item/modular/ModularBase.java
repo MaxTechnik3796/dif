@@ -1,11 +1,11 @@
 package cz.maxtechnik.dif.item.modular;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraft.ChatFormatting;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -35,10 +36,10 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.ToolActions;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -55,29 +56,12 @@ public abstract class ModularBase extends DiggerItem{
 			"Obsidian",
 			"Netherite"
 	};
-	public static int repairAmount=5;
-	public static int cheepRepairAmount=15;
+	public static int repairAmount=5, cheepRepairAmount=15;
 	protected String material;
-	protected int defaultMiningLevel;
-	protected int defaultDurability;
-	protected int defaultEfficiency;
-	protected float defaultAttackDamage;
-	protected float defaultAttackSpeed;
+	protected int defaultMiningLevel, defaultDurability, defaultEfficiency;
+	protected float defaultAttackDamage, defaultAttackSpeed;
 	protected static int defaultMaxModifiers=3;
-	protected static int[] efficiencyModifierStages={3,5,7};
-	protected static int[] efficiencyModifierLevels={2,4,6};
-	protected static int[] fortuneModifierStages={3,5,7};
-	protected static int[] fortuneModifierLevels={1,2,3};
-	public static final Map<Block,Block> AXE_STRIPPABLES=(new ImmutableMap.Builder<Block,Block>())
-			.put(Blocks.OAK_LOG,Blocks.STRIPPED_OAK_LOG)
-			.put(Blocks.SPRUCE_LOG,Blocks.STRIPPED_SPRUCE_LOG)
-			.put(Blocks.BIRCH_LOG,Blocks.STRIPPED_BIRCH_LOG)
-			.put(Blocks.JUNGLE_LOG,Blocks.STRIPPED_JUNGLE_LOG)
-			.put(Blocks.ACACIA_LOG,Blocks.STRIPPED_ACACIA_LOG)
-			.put(Blocks.DARK_OAK_LOG,Blocks.STRIPPED_DARK_OAK_LOG)
-			.put(Blocks.CRIMSON_STEM,Blocks.STRIPPED_CRIMSON_STEM)
-			.put(Blocks.WARPED_STEM,Blocks.STRIPPED_WARPED_STEM)
-			.build();
+	protected static int[] efficiencyModifierStages={3,5,7}, efficiencyModifierLevels={2,4,6}, fortuneModifierStages={3,5,7}, fortuneModifierLevels={1,2,3};
 	public ModularBase(int durability,int efficiency,int miningLevel,float attackDamage,float attackSpeed,String material){
 		super(attackDamage,attackSpeed,new Tier(){
 			@Override
@@ -535,13 +519,33 @@ public abstract class ModularBase extends DiggerItem{
 		BlockPos blockpos=context.getClickedPos();
 		Player player=context.getPlayer();
 		BlockState blockstate=level.getBlockState(blockpos);
-		Optional<BlockState> optional=Optional.ofNullable(AXE_STRIPPABLES.get(blockstate.getBlock())).map((block)->block.defaultBlockState().setValue(RotatedPillarBlock.AXIS,blockstate.getValue(RotatedPillarBlock.AXIS)));
+		Optional<BlockState> optional=Optional.ofNullable(blockstate.getToolModifiedState(context,ToolActions.AXE_STRIP,false));
+		Optional<BlockState> optional1=optional.isPresent()?Optional.empty():Optional.ofNullable(blockstate.getToolModifiedState(context,ToolActions.AXE_SCRAPE,false));
+		Optional<BlockState> optional2=optional.isPresent()||optional1.isPresent()?Optional.empty():Optional.ofNullable(blockstate.getToolModifiedState(context,ToolActions.AXE_WAX_OFF,false));
+		ItemStack itemstack=context.getItemInHand();
+		Optional<BlockState> optional3=Optional.empty();
 		if(optional.isPresent()){
 			level.playSound(player,blockpos,SoundEvents.AXE_STRIP,SoundSource.BLOCKS,1.0F,1.0F);
-			if(!level.isClientSide){
-				level.setBlock(blockpos,optional.get(),11);
-				if(player!=null)
-					context.getItemInHand().hurtAndBreak(1,player,(p)->p.broadcastBreakEvent(context.getHand()));
+			optional3=optional;
+		}else if(optional1.isPresent()){
+			level.playSound(player,blockpos,SoundEvents.AXE_SCRAPE,SoundSource.BLOCKS,1.0F,1.0F);
+			level.levelEvent(player,3005,blockpos,0);
+			optional3=optional1;
+		}else if(optional2.isPresent()){
+			level.playSound(player,blockpos,SoundEvents.AXE_WAX_OFF,SoundSource.BLOCKS,1.0F,1.0F);
+			level.levelEvent(player,3004,blockpos,0);
+			optional3=optional2;
+		}
+		if(optional3.isPresent()){
+			if(player instanceof ServerPlayer){
+				CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer)player,blockpos,itemstack);
+			}
+			level.setBlock(blockpos,optional3.get(),11);
+			level.gameEvent(GameEvent.BLOCK_CHANGE,blockpos,GameEvent.Context.of(player,optional3.get()));
+			if(player!=null){
+				itemstack.hurtAndBreak(1,player,(p_150686_)->{
+					p_150686_.broadcastBreakEvent(context.getHand());
+				});
 			}
 			return InteractionResult.sidedSuccess(level.isClientSide);
 		}else{
@@ -560,15 +564,22 @@ public abstract class ModularBase extends DiggerItem{
 		if(tag.contains("BindingMaterial")&&tag.getString("BindingMaterial").equals(material)) return true;
 		return tag.contains("HandleMaterial")&&tag.getString("handleMaterial").equals(material);
 	}
-	public static boolean isInMainHand(ItemStack itemStack,Player player){return player.getItemBySlot(EquipmentSlot.MAINHAND).equals(itemStack);}
-	public static boolean isInOffHand(ItemStack itemStack,Player player){return player.getItemBySlot(EquipmentSlot.OFFHAND).equals(itemStack);}
+	public static boolean isInMainHand(ItemStack itemStack,Player player){
+		return player.getItemBySlot(EquipmentSlot.MAINHAND).equals(itemStack);
+	}
+	public static boolean isInOffHand(ItemStack itemStack,Player player){
+		return player.getItemBySlot(EquipmentSlot.OFFHAND).equals(itemStack);
+	}
 	public static Component modifierTipFormMaterial(String material){
 		Component component=Component.literal("");
 		switch(material){
-			case "Wood"->component=Component.literal("Natural").withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial("Wood"))));
-			case "Stone"->component=Component.literal("Cheep").withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial("Stone"))));
+			case "Wood" ->
+					component=Component.literal("Natural").withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial("Wood"))));
+			case "Stone" ->
+					component=Component.literal("Cheep").withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial("Stone"))));
 			//case "Copper"->;
-			case "Iron"->component=Component.literal("Magnetic").withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial("Iron"))));
+			case "Iron" ->
+					component=Component.literal("Magnetic").withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial("Iron"))));
 			//case "Gold"->;
 			//case "Diamond"->;
 			//case "Obsidian"->;
@@ -621,7 +632,8 @@ public abstract class ModularBase extends DiggerItem{
 				tag.putInt("CustomModelData",0);
 			}
 			if(entity instanceof Player player){
-				if(containsMaterial(itemStack,"Wood")&&DifMod.rouletteBoolean(500)&&!(isInMainHand(itemStack,player)))itemStack.setDamageValue(itemStack.getDamageValue()-1);
+				if(containsMaterial(itemStack,"Wood")&&DifMod.rouletteBoolean(500)&&!(isInMainHand(itemStack,player)))
+					itemStack.setDamageValue(itemStack.getDamageValue()-1);
 			}
 		}
 		if(entity instanceof Player player){
@@ -637,7 +649,7 @@ public abstract class ModularBase extends DiggerItem{
 					// Normalizace a nastavení rychlosti přitahování (0.2 je tak akorát	)
 					if(moveVec.lengthSqr()<0.4D){
 						// Volitelně: Můžeme itemu nastavit nulový horizontální pohyb, aby hned zastavil
-						itemEntity.setDeltaMovement(itemEntity.getDeltaMovement().multiply(0.8D, 1.0D, 0.8D));
+						itemEntity.setDeltaMovement(itemEntity.getDeltaMovement().multiply(0.8D,1.0D,0.8D));
 						continue;
 					}
 					itemEntity.setDeltaMovement(itemEntity.getDeltaMovement().add(moveVec.normalize().scale(0.1D)));
@@ -650,22 +662,30 @@ public abstract class ModularBase extends DiggerItem{
 		if(!itemStack.hasTag()) return;
 		assert itemStack.getTag()!=null;
 		CompoundTag tag=itemStack.getTag();
-		if(!tag.contains("MiningLevel")||!tag.contains("Durability")||!tag.contains("Efficiency")||!tag.contains("AttackDamage")||!tag.contains("AttackSpeed")) return;
+		if(!tag.contains("MiningLevel")||!tag.contains("Durability")||!tag.contains("Efficiency")||!tag.contains("AttackDamage")||!tag.contains("AttackSpeed"))
+			return;
 		if(Screen.hasShiftDown()){//Shift
 			list.add(Component.literal("Remaining Modifiers:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("MaxModifiers"))).withStyle(ChatFormatting.YELLOW))));
 			if(tag.getInt("EfficiencyModifierProgress")>0||tag.getInt("EfficiencyModifier")>0){
-				if(tag.getInt("EfficiencyModifierProgress")>0) list.add(Component.literal("Efficiency:").withStyle(ChatFormatting.RED).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("EfficiencyModifier"))).append(CommonComponents.space().append(CommonComponents.space().append(Component.literal("( "+tag.getInt("EfficiencyModifierProgress")+" / "+efficiencyModifierStages[tag.getInt("EfficiencyModifier")]+" )")))))));
-				else list.add(Component.literal("Efficiency:").withStyle(ChatFormatting.RED).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("EfficiencyModifier"))))));
+				if(tag.getInt("EfficiencyModifierProgress")>0)
+					list.add(Component.literal("Efficiency:").withStyle(ChatFormatting.RED).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("EfficiencyModifier"))).append(CommonComponents.space().append(CommonComponents.space().append(Component.literal("( "+tag.getInt("EfficiencyModifierProgress")+" / "+efficiencyModifierStages[tag.getInt("EfficiencyModifier")]+" )")))))));
+				else
+					list.add(Component.literal("Efficiency:").withStyle(ChatFormatting.RED).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("EfficiencyModifier"))))));
 			}
 			if(tag.getInt("FortuneModifierProgress")>0||tag.getInt("FortuneModifier")>0){
-				if(tag.getInt("FortuneModifierProgress")>0) list.add(Component.literal("Fortune:").withStyle(ChatFormatting.BLUE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("FortuneModifier"))).append(CommonComponents.space().append(CommonComponents.space().append(Component.literal("( "+tag.getInt("FortuneModifierProgress")+" / "+fortuneModifierStages[tag.getInt("FortuneModifier")]+" )")))))));
-				else list.add(Component.literal("Fortune:").withStyle(ChatFormatting.BLUE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("FortuneModifier"))))));
+				if(tag.getInt("FortuneModifierProgress")>0)
+					list.add(Component.literal("Fortune:").withStyle(ChatFormatting.BLUE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("FortuneModifier"))).append(CommonComponents.space().append(CommonComponents.space().append(Component.literal("( "+tag.getInt("FortuneModifierProgress")+" / "+fortuneModifierStages[tag.getInt("FortuneModifier")]+" )")))))));
+				else
+					list.add(Component.literal("Fortune:").withStyle(ChatFormatting.BLUE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("FortuneModifier"))))));
 			}
-			if(tag.getBoolean("SilkTouchModifier")) list.add(Component.literal("SilkTouch").withStyle(Style.EMPTY.withColor(TextColor.parseColor("#FDFD96"))));
-			if(tag.getBoolean("DiamondModifier")) list.add(Component.literal("Diamond").withStyle(Style.EMPTY.withColor(TextColor.parseColor(miningLevelColor("Diamond")))));
+			if(tag.getBoolean("SilkTouchModifier"))
+				list.add(Component.literal("SilkTouch").withStyle(Style.EMPTY.withColor(TextColor.parseColor("#FDFD96"))));
+			if(tag.getBoolean("DiamondModifier"))
+				list.add(Component.literal("Diamond").withStyle(Style.EMPTY.withColor(TextColor.parseColor(miningLevelColor("Diamond")))));
 			if(tag.contains("HeadMaterial")||tag.contains("HandleMaterial")||tag.contains("BindingMaterial")){
-				list.add(Component.literal(""));
-				for(String material:materials) if(containsMaterial(itemStack,material))list.add(modifierTipFormMaterial(material));
+				list.add(CommonComponents.EMPTY);
+				for(String material: materials)
+					if(containsMaterial(itemStack,material)) list.add(modifierTipFormMaterial(material));
 			}
 		}else if(Screen.hasControlDown()){//Control
 			list.add(Component.literal("Tool Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("Material")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial(tag.getString("Material")))))));
@@ -687,7 +707,8 @@ public abstract class ModularBase extends DiggerItem{
 			list.add(Component.literal("Efficiency:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.literal(String.valueOf(tag.getInt("Efficiency")+tag.getInt("SpecialEfficiency"))).withStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))));
 			list.add(Component.literal("Attack Damage:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.literal(String.format(Locale.ROOT,"%.1f",1.0F+tag.getFloat("AttackDamage"))).withStyle(Style.EMPTY.withColor(ChatFormatting.RED))));
 			list.add(Component.literal("Attack Speed:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.literal(String.format(Locale.ROOT,"%.1f",4.0F+tag.getFloat("AttackSpeed"))).withStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))));
-			if(tag.getBoolean("Broken")) list.add(Component.literal("Broken").withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_RED).withBold(true)));
+			if(tag.getBoolean("Broken"))
+				list.add(Component.literal("Broken").withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_RED).withBold(true)));
 			list.add(CommonComponents.EMPTY);
 			list.add(Component.literal("Press").withStyle(Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false)).append(CommonComponents.space().append(Component.literal("Shift").withStyle(Style.EMPTY.withColor(ChatFormatting.AQUA).withItalic(true)).append(CommonComponents.space().append(Component.literal("for modifiers info.").withStyle(Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false)))))));
 			list.add(Component.literal("Press").withStyle(Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false)).append(CommonComponents.space().append(Component.literal("Ctrl").withStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW).withItalic(true)).append(CommonComponents.space().append(Component.literal("for parts info.").withStyle(Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false)))))));
