@@ -35,14 +35,14 @@ public class BlazingModifierHandler{
 			boolean smeltedAny=false;
 			for(ItemStack drop: drops){
 				Optional<SmeltingRecipe> recipe=world.getRecipeManager().getRecipeFor(RecipeType.SMELTING,new SimpleContainer(drop),world);
-				if(recipe.isPresent()){
+				if(recipe.isPresent()&&!player.getAbilities().instabuild){
 					ItemStack result=recipe.get().getResultItem(world.registryAccess()).copy();
 					result.setCount(drop.getCount());
 					Block.popResource(world,pos,result);
 					smeltedAny=true;
 				}
 			}
-			if(smeltedAny&&!player.getAbilities().instabuild){
+			if(smeltedAny){
 				world.setBlock(pos,Blocks.AIR.defaultBlockState(),3);
 				event.setCanceled(true);
 				world.playSound(null,pos,SoundEvents.FIRECHARGE_USE,SoundSource.BLOCKS,0.5F,1.2F);

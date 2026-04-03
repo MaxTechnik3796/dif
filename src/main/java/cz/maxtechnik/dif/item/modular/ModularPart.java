@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.item.modular;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -25,17 +26,17 @@ public class ModularPart extends Item{
 			CompoundTag tag=itemStack.getOrCreateTag();
 			if(isHead(itemStack)){
 				if(!tag.contains("HeadMaterial"))tag.putString("HeadMaterial",defaultMaterial);
-				if(!tag.contains("HeadDurability"))tag.putInt("HeadDurability",durabilityFromMaterial("Head",tag));
+				if(!tag.contains("HeadDurability"))tag.putInt("HeadDurability",durabilityFromMaterial("Head",defaultMaterial));
 				if(!tag.contains("HeadColor"))tag.putInt("HeadColor",colorIntFromMaterial(tag.getString("HeadMaterial")));
 			}
 			if(isBinding(itemStack)){
 				if(!tag.contains("BindingMaterial"))tag.putString("BindingMaterial",defaultMaterial);
-				if(!tag.contains("BindingDurability"))tag.putInt("BindingDurability",durabilityFromMaterial("Binding",tag));
+				if(!tag.contains("BindingDurability"))tag.putInt("BindingDurability",durabilityFromMaterial("Binding",defaultMaterial));
 				if(!tag.contains("BindingColor")) tag.putInt("BindingColor",colorIntFromMaterial(tag.getString("BindingMaterial")));
 			}
 			if(isHandle(itemStack)){
 				if(!tag.contains("HandleMaterial"))tag.putString("HandleMaterial",defaultMaterial);
-				if(!tag.contains("HandleDurability"))tag.putInt("HandleDurability",durabilityFromMaterial("Handle",tag));
+				if(!tag.contains("HandleDurability"))tag.putInt("HandleDurability",durabilityFromMaterial("Handle",defaultMaterial));
 				if(!tag.contains("HandleColor"))tag.putInt("HandleColor",colorIntFromMaterial(tag.getString("HandleMaterial")));
 			}
 		}
@@ -52,6 +53,7 @@ public class ModularPart extends Item{
 		String partType=getPartType(itemStack);
 		list.add(Component.literal("Material:").append(CommonComponents.space()).append(Component.literal(tag.getString(partType+"Material")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial(tag.getString(partType+"Material")))))));
 		list.add(Component.literal("Durability:").append(CommonComponents.space()).append(Component.literal(String.valueOf(tag.getInt(partType+"Durability"))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(durabilityColor(partType,tag))))));
+		if(isHead(itemStack))list.add(Component.literal("Efficiency:").append(CommonComponents.space()).append(Component.literal(String.valueOf(ModularBase.efficiencyFromMaterial(tag.getString("HeadMaterial")))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(ChatFormatting.GREEN)))));
 		list.add(CommonComponents.EMPTY);
 		list.add(modifierTipFormMaterial(tag.getString(partType+"Material")));
 	}

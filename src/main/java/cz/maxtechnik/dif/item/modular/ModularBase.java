@@ -113,7 +113,8 @@ public abstract class ModularBase extends DiggerItem{
 		if(!itemStack.hasTag()) return super.getDestroySpeed(itemStack,blockState);
 		CompoundTag tag=itemStack.getOrCreateTag();
 		if(tag.getBoolean("Broken")) return 1F;
-		return blockState.is(getMineableTag())?tag.getInt("Efficiency")+tag.getInt("SpecialEfficiency"):1F;
+		int speeeed=containsMaterial(itemStack,"Gold")?8:0;
+		return blockState.is(getMineableTag())?tag.getInt("Efficiency")+tag.getInt("SpecialEfficiency")+speeeed:1F;
 	}
 	@Override
 	public int getMaxDamage(ItemStack itemStack){
@@ -406,9 +407,9 @@ public abstract class ModularBase extends DiggerItem{
 		}
 		return dColor;
 	}
-	public static int durabilityFromMaterial(String partType,CompoundTag tag){
+	public static int durabilityFromMaterial(String partType,String material){
 		int durability=0;
-		switch(tag.getString(partType+"Material")){
+		switch(material){
 			case "Wood" -> durability=30;
 			case "Stone" -> durability=70;
 			case "Copper" -> durability=80;
@@ -423,11 +424,6 @@ public abstract class ModularBase extends DiggerItem{
 			case "Handle" -> durability=(int)(durability*0.15);
 		}
 		return durability;
-	}
-	public static int durabilityFromMaterial(String partType,String material){
-		CompoundTag tag=new CompoundTag();
-		tag.putString(partType+"Material",material);
-		return durabilityFromMaterial(partType,tag);
 	}
 	public static int miningLevelFromMaterial(String material){
 		int miningLevel=0;
@@ -573,6 +569,33 @@ public abstract class ModularBase extends DiggerItem{
 	public static boolean isInOffHand(ItemStack itemStack,Player player){
 		return player.getItemBySlot(EquipmentSlot.OFFHAND).equals(itemStack);
 	}
+	public static ItemStack newToolFromMaterials(Item toolItem,String headMaterial,String bindingMaterial,String handleMaterial){
+		ItemStack modular_tools_icon=new ItemStack(toolItem);
+		CompoundTag tag=new CompoundTag();
+		tag.putString("Material",headMaterial);
+		tag.putInt("MaxModifiers",defaultMaxModifiers);
+		tag.putInt("SpecialDurability",1);
+		tag.putInt("SpecialMiningLevel",0);
+		tag.putInt("BonusMiningLevel",0);
+		tag.putInt("SpecialEfficiency",0);
+		tag.putInt("HideFlags",5);
+		tag.putInt("MiningLevel",miningLevelFromMaterial(tag.getString(headMaterial)));
+		tag.putInt("Efficiency",efficiencyFromMaterial(tag.getString(headMaterial)));
+		tag.putFloat("AttackDamage",attackDamageFromMaterial(tag.getString(headMaterial),modular_tools_icon));
+		tag.putFloat("AttackSpeed",attackSpeedFromMaterial(tag.getString(headMaterial),modular_tools_icon));
+		tag.putString("HeadMaterial",headMaterial);
+		tag.putString("BindingMaterial",bindingMaterial);
+		tag.putString("HandleMaterial",handleMaterial);
+		tag.putInt("HeadDurability",durabilityFromMaterial("Head",headMaterial));
+		tag.putInt("BindingDurability",durabilityFromMaterial("Binding",bindingMaterial));
+		tag.putInt("HandleDurability",durabilityFromMaterial("handle",handleMaterial));
+		tag.putInt("Durability",tag.getInt("HeadDurability")+tag.getInt("BindingDurability")+tag.getInt("HandleDurability")+1);
+		tag.putInt("HeadColor",colorIntFromMaterial(headMaterial));
+		tag.putInt("BindingColor",colorIntFromMaterial(bindingMaterial));
+		tag.putInt("HandleColor",colorIntFromMaterial(handleMaterial));
+		modular_tools_icon.setTag(tag);
+		return modular_tools_icon;
+	}
 	public static Component modifierTipFormMaterial(String material){
 		Component component=Component.literal("");
 		switch(material){
@@ -583,7 +606,7 @@ public abstract class ModularBase extends DiggerItem{
 			//case "Copper"->;
 			case "Iron" ->
 					component=Component.literal("Magnetic").withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial("Iron"))));
-			//case "Gold"->;
+			case "Gold"->component=Component.literal("Speeeed").withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial("Gold"))));
 			//case "Diamond"->;
 			//case "Obsidian"->;
 			//case "Netherite"->;
@@ -709,7 +732,8 @@ public abstract class ModularBase extends DiggerItem{
 			if(miningLevel>4) miningLevel=4;
 			list.add(Component.literal("Mining Level:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable("dif.mining_level."+miningLevel).withStyle(Style.EMPTY.withColor(TextColor.parseColor(miningLevelColor(tag))))));
 			showDurability(itemStack,tag,list);
-			list.add(Component.literal("Efficiency:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.literal(String.valueOf(tag.getInt("Efficiency")+tag.getInt("SpecialEfficiency"))).withStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))));
+			int speeeed=containsMaterial(itemStack,"Gold")?8:0;
+			list.add(Component.literal("Efficiency:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.literal(String.valueOf(tag.getInt("Efficiency")+tag.getInt("SpecialEfficiency")+speeeed)).withStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))));
 			list.add(Component.literal("Attack Damage:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.literal(String.format(Locale.ROOT,"%.1f",1.0F+tag.getFloat("AttackDamage"))).withStyle(Style.EMPTY.withColor(ChatFormatting.RED))));
 			list.add(Component.literal("Attack Speed:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.literal(String.format(Locale.ROOT,"%.1f",4.0F+tag.getFloat("AttackSpeed"))).withStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))));
 			if(tag.getBoolean("Broken"))
@@ -719,78 +743,28 @@ public abstract class ModularBase extends DiggerItem{
 			list.add(Component.literal("Press").withStyle(Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false)).append(CommonComponents.space().append(Component.literal("Ctrl").withStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW).withItalic(true)).append(CommonComponents.space().append(Component.literal("for parts info.").withStyle(Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false)))))));
 		}
 	}
-	public static CompoundTag newSingleMaterialPreFab(ItemStack tool,String material){
-		CompoundTag tag=new CompoundTag();
-		tag.putString("Material",material);
-		if(!tag.contains("MaxModifiers")) tag.putInt("MaxModifiers",defaultMaxModifiers);
-		tag.putInt("SpecialDurability",1);
-		tag.putInt("SpecialMiningLevel",0);
-		tag.putInt("BonusMiningLevel",0);
-		tag.putInt("SpecialEfficiency",0);
-		tag.putInt("HideFlags",5);
-		tag.putInt("MiningLevel",miningLevelFromMaterial(tag.getString("Material")));
-		tag.putInt("Efficiency",efficiencyFromMaterial(tag.getString("Material")));
-		tag.putFloat("AttackDamage",attackDamageFromMaterial(tag.getString("Material"),tool));
-		tag.putFloat("AttackSpeed",attackSpeedFromMaterial(tag.getString("Material"),tool));
-		tag.putString("HeadMaterial",material);
-		tag.putString("BindingMaterial",material);
-		tag.putString("HandleMaterial",material);
-		tag.putInt("HeadDurability",durabilityFromMaterial("Head",material));
-		tag.putInt("BindingDurability",durabilityFromMaterial("Binding",material));
-		tag.putInt("HandleDurability",durabilityFromMaterial("handle",material));
-		tag.putInt("Durability",tag.getInt("HeadDurability")+tag.getInt("BindingDurability")+tag.getInt("HandleDurability")+1);
-		tag.putInt("HeadColor",colorIntFromMaterial(material));
-		tag.putInt("BindingColor",colorIntFromMaterial(material));
-		tag.putInt("HandleColor",colorIntFromMaterial(material));
-		return tag;
+	public static ItemStack newSingleMaterialPreFab(Item toolItem,String material){
+		return newToolFromMaterials(toolItem,material,material,material);
 	}
-	public static CompoundTag newMaterialPart(ItemStack part,String material){
+	public static ItemStack newPartFromMaterial(Item partItem,String material){
+		ItemStack itemStack=new ItemStack(partItem);
 		CompoundTag tag=new CompoundTag();
-		if(isHead(part)){
+		if(isHead(partItem.getDefaultInstance())){
 			if(!tag.contains("HeadMaterial")) tag.putString("HeadMaterial",material);
-			if(!tag.contains("HeadDurability")) tag.putInt("HeadDurability",durabilityFromMaterial("Head",tag));
+			if(!tag.contains("HeadDurability")) tag.putInt("HeadDurability",durabilityFromMaterial("Head",material));
 			if(!tag.contains("HeadColor")) tag.putInt("HeadColor",colorIntFromMaterial(tag.getString("HeadMaterial")));
 		}
-		if(isBinding(part)){
+		if(isBinding(partItem.getDefaultInstance())){
 			if(!tag.contains("BindingMaterial")) tag.putString("BindingMaterial",material);
-			if(!tag.contains("BindingDurability"))
-				tag.putInt("BindingDurability",durabilityFromMaterial("Binding",tag));
-			if(!tag.contains("BindingColor"))
-				tag.putInt("BindingColor",colorIntFromMaterial(tag.getString("BindingMaterial")));
+			if(!tag.contains("BindingDurability")) tag.putInt("BindingDurability",durabilityFromMaterial("Binding",material));
+			if(!tag.contains("BindingColor")) tag.putInt("BindingColor",colorIntFromMaterial(tag.getString("BindingMaterial")));
 		}
-		if(isHandle(part)){
+		if(isHandle(partItem.getDefaultInstance())){
 			if(!tag.contains("HandleMaterial")) tag.putString("HandleMaterial",material);
-			if(!tag.contains("HandleDurability")) tag.putInt("HandleDurability",durabilityFromMaterial("Handle",tag));
-			if(!tag.contains("HandleColor"))
-				tag.putInt("HandleColor",colorIntFromMaterial(tag.getString("HandleMaterial")));
+			if(!tag.contains("HandleDurability")) tag.putInt("HandleDurability",durabilityFromMaterial("Handle",material));
+			if(!tag.contains("HandleColor")) tag.putInt("HandleColor",colorIntFromMaterial(tag.getString("HandleMaterial")));
 		}
-		return tag;
-	}
-	public static ItemStack modularToolsTabIcon(){
-		ItemStack modular_tools_icon=new ItemStack(DifModItems.MODULAR_PICKAXE.get());
-		CompoundTag tag=new CompoundTag();
-		tag.putString("Material","Iron");
-		tag.putInt("MaxModifiers",defaultMaxModifiers);
-		tag.putInt("SpecialDurability",1);
-		tag.putInt("SpecialMiningLevel",0);
-		tag.putInt("BonusMiningLevel",0);
-		tag.putInt("SpecialEfficiency",0);
-		tag.putInt("HideFlags",5);
-		tag.putInt("MiningLevel",miningLevelFromMaterial(tag.getString("Iron")));
-		tag.putInt("Efficiency",efficiencyFromMaterial(tag.getString("Iron")));
-		tag.putFloat("AttackDamage",attackDamageFromMaterial(tag.getString("Iron"),modular_tools_icon));
-		tag.putFloat("AttackSpeed",attackSpeedFromMaterial(tag.getString("Iron"),modular_tools_icon));
-		tag.putString("HeadMaterial","Iron");
-		tag.putString("BindingMaterial","Diamond");
-		tag.putString("HandleMaterial","Stone");
-		tag.putInt("HeadDurability",durabilityFromMaterial("Head","Iron"));
-		tag.putInt("BindingDurability",durabilityFromMaterial("Binding","Diamond"));
-		tag.putInt("HandleDurability",durabilityFromMaterial("handle","Stone"));
-		tag.putInt("Durability",tag.getInt("HeadDurability")+tag.getInt("BindingDurability")+tag.getInt("HandleDurability")+1);
-		tag.putInt("HeadColor",colorIntFromMaterial("Iron"));
-		tag.putInt("BindingColor",colorIntFromMaterial("Diamond"));
-		tag.putInt("HandleColor",colorIntFromMaterial("Stone"));
-		modular_tools_icon.setTag(tag);
-		return modular_tools_icon;
+		itemStack.setTag(tag);
+		return itemStack;
 	}
 }
