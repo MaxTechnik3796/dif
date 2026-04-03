@@ -312,6 +312,10 @@ public abstract class ModularBase extends DiggerItem{
 			baseTag.putInt("MaxModifiers",baseTag.getInt("MaxModifiers")-1);
 			baseTag.putInt("SpecialMiningLevel",3);
 		}
+		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/blazing")){
+			baseTag.putBoolean("BlazingModifier",true);
+			baseTag.putInt("MaxModifiers",baseTag.getInt("MaxModifiers")-1);
+		}
 	}
 	public static boolean toolRepairCheck(ItemStack template,ItemStack base,ItemStack addition,CompoundTag templateTag,CompoundTag baseTag,CompoundTag additionTag){
 		return template.getItem().equals(Items.AIR)&&base.getDamageValue()>0&&isTagged(addition,DifMod.MODID,"modular_tools_materials/"+baseTag.getString("Material").toLowerCase());
@@ -342,10 +346,9 @@ public abstract class ModularBase extends DiggerItem{
 			if(baseTag.getInt("FortuneModifierProgress")==0&&baseTag.getInt("MaxModifiers")==0) return false;
 			return !(baseTag.getInt("FortuneModifier")>=3);
 		}
-		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/silk_touch")&&baseTag.getInt("FortuneModifier")==0&&baseTag.getInt("FortuneModifierProgress")==0&&baseTag.getInt("MaxModifiers")>0&&!baseTag.getBoolean("SilkTouchModifier"))
-			return true;
-		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/diamond")&&baseTag.getInt("MaxModifiers")>0&&!baseTag.getBoolean("DiamondModifier"))
-			return true;
+		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/silk_touch")&&baseTag.getInt("FortuneModifier")==0&&baseTag.getInt("FortuneModifierProgress")==0&&baseTag.getInt("MaxModifiers")>0&&!baseTag.getBoolean("SilkTouchModifier")) return true;
+		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/diamond")&&baseTag.getInt("MaxModifiers")>0&&!baseTag.getBoolean("DiamondModifier")) return true;
+		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/blazing")&&baseTag.getInt("MaxModifiers")>0&&!baseTag.getBoolean("BlazingModifier")) return true;
 		return false;
 	}
 	public static String miningLevelColor(CompoundTag tag){
@@ -562,7 +565,7 @@ public abstract class ModularBase extends DiggerItem{
 		CompoundTag tag=itemStack.getOrCreateTag();
 		if(tag.contains("HeadMaterial")&&tag.getString("HeadMaterial").equals(material)) return true;
 		if(tag.contains("BindingMaterial")&&tag.getString("BindingMaterial").equals(material)) return true;
-		return tag.contains("HandleMaterial")&&tag.getString("handleMaterial").equals(material);
+		return tag.contains("HandleMaterial")&&tag.getString("HandleMaterial").equals(material);
 	}
 	public static boolean isInMainHand(ItemStack itemStack,Player player){
 		return player.getItemBySlot(EquipmentSlot.MAINHAND).equals(itemStack);
@@ -682,6 +685,8 @@ public abstract class ModularBase extends DiggerItem{
 				list.add(Component.literal("SilkTouch").withStyle(Style.EMPTY.withColor(TextColor.parseColor("#FDFD96"))));
 			if(tag.getBoolean("DiamondModifier"))
 				list.add(Component.literal("Diamond").withStyle(Style.EMPTY.withColor(TextColor.parseColor(miningLevelColor("Diamond")))));
+			if(tag.getBoolean("BlazingModifier"))
+				list.add(Component.literal("Blazing").withStyle(Style.EMPTY.withColor(TextColor.parseColor("#FF5A00"))));
 			if(tag.contains("HeadMaterial")||tag.contains("HandleMaterial")||tag.contains("BindingMaterial")){
 				list.add(CommonComponents.EMPTY);
 				for(String material: materials)
@@ -690,13 +695,13 @@ public abstract class ModularBase extends DiggerItem{
 		}else if(Screen.hasControlDown()){//Control
 			list.add(Component.literal("Tool Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("Material")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial(tag.getString("Material")))))));
 			list.add(Component.literal("Head:").withStyle(ChatFormatting.WHITE));
-			list.add(CommonComponents.space().append(Component.literal("Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("HeadMaterial")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial(tag.getString("Head"))))))));
+			list.add(CommonComponents.space().append(Component.literal("Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("HeadMaterial")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial(tag.getString("HeadMaterial"))))))));
 			list.add(CommonComponents.space().append(Component.literal("Durability:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(String.valueOf(tag.getInt("HeadDurability"))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(durabilityColor("Head",tag)))))));
 			list.add(Component.literal("Binding:").withStyle(ChatFormatting.WHITE));
-			list.add(CommonComponents.space().append(Component.literal("Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("BindingMaterial")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial(tag.getString("Binding"))))))));
+			list.add(CommonComponents.space().append(Component.literal("Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("BindingMaterial")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial(tag.getString("BindingMaterial"))))))));
 			list.add(CommonComponents.space().append(Component.literal("Durability:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(String.valueOf(tag.getInt("BindingDurability"))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(durabilityColor("Binding",tag)))))));
 			list.add(Component.literal("Handle:").withStyle(ChatFormatting.WHITE));
-			list.add(CommonComponents.space().append(Component.literal("Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("HandleMaterial")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial(tag.getString("Handle"))))))));
+			list.add(CommonComponents.space().append(Component.literal("Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("HandleMaterial")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial(tag.getString("HandleMaterial"))))))));
 			list.add(CommonComponents.space().append(Component.literal("Durability:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(String.valueOf(tag.getInt("HandleDurability"))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(durabilityColor("Handle",tag)))))));
 		}else{//None
 			int miningLevel=tag.getInt("MiningLevel")+tag.getInt("BonusMiningLevel");
