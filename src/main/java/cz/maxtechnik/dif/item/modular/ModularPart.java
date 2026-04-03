@@ -17,7 +17,7 @@ import static cz.maxtechnik.dif.item.modular.ModularBase.*;
 public class ModularPart extends Item{
 	public String defaultMaterial="Wood";
 	public ModularPart(){
-		super(new Properties().rarity(Rarity.EPIC));
+		super(new Properties().rarity(Rarity.EPIC).fireResistant());
 	}
 	@Override
 	public void inventoryTick(@NotNull ItemStack itemStack,@NotNull Level world,@NotNull Entity entity,int slot,boolean selected){
