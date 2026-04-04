@@ -15,6 +15,7 @@ public class DifModCommonConfig{
 		load();
 	}
 	private static final ForgeConfigSpec.Builder BUILDER=new ForgeConfigSpec.Builder();
+	public static int MAX=Integer.MAX_VALUE;
 	public static String reload(String defaultValue){
 		return "\nDif-reload required!\nDefault value: "+defaultValue;
 	}
@@ -56,27 +57,27 @@ public class DifModCommonConfig{
 		BUILDER.comment("Dif-reload required - use '/dif_config_reload' command.");
 		BUILDER.comment("+----------------------------------------+");
 		BUILDER.push("SolarPanelSettings");
-		SOLAR_PANEL_00=BUILDER.comment("Production of Solar Panel 00, (Fe/t.)"+reload(1)).defineInRange("solar_panel_00",1,0,Integer.MAX_VALUE);
-		SOLAR_PANEL_01=BUILDER.comment("Production of Solar Panel 01, (Fe/t.)"+reload(5)).defineInRange("solar_panel_01",5,0,Integer.MAX_VALUE);
-		SOLAR_PANEL_02=BUILDER.comment("Production of Solar Panel 02, (Fe/t.)"+reload(20)).defineInRange("solar_panel_02",20,0,Integer.MAX_VALUE);
-		SOLAR_PANEL_03=BUILDER.comment("Production of Solar Panel 03, (Fe/t.)"+reload(50)).defineInRange("solar_panel_03",50,0,Integer.MAX_VALUE);
-		SOLAR_PANEL_04=BUILDER.comment("Production of Solar Panel 04, (Fe/t.)"+reload(100)).defineInRange("solar_panel_04",100,0,Integer.MAX_VALUE);
-		SOLAR_PANEL_ORBIT_MULTIPLIER=BUILDER.comment("Production multiplier of Solar Panels on Orbit, (Number.)"+reload(2)).defineInRange("solar_panel_orbit_multiplier",2,1,Integer.MAX_VALUE);
+		SOLAR_PANEL_00=BUILDER.comment("Production of Solar Panel 00, (Fe/t.)"+reload(1)).defineInRange("solar_panel_00",1,0,MAX);
+		SOLAR_PANEL_01=BUILDER.comment("Production of Solar Panel 01, (Fe/t.)"+reload(5)).defineInRange("solar_panel_01",5,0,MAX);
+		SOLAR_PANEL_02=BUILDER.comment("Production of Solar Panel 02, (Fe/t.)"+reload(20)).defineInRange("solar_panel_02",20,0,MAX);
+		SOLAR_PANEL_03=BUILDER.comment("Production of Solar Panel 03, (Fe/t.)"+reload(50)).defineInRange("solar_panel_03",50,0,MAX);
+		SOLAR_PANEL_04=BUILDER.comment("Production of Solar Panel 04, (Fe/t.)"+reload(100)).defineInRange("solar_panel_04",100,0,MAX);
+		SOLAR_PANEL_ORBIT_MULTIPLIER=BUILDER.comment("Production multiplier of Solar Panels on Orbit, (Number.)"+reload(2)).defineInRange("solar_panel_orbit_multiplier",2,1,MAX);
 		BUILDER.pop();
 		BUILDER.push("BurningGenerator");
-		BURNING_GENERATOR_ENERGY_PER_TICK=BUILDER.comment("Production of Burning Generator, (Fe/t.)"+restart(20)).defineInRange("burning_generator_energy_per_tick",20,0,Integer.MAX_VALUE);
-		BURNING_GENERATOR_MAX_ENERGY=BUILDER.comment("Maximum capacity of the Burning Generator, (Fe.)"+restart(32000)).defineInRange("burning_generator_max_energy",32000,0,Integer.MAX_VALUE);
-		BURNING_GENERATOR_MAX_EXTRACT=BUILDER.comment("Maximum energy output from the Burning Generator, (Fe/t.)"+restart(200)).defineInRange("burning_generator_max_extract",200,0,Integer.MAX_VALUE);
+		BURNING_GENERATOR_ENERGY_PER_TICK=BUILDER.comment("Production of Burning Generator, (Fe/t.)"+restart(20)).defineInRange("burning_generator_energy_per_tick",20,0,MAX);
+		BURNING_GENERATOR_MAX_ENERGY=BUILDER.comment("Maximum capacity of the Burning Generator, (Fe.)"+restart(32000)).defineInRange("burning_generator_max_energy",32000,0,MAX);
+		BURNING_GENERATOR_MAX_EXTRACT=BUILDER.comment("Maximum energy output from the Burning Generator, (Fe/t.)"+restart(200)).defineInRange("burning_generator_max_extract",200,0,MAX);
 		BUILDER.pop();
 		BUILDER.push("GeneralSettings");
-		MATA_PLANT_MAX_HEIGHT=BUILDER.comment("Maximal height of Mata Plant, (Blocks.)"+reload(2)).defineInRange("mata_plant_max_height",2,1,Integer.MAX_VALUE);
-		SPACE_SCAFFOLDING_LIFE_TIME=BUILDER.comment("Life Time of Space Scaffolding, (t.)"+reload(300)).defineInRange("space_scaffolding_life_time",300,1,Integer.MAX_VALUE);
+		MATA_PLANT_MAX_HEIGHT=BUILDER.comment("Maximal height of Mata Plant, (Blocks.)"+reload(2)).defineInRange("mata_plant_max_height",2,1,MAX);
+		SPACE_SCAFFOLDING_LIFE_TIME=BUILDER.comment("Life Time of Space Scaffolding, (t.)"+reload(300)).defineInRange("space_scaffolding_life_time",300,1,MAX);
 		MEGA_TORCH_RADIUS=BUILDER.comment("Radius of MEGA Torch, (Blocks.)"+reload(128)).defineInRange("mega_torch_radius",128,32,8192);
 		BUILDER.pop();
 		BUILDER.push("Jetpack");
-		JETPACK_MAX_BASIC=BUILDER.comment("Max Basic of Jetpack, (Number.)"+reload(200)).defineInRange("jetpack_max_basic",200,1,Integer.MAX_VALUE);
-		JETPACK_MAX_TURBO=BUILDER.comment("Max Turbo of Jetpack, (Number.)"+reload(100)).defineInRange("jetpack_max_turbo",100,1,Integer.MAX_VALUE);
-		JETPACK_MAX_THRUST=BUILDER.comment("Max Thrust of Jetpack, (Number.)"+reload(50)).defineInRange("jetpack_max_thrust",50,1,Integer.MAX_VALUE);
+		JETPACK_MAX_BASIC=BUILDER.comment("Max Basic of Jetpack, (Number.)"+reload(200)).defineInRange("jetpack_max_basic",200,1,MAX);
+		JETPACK_MAX_TURBO=BUILDER.comment("Max Turbo of Jetpack, (Number.)"+reload(100)).defineInRange("jetpack_max_turbo",100,1,MAX);
+		JETPACK_MAX_THRUST=BUILDER.comment("Max Thrust of Jetpack, (Number.)"+reload(50)).defineInRange("jetpack_max_thrust",50,1,MAX);
 		BUILDER.pop();
 		SPEC=BUILDER.build();
 	}
