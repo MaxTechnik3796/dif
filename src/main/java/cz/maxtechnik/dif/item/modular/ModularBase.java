@@ -44,6 +44,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.List;
+
+import static cz.maxtechnik.dif.DifModCommonConfig.*;
 public abstract class ModularBase extends DiggerItem{
 	protected abstract TagKey<Block> getMineableTag();
 	public String[] materials={
@@ -56,12 +58,9 @@ public abstract class ModularBase extends DiggerItem{
 			"Obsidian",
 			"Netherite"
 	};
-	public static int repairAmount=5, cheepRepairAmount=15;
 	protected String material;
 	protected int defaultMiningLevel, defaultDurability, defaultEfficiency;
 	protected float defaultAttackDamage, defaultAttackSpeed;
-	protected static int defaultMaxModifiers=3;
-	protected static int[] efficiencyModifierStages={3,5,7}, efficiencyModifierLevels={2,4,6}, fortuneModifierStages={3,5,7}, fortuneModifierLevels={1,2,3};
 	public ModularBase(int durability,int efficiency,int miningLevel,float attackDamage,float attackSpeed,String material){
 		super(attackDamage,attackSpeed,new Tier(){
 			@Override
@@ -155,7 +154,7 @@ public abstract class ModularBase extends DiggerItem{
 	}
 	public static void toolRepair(ItemStack template,ItemStack base,ItemStack addition,CompoundTag templateTag,CompoundTag baseTag,CompoundTag additionTag){
 		int currentDamage=base.getDamageValue();
-		int repair=containsMaterial(base,"Stone")?cheepRepairAmount:repairAmount;
+		int repair=containsMaterial(base,"Stone")?modularToolsCheepRepairAmount:modularToolsRepairAmount;
 		int newDamage=Math.max(0,currentDamage-repair);
 		base.setDamageValue(newDamage);
 		if(base.hasTag()&&base.getTag()!=null){
@@ -217,7 +216,7 @@ public abstract class ModularBase extends DiggerItem{
 		toolTag.putInt("BonusMiningLevel",0);
 		toolTag.putInt("SpecialEfficiency",0);
 		toolTag.putInt("HideFlags",5);
-		toolTag.putInt("MaxModifiers",defaultMaxModifiers);
+		toolTag.putInt("MaxModifiers",modularToolsDefaultMaxModifiers);
 		toolTag.putInt("Durability",baseTag.getInt("HeadDurability")+additionTag.getInt("BindingDurability")+templateTag.getInt("HandleDurability")+1);
 		toolTag.putInt("MiningLevel",miningLevelFromMaterial(toolTag.getString("Material")));
 		toolTag.putInt("Efficiency",efficiencyFromMaterial(toolTag.getString("Material")));
@@ -237,10 +236,9 @@ public abstract class ModularBase extends DiggerItem{
 	}
 	public static void applyModifiers(ItemStack template,ItemStack base,ItemStack addition,CompoundTag templateTag,CompoundTag baseTag,CompoundTag additionTag){
 		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/efficiency")){
-			if(baseTag.getInt("EfficiencyModifierProgress")+1>=efficiencyModifierStages[baseTag.getInt("EfficiencyModifier")]){
+			if(baseTag.getInt("EfficiencyModifierProgress")+1>=new int[]{modularToolsEfficiencyModifierStage0,modularToolsEfficiencyModifierStage1,modularToolsEfficiencyModifierStage2}[baseTag.getInt("EfficiencyModifier")]){
 				baseTag.putInt("EfficiencyModifierProgress",0);
 				baseTag.putInt("EfficiencyModifier",baseTag.getInt("EfficiencyModifier")+1);
-				baseTag.putInt("SpecialEfficiency",baseTag.getInt("EfficiencyModifier")+efficiencyModifierLevels[baseTag.getInt("EfficiencyModifier")-1]);
 			}else{
 				if(baseTag.getInt("EfficiencyModifierProgress")==0)
 					baseTag.putInt("MaxModifiers",baseTag.getInt("MaxModifiers")-1);
@@ -248,10 +246,9 @@ public abstract class ModularBase extends DiggerItem{
 			}
 		}
 		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/fortune")){
-			if(baseTag.getInt("FortuneModifierProgress")+1>=fortuneModifierStages[baseTag.getInt("FortuneModifier")]){
+			if(baseTag.getInt("FortuneModifierProgress")+1>=new int[]{modularToolsFortuneModifierStage0,modularToolsFortuneModifierStage1,modularToolsFortuneModifierStage2}[baseTag.getInt("FortuneModifier")]){
 				baseTag.putInt("FortuneModifierProgress",0);
 				baseTag.putInt("FortuneModifier",baseTag.getInt("FortuneModifier")+1);
-				setEnchantmentLevel(base,Enchantments.BLOCK_FORTUNE,fortuneModifierLevels[baseTag.getInt("FortuneModifier")-1]);
 			}else{
 				if(baseTag.getInt("FortuneModifierProgress")==0)
 					baseTag.putInt("MaxModifiers",baseTag.getInt("MaxModifiers")-1);
@@ -553,8 +550,10 @@ public abstract class ModularBase extends DiggerItem{
 	}
 	public static void setEnchantmentLevel(ItemStack itemStack,Enchantment enchantment,int level){
 		Map<Enchantment,Integer> enchantments=EnchantmentHelper.getEnchantments(itemStack);
+		if(enchantments.containsKey(enchantment)&&enchantments.get(enchantment).equals(level))return;
 		if(level<=0) enchantments.remove(enchantment);
 		else enchantments.put(enchantment,level);
+		DifMod.LOGGER.debug("gg");
 		EnchantmentHelper.setEnchantments(enchantments,itemStack);
 	}
 	public static boolean containsMaterial(ItemStack itemStack,String material){
@@ -573,7 +572,7 @@ public abstract class ModularBase extends DiggerItem{
 		ItemStack modular_tools_icon=new ItemStack(toolItem);
 		CompoundTag tag=new CompoundTag();
 		tag.putString("Material",headMaterial);
-		tag.putInt("MaxModifiers",defaultMaxModifiers);
+		tag.putInt("MaxModifiers",modularToolsDefaultMaxModifiers);
 		tag.putInt("SpecialDurability",1);
 		tag.putInt("SpecialMiningLevel",0);
 		tag.putInt("BonusMiningLevel",0);
@@ -617,7 +616,7 @@ public abstract class ModularBase extends DiggerItem{
 	public void inventoryTick(@NotNull ItemStack itemStack,@NotNull Level world,@NotNull Entity entity,int slot,boolean selected){
 		if(!world.isClientSide()){
 			CompoundTag tag=itemStack.getOrCreateTag();
-			if(!tag.contains("MaxModifiers")) tag.putInt("MaxModifiers",defaultMaxModifiers);
+			if(!tag.contains("MaxModifiers")) tag.putInt("MaxModifiers",modularToolsDefaultMaxModifiers);
 			if(!tag.contains("SilkTouchModifier")) tag.putBoolean("SilkTouchModifier",false);
 			if(!tag.contains("DiamondModifier")) tag.putBoolean("DiamondModifier",false);
 			if(!tag.contains("EfficiencyModifierProgress")) tag.putInt("EfficiencyModifierProgress",0);
@@ -628,7 +627,6 @@ public abstract class ModularBase extends DiggerItem{
 			if(!tag.contains("BonusMiningLevel")) tag.putInt("BonusMiningLevel",0);
 			if(!tag.contains("SpecialMiningLevel")) tag.putInt("SpecialMiningLevel",0);
 			if(!tag.contains("Efficiency")) tag.putInt("Efficiency",defaultEfficiency);
-			if(!tag.contains("SpecialEfficiency")) tag.putInt("SpecialEfficiency",0);
 			if(!tag.contains("AttackDamage")) tag.putFloat("AttackDamage",defaultAttackDamage);
 			if(!tag.contains("AttackSpeed")) tag.putFloat("AttackSpeed",defaultAttackSpeed);
 			if(!tag.contains("HeadMaterial")) tag.putString("HeadMaterial",material);
@@ -657,8 +655,13 @@ public abstract class ModularBase extends DiggerItem{
 				tag.putBoolean("Unbreakable",false);
 				tag.putInt("CustomModelData",0);
 			}
+			tag.putInt("SpecialEfficiency",new int[]{0,modularToolsEfficiencyModifierLevel0,modularToolsEfficiencyModifierLevel1,modularToolsEfficiencyModifierLevel2}[tag.getInt("EfficiencyModifier")]);
+			if(tag.getInt("FortuneModifier")>0)setEnchantmentLevel(itemStack,Enchantments.BLOCK_FORTUNE,new int[]{0,modularToolsFortuneModifierLevel0,modularToolsFortuneModifierLevel1,modularToolsFortuneModifierLevel2}[tag.getInt("FortuneModifier")]);
 			if(entity instanceof Player player){
 				if(containsMaterial(itemStack,"Wood")&&DifMod.rouletteBoolean(500)&&!(isInMainHand(itemStack,player)))
+					itemStack.setDamageValue(itemStack.getDamageValue()-1);
+			}else{
+				if(containsMaterial(itemStack,"Wood")&&DifMod.rouletteBoolean(500))
 					itemStack.setDamageValue(itemStack.getDamageValue()-1);
 			}
 		}
@@ -694,13 +697,13 @@ public abstract class ModularBase extends DiggerItem{
 			list.add(Component.literal("Remaining Modifiers:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("MaxModifiers"))).withStyle(ChatFormatting.YELLOW))));
 			if(tag.getInt("EfficiencyModifierProgress")>0||tag.getInt("EfficiencyModifier")>0){
 				if(tag.getInt("EfficiencyModifierProgress")>0)
-					list.add(Component.literal("Efficiency:").withStyle(ChatFormatting.RED).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("EfficiencyModifier"))).append(CommonComponents.space().append(CommonComponents.space().append(Component.literal("( "+tag.getInt("EfficiencyModifierProgress")+" / "+efficiencyModifierStages[tag.getInt("EfficiencyModifier")]+" )")))))));
+					list.add(Component.literal("Efficiency:").withStyle(ChatFormatting.RED).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("EfficiencyModifier"))).append(CommonComponents.space().append(CommonComponents.space().append(Component.literal("( "+tag.getInt("EfficiencyModifierProgress")+" / "+new int[]{modularToolsEfficiencyModifierStage0,modularToolsEfficiencyModifierStage1,modularToolsEfficiencyModifierStage2}[tag.getInt("EfficiencyModifier")]+" )")))))));
 				else
 					list.add(Component.literal("Efficiency:").withStyle(ChatFormatting.RED).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("EfficiencyModifier"))))));
 			}
 			if(tag.getInt("FortuneModifierProgress")>0||tag.getInt("FortuneModifier")>0){
 				if(tag.getInt("FortuneModifierProgress")>0)
-					list.add(Component.literal("Fortune:").withStyle(ChatFormatting.BLUE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("FortuneModifier"))).append(CommonComponents.space().append(CommonComponents.space().append(Component.literal("( "+tag.getInt("FortuneModifierProgress")+" / "+fortuneModifierStages[tag.getInt("FortuneModifier")]+" )")))))));
+					list.add(Component.literal("Fortune:").withStyle(ChatFormatting.BLUE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("FortuneModifier"))).append(CommonComponents.space().append(CommonComponents.space().append(Component.literal("( "+tag.getInt("FortuneModifierProgress")+" / "+new int[]{modularToolsFortuneModifierStage0,modularToolsFortuneModifierStage1,modularToolsFortuneModifierStage2}[tag.getInt("FortuneModifier")]+" )")))))));
 				else
 					list.add(Component.literal("Fortune:").withStyle(ChatFormatting.BLUE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("FortuneModifier"))))));
 			}

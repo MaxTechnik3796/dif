@@ -98,10 +98,10 @@ public class DifMod{
 		LOGGER.info("DIF MOD: Server Starting");
 	}
 	@SubscribeEvent
-	public void onCommandsRegister(RegisterCommandsEvent event) {
+	public void onCommandsRegister(RegisterCommandsEvent event){
 		ChunkLoaderCommands.register(event.getDispatcher());
 	}
-	@Mod.EventBusSubscriber(modid=MODID, bus=Mod.EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
+	@Mod.EventBusSubscriber(modid=MODID,bus=Mod.EventBusSubscriber.Bus.MOD,value=Dist.CLIENT)
 	public static class ClientModEvents{
 		@SubscribeEvent
 		public static void onClientSetup(FMLClientSetupEvent event){

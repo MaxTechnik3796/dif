@@ -9,58 +9,52 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.UUID;
-
-public class ChunkLoaderBlockEntity extends BlockEntity {
-    private UUID ownerUUID;
-    private String ownerName = "Unknown";
-
-    public ChunkLoaderBlockEntity(BlockPos pos, BlockState state) {
-        super(DifModBlockEntities.CHUNK_LOADER_BE.get(), pos, state);
-    }
-
-    public void setOwner(UUID uuid, String name) {
-        this.ownerUUID = uuid;
-        this.ownerName = name;
-        this.setChanged();
-    }
-
-    public void updateStatus(boolean active) {
-        if (level instanceof ServerLevel serverLevel) {
-            // Důležité: Kontrola proti tvým registrovaným blokům
-            boolean is3x3 = getBlockState().is(DifModBlocks.CHUNK_LOADER_3X3.get());
-            ChunkPos center = new ChunkPos(worldPosition);
-            int radius = is3x3 ? 1 : 0;
-
-            for (int x = -radius; x <= radius; x++) {
-                for (int z = -radius; z <= radius; z++) {
-                    serverLevel.setChunkForced(center.x + x, center.z + z, active);
-                }
-            }
-            ChunkLoaderData.get(serverLevel).updateRecord(worldPosition, ownerUUID, ownerName, active, is3x3);
-        }
-    }
-
-    public void handleRemoval() {
-        if (level instanceof ServerLevel serverLevel) {
-            updateStatus(false);
-            ChunkLoaderData data = ChunkLoaderData.get(serverLevel);
-            data.loaders.removeIf(r -> r.pos().equals(this.worldPosition));
-            data.setDirty();
-        }
-    }
-
-    @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        if (tag.hasUUID("ownerUUID")) this.ownerUUID = tag.getUUID("ownerUUID");
-        if (tag.contains("ownerName")) this.ownerName = tag.getString("ownerName");
-    }
-
-    @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        if (ownerUUID != null) tag.putUUID("ownerUUID", ownerUUID);
-        tag.putString("ownerName", ownerName);
-    }
+public class ChunkLoaderBlockEntity extends BlockEntity{
+	private UUID ownerUUID;
+	private String ownerName="Unknown";
+	public ChunkLoaderBlockEntity(BlockPos pos,BlockState state){
+		super(DifModBlockEntities.CHUNK_LOADER_BE.get(),pos,state);
+	}
+	public void setOwner(UUID uuid,String name){
+		this.ownerUUID=uuid;
+		this.ownerName=name;
+		this.setChanged();
+	}
+	public void updateStatus(boolean active){
+		if(level instanceof ServerLevel serverLevel){
+			// Důležité: Kontrola proti tvým registrovaným blokům
+			boolean is3x3=getBlockState().is(DifModBlocks.CHUNK_LOADER_3X3.get());
+			ChunkPos center=new ChunkPos(worldPosition);
+			int radius=is3x3?1:0;
+			for(int x=-radius;x<=radius;x++){
+				for(int z=-radius;z<=radius;z++){
+					serverLevel.setChunkForced(center.x+x,center.z+z,active);
+				}
+			}
+			ChunkLoaderData.get(serverLevel).updateRecord(worldPosition,ownerUUID,ownerName,active,is3x3);
+		}
+	}
+	public void handleRemoval(){
+		if(level instanceof ServerLevel serverLevel){
+			updateStatus(false);
+			ChunkLoaderData data=ChunkLoaderData.get(serverLevel);
+			data.loaders.removeIf(r->r.pos().equals(this.worldPosition));
+			data.setDirty();
+		}
+	}
+	@Override
+	public void load(@NotNull CompoundTag tag){
+		super.load(tag);
+		if(tag.hasUUID("ownerUUID")) this.ownerUUID=tag.getUUID("ownerUUID");
+		if(tag.contains("ownerName")) this.ownerName=tag.getString("ownerName");
+	}
+	@Override
+	protected void saveAdditional(@NotNull CompoundTag tag){
+		super.saveAdditional(tag);
+		if(ownerUUID!=null) tag.putUUID("ownerUUID",ownerUUID);
+		tag.putString("ownerName",ownerName);
+	}
 }

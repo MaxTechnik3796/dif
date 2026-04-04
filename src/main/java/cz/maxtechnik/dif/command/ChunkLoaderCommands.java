@@ -109,13 +109,13 @@ public class ChunkLoaderCommands {
                 // TP tlačítko
                 line.append(Component.literal("§6[TP] ").withStyle(s -> s
                         .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tp " + r.pos().getX() + " " + r.pos().getY() + " " + r.pos().getZ()))
-                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Teleport to the block")))));
+                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Teleport to the Chunkloader")))));
 
                 // DELETE tlačítko
                 String setblockCmd = "/setblock " + r.pos().getX() + " " + r.pos().getY() + " " + r.pos().getZ() + " minecraft:air";
                 line.append(Component.literal("§c[DEL]").withStyle(s -> s
                         .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, setblockCmd))
-                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Setnlock Chunkloader")))));
+                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Remove Chunkloader")))));
             }
             source.sendSuccess(() -> line, false);
         }

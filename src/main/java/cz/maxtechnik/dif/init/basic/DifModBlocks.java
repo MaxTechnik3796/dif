@@ -24,8 +24,8 @@ import static net.minecraft.world.level.block.Blocks.DEEPSLATE;
 public class DifModBlocks{
 	public static final DeferredRegister<Block>REGISTRY=DeferredRegister.create(ForgeRegistries.BLOCKS,DifMod.MODID);
 
-	public static final RegistryObject<Block> CHUNK_LOADER_1X1 = REGISTRY.register("chunk_loader_1x1", () -> new ChunkLoaderBlock(false));
-	public static final RegistryObject<Block> CHUNK_LOADER_3X3 = REGISTRY.register("chunk_loader_3x3", () -> new ChunkLoaderBlock(true));
+	public static final RegistryObject<Block> CHUNK_LOADER_1X1 = REGISTRY.register("chunk_loader_1x1",ChunkLoader::new);
+	public static final RegistryObject<Block> CHUNK_LOADER_3X3 = REGISTRY.register("chunk_loader_3x3",ChunkLoader::new);
 	public static final RegistryObject<Block>FAST_POWERED_RAIL=REGISTRY.register("fast_powered_rail",()->new FastPoweredRailBlock(BlockBehaviour.Properties.of().noCollission().strength(0.7F).sound(SoundType.METAL)));
 	public static final RegistryObject<Block>FAST_RAIL=REGISTRY.register("fast_rail",()->new FastRailBlock(BlockBehaviour.Properties.of().noCollission().strength(0.7F).sound(SoundType.METAL)));
 	public static final RegistryObject<Block>EXAMPLE_BLOCK=REGISTRY.register("example_block",Test::new);
