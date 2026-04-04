@@ -14,6 +14,7 @@ import cz.maxtechnik.dif.init.other.DifModMobEffects;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
 import cz.maxtechnik.dif.init.other.DifModDimensions;
 import cz.maxtechnik.dif.init.events.JetpackHandler;
+import cz.maxtechnik.dif.renderer.ChunkLoaderRenderer;
 import cz.maxtechnik.dif.renderer.FryingTableRenderer;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -110,6 +111,7 @@ public class DifMod{
 		@SubscribeEvent
 		public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event){
 			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(),context->new FryingTableRenderer());
+			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(),context->new ChunkLoaderRenderer());
 		}
 	}
 	/**
