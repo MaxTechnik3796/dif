@@ -126,12 +126,17 @@ public class DifMod{
 	}
 	/**
 	 * Method for detecting mouse in a specific area (used in GUI/Screen)
+	 * @param  mouseX Mouse X position.
+	 * @param mouseY Mouse Y position.
+	 * @param x X offset from 0. (top left corner)
+	 * @param y Y offset from 0. (top left corner)
+	 * @param w Width of area. (bottom right corner)
+	 * @param h Height of area. (bottom right corner)
 	 */
 	public static boolean mouseIn(int mouseX,int mouseY,int x,int y,int w,int h){
 		return mouseX>=x&&mouseX<x+w&&mouseY>=y&&mouseY<y+h;
 	}
 	/**
-	 *
 	 * Send message to player with mod prefix
 	 */
 	public static void sendMessageToPlayer(Player player,MutableComponent message){
@@ -142,7 +147,6 @@ public class DifMod{
 		player.sendSystemMessage(messageTemplate);
 	}
 	/**
-	 *
 	 * Check if is player in creative based gamemode
 	 */
 	public static boolean playerGameModeIsCreativeCategory(ServerPlayer player){
