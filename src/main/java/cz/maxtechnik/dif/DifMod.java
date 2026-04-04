@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
+import cz.maxtechnik.dif.command.ChunkLoaderCommands;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.basic.DifModSounds;
@@ -28,6 +29,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -94,6 +96,10 @@ public class DifMod{
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event){
 		LOGGER.info("DIF MOD: Server Starting");
+	}
+	@SubscribeEvent
+	public void onCommandsRegister(RegisterCommandsEvent event) {
+		ChunkLoaderCommands.register(event.getDispatcher());
 	}
 	@Mod.EventBusSubscriber(modid=MODID, bus=Mod.EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
 	public static class ClientModEvents{

@@ -21,6 +21,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
+
 public class DifModItems{
 	public static final DeferredRegister<Item> REGISTRY=DeferredRegister.create(ForgeRegistries.ITEMS,DifMod.MODID);
 	public static final DeferredRegister<Item> V_REGISTRY=DeferredRegister.create(ForgeRegistries.ITEMS,"minecraft");
@@ -36,6 +38,9 @@ public class DifModItems{
 
 	public static final RegistryObject<Item>FAST_POWERED_RAIL=block(DifModBlocks.FAST_POWERED_RAIL);
 	public static final RegistryObject<Item>FAST_RAIL=block(DifModBlocks.FAST_RAIL);
+
+	public static final RegistryObject<Item> CHUNK_LOADER_1X1 = REGISTRY.register("chunk_loader_1x1", () -> new BlockItem(DifModBlocks.CHUNK_LOADER_1X1.get(), new Item.Properties()) {@Override public boolean isFoil(@NotNull ItemStack stack) {return true;}});
+	public static final RegistryObject<Item> CHUNK_LOADER_3X3 = REGISTRY.register("chunk_loader_3x3", () -> new BlockItem(DifModBlocks.CHUNK_LOADER_3X3.get(), new Item.Properties()) {@Override public boolean isFoil(@NotNull ItemStack stack) {return true;}});
 
 	//Modular Tools:
 	public static final RegistryObject<Item> MODULAR_PICKAXE=REGISTRY.register("modular_pickaxe",ModularPickaxe::new);
