@@ -97,51 +97,6 @@ public abstract class ModularBase extends DiggerItem{
 		this.defaultAttackSpeed=attackSpeed;
 	}
 	@Override
-	public boolean isCorrectToolForDrops(ItemStack itemStack,@NotNull BlockState blockState){
-		if(!itemStack.hasTag()) return super.isCorrectToolForDrops(itemStack,blockState);
-		CompoundTag tag=itemStack.getOrCreateTag();
-		if(tag.getBoolean("Broken")) return false;
-		int level=tag.getInt("MiningLevel")+tag.getInt("BonusMiningLevel");
-		if(tag.getInt("SpecialMiningLevel")>level) level=tag.getInt("SpecialMiningLevel");
-		if(blockState.is(BlockTags.NEEDS_DIAMOND_TOOL)&&level<3) return false;
-		if(blockState.is(BlockTags.NEEDS_IRON_TOOL)&&level<2) return false;
-		if(blockState.is(BlockTags.NEEDS_STONE_TOOL)&&level<1) return false;
-		return blockState.is(getMineableTag());
-	}
-	@Override
-	public float getDestroySpeed(ItemStack itemStack,@NotNull BlockState blockState){
-		if(!itemStack.hasTag()) return super.getDestroySpeed(itemStack,blockState);
-		CompoundTag tag=itemStack.getOrCreateTag();
-		if(tag.getBoolean("Broken")) return 1F;
-		int speeeed=containsMaterial(itemStack,"Gold")?8:0;
-		return blockState.is(getMineableTag())?tag.getInt("Efficiency")+tag.getInt("SpecialEfficiency")+speeeed:1F;
-	}
-	@Override
-	public int getMaxDamage(ItemStack itemStack){
-		if(itemStack.hasTag()){
-			assert itemStack.getTag()!=null;
-			if(itemStack.getTag().contains("Durability")){
-				return itemStack.getTag().getInt("Durability");
-			}
-		}
-		return this.defaultDurability;
-	}
-	@Override
-	public Multimap<Attribute,AttributeModifier> getAttributeModifiers(EquipmentSlot slot,ItemStack itemStack){
-		if(slot==EquipmentSlot.MAINHAND&&itemStack.hasTag()){
-			CompoundTag tag=itemStack.getOrCreateTag();
-			ImmutableMultimap.Builder<Attribute,AttributeModifier> builders=ImmutableMultimap.builder();
-			float damage=tag.contains("AttackDamage")?tag.getFloat("AttackDamage"):defaultAttackDamage;
-			float speed=tag.contains("AttackSpeed")?tag.getFloat("AttackSpeed"):defaultAttackSpeed;
-			if(!tag.getBoolean("Broken")){
-				builders.put(Attributes.ATTACK_DAMAGE,new AttributeModifier(BASE_ATTACK_DAMAGE_UUID,"Tool modifier",damage,AttributeModifier.Operation.ADDITION));
-				builders.put(Attributes.ATTACK_SPEED,new AttributeModifier(BASE_ATTACK_SPEED_UUID,"Tool modifier",speed,AttributeModifier.Operation.ADDITION));
-			}
-			return builders.build();
-		}
-		return super.getAttributeModifiers(slot,itemStack);
-	}
-	@Override
 	public boolean canApplyAtEnchantingTable(ItemStack itemStack,Enchantment enchantment){
 		return false;
 	}
@@ -512,6 +467,51 @@ public abstract class ModularBase extends DiggerItem{
 		list.add(Component.literal("Durability: ").append(Component.literal(String.valueOf(remainingDurability)).withStyle(Style.EMPTY.withColor(TextColor.parseColor(hexColor)))).append(Component.literal(" / "+(maxDurability-1)).withStyle(Style.EMPTY.withColor(TextColor.parseColor("#AAAAAA")))));
 	}
 	@Override
+	public boolean isCorrectToolForDrops(ItemStack itemStack,@NotNull BlockState blockState){
+		if(!itemStack.hasTag()) return super.isCorrectToolForDrops(itemStack,blockState);
+		CompoundTag tag=itemStack.getOrCreateTag();
+		if(tag.getBoolean("Broken")) return false;
+		int level=tag.getInt("MiningLevel")+tag.getInt("BonusMiningLevel");
+		if(tag.getInt("SpecialMiningLevel")>level) level=tag.getInt("SpecialMiningLevel");
+		if(blockState.is(BlockTags.NEEDS_DIAMOND_TOOL)&&level<3) return false;
+		if(blockState.is(BlockTags.NEEDS_IRON_TOOL)&&level<2) return false;
+		if(blockState.is(BlockTags.NEEDS_STONE_TOOL)&&level<1) return false;
+		return blockState.is(getMineableTag());
+	}
+	@Override
+	public float getDestroySpeed(ItemStack itemStack,@NotNull BlockState blockState){
+		if(!itemStack.hasTag()) return super.getDestroySpeed(itemStack,blockState);
+		CompoundTag tag=itemStack.getOrCreateTag();
+		if(tag.getBoolean("Broken")) return 1F;
+		int speeeed=containsMaterial(itemStack,"Gold")?8:0;
+		return blockState.is(getMineableTag())?tag.getInt("Efficiency")+tag.getInt("SpecialEfficiency")+speeeed:1F;
+	}
+	@Override
+	public int getMaxDamage(ItemStack itemStack){
+		if(itemStack.hasTag()){
+			assert itemStack.getTag()!=null;
+			if(itemStack.getTag().contains("Durability")){
+				return itemStack.getTag().getInt("Durability");
+			}
+		}
+		return this.defaultDurability;
+	}
+	@Override
+	public Multimap<Attribute,AttributeModifier> getAttributeModifiers(EquipmentSlot slot,ItemStack itemStack){
+		if(slot==EquipmentSlot.MAINHAND&&itemStack.hasTag()){
+			CompoundTag tag=itemStack.getOrCreateTag();
+			ImmutableMultimap.Builder<Attribute,AttributeModifier> builders=ImmutableMultimap.builder();
+			float damage=tag.contains("AttackDamage")?tag.getFloat("AttackDamage"):defaultAttackDamage;
+			float speed=tag.contains("AttackSpeed")?tag.getFloat("AttackSpeed"):defaultAttackSpeed;
+			if(!tag.getBoolean("Broken")){
+				builders.put(Attributes.ATTACK_DAMAGE,new AttributeModifier(BASE_ATTACK_DAMAGE_UUID,"Tool modifier",damage,AttributeModifier.Operation.ADDITION));
+				builders.put(Attributes.ATTACK_SPEED,new AttributeModifier(BASE_ATTACK_SPEED_UUID,"Tool modifier",speed,AttributeModifier.Operation.ADDITION));
+			}
+			return builders.build();
+		}
+		return super.getAttributeModifiers(slot,itemStack);
+	}
+	@Override
 	public @NotNull InteractionResult useOn(UseOnContext context){
 		if(!context.getItemInHand().getItem().equals(DifModItems.MODULAR_AXE.get())) return InteractionResult.PASS;
 		Level level=context.getLevel();
@@ -675,7 +675,7 @@ public abstract class ModularBase extends DiggerItem{
 					// Normalizace a nastavení rychlosti přitahování (0.2 je tak akorát	)
 					if(moveVec.lengthSqr()<0.4D){
 						// Volitelně: Můžeme itemu nastavit nulový horizontální pohyb, aby hned zastavil
-						itemEntity.setDeltaMovement(itemEntity.getDeltaMovement().multiply(0.8D,1.0D,0.8D));
+						itemEntity.setDeltaMovement(itemEntity.getDeltaMovement().multiply(0.8D,1D,0.8D));
 						continue;
 					}
 					itemEntity.setDeltaMovement(itemEntity.getDeltaMovement().add(moveVec.normalize().scale(0.1D)));
