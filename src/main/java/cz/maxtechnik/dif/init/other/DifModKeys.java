@@ -15,18 +15,14 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
-
 @Mod.EventBusSubscriber(modid=DifMod.MODID, bus=Mod.EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
-public class DifModKeys {
-	public static final String CATEGORY = "key.categories.dif";
-
-	public static final KeyMapping JETPACK_FLY = new KeyMapping("key.dif.jetpack_fly", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_SPACE, CATEGORY);
-	public static final KeyMapping OPEN_ENDER_CHEST = new KeyMapping("key.dif.open_ender", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, CATEGORY);
-
+public class DifModKeys{
+	public static final String CATEGORY="key.categories.dif";
+	public static final KeyMapping JETPACK_FLY=new KeyMapping("key.dif.jetpack_fly",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_SPACE,CATEGORY);
+	public static final KeyMapping OPEN_ENDER_CHEST=new KeyMapping("key.dif.open_ender",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_V,CATEGORY);
 	// NOVÉ KLÁVESY PRO MINECART
-	public static final KeyMapping MINE_FORWARD = new KeyMapping("key.dif.mine_forward", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_I, CATEGORY);
-	public static final KeyMapping MINE_BACKWARD = new KeyMapping("key.dif.mine_backward", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_K, CATEGORY);
-
+	public static final KeyMapping MINE_FORWARD=new KeyMapping("key.dif.mine_forward",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_I,CATEGORY);
+	public static final KeyMapping MINE_BACKWARD=new KeyMapping("key.dif.mine_backward",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_K,CATEGORY);
 	@SubscribeEvent
 	public static void registerKeys(RegisterKeyMappingsEvent event){
 		event.register(JETPACK_FLY);
@@ -34,34 +30,28 @@ public class DifModKeys {
 		event.register(MINE_FORWARD);
 		event.register(MINE_BACKWARD);
 	}
-
 	@Mod.EventBusSubscriber(modid=DifMod.MODID, value=Dist.CLIENT, bus=Mod.EventBusSubscriber.Bus.FORGE)
-	public static class ClientTickHandler {
+	public static class ClientTickHandler{
 		@SubscribeEvent
 		public static void onClientTick(TickEvent.ClientTickEvent event){
-			if(event.phase==TickEvent.Phase.END && Minecraft.getInstance().player != null){
-				var player = Minecraft.getInstance().player;
-
+			if(event.phase==TickEvent.Phase.END&&Minecraft.getInstance().player!=null){
+				var player=Minecraft.getInstance().player;
 				// Existující logika Jetpacku a Ender chesty
 				if(JETPACK_FLY.isDown()){
 					DifMod.PACKET_HANDLER.sendToServer(new JetpackFlyMessage(0,0));
-					JetpackFlyMessage.pressAction(player, 0);
+					JetpackFlyMessage.pressAction(player,0);
 				}
 				while(OPEN_ENDER_CHEST.consumeClick()){
 					DifMod.PACKET_HANDLER.sendToServer(new EnderOpenMessage(0,0));
 				}
-
-				// NOVÁ LOGIKA: Ovládání Minecartu
-				if (player.getMainHandItem().is(DifModItems.REMOTE_CONTROLLER.get())) {
-					double speed = 0;
-					if (MINE_FORWARD.isDown()) speed = 0.5;
-					else if (MINE_BACKWARD.isDown()) speed = -0.5;
-
-					if (speed != 0) {
-						Vec3 look = player.getLookAngle();
-						// Pošleme packet přes tvůj PACKET_HANDLER
-						DifMod.PACKET_HANDLER.sendToServer(new RemoteControlPacket(look.x * speed, look.z * speed));
-					}
+				// NOVÁ LOGIKA: Ovládání Minecartu jako vozidla
+				// V ClientTickHandler v DifModKeys.java:
+				if(player.getMainHandItem().is(DifModItems.REMOTE_CONTROLLER.get())){
+					if(MINE_FORWARD.isDown())
+						DifMod.PACKET_HANDLER.sendToServer(new RemoteControlPacket(1.0));
+					else if(MINE_BACKWARD.isDown())
+						DifMod.PACKET_HANDLER.sendToServer(new RemoteControlPacket(-1.0));
+					else DifMod.PACKET_HANDLER.sendToServer(new RemoteControlPacket(0));
 				}
 			}
 		}
