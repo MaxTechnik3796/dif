@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.block;
+package cz.maxtechnik.dif.block.space;
 
 import cz.maxtechnik.dif.DifModCommonConfig;
 import cz.maxtechnik.dif.block.entity.SpaceScaffoldingBlockEntity;

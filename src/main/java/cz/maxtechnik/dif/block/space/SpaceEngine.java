@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.block;
+package cz.maxtechnik.dif.block.space;
 
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;

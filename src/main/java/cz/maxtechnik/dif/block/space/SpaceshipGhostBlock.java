@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.block;
+package cz.maxtechnik.dif.block.space;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

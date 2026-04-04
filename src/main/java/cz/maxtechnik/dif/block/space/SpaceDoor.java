@@ -1,7 +1,6 @@
-package cz.maxtechnik.dif.block;
+package cz.maxtechnik.dif.block.space;
 
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.BlockBehaviour;

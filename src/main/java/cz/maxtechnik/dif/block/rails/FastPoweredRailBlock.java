@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.block;
+package cz.maxtechnik.dif.block.rails;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;

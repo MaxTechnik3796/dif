@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.init.events;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.block.Spaceship;
+import cz.maxtechnik.dif.block.space.Spaceship;
 import cz.maxtechnik.dif.block.entity.SpaceshipBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.basic.DifModItems;
