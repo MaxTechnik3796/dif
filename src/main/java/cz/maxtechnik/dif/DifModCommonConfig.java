@@ -7,7 +7,7 @@ import net.minecraftforge.fml.event.config.ModConfigEvent;
 @Mod.EventBusSubscriber(modid=DifMod.MODID,bus=Mod.EventBusSubscriber.Bus.MOD)
 public class DifModCommonConfig{
 	@SubscribeEvent
-	static void onLoad(final ModConfigEvent event) {
+	static void onLoad(final ModConfigEvent event){
 		load();
 	}
 	@SubscribeEvent
@@ -15,6 +15,19 @@ public class DifModCommonConfig{
 		load();
 	}
 	private static final ForgeConfigSpec.Builder BUILDER=new ForgeConfigSpec.Builder();
+	public static String reload(String defaultValue){
+		return "\nDif-reload required!\nDefault value: "+defaultValue;
+	}
+	public static String reload(int defaultValue){
+		return reload(String.valueOf(defaultValue));
+	}
+
+	public static String restart(String defaultValue){
+		return "\nRestart required!\nDefault value: "+defaultValue;
+	}
+	public static String restart(int defaultValue){
+		return restart(String.valueOf(defaultValue));
+	}
 
 	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_00;
 	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_01;
@@ -28,7 +41,6 @@ public class DifModCommonConfig{
 	private static final ForgeConfigSpec.IntValue BURNING_GENERATOR_MAX_EXTRACT;
 
 	private static final ForgeConfigSpec.IntValue MATA_PLANT_MAX_HEIGHT;
-	private static final ForgeConfigSpec.BooleanValue DISABLE_END;
 	private static final ForgeConfigSpec.IntValue SPACE_SCAFFOLDING_LIFE_TIME;
 	private static final ForgeConfigSpec.IntValue MEGA_TORCH_RADIUS;
 
@@ -36,13 +48,6 @@ public class DifModCommonConfig{
 	private static final ForgeConfigSpec.IntValue JETPACK_MAX_TURBO;
 	private static final ForgeConfigSpec.IntValue JETPACK_MAX_THRUST;
 
-	private static final ForgeConfigSpec.IntValue PORTAL_GUN_MAX_AMMO;
-	private static final ForgeConfigSpec.IntValue PORTAL_GUN_MAX_RANGE;
-	private static final ForgeConfigSpec.IntValue PORTAL_GUN_COOLDOWN;
-
-	private static final ForgeConfigSpec.BooleanValue LOG_DIRT_BLOCK;
-	private static final ForgeConfigSpec.IntValue MAGIC_NUMBER;
-	private static final ForgeConfigSpec.ConfigValue<String>MAGIC_NUMBER_INTRODUCTION;
 	static{
 		BUILDER.comment("Dif common config.");
 		BUILDER.comment("This configuration is generated, do not overwrite anything except the values!");
@@ -51,38 +56,27 @@ public class DifModCommonConfig{
 		BUILDER.comment("Dif-reload required - use '/dif_config_reload' command.");
 		BUILDER.comment("+----------------------------------------+");
 		BUILDER.push("SolarPanelSettings");
-		SOLAR_PANEL_00=BUILDER.comment("Production of Solar Panel 00, (Fe/t.)\nDif-reload required!\nDefault value: 1").defineInRange("solar_panel_00",1,0,Integer.MAX_VALUE);
-		SOLAR_PANEL_01=BUILDER.comment("Production of Solar Panel 01, (Fe/t.)\nDif-reload required!\nDefault value: 5").defineInRange("solar_panel_01",5,0,Integer.MAX_VALUE);
-		SOLAR_PANEL_02=BUILDER.comment("Production of Solar Panel 02, (Fe/t.)\nDif-reload required!\nDefault value: 20").defineInRange("solar_panel_02",20,0,Integer.MAX_VALUE);
-		SOLAR_PANEL_03=BUILDER.comment("Production of Solar Panel 03, (Fe/t.)\nDif-reload required!\nDefault value: 50").defineInRange("solar_panel_03",50,0,Integer.MAX_VALUE);
-		SOLAR_PANEL_04=BUILDER.comment("Production of Solar Panel 04, (Fe/t.)\nDif-reload required!\nDefault value: 100").defineInRange("solar_panel_04",100,0,Integer.MAX_VALUE);
-		SOLAR_PANEL_ORBIT_MULTIPLIER=BUILDER.comment("Production multiplier of Solar Panels on Orbit, (Number.)\nDif-reload required!\nDefault value: 2").defineInRange("solar_panel_orbit_multiplier",2,1,Integer.MAX_VALUE);
+		SOLAR_PANEL_00=BUILDER.comment("Production of Solar Panel 00, (Fe/t.)"+reload(1)).defineInRange("solar_panel_00",1,0,Integer.MAX_VALUE);
+		SOLAR_PANEL_01=BUILDER.comment("Production of Solar Panel 01, (Fe/t.)"+reload(5)).defineInRange("solar_panel_01",5,0,Integer.MAX_VALUE);
+		SOLAR_PANEL_02=BUILDER.comment("Production of Solar Panel 02, (Fe/t.)"+reload(20)).defineInRange("solar_panel_02",20,0,Integer.MAX_VALUE);
+		SOLAR_PANEL_03=BUILDER.comment("Production of Solar Panel 03, (Fe/t.)"+reload(50)).defineInRange("solar_panel_03",50,0,Integer.MAX_VALUE);
+		SOLAR_PANEL_04=BUILDER.comment("Production of Solar Panel 04, (Fe/t.)"+reload(100)).defineInRange("solar_panel_04",100,0,Integer.MAX_VALUE);
+		SOLAR_PANEL_ORBIT_MULTIPLIER=BUILDER.comment("Production multiplier of Solar Panels on Orbit, (Number.)"+reload(2)).defineInRange("solar_panel_orbit_multiplier",2,1,Integer.MAX_VALUE);
 		BUILDER.pop();
 		BUILDER.push("BurningGenerator");
-		BURNING_GENERATOR_ENERGY_PER_TICK=BUILDER.comment("Production of Burning Generator, (Fe/t.)\nRestart required!\nDefault value: 20").defineInRange("burning_generator_energy_per_tick",20,0,Integer.MAX_VALUE);
-		BURNING_GENERATOR_MAX_ENERGY=BUILDER.comment("Maximum capacity of the Burning Generator, (Fe.)\nRestart required!\nDefault value: 32000").defineInRange("burning_generator_max_energy",32000,0,Integer.MAX_VALUE);
-		BURNING_GENERATOR_MAX_EXTRACT=BUILDER.comment("Maximum energy output from the Burning Generator, (Fe/t.)\nRestart required!\nDefault value: 200").defineInRange("burning_generator_max_extract",200,0,Integer.MAX_VALUE);
+		BURNING_GENERATOR_ENERGY_PER_TICK=BUILDER.comment("Production of Burning Generator, (Fe/t.)"+restart(20)).defineInRange("burning_generator_energy_per_tick",20,0,Integer.MAX_VALUE);
+		BURNING_GENERATOR_MAX_ENERGY=BUILDER.comment("Maximum capacity of the Burning Generator, (Fe.)"+restart(32000)).defineInRange("burning_generator_max_energy",32000,0,Integer.MAX_VALUE);
+		BURNING_GENERATOR_MAX_EXTRACT=BUILDER.comment("Maximum energy output from the Burning Generator, (Fe/t.)"+restart(200)).defineInRange("burning_generator_max_extract",200,0,Integer.MAX_VALUE);
 		BUILDER.pop();
 		BUILDER.push("GeneralSettings");
-		MATA_PLANT_MAX_HEIGHT=BUILDER.comment("Maximal height of Mata Plant, (Blocks.)\nDif-reload required!\nDefault value: 2").defineInRange("mata_plant_max_height",2,1,Integer.MAX_VALUE);
-		DISABLE_END=BUILDER.comment("Disable End dimension, (t/f.)\nDif-reload required!\nDefault value: false").define("disable_end",false);
-		SPACE_SCAFFOLDING_LIFE_TIME=BUILDER.comment("Life Time of Space Scaffolding, (t.)\nDif-reload required!\nDefault value: 300").defineInRange("space_scaffolding_life_time",300,1,Integer.MAX_VALUE);
-		MEGA_TORCH_RADIUS=BUILDER.comment("Radius of MEGA Torch, (Blocks.)\nDif-reload required!\nDefault value: 128").defineInRange("mega_torch_radius",128,32,8192);
+		MATA_PLANT_MAX_HEIGHT=BUILDER.comment("Maximal height of Mata Plant, (Blocks.)"+reload(2)).defineInRange("mata_plant_max_height",2,1,Integer.MAX_VALUE);
+		SPACE_SCAFFOLDING_LIFE_TIME=BUILDER.comment("Life Time of Space Scaffolding, (t.)"+reload(300)).defineInRange("space_scaffolding_life_time",300,1,Integer.MAX_VALUE);
+		MEGA_TORCH_RADIUS=BUILDER.comment("Radius of MEGA Torch, (Blocks.)"+reload(128)).defineInRange("mega_torch_radius",128,32,8192);
 		BUILDER.pop();
 		BUILDER.push("Jetpack");
-		JETPACK_MAX_BASIC=BUILDER.comment("Max Basic of Jetpack, (Number.)\nDif-reload required!\nDefault value: 200").defineInRange("jetpack_max_basic",200,1,Integer.MAX_VALUE);
-		JETPACK_MAX_TURBO=BUILDER.comment("Max Turbo of Jetpack, (Number.)\nDif-reload required!\nDefault value: 100").defineInRange("jetpack_max_turbo",100,1,Integer.MAX_VALUE);
-		JETPACK_MAX_THRUST=BUILDER.comment("Max Thrust of Jetpack, (Number.)\nDif-reload required!\nDefault value: 50").defineInRange("jetpack_max_thrust",50,1,Integer.MAX_VALUE);
-		BUILDER.pop();
-		BUILDER.push("PortalGun");
-		PORTAL_GUN_MAX_AMMO=BUILDER.comment("Maximal capacity of Portal Gun, (Shots.)\nDRestart required!\nDefault value: 16").defineInRange("portal_gun_max_ammo",16,1,Integer.MAX_VALUE);
-		PORTAL_GUN_MAX_RANGE=BUILDER.comment("Maximal shot power of Portal Gun, (Number.)\nDif-reload required!\nDefault value: 3").defineInRange("portal_gun_max_range",3,1,255);
-		PORTAL_GUN_COOLDOWN=BUILDER.comment("Cooldown of Portal Gun, (t.)\nDif-reload required!\nDefault value: 80").defineInRange("portal_gun_cooldown",80,0,Integer.MAX_VALUE);
-		BUILDER.pop();
-		BUILDER.push("TrashSettings");
-		LOG_DIRT_BLOCK=BUILDER.comment("Whether to log the dirt item").define("logDirtBlock",false);
-		MAGIC_NUMBER=BUILDER.comment("The magic number").defineInRange("magicNumber",42,0,1000);
-		MAGIC_NUMBER_INTRODUCTION=BUILDER.comment("A string to introduce the magic number").define("magicNumberIntroduction","The magic number is...");
+		JETPACK_MAX_BASIC=BUILDER.comment("Max Basic of Jetpack, (Number.)"+reload(200)).defineInRange("jetpack_max_basic",200,1,Integer.MAX_VALUE);
+		JETPACK_MAX_TURBO=BUILDER.comment("Max Turbo of Jetpack, (Number.)"+reload(100)).defineInRange("jetpack_max_turbo",100,1,Integer.MAX_VALUE);
+		JETPACK_MAX_THRUST=BUILDER.comment("Max Thrust of Jetpack, (Number.)"+reload(50)).defineInRange("jetpack_max_thrust",50,1,Integer.MAX_VALUE);
 		BUILDER.pop();
 		SPEC=BUILDER.build();
 	}
@@ -99,21 +93,12 @@ public class DifModCommonConfig{
 	public static int burningGeneratorMaxExtract;
 
 	public static int mataPlantMaxHeight;
-	public static boolean disableEnd;
 	public static int spaceScaffoldingLifeTime;
 	public static int megaTorchRadius;
 
 	public static int jetpackMaxBasic;
 	public static int jetpackMaxTurbo;
 	public static int jetpackMaxThrust;
-
-	public static int portalGunMaxAmmo;
-	public static int portalGunMaxRange;
-	public static int portalGunCooldown;
-
-	public static boolean logDirtBlock;
-	public static int magicNumber;
-	public static String magicNumberIntroduction;
 
 	public static void load(){
 		DifMod.LOGGER.info("Configuration loaded!");
@@ -129,20 +114,11 @@ public class DifModCommonConfig{
 		burningGeneratorMaxExtract=BURNING_GENERATOR_MAX_EXTRACT.get();
 
 		mataPlantMaxHeight=MATA_PLANT_MAX_HEIGHT.get();
-		disableEnd=DISABLE_END.get();
 		spaceScaffoldingLifeTime=SPACE_SCAFFOLDING_LIFE_TIME.get();
 		megaTorchRadius=MEGA_TORCH_RADIUS.get();
 
 		jetpackMaxBasic=JETPACK_MAX_BASIC.get();
 		jetpackMaxTurbo=JETPACK_MAX_TURBO.get();
 		jetpackMaxThrust=JETPACK_MAX_THRUST.get();
-
-		portalGunMaxAmmo=PORTAL_GUN_MAX_AMMO.get();
-		portalGunMaxRange=PORTAL_GUN_MAX_RANGE.get();
-		portalGunCooldown=PORTAL_GUN_COOLDOWN.get();
-
-		logDirtBlock=LOG_DIRT_BLOCK.get();
-		magicNumber=MAGIC_NUMBER.get();
-		magicNumberIntroduction=MAGIC_NUMBER_INTRODUCTION.get();
 	}
 }
