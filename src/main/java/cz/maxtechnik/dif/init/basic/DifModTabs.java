@@ -22,6 +22,8 @@ public class DifModTabs{
 		tabData.accept(DifModItems.MEGA_TORCH.get());
 		tabData.accept(DifModItems.BAN_HAMMER.get());
 		tabData.accept(DifModItems.PORTAL_GUN.get());
+		tabData.accept(DifModItems.CHUNK_LOADER_1X1.get());
+		tabData.accept(DifModItems.CHUNK_LOADER_3X3.get());
 		tabData.accept(DifModItems.EVENT_BUS.get());
 		tabData.accept(DifModItems.VENT.get());
 		tabData.accept(DifModItems.HOSPITAL_HANDLE.get());

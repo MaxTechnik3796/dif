@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "lit=true": { "model": "block/lodestone" },
+    "lit=false": { "model": "block/lodestone" }
+  }
+}
