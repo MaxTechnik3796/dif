@@ -9,11 +9,9 @@ import cz.maxtechnik.dif.init.basic.DifModTabs;
 import cz.maxtechnik.dif.init.fluid.DifModFluidTypes;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
-import cz.maxtechnik.dif.init.other.DifModBlockEntities;
-import cz.maxtechnik.dif.init.other.DifModMobEffects;
-import cz.maxtechnik.dif.init.other.DifModRecipes;
-import cz.maxtechnik.dif.init.other.DifModDimensions;
+import cz.maxtechnik.dif.init.other.*;
 import cz.maxtechnik.dif.init.events.JetpackHandler;
+import cz.maxtechnik.dif.network.RemoteControlPacket;
 import cz.maxtechnik.dif.renderer.ChunkLoaderRenderer;
 import cz.maxtechnik.dif.renderer.FryingTableRenderer;
 import net.minecraft.network.chat.CommonComponents;
@@ -84,6 +82,7 @@ public class DifMod{
 		DifModFluidTypes.REGISTRY.register(bus);
 		DifModRecipes.REGISTRY.register(bus);
 		DifModRecipes.TYPE_REGISTRY.register(bus);
+		DifModEntities.REGISTRY.register(bus);
 		// REGISTRACE EVENTŮ
 		MinecraftForge.EVENT_BUS.register(this);
 		// Registrujeme JetpackHandler, aby fungoval let
@@ -93,6 +92,12 @@ public class DifMod{
 	}
 	private void commonSetup(final FMLCommonSetupEvent event){
 		LOGGER.info("DIF MOD: Common Setup");
+		event.enqueueWork(() ->addNetworkMessage(
+				RemoteControlPacket.class,
+				RemoteControlPacket::encode,
+				RemoteControlPacket::decode,
+				RemoteControlPacket::handle
+		));
 	}
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event){
@@ -112,6 +117,12 @@ public class DifMod{
 		public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event){
 			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(),context->new FryingTableRenderer());
 			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(),context->new ChunkLoaderRenderer());
+			event.registerEntityRenderer(DifModEntities.REMOTE_MINECART.get(),
+					context -> new net.minecraft.client.renderer.entity.MinecartRenderer<>(
+							context,
+							net.minecraft.client.model.geom.ModelLayers.MINECART
+					)
+			);
 		}
 	}
 	/**

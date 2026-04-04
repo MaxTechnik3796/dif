@@ -3,10 +3,7 @@ package cz.maxtechnik.dif.init.basic;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.fluid.bucket.*;
 import cz.maxtechnik.dif.init.other.DifModTiers;
-import cz.maxtechnik.dif.item.Basic;
-import cz.maxtechnik.dif.item.MusicDiscDesc2;
-import cz.maxtechnik.dif.item.StackSize;
-import cz.maxtechnik.dif.item.Test;
+import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
 import cz.maxtechnik.dif.item.food.create.*;
 import cz.maxtechnik.dif.item.modular.ModularPart;
@@ -14,6 +11,7 @@ import cz.maxtechnik.dif.item.modular.tool.*;
 import cz.maxtechnik.dif.item.random.*;
 import cz.maxtechnik.dif.item.tool.*;
 import cz.maxtechnik.dif.item.armor.*;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
@@ -34,6 +32,10 @@ public class DifModItems{
 		assert block.getId()!=null;
 		return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));
 	}
+	public static final RegistryObject<Item> REMOTE_MINECART_ITEM = REGISTRY.register("remote_minecart_item",
+			() -> new RemoteMinecartItem(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<Item>REMOTE_CONTROLLER=REGISTRY.register("remote_controller",Basic::new);
+
 	public static final RegistryObject<Item> MEGA_TORCH = block(DifModBlocks.MEGA_TORCH);
 
 	public static final RegistryObject<Item>FAST_POWERED_RAIL=block(DifModBlocks.FAST_POWERED_RAIL);

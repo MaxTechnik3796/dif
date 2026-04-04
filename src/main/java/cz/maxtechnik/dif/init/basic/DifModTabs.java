@@ -430,6 +430,9 @@ public class DifModTabs{
 			tabData.accept(DifModItems.FAST_POWERED_RAIL.get());
 			tabData.accept(DifModItems.FAST_RAIL.get());
 
+			tabData.accept(DifModItems.REMOTE_CONTROLLER.get());
+			tabData.accept(DifModItems.REMOTE_MINECART_ITEM.get());
+
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
 			tabData.getEntries().putAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(DifModItems.TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
