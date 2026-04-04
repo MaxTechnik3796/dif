@@ -9,3 +9,9 @@
 /.vscode/
 /bin/
 /resources.lnk
+/.shelf/
+/dif.iml
+/dif.ipr
+/dif.iws
+/dif.main.iml
+/dif.test.iml
