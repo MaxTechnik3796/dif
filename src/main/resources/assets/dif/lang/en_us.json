@@ -58,6 +58,9 @@
 	"block.dif.jetpack_fuel_fluid":"Jetpack Fuel",
 	"fluid.dif.jetpack_fuel_fluid":"Jetpack Fuel",
 	"fluid_type.dif.jetpack_fuel_fluid":"Jetpack Fuel",
+	"block.dif.chunk_loader_3x3,": "ChunkLoader 3x3",
+	"block.dif.chunk_loader_1x1,": "ChunkLoader 1x1",
+
 
 	"item.dif.jetpack_turbo_fuel_bucket":"Jetpack TURBO Fuel Bucket",
 	"block.dif.jetpack_turbo_fuel_fluid":"Jetpack TURBO Fuel",
