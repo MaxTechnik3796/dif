@@ -15,6 +15,7 @@ import cz.maxtechnik.dif.init.events.JetpackHandler;
 import cz.maxtechnik.dif.network.RemoteControlPacket;
 import cz.maxtechnik.dif.renderer.ChunkLoaderRenderer;
 import cz.maxtechnik.dif.renderer.FryingTableRenderer;
+import cz.maxtechnik.dif.renderer.WitherTitanRenderer;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -111,6 +112,13 @@ public class DifMod{
 		IsChunkLoadedCommand.register(event.getDispatcher());
 		ConfigCommand.register(event.getDispatcher());
 	}
+	@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+	public static class ModBusEvents {
+		@SubscribeEvent
+		public static void entityAttributes(net.minecraftforge.event.entity.EntityAttributeCreationEvent event) {
+			event.put(DifModEntities.WITHER_TITAN.get(), cz.maxtechnik.dif.entity.WitherTitanEntity.createAttributes().build());
+		}
+	}
 	@Mod.EventBusSubscriber(modid=MODID,bus=Mod.EventBusSubscriber.Bus.MOD,value=Dist.CLIENT)
 	public static class ClientModEvents{
 		@SubscribeEvent
@@ -121,6 +129,7 @@ public class DifMod{
 		public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event){
 			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(),context->new FryingTableRenderer());
 			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(),context->new ChunkLoaderRenderer());
+			event.registerEntityRenderer(DifModEntities.WITHER_TITAN.get(), WitherTitanRenderer::new);
 			event.registerEntityRenderer(DifModEntities.REMOTE_MINECART.get(),
 					context -> new net.minecraft.client.renderer.entity.MinecartRenderer<>(
 							context,
