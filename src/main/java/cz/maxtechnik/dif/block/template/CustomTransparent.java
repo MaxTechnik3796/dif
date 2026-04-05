@@ -32,8 +32,7 @@ public class CustomTransparent extends Block{
 		return Shapes.empty();
 	}
 	@Override
-	public boolean skipRendering(@NotNull BlockState state,BlockState adjacentBlockState,@NotNull Direction side) {
+	public boolean skipRendering(@NotNull BlockState state,BlockState adjacentBlockState,@NotNull Direction side){
 		return adjacentBlockState.getBlock()==this||super.skipRendering(state,adjacentBlockState,side);
 	}
-
 }

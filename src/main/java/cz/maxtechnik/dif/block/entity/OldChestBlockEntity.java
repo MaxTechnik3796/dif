@@ -23,11 +23,12 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.jetbrains.annotations.NotNull;
+
 import javax.annotation.Nullable;
 import java.util.stream.IntStream;
 public class OldChestBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer{
-	private NonNullList<ItemStack>stacks=NonNullList.withSize(27,ItemStack.EMPTY);
-	private final LazyOptional<?extends IItemHandler>[]handlers=SidedInvWrapper.create(this,Direction.values());
+	private NonNullList<ItemStack> stacks=NonNullList.withSize(27,ItemStack.EMPTY);
+	private final LazyOptional<? extends IItemHandler>[] handlers=SidedInvWrapper.create(this,Direction.values());
 	public OldChestBlockEntity(BlockPos position,BlockState state){
 		super(DifModBlockEntities.OLD_CHEST.get(),position,state);
 	}
@@ -89,7 +90,7 @@ public class OldChestBlockEntity extends RandomizableContainerBlockEntity implem
 		return true;
 	}
 	@Override
-	public int @NotNull[]getSlotsForFace(@NotNull Direction side){
+	public int @NotNull [] getSlotsForFace(@NotNull Direction side){
 		return IntStream.range(0,this.getContainerSize()).toArray();
 	}
 	@Override
@@ -101,7 +102,7 @@ public class OldChestBlockEntity extends RandomizableContainerBlockEntity implem
 		return true;
 	}
 	@Override
-	public<T>@NotNull LazyOptional<T>getCapability(@NotNull Capability<T>capability,@Nullable Direction facing){
+	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability,@Nullable Direction facing){
 		if(!this.remove&&facing!=null&&capability==ForgeCapabilities.ITEM_HANDLER)
 			return handlers[facing.ordinal()].cast();
 		return super.getCapability(capability,facing);
@@ -109,7 +110,7 @@ public class OldChestBlockEntity extends RandomizableContainerBlockEntity implem
 	@Override
 	public void setRemoved(){
 		super.setRemoved();
-		for(LazyOptional<?extends IItemHandler>handler:handlers)
+		for(LazyOptional<? extends IItemHandler> handler: handlers)
 			handler.invalidate();
 	}
 }

@@ -31,129 +31,129 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.stream.IntStream;
-public class AndesiteBarrelBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
-    private NonNullList<ItemStack> stacks = NonNullList.withSize(36, ItemStack.EMPTY);
-    private final LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper.create(this, Direction.values());
-    private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
-        @Override
-        protected void onOpen(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
-            level.playSound(null, pos, SoundEvents.BARREL_OPEN, SoundSource.BLOCKS, 1.0F, 1.0F);
-            level.setBlock(pos, state.setValue(cz.maxtechnik.dif.block.barrel.AndesiteBarrel.OPEN, true), 3);
-        }
-        @Override
-        protected void onClose(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
-            level.playSound(null, pos, SoundEvents.BARREL_CLOSE, SoundSource.BLOCKS, 1.0F, 1.0F);
-            level.setBlock(pos, state.setValue(cz.maxtechnik.dif.block.barrel.AndesiteBarrel.OPEN, false), 3);
-        }
-        @Override
-        protected void openerCountChanged(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, int p_155062_, int p_155063_) {
-        }
-        @Override
-        protected boolean isOwnContainer(Player player) {
-            if (player.containerMenu instanceof AndesiteBarrelMenu menu) {
-                return menu.getBlockEntity() == AndesiteBarrelBlockEntity.this;
-            }
-            return false;
-        }
-    };
-    public AndesiteBarrelBlockEntity(BlockPos position,BlockState state) {
-        super(DifModBlockEntities.ANDESITE_BARREL.get(), position, state);
-    }
-    @Override
-    public void startOpen(@NotNull Player player) {
-        super.startOpen(player);
-        if (this.level != null && !this.level.isClientSide) {
-            assert this.getLevel() != null;
-            this.openersCounter.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
-        }
-    }
-    @Override
-    public void stopOpen(@NotNull Player player) {
-        super.stopOpen(player);
-        if (this.level != null && !this.level.isClientSide) {
-            assert this.getLevel() != null;
-            this.openersCounter.decrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
-        }
-    }
-    @Override
-    public void load(@NotNull CompoundTag compound) {
-        super.load(compound);
-        if (!this.tryLoadLootTable(compound))
-            this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(compound, this.stacks);
-    }
-    @Override
-    public void saveAdditional(@NotNull CompoundTag compound) {
-        super.saveAdditional(compound);
-        if (!this.trySaveLootTable(compound)) {
-            ContainerHelper.saveAllItems(compound, this.stacks);
-        }
-    }
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-    @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        return this.saveWithFullMetadata();
-    }
-    @Override
-    public int getContainerSize() {
-        return stacks.size();
-    }
-    @Override
-    public boolean isEmpty() {
-        for (ItemStack itemstack : this.stacks)
-            if (!itemstack.isEmpty())
-                return false;
-        return true;
-    }
-    @Override
-    public @NotNull Component getDefaultName() {
-        return Component.translatable("container.dif.andesite_barrel");
-    }
-    @Override
-    public @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory) {
-        return new AndesiteBarrelMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(this.worldPosition));
-    }
-    @Override
-    public @NotNull Component getDisplayName() {
-        return Component.translatable("container.dif.andesite_barrel");
-    }
-    @Override
-    protected @NotNull NonNullList<ItemStack> getItems() {
-        return this.stacks;
-    }
-    @Override
-    protected void setItems(@NotNull NonNullList<ItemStack> stacks) {
-        this.stacks = stacks;
-    }
-    @Override
-    public boolean canPlaceItem(int index, @NotNull ItemStack stack) {
-        return true;
-    }
-    @Override
-    public int @NotNull [] getSlotsForFace(@NotNull Direction side) {
-        return IntStream.range(0, this.getContainerSize()).toArray();
-    }
-    @Override
-    public boolean canPlaceItemThroughFace(int index, @NotNull ItemStack stack, @Nullable Direction direction) {
-        return this.canPlaceItem(index, stack);
-    }
-    @Override
-    public boolean canTakeItemThroughFace(int index, @NotNull ItemStack stack, @NotNull Direction direction) {
-        return true;
-    }
-    @Override
-    public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction facing) {
-        if (!this.remove && facing != null && capability == ForgeCapabilities.ITEM_HANDLER)
-            return handlers[facing.ordinal()].cast();
-        return super.getCapability(capability, facing);
-    }
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-        for (LazyOptional<? extends IItemHandler> handler : handlers)
-            handler.invalidate();
-    }
+public class AndesiteBarrelBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer{
+	private NonNullList<ItemStack> stacks=NonNullList.withSize(36,ItemStack.EMPTY);
+	private final LazyOptional<? extends IItemHandler>[] handlers=SidedInvWrapper.create(this,Direction.values());
+	private final ContainerOpenersCounter openersCounter=new ContainerOpenersCounter(){
+		@Override
+		protected void onOpen(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState state){
+			level.playSound(null,pos,SoundEvents.BARREL_OPEN,SoundSource.BLOCKS,1.0F,1.0F);
+			level.setBlock(pos,state.setValue(cz.maxtechnik.dif.block.barrel.AndesiteBarrel.OPEN,true),3);
+		}
+		@Override
+		protected void onClose(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState state){
+			level.playSound(null,pos,SoundEvents.BARREL_CLOSE,SoundSource.BLOCKS,1.0F,1.0F);
+			level.setBlock(pos,state.setValue(cz.maxtechnik.dif.block.barrel.AndesiteBarrel.OPEN,false),3);
+		}
+		@Override
+		protected void openerCountChanged(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState state,int p_155062_,int p_155063_){
+		}
+		@Override
+		protected boolean isOwnContainer(Player player){
+			if(player.containerMenu instanceof AndesiteBarrelMenu menu){
+				return menu.getBlockEntity()==AndesiteBarrelBlockEntity.this;
+			}
+			return false;
+		}
+	};
+	public AndesiteBarrelBlockEntity(BlockPos position,BlockState state){
+		super(DifModBlockEntities.ANDESITE_BARREL.get(),position,state);
+	}
+	@Override
+	public void startOpen(@NotNull Player player){
+		super.startOpen(player);
+		if(this.level!=null&&!this.level.isClientSide){
+			assert this.getLevel()!=null;
+			this.openersCounter.incrementOpeners(player,this.getLevel(),this.getBlockPos(),this.getBlockState());
+		}
+	}
+	@Override
+	public void stopOpen(@NotNull Player player){
+		super.stopOpen(player);
+		if(this.level!=null&&!this.level.isClientSide){
+			assert this.getLevel()!=null;
+			this.openersCounter.decrementOpeners(player,this.getLevel(),this.getBlockPos(),this.getBlockState());
+		}
+	}
+	@Override
+	public void load(@NotNull CompoundTag compound){
+		super.load(compound);
+		if(!this.tryLoadLootTable(compound))
+			this.stacks=NonNullList.withSize(this.getContainerSize(),ItemStack.EMPTY);
+		ContainerHelper.loadAllItems(compound,this.stacks);
+	}
+	@Override
+	public void saveAdditional(@NotNull CompoundTag compound){
+		super.saveAdditional(compound);
+		if(!this.trySaveLootTable(compound)){
+			ContainerHelper.saveAllItems(compound,this.stacks);
+		}
+	}
+	@Override
+	public ClientboundBlockEntityDataPacket getUpdatePacket(){
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
+	@Override
+	public @NotNull CompoundTag getUpdateTag(){
+		return this.saveWithFullMetadata();
+	}
+	@Override
+	public int getContainerSize(){
+		return stacks.size();
+	}
+	@Override
+	public boolean isEmpty(){
+		for(ItemStack itemstack: this.stacks)
+			if(!itemstack.isEmpty())
+				return false;
+		return true;
+	}
+	@Override
+	public @NotNull Component getDefaultName(){
+		return Component.translatable("container.dif.andesite_barrel");
+	}
+	@Override
+	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory){
+		return new AndesiteBarrelMenu(id,inventory,new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(this.worldPosition));
+	}
+	@Override
+	public @NotNull Component getDisplayName(){
+		return Component.translatable("container.dif.andesite_barrel");
+	}
+	@Override
+	protected @NotNull NonNullList<ItemStack> getItems(){
+		return this.stacks;
+	}
+	@Override
+	protected void setItems(@NotNull NonNullList<ItemStack> stacks){
+		this.stacks=stacks;
+	}
+	@Override
+	public boolean canPlaceItem(int index,@NotNull ItemStack stack){
+		return true;
+	}
+	@Override
+	public int @NotNull [] getSlotsForFace(@NotNull Direction side){
+		return IntStream.range(0,this.getContainerSize()).toArray();
+	}
+	@Override
+	public boolean canPlaceItemThroughFace(int index,@NotNull ItemStack stack,@Nullable Direction direction){
+		return this.canPlaceItem(index,stack);
+	}
+	@Override
+	public boolean canTakeItemThroughFace(int index,@NotNull ItemStack stack,@NotNull Direction direction){
+		return true;
+	}
+	@Override
+	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability,@Nullable Direction facing){
+		if(!this.remove&&facing!=null&&capability==ForgeCapabilities.ITEM_HANDLER)
+			return handlers[facing.ordinal()].cast();
+		return super.getCapability(capability,facing);
+	}
+	@Override
+	public void setRemoved(){
+		super.setRemoved();
+		for(LazyOptional<? extends IItemHandler> handler: handlers)
+			handler.invalidate();
+	}
 }

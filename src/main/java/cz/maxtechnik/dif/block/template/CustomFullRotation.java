@@ -21,7 +21,7 @@ public class CustomFullRotation extends Block{
 		return 15;
 	}
 	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState>builder){
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
 		builder.add(FACING);
 	}
 	@Override

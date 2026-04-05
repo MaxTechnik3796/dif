@@ -32,7 +32,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 public class FryingTableBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer{
 	public static final int SLOTS=2;
 	public static final int INPUT_SLOT=0;
@@ -179,7 +178,8 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 		if(stack.getCount()>this.getMaxStackSize()) stack.setCount(this.getMaxStackSize());
 		if(this.level!=null){
 			this.setChanged();
-			if(!this.level.isClientSide) this.level.sendBlockUpdated(this.worldPosition,this.getBlockState(),this.getBlockState(),3);
+			if(!this.level.isClientSide)
+				this.level.sendBlockUpdated(this.worldPosition,this.getBlockState(),this.getBlockState(),3);
 		}
 	}
 }

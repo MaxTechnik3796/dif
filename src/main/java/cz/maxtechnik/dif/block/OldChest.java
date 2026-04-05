@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 public class OldChest extends Block implements EntityBlock{
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
 	public static final BooleanProperty CONNECTED=BooleanProperty.create("connected");
-	public static final EnumProperty<OldChestType>TYPE=EnumProperty.create("type",OldChestType.class);
+	public static final EnumProperty<OldChestType> TYPE=EnumProperty.create("type",OldChestType.class);
 	public OldChest(){
 		super(Properties.of().strength(3F,3F).sound(SoundType.WOOD));
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(CONNECTED,false).setValue(TYPE,OldChestType.SINGLE));
@@ -86,8 +86,12 @@ public class OldChest extends Block implements EntityBlock{
 	public enum OldChestType implements net.minecraft.util.StringRepresentable{
 		SINGLE("single"),LEFT("left"),RIGHT("right");
 		private final String name;
-		OldChestType(String name){this.name=name;}
-		public @NotNull String getSerializedName(){return this.name;}
+		OldChestType(String name){
+			this.name=name;
+		}
+		public @NotNull String getSerializedName(){
+			return this.name;
+		}
 	}
 	@Override
 	public MenuProvider getMenuProvider(@NotNull BlockState state,Level worldIn,@NotNull BlockPos pos){
@@ -96,7 +100,7 @@ public class OldChest extends Block implements EntityBlock{
 	}
 	@Override
 	public @NotNull InteractionResult use(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
-		if(world.isClientSide())return InteractionResult.SUCCESS;
+		if(world.isClientSide()) return InteractionResult.SUCCESS;
 		if(player instanceof ServerPlayer serverPlayer){
 			BlockEntity blockEntity=world.getBlockEntity(pos);
 			if(blockEntity instanceof MenuProvider menuProvider){

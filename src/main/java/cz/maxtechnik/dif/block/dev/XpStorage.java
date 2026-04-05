@@ -37,8 +37,8 @@ public class XpStorage extends Block implements EntityBlock{
 	@Override
 	public @NotNull InteractionResult use(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
 		super.use(blockstate,world,pos,player,hand,hit);
-		if(world.isClientSide())return InteractionResult.SUCCESS;
-		if(!(world.getBlockEntity(pos) instanceof XpStorageBlockEntity blockEntity))return InteractionResult.SUCCESS;
+		if(world.isClientSide()) return InteractionResult.SUCCESS;
+		if(!(world.getBlockEntity(pos) instanceof XpStorageBlockEntity blockEntity)) return InteractionResult.SUCCESS;
 		if(player.isShiftKeyDown()){
 			player.giveExperiencePoints(blockEntity.xp);
 			blockEntity.xp=0;

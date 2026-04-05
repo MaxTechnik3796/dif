@@ -36,7 +36,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("deprecation")
-public class SuperBox extends Block implements SimpleWaterloggedBlock,EntityBlock{
+public class SuperBox extends Block implements SimpleWaterloggedBlock, EntityBlock{
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
 	public SuperBox(){
@@ -60,7 +60,7 @@ public class SuperBox extends Block implements SimpleWaterloggedBlock,EntityBloc
 		return Shapes.empty();
 	}
 	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState>builder){
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
 		builder.add(FACING,WATERLOGGED);
 	}
 	@Override
@@ -71,7 +71,7 @@ public class SuperBox extends Block implements SimpleWaterloggedBlock,EntityBloc
 	public @NotNull BlockState rotate(BlockState state,Rotation rot){
 		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));
 	}
-	public @NotNull BlockState mirror(BlockState state,Mirror mirrorIn) {
+	public @NotNull BlockState mirror(BlockState state,Mirror mirrorIn){
 		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
 	}
 	@Override
@@ -79,8 +79,8 @@ public class SuperBox extends Block implements SimpleWaterloggedBlock,EntityBloc
 		return state.getValue(WATERLOGGED)?Fluids.WATER.getSource(false):super.getFluidState(state);
 	}
 	@Override
-	public @NotNull BlockState updateShape(BlockState state,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos) {
-		if (state.getValue(WATERLOGGED)) {
+	public @NotNull BlockState updateShape(BlockState state,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
+		if(state.getValue(WATERLOGGED)){
 			world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
 		}
 		return super.updateShape(state,facing,facingState,world,currentPos,facingPos);
@@ -88,10 +88,10 @@ public class SuperBox extends Block implements SimpleWaterloggedBlock,EntityBloc
 	@Override
 	public @NotNull InteractionResult use(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player entity,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
 		super.use(blockstate,world,pos,entity,hand,hit);
-		if (entity instanceof ServerPlayer player) {
+		if(entity instanceof ServerPlayer player){
 			NetworkHooks.openScreen(player,new MenuProvider(){
 				@Override
-				public @NotNull Component getDisplayName() {
+				public @NotNull Component getDisplayName(){
 					return Component.literal("§e§lSuper Box");
 				}
 				@Override
@@ -115,7 +115,7 @@ public class SuperBox extends Block implements SimpleWaterloggedBlock,EntityBloc
 	public boolean triggerEvent(@NotNull BlockState state,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
 		super.triggerEvent(state,world,pos,eventID,eventParam);
 		BlockEntity blockEntity=world.getBlockEntity(pos);
-		return blockEntity!=null && blockEntity.triggerEvent(eventID,eventParam);
+		return blockEntity!=null&&blockEntity.triggerEvent(eventID,eventParam);
 	}
 	@Override
 	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){

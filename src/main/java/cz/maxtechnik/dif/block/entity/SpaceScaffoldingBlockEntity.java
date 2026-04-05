@@ -27,8 +27,7 @@ public class SpaceScaffoldingBlockEntity extends BlockEntity{
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
 	@Override
-	public @NotNull CompoundTag getUpdateTag() {
+	public @NotNull CompoundTag getUpdateTag(){
 		return this.saveWithFullMetadata();
 	}
-
 }
