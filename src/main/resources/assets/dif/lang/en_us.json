@@ -19,15 +19,11 @@
 	"container.dif.sturdy_barrel":"Sturdy Barrel",
 	"container.dif.old_chest":"Alpha Chest",
 
-	"subtitles.cremeka":"",
 	"subtitles.redstone":"",
 	"subtitles.maty_create":"",
-	"subtitles.mayonnaise":"",
 	"subtitles.maty_pada_stream":"",
 	"subtitles.furt_ta_stejna_hra":"",
 
-	"item.dif.mayonnaise":"Majo",
-	"item.dif.cremeka":"Music Disc",
 	"item.dif.maty_create":"Music Disc",
 	"item.dif.furt_ta_stejna_hra":"Music Disc",
 	"item.dif.redstone":"Music Disc",
@@ -69,15 +65,11 @@
 	"fluid.dif.cider_fluid":"Mošt",
 	"fluid_type.dif.cider_fluid":"Mošt",
 
-	"item.dif.mayonnaise.desc":"§7Mayonnaise on an escalator! - Harry Arbuckle§r",
-	"item.dif.cremeka.desc":"§7Cremeka song! - CZ|Ted<3 & AI§r",
 	"item.dif.maty_create.desc":"§7Maty Create Song - Matrixgold§r",
 	"item.dif.furt_ta_stejna_hra.desc":"§7Furt Ta Stejná Hra - LaserLinx_yt & AI§r",
 	"item.dif.redstone.desc":"§7Redstone - Matrixgold & AI§r",
 	"item.dif.maty_pada_stream.desc":"§7Matymu padá stream - CZ|Ted<3 & AI§r",
 
-	"item.dif.mayonnaise.desc2":"§7License: §6Copyright?§r",
-	"item.dif.cremeka.desc2":"§7License: §eNocopy§r",
 	"item.dif.maty_create.desc2":"§7License: §eNocopy§r",
 	"item.dif.furt_ta_stejna_hra.desc2":"§7License: §b©2024 LaserLinx§r",
 	"item.dif.redstone.desc2":"§7License: §eNocopy§r",
@@ -93,7 +85,6 @@
 	"item.dif.bluestone":"Bluestone",
 	"item.dif.cpu_singularity":"§dCPU Singularity§r",
 	"item.dif.incomplete_cpu_singularity":"§dIncomplete CPU Singularity§r",
-	"item.dif.masticka":"Mastička",
 	"item.dif.blue_plate":"Blue Plate",
 	"item.dif.heavy_plate":"Heavy Plate",
 
@@ -104,7 +95,6 @@
 	"item.dif.cherry_bottle":"Cherry Bottle",
 	"item.dif.nether_wart_bottle":"Nether Wart Bottle",
 	"item.dif.rotten_belt":"Rotten Belt",
-	"item.dif.rotten_apple":"Rotten Apple",
 	"item.dif.bottle_of_molotovuv_koktejl":"Bottle of Molotovuv Koktejl",
 	"item.dif.bottle_of_uranovej_koktejl":"Bottle of Uranovej Koktejl",
 	"item.dif.bucket_of_chicken":"Kyblík S Kuřetem",
@@ -119,20 +109,15 @@
 	"block.dif.canola_plant":"Canola Plant",
 
 	"item.dif.portal_gun":"Portal Gun",
-	"item.dif.laser_hookah":"Laser Hookah",
 	"item.dif.ban_hammer":"§c§lBan Hammer§r",
 	"item.dif.electrum_destroyer":"Electrum Destroyer",
 	"item.dif.jadernej_sutr":"§lJ§Jadernej §lŠUTR§r",
-	"item.dif.item_5261":"52616E646F6D20706573207A204149206B64797A2074616D20646173206C6F676F204372656174752058444444",
 	"item.dif.vhs":"VHS",
 	"item.dif.ruby":"Ruby",
 	"block.dif.ruby_ore":"Ruby Ore",
 	"block.dif.ruby_block":"Block of Ruby",
 
 	"item.dif.coin_00":"Coin",
-	"item.dif.coin_01":"Coin",
-	"item.dif.coin_02":"Coin",
-	"item.dif.coin_03":"Coin",
 
 	"item.dif.maty_drink":"Máty Drink",
 	"item.dif.mata":"Máta",
@@ -180,10 +165,6 @@
 
 	"item.dif.ram":"RAM",
 	"item.dif.explosive_ram":"§cExplosive RAM§r",
-	"item.dif.spring":"Spring",
-	"item.dif.soldering_iron":"Soldering Iron",
-	"item.dif.drill":"Drill",
-	"item.dif.screwdriver":"Screwdriver",
 	"item.dif.incomplete_universal":"Incomplete Universal",
 
 	"block.dif.deepslate_bauxite_ore":"Deepslate Bauxite Ore",

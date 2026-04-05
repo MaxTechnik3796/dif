@@ -45,28 +45,17 @@ public class DifModTabs{
 		tabData.accept(DifModItems.SOLAR_PANEL_02_W.get());
 		tabData.accept(DifModItems.SOLAR_PANEL_03_W.get());
 		tabData.accept(DifModItems.SOLAR_PANEL_04_W.get());
-		tabData.accept(DifModItems.MASTICKA.get());
-		tabData.accept(DifModItems.ITEM_5261.get());
 		tabData.accept(DifModItems.CPU_SINGULARITY.get());
 		tabData.accept(DifModItems.HEAVY_PLATE.get());
-		tabData.accept(DifModItems.SPRING.get());
-		tabData.accept(DifModItems.SOLDERING_IRON.get());
-		tabData.accept(DifModItems.DRILL.get());
-		tabData.accept(DifModItems.SCREWDRIVER.get());
 		tabData.accept(DifModItems.MITHRIL.get());
 		tabData.accept(DifModItems.MITHRIL_PLATE.get());
 		tabData.accept(DifModItems.BLUESTONE.get());
 		tabData.accept(DifModItems.BLUE_PLATE.get());
 		tabData.accept(DifModItems.COIN_00.get());
-		tabData.accept(DifModItems.COIN_01.get());
-		tabData.accept(DifModItems.COIN_02.get());
-		tabData.accept(DifModItems.COIN_03.get());
 		tabData.accept(DifModItems.RAM.get());
 		tabData.accept(DifModItems.EXPLOSIVE_RAM.get());
 		tabData.accept(DifModItems.ROTTEN_BELT.get());
-		tabData.accept(DifModItems.ROTTEN_APPLE.get());
 		tabData.accept(DifModItems.QUESTION_MARK.get());
-		tabData.accept(DifModItems.LASER_HOOKAH.get());
 
 
 		tabData.accept(DifModItems.INCOMPLETE_CPU_SINGULARITY.get());
@@ -343,9 +332,7 @@ public class DifModTabs{
 							new ItemStack(DifModItems.JETPACK_TURBO_FUEL_BUCKET.get()),
 							new ItemStack(DifModItems.SUNFLOWER_OIL_BUCKET.get())
 					});
-			tabData.accept(DifModItems.CREMEKA.get());
 			tabData.accept(DifModItems.MATY_CREATE.get());
-			tabData.accept(DifModItems.MAYONNAISE.get());
 			tabData.accept(DifModItems.REDSTONE.get());
 			tabData.accept(DifModItems.MATY_PADA_STREAM.get());
 			tabData.accept(DifModItems.FURT_TA_STEJNA_HRA.get());

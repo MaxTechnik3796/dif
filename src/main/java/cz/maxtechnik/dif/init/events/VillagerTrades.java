@@ -22,8 +22,6 @@ public class VillagerTrades{
 	}
 	@SubscribeEvent
 	public static void registerWanderingTrades(WandererTradesEvent event){
-		event.getGenericTrades().add(new BasicItemListing(emerald(5),new ItemStack(DifModItems.CREMEKA.get(),1),2,0,0F));
 		event.getGenericTrades().add(new BasicItemListing(emerald(5),new ItemStack(DifModItems.MATY_CREATE.get(),1),2,0,0F));
-		event.getGenericTrades().add(new BasicItemListing(emerald(5),new ItemStack(DifModItems.MAYONNAISE.get(),1),2,0,0F));
 	}
 }

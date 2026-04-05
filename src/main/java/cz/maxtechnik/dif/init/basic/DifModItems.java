@@ -62,7 +62,6 @@ public class DifModItems{
 	public static final RegistryObject<Item> MODULAR_PART_SWORD_BINDING=REGISTRY.register("sword_binding",ModularPart::new);
 	public static final RegistryObject<Item> MODULAR_PART_HANDLE=REGISTRY.register("handle",ModularPart::new);
 
-	public static final RegistryObject<Item> LASER_HOOKAH=REGISTRY.register("laser_hookah",LaserHookah::new);
 	public static final RegistryObject<Item> PORTAL_GUN=REGISTRY.register("portal_gun",PortalGun::new);
 
 	public static final RegistryObject<Item> ELECTRO_RUNNERS=REGISTRY.register("electro_runners",ElectroRunners.Boots::new);
@@ -105,7 +104,6 @@ public class DifModItems{
 	public static final RegistryObject<Item> CHERRY=REGISTRY.register("cherry",()->new Custom(1,0.1F));
 
 	public static final RegistryObject<Item> ROTTEN_BELT=REGISTRY.register("rotten_belt",Bad::new);
-	public static final RegistryObject<Item> ROTTEN_APPLE=REGISTRY.register("rotten_apple",Bad::new);
 
 	public static final RegistryObject<Item> BOTTLE_OF_MOLOTOVUV_KOKTEJL=REGISTRY.register("bottle_of_molotovuv_koktejl",MolotovuvKoktejl::new);
 	public static final RegistryObject<Item> BOTTLE_OF_URANOVEJ_KOKTEJL=REGISTRY.register("bottle_of_uranovej_koktejl",UranovejKoktejl::new);
@@ -125,21 +123,13 @@ public class DifModItems{
 	public static final RegistryObject<Item> SUPER_HEATED_CREATE_BOWL=REGISTRY.register("super_heated_create_bowl",Super::new);
 
 	public static final RegistryObject<Item> JADERNEJ_SUTR=REGISTRY.register("jadernej_sutr",JadernejSutr::new);
-	public static final RegistryObject<Item> ITEM_5261=REGISTRY.register("item_5261",Basic::new);
 	public static final RegistryObject<Item> VHS=REGISTRY.register("vhs",()->new StackSize(16));
-	public static final RegistryObject<Item> MASTICKA=REGISTRY.register("masticka",Basic::new);
 	public static final RegistryObject<Item> QUESTION_MARK=REGISTRY.register("question_mark",Basic::new);
 
-	public static final RegistryObject<Item> SOLDERING_IRON=REGISTRY.register("soldering_iron",()->new StackSize(1));
-	public static final RegistryObject<Item> DRILL=REGISTRY.register("drill",()->new StackSize(1));
-	public static final RegistryObject<Item> SCREWDRIVER=REGISTRY.register("screwdriver",()->new StackSize(1));
 
 	public static final RegistryObject<Item> INCOMPLETE_UNIVERSAL=REGISTRY.register("incomplete_universal",Basic::new);
 
 	public static final RegistryObject<Item> COIN_00=REGISTRY.register("coin_00",Basic::new);
-	public static final RegistryObject<Item> COIN_01=REGISTRY.register("coin_01",Basic::new);
-	public static final RegistryObject<Item> COIN_02=REGISTRY.register("coin_02",Basic::new);
-	public static final RegistryObject<Item> COIN_03=REGISTRY.register("coin_03",Basic::new);
 
 	public static final RegistryObject<Item> MATY_DRINK=REGISTRY.register("maty_drink",MatyDrink::new);
 	public static final RegistryObject<Item> MATA=REGISTRY.register("mata",()->new Custom(1,0.2F));
@@ -151,7 +141,6 @@ public class DifModItems{
 
 	public static final RegistryObject<Item> ELECTRUM_DESTROYER=REGISTRY.register("electrum_destroyer",ElectrumDestroyer::new);
 
-	public static final RegistryObject<Item> SPRING=REGISTRY.register("spring",Basic::new);
 
 	public static final RegistryObject<Item> MITHRIL=REGISTRY.register("mithril",Basic::new);
 	public static final RegistryObject<Item> MITHRIL_PLATE=REGISTRY.register("mithril_plate",Basic::new);
@@ -301,11 +290,9 @@ public class DifModItems{
 
 
 	//MusicDiscs:
-	public static final RegistryObject<Item> CREMEKA=REGISTRY.register("cremeka",()->new MusicDiscDesc2(15,3860,DifMod.MODID,"cremeka"));
 	public static final RegistryObject<Item> FURT_TA_STEJNA_HRA=REGISTRY.register("furt_ta_stejna_hra",()->new MusicDiscDesc2(15,2100,DifMod.MODID,"furt_ta_stejna_hra"));
 	public static final RegistryObject<Item> MATY_CREATE=REGISTRY.register("maty_create",()->new MusicDiscDesc2(10,1900,DifMod.MODID,"maty_create"));
 	public static final RegistryObject<Item> MATY_PADA_STREAM=REGISTRY.register("maty_pada_stream",()->new MusicDiscDesc2(15,3966,DifMod.MODID,"maty_pada_stream"));
-	public static final RegistryObject<Item> MAYONNAISE=REGISTRY.register("mayonnaise",()->new MusicDiscDesc2(15,180,DifMod.MODID,"mayonnaise"));
 	public static final RegistryObject<Item> REDSTONE=REGISTRY.register("redstone",()->new MusicDiscDesc2(15,3960,DifMod.MODID,"redstone"));
 
 	//Weapons:

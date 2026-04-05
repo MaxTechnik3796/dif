@@ -1,12 +1,4 @@
 {
-  "cremeka": {
-    "sounds": [
-      {
-        "name": "dif:records/cremeka",
-        "stream": true
-      }
-    ]
-  },
   "furt_ta_stejna_hra": {
     "sounds": [
       {
@@ -27,14 +19,6 @@
     "sounds": [
       {
         "name": "dif:records/maty_pada_stream",
-        "stream": true
-      }
-    ]
-  },
-  "mayonnaise": {
-    "sounds": [
-      {
-        "name": "dif:records/mayonnaise",
         "stream": true
       }
     ]
