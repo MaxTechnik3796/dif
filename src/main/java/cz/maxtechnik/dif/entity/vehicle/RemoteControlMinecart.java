@@ -1,7 +1,12 @@
 package cz.maxtechnik.dif.entity.vehicle;
 
+import cz.maxtechnik.dif.block.RemoteMinecartBlock;
+import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.other.DifModEntities;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -17,7 +22,8 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 public class RemoteControlMinecart extends AbstractMinecart{
 	private double push;
-	private boolean isReversed=false;
+	private double xPush;
+	private double zPush;
 	public RemoteControlMinecart(EntityType<? extends AbstractMinecart> type,Level level){
 		super(type,level);
 	}
@@ -27,9 +33,22 @@ public class RemoteControlMinecart extends AbstractMinecart{
 	public void setRemoteMovement(double push){
 		this.push=push;
 	}
+	@Override
+	protected void moveAlongTrack(@NotNull BlockPos pPos,@NotNull BlockState pState){
+		super.moveAlongTrack(pPos,pState);
+		Vec3 motion=this.getDeltaMovement();
+		double horizontalDistSqr=motion.horizontalDistanceSqr();
+		double pushSqr=this.xPush*this.xPush+this.zPush*this.zPush;
+		if(pushSqr>1.0E-4D&&horizontalDistSqr>0.01D){
+			double d4=Math.sqrt(horizontalDistSqr);
+			double d5=Math.sqrt(pushSqr);
+			this.xPush=motion.x/d4*d5;
+			this.zPush=motion.z/d4*d5;
+		}
+	}
 	public void flipDirection(){
-		this.isReversed=!this.isReversed;
-		// Za jízdy otočíme i hybnost pro okamžitou reakci
+		this.xPush*=-1;
+		this.zPush*=-1;
 		Vec3 motion=this.getDeltaMovement();
 		this.setDeltaMovement(motion.x*-0.5,motion.y,motion.z*-0.5);
 	}
@@ -38,35 +57,29 @@ public class RemoteControlMinecart extends AbstractMinecart{
 		super.tick();
 		if(!this.level().isClientSide){
 			Vec3 motion=this.getDeltaMovement();
-			double horizontalSpeed=motion.horizontalDistance();
-			// Plyn (push) je nyní vždy kladný (0.0 až 1.0)
 			if(this.push>0.01){
-				Vec3 railDir;
-				// Určení směru, kam zrovna vedou koleje
-				if(horizontalSpeed>0.01){
-					railDir=motion.normalize();
-				}else{
-					// Pokud stojíme, určíme směr podle rotace
+				// Pokud nemáme nastavený směr (stojíme), určíme ho podle rotace a isReversed
+				if(xPush*xPush+zPush*zPush<1.0E-4D){
 					float f=this.getYRot()*((float)Math.PI/180F);
-					railDir=new Vec3(-Math.sin(f),0,Math.cos(f));
+					this.xPush=-Math.sin(f);
+					this.zPush=Math.cos(f);
 				}
-				double accel=0.06;
-				double maxSpeed=0.4;
-				// Výsledný impuls
-				Vec3 thrust=railDir.scale(this.push*accel);
-				Vec3 newMotion=motion.add(thrust);
-				// Omezení maximální rychlosti
-				if(newMotion.horizontalDistance()>maxSpeed) newMotion=newMotion.normalize().scale(maxSpeed);
-				this.setDeltaMovement(newMotion.x,motion.y,newMotion.z);
+				// Aplikace síly jako u Furnace Minecartu
+				double accel=0.15D; // Síla motoru
+				this.setDeltaMovement(motion.x*0.9D+xPush*accel,motion.y,motion.z*0.9D+zPush*accel);
 			}else{
-				// Pasivní tření
-				if(horizontalSpeed>0.001){
-					this.setDeltaMovement(motion.multiply(0.9,1.0,0.9));
-				}else{
-					this.setDeltaMovement(0,motion.y,0);
+				// Přirozené zpomalování
+				if(motion.horizontalDistance()>0.001){
+					this.setDeltaMovement(motion.multiply(0.95,1,0.95));
 				}
+				// Vynulujeme push vektory, když se neovládá, aby se příště mohl směr určit znovu
+				this.xPush=0;
+				this.zPush=0;
 			}
 			this.push=0;
+		}else{
+			if(!(this.getDeltaMovement().horizontalDistance()==0)&&this.random.nextInt(4)==0)
+				this.level().addParticle(ParticleTypes.LARGE_SMOKE,this.getX(),this.getY()+0.8D,this.getZ(),0.0D,0.0D,0.0D);
 		}
 	}
 	@Override
@@ -87,20 +100,13 @@ public class RemoteControlMinecart extends AbstractMinecart{
 		}
 		return super.interact(player,hand);
 	}
-	// NBT Data pro uložení orientace
 	@Override
-	protected void addAdditionalSaveData(@NotNull CompoundTag tag){
-		super.addAdditionalSaveData(tag);
-		tag.putBoolean("isReversed",isReversed);
-	}
-	@Override
-	protected void readAdditionalSaveData(@NotNull CompoundTag tag){
-		super.readAdditionalSaveData(tag);
-		this.isReversed=tag.getBoolean("isReversed");
+	public float getMaxCartSpeedOnRail(){
+		return 0.6F;
 	}
 	@Override
 	public @NotNull Item getDropItem(){
-		return DifModItems.REMOTE_MINECART_ITEM.get();
+		return DifModItems.REMOTE_MINECART.get();
 	}
 	@Override
 	public @NotNull Type getMinecartType(){
@@ -108,11 +114,10 @@ public class RemoteControlMinecart extends AbstractMinecart{
 	}
 	@Override
 	public @NotNull ItemStack getPickResult(){
-		return new ItemStack(DifModItems.REMOTE_MINECART_ITEM.get());
+		return new ItemStack(DifModItems.REMOTE_MINECART.get());
 	}
 	@Override
 	public @NotNull BlockState getDefaultDisplayBlockState(){
-		return net.minecraft.world.level.block.Blocks.BLAST_FURNACE.defaultBlockState()
-				.setValue(net.minecraft.world.level.block.BlastFurnaceBlock.FACING,net.minecraft.core.Direction.NORTH);
+		return DifModBlocks.REMOTE_MINECART_BLOCK.get().defaultBlockState().setValue(RemoteMinecartBlock.FACING,Direction.NORTH).setValue(RemoteMinecartBlock.WATERLOGGED,false).setValue(RemoteMinecartBlock.LIT,!(this.getDeltaMovement().horizontalDistance()==0));
 	}
 }

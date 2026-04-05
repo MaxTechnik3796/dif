@@ -11,7 +11,6 @@ import cz.maxtechnik.dif.item.modular.tool.*;
 import cz.maxtechnik.dif.item.random.*;
 import cz.maxtechnik.dif.item.tool.*;
 import cz.maxtechnik.dif.item.armor.*;
-import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
@@ -32,17 +31,17 @@ public class DifModItems{
 		assert block.getId()!=null;
 		return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));
 	}
-	public static final RegistryObject<Item> REMOTE_MINECART_ITEM = REGISTRY.register("remote_minecart_item",
-			() -> new RemoteMinecartItem(new Item.Properties().stacksTo(1)));
-	public static final RegistryObject<Item>REMOTE_CONTROLLER=REGISTRY.register("remote_controller",Basic::new);
+	public static final RegistryObject<Item>REMOTE_MINECART=REGISTRY.register("remote_minecart",()->new RemoteMinecartItem(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<Item>REMOTE_CONTROLLER=REGISTRY.register("remote_controller",()->new StackSize(1));
+	public static final RegistryObject<Item>REMOTE_MINECART_BLOCK=block(DifModBlocks.REMOTE_MINECART_BLOCK);
 
 	public static final RegistryObject<Item> MEGA_TORCH = block(DifModBlocks.MEGA_TORCH);
 
 	public static final RegistryObject<Item>FAST_POWERED_RAIL=block(DifModBlocks.FAST_POWERED_RAIL);
 	public static final RegistryObject<Item>FAST_RAIL=block(DifModBlocks.FAST_RAIL);
 
-	public static final RegistryObject<Item> CHUNK_LOADER_1X1 = REGISTRY.register("chunk_loader_1x1", () -> new BlockItem(DifModBlocks.CHUNK_LOADER_1X1.get(), new Item.Properties()) {@Override public boolean isFoil(@NotNull ItemStack stack) {return true;}});
-	public static final RegistryObject<Item> CHUNK_LOADER_3X3 = REGISTRY.register("chunk_loader_3x3", () -> new BlockItem(DifModBlocks.CHUNK_LOADER_3X3.get(), new Item.Properties()) {@Override public boolean isFoil(@NotNull ItemStack stack) {return true;}});
+	public static final RegistryObject<Item> CHUNK_LOADER_1X1 = REGISTRY.register("chunk_loader_1x1",()->new BlockItem(DifModBlocks.CHUNK_LOADER_1X1.get(),new Item.Properties()){@Override public boolean isFoil(@NotNull ItemStack stack){return true;}});
+	public static final RegistryObject<Item> CHUNK_LOADER_3X3 = REGISTRY.register("chunk_loader_3x3",()->new BlockItem(DifModBlocks.CHUNK_LOADER_3X3.get(),new Item.Properties()){@Override public boolean isFoil(@NotNull ItemStack stack){return true;}});
 
 	//Modular Tools:
 	public static final RegistryObject<Item> MODULAR_PICKAXE=REGISTRY.register("modular_pickaxe",ModularPickaxe::new);

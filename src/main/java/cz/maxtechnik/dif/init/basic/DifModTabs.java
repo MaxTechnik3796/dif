@@ -431,7 +431,8 @@ public class DifModTabs{
 			tabData.accept(DifModItems.FAST_RAIL.get());
 
 			tabData.accept(DifModItems.REMOTE_CONTROLLER.get());
-			tabData.accept(DifModItems.REMOTE_MINECART_ITEM.get());
+			tabData.accept(DifModItems.REMOTE_MINECART.get());
+			tabData.accept(DifModItems.REMOTE_MINECART_BLOCK.get());
 
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){

@@ -53,6 +53,7 @@
 		"dif:fast_powered_rail",
 		"dif:fast_rail",
 		"dif:chunk_loader_3x3",
-		"dif:chunk_loader_1x1"
+		"dif:chunk_loader_1x1",
+		"dif:remote_minecart_block"
 	]
 }
