@@ -26,7 +26,6 @@ public class DifModTabs{
 		tabData.accept(DifModItems.CHUNK_LOADER_3X3.get());
 		tabData.accept(DifModItems.EVENT_BUS.get());
 		tabData.accept(DifModItems.VENT.get());
-		tabData.accept(DifModItems.HOSPITAL_HANDLE.get());
 		tabData.accept(DifModItems.WASHING_MACHINE.get());
 		tabData.accept(DifModItems.AIR_CONDITIONING.get());
 		tabData.accept(DifModItems.BURNING_GENERATOR.get());

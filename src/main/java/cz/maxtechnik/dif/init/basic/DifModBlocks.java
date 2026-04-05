@@ -52,7 +52,6 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>VENT=REGISTRY.register("vent",()->new CustomWaterloggedHorizontalRotation(SoundType.NETHERITE_BLOCK,5F,6F,true));
 	public static final RegistryObject<Block>BURNING_GENERATOR=REGISTRY.register("burning_generator",BurningGenerator::new);
 	public static final RegistryObject<Block>FLUID_HATCH=REGISTRY.register("fluid_hatch",FluidHatch::new);
-	public static final RegistryObject<Block>HOSPITAL_HANDLE=REGISTRY.register("hospital_handle",HospitalHandle::new);
 	public static final RegistryObject<Block>SINGULARITATOR=REGISTRY.register("singularitator",()->new CustomWaterlogged(SoundType.METAL,5F,6F,true));
 	public static final RegistryObject<Block>SUPER_BOX=REGISTRY.register("super_box",SuperBox::new);
 	public static final RegistryObject<Block>OLD_CHEST=REGISTRY.register("old_chest",OldChest::new);
