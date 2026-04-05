@@ -2,6 +2,7 @@ package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
+import cz.maxtechnik.dif.command.ConfigReloadCommand;
 import cz.maxtechnik.dif.command.IsChunkLoadedCommand;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.basic.DifModItems;
@@ -39,7 +40,6 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.server.command.ConfigCommand;
 import org.slf4j.Logger;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -109,7 +109,7 @@ public class DifMod{
 	public void onCommandsRegister(RegisterCommandsEvent event){
 		ChunkLoaderCommand.register(event.getDispatcher());
 		IsChunkLoadedCommand.register(event.getDispatcher());
-		ConfigCommand.register(event.getDispatcher());
+		ConfigReloadCommand.register(event.getDispatcher());
 	}
 	@Mod.EventBusSubscriber(modid=MODID,bus=Mod.EventBusSubscriber.Bus.MOD,value=Dist.CLIENT)
 	public static class ClientModEvents{
