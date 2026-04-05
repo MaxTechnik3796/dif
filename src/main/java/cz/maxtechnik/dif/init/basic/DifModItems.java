@@ -6,11 +6,13 @@ import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
 import cz.maxtechnik.dif.item.food.create.*;
+import cz.maxtechnik.dif.item.god.GodTotemItem;
 import cz.maxtechnik.dif.item.modular.ModularPart;
 import cz.maxtechnik.dif.item.modular.tool.*;
 import cz.maxtechnik.dif.item.random.*;
 import cz.maxtechnik.dif.item.tool.*;
 import cz.maxtechnik.dif.item.armor.*;
+import cz.maxtechnik.dif.item.god.*;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
@@ -37,6 +39,13 @@ public class DifModItems{
 	public static final RegistryObject<Item>REMOTE_CONTROLLER=REGISTRY.register("remote_controller",Basic::new);
 
 	public static final RegistryObject<Item> MEGA_TORCH = block(DifModBlocks.MEGA_TORCH);
+
+	public static final RegistryObject<Item> GOD_TOTEM = REGISTRY.register("god_totem",
+			() -> new GodTotemItem(new Item.Properties()));
+	public static final RegistryObject<Item> GOD_SWORD = REGISTRY.register("god_sword",
+			() -> new GodSwordItem(new Item.Properties().fireResistant()));
+	public static final RegistryObject<Item> BAN_HAMMER = REGISTRY.register("ban_hammer",
+            BanHammer::new);
 
 	public static final RegistryObject<Item>FAST_POWERED_RAIL=block(DifModBlocks.FAST_POWERED_RAIL);
 	public static final RegistryObject<Item>FAST_RAIL=block(DifModBlocks.FAST_RAIL);
@@ -146,7 +155,6 @@ public class DifModItems{
 	public static final RegistryObject<Item> CANOLA_SEEDS=REGISTRY.register("canola_seeds",Canola::new);
 	public static final RegistryObject<Item> CANOLA_PLANT=block(DifModBlocks.CANOLA_PLANT);
 
-	public static final RegistryObject<Item> BAN_HAMMER=REGISTRY.register("ban_hammer",BanHammer::new);
 	public static final RegistryObject<Item> ELECTRUM_DESTROYER=REGISTRY.register("electrum_destroyer",ElectrumDestroyer::new);
 
 	public static final RegistryObject<Item> SPRING=REGISTRY.register("spring",Basic::new);
