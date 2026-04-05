@@ -36,6 +36,10 @@ public class DifModItems{
 	public static final RegistryObject<Item>REMOTE_CONTROLLER=REGISTRY.register("remote_controller",()->new StackSize(1));
 	public static final RegistryObject<Item>REMOTE_MINECART_BLOCK=block(DifModBlocks.REMOTE_MINECART_BLOCK);
 
+	public static final RegistryObject<Item>MONITOR=block(DifModBlocks.MONITOR);
+	public static final RegistryObject<Item>CAMERA=block(DifModBlocks.CAMERA);
+	public static final RegistryObject<Item>CAMERA_LINK=REGISTRY.register("camera_link",()->new CameraLinkerItem(new Item.Properties()));
+
 	public static final RegistryObject<Item> MEGA_TORCH = block(DifModBlocks.MEGA_TORCH);
 
 	public static final RegistryObject<Item> GOD_TOTEM = REGISTRY.register("god_totem", () -> new GodTotemItem(new Item.Properties()));

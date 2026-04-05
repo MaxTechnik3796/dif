@@ -34,6 +34,9 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>EXAMPLE_BLOCK=REGISTRY.register("example_block",Test::new);
 	public static final RegistryObject<Block>REMOTE_MINECART_BLOCK=REGISTRY.register("remote_minecart_block",RemoteMinecartBlock::new);
 
+	public static final RegistryObject<Block>MONITOR=REGISTRY.register("monitor",()->new MonitorBlock(BlockBehaviour.Properties.of()));
+	public static final RegistryObject<Block>CAMERA=REGISTRY.register("camera",()->new CameraBlock(BlockBehaviour.Properties.of()));
+
 	public static final RegistryObject<Block>FUEL_FLUID=REGISTRY.register("fuel_fluid",FuelBlock::new);
 	public static final RegistryObject<Block>BEER_FLUID=REGISTRY.register("beer_fluid",BeerBlock::new);
 	public static final RegistryObject<Block>XP_FLUID=REGISTRY.register("xp_fluid",XpBlock::new);

@@ -420,6 +420,9 @@ public class DifModTabs{
 			tabData.accept(DifModItems.REMOTE_MINECART.get());
 			tabData.accept(DifModItems.REMOTE_MINECART_BLOCK.get());
 
+			tabData.accept(DifModItems.MONITOR.get());
+			tabData.accept(DifModItems.CAMERA.get());
+			tabData.accept(DifModItems.CAMERA_LINK.get());
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
 			tabData.getEntries().putAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(DifModItems.TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
