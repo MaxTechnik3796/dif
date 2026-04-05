@@ -2,6 +2,7 @@ package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
 import cz.maxtechnik.dif.command.ChunkLoaderCommands;
+import cz.maxtechnik.dif.command.IsChunkLoadedCommand;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.basic.DifModSounds;
@@ -106,6 +107,7 @@ public class DifMod{
 	@SubscribeEvent
 	public void onCommandsRegister(RegisterCommandsEvent event){
 		ChunkLoaderCommands.register(event.getDispatcher());
+		IsChunkLoadedCommand.register(event.getDispatcher());
 	}
 	@Mod.EventBusSubscriber(modid=MODID,bus=Mod.EventBusSubscriber.Bus.MOD,value=Dist.CLIENT)
 	public static class ClientModEvents{

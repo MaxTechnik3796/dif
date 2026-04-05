@@ -11,23 +11,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 
-import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ChunkLoaderCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("chunkloader")
-                // Hlavní příkaz bez argumentů
                 .executes(ctx -> {
                     showMainDashboard(ctx.getSource());
                     return 1;
                 })
-                // Detail hráče přes /chunkloader [jméno]
                 .then(Commands.argument("player", StringArgumentType.string())
-                        .suggests((ctx, builder) -> {
-                            var names = ChunkLoaderData.get(ctx.getSource().getLevel()).loaders.stream()
-                                    .map(ChunkLoaderData.LoaderRecord::name).distinct();
-                            return SharedSuggestionProvider.suggest(names, builder);
-                        })
+                        .suggests((ctx, builder) -> SharedSuggestionProvider.suggest(
+                                ChunkLoaderData.get(ctx.getSource().getLevel()).loaders.stream().map(ChunkLoaderData.LoaderRecord::name).distinct(), builder))
                         .executes(ctx -> {
                             showPlayerDetail(ctx.getSource(), StringArgumentType.getString(ctx, "player"));
                             return 1;
@@ -37,60 +33,46 @@ public class ChunkLoaderCommands {
     }
 
     private static void showMainDashboard(CommandSourceStack source) {
-        ChunkLoaderData data = ChunkLoaderData.get(source.getLevel());
+        var loaders = ChunkLoaderData.get(source.getLevel()).loaders;
         source.sendSuccess(() -> Component.literal("§6§l=== CHUNKLOADERS ==="), false);
 
-        if (data.loaders.isEmpty()) {
+        if (loaders.isEmpty()) {
             source.sendSuccess(() -> Component.literal("§8No chunkloaders found."), false);
             return;
         }
 
-        // Výpočet celkových statistik (vzaté z ModCommands)
-        long total = data.loaders.size();
-        long activeCount = data.loaders.stream().filter(ChunkLoaderData.LoaderRecord::active).count();
-        long offCount = total - activeCount;
-
-        source.sendSuccess(() -> Component.literal("§f (Total: " + total + " §8|§aActive: " + activeCount + " §7| §cInactive: " + offCount + "§8)"), false);
+        long activeCount = loaders.stream().filter(ChunkLoaderData.LoaderRecord::active).count();
+        source.sendSuccess(() -> Component.literal("§f (Total: " + loaders.size() + " §8|§aActive: " + activeCount + " §7| §cInactive: " + (loaders.size() - activeCount) + "§8)"), false);
         source.sendSuccess(() -> Component.literal("§7Player list:"), false);
 
-        Map<String, List<ChunkLoaderData.LoaderRecord>> grouped = new HashMap<>();
-        for (var r : data.loaders) {
-            grouped.computeIfAbsent(r.name(), k -> new ArrayList<>()).add(r);
-        }
-
-        // Výpis hráčů s podtrženým jménem jako tlačítkem
-        grouped.forEach((name, list) -> {
+        loaders.stream().collect(Collectors.groupingBy(ChunkLoaderData.LoaderRecord::name)).forEach((name, list) -> {
             long pActive = list.stream().filter(ChunkLoaderData.LoaderRecord::active).count();
-
-            MutableComponent playerLine = Component.literal(" §e• ")
-                    .append(Component.literal("§f§n" + name)
-                            .withStyle(s -> s
-                                    .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/chunkloader " + name))
-                                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Show player loaders " + name)))))
-                    .append(Component.literal(" §7- " + list.size() + " ks §8(§a" + pActive + "§7/§c" + (list.size() - pActive) + "§8)"));
-            source.sendSuccess(() -> playerLine, false);
+            source.sendSuccess(() -> Component.literal(" §e• ")
+                    .append(Component.literal("§f§n" + name).withStyle(s -> s
+                            .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/chunkloader " + name))
+                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Show player loaders " + name)))))
+                    .append(" §7- " + list.size() + " ks §8(§a" + pActive + "§7/§c" + (list.size() - pActive) + "§8)"), false);
         });
     }
 
     private static void showPlayerDetail(CommandSourceStack source, String playerName) {
-        ChunkLoaderData data = ChunkLoaderData.get(source.getLevel());
-        List<ChunkLoaderData.LoaderRecord> all = data.loaders.stream()
+        var playerLoaders = ChunkLoaderData.get(source.getLevel()).loaders.stream()
                 .filter(r -> r.name().equalsIgnoreCase(playerName)).toList();
 
-        if (all.isEmpty()) {
+        if (playerLoaders.isEmpty()) {
             source.sendSuccess(() -> Component.literal("§cPlayer Records " + playerName + " do not exist."), false);
             return;
         }
 
         source.sendSuccess(() -> Component.literal("§6§l=== LOADERS: " + playerName + " ==="), false);
 
-        // Sekce ACTIVE
-        source.sendSuccess(() -> Component.literal("§aACTIVE:"), false);
-        renderList(source, all.stream().filter(ChunkLoaderData.LoaderRecord::active).toList());
+        var partitioned = playerLoaders.stream().collect(Collectors.partitioningBy(ChunkLoaderData.LoaderRecord::active));
 
-        // Sekce DEACTIVE
+        source.sendSuccess(() -> Component.literal("§aACTIVE:"), false);
+        renderList(source, partitioned.get(true));
+
         source.sendSuccess(() -> Component.literal("\n§cINACTIVE:"), false);
-        renderList(source, all.stream().filter(r -> !r.active()).toList());
+        renderList(source, partitioned.get(false));
     }
 
     private static void renderList(CommandSourceStack source, List<ChunkLoaderData.LoaderRecord> list) {
@@ -102,19 +84,16 @@ public class ChunkLoaderCommands {
         boolean isOp = source.hasPermission(2);
 
         for (var r : list) {
-            String type = r.is3x3() ? "§b[3x3]" : "§7[1x1]";
-            MutableComponent line = Component.literal(" §e• " + type + " §f" + r.pos().getX() + ", " + r.pos().getY() + ", " + r.pos().getZ() + " ");
+            var pos = r.pos(); // Ušetří spoustu místa při psaní .getX() atd.
+            MutableComponent line = Component.literal(" §e• " + (r.is3x3() ? "§b[3x3]" : "§7[1x1]") + " §f" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + " ");
 
             if (isOp) {
-                // TP tlačítko
                 line.append(Component.literal("§6[TP] ").withStyle(s -> s
-                        .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tp " + r.pos().getX() + " " + r.pos().getY() + " " + r.pos().getZ()))
+                        .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tp " + pos.getX() + " " + pos.getY() + " " + pos.getZ()))
                         .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Teleport to the Chunkloader")))));
 
-                // DELETE tlačítko
-                String setblockCmd = "/setblock " + r.pos().getX() + " " + r.pos().getY() + " " + r.pos().getZ() + " minecraft:air";
                 line.append(Component.literal("§c[DEL]").withStyle(s -> s
-                        .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, setblockCmd))
+                        .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/setblock " + pos.getX() + " " + pos.getY() + " " + pos.getZ() + " minecraft:air"))
                         .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Remove Chunkloader")))));
             }
             source.sendSuccess(() -> line, false);
