@@ -78,7 +78,7 @@ public class RemoteControlMinecart extends AbstractMinecart{
 			}
 			this.push=0;
 		}else{
-			if(this.getDeltaMovement().horizontalDistance()<0.01&&this.random.nextInt(4)==0)
+			if(this.getDeltaMovement().horizontalDistance()>0.01D&&this.random.nextInt(4)==0)
 				this.level().addParticle(ParticleTypes.LARGE_SMOKE,this.getX(),this.getY()+0.8D,this.getZ(),0D,0D,0D);
 		}
 	}
@@ -118,6 +118,6 @@ public class RemoteControlMinecart extends AbstractMinecart{
 	}
 	@Override
 	public @NotNull BlockState getDefaultDisplayBlockState(){
-		return DifModBlocks.REMOTE_MINECART_BLOCK.get().defaultBlockState().setValue(RemoteMinecartBlock.FACING,Direction.NORTH).setValue(RemoteMinecartBlock.WATERLOGGED,false).setValue(RemoteMinecartBlock.LIT,this.getDeltaMovement().horizontalDistance()<0.01);
+		return DifModBlocks.REMOTE_MINECART_BLOCK.get().defaultBlockState().setValue(RemoteMinecartBlock.FACING,Direction.NORTH).setValue(RemoteMinecartBlock.WATERLOGGED,false).setValue(RemoteMinecartBlock.LIT,this.getDeltaMovement().horizontalDistance()>0.01D);
 	}
 }

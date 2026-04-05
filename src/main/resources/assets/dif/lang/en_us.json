@@ -370,6 +370,7 @@
 	"block.dif.fast_rail":"Fast Rail",
 
 	"entity.dif.remote_minecart":"Remote Minecart",
+	"item.dif.remote_minecart":"Remote Minecart",
 	"item.dif.remote_controller":"Remote Minecart Controller",
 	"block.dif.remote_minecart_block":"Remote Minecart Boiler"
 
