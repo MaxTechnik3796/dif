@@ -3,6 +3,8 @@
 	"key.categories.dif":"TheDifferential",
 	"key.dif.jetpack_fly":"Jetpack Fly",
 	"key.dif.open_ender":"Open Ender Chest",
+	"key.dif.remote_minecart_boost":"Boost Remote Minecart",
+	"key.dif.remote_minecart_invert":"Invert Remote Minecart",
 	"effect.dif.redstone_iq":"Redstone Boost",
 	"effect.dif.redstone_not_iq":"Redstonenot Anti-Boost",
 	"effect.dif.drank":"Drank",

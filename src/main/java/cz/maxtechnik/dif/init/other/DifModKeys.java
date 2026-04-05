@@ -21,8 +21,8 @@ public class DifModKeys{
 	public static final KeyMapping JETPACK_FLY=new KeyMapping("key.dif.jetpack_fly",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_SPACE,CATEGORY);
 	public static final KeyMapping OPEN_ENDER_CHEST=new KeyMapping("key.dif.open_ender",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_V,CATEGORY);
 	// NOVÉ KLÁVESY PRO MINECART
-	public static final KeyMapping MINE_FORWARD=new KeyMapping("key.dif.mine_forward",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_I,CATEGORY);
-	public static final KeyMapping MINE_BACKWARD=new KeyMapping("key.dif.mine_backward",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_K,CATEGORY);
+	public static final KeyMapping MINE_FORWARD=new KeyMapping("key.dif.remote_minecart_boost",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_I,CATEGORY);
+	public static final KeyMapping MINE_BACKWARD=new KeyMapping("key.dif.remote_minecart_invert",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_K,CATEGORY);
 	@SubscribeEvent
 	public static void registerKeys(RegisterKeyMappingsEvent event){
 		event.register(JETPACK_FLY);
