@@ -13,4 +13,5 @@ public class DifModSounds{
     public static final RegistryObject<SoundEvent>MATY_CREATE=REGISTRY.register("maty_create",()->SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"maty_create")));
     public static final RegistryObject<SoundEvent>MATY_PADA_STREAM=REGISTRY.register("maty_pada_stream",()->SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"maty_pada_stream")));
     public static final RegistryObject<SoundEvent>REDSTONE=REGISTRY.register("redstone",()->SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"redstone")));
+	public static final RegistryObject<SoundEvent>DOG=REGISTRY.register("dog",()->SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"dog")));
 }

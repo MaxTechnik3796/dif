@@ -1,34 +1,42 @@
 {
-  "furt_ta_stejna_hra": {
-    "sounds": [
-      {
-        "name": "dif:records/furt_ta_stejna_hra",
-        "stream": true
-      }
-    ]
-  },
-  "maty_create": {
-    "sounds": [
-      {
-        "name": "dif:records/maty_create",
-        "stream": true
-      }
-    ]
-  },
-  "maty_pada_stream": {
-    "sounds": [
-      {
-        "name": "dif:records/maty_pada_stream",
-        "stream": true
-      }
-    ]
-  },
-  "redstone": {
-    "sounds": [
-      {
-        "name": "dif:records/redstone",
-        "stream": true
-      }
-    ]
-  }
+	"furt_ta_stejna_hra":{
+		"sounds":[
+			{
+				"name":"dif:records/furt_ta_stejna_hra",
+				"stream":true
+			}
+		]
+	},
+	"maty_create":{
+		"sounds":[
+			{
+				"name":"dif:records/maty_create",
+				"stream":true
+			}
+		]
+	},
+	"maty_pada_stream":{
+		"sounds":[
+			{
+				"name":"dif:records/maty_pada_stream",
+				"stream":true
+			}
+		]
+	},
+	"redstone":{
+		"sounds":[
+			{
+				"name":"dif:records/redstone",
+				"stream":true
+			}
+		]
+	},
+	"dog":{
+		"sounds":[
+			{
+				"name":"dif:records/dog",
+				"stream":true
+			}
+		]
+	}
 }

@@ -23,11 +23,13 @@
 	"subtitles.maty_create":"",
 	"subtitles.maty_pada_stream":"",
 	"subtitles.furt_ta_stejna_hra":"",
+	"subtitles.dog":"",
 
 	"item.dif.maty_create":"Music Disc",
 	"item.dif.furt_ta_stejna_hra":"Music Disc",
 	"item.dif.redstone":"Music Disc",
 	"item.dif.maty_pada_stream":"Music Disc",
+	"item.dif.dog":"Music Disc",
 
 	"item.dif.beer_bucket":"GoldBerg Bucket",
 	"block.dif.beer_fluid":"GoldBerg",
@@ -69,11 +71,13 @@
 	"item.dif.furt_ta_stejna_hra.desc":"§7Furt Ta Stejná Hra - LaserLinx_yt & AI§r",
 	"item.dif.redstone.desc":"§7Redstone - Matrixgold & AI§r",
 	"item.dif.maty_pada_stream.desc":"§7Matymu padá stream - CZ|Ted<3 & AI§r",
+	"item.dif.dog.desc":"§7Dog - C418",
 
 	"item.dif.maty_create.desc2":"§7License: §eNocopy§r",
 	"item.dif.furt_ta_stejna_hra.desc2":"§7License: §b©2024 LaserLinx§r",
 	"item.dif.redstone.desc2":"§7License: §eNocopy§r",
 	"item.dif.maty_pada_stream.desc2":"§7License: §eNocopy§r",
+	"item.dif.dog.desc2":"§7License: §b©2011 C418§r",
 
 
 	"creative_tab.dif.main":"TheDifferential: Main",
@@ -87,6 +91,7 @@
 	"item.dif.incomplete_cpu_singularity":"§dIncomplete CPU Singularity§r",
 	"item.dif.blue_plate":"Blue Plate",
 	"item.dif.heavy_plate":"Heavy Plate",
+	"item.dif.cremeka":"Update",
 
     "item.dif.wine":"Wine",
 	"item.dif.fernet":"Fernet",

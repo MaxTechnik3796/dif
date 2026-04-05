@@ -294,6 +294,9 @@ public class DifModItems{
 	public static final RegistryObject<Item> MATY_CREATE=REGISTRY.register("maty_create",()->new MusicDiscDesc2(10,1900,DifMod.MODID,"maty_create"));
 	public static final RegistryObject<Item> MATY_PADA_STREAM=REGISTRY.register("maty_pada_stream",()->new MusicDiscDesc2(15,3966,DifMod.MODID,"maty_pada_stream"));
 	public static final RegistryObject<Item> REDSTONE=REGISTRY.register("redstone",()->new MusicDiscDesc2(15,3960,DifMod.MODID,"redstone"));
+	public static final RegistryObject<Item> DOG=REGISTRY.register("dog",()->new MusicDiscDesc2(2,2900,DifMod.MODID,"dog"));
+
+	public static final RegistryObject<Item>CREMEKA=REGISTRY.register("cremeka",Update::new);
 
 	//Weapons:
 	public static final RegistryObject<Item> WOODEN_BATTLE_AXE=REGISTRY.register("wooden_battle_axe",()->new BattleAxeItem(Tiers.WOOD,6,-3.4F,new Item.Properties()));

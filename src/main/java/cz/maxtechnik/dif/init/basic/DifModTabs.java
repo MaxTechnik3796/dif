@@ -336,6 +336,7 @@ public class DifModTabs{
 			tabData.accept(DifModItems.REDSTONE.get());
 			tabData.accept(DifModItems.MATY_PADA_STREAM.get());
 			tabData.accept(DifModItems.FURT_TA_STEJNA_HRA.get());
+			tabData.accept(DifModItems.DOG.get());
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.COMBAT)){
 			tabData.getEntries().putAfter(new ItemStack(Items.STONE_SWORD),new ItemStack(DifModItems.COPPER_SWORD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.getEntries().putAfter(new ItemStack(Items.STONE_AXE),new ItemStack(DifModItems.COPPER_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
