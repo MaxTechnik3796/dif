@@ -292,7 +292,6 @@ public class DifModItems{
 	//MusicDiscs:
 	public static final RegistryObject<Item> FURT_TA_STEJNA_HRA=REGISTRY.register("furt_ta_stejna_hra",()->new MusicDiscDesc2(15,2100,DifMod.MODID,"furt_ta_stejna_hra"));
 	public static final RegistryObject<Item> MATY_CREATE=REGISTRY.register("maty_create",()->new MusicDiscDesc2(10,1900,DifMod.MODID,"maty_create"));
-	public static final RegistryObject<Item> MATY_PADA_STREAM=REGISTRY.register("maty_pada_stream",()->new MusicDiscDesc2(15,3966,DifMod.MODID,"maty_pada_stream"));
 	public static final RegistryObject<Item> REDSTONE=REGISTRY.register("redstone",()->new MusicDiscDesc2(15,3960,DifMod.MODID,"redstone"));
 	public static final RegistryObject<Item> DOG=REGISTRY.register("dog",()->new MusicDiscDesc2(2,2900,DifMod.MODID,"dog"));
 

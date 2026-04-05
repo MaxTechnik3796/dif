@@ -334,7 +334,6 @@ public class DifModTabs{
 					});
 			tabData.accept(DifModItems.MATY_CREATE.get());
 			tabData.accept(DifModItems.REDSTONE.get());
-			tabData.accept(DifModItems.MATY_PADA_STREAM.get());
 			tabData.accept(DifModItems.FURT_TA_STEJNA_HRA.get());
 			tabData.accept(DifModItems.DOG.get());
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.COMBAT)){

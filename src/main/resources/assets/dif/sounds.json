@@ -15,14 +15,6 @@
 			}
 		]
 	},
-	"maty_pada_stream":{
-		"sounds":[
-			{
-				"name":"dif:records/maty_pada_stream",
-				"stream":true
-			}
-		]
-	},
 	"redstone":{
 		"sounds":[
 			{
