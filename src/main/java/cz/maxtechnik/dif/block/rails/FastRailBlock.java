@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.block.rails;
 
+import cz.maxtechnik.dif.DifModCommonConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.Level;
@@ -13,6 +14,6 @@ public class FastRailBlock extends RailBlock{
 	public float getRailMaxSpeed(BlockState state,Level world,BlockPos pos,AbstractMinecart cart){
 		// Nastavíme stejný limit jako u tvého FastPoweredRailu (1.2f)
 		// Díky tomu vozík v zatáčce "necukne" a nezpomalí.
-		return 15F;
+		return (float)DifModCommonConfig.fastRailTopSpeed;
 	}
 }

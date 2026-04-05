@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.block.rails;
 
+import cz.maxtechnik.dif.DifModCommonConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.Level;
@@ -17,11 +18,11 @@ public class FastPoweredRailBlock extends PoweredRailBlock{
 		// Výchozí hodnota u běžných kolejí je 0.4f
 		// 1.2f je trojnásobná rychlost.
 		// POZOR: Pokud dáš víc než 1.5f, vozíky budou v zatáčkách často vypadávat!
-		return 15F;
+		return (float)DifModCommonConfig.fastRailTopSpeed;
 	}
 	@Override
 	public void onMinecartPass(BlockState state,Level world,BlockPos pos,AbstractMinecart cart){
-		double multiplier=1.2;
+		double multiplier=DifModCommonConfig.fastPoweredRailAcceleration;
 		if(state.getValue(POWERED)){
 			Vec3 motion=cart.getDeltaMovement();
 			double speed=motion.horizontalDistance();

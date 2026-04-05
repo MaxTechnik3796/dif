@@ -30,6 +30,9 @@ public class DifModCommonConfig{
 	public static String restart(int defaultValue){
 		return restart(String.valueOf(defaultValue));
 	}
+	public static String restart(double defaultValue){
+		return restart(String.valueOf(defaultValue));
+	}
 
 	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_00;public static int solarPanel_00;
 	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_01;public static int solarPanel_01;
@@ -53,6 +56,9 @@ public class DifModCommonConfig{
 	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_DEFAULT_MAX_MODIFIERS;public static int modularToolsDefaultMaxModifiers;
 	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_REPAIR_AMOUNT;public static int modularToolsRepairAmount;
 	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_CHEEP_REPAIR_AMOUNT;public static int modularToolsCheepRepairAmount;
+
+	private static final ForgeConfigSpec.DoubleValue FAST_RAIL_TOP_SPEED;public static double fastRailTopSpeed;
+	private static final ForgeConfigSpec.DoubleValue FAST_POWERED_RAIL_ACCELERATION;public static double fastPoweredRailAcceleration;
 
 	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_0;public static int modularToolsEfficiencyModifierStage0;
 	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_1;public static int modularToolsEfficiencyModifierStage1;
@@ -97,6 +103,10 @@ public class DifModCommonConfig{
 			JETPACK_MAX_BASIC=BUILDER.comment("Max Basic of Jetpack, (Number.)"+reload(200)).defineInRange("jetpack_max_basic",200,1,MAX);
 			JETPACK_MAX_TURBO=BUILDER.comment("Max Turbo of Jetpack, (Number.)"+reload(100)).defineInRange("jetpack_max_turbo",100,1,MAX);
 			JETPACK_MAX_THRUST=BUILDER.comment("Max Thrust of Jetpack, (Number.)"+reload(50)).defineInRange("jetpack_max_thrust",50,1,MAX);
+		BUILDER.pop();
+		BUILDER.push("FastRails");
+			FAST_RAIL_TOP_SPEED=BUILDER.comment("Top speed of Fast Rail/Fast Powered Rail, (Number)"+restart(1.7D)).defineInRange("fast_rail_top_speed",1.7D,0.1D,(float)MAX);
+			FAST_POWERED_RAIL_ACCELERATION=BUILDER.comment("Acceleration of Speed Powered Rail, (Number)"+restart(0.7D)).defineInRange("fast_powered_rail_acceleration",0.7D,0.1D,(float)MAX);
 		BUILDER.pop();
 		BUILDER.push("ModularTools");
 			MODULAR_TOOLS_DEFAULT_MAX_MODIFIERS=BUILDER.comment("Default maximum of modifiers, (Number.)"+reload(3)).defineInRange("modular_tools_default_max_modifiers",3,0,MAX);
@@ -154,6 +164,9 @@ public class DifModCommonConfig{
 		modularToolsDefaultMaxModifiers=MODULAR_TOOLS_DEFAULT_MAX_MODIFIERS.get();
 		modularToolsRepairAmount=MODULAR_TOOLS_REPAIR_AMOUNT.get();
 		modularToolsCheepRepairAmount=MODULAR_TOOLS_CHEEP_REPAIR_AMOUNT.get();
+
+		fastRailTopSpeed=FAST_RAIL_TOP_SPEED.get();
+		fastPoweredRailAcceleration=FAST_POWERED_RAIL_ACCELERATION.get();
 
 		modularToolsEfficiencyModifierStage0=MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_0.get();
 		modularToolsEfficiencyModifierStage1=MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_1.get();
