@@ -46,12 +46,16 @@ public class DifModKeys{
 				}
 				// NOVÁ LOGIKA: Ovládání Minecartu jako vozidla
 				// V ClientTickHandler v DifModKeys.java:
-				if(player.getMainHandItem().is(DifModItems.REMOTE_CONTROLLER.get())){
-					if(MINE_FORWARD.isDown())
-						DifMod.PACKET_HANDLER.sendToServer(new RemoteControlPacket(1.0));
-					else if(MINE_BACKWARD.isDown())
-						DifMod.PACKET_HANDLER.sendToServer(new RemoteControlPacket(-1.0));
-					else DifMod.PACKET_HANDLER.sendToServer(new RemoteControlPacket(0));
+				if (player.getMainHandItem().is(DifModItems.REMOTE_CONTROLLER.get())) {
+					// PLYN (I) - Posíláme 1.0 dokud se drží
+					if (MINE_FORWARD.isDown()) {
+						DifMod.PACKET_HANDLER.sendToServer(new RemoteControlPacket(1.0, false));
+					}
+
+					// REVERZ (K) - Pošle signál k otočení jen při stisku
+					if (MINE_BACKWARD.consumeClick()) {
+						DifMod.PACKET_HANDLER.sendToServer(new RemoteControlPacket(0.0, true));
+					}
 				}
 			}
 		}
