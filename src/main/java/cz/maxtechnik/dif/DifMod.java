@@ -13,6 +13,7 @@ import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import cz.maxtechnik.dif.init.other.*;
 import cz.maxtechnik.dif.init.events.JetpackHandler;
+import cz.maxtechnik.dif.network.CameraExitPacket;
 import cz.maxtechnik.dif.network.RemoteControlPacket;
 import cz.maxtechnik.dif.renderer.ChunkLoaderRenderer;
 import cz.maxtechnik.dif.renderer.FryingTableRenderer;
@@ -100,6 +101,12 @@ public class DifMod{
 				RemoteControlPacket::encode,
 				RemoteControlPacket::decode,
 				RemoteControlPacket::handle
+		));
+		event.enqueueWork(() ->addNetworkMessage(
+				CameraExitPacket.class,
+				CameraExitPacket::encode,
+				CameraExitPacket::decode,
+				CameraExitPacket::handle
 		));
 	}
 	@SubscribeEvent

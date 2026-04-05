@@ -1,6 +1,8 @@
 package cz.maxtechnik.dif.client;
 
+import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.block.CameraBlock;
+import cz.maxtechnik.dif.network.CameraExitPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,12 +19,13 @@ import net.minecraftforge.fml.common.Mod;
 public class ClientCameraHandler {
 	private static boolean isViewing = false;
 	private static BlockPos cameraPos = null;
+	private static BlockPos currentMonitorPos = null;
 	private static ArmorStand dummyEntity = null;
 
-	public static void enterCamera(BlockPos pos) {
+	public static void enterCamera(BlockPos pos,BlockPos monPos) {
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.level == null || mc.player == null) return;
-
+		currentMonitorPos = monPos;
 		cameraPos = pos;
 		BlockState state = mc.level.getBlockState(pos);
 
@@ -57,6 +60,22 @@ public class ClientCameraHandler {
 	}
 
 	@SubscribeEvent
+	public static void onComputeAngles(ViewportEvent.ComputeCameraAngles event) {
+		if (isViewing && dummyEntity != null) {
+			event.setYaw(dummyEntity.getYRot());
+			event.setPitch(dummyEntity.getXRot());
+
+			// ZÁKAZ OTÁČENÍ MODELU HRÁČE:
+			/*Minecraft mc = Minecraft.getInstance();
+			if (mc.player != null) {
+				mc.player.setYRot(dummyEntity.getYRot());
+				mc.player.setXRot(dummyEntity.getXRot());
+				mc.player.yRotO = dummyEntity.getYRot();
+				mc.player.xRotO = dummyEntity.getXRot();
+			}*/
+		}
+	}
+	@SubscribeEvent
 	public static void onClientTick(TickEvent.ClientTickEvent event) {
 		if (event.phase != TickEvent.Phase.END || !isViewing || cameraPos == null) return;
 
@@ -79,25 +98,16 @@ public class ClientCameraHandler {
 			exitCamera();
 		}
 	}
-	@SubscribeEvent
-	public static void onRenderHand(net.minecraftforge.client.event.RenderHandEvent event) {
-		if (isViewing) {
-			event.setCanceled(true); // Toto skryje ruku i item, který držíš
-		}
-	}
-	@SubscribeEvent
-	public static void onComputeAngles(ViewportEvent.ComputeCameraAngles event) {
-		if (isViewing && dummyEntity != null) {
-			// Totální fixace rotace - hráč nemůže pohnout kamerou myší
-			event.setYaw(dummyEntity.getYRot());
-			event.setPitch(dummyEntity.getXRot());
-		}
-	}
+
 
 	public static void exitCamera() {
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.player != null) {
 			mc.setCameraEntity(mc.player);
+		}
+		if (currentMonitorPos != null) {
+			DifMod.PACKET_HANDLER.sendToServer(new CameraExitPacket(currentMonitorPos));
+			currentMonitorPos = null;
 		}
 		isViewing = false;
 		cameraPos = null;
@@ -130,4 +140,11 @@ public class ClientCameraHandler {
 			}
 		}
 	}
+	@SubscribeEvent
+	public static void onRenderHand(net.minecraftforge.client.event.RenderHandEvent event) {
+		if (isViewing) {
+			event.setCanceled(true); // Toto skryje ruku i item, který držíš
+		}
+	}
+
 }

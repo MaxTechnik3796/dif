@@ -45,7 +45,7 @@ public class MonitorBlockEntity extends BlockEntity {
 		}
 
 		if (level.isClientSide) {
-			ClientCameraHandler.enterCamera(linkedCameraPos);
+			ClientCameraHandler.enterCamera(linkedCameraPos,this.getBlockPos());
 		} else {
 			level.setBlock(worldPosition, getBlockState().setValue(MonitorBlock.STATE, MonitorState.ACTIVE), 3);
 		}
