@@ -105,8 +105,8 @@ public class DifModCommonConfig{
 			JETPACK_MAX_THRUST=BUILDER.comment("Max Thrust of Jetpack, (Number.)"+reload(50)).defineInRange("jetpack_max_thrust",50,1,MAX);
 		BUILDER.pop();
 		BUILDER.push("FastRails");
-			FAST_RAIL_TOP_SPEED=BUILDER.comment("Top speed of Fast Rail/Fast Powered Rail, (Number)"+restart(1.7D)).defineInRange("fast_rail_top_speed",1.7D,0.1D,(float)MAX);
-			FAST_POWERED_RAIL_ACCELERATION=BUILDER.comment("Acceleration of Speed Powered Rail, (Number)"+restart(0.7D)).defineInRange("fast_powered_rail_acceleration",0.7D,0.1D,(float)MAX);
+			FAST_RAIL_TOP_SPEED=BUILDER.comment("Top speed of Fast Rail/Fast Powered Rail, (Number)"+restart(1.2D)).defineInRange("fast_rail_top_speed",1.2D,0.1D,MAX);
+			FAST_POWERED_RAIL_ACCELERATION=BUILDER.comment("Acceleration of Speed Powered Rail, (Number)"+restart(0.5D)).defineInRange("fast_powered_rail_acceleration",0.5D,0.1D,MAX);
 		BUILDER.pop();
 		BUILDER.push("ModularTools");
 			MODULAR_TOOLS_DEFAULT_MAX_MODIFIERS=BUILDER.comment("Default maximum of modifiers, (Number.)"+reload(3)).defineInRange("modular_tools_default_max_modifiers",3,0,MAX);
