@@ -9,7 +9,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 public class Update extends Item{
 	public Update(){
-		super(new Properties());
+		super(new Properties().stacksTo(1));
 	}
 	@Override
 	public void inventoryTick(@NotNull ItemStack itemStack,@NotNull Level world,@NotNull Entity entity,int slot,boolean selected){
