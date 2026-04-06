@@ -2,6 +2,7 @@ package cz.maxtechnik.dif.init.events.client;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.block.Camera;
+import cz.maxtechnik.dif.block.CameraMonitor;
 import cz.maxtechnik.dif.network.CameraExitPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -92,6 +93,55 @@ public class ClientCameraHandler{
 		}
 		if(mc.player.isShiftKeyDown()){
 			exitCamera();
+			return;
+		}
+		// 2. Přepínání monitorů (A/D = Strany, W/S = Nahoru/Dolů)
+		if (mc.options.keyLeft.consumeClick()) {
+			switchMonitor(mc, Direction.WEST); // Relativní vlevo
+		} else if (mc.options.keyRight.consumeClick()) {
+			switchMonitor(mc, Direction.EAST); // Relativní vpravo
+		} else if (mc.options.keyUp.consumeClick()) {
+			switchMonitor(mc, Direction.UP);    // Nahoru
+		} else if (mc.options.keyDown.consumeClick()) {
+			switchMonitor(mc, Direction.DOWN);  // Dolů
+		}
+	}
+	private static void switchMonitor(Minecraft mc, Direction relativeDir) {
+		if (currentMonitorPos == null || mc.level == null) return;
+
+		BlockState state = mc.level.getBlockState(currentMonitorPos);
+		if (!(state.getBlock() instanceof CameraMonitor)) return;
+
+		Direction monitorFacing = state.getValue(CameraMonitor.FACING);
+		BlockPos neighborPos;
+
+		// Přepočet relativního směru na absolutní souřadnice světa
+		if (relativeDir == Direction.UP || relativeDir == Direction.DOWN) {
+			neighborPos = currentMonitorPos.relative(relativeDir);
+		} else {
+			// Logika pro strany (vlevo/vpravo) podle rotace monitoru
+			Direction absoluteSide = (relativeDir == Direction.WEST)
+					? monitorFacing.getClockWise()
+					: monitorFacing.getCounterClockWise();
+			neighborPos = currentMonitorPos.relative(absoluteSide);
+		}
+
+		BlockState neighborState = mc.level.getBlockState(neighborPos);
+
+		// Pokud je na cílové pozici další monitor, přepneme
+		if (neighborState.getBlock() instanceof CameraMonitor) {
+			// Ukončíme starou kameru
+			exitCamera();
+
+			// Nasimulujeme kliknutí (v Minecraftu "Use") na nový monitor
+			assert mc.player!=null;
+			assert mc.gameMode!=null;
+			mc.gameMode.useItemOn(mc.player, net.minecraft.world.InteractionHand.MAIN_HAND,
+					new net.minecraft.world.phys.BlockHitResult(
+							new net.minecraft.world.phys.Vec3(neighborPos.getX() + 0.5, neighborPos.getY() + 0.5, neighborPos.getZ() + 0.5),
+							Direction.UP, neighborPos, false
+					)
+			);
 		}
 	}
 	public static void exitCamera() {

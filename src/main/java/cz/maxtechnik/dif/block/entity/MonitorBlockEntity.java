@@ -5,6 +5,7 @@ import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.events.client.ClientCameraHandler;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.util.CameraMonitorState;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -100,7 +101,7 @@ public class MonitorBlockEntity extends BlockEntity{
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
 	@Override
-	public void onDataPacket(net.minecraft.network.Connection net,net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket pkt){
+	public void onDataPacket(net.minecraft.network.Connection net,ClientboundBlockEntityDataPacket pkt){
 		assert pkt.getTag()!=null;
 		this.load(pkt.getTag());
 	}
