@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.item;
 
-import cz.maxtechnik.dif.block.entity.MonitorBlockEntity;
+import cz.maxtechnik.dif.block.entity.CameraMonitorBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -30,7 +30,7 @@ public class CameraLinkerItem extends Item {
         // 2. Kliknutí na monitor
         if (context.getLevel().getBlockState(pos).is(DifModBlocks.CAMERA_MONITOR.get())) {
             if (tag.contains("LinkedPos")) {
-                if (context.getLevel().getBlockEntity(pos) instanceof MonitorBlockEntity monitor) {
+                if (context.getLevel().getBlockEntity(pos) instanceof CameraMonitorBlockEntity monitor) {
                     monitor.linkCamera(BlockPos.of(tag.getLong("LinkedPos")));
 					assert context.getPlayer()!=null;
 	                context.getPlayer().displayClientMessage(Component.literal("Link established!"), true);

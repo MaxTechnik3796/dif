@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.network;
 
-import cz.maxtechnik.dif.block.entity.MonitorBlockEntity;
+import cz.maxtechnik.dif.block.entity.CameraMonitorBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,7 +20,7 @@ public class CameraExitPacket{
 	public static void handle(CameraExitPacket msg, Supplier<NetworkEvent.Context> ctx){
 		ctx.get().enqueueWork(()->{
 			ServerPlayer player=ctx.get().getSender();
-			if(player!=null)if(player.level().getBlockEntity(msg.monitorPos) instanceof MonitorBlockEntity monitor) monitor.setInactive();
+			if(player!=null)if(player.level().getBlockEntity(msg.monitorPos) instanceof CameraMonitorBlockEntity monitor) monitor.setInactive();
 		});
 		ctx.get().setPacketHandled(true);
 	}

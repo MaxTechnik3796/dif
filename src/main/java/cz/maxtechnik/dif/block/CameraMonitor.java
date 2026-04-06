@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.block;
 
-import cz.maxtechnik.dif.block.entity.MonitorBlockEntity;
+import cz.maxtechnik.dif.block.entity.CameraMonitorBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.util.CameraMonitorState;
@@ -34,14 +34,14 @@ public class CameraMonitor extends BaseEntityBlock{
 	}
 	@Override
 	public @NotNull InteractionResult use(@NotNull BlockState state,Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
-		if(level.getBlockEntity(pos) instanceof MonitorBlockEntity monitor){
+		if(level.getBlockEntity(pos) instanceof CameraMonitorBlockEntity monitor){
 			if(player.getMainHandItem().getItem().equals(DifModItems.CAMERA_LINK.get())) return InteractionResult.PASS;
 			return monitor.useMonitor(player);
 		}
 		return InteractionResult.PASS;
 	}
 	@Override
-	public @NotNull RenderShape getRenderShape(@NotNull BlockState blockState) {
+	public @NotNull RenderShape getRenderShape(@NotNull BlockState blockState){
 		return RenderShape.MODEL;
 	}
 	@Override
@@ -62,7 +62,7 @@ public class CameraMonitor extends BaseEntityBlock{
 	@Nullable
 	@Override
 	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		return new MonitorBlockEntity(pos,state);
+		return new CameraMonitorBlockEntity(pos,state);
 	}
 	@Override
 	public void onRemove(BlockState state,@NotNull Level level,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
@@ -75,17 +75,16 @@ public class CameraMonitor extends BaseEntityBlock{
 		super.tick(blockstate,world,pos,random);
 	}
 	@Override
-	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
+	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T> type){
 		// Ticker nás zajímá jen na serveru, klient si stav synchronizuje přes blockstates
-		if (level.isClientSide) return null;
-
-		return createTickerHelper(type, DifModBlockEntities.MONITOR.get(), (lvl, pos, st, be) -> {
+		if(level.isClientSide) return null;
+		return createTickerHelper(type,DifModBlockEntities.CAMERA_MONITOR.get(),(lvl,pos,st,be)->{
 			// Kontrolujeme jen pokud je monitor ACTIVE
-			if (st.getValue(STATE) == CameraMonitorState.ACTIVE) {
+			if(st.getValue(STATE)==CameraMonitorState.ACTIVE){
 				// Každých 20 ticků (1 sekunda) zkontrolujeme okolí
-				if (lvl.getGameTime() % 20 == 0) {
+				if(lvl.getGameTime()%20==0){
 					// Pokud v okruhu 8 bloků není žádný hráč, vypneme to
-					if (lvl.getNearestPlayer(pos.getX(), pos.getY(), pos.getZ(), 8, false) == null) {
+					if(lvl.getNearestPlayer(pos.getX(),pos.getY(),pos.getZ(),8,false)==null){
 						be.setInactive();
 					}
 				}

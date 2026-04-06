@@ -8,11 +8,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(value=Dist.CLIENT)
@@ -24,20 +29,19 @@ public class ClientCameraHandler{
 	private static int timeOut=0;
 	public static void enterCamera(BlockPos pos,BlockPos monPos){
 		Minecraft mc=Minecraft.getInstance();
-		timeOut=0;
 		if(mc.level==null||mc.player==null) return;
+		timeOut=0;
 		currentMonitorPos=monPos;
 		cameraPos=pos;
-		BlockState state=mc.level.getBlockState(pos);
+		BlockState blockState=mc.level.getBlockState(pos);
 		// VÝPOČET POZICE: Posuneme entitu mírně PŘED blok, aby nebyl vidět vnitřek (X-ray)
 		double x=pos.getX()+0.5;
-		double y=pos.getY()-1;// + 0.70; // Výška očí v kameře
+		double y=pos.getY()-1;
 		double z=pos.getZ()+0.5;
 		float yRot=0;
-		if(state.hasProperty(Camera.FACING)){
-			Direction dir=state.getValue(Camera.FACING);
+		if(blockState.hasProperty(Camera.FACING)){
+			Direction dir=blockState.getValue(Camera.FACING);
 			yRot=dir.toYRot();
-			// Posun o 0.2 bloku směrem, kam kamera kouká
 			x+=dir.getStepX()*0.2;
 			z+=dir.getStepZ()*0.2;
 		}
@@ -46,36 +50,24 @@ public class ClientCameraHandler{
 		dummyEntity.setInvisible(true);
 		dummyEntity.setNoGravity(true);
 		dummyEntity.setYRot(yRot);
+		dummyEntity.setInvulnerable(true);
 		dummyEntity.setYHeadRot(yRot);
-		dummyEntity.setXRot(10.0F); // Mírný pohled dolů
-		// Klíčové pro stabilitu:
+		dummyEntity.setXRot(10F); // Mírný pohled dolů
 		dummyEntity.noPhysics=true;
 		mc.setCameraEntity(dummyEntity);
 		isViewing=true;
 		mc.levelRenderer.allChanged();
-		if (mc.level != null) {
-			// Toto řekne Minecraftu, aby bral pozici kamery jako prioritu pro renderování
-			mc.level.setSectionDirtyWithNeighbors(pos.getX() >> 4, pos.getY() >> 4, pos.getZ() >> 4);
-		}
+		// Toto řekne Minecraftu, aby bral pozici kamery jako prioritu pro renderování
+		mc.level.setSectionDirtyWithNeighbors(pos.getX()>>4,pos.getY()>>4,pos.getZ()>>4);
 		assert mc.player!=null;
-		// Získáme název klávesy pro plížení (standardně Shift)
-		Component sneakKey = mc.options.keyShift.getTranslatedKeyMessage();
-		// Pošleme ji jako argument do translatable komponenty
-		mc.player.displayClientMessage(Component.translatable("mount.onboard", sneakKey), true);
+		mc.player.setJumping(false);
+		mc.player.displayClientMessage(Component.translatable("mount.onboard",mc.options.keyShift.getTranslatedKeyMessage()),true);
 	}
 	@SubscribeEvent
 	public static void onComputeAngles(ViewportEvent.ComputeCameraAngles event){
 		if(isViewing&&dummyEntity!=null){
 			event.setYaw(dummyEntity.getYRot());
 			event.setPitch(dummyEntity.getXRot());
-			// ZÁKAZ OTÁČENÍ MODELU HRÁČE:
-			/*Minecraft mc = Minecraft.getInstance();
-			if (mc.player != null) {
-				mc.player.setYRot(dummyEntity.getYRot());
-				mc.player.setXRot(dummyEntity.getXRot());
-				mc.player.yRotO = dummyEntity.getYRot();
-				mc.player.xRotO = dummyEntity.getXRot();
-			}*/
 		}
 	}
 	@SubscribeEvent
@@ -84,8 +76,8 @@ public class ClientCameraHandler{
 		Minecraft mc=Minecraft.getInstance();
 		if(mc.player==null) return;
 		// Kontrola zničení bloku
-		if(mc.level!=null&&!(mc.level.getBlockState(cameraPos).getBlock() instanceof Camera))timeOut+=1;
-		if(timeOut>=60){
+		if(mc.level!=null&&!(mc.level.getBlockState(cameraPos).getBlock() instanceof Camera)) timeOut+=1;
+		if(timeOut>=5){
 			exitCamera();
 			mc.player.displayClientMessage(Component.literal("Camera is too far away or has been destroyed!"),true);
 			return;
@@ -98,76 +90,60 @@ public class ClientCameraHandler{
 			exitCamera();
 			return;
 		}
-		// 2. Přepínání monitorů (A/D = Strany, W/S = Nahoru/Dolů)
-		if (mc.options.keyLeft.consumeClick()) {
-			switchMonitor(mc, Direction.WEST); // Relativní vlevo
-		} else if (mc.options.keyRight.consumeClick()) {
-			switchMonitor(mc, Direction.EAST); // Relativní vpravo
-		} else if (mc.options.keyUp.consumeClick()) {
-			switchMonitor(mc, Direction.UP);    // Nahoru
-		} else if (mc.options.keyDown.consumeClick()) {
-			switchMonitor(mc, Direction.DOWN);  // Dolů
+		if(mc.options.keyLeft.consumeClick()){
+			switchMonitor(mc,Direction.WEST); // Relativní vlevo
+		}else if(mc.options.keyRight.consumeClick()){
+			switchMonitor(mc,Direction.EAST); // Relativní vpravo
+		}else if(mc.options.keyUp.consumeClick()){
+			switchMonitor(mc,Direction.UP);    // Nahoru
+		}else if(mc.options.keyDown.consumeClick()){
+			switchMonitor(mc,Direction.DOWN);  // Dolů
 		}
+
 	}
-	private static void switchMonitor(Minecraft mc, Direction relativeDir) {
-		if (currentMonitorPos == null || mc.level == null) return;
-
-		BlockState state = mc.level.getBlockState(currentMonitorPos);
-		if (!(state.getBlock() instanceof CameraMonitor)) return;
-
-		Direction monitorFacing = state.getValue(CameraMonitor.FACING);
+	private static void switchMonitor(Minecraft mc,Direction relativeDir){
+		if(currentMonitorPos==null||mc.level==null) return;
+		BlockState state=mc.level.getBlockState(currentMonitorPos);
+		if(!(state.getBlock() instanceof CameraMonitor)) return;
+		Direction monitorFacing=state.getValue(CameraMonitor.FACING);
 		BlockPos neighborPos;
-
 		// Přepočet relativního směru na absolutní souřadnice světa
-		if (relativeDir == Direction.UP || relativeDir == Direction.DOWN) {
-			neighborPos = currentMonitorPos.relative(relativeDir);
-		} else {
+		if(relativeDir==Direction.UP||relativeDir==Direction.DOWN)
+			neighborPos=currentMonitorPos.relative(relativeDir);
+		else{
 			// Logika pro strany (vlevo/vpravo) podle rotace monitoru
-			Direction absoluteSide = (relativeDir == Direction.WEST)
-					? monitorFacing.getClockWise()
-					: monitorFacing.getCounterClockWise();
-			neighborPos = currentMonitorPos.relative(absoluteSide);
+			Direction absoluteSide=(relativeDir==Direction.WEST)?monitorFacing.getClockWise():monitorFacing.getCounterClockWise();
+			neighborPos=currentMonitorPos.relative(absoluteSide);
 		}
-
-		BlockState neighborState = mc.level.getBlockState(neighborPos);
-
+		BlockState neighborState=mc.level.getBlockState(neighborPos);
 		// Pokud je na cílové pozici další monitor, přepneme
-		if (neighborState.getBlock() instanceof CameraMonitor) {
+		if(neighborState.getBlock() instanceof CameraMonitor){
 			// Ukončíme starou kameru
 			exitCamera();
-
 			// Nasimulujeme kliknutí (v Minecraftu "Use") na nový monitor
 			assert mc.player!=null;
 			assert mc.gameMode!=null;
-			mc.gameMode.useItemOn(mc.player, net.minecraft.world.InteractionHand.MAIN_HAND,
-					new net.minecraft.world.phys.BlockHitResult(
-							new net.minecraft.world.phys.Vec3(neighborPos.getX() + 0.5, neighborPos.getY() + 0.5, neighborPos.getZ() + 0.5),
-							Direction.UP, neighborPos, false
-					)
-			);
+			mc.gameMode.useItemOn(mc.player,InteractionHand.MAIN_HAND,new BlockHitResult(new Vec3(neighborPos.getX()+0.5,neighborPos.getY()+0.5,neighborPos.getZ()+0.5),Direction.UP,neighborPos,false));
 		}
 	}
-	public static void exitCamera() {
-		Minecraft mc = Minecraft.getInstance();
-		if (mc.player != null) {
+	public static void exitCamera(){
+		Minecraft mc=Minecraft.getInstance();
+		if(mc.player!=null){
 			mc.setCameraEntity(mc.player);
-
 			// --- KLÍČOVÁ OPRAVA ---
 			// Vynutíme, aby si klient znovu načetl okolí hráče
 			mc.levelRenderer.allChanged();
 			// ----------------------
 		}
-
-		if (currentMonitorPos != null) {
+		if(currentMonitorPos!=null){
 			DifMod.PACKET_HANDLER.sendToServer(new CameraExitPacket(currentMonitorPos));
-			currentMonitorPos = null;
+			currentMonitorPos=null;
 		}
-
-		isViewing = false;
-		cameraPos = null;
-		if (dummyEntity != null) {
+		isViewing=false;
+		cameraPos=null;
+		if(dummyEntity!=null){
 			dummyEntity.discard();
-			dummyEntity = null;
+			dummyEntity=null;
 		}
 	}
 	@SubscribeEvent
@@ -186,7 +162,7 @@ public class ClientCameraHandler{
 		}
 	}
 	@SubscribeEvent
-	public static void onPlayerInteract(net.minecraftforge.event.entity.player.PlayerInteractEvent event){
+	public static void onPlayerInteract(PlayerInteractEvent event){
 		// Toto běží na obou stranách, ale my to řešíme hlavně pro klienta v kameře
 		if(event.getSide().isClient()&&isViewing){
 			if(event.isCancelable()){
@@ -195,9 +171,9 @@ public class ClientCameraHandler{
 		}
 	}
 	@SubscribeEvent
-	public static void onRenderHand(net.minecraftforge.client.event.RenderHandEvent event){
+	public static void onRenderHand(RenderHandEvent event){
 		if(isViewing){
-			event.setCanceled(true); // Toto skryje ruku i item, který držíš
+			event.setCanceled(true);
 		}
 	}
 }
