@@ -64,11 +64,19 @@ public class ClientCameraHandler{
 		assert mc.player!=null;
 		mc.player.setJumping(false);
 		mc.player.setDeltaMovement(0, 0, 0); // Zastavíme fyzický pohyb
-		mc.options.keyUp.setDown(false);      // Resetujeme stisknuté klávesy v engine
+		mc.options.keyUp.setDown(false);
 		mc.options.keyDown.setDown(false);
 		mc.options.keyLeft.setDown(false);
 		mc.options.keyRight.setDown(false);
 		mc.options.keyJump.setDown(false);
+		mc.player.input.leftImpulse = 0;
+		mc.player.input.forwardImpulse = 0;
+		mc.player.input.up = false;
+		mc.player.input.down = false;
+		mc.player.input.left = false;
+		mc.player.input.right = false;
+		mc.player.input.jumping = false;
+		mc.player.input.shiftKeyDown = false;
 		mc.player.displayClientMessage(Component.translatable("mount.onboard",mc.options.keyShift.getTranslatedKeyMessage()),true);
 	}
 	@SubscribeEvent
@@ -98,6 +106,9 @@ public class ClientCameraHandler{
 			exitCamera();
 			return;
 		}
+		mc.player.setDeltaMovement(0, mc.player.getDeltaMovement().y, 0); // Necháme gravitaci (y), ale zrušíme X a Z
+		mc.player.input.leftImpulse = 0;
+		mc.player.input.forwardImpulse = 0;
 		// --- OPRAVA: Input Cooldown ---
 		if (inputDelay < 5) { // Počkáme 5 ticků (čtvrt sekundy)
 			inputDelay++;
