@@ -5,7 +5,6 @@ import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.events.client.ClientCameraHandler;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.util.CameraMonitorState;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -49,14 +48,13 @@ public class MonitorBlockEntity extends BlockEntity{
 			// Nastavíme stav monitoru
 			if(level.getBlockState(linkedCameraPos).getBlock().equals(DifModBlocks.CAMERA.get()))
 				level.setBlock(worldPosition, getBlockState().setValue(CameraMonitor.STATE, CameraMonitorState.ACTIVE), 3);
+			else player.displayClientMessage(Component.literal("Camera is not available!"),true);
 		}
 
 		if (level.isClientSide) {
 			// Na klientovi už jen vstoupíme do handleru
 			if (linkedCameraPos != null) {
-				if(level.getBlockState(linkedCameraPos).getBlock().equals(DifModBlocks.CAMERA.get()))
-					ClientCameraHandler.enterCamera(linkedCameraPos, this.getBlockPos());
-				else player.displayClientMessage(Component.literal("Camera is not available!"),true);
+				ClientCameraHandler.enterCamera(linkedCameraPos, this.getBlockPos());
 			}
 		}
 		return InteractionResult.SUCCESS;

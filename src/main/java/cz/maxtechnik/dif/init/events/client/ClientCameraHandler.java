@@ -21,8 +21,10 @@ public class ClientCameraHandler{
 	private static BlockPos cameraPos=null;
 	private static BlockPos currentMonitorPos=null;
 	private static ArmorStand dummyEntity=null;
+	private static int timeOut=0;
 	public static void enterCamera(BlockPos pos,BlockPos monPos){
 		Minecraft mc=Minecraft.getInstance();
+		timeOut=0;
 		if(mc.level==null||mc.player==null) return;
 		currentMonitorPos=monPos;
 		cameraPos=pos;
@@ -82,9 +84,10 @@ public class ClientCameraHandler{
 		Minecraft mc=Minecraft.getInstance();
 		if(mc.player==null) return;
 		// Kontrola zničení bloku
-		if(mc.level!=null&&!(mc.level.getBlockState(cameraPos).getBlock() instanceof Camera)){
+		if(mc.level!=null&&!(mc.level.getBlockState(cameraPos).getBlock() instanceof Camera))timeOut+=1;
+		if(timeOut>=60){
 			exitCamera();
-			mc.player.displayClientMessage(Component.literal("Spojení ztraceno!"),true);
+			mc.player.displayClientMessage(Component.literal("Camera is too far away or has been destroyed!"),true);
 			return;
 		}
 		// Vynucení pozice dummy entity v každém ticku (zabrání plavání)
