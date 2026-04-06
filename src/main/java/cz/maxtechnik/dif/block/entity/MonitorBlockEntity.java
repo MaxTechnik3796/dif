@@ -1,10 +1,10 @@
 package cz.maxtechnik.dif.block.entity;
 
-import cz.maxtechnik.dif.block.CameraBlock;
-import cz.maxtechnik.dif.block.MonitorBlock;
-import cz.maxtechnik.dif.client.ClientCameraHandler;
+import cz.maxtechnik.dif.block.Camera;
+import cz.maxtechnik.dif.block.CameraMonitor;
+import cz.maxtechnik.dif.init.events.client.ClientCameraHandler;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
-import cz.maxtechnik.dif.util.MonitorState;
+import cz.maxtechnik.dif.util.CameraMonitorState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -24,7 +24,7 @@ public class MonitorBlockEntity extends BlockEntity{
 	public void linkCamera(BlockPos camPos){
 		this.linkedCameraPos=camPos;
 		if(level!=null){
-			level.setBlock(worldPosition,getBlockState().setValue(MonitorBlock.STATE,MonitorState.INACTIVE),3);
+			level.setBlock(worldPosition,getBlockState().setValue(CameraMonitor.STATE,CameraMonitorState.INACTIVE),3);
 		}
 		setChanged();
 	}
@@ -37,7 +37,7 @@ public class MonitorBlockEntity extends BlockEntity{
 				return InteractionResult.FAIL;
 			}
 			// Kontrola, jestli kamera stále existuje
-			if(!(level.getBlockState(linkedCameraPos).getBlock() instanceof CameraBlock)){
+			if(!(level.getBlockState(linkedCameraPos).getBlock() instanceof Camera)){
 				player.displayClientMessage(Component.literal("Link lost!"),true);
 				return InteractionResult.FAIL;
 			}
@@ -45,17 +45,17 @@ public class MonitorBlockEntity extends BlockEntity{
 		if(level.isClientSide){
 			// Klient teď díky onDataPacket už ví, kde je linkedCameraPos
 			if(linkedCameraPos!=null){
-				if(level.getBlockState(linkedCameraPos).getBlock() instanceof CameraBlock)
+				if(level.getBlockState(linkedCameraPos).getBlock() instanceof Camera)
 					ClientCameraHandler.enterCamera(linkedCameraPos,this.getBlockPos());
 			}
 		}else{
-			level.setBlock(worldPosition,getBlockState().setValue(MonitorBlock.STATE,MonitorState.ACTIVE),3);
+			level.setBlock(worldPosition,getBlockState().setValue(CameraMonitor.STATE,CameraMonitorState.ACTIVE),3);
 		}
 		return InteractionResult.SUCCESS;
 	}
 	public void setInactive(){
 		if(level!=null){
-			level.setBlock(worldPosition,getBlockState().setValue(MonitorBlock.STATE,MonitorState.INACTIVE),3);
+			level.setBlock(worldPosition,getBlockState().setValue(CameraMonitor.STATE,CameraMonitorState.INACTIVE),3);
 		}
 	}
 	@Override

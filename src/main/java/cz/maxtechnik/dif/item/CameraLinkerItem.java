@@ -28,7 +28,7 @@ public class CameraLinkerItem extends Item {
         }
 
         // 2. Kliknutí na monitor
-        if (context.getLevel().getBlockState(pos).is(DifModBlocks.MONITOR.get())) {
+        if (context.getLevel().getBlockState(pos).is(DifModBlocks.CAMERA_MONITOR.get())) {
             if (tag.contains("LinkedPos")) {
                 if (context.getLevel().getBlockEntity(pos) instanceof MonitorBlockEntity monitor) {
                     monitor.linkCamera(BlockPos.of(tag.getLong("LinkedPos")));

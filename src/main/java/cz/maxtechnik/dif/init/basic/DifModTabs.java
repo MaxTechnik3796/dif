@@ -420,7 +420,7 @@ public class DifModTabs{
 			tabData.accept(DifModItems.REMOTE_MINECART.get());
 			tabData.accept(DifModItems.REMOTE_MINECART_BLOCK.get());
 
-			tabData.accept(DifModItems.MONITOR.get());
+			tabData.accept(DifModItems.CAMERA_MONITOR.get());
 			tabData.accept(DifModItems.CAMERA.get());
 			tabData.accept(DifModItems.CAMERA_LINK.get());
 

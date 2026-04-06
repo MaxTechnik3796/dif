@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.init.events;
+package cz.maxtechnik.dif.init.events.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;

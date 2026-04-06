@@ -1,7 +1,7 @@
-package cz.maxtechnik.dif.client;
+package cz.maxtechnik.dif.init.events.client;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.block.CameraBlock;
+import cz.maxtechnik.dif.block.Camera;
 import cz.maxtechnik.dif.network.CameraExitPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -31,8 +31,8 @@ public class ClientCameraHandler{
 		double y=pos.getY()-1;// + 0.70; // Výška očí v kameře
 		double z=pos.getZ()+0.5;
 		float yRot=0;
-		if(state.hasProperty(CameraBlock.FACING)){
-			Direction dir=state.getValue(CameraBlock.FACING);
+		if(state.hasProperty(Camera.FACING)){
+			Direction dir=state.getValue(Camera.FACING);
 			yRot=dir.toYRot();
 			// Posun o 0.2 bloku směrem, kam kamera kouká
 			x+=dir.getStepX()*0.2;
@@ -72,7 +72,7 @@ public class ClientCameraHandler{
 		Minecraft mc=Minecraft.getInstance();
 		if(mc.player==null) return;
 		// Kontrola zničení bloku
-		if(mc.level!=null&&!(mc.level.getBlockState(cameraPos).getBlock() instanceof CameraBlock)){
+		if(mc.level!=null&&!(mc.level.getBlockState(cameraPos).getBlock() instanceof Camera)){
 			exitCamera();
 			mc.player.displayClientMessage(Component.literal("Spojení ztraceno!"),true);
 			return;

@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.init.events;
+package cz.maxtechnik.dif.init.events.client;
 
 import cz.maxtechnik.dif.DifMod;
 import net.minecraft.client.Minecraft;
@@ -11,7 +11,7 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
-public class SkyHandler{
+public class ClientSkyHandler{
 	@Mod.EventBusSubscriber(modid=DifMod.MODID, bus=Mod.EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
 	public static class ModBusEvents{
 		@SubscribeEvent

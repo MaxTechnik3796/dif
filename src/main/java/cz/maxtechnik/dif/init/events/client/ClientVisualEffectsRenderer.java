@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.init.events;
+package cz.maxtechnik.dif.init.events.client;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModSounds;
@@ -17,7 +17,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import java.awt.Color;
 @Mod.EventBusSubscriber(modid=DifMod.MODID,value=Dist.CLIENT)
-public class VisualEffectsRenderer{
+public class ClientVisualEffectsRenderer{
 	private static boolean wasWTFActive=false;
 	private static SoundInstance playingWTFSound=null;
 	@SubscribeEvent

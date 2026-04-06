@@ -375,6 +375,10 @@
 	"entity.dif.remote_minecart":"Remote Minecart",
 	"item.dif.remote_minecart":"Remote Minecart",
 	"item.dif.remote_controller":"Remote Minecart Controller",
-	"block.dif.remote_minecart_block":"Remote Minecart Boiler"
+	"block.dif.remote_minecart_block":"Remote Minecart Boiler",
+
+	"block.dif.camera":"Camera",
+	"block.dif.camera_monitor":"Camera Monitor",
+	"item.dif.camera_link":"Camera Linker"
 
 }

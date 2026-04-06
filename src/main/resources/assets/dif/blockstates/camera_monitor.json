@@ -1,0 +1,51 @@
+{
+	"variants":{
+		"facing=north,state=no_signal":{
+			"model":"dif:block/camera_monitor_no_signal"
+		},
+		"facing=east,state=no_signal":{
+			"model":"dif:block/camera_monitor_no_signal",
+			"y":90
+		},
+		"facing=south,state=no_signal":{
+			"model":"dif:block/camera_monitor_no_signal",
+			"y":180
+		},
+		"facing=west,state=no_signal":{
+			"model":"dif:block/camera_monitor_no_signal",
+			"y":270
+		},
+
+		"facing=north,state=inactive":{
+			"model":"dif:block/camera_monitor_inactive"
+		},
+		"facing=east,state=inactive":{
+			"model":"dif:block/camera_monitor_inactive",
+			"y":90
+		},
+		"facing=south,state=inactive":{
+			"model":"dif:block/camera_monitor_inactive",
+			"y":180
+		},
+		"facing=west,state=inactive":{
+			"model":"dif:block/camera_monitor_inactive",
+			"y":270
+		},
+
+		"facing=north,state=active":{
+			"model":"dif:block/camera_monitor_active"
+		},
+		"facing=east,state=active":{
+			"model":"dif:block/camera_monitor_active",
+			"y":90
+		},
+		"facing=south,state=active":{
+			"model":"dif:block/camera_monitor_active",
+			"y":180
+		},
+		"facing=west,state=active":{
+			"model":"dif:block/camera_monitor_active",
+			"y":270
+		}
+	}
+}
