@@ -27,10 +27,12 @@ public class ClientCameraHandler{
 	private static BlockPos currentMonitorPos=null;
 	private static ArmorStand dummyEntity=null;
 	private static int timeOut=0;
+	private static int inputDelay = 0;
 	public static void enterCamera(BlockPos pos,BlockPos monPos){
 		Minecraft mc=Minecraft.getInstance();
 		if(mc.level==null||mc.player==null) return;
 		timeOut=0;
+		inputDelay=0;
 		currentMonitorPos=monPos;
 		cameraPos=pos;
 		BlockState blockState=mc.level.getBlockState(pos);
@@ -61,6 +63,12 @@ public class ClientCameraHandler{
 		mc.level.setSectionDirtyWithNeighbors(pos.getX()>>4,pos.getY()>>4,pos.getZ()>>4);
 		assert mc.player!=null;
 		mc.player.setJumping(false);
+		mc.player.setDeltaMovement(0, 0, 0); // Zastavíme fyzický pohyb
+		mc.options.keyUp.setDown(false);      // Resetujeme stisknuté klávesy v engine
+		mc.options.keyDown.setDown(false);
+		mc.options.keyLeft.setDown(false);
+		mc.options.keyRight.setDown(false);
+		mc.options.keyJump.setDown(false);
 		mc.player.displayClientMessage(Component.translatable("mount.onboard",mc.options.keyShift.getTranslatedKeyMessage()),true);
 	}
 	@SubscribeEvent
@@ -88,6 +96,16 @@ public class ClientCameraHandler{
 		}
 		if(mc.player.isShiftKeyDown()){
 			exitCamera();
+			return;
+		}
+		// --- OPRAVA: Input Cooldown ---
+		if (inputDelay < 5) { // Počkáme 5 ticků (čtvrt sekundy)
+			inputDelay++;
+			// Vyčistíme kliknutí, která se stala během animace otevírání
+			mc.options.keyLeft.consumeClick();
+			mc.options.keyRight.consumeClick();
+			mc.options.keyUp.consumeClick();
+			mc.options.keyDown.consumeClick();
 			return;
 		}
 		if(mc.options.keyLeft.consumeClick()){
