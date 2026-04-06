@@ -2,9 +2,12 @@ package cz.maxtechnik.dif.block;
 
 import cz.maxtechnik.dif.block.entity.MonitorBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModItems;
+import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.util.CameraMonitorState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -12,6 +15,8 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
@@ -64,5 +69,27 @@ public class CameraMonitor extends BaseEntityBlock{
 		if(!state.is(newState.getBlock())){
 			super.onRemove(state,level,pos,newState,isMoving);
 		}
+	}
+	@Override
+	public void tick(@NotNull BlockState blockstate,@NotNull ServerLevel world,@NotNull BlockPos pos,@NotNull RandomSource random){
+		super.tick(blockstate,world,pos,random);
+	}
+	@Override
+	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
+		// Ticker nás zajímá jen na serveru, klient si stav synchronizuje přes blockstates
+		if (level.isClientSide) return null;
+
+		return createTickerHelper(type, DifModBlockEntities.MONITOR.get(), (lvl, pos, st, be) -> {
+			// Kontrolujeme jen pokud je monitor ACTIVE
+			if (st.getValue(STATE) == CameraMonitorState.ACTIVE) {
+				// Každých 20 ticků (1 sekunda) zkontrolujeme okolí
+				if (lvl.getGameTime() % 20 == 0) {
+					// Pokud v okruhu 8 bloků není žádný hráč, vypneme to
+					if (lvl.getNearestPlayer(pos.getX(), pos.getY(), pos.getZ(), 8, false) == null) {
+						be.setInactive();
+					}
+				}
+			}
+		});
 	}
 }

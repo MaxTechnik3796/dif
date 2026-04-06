@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.block.entity;
 
-import cz.maxtechnik.dif.block.Camera;
 import cz.maxtechnik.dif.block.CameraMonitor;
+import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.events.client.ClientCameraHandler;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.util.CameraMonitorState;
@@ -11,8 +11,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.TicketType;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -28,34 +32,45 @@ public class MonitorBlockEntity extends BlockEntity{
 		}
 		setChanged();
 	}
-	public InteractionResult useMonitor(Player player){
-		if(level==null) return InteractionResult.PASS;
-		// Na serveru zkontrolujeme, jestli máme link
-		if(!level.isClientSide){
-			if(linkedCameraPos==null){
-				player.displayClientMessage(Component.literal("No camera linked!"),true);
-				return InteractionResult.FAIL;
-			}
-			// Kontrola, jestli kamera stále existuje
-			if(!(level.getBlockState(linkedCameraPos).getBlock() instanceof Camera)){
-				player.displayClientMessage(Component.literal("Link lost!"),true);
-				return InteractionResult.FAIL;
-			}
+	public InteractionResult useMonitor(Player player) {
+		if (level == null) return InteractionResult.PASS;
+
+		if (!level.isClientSide && player instanceof ServerPlayer) {
+			if (linkedCameraPos == null) return InteractionResult.FAIL;
+
+			// VYNUCENÍ NAČTENÍ CHUNKU PRO HRÁČE
+			// Tento příkaz řekne serveru, aby posílal data z okolí kamery tomuto hráči,
+			// i když je jeho tělo fyzicky daleko.
+			ServerLevel serverLevel = (ServerLevel) level;
+			ChunkPos chunkPos = new ChunkPos(linkedCameraPos);
+			serverLevel.getChunkSource().addRegionTicket(TicketType.FORCED, chunkPos, 3, chunkPos);
+
+			// Nastavíme stav monitoru
+			if(level.getBlockState(linkedCameraPos).getBlock().equals(DifModBlocks.CAMERA.get()))
+				level.setBlock(worldPosition, getBlockState().setValue(CameraMonitor.STATE, CameraMonitorState.ACTIVE), 3);
 		}
-		if(level.isClientSide){
-			// Klient teď díky onDataPacket už ví, kde je linkedCameraPos
-			if(linkedCameraPos!=null){
-				if(level.getBlockState(linkedCameraPos).getBlock() instanceof Camera)
-					ClientCameraHandler.enterCamera(linkedCameraPos,this.getBlockPos());
+
+		if (level.isClientSide) {
+			// Na klientovi už jen vstoupíme do handleru
+			if (linkedCameraPos != null) {
+				if(level.getBlockState(linkedCameraPos).getBlock().equals(DifModBlocks.CAMERA.get()))
+					ClientCameraHandler.enterCamera(linkedCameraPos, this.getBlockPos());
+				else player.displayClientMessage(Component.literal("Camera is not available!"),true);
 			}
-		}else{
-			level.setBlock(worldPosition,getBlockState().setValue(CameraMonitor.STATE,CameraMonitorState.ACTIVE),3);
 		}
 		return InteractionResult.SUCCESS;
 	}
-	public void setInactive(){
-		if(level!=null){
-			level.setBlock(worldPosition,getBlockState().setValue(CameraMonitor.STATE,CameraMonitorState.INACTIVE),3);
+	public void setInactive() {
+		if (level != null) {
+			// Změna stavu bloku
+			level.setBlock(worldPosition, getBlockState().setValue(CameraMonitor.STATE, CameraMonitorState.INACTIVE), 3);
+
+			// ODEBRÁNÍ TICKETU (pouze na serveru)
+			if (!level.isClientSide && level instanceof ServerLevel serverLevel && linkedCameraPos != null) {
+				ChunkPos chunkPos = new ChunkPos(linkedCameraPos);
+				// Musí to být stejný typ a parametry jako při addRegionTicket
+				serverLevel.getChunkSource().removeRegionTicket(TicketType.FORCED, chunkPos, 3, chunkPos);
+			}
 		}
 	}
 	@Override

@@ -49,7 +49,16 @@ public class ClientCameraHandler{
 		dummyEntity.noPhysics=true;
 		mc.setCameraEntity(dummyEntity);
 		isViewing=true;
-		mc.player.displayClientMessage(Component.literal("Kamera aktivní (SHIFT pro ukončení)"),true);
+		mc.levelRenderer.allChanged();
+		if (mc.level != null) {
+			// Toto řekne Minecraftu, aby bral pozici kamery jako prioritu pro renderování
+			mc.level.setSectionDirtyWithNeighbors(pos.getX() >> 4, pos.getY() >> 4, pos.getZ() >> 4);
+		}
+		assert mc.player!=null;
+		// Získáme název klávesy pro plížení (standardně Shift)
+		Component sneakKey = mc.options.keyShift.getTranslatedKeyMessage();
+		// Pošleme ji jako argument do translatable komponenty
+		mc.player.displayClientMessage(Component.translatable("mount.onboard", sneakKey), true);
 	}
 	@SubscribeEvent
 	public static void onComputeAngles(ViewportEvent.ComputeCameraAngles event){
@@ -85,20 +94,27 @@ public class ClientCameraHandler{
 			exitCamera();
 		}
 	}
-	public static void exitCamera(){
-		Minecraft mc=Minecraft.getInstance();
-		if(mc.player!=null){
+	public static void exitCamera() {
+		Minecraft mc = Minecraft.getInstance();
+		if (mc.player != null) {
 			mc.setCameraEntity(mc.player);
+
+			// --- KLÍČOVÁ OPRAVA ---
+			// Vynutíme, aby si klient znovu načetl okolí hráče
+			mc.levelRenderer.allChanged();
+			// ----------------------
 		}
-		if(currentMonitorPos!=null){
+
+		if (currentMonitorPos != null) {
 			DifMod.PACKET_HANDLER.sendToServer(new CameraExitPacket(currentMonitorPos));
-			currentMonitorPos=null;
+			currentMonitorPos = null;
 		}
-		isViewing=false;
-		cameraPos=null;
-		if(dummyEntity!=null){
+
+		isViewing = false;
+		cameraPos = null;
+		if (dummyEntity != null) {
 			dummyEntity.discard();
-			dummyEntity=null;
+			dummyEntity = null;
 		}
 	}
 	@SubscribeEvent
