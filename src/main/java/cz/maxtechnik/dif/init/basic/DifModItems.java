@@ -38,7 +38,7 @@ public class DifModItems{
 
 	public static final RegistryObject<Item>CAMERA_MONITOR=block(DifModBlocks.CAMERA_MONITOR);
 	public static final RegistryObject<Item>CAMERA=block(DifModBlocks.CAMERA);
-	public static final RegistryObject<Item>CAMERA_LINK=REGISTRY.register("camera_link",()->new CameraLink(new Item.Properties()));
+	public static final RegistryObject<Item>CAMERA_LINK=REGISTRY.register("camera_link",()->new CameraLink(new Item.Properties().stacksTo(1)));
 
 	public static final RegistryObject<Item> MEGA_TORCH = block(DifModBlocks.MEGA_TORCH);
 
