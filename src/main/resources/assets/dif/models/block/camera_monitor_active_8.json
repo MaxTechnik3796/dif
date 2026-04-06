@@ -1,0 +1,9 @@
+{
+	"parent":"block/orientable",
+	"textures":{
+		"front":"dif:block/camera_monitor_active_8",
+		"side":"dif:block/camera_side",
+		"top":"dif:block/camera_side",
+		"particle":"dif:block/camera_side"
+	}
+}

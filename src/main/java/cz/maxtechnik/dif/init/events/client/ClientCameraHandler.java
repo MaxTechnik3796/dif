@@ -27,7 +27,7 @@ public class ClientCameraHandler{
 	private static BlockPos currentMonitorPos=null;
 	private static ArmorStand dummyEntity=null;
 	private static int timeOut=0;
-	private static int inputDelay = 0;
+	private static int inputDelay=0;
 	public static void enterCamera(BlockPos pos,BlockPos monPos){
 		Minecraft mc=Minecraft.getInstance();
 		if(mc.level==null||mc.player==null) return;
@@ -63,20 +63,6 @@ public class ClientCameraHandler{
 		mc.level.setSectionDirtyWithNeighbors(pos.getX()>>4,pos.getY()>>4,pos.getZ()>>4);
 		assert mc.player!=null;
 		mc.player.setJumping(false);
-		mc.player.setDeltaMovement(0, 0, 0); // Zastavíme fyzický pohyb
-		mc.options.keyUp.setDown(false);
-		mc.options.keyDown.setDown(false);
-		mc.options.keyLeft.setDown(false);
-		mc.options.keyRight.setDown(false);
-		mc.options.keyJump.setDown(false);
-		mc.player.input.leftImpulse = 0;
-		mc.player.input.forwardImpulse = 0;
-		mc.player.input.up = false;
-		mc.player.input.down = false;
-		mc.player.input.left = false;
-		mc.player.input.right = false;
-		mc.player.input.jumping = false;
-		mc.player.input.shiftKeyDown = false;
 		mc.player.displayClientMessage(Component.translatable("mount.onboard",mc.options.keyShift.getTranslatedKeyMessage()),true);
 	}
 	@SubscribeEvent
@@ -92,25 +78,22 @@ public class ClientCameraHandler{
 		Minecraft mc=Minecraft.getInstance();
 		if(mc.player==null) return;
 		// Kontrola zničení bloku
-		if(mc.level!=null&&!(mc.level.getBlockState(cameraPos).getBlock() instanceof Camera)) timeOut+=1;
-		if(timeOut>=5){
+		if(mc.level!=null&&!(mc.level.getBlockState(cameraPos).getBlock() instanceof Camera)) timeOut++;
+		if(timeOut>=3){
 			exitCamera();
 			mc.player.displayClientMessage(Component.literal("Camera is too far away or has been destroyed!"),true);
 			return;
 		}
 		// Vynucení pozice dummy entity v každém ticku (zabrání plavání)
-		if(dummyEntity!=null){
-			dummyEntity.setOldPosAndRot(); // Resetuje interpolace pohybu
-		}
+		if(dummyEntity!=null) dummyEntity.setOldPosAndRot(); // Resetuje interpolace pohybu
 		if(mc.player.isShiftKeyDown()){
 			exitCamera();
 			return;
 		}
-		mc.player.setDeltaMovement(0, mc.player.getDeltaMovement().y, 0); // Necháme gravitaci (y), ale zrušíme X a Z
-		mc.player.input.leftImpulse = 0;
-		mc.player.input.forwardImpulse = 0;
-		// --- OPRAVA: Input Cooldown ---
-		if (inputDelay < 5) { // Počkáme 5 ticků (čtvrt sekundy)
+		mc.player.xxa=0;
+		mc.player.yya=0;
+		mc.player.zza=0;
+		if(inputDelay<2){
 			inputDelay++;
 			// Vyčistíme kliknutí, která se stala během animace otevírání
 			mc.options.keyLeft.consumeClick();
@@ -128,7 +111,6 @@ public class ClientCameraHandler{
 		}else if(mc.options.keyDown.consumeClick()){
 			switchMonitor(mc,Direction.DOWN);  // Dolů
 		}
-
 	}
 	private static void switchMonitor(Minecraft mc,Direction relativeDir){
 		if(currentMonitorPos==null||mc.level==null) return;

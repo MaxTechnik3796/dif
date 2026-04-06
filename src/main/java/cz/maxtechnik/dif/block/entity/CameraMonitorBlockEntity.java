@@ -51,7 +51,7 @@ public class CameraMonitorBlockEntity extends BlockEntity{
 			// Na klientovi už jen vstoupíme do handleru
 			if(linkedCameraPos!=null){
 				ClientCameraHandler.enterCamera(linkedCameraPos,this.getBlockPos());
-			}
+			}else player.displayClientMessage(Component.literal("No camera connected!"),true);
 		}
 		return InteractionResult.SUCCESS;
 	}
