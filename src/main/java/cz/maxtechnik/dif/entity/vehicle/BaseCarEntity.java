@@ -27,6 +27,12 @@ import java.lang.reflect.Field;
  * Povrchy: NORMAL, SOUL_SAND (pomalé), ICE (kluže), CARPET (mírně pomalejší)
  *
  * Když hráč vyleze: motor se vypne, minimální fyzika (pouze setrvačnost + gravitace).
+ *
+ * OPRAVY v této verzi:
+ *  - hasImpulse = true každý tick → server posílá pozici každý tick → žádné 30s zpoždění
+ *  - removePassenger(): velocity a deltaMovement se vynulují → formule neodlétá
+ *  - Nárazová fyzika: pokud entita narazí do zdi při vysoké rychlosti, řidič dostane damage
+ *  - setMaxUpStep() voláno v konstruktoru → auto přejede 3/4 bloku
  */
 public abstract class BaseCarEntity extends Entity {
 
@@ -46,6 +52,18 @@ public abstract class BaseCarEntity extends Entity {
     protected float velocity      = 0.0f;  // bl/tick, kladné = vpřed
     protected int   shiftCooldown = 0;     // ticků do dalšího přeřazení
 
+    /**
+     * Rychlost v minulém ticku — používá se pro detekci nárazu.
+     * Pokud se velocity prudce sníží (náraz do zdi), hráč dostane damage.
+     */
+    private float prevVelocity = 0.0f;
+
+    /**
+     * Cooldown po nárazu — zabraňuje tomu, aby hráč dostával damage každý tick
+     * při klouzání po zdi (jen jednou za X ticků).
+     */
+    private int crashDamageCooldown = 0;
+
     //  SURFACE TYPES
     public enum SurfaceType { NORMAL, SOUL_SAND, ICE, CARPET }
 
@@ -64,6 +82,9 @@ public abstract class BaseCarEntity extends Entity {
     public BaseCarEntity(EntityType<?> type, Level level) {
         super(type, level);
         this.blocksBuilding = true;
+        // Výchozí výška přeskoku — podtřídy mohou přepsat přes getCustomStepHeight()
+        // Nastavujeme zde, aby bylo funkční ihned po vytvoření entity.
+        this.setMaxUpStep(getCustomStepHeight());
     }
 
     @Override
@@ -91,6 +112,19 @@ public abstract class BaseCarEntity extends Entity {
         super.removePassenger(passenger);
         if (!this.level().isClientSide && !this.isVehicle()) {
             setEngineOn(false);
+
+            // -------------------------------------------------------
+            // OPRAVA ZMIZENÍ:
+            // Při vystoupení z jedoucího auta server okamžitě zastaví
+            // veškerý pohyb. Bez toho by entita odletěla mimo "oblast
+            // zájmu" klienta a znovu se objevila až po desítkách sekund.
+            // -------------------------------------------------------
+            velocity = 0.0f;
+            prevVelocity = 0.0f;
+            this.setDeltaMovement(Vec3.ZERO);
+
+            // Vynutíme okamžité odeslání pozice klientům.
+            this.hasImpulse = true;
         }
     }
 
@@ -108,18 +142,30 @@ public abstract class BaseCarEntity extends Entity {
     public void tick() {
         super.tick();
         if (shiftCooldown > 0) shiftCooldown--;
+        if (crashDamageCooldown > 0) crashDamageCooldown--;
 
         // Získáme pasažéra přímo
         LivingEntity driver = this.getControllingPassenger();
 
-        // Kontrola, jestli tam někdo sedí
+        // Uložíme velocity PŘED fyzickým krokem — pro detekci nárazu
+        prevVelocity = velocity;
+
         if (this.isVehicle() && driver != null) {
             simulateActivePhysics(driver);
         } else {
             simulateIdlePhysics();
         }
 
-        // 3. Synchronizace dat pro HUD
+        // -----------------------------------------------------------
+        // OPRAVA SYNCHRONIZACE:
+        // hasImpulse = true říká ServerEntity, že má ihned odeslat
+        // aktuální pozici všem klientům v dosahu — místo čekání na
+        // práh pohybu. Bez toho server posílá pozici jen každých N
+        // ticků nebo při velkém pohybu, což způsobuje 30s zpoždění.
+        // -----------------------------------------------------------
+        this.hasImpulse = true;
+
+        // Synchronizace dat pro HUD
         this.entityData.set(DATA_SPEED, velocity);
     }
 
@@ -147,9 +193,9 @@ public abstract class BaseCarEntity extends Entity {
 
     //  AKTIVNÍ FYZIKA  – řidič sedí v autě
     protected void simulateActivePhysics(LivingEntity driver) {
-        float throttle   = driver.zza;       // W = +1 vpřed, S = -1 brzda
-        float steerInput = -driver.xxa;      // A = vlevo, D = vpravo
-        boolean handbrake = getJumping(driver); // mezerník = ruční brzda
+        float throttle   = driver.zza;
+        float steerInput = -driver.xxa;
+        boolean handbrake = getJumping(driver);
 
         SurfaceType surface = detectSurface();
 
@@ -163,7 +209,6 @@ public abstract class BaseCarEntity extends Entity {
         float gearRatio = getGearRatios()[getCurrentGear() - 1];
         float targetRPM = Math.abs(velocity) * gearRatio * rpmConv;
 
-        // Blip při stojícím autě + plyn
         if (Math.abs(velocity) < 0.05f && throttle > 0) {
             targetRPM = Math.max(targetRPM,
                     getIdleRPM() + (getMaxRPM() - getIdleRPM()) * throttle * 0.25f);
@@ -175,7 +220,6 @@ public abstract class BaseCarEntity extends Entity {
                 ? (float) shiftCooldown / getShiftCooldownTicks()
                 : 1.0f;
 
-        // Omezovač otáček (rev limiter)
         if (getRPM() >= getMaxRPM() * 0.999f) torqueFactor = 0.0f;
 
         // ---- TAHOVÁ SÍLA ----
@@ -188,14 +232,13 @@ public abstract class BaseCarEntity extends Entity {
                     * rpmPowerFactor
                     * torqueFactor;
         } else if (throttle < 0.0f) {
-            // Aktivní brzda (S)
             thrust = throttle * getBrakingDeceleration();
         }
 
         // ---- RUČNÍ BRZDA ----
         if (handbrake) {
             velocity    *= 0.87f;
-            lateralGrip *= 0.22f; // smyk
+            lateralGrip *= 0.22f;
         }
 
         // ---- AERODYNAMICKÝ ODPOR (v²) ----
@@ -217,7 +260,7 @@ public abstract class BaseCarEntity extends Entity {
         // ---- CLAMP rychlosti ----
         velocity = Math.max(-0.25f, Math.min(maxSpeedBT, velocity));
 
-        // ---- PŘÍTLAK (downforce) – zlepšuje grip při vysoké rychlosti ----
+        // ---- PŘÍTLAK (downforce) ----
         float downforceMult = 1.0f;
         if (maxSpeedBT > 0.001f) {
             float speedRatio = velocity / maxSpeedBT;
@@ -239,12 +282,60 @@ public abstract class BaseCarEntity extends Entity {
         double newYMot = this.onGround() ? -0.05 : this.getDeltaMovement().y - 0.04;
         newYMot = Math.max(newYMot, -1.5);
 
-        this.setDeltaMovement(new Vec3(
+        Vec3 intendedMotion = new Vec3(
                 -Math.sin(yawRad) * velocity,
                 newYMot,
                 Math.cos(yawRad) * velocity
-        ));
+        );
+        this.setDeltaMovement(intendedMotion);
+
+        // Zapamatujeme si horizontální pohyb PŘED move() pro detekci nárazu
+        double preX = this.getX();
+        double preZ = this.getZ();
+
         this.move(MoverType.SELF, this.getDeltaMovement());
+
+        // -----------------------------------------------------------
+        // DETEKCE NÁRAZU
+        //
+        // Inspirováno Automobility: porovnáváme skutečný pohyb
+        // s zamýšleným. Pokud se entita nehýbala, ačkoli měla,
+        // narazila do zdi. Škoda závisí na rychlosti dopadu.
+        //
+        // Schéma škody (podobně jako Automobility):
+        //   - pod getCrashDamageThreshold() km/h → žádná škoda
+        //   - lineárně roste od prahu do maxRPM ekvivalentu
+        //   - damage = impactSpeed * getCrashDamageMultiplier()
+        // -----------------------------------------------------------
+        if (!this.level().isClientSide && crashDamageCooldown == 0) {
+            double actualDX = this.getX() - preX;
+            double actualDZ = this.getZ() - preZ;
+            double expectedDX = intendedMotion.x;
+            double expectedDZ = intendedMotion.z;
+
+            // Jak moc jsme se "zastavili" ve srovnání s tím, co jsme chtěli
+            double blockedX = expectedDX - actualDX;
+            double blockedZ = expectedDZ - actualDZ;
+            double blockedSpeed = Math.sqrt(blockedX * blockedX + blockedZ * blockedZ); // bl/tick
+
+            float blockedKmh = (float)(blockedSpeed * 72.0);
+
+            if (blockedKmh > getCrashDamageThresholdKmh()) {
+                float damage = (blockedKmh - getCrashDamageThresholdKmh())
+                        * getCrashDamageMultiplier();
+
+                driver.hurt(
+                        this.level().damageSources().generic(),
+                        damage
+                );
+
+                // Prudce sníž rychlost — náraz zastaví auto
+                velocity *= (1.0f - Math.min(1.0f, blockedKmh / getMaxSpeedKmh()));
+
+                // Cooldown 10 ticků (0.5s) — zabraňuje spamu škody při kluzu po zdi
+                crashDamageCooldown = 10;
+            }
+        }
     }
 
     //  DETEKCE POVRCHU
@@ -255,15 +346,12 @@ public abstract class BaseCarEntity extends Entity {
         Block atFeet  = this.level().getBlockState(feet).getBlock();
         Block atBelow = this.level().getBlockState(below).getBlock();
 
-        // Koberec – auto na něm stojí (je tenký)
         if (atFeet instanceof CarpetBlock || atBelow instanceof CarpetBlock)
             return SurfaceType.CARPET;
 
-        // Led
         if (isIceBlock(atBelow) || isIceBlock(atFeet))
             return SurfaceType.ICE;
 
-        // Duše písku / duší půda
         if (atBelow == Blocks.SOUL_SAND || atBelow == Blocks.SOUL_SOIL
                 || atFeet  == Blocks.SOUL_SAND || atFeet  == Blocks.SOUL_SOIL)
             return SurfaceType.SOUL_SAND;
@@ -289,7 +377,7 @@ public abstract class BaseCarEntity extends Entity {
 
     protected float getSurfaceLateralGrip(SurfaceType s) {
         return switch (s) {
-            case ICE       -> 0.10f;  // velmi kluzký
+            case ICE       -> 0.10f;
             case SOUL_SAND -> 0.50f;
             case CARPET    -> 0.75f;
             default        -> 1.0f;
@@ -299,22 +387,21 @@ public abstract class BaseCarEntity extends Entity {
     protected float getSurfaceRollingResistance(SurfaceType s) {
         return switch (s) {
             case SOUL_SAND -> 0.025f;
-            case ICE       -> 0.0004f; // skoro žádný odpor
+            case ICE       -> 0.0004f;
             case CARPET    -> 0.006f;
             default        -> 0.002f;
         };
     }
 
-    //  MOMENTOVÁ KŘIVKA  (zjednodušená – vrchol ~75 % maxRPM)
+    //  MOMENTOVÁ KŘIVKA
     private float computeTorqueCurve(float rpm) {
-        float norm = rpm / getMaxRPM();             // 0..1
+        float norm = rpm / getMaxRPM();
         float peak = 0.75f;
         float f    = (float)(-4.0 * Math.pow(norm - peak, 2) + 1.0);
         return Math.max(0.25f, Math.min(1.0f, f));
     }
 
     //  RPM PŘEPOČTOVÝ FAKTOR
-    //  Zajišťuje: při maxRPM v posledním stupni = maxSpeedKmh
     private float computeRPMConversionFactor() {
         float[] ratios  = getGearRatios();
         float topRatio  = ratios[ratios.length - 1];
@@ -328,54 +415,46 @@ public abstract class BaseCarEntity extends Entity {
         catch (Exception ex) { return false; }
     }
 
-    //  ABSTRAKTNÍ PARAMETRY AUTA  (implementují podtřídy)
-
-    /** Výška přeskoku obrubníku (bl) */
-    public abstract float getCustomStepHeight();
-
-    /** Maximální rychlost (km/h) */
-    public abstract float getMaxSpeedKmh();
+    //  ABSTRAKTNÍ PARAMETRY AUTA
 
     /**
-     * Základní zrychlení v 1. rychlostním stupni při plném plynu (bl/tick²).
-     * Pro cíl 0→100 km/h za X sekund: hodnota ≈ (100/72) / (X * 20)
+     * Výška přeskoku obrubníku (bl).
+     * Nastavuje se přes setMaxUpStep() v konstruktoru.
      */
+    public abstract float getCustomStepHeight();
+
+    public abstract float getMaxSpeedKmh();
     public abstract float getBaseAcceleration();
-
-    /** Pole převodových poměrů [0]=1. stupeň … [n-1]=poslední */
     public abstract float[] getGearRatios();
-
-    /** Základní handling = stupně/tick při nízké rychlosti */
     public abstract float getBaseHandling();
-
-    /** Idle otáčky (ot/min) */
     public abstract float getIdleRPM();
-
-    /** Maximální otáčky / limitér (ot/min) */
     public abstract float getMaxRPM();
-
-    /** Redline (vizuální varování v HUDu, ot/min) */
     public abstract float getRedlineRPM();
 
-    //  VOLITELNÉ PŘEPSÁNÍ  (mají rozumné výchozí hodnoty)
+    //  VOLITELNÉ PŘEPSÁNÍ
 
-    /** Koeficient přítlaku (0 = žádný, 2+ = F1 úroveň) */
     public float getDownforceCoefficient()    { return 0.0f;    }
-
-    /** Aerodynamický odpor cd×A (ovlivňuje max rychlost a brzdění vzduchem) */
     public float getAeroDrag()               { return 0.00020f; }
-
-    /** Brzdná decelerace při stisku S (bl/tick²) */
     public float getBrakingDeceleration()    { return 0.05f;   }
-
-    /** Redukce zatáčení při vysoké rychlosti (0 = bez redukce, 1 = nelze točit) */
     public float getHighSpeedSteerReduction(){ return 0.55f;   }
-
-    /** Délka torque-cutu při manuálním řazení (ticků) */
     public int   getShiftCooldownTicks()     { return 8;       }
-
-    /** Volá se z packet handleru při přeřazení */
     public void  applyShiftCooldown()        { this.shiftCooldown = getShiftCooldownTicks(); }
+
+    /**
+     * Minimální rychlost nárazu (km/h) pro způsobení škody řidiči.
+     * Pod touto hodnotou náraz nezpůsobí žádnou škodu.
+     * Výchozí: 40 km/h — přepsatelné v podtřídách.
+     */
+    public float getCrashDamageThresholdKmh() { return 40.0f; }
+
+    /**
+     * Koeficient škody při nárazu.
+     * damage = (impactSpeed_kmh - threshold) * multiplier
+     *
+     * Výchozí: 0.15 → při 100 km/h nárazu (60 nad prahem) = 9 HP
+     * Přepsatelné v podtřídách.
+     */
+    public float getCrashDamageMultiplier() { return 0.15f; }
 
     //  GETTERY / SETTERY
     public float   getRPM()              { return this.entityData.get(DATA_RPM); }
@@ -384,7 +463,6 @@ public abstract class BaseCarEntity extends Entity {
     public int     getCurrentGear()      { return this.entityData.get(DATA_GEAR); }
     public void    setCurrentGear(int v) { this.entityData.set(DATA_GEAR, v); }
 
-    /** Rychlost v km/h (absolutní hodnota) */
     public float   getSpeedKmh()         { return Math.abs(this.entityData.get(DATA_SPEED)) * 72.0f; }
 
     public boolean isEngineOn()          { return this.entityData.get(DATA_ENGINE_ON); }
