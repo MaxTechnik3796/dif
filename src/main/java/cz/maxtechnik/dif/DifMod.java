@@ -15,9 +15,7 @@ import cz.maxtechnik.dif.init.other.*;
 import cz.maxtechnik.dif.init.events.JetpackHandler;
 import cz.maxtechnik.dif.network.CameraExitPacket;
 import cz.maxtechnik.dif.network.RemoteControlPacket;
-import cz.maxtechnik.dif.renderer.ChunkLoaderRenderer;
-import cz.maxtechnik.dif.renderer.FryingTableRenderer;
-import cz.maxtechnik.dif.renderer.WitherTitanRenderer;
+import cz.maxtechnik.dif.renderer.*;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -30,6 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -108,6 +107,14 @@ public class DifMod{
 				CameraExitPacket::decode,
 				CameraExitPacket::handle
 		));
+
+		// PŘIDÁNO: Registrace řazení
+		event.enqueueWork(() ->addNetworkMessage(
+				cz.maxtechnik.dif.network.ShiftGearPacket.class,
+				cz.maxtechnik.dif.network.ShiftGearPacket::encode,
+				cz.maxtechnik.dif.network.ShiftGearPacket::decode,
+				cz.maxtechnik.dif.network.ShiftGearPacket::handle
+		));
 	}
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event){
@@ -126,6 +133,12 @@ public class DifMod{
 			event.put(DifModEntities.WITHER_TITAN.get(), cz.maxtechnik.dif.entity.WitherTitanEntity.createAttributes().build());
 		}
 	}
+	@SubscribeEvent
+	public void onRenderGui(RenderGuiOverlayEvent.Post event) {
+		if (event.getOverlay().id().getPath().equals("hotbar")) {
+			CarHudOverlay.render(event.getGuiGraphics(), event.getPartialTick());
+		}
+	}
 	@Mod.EventBusSubscriber(modid=MODID,bus=Mod.EventBusSubscriber.Bus.MOD,value=Dist.CLIENT)
 	public static class ClientModEvents{
 		@SubscribeEvent
@@ -137,6 +150,7 @@ public class DifMod{
 			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(),context->new FryingTableRenderer());
 			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(),context->new ChunkLoaderRenderer());
 			event.registerEntityRenderer(DifModEntities.WITHER_TITAN.get(), WitherTitanRenderer::new);
+			event.registerEntityRenderer(DifModEntities.FORMULA.get(), CarRenderer::new);
 			event.registerEntityRenderer(DifModEntities.REMOTE_MINECART.get(),
 					context -> new net.minecraft.client.renderer.entity.MinecartRenderer<>(
 							context,
