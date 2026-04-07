@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.client;
 
+import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.entity.vehicle.BaseCarEntity;
-import cz.maxtechnik.dif.network.ModNetworking;
 import cz.maxtechnik.dif.network.ShiftGearPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
@@ -23,12 +23,12 @@ public class CarInputHandler {
         int currentGear = car.getCurrentGear();
         int maxGear = car.getGearRatios().length;
 
-        if (event.getKey() == GLFW.GLFW_KEY_X) { // GEAR UP
+        if (event.getKey() == GLFW.GLFW_KEY_R) { // GEAR UP
             if (currentGear < maxGear) {
                 car.setCurrentGear(currentGear + 1);
                 sendPacket(+1);
             }
-        } else if (event.getKey() == GLFW.GLFW_KEY_Y) { // GEAR DOWN
+        } else if (event.getKey() == GLFW.GLFW_KEY_F) { // GEAR DOWN
             if (currentGear > 1) {
                 car.setCurrentGear(currentGear - 1);
                 sendPacket(-1);
@@ -37,12 +37,7 @@ public class CarInputHandler {
     }
 
     private static void sendPacket(int direction) {
-        try {
-            // Kontrola, zda je třída ModNetworking v pořádku
-            ModNetworking.CHANNEL.sendToServer(new ShiftGearPacket(direction));
-        } catch (Throwable t) {
-            // Zachytí ExceptionInInitializerError a vypíše ji do konzole místo pádu hry
-            System.err.println("NETWORK ERROR: Inicializace ModNetworking selhala! Zkontroluj registraci kanálu.");
-        }
+        // Použijeme tvůj vlastní PACKET_HANDLER z DifMod.java
+        DifMod.PACKET_HANDLER.sendToServer(new ShiftGearPacket(direction));
     }
 }

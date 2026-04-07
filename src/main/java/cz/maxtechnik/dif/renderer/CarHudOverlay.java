@@ -18,7 +18,7 @@ public class CarHudOverlay {
 
         // Střed HUDu posunutý nahoru od spodku obrazovky
         float arcCX = sw / 2.0f;
-        float arcCY = sh - 50.0f;
+        float arcCY = sh - 70.0f;
 
         float rpmPercent = car.getRPM() / 18000f;
 

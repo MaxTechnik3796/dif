@@ -107,6 +107,14 @@ public class DifMod{
 				CameraExitPacket::decode,
 				CameraExitPacket::handle
 		));
+
+		// PŘIDÁNO: Registrace řazení
+		event.enqueueWork(() ->addNetworkMessage(
+				cz.maxtechnik.dif.network.ShiftGearPacket.class,
+				cz.maxtechnik.dif.network.ShiftGearPacket::encode,
+				cz.maxtechnik.dif.network.ShiftGearPacket::decode,
+				cz.maxtechnik.dif.network.ShiftGearPacket::handle
+		));
 	}
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event){
@@ -126,7 +134,7 @@ public class DifMod{
 		}
 	}
 	@SubscribeEvent
-	public static void onRenderGui(RenderGuiOverlayEvent.Post event) {
+	public void onRenderGui(RenderGuiOverlayEvent.Post event) {
 		if (event.getOverlay().id().getPath().equals("hotbar")) {
 			CarHudOverlay.render(event.getGuiGraphics(), event.getPartialTick());
 		}

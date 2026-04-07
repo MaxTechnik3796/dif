@@ -6,7 +6,9 @@ import net.minecraftforge.network.simple.SimpleChannel;
 
 public class ModNetworking {
     private static final String PROTOCOL_VERSION = "1";
-    public static final String MOD_ID = "dif"; // ZMĚŇ NA SVŮJ SKUTEČNÝ MOD ID
+
+    // !!! MUSÍ BÝT MALÝMI PÍSMENY !!!
+    public static final String MOD_ID = "dif";
 
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
             ResourceLocation.fromNamespaceAndPath(MOD_ID, "main"),
@@ -17,6 +19,10 @@ public class ModNetworking {
 
     public static void register() {
         int id = 0;
-        CHANNEL.registerMessage(id++, ShiftGearPacket.class, ShiftGearPacket::encode, ShiftGearPacket::decode, ShiftGearPacket::handle);
+        // Registrace packetu
+        CHANNEL.registerMessage(id++, ShiftGearPacket.class,
+                ShiftGearPacket::encode,
+                ShiftGearPacket::decode,
+                ShiftGearPacket::handle);
     }
 }
