@@ -8,16 +8,14 @@ import net.minecraft.world.entity.boss.wither.WitherBoss;
 public class WitherTitanRenderer extends WitherBossRenderer {
     public WitherTitanRenderer(EntityRendererProvider.Context context) {
         super(context);
-        this.shadowRadius = 5.0F;
+        this.shadowRadius = 0.0F;
     }
 
     @Override
     protected void scale(WitherBoss entity, PoseStack poseStack, float partialTickTime) {
         if (entity.tickCount > 0) {
-            float scale = 100.0F; // 10x větší
-            poseStack.scale(scale, scale, scale);
-        } else {
-            poseStack.scale(1.0F, 1.0F, 1.0F);
+            poseStack.scale(10.0F, 10.0F, 10.0F);
+            // Žádný translate! Model stojí tam, kde je Collision Box (nohy).
         }
     }
 }
