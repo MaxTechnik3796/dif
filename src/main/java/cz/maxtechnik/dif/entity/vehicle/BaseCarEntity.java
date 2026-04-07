@@ -42,20 +42,14 @@ public abstract class BaseCarEntity extends Entity {
     protected static final EntityDataAccessor<Boolean> DATA_ENGINE_ON =
             SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.BOOLEAN);
 
-    // =========================================================
     //  PHYSICS STATE  (jen na serveru/single-player)
-    // =========================================================
     protected float velocity      = 0.0f;  // bl/tick, kladné = vpřed
     protected int   shiftCooldown = 0;     // ticků do dalšího přeřazení
 
-    // =========================================================
     //  SURFACE TYPES
-    // =========================================================
     public enum SurfaceType { NORMAL, SOUL_SAND, ICE, CARPET }
 
-    // =========================================================
     //  REFLECTION – přístup k "jumping" (mezerník/handbrake)
-    // =========================================================
     private static Field jumpingField;
     static {
         try {
@@ -66,9 +60,7 @@ public abstract class BaseCarEntity extends Entity {
         } catch (Exception ignored) {}
     }
 
-    // =========================================================
     //  CONSTRUCTOR
-    // =========================================================
     public BaseCarEntity(EntityType<?> type, Level level) {
         super(type, level);
         this.blocksBuilding = true;
@@ -82,9 +74,7 @@ public abstract class BaseCarEntity extends Entity {
         this.entityData.define(DATA_ENGINE_ON, false);
     }
 
-    // =========================================================
     //  NASEDNUTÍ / VYSTOUPENÍ
-    // =========================================================
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
         if (player.isSecondaryUseActive()) return InteractionResult.PASS;
@@ -104,9 +94,7 @@ public abstract class BaseCarEntity extends Entity {
         }
     }
 
-    // =========================================================
     //  POŠKOZENÍ (levé tlačítko = zničení)
-    // =========================================================
     @Override
     public boolean hurt(DamageSource source, float amount) {
         if (!this.level().isClientSide && !this.isRemoved()) {
@@ -116,14 +104,9 @@ public abstract class BaseCarEntity extends Entity {
         return false;
     }
 
-    // =========================================================
-    //  HLAVNÍ TICK
-    // =========================================================
     @Override
     public void tick() {
         super.tick();
-        this.setMaxUpStep(getCustomStepHeight());
-
         if (shiftCooldown > 0) shiftCooldown--;
 
         // Získáme pasažéra přímo
@@ -136,13 +119,11 @@ public abstract class BaseCarEntity extends Entity {
             simulateIdlePhysics();
         }
 
+        // 3. Synchronizace dat pro HUD
         this.entityData.set(DATA_SPEED, velocity);
     }
 
-    // =========================================================
     //  IDLE FYZIKA  – minimální výpočty, žádný řidič
-    //  (nespotřebovává výkon při hromadě zaparkovaných aut)
-    // =========================================================
     private void simulateIdlePhysics() {
         // Rychlé dojíždění
         velocity *= 0.88f;
@@ -164,9 +145,7 @@ public abstract class BaseCarEntity extends Entity {
         this.move(MoverType.SELF, this.getDeltaMovement());
     }
 
-    // =========================================================
     //  AKTIVNÍ FYZIKA  – řidič sedí v autě
-    // =========================================================
     protected void simulateActivePhysics(LivingEntity driver) {
         float throttle   = driver.zza;       // W = +1 vpřed, S = -1 brzda
         float steerInput = -driver.xxa;      // A = vlevo, D = vpravo
@@ -235,10 +214,6 @@ public abstract class BaseCarEntity extends Entity {
             }
         }
 
-        // ---- KLOUZÁNÍ NA LEDĚ ----
-        // Nízká lateralGrip = auto se točí pomaleji a klouže déle
-        // (Implementováno přes redukci turn rate níže)
-
         // ---- CLAMP rychlosti ----
         velocity = Math.max(-0.25f, Math.min(maxSpeedBT, velocity));
 
@@ -272,9 +247,7 @@ public abstract class BaseCarEntity extends Entity {
         this.move(MoverType.SELF, this.getDeltaMovement());
     }
 
-    // =========================================================
     //  DETEKCE POVRCHU
-    // =========================================================
     protected SurfaceType detectSurface() {
         BlockPos feet  = this.blockPosition();
         BlockPos below = feet.below();
@@ -305,9 +278,7 @@ public abstract class BaseCarEntity extends Entity {
                 || b == Blocks.FROSTED_ICE;
     }
 
-    // =========================================================
     //  MODIFIKÁTORY POVRCHU
-    // =========================================================
     protected float getSurfaceSpeedMult(SurfaceType s) {
         return switch (s) {
             case SOUL_SAND -> 0.35f;
@@ -334,9 +305,7 @@ public abstract class BaseCarEntity extends Entity {
         };
     }
 
-    // =========================================================
     //  MOMENTOVÁ KŘIVKA  (zjednodušená – vrchol ~75 % maxRPM)
-    // =========================================================
     private float computeTorqueCurve(float rpm) {
         float norm = rpm / getMaxRPM();             // 0..1
         float peak = 0.75f;
@@ -344,10 +313,8 @@ public abstract class BaseCarEntity extends Entity {
         return Math.max(0.25f, Math.min(1.0f, f));
     }
 
-    // =========================================================
     //  RPM PŘEPOČTOVÝ FAKTOR
     //  Zajišťuje: při maxRPM v posledním stupni = maxSpeedKmh
-    // =========================================================
     private float computeRPMConversionFactor() {
         float[] ratios  = getGearRatios();
         float topRatio  = ratios[ratios.length - 1];
@@ -355,17 +322,13 @@ public abstract class BaseCarEntity extends Entity {
         return getMaxRPM() / (maxVelBT * topRatio);
     }
 
-    // =========================================================
     //  HELPER – mezerník přes reflexi
-    // =========================================================
     private boolean getJumping(LivingEntity e) {
         try { return jumpingField != null && jumpingField.getBoolean(e); }
         catch (Exception ex) { return false; }
     }
 
-    // =========================================================
     //  ABSTRAKTNÍ PARAMETRY AUTA  (implementují podtřídy)
-    // =========================================================
 
     /** Výška přeskoku obrubníku (bl) */
     public abstract float getCustomStepHeight();
@@ -394,9 +357,7 @@ public abstract class BaseCarEntity extends Entity {
     /** Redline (vizuální varování v HUDu, ot/min) */
     public abstract float getRedlineRPM();
 
-    // =========================================================
     //  VOLITELNÉ PŘEPSÁNÍ  (mají rozumné výchozí hodnoty)
-    // =========================================================
 
     /** Koeficient přítlaku (0 = žádný, 2+ = F1 úroveň) */
     public float getDownforceCoefficient()    { return 0.0f;    }
@@ -416,9 +377,7 @@ public abstract class BaseCarEntity extends Entity {
     /** Volá se z packet handleru při přeřazení */
     public void  applyShiftCooldown()        { this.shiftCooldown = getShiftCooldownTicks(); }
 
-    // =========================================================
     //  GETTERY / SETTERY
-    // =========================================================
     public float   getRPM()              { return this.entityData.get(DATA_RPM); }
     public void    setRPM(float v)       { this.entityData.set(DATA_RPM, v); }
 
