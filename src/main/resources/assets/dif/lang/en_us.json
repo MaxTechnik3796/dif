@@ -379,6 +379,8 @@
 
 	"block.dif.camera":"Camera",
 	"block.dif.camera_monitor":"Camera Monitor",
-	"item.dif.camera_link":"Camera Linker"
+	"item.dif.camera_link":"Camera Linker",
+
+	"item.dif.god_totel":"God Totem"
 
 }
