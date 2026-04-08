@@ -10,14 +10,6 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-/**
- * Paket odesílaný ze SERVERU → KLIENTOVI každý tick pro vozidla.
- * Opravuje desynchronizaci polohy (auto "skáče" při zastavení nebo po vystoupení).
- *
- * Registrace: DifMod.commonSetup → addNetworkMessage(SyncCarPositionPacket.class, ...)
- * Odesílání:  BaseCarEntity.tick() na serveru →
- *             PacketDistributor.TRACKING_ENTITY_AND_SELF
- */
 public class SyncCarPositionPacket {
 
     private final int   entityId;
@@ -35,8 +27,7 @@ public class SyncCarPositionPacket {
         this.velocity = velocity;
     }
 
-    // ── Kodek ────────────────────────────────────────────────────────────────
-
+    // ── Kodek
     public static SyncCarPositionPacket decode(FriendlyByteBuf buf) {
         return new SyncCarPositionPacket(
                 buf.readInt(),
@@ -57,8 +48,7 @@ public class SyncCarPositionPacket {
         buf.writeFloat(velocity);
     }
 
-    // ── Zpracování na klientovi ───────────────────────────────────────────────
-
+    // ── Zpracování na klientovi
     public void handle(Supplier<NetworkEvent.Context> ctxSupplier) {
         NetworkEvent.Context ctx = ctxSupplier.get();
         ctx.enqueueWork(this::applyOnClient);

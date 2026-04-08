@@ -7,14 +7,6 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-/**
- * Packet odesílaný z klienta na server při manuálním přeřazení.
- *
- * direction: +1 = řadíme nahoru, -1 = dolů
- *
- * Registrace: viz ModNetworking.register()
- * Volání:     ModNetworking.CHANNEL.sendToServer(new ShiftGearPacket(+1));
- */
 public class ShiftGearPacket {
 
     private final int direction; // +1 nebo -1
@@ -23,8 +15,7 @@ public class ShiftGearPacket {
         this.direction = direction;
     }
 
-    // ---- Kodek ----
-
+    //Kodek
     public static ShiftGearPacket decode(FriendlyByteBuf buf) {
         return new ShiftGearPacket(buf.readByte());
     }
@@ -33,8 +24,7 @@ public class ShiftGearPacket {
         buf.writeByte(direction);
     }
 
-    // ---- Zpracování na serveru ----
-
+    //Zpracování na serveru
     public void handle(Supplier<NetworkEvent.Context> ctxSupplier) {
         NetworkEvent.Context ctx = ctxSupplier.get();
         ctx.enqueueWork(() -> {

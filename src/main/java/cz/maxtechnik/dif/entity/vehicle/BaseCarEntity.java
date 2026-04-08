@@ -67,10 +67,7 @@ public abstract class BaseCarEntity extends Entity {
         this.entityData.define(DATA_FUEL,      getInitialFuelMb());
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
     //  INTERAKCE – nastoupení / tankování (Shift + pravé tlačítko)
-    // ─────────────────────────────────────────────────────────────────────────────
-
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
 
@@ -160,19 +157,31 @@ public abstract class BaseCarEntity extends Entity {
         }
     }
 
+    // 1. Nahraď stávající metodu hurt() v BaseCarEntity.java a přidej getDropItem()
     @Override
     public boolean hurt(DamageSource source, float amount) {
+        if (this.isInvulnerableTo(source)) {
+            return false;
+        }
+
         if (!this.level().isClientSide && !this.isRemoved()) {
+            // Pokud entitu zničil hráč a není v creativu, dropne item
+            if (source.getEntity() instanceof net.minecraft.world.entity.player.Player player) {
+                if (!player.getAbilities().instabuild) {
+                    this.spawnAtLocation(this.getDropItem());
+                }
+            }
             this.discard();
             return true;
         }
         return false;
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  TICK
-    // ─────────────────────────────────────────────────────────────────────────────
+    // Abstraktní metoda pro určení, jaký item z auta vypadne
+    public abstract net.minecraft.world.item.Item getDropItem();
 
+
+    //  TICK
     @Override
     public void tick() {
         super.tick();
@@ -209,10 +218,7 @@ public abstract class BaseCarEntity extends Entity {
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
     //  PALIVO
-    // ─────────────────────────────────────────────────────────────────────────────
-
     private void tickFuelConsumption() {
         float currentFuel = getFuelMb();
         if (currentFuel <= 0.0f) return;
@@ -231,10 +237,7 @@ public abstract class BaseCarEntity extends Entity {
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
     //  FYZIKA – IDLE
-    // ─────────────────────────────────────────────────────────────────────────────
-
     private void simulateIdlePhysics() {
         velocity *= 0.88f;
         if (Math.abs(velocity) < 0.0005f) velocity = 0.0f;
@@ -248,10 +251,7 @@ public abstract class BaseCarEntity extends Entity {
         this.move(MoverType.SELF, this.getDeltaMovement());
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
     //  FYZIKA – AKTIVNÍ
-    // ─────────────────────────────────────────────────────────────────────────────
-
     protected void simulateActivePhysics(LivingEntity driver) {
         float throttle   = driver.zza;
         float steerInput = -driver.xxa;
@@ -354,10 +354,7 @@ public abstract class BaseCarEntity extends Entity {
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
     //  POVRCHY
-    // ─────────────────────────────────────────────────────────────────────────────
-
     protected SurfaceType detectSurface() {
         BlockPos feet  = this.blockPosition();
         BlockPos below = feet.below();
@@ -399,20 +396,13 @@ public abstract class BaseCarEntity extends Entity {
         catch (Exception ex) { return false; }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
     //  METODA PRO PAKET – nastavení velocity z klientského paketu
-    // ─────────────────────────────────────────────────────────────────────────────
-
-    /** Volá SyncCarPositionPacket na straně klienta. */
     public void setVelocityFromPacket(float v) {
         this.velocity = v;
         this.entityData.set(DATA_SPEED, v);
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
     //  ABSTRAKTNÍ PARAMETRY – výkon / geometrie
-    // ─────────────────────────────────────────────────────────────────────────────
-
     public abstract float getCustomStepHeight();
     public abstract float getMaxSpeedKmh();
     public abstract float getBaseAcceleration();
@@ -422,10 +412,7 @@ public abstract class BaseCarEntity extends Entity {
     public abstract float getMaxRPM();
     public abstract float getRedlineRPM();
 
-    // ─────────────────────────────────────────────────────────────────────────────
     //  ABSTRAKTNÍ PARAMETRY – palivo
-    // ─────────────────────────────────────────────────────────────────────────────
-
     public abstract float getMaxFuelMb();
     public abstract float getFuelConsumptionLowMbPerTick();
     public abstract float getFuelConsumptionHighMbPerTick();
@@ -434,10 +421,7 @@ public abstract class BaseCarEntity extends Entity {
 
     public float getInitialFuelMb() { return getMaxFuelMb(); }
 
-    // ─────────────────────────────────────────────────────────────────────────────
     //  VOLITELNÉ PŘEPISY – výkon
-    // ─────────────────────────────────────────────────────────────────────────────
-
     public float getDownforceCoefficient()     { return 0.0f;     }
     public float getAeroDrag()                 { return 0.00020f; }
     public float getBrakingDeceleration()      { return 0.05f;    }
@@ -447,10 +431,7 @@ public abstract class BaseCarEntity extends Entity {
     public float getCrashDamageThresholdKmh()  { return 40.0f; }
     public float getCrashDamageMultiplier()    { return 0.15f; }
 
-    // ─────────────────────────────────────────────────────────────────────────────
     //  GETTERY / SETTERY – synced data
-    // ─────────────────────────────────────────────────────────────────────────────
-
     public float   getRPM()              { return this.entityData.get(DATA_RPM); }
     public void    setRPM(float v)       { this.entityData.set(DATA_RPM, v); }
     public int     getCurrentGear()      { return this.entityData.get(DATA_GEAR); }
