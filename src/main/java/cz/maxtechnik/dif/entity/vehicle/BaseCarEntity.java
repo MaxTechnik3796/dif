@@ -1,5 +1,7 @@
 package cz.maxtechnik.dif.entity.vehicle;
 
+import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.network.SyncCarPositionPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -16,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.lang.reflect.Field;
 
@@ -81,9 +84,9 @@ public abstract class BaseCarEntity extends Entity {
                     float max     = getMaxFuelMb();
                     float current = getFuelMb();
                     if (current >= max) {
-                        player.sendSystemMessage(Component.literal("Nádrž je plná!"));
+                        // ACTION BAR – zobrazí se nad hotbarem, ne v chatu
+                        player.displayClientMessage(Component.literal("Nádrž je plná!"), true);
                     } else {
-                        // Přidáme nejvýše 1 000 mb (1 bucket), ale nepřetečeme nádrž.
                         float canAdd = Math.min(1000.0f, max - current);
                         setFuelMb(current + canAdd);
                         if (!player.getAbilities().instabuild) {
@@ -103,10 +106,10 @@ public abstract class BaseCarEntity extends Entity {
                 if (!this.level().isClientSide) {
                     float current = getFuelMb();
                     if (current < 1000.0f) {
-                        // Méně než celý bucket – zlomek nelze odebrat.
-                        player.sendSystemMessage(Component.literal("Nestačí palivo na odebrání celého bucketu!"));
+                        // ACTION BAR – zpráva nad hotbarem
+                        player.displayClientMessage(
+                                Component.literal("Nestačí palivo na odebrání celého bucketu!"), true);
                     } else {
-                        // Vždy odebere přesně 1 000 mb; zbytek (zlomek) zůstane v nádrži.
                         setFuelMb(current - 1000.0f);
                         if (!player.getAbilities().instabuild) {
                             stack.shrink(1);
@@ -120,7 +123,6 @@ public abstract class BaseCarEntity extends Entity {
                 return InteractionResult.sidedSuccess(this.level().isClientSide);
             }
 
-            // Jiný předmět + shift – nic neděláme, ať se event šíří dál.
             return InteractionResult.PASS;
         }
 
@@ -138,10 +140,23 @@ public abstract class BaseCarEntity extends Entity {
         super.removePassenger(passenger);
         if (!this.isVehicle()) {
             if (!this.level().isClientSide) setEngineOn(false);
-            velocity = 0.0f;
+            velocity     = 0.0f;
             prevVelocity = 0.0f;
             this.setDeltaMovement(Vec3.ZERO);
             this.hasImpulse = true;
+
+            // ── FIX SYNCHRONIZACE: při vystoupení okamžitě informujeme klienty
+            // o nulové rychlosti a aktuální poloze, aby auto nezmizelo / neskočilo.
+            if (!this.level().isClientSide) {
+                DifMod.PACKET_HANDLER.send(
+                        PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> this),
+                        new SyncCarPositionPacket(
+                                this.getId(),
+                                this.getX(), this.getY(), this.getZ(),
+                                this.getYRot(), 0.0f
+                        )
+                );
+            }
         }
     }
 
@@ -179,6 +194,19 @@ public abstract class BaseCarEntity extends Entity {
 
         this.hasImpulse = true;
         this.entityData.set(DATA_SPEED, velocity);
+
+        // ── FIX SYNCHRONIZACE: každý tick posíláme autoritativní polohu ze serveru.
+        // Klienti (neřidič) ji aplikují přes lerpTo() → plynulý pohyb bez skoků.
+        if (!this.level().isClientSide) {
+            DifMod.PACKET_HANDLER.send(
+                    PacketDistributor.TRACKING_ENTITY.with(() -> this),
+                    new SyncCarPositionPacket(
+                            this.getId(),
+                            this.getX(), this.getY(), this.getZ(),
+                            this.getYRot(), velocity
+                    )
+            );
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
@@ -258,7 +286,7 @@ public abstract class BaseCarEntity extends Entity {
                 thrust = throttle * getBrakingDeceleration();
             }
         } else {
-            // Bez paliva – motor stall. Brzdit a zatáčet lze normálně.
+            // Bez paliva – motor stall.
             if (throttle < 0.0f) thrust = throttle * getBrakingDeceleration();
             setRPM(Math.max(0.0f, getRPM() - getMaxRPM() * 0.04f));
         }
@@ -372,6 +400,16 @@ public abstract class BaseCarEntity extends Entity {
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
+    //  METODA PRO PAKET – nastavení velocity z klientského paketu
+    // ─────────────────────────────────────────────────────────────────────────────
+
+    /** Volá SyncCarPositionPacket na straně klienta. */
+    public void setVelocityFromPacket(float v) {
+        this.velocity = v;
+        this.entityData.set(DATA_SPEED, v);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
     //  ABSTRAKTNÍ PARAMETRY – výkon / geometrie
     // ─────────────────────────────────────────────────────────────────────────────
 
@@ -388,25 +426,12 @@ public abstract class BaseCarEntity extends Entity {
     //  ABSTRAKTNÍ PARAMETRY – palivo
     // ─────────────────────────────────────────────────────────────────────────────
 
-    /** Maximální kapacita nádrže v millibucketech (1 bucket = 1 000 mb). */
     public abstract float getMaxFuelMb();
-
-    /** Spotřeba mb/tick pod {@link #getFuelSpeedThresholdKmh()} km/h. */
     public abstract float getFuelConsumptionLowMbPerTick();
-
-    /** Spotřeba mb/tick nad (nebo rovno) {@link #getFuelSpeedThresholdKmh()} km/h. */
     public abstract float getFuelConsumptionHighMbPerTick();
-
-    /** Rychlostní práh v km/h oddělující nízkou a vysokou spotřebu. */
     public abstract float getFuelSpeedThresholdKmh();
-
-    /** Typ paliva – např. {@code Fluids.LAVA}. */
     public abstract Fluid getFuelFluid();
 
-    /**
-     * Počáteční palivo při spawnu entity v mb.
-     * Výchozí = plná nádrž. Přepiš na {@code 0.0f} pro prázdnou nádrž.
-     */
     public float getInitialFuelMb() { return getMaxFuelMb(); }
 
     // ─────────────────────────────────────────────────────────────────────────────

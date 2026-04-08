@@ -15,6 +15,7 @@ import cz.maxtechnik.dif.init.other.*;
 import cz.maxtechnik.dif.init.events.JetpackHandler;
 import cz.maxtechnik.dif.network.CameraExitPacket;
 import cz.maxtechnik.dif.network.RemoteControlPacket;
+import cz.maxtechnik.dif.network.SyncCarPositionPacket;
 import cz.maxtechnik.dif.renderer.*;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -114,6 +115,12 @@ public class DifMod{
 				cz.maxtechnik.dif.network.ShiftGearPacket::encode,
 				cz.maxtechnik.dif.network.ShiftGearPacket::decode,
 				cz.maxtechnik.dif.network.ShiftGearPacket::handle
+		));
+		event.enqueueWork(() -> addNetworkMessage(
+				SyncCarPositionPacket.class,
+				SyncCarPositionPacket::encode,
+				SyncCarPositionPacket::decode,
+				SyncCarPositionPacket::handle
 		));
 	}
 	@SubscribeEvent
