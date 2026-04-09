@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -22,7 +23,6 @@ import net.minecraftforge.network.PacketDistributor;
 
 import java.lang.reflect.Field;
 
-// Základ pro všechna auta v modu s fyzikou pohybu, převodovkou, kolizemi a palivovým systémem.
 public abstract class BaseCarEntity extends Entity {
 
     protected static final EntityDataAccessor<Float>   DATA_RPM       = SynchedEntityData.defineId(BaseCarEntity.class, EntityDataSerializers.FLOAT);
@@ -37,9 +37,11 @@ public abstract class BaseCarEntity extends Entity {
     private float prevVelocity        = 0.0f;
     private int   crashDamageCooldown = 0;
 
-    // Akumulátor zlomků mb – šetří dirty-flagy na synced datech.
     private float fuelAccumulator = 0.0f;
     private int   fuelSyncTick    = 0;
+
+    // PŘIDÁNO: Hlídá, jestli už zvuk hraje
+    public boolean isSoundPlaying = false;
 
     public enum SurfaceType { NORMAL, SOUL_SAND, ICE, CARPET }
 
@@ -67,21 +69,15 @@ public abstract class BaseCarEntity extends Entity {
         this.entityData.define(DATA_FUEL,      getInitialFuelMb());
     }
 
-    //  INTERAKCE – nastoupení / tankování (Shift + pravé tlačítko)
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
-
-        // ── Shift + klik = práce s palivem ──────────────────────────────────
         if (player.isSecondaryUseActive()) {
             ItemStack stack = player.getItemInHand(hand);
-
-            // Plnění – lávový bucket → nádrž
             if (stack.is(Items.LAVA_BUCKET)) {
                 if (!this.level().isClientSide) {
                     float max     = getMaxFuelMb();
                     float current = getFuelMb();
                     if (current >= max) {
-                        // ACTION BAR – zobrazí se nad hotbarem, ne v chatu
                         player.displayClientMessage(Component.literal("Nádrž je plná!"), true);
                     } else {
                         float canAdd = Math.min(1000.0f, max - current);
@@ -98,12 +94,10 @@ public abstract class BaseCarEntity extends Entity {
                 return InteractionResult.sidedSuccess(this.level().isClientSide);
             }
 
-            // Odebírání – prázdný bucket ← nádrž
             if (stack.is(Items.BUCKET)) {
                 if (!this.level().isClientSide) {
                     float current = getFuelMb();
                     if (current < 1000.0f) {
-                        // ACTION BAR – zpráva nad hotbarem
                         player.displayClientMessage(
                                 Component.literal("Nestačí palivo na odebrání celého bucketu!"), true);
                     } else {
@@ -119,11 +113,9 @@ public abstract class BaseCarEntity extends Entity {
                 }
                 return InteractionResult.sidedSuccess(this.level().isClientSide);
             }
-
             return InteractionResult.PASS;
         }
 
-        // ── Normální klik = nastoupení ───────────────────────────────────────
         if (!this.level().isClientSide) {
             boolean ok = player.startRiding(this);
             if (ok) setEngineOn(true);
@@ -142,8 +134,6 @@ public abstract class BaseCarEntity extends Entity {
             this.setDeltaMovement(Vec3.ZERO);
             this.hasImpulse = true;
 
-            // ── FIX SYNCHRONIZACE: při vystoupení okamžitě informujeme klienty
-            // o nulové rychlosti a aktuální poloze, aby auto nezmizelo / neskočilo.
             if (!this.level().isClientSide) {
                 DifMod.PACKET_HANDLER.send(
                         PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> this),
@@ -157,7 +147,6 @@ public abstract class BaseCarEntity extends Entity {
         }
     }
 
-    // 1. Nahraď stávající metodu hurt() v BaseCarEntity.java a přidej getDropItem()
     @Override
     public boolean hurt(DamageSource source, float amount) {
         if (this.isInvulnerableTo(source)) {
@@ -165,7 +154,6 @@ public abstract class BaseCarEntity extends Entity {
         }
 
         if (!this.level().isClientSide && !this.isRemoved()) {
-            // Pokud entitu zničil hráč a není v creativu, dropne item
             if (source.getEntity() instanceof net.minecraft.world.entity.player.Player player) {
                 if (!player.getAbilities().instabuild) {
                     this.spawnAtLocation(this.getDropItem());
@@ -177,11 +165,8 @@ public abstract class BaseCarEntity extends Entity {
         return false;
     }
 
-    // Abstraktní metoda pro určení, jaký item z auta vypadne
     public abstract net.minecraft.world.item.Item getDropItem();
 
-
-    //  TICK
     @Override
     public void tick() {
         super.tick();
@@ -204,8 +189,6 @@ public abstract class BaseCarEntity extends Entity {
         this.hasImpulse = true;
         this.entityData.set(DATA_SPEED, velocity);
 
-        // ── FIX SYNCHRONIZACE: každý tick posíláme autoritativní polohu ze serveru.
-        // Klienti (neřidič) ji aplikují přes lerpTo() → plynulý pohyb bez skoků.
         if (!this.level().isClientSide) {
             DifMod.PACKET_HANDLER.send(
                     PacketDistributor.TRACKING_ENTITY.with(() -> this),
@@ -216,9 +199,19 @@ public abstract class BaseCarEntity extends Entity {
                     )
             );
         }
+
+        // PŘIDÁNO: Přehrávání zvuku na klientovi
+        if (this.level().isClientSide) {
+            if (this.isEngineOn() && !this.isSoundPlaying && this.getEngineSound() != null) {
+                cz.maxtechnik.dif.client.sound.SoundPlayHelper.playEngineSound(this);
+                this.isSoundPlaying = true;
+            }
+            if (!this.isEngineOn()) {
+                this.isSoundPlaying = false;
+            }
+        }
     }
 
-    //  PALIVO
     private void tickFuelConsumption() {
         float currentFuel = getFuelMb();
         if (currentFuel <= 0.0f) return;
@@ -237,7 +230,6 @@ public abstract class BaseCarEntity extends Entity {
         }
     }
 
-    //  FYZIKA – IDLE
     private void simulateIdlePhysics() {
         velocity *= 0.88f;
         if (Math.abs(velocity) < 0.0005f) velocity = 0.0f;
@@ -251,7 +243,6 @@ public abstract class BaseCarEntity extends Entity {
         this.move(MoverType.SELF, this.getDeltaMovement());
     }
 
-    //  FYZIKA – AKTIVNÍ
     protected void simulateActivePhysics(LivingEntity driver) {
         float throttle   = driver.zza;
         float steerInput = -driver.xxa;
@@ -286,7 +277,6 @@ public abstract class BaseCarEntity extends Entity {
                 thrust = throttle * getBrakingDeceleration();
             }
         } else {
-            // Bez paliva – motor stall.
             if (throttle < 0.0f) thrust = throttle * getBrakingDeceleration();
             setRPM(Math.max(0.0f, getRPM() - getMaxRPM() * 0.04f));
         }
@@ -354,7 +344,6 @@ public abstract class BaseCarEntity extends Entity {
         }
     }
 
-    //  POVRCHY
     protected SurfaceType detectSurface() {
         BlockPos feet  = this.blockPosition();
         BlockPos below = feet.below();
@@ -396,13 +385,14 @@ public abstract class BaseCarEntity extends Entity {
         catch (Exception ex) { return false; }
     }
 
-    //  METODA PRO PAKET – nastavení velocity z klientského paketu
     public void setVelocityFromPacket(float v) {
         this.velocity = v;
         this.entityData.set(DATA_SPEED, v);
     }
 
-    //  ABSTRAKTNÍ PARAMETRY – výkon / geometrie
+    // PŘIDÁNO: Abstraktní funkce pro ten tvůj "jeden řádek kódu"
+    public abstract SoundEvent getEngineSound();
+
     public abstract float getCustomStepHeight();
     public abstract float getMaxSpeedKmh();
     public abstract float getBaseAcceleration();
@@ -412,7 +402,6 @@ public abstract class BaseCarEntity extends Entity {
     public abstract float getMaxRPM();
     public abstract float getRedlineRPM();
 
-    //  ABSTRAKTNÍ PARAMETRY – palivo
     public abstract float getMaxFuelMb();
     public abstract float getFuelConsumptionLowMbPerTick();
     public abstract float getFuelConsumptionHighMbPerTick();
@@ -421,7 +410,6 @@ public abstract class BaseCarEntity extends Entity {
 
     public float getInitialFuelMb() { return getMaxFuelMb(); }
 
-    //  VOLITELNÉ PŘEPISY – výkon
     public float getDownforceCoefficient()     { return 0.0f;     }
     public float getAeroDrag()                 { return 0.00020f; }
     public float getBrakingDeceleration()      { return 0.05f;    }
@@ -431,7 +419,6 @@ public abstract class BaseCarEntity extends Entity {
     public float getCrashDamageThresholdKmh()  { return 40.0f; }
     public float getCrashDamageMultiplier()    { return 0.15f; }
 
-    //  GETTERY / SETTERY – synced data
     public float   getRPM()              { return this.entityData.get(DATA_RPM); }
     public void    setRPM(float v)       { this.entityData.set(DATA_RPM, v); }
     public int     getCurrentGear()      { return this.entityData.get(DATA_GEAR); }
