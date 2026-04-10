@@ -11,47 +11,18 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
-/**
- * Renderer pro všechna auta (placeholder – zatím Minecart model).
- * Až budeš mít vlastní OBJ/BBMODEL model, vyměň MinecartModel za BakedModel nebo EntityModel.
- */
 public class CarRenderer<T extends BaseCarEntity> extends EntityRenderer<T> {
-
     private final MinecartModel<T> model;
-    private static final ResourceLocation TEXTURE =
-            ResourceLocation.fromNamespaceAndPath("minecraft", "textures/entity/minecart.png");
+    private static final ResourceLocation TEX = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/entity/minecart.png");
 
-    public CarRenderer(EntityRendererProvider.Context context) {
-        super(context);
-        this.shadowRadius = 0.7F;
-        this.model = new MinecartModel<>(context.bakeLayer(ModelLayers.MINECART));
+    public CarRenderer(EntityRendererProvider.Context ctx) {
+        super(ctx); this.shadowRadius = 0.7F; this.model = new MinecartModel<>(ctx.bakeLayer(ModelLayers.MINECART));
     }
 
-    @Override
-    public void render(T entity, float entityYaw, float partialTicks,
-                       PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        poseStack.pushPose();
-
-        // Otočení dle fyziky auta
-        poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - entityYaw));
-
-        // Model vozíku je zabořený – zvedneme ho
-        poseStack.translate(0.0D, 0.5D, 0.0D);
-
-        this.model.renderToBuffer(
-                poseStack,
-                buffer.getBuffer(this.model.renderType(TEXTURE)),
-                packedLight,
-                OverlayTexture.NO_OVERLAY,
-                1.0F, 1.0F, 1.0F, 1.0F
-        );
-
-        poseStack.popPose();
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+    @Override public void render(T e, float y, float pt, PoseStack ps, MultiBufferSource b, int l) {
+        ps.pushPose(); ps.mulPose(Axis.YP.rotationDegrees(180F - y)); ps.translate(0D, 0.5D, 0D);
+        model.renderToBuffer(ps, b.getBuffer(model.renderType(TEX)), l, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+        ps.popPose(); super.render(e, y, pt, ps, b, l);
     }
-
-    @Override
-    public ResourceLocation getTextureLocation(T entity) {
-        return TEXTURE;
-    }
+    @Override public ResourceLocation getTextureLocation(T e) { return TEX; }
 }

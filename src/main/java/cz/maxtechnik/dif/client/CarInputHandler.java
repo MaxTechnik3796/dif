@@ -3,7 +3,7 @@ package cz.maxtechnik.dif.client;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.entity.vehicle.BaseCarEntity;
 import cz.maxtechnik.dif.init.other.DifModKeys;
-import cz.maxtechnik.dif.network.ShiftGearPacket;
+import cz.maxtechnik.dif.network.ModNetworking.ShiftGearPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
