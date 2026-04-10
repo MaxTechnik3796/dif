@@ -6,49 +6,78 @@ import cz.maxtechnik.dif.init.other.DifModKeys;
 import cz.maxtechnik.dif.network.ShiftGearPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+/**
+ * Klientský handler vstupu pro vozidla – řazení.
+ *
+ * Sekvence: R(-1) ↔ N(0) ↔ 1 ↔ 2 ↔ … ↔ 7
+ *   F (GEAR_DOWN) = řadit dolů  → N → R
+ *   R (GEAR_UP)   = řadit nahoru → R → N → 1 → …
+ *
+ * Zpátečka (R = -1): pouze stojíš + máš palivo.
+ * W v R = jede dozadu. S = nic.
+ */
 @Mod.EventBusSubscriber(modid = DifMod.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CarInputHandler {
 
     @SubscribeEvent
-    public static void onKeyInput(InputEvent.Key event) {
-        Minecraft mc = Minecraft.getInstance();
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
 
-        // Základní kontroly: hráč musí existovat, nesmí být v menu a musí sedět v autě
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.screen != null) return;
         if (!(mc.player.getVehicle() instanceof BaseCarEntity car)) return;
 
-        // Reagujeme pouze na stisk (Action 1), ne na držení nebo puštění[cite: 16]
-        if (event.getAction() != 1) return;
-
-        // Propojení na KeyMappingy z DifModKeys místo GLFW konstant
-        if (DifModKeys.GEAR_UP.consumeClick()) {
-            handleShift(car, 1);
-        } else if (DifModKeys.GEAR_DOWN.consumeClick()) {
+        // consumeClick() vrátí true právě jednou za každý stisk klávesy
+        while (DifModKeys.GEAR_UP.consumeClick()) {
+            handleShift(car, +1);
+        }
+        while (DifModKeys.GEAR_DOWN.consumeClick()) {
             handleShift(car, -1);
         }
     }
 
+    /**
+     * Optimistická klientská predikce řazení.
+     * Pravidla jsou zrcadlem ShiftGearPacket na serveru.
+     *
+     * Sekvence: R(-1) – N(0) – 1 – 2 – … – maxGear
+     * Zpátečka: jen při stání (< 0.5 km/h) a s palivem.
+     */
     private static void handleShift(BaseCarEntity car, int direction) {
-        int currentGear = car.getCurrentGear(); //[cite: 16]
-        int maxGear = car.getGearRatios().length; //[cite: 16]
+        int   current  = car.getCurrentGear();
+        int   maxGear  = car.getGearRatios().length;
+        float speedKmh = car.getSpeedKmh();
 
-        if (direction == 1 && currentGear < maxGear) {
-            // Logika pro přeřazení nahoru[cite: 16]
-            car.setCurrentGear(currentGear + 1);
-            sendPacket(1);
-        } else if (direction == -1 && currentGear > 1) {
-            // Logika pro přeřazení dolů[cite: 16]
-            car.setCurrentGear(currentGear - 1);
-            sendPacket(-1);
+        int newGear = current + direction;
+
+        // Ohraničení sekvence: R(-1) až maxGear
+        if (newGear < -1)      newGear = -1;
+        if (newGear > maxGear) newGear = maxGear;
+
+        // R(-1): pouze stojíš A máš palivo
+        if (newGear == -1 && (speedKmh > 0.5f || car.getFuelMb() <= 0.0f)) {
+            newGear = 0; // fallback na N
         }
-    }
 
-    private static void sendPacket(int direction) {
-        // Odeslání packetu přes tvůj PACKET_HANDLER[cite: 16]
-        DifMod.PACKET_HANDLER.sendToServer(new ShiftGearPacket(direction));
+        // Downshift rev-protection (jen pro 3↓2, 4↓3 atd.)
+        if (direction < 0 && current > 1 && newGear > 0) {
+            float[] ratios = car.getGearRatios();
+            float newRatio = ratios[newGear - 1];
+            float rpmConv  = car.getMaxRPM() /
+                    ((car.getMaxSpeedKmh() / 72.0f) * ratios[ratios.length - 1]);
+            float estRPM   = (speedKmh / 72.0f) * newRatio * rpmConv;
+            if (estRPM > car.getRedlineRPM() * 1.02f) return;
+        }
+
+        if (newGear != current) {
+            // Okamžitá klientská predikce → HUD se okamžitě aktualizuje
+            car.setCurrentGear(newGear);
+            // Autoritativní potvrzení serveru
+            DifMod.PACKET_HANDLER.sendToServer(new ShiftGearPacket(direction));
+        }
     }
 }

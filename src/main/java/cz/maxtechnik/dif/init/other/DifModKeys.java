@@ -2,12 +2,11 @@ package cz.maxtechnik.dif.init.other;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.entity.vehicle.BaseCarEntity;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.network.EnderOpenMessage;
 import cz.maxtechnik.dif.network.JetpackFlyMessage;
 import cz.maxtechnik.dif.network.RemoteControlPacket;
-import cz.maxtechnik.dif.network.ShiftGearPacket;
+
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
@@ -50,15 +49,8 @@ public class DifModKeys {
 			if (event.phase == TickEvent.Phase.END && Minecraft.getInstance().player != null) {
 				var player = Minecraft.getInstance().player;
 
-				// 1. Logika řazení (pokud hráč sedí v autě)
-				if (player.getVehicle() instanceof BaseCarEntity) {
-					while (GEAR_UP.consumeClick()) {
-						DifMod.PACKET_HANDLER.sendToServer(new ShiftGearPacket(+1));
-					}
-					while (GEAR_DOWN.consumeClick()) {
-						DifMod.PACKET_HANDLER.sendToServer(new ShiftGearPacket(-1));
-					}
-				}
+				// 1. Řazení obsluhuje CarInputHandler přes InputEvent.Key
+				//    (má správnou logiku R/N/1-7 a klientskou predikci)
 
 				// 2. Logika Jetpacku
 				if (JETPACK_FLY.isDown()) {

@@ -63,7 +63,7 @@ public abstract class BaseCarEntity extends Entity {
     @Override
     protected void defineSynchedData() {
         this.entityData.define(DATA_RPM,       getIdleRPM());
-        this.entityData.define(DATA_GEAR,      1);
+        this.entityData.define(DATA_GEAR,      0); // Začínáme v neutrálu (N)
         this.entityData.define(DATA_SPEED,     0.0f);
         this.entityData.define(DATA_ENGINE_ON, false);
         this.entityData.define(DATA_FUEL,      getInitialFuelMb());
@@ -118,7 +118,10 @@ public abstract class BaseCarEntity extends Entity {
 
         if (!this.level().isClientSide) {
             boolean ok = player.startRiding(this);
-            if (ok) setEngineOn(true);
+            if (ok) {
+                setEngineOn(true);
+                setCurrentGear(0); // Nastoupení vždy začíná v N
+            }
             return ok ? InteractionResult.SUCCESS : InteractionResult.FAIL;
         }
         return InteractionResult.SUCCESS;
@@ -216,7 +219,8 @@ public abstract class BaseCarEntity extends Entity {
         float currentFuel = getFuelMb();
         if (currentFuel <= 0.0f) return;
 
-        float mbPerTick = (getSpeedKmh() >= getFuelSpeedThresholdKmh())
+        // Zpátečka (R) spotřebovává palivo stejně jako jízda vpřed
+        float mbPerTick = (getSpeedKmh() >= getFuelSpeedThresholdKmh() || getCurrentGear() == -1)
                 ? getFuelConsumptionHighMbPerTick()
                 : getFuelConsumptionLowMbPerTick();
 
@@ -244,24 +248,34 @@ public abstract class BaseCarEntity extends Entity {
     }
 
     protected void simulateActivePhysics(LivingEntity driver) {
-        float throttle   = driver.zza;
-        float steerInput = -driver.xxa;
-        boolean handbrake = getJumping(driver);
+        // Pouze W klávesa (driver.zza > 0) je plyn.
+        // S klávesa se ignoruje – couvat lze pouze zpátečkou (R gear = -1).
+        float throttle    = Math.max(0f, driver.zza); // pouze W
+        float steerInput  = -driver.xxa;
+        boolean handbrake = getJumping(driver);        // mezeríkem
         SurfaceType surface = detectSurface();
+        int gear = getCurrentGear(); // -1=R, 0=N, 1..n
 
         float surfaceSpeedMult = getSurfaceSpeedMult(surface);
         float lateralGrip      = getSurfaceLateralGrip(surface);
         float rollingRes       = getSurfaceRollingResistance(surface);
         float maxSpeedBT       = (getMaxSpeedKmh() * surfaceSpeedMult) / 72.0f;
 
-        float rpmConv   = computeRPMConversionFactor();
-        float gearRatio = getGearRatios()[getCurrentGear() - 1];
-        float targetRPM = Math.abs(velocity) * gearRatio * rpmConv;
-
-        if (Math.abs(velocity) < 0.05f && throttle > 0) {
-            targetRPM = Math.max(targetRPM, getIdleRPM() + (getMaxRPM() - getIdleRPM()) * throttle * 0.25f);
+        // RPM – sleduje abs. rychlost * převodní poměr (v N pouze volnoběh)
+        float rpmConv = computeRPMConversionFactor();
+        if (gear == 0) {
+            // Neutrál: RPM jen lehce reaguje na plyn
+            float targetRPM = getIdleRPM() + (getMaxRPM() - getIdleRPM()) * throttle * 0.25f;
+            setRPM(getRPM() + (targetRPM - getRPM()) * 0.15f);
+        } else {
+            int gearIdx = (gear == -1) ? 0 : (gear - 1);
+            float gearRatio = getGearRatios()[gearIdx];
+            float targetRPM = Math.abs(velocity) * gearRatio * rpmConv;
+            if (Math.abs(velocity) < 0.05f && throttle > 0f) {
+                targetRPM = Math.max(targetRPM, getIdleRPM() + (getMaxRPM() - getIdleRPM()) * throttle * 0.25f);
+            }
+            setRPM(Math.max(getIdleRPM(), Math.min(getMaxRPM(), targetRPM)));
         }
-        setRPM(Math.max(getIdleRPM(), Math.min(getMaxRPM(), targetRPM)));
 
         float torqueFactor = (shiftCooldown > 0) ? (float) shiftCooldown / getShiftCooldownTicks() : 1.0f;
         if (getRPM() >= getMaxRPM() * 0.999f) torqueFactor = 0.0f;
@@ -269,15 +283,20 @@ public abstract class BaseCarEntity extends Entity {
         boolean hasFuel = getFuelMb() > 0.0f;
 
         float thrust = 0.0f;
-        if (hasFuel) {
-            if (throttle > 0.0f) {
-                float rpmPowerFactor = computeTorqueCurve(getRPM());
-                thrust = throttle * getBaseAcceleration() * (gearRatio / getGearRatios()[0]) * rpmPowerFactor * torqueFactor;
-            } else if (throttle < 0.0f) {
-                thrust = throttle * getBrakingDeceleration();
-            }
+        if (gear == 0 || throttle == 0f) {
+            // Neutrál nebo žádný vstup: nula tahu
+            if (!hasFuel) setRPM(Math.max(0.0f, getRPM() - getMaxRPM() * 0.04f));
+        } else if (hasFuel) {
+            // V R(-1): W jede DOZADU, v 1-7: W jede VPŘED
+            int gearIdx = (gear == -1) ? 0 : (gear - 1);
+            float gearRatio = getGearRatios()[gearIdx];
+            float rpmPowerFactor = computeTorqueCurve(getRPM());
+            float baseThrust = throttle * getBaseAcceleration()
+                    * (gearRatio / getGearRatios()[0])
+                    * rpmPowerFactor * torqueFactor;
+            thrust = (gear == -1) ? -baseThrust * 0.4f : baseThrust;
         } else {
-            if (throttle < 0.0f) thrust = throttle * getBrakingDeceleration();
+            // Bez paliva: RPM kač, žádný tah
             setRPM(Math.max(0.0f, getRPM() - getMaxRPM() * 0.04f));
         }
 
@@ -390,7 +409,6 @@ public abstract class BaseCarEntity extends Entity {
         this.entityData.set(DATA_SPEED, v);
     }
 
-    // PŘIDÁNO: Abstraktní funkce pro ten tvůj "jeden řádek kódu"
     public abstract SoundEvent getEngineSound();
 
     public abstract float getCustomStepHeight();
@@ -400,6 +418,7 @@ public abstract class BaseCarEntity extends Entity {
     public abstract float getBaseHandling();
     public abstract float getIdleRPM();
     public abstract float getMaxRPM();
+    /** Absolutní RPM limit (omezovač); typicky maxRPM nebo maxRPM + 200. */
     public abstract float getRedlineRPM();
 
     public abstract float getMaxFuelMb();

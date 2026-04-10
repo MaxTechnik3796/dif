@@ -19,10 +19,15 @@ public class ModNetworking {
 
     public static void register() {
         int id = 0;
-        // Registrace packetu
+        // Registrace paketů
         CHANNEL.registerMessage(id++, ShiftGearPacket.class,
                 ShiftGearPacket::encode,
                 ShiftGearPacket::decode,
                 ShiftGearPacket::handle);
+
+        CHANNEL.registerMessage(id++, SyncCarPositionPacket.class,
+                SyncCarPositionPacket::encode,
+                SyncCarPositionPacket::decode,
+                SyncCarPositionPacket::handle);
     }
 }
