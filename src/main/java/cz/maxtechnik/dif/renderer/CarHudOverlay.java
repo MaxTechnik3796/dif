@@ -1,12 +1,30 @@
 package cz.maxtechnik.dif.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import cz.maxtechnik.dif.entity.vehicle.BaseCarEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 
+/**
+ * HUD přístrojová deska – design převzat z Old_CarHudOverlay, bez spojky.
+ *
+ * ═══ ROZVRŽENÍ (střed spodní části obrazovky) ══════════════════════════════
+ *
+ *   ┌─────────────────────────────────────────────────────────────────┐
+ *   │  [●●●●●●●●●●○○○○○]  ← LED pruh (15 diod)                      │
+ *   │                                                                  │
+ *   │              3      ← stupeň (velký, 2×)                       │
+ *   │           235 km/h  ← rychlost                                  │
+ *   │  Fuel 45%           ← palivo                                    │
+ *   └─────────────────────────────────────────────────────────────────┘
+ *
+ * Stupně: R = červená, N = žlutá, 1–7 = bílá.
+ */
 public class CarHudOverlay {
+
+    private static float smoothedSpeed = 0.0f;
+    private static final float SPEED_LERP = 0.20f;
+    private static final int   LED_COUNT  = 15;
 
     public static void render(GuiGraphics gui, float partialTick) {
         Minecraft mc = Minecraft.getInstance();
@@ -15,43 +33,124 @@ public class CarHudOverlay {
 
         int sw = mc.getWindow().getGuiScaledWidth();
         int sh = mc.getWindow().getGuiScaledHeight();
+        int cx = sw / 2;
 
-        // Střed HUDu posunutý nahoru od spodku obrazovky
-        float arcCX = sw / 2.0f;
-        float arcCY = sh - 70.0f;
+        // Vyhlazení rychlosti (LERP) pro plynulý tachometr
+        smoothedSpeed += (car.getSpeedKmh() - smoothedSpeed) * SPEED_LERP;
 
-        float rpmPercent = car.getRPM() / 18000f;
+        // ── Základní hodnoty ──────────────────────────────────────────────────
+        float rpm      = car.getRPM();
+        float maxRPM   = car.getMaxRPM();
+        float idleRPM  = car.getIdleRPM();
+        float fuelPct  = car.getFuelPercent();
+        int   gear     = car.getCurrentGear();
 
-        // Vykreslení 14 segmentů otáčkoměru
-        for (int i = 0; i < 14; i++) {
-            float segStart = i / 14.0f;
-            int color = 0x44FFFFFF; // Průhledná bílá (vypnuto)
+        // Rev limit (fallback na maxRPM pokud getRedlineRPM chybí)
+        float revLimit = car.getRedlineRPM();
 
-            if (rpmPercent > segStart) {
-                if (i < 8) color = 0xFF00FF00;      // Zelená
-                else if (i < 11) color = 0xFFFFFF00; // Žlutá
-                else color = 0xFFFF0000;             // Červená
+        // Blikací takt pro rev limiter
+        long ms = System.currentTimeMillis();
+        boolean blinkFast = (ms % 150L) < 75L;   // ~6.7 Hz – rev limiter
+
+        // ── Pozice panelu ─────────────────────────────────────────────────────
+        int panelW = 180;
+        int panelH = 76;
+        int panelX = cx - panelW / 2;
+        int panelY = sh - panelH - 56;
+
+
+        // Poloprůhledné pozadí panelu
+        gui.fill(panelX, panelY, panelX + panelW, panelY + panelH, 0xAA000000);
+        // Tenký rámeček
+        gui.fill(panelX,              panelY,              panelX + panelW, panelY + 1,      0x88FFFFFF);
+        gui.fill(panelX,              panelY + panelH - 1, panelX + panelW, panelY + panelH, 0x88FFFFFF);
+        gui.fill(panelX,              panelY,              panelX + 1,      panelY + panelH, 0x88FFFFFF);
+        gui.fill(panelX + panelW - 1, panelY,              panelX + panelW, panelY + panelH, 0x88FFFFFF);
+
+        // ── LED PRUH ─────────────────────────────────────────────────────────
+        int ledBarY      = panelY + 7;
+        int ledW         = 9;
+        int ledH         = 10;
+        int ledGap       = 2;
+        int ledStep      = ledW + ledGap;
+        int ledBarTotalW = LED_COUNT * ledStep - ledGap;
+        int ledBarStartX = cx - ledBarTotalW / 2;
+
+        // RPM práh pro rozsvícení každé diody (lineární od idleRPM do revLimit)
+        float rpmRange = revLimit - idleRPM;
+        boolean revLimiting = rpm >= revLimit;
+
+        for (int i = 0; i < LED_COUNT; i++) {
+            float threshold = idleRPM + (i / (float)(LED_COUNT - 1)) * rpmRange;
+            boolean lit = rpm >= threshold;
+
+            int color;
+
+            if (revLimiting) {
+                // Omezovač: všechny diody blikají červeně rychle
+                color = blinkFast ? 0xFFFF1111 : 0x55FF1111;
+            } else if (lit) {
+                // Normální "fill" chování
+                if (i < 5) {
+                    color = 0xFF00DD00;  // Zelená – zahřívání
+                } else if (i < 10) {
+                    color = 0xFFFF5500;  // Oranžová-červená – výkonová zóna
+                } else {
+                    color = 0xFF4455FF;  // Modrá – těsně před limitem
+                }
+            } else {
+                color = 0x22FFFFFF;     // Vypnuto (tmavá)
             }
 
-            float angle = -100f + (i * 200f / 13f);
-            drawSegment(gui, arcCX, arcCY, 6, 3, angle, color);
+            int lx = ledBarStartX + i * ledStep;
+            gui.fill(lx, ledBarY, lx + ledW, ledBarY + ledH, color);
+
+            // Malý lesk na horní hraně diody
+            if (color != 0x22FFFFFF) {
+                gui.fill(lx, ledBarY, lx + ledW, ledBarY + 1, 0x44FFFFFF);
+            }
         }
 
-        // Rychlost a stupeň
-        String gear = car.getCurrentGear() == 0 ? "N" : String.valueOf(car.getCurrentGear());
-        gui.drawCenteredString(mc.font, gear, (int)arcCX, (int)arcCY - 15, 0xFFFFFFFF);
+        // ── VELKÝ STUPEŇ (2× zvětšeno) ───────────────────────────────────────
+        String gearText = switch (gear) {
+            case -1 -> "R";
+            case  0 -> "N";
+            default -> String.valueOf(gear);
+        };
 
-        String speed = (int)car.getSpeedKmh() + " km/h";
-        gui.drawCenteredString(mc.font, speed, (int)arcCX, (int)arcCY + 10, 0xFFFFFFFF);
-    }
+        int gearColor;
+        if (revLimiting && blinkFast) {
+            gearColor = 0xFFFF1111; // Bliká červeně při omezovači
+        } else if (revLimiting) {
+            gearColor = 0xFFAA0000;
+        } else {
+            gearColor = switch (gear) {
+                case -1 -> 0xFFFF4444; // R – červená
+                case  0 -> 0xFFFFDD00; // N – žlutá
+                default -> 0xFFFFFFFF; // 1–7 – bílá
+            };
+        }
 
-    private static void drawSegment(GuiGraphics gui, float cx, float cy, float w, float h, float rot, int color) {
+        int gearY = panelY + 22;
         PoseStack ps = gui.pose();
         ps.pushPose();
-        ps.translate(cx, cy, 0);
-        ps.mulPose(Axis.ZP.rotationDegrees(rot));
-        ps.translate(0, -40, 0); // Poloměr oblouku
-        gui.fill((int)(-w/2), (int)(-h/2), (int)(w/2), (int)(h/2), color);
+        ps.translate(cx, gearY, 0);
+        ps.scale(2.0f, 2.0f, 1.0f);
+        gui.drawCenteredString(mc.font, gearText, 0, 0, gearColor);
         ps.popPose();
+
+        // ── RYCHLOST ─────────────────────────────────────────────────────────
+        int speedY = panelY + 44;
+        String speedText = (int) smoothedSpeed + " km/h";
+        gui.drawCenteredString(mc.font, speedText, cx, speedY, 0xFFCCCCCC);
+
+        // ── PALIVO (spodní řádek panelu) ──────────────────────────────────────
+        int bottomY = panelY + 59;
+        int fuelColor;
+        if (fuelPct > 0.50f)       fuelColor = 0xFF00CC00;
+        else if (fuelPct > 0.25f)  fuelColor = 0xFFFFDD00;
+        else                       fuelColor = 0xFFFF4444;
+        String fuelText = "Fuel " + (int)(fuelPct * 100f) + "%";
+        gui.drawString(mc.font, fuelText, panelX + 8, bottomY, fuelColor);
     }
 }
