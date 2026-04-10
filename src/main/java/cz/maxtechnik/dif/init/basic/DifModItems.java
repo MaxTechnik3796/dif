@@ -2,6 +2,7 @@ package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.fluid.bucket.*;
+import cz.maxtechnik.dif.init.other.DifModEntities;
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
@@ -16,6 +17,7 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -32,6 +34,8 @@ public class DifModItems{
 		assert block.getId()!=null;
 		return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));
 	}
+
+
 	public static final RegistryObject<Item>REMOTE_MINECART=REGISTRY.register("remote_minecart",()->new RemoteMinecartItem(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<Item>REMOTE_CONTROLLER=REGISTRY.register("remote_controller",()->new StackSize(1));
 	public static final RegistryObject<Item>REMOTE_MINECART_BLOCK=block(DifModBlocks.REMOTE_MINECART_BLOCK);
