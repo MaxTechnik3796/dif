@@ -42,6 +42,8 @@ public class DifModItems{
 
 	public static final RegistryObject<Item> MEGA_TORCH = block(DifModBlocks.MEGA_TORCH);
 
+	public static final RegistryObject<Item>PHANTOM_RING=REGISTRY.register("phantom_ring",PhantomRing::new);
+
 	public static final RegistryObject<Item> GOD_TOTEM = REGISTRY.register("god_totem", () -> new GodTotemItem(new Item.Properties()));
 	public static final RegistryObject<Item> BAN_HAMMER = REGISTRY.register("ban_hammer", BanHammer::new);
 

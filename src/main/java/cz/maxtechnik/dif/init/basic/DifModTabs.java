@@ -315,6 +315,7 @@ public class DifModTabs{
 					});
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES)){
 			tabData.getEntries().putBefore(new ItemStack(Items.BUCKET),new ItemStack(DifModItems.ELECTRUM_DESTROYER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.getEntries().putAfter(new ItemStack(Items.ELYTRA),new ItemStack(DifModItems.PHANTOM_RING.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			addItemStacksBehind(tabData,new ItemStack(Items.STONE),
 					new ItemStack[]{
 							new ItemStack(DifModItems.COPPER_SHOVEL.get()),
