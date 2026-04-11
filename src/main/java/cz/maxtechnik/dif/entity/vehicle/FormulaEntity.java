@@ -10,7 +10,7 @@ import net.minecraft.world.level.material.Fluids;
 public class FormulaEntity extends BaseCarEntity {
     public FormulaEntity(EntityType<?> t, Level l) { super(t, l); }
     @Override public SoundEvent getEngineSound() { return DifModSounds.FORMULA_ENGINE.get(); }
-    @Override public net.minecraft.world.item.Item getDropItem() { return net.minecraft.world.item.Items.MINECART; }
+    @Override public net.minecraft.world.item.Item getDropItem() { return cz.maxtechnik.dif.init.basic.DifModItems.FORMULA_ITEM.get(); }
     @Override public float getCustomStepHeight() { return 0.75f; }
     @Override public float getMaxSpeedKmh() { return 330.0f; }
     @Override public float getBaseAcceleration() { return 0.042f; }

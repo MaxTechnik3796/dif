@@ -40,6 +40,25 @@ public class CarInputHandler {
         }
     }
 
+    @SubscribeEvent
+    public static void onMovementInput(net.minecraftforge.client.event.MovementInputUpdateEvent event) {
+        if (event.getEntity().getVehicle() instanceof BaseCarEntity) {
+            net.minecraft.client.player.Input input = event.getInput();
+            // Override vanilla inputs with custom car keys
+            input.up = DifModKeys.CAR_GAS.isDown();
+            input.jumping = DifModKeys.CAR_BRAKE.isDown();
+
+            // Recompute forward impulse for client-side syncing and packet sending
+            input.forwardImpulse = 0.0f;
+            if (input.up) {
+                input.forwardImpulse += 1.0f;
+            }
+            if (input.down) {
+                input.forwardImpulse -= 1.0f;
+            }
+        }
+    }
+
     /**
      * Optimistická klientská predikce řazení.
      * Pravidla jsou zrcadlem ShiftGearPacket na serveru.

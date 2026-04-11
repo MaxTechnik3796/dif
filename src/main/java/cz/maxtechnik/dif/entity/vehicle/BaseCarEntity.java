@@ -38,8 +38,10 @@ public abstract class BaseCarEntity extends Entity{
 	protected float motionYaw=0f;
 	protected int spinoutTimer=0;
 	protected int oversteerTimer=0;
+	protected int driftRecoveryTimer=0;
+	protected float spinoutDirection=1f;
 	public boolean isSoundPlaying=false;
-	public enum SurfaceType{NORMAL,SOUL_SAND,ICE,CARPET}
+	public enum SurfaceType{NORMAL,SOUL_SAND,ICE,CARPET,GRASS}
 	private static Field jumpingField;
 	static{
 		try{
@@ -165,10 +167,11 @@ public abstract class BaseCarEntity extends Entity{
 		float throttle=Math.max(0f,d.zza), targetInput=-d.xxa;
 		if (spinoutTimer > 0) {
 			spinoutTimer--;
-			throttle = 0f;
-			targetInput = 0f;
-			currentSteering = Math.signum(currentSteering);
-			setYRot(getYRot() + 25f * currentSteering);
+			if (spinoutTimer > 60) {
+				throttle = 0f;
+				targetInput = 0f;
+			}
+			setYRot(getYRot() + 6f * spinoutDirection);
 			velocity *= 0.985f;
 		} else {
 			if(targetInput!=0f){
@@ -184,7 +187,7 @@ public abstract class BaseCarEntity extends Entity{
 		}
 		SurfaceType s=detectSurface();
 		int g=getCurrentGear();
-		float sMult=s==SurfaceType.SOUL_SAND?0.35f:s==SurfaceType.CARPET?0.88f:1f, lGrip=s==SurfaceType.ICE?0.1f:s==SurfaceType.SOUL_SAND?0.5f:s==SurfaceType.CARPET?0.75f:1f, rRes=s==SurfaceType.SOUL_SAND?0.025f:s==SurfaceType.ICE?0.0004f:s==SurfaceType.CARPET?0.006f:0.002f;
+		float sMult=s==SurfaceType.SOUL_SAND?0.35f:s==SurfaceType.CARPET?0.88f:1f, lGrip=s==SurfaceType.ICE?0.1f:s==SurfaceType.GRASS?0.7f:s==SurfaceType.SOUL_SAND?0.5f:s==SurfaceType.CARPET?0.75f:1f, rRes=s==SurfaceType.SOUL_SAND?0.025f:s==SurfaceType.ICE?0.0004f:s==SurfaceType.GRASS?0.0015f:s==SurfaceType.CARPET?0.006f:0.002f;
 		float msBT=(getMaxSpeedKmh()*sMult)/72f, rpmC=getMaxRPM()/((getMaxSpeedKmh()/72f)*getGearRatios()[getGearRatios().length-1]);
 		if(g==0) setRPM(getRPM()+(getIdleRPM()+(getMaxRPM()-getIdleRPM())*throttle*0.25f-getRPM())*0.15f);
 		else{
@@ -206,40 +209,38 @@ public abstract class BaseCarEntity extends Entity{
 			velocity=velocity*0.82f+Math.signum(velocity)*(22f/72f)*0.18f;
 		boolean isDrifting = false;
 		if(Math.abs(velocity)>0.015f){
-			setYRot(getYRot()+getBaseHandling()*(1f+getDownforceCoefficient()*(velocity/msBT)*(velocity/msBT))*lGrip*currentSteering*Math.max(0.05f,1f-Math.abs(velocity)/msBT*getHighSpeedSteerReduction()));
-			
 			float speedKmh = Math.abs(velocity) * 72f;
-			float safeAngle;
-			if (speedKmh <= 130f) safeAngle = 25f;
-			else if (speedKmh <= 200f) safeAngle = 25f - ((speedKmh - 130f) / 70f) * 10f;
-			else if (speedKmh <= 250f) safeAngle = 15f - ((speedKmh - 200f) / 50f) * 5f;
-			else if (speedKmh <= 300f) safeAngle = 10f - ((speedKmh - 250f) / 50f) * 5f;
-			else safeAngle = 5f;
+			float steeringMult = Math.max(0.35f, 1f - (speedKmh / 500f));
+			setYRot(getYRot()+getBaseHandling()*(1f+getDownforceCoefficient()*(velocity/msBT)*(velocity/msBT))*lGrip*currentSteering*steeringMult);
 			
-			float safeLimit = safeAngle / 25f;
+			float safeLimit;
+			if (speedKmh <= 150f) safeLimit = 1.0f;
+			else if (speedKmh <= 250f) safeLimit = 1.0f - ((speedKmh - 150f) / 100f) * 0.44f;
+			else if (speedKmh <= 300f) safeLimit = 0.56f - ((speedKmh - 250f) / 50f) * 0.23f;
+			else safeLimit = 0.30f;
+			
 			float absSteer = Math.abs(currentSteering);
-			if (absSteer > safeLimit && spinoutTimer == 0) {
+			boolean oversteerDanger = absSteer > safeLimit;
+			
+			if (oversteerDanger && spinoutTimer == 0) {
 				oversteerTimer++;
-				if (oversteerTimer > 10) {
-					float oversteer = absSteer - safeLimit;
-					if (oversteer > safeLimit * 0.3f) {
-						spinoutTimer = 120;
-					} else {
-						isDrifting = true;
-						float driftSec = oversteer / (safeLimit * 0.3f);
-						setYRot(getYRot() + Math.signum(currentSteering) * 4f * driftSec);
-						velocity *= 0.99f;
-					}
+				int timeLimit = getJumping(d) ? 30 : 10;
+				if (oversteerTimer > timeLimit) {
+					// HODINY (Spinout) - striktně překročení limitů přináší hodiny, zrušen lehký drift
+					spinoutTimer = 120;
+					spinoutDirection = Math.signum(currentSteering);
 				}
 			} else {
 				oversteerTimer = Math.max(0, oversteerTimer - 2);
 			}
 		}
 		
+		if (driftRecoveryTimer > 0) driftRecoveryTimer--;
+		
 		float yawDiff = net.minecraft.util.Mth.wrapDegrees(getYRot() - motionYaw);
 		float alignSpeed = 0.2f;
 		if (spinoutTimer > 0) alignSpeed = 0.01f;
-		else if (isDrifting) alignSpeed = 0.04f;
+		else if (driftRecoveryTimer > 0) alignSpeed = 0.04f;
 		motionYaw += yawDiff * alignSpeed;
 		
 		double yaw=Math.toRadians(motionYaw), preX=getX(), preY=getY(), preZ=getZ();
@@ -261,6 +262,8 @@ public abstract class BaseCarEntity extends Entity{
 		BlockPos f=blockPosition();
 		Block bf=level().getBlockState(f).getBlock(), bb=level().getBlockState(f.below()).getBlock();
 		if(bf instanceof CarpetBlock||bb instanceof CarpetBlock) return SurfaceType.CARPET;
+		if(bb==Blocks.GRASS_BLOCK||bb==Blocks.DIRT_PATH||bf==Blocks.GRASS_BLOCK||bf==Blocks.DIRT_PATH)
+			return SurfaceType.GRASS;
 		if(bb==Blocks.ICE||bb==Blocks.PACKED_ICE||bb==Blocks.BLUE_ICE||bb==Blocks.FROSTED_ICE||bf==Blocks.ICE||bf==Blocks.PACKED_ICE||bf==Blocks.BLUE_ICE||bf==Blocks.FROSTED_ICE)
 			return SurfaceType.ICE;
 		if(bb==Blocks.SOUL_SAND||bb==Blocks.SOUL_SOIL||bf==Blocks.SOUL_SAND||bf==Blocks.SOUL_SOIL)
