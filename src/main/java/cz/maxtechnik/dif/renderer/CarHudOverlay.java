@@ -7,10 +7,26 @@ import net.minecraft.client.gui.GuiGraphics;
 
 public class CarHudOverlay {
     private static float smoothedSpeed = 0.0f;
+    private static long lastLapFinishTime = -1;
+    private static long currentBestLap = -1;
+    private static boolean wasOnLine = false;
+    private static BaseCarEntity lastCar = null;
 
-    public static void render(GuiGraphics gui, float tick) {
+    public static void render(GuiGraphics gui) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.options.hideGui || !(mc.player.getVehicle() instanceof BaseCarEntity c)) return;
+        if (mc.player == null || mc.options.hideGui || !(mc.player.getVehicle() instanceof BaseCarEntity c)) {
+            lastLapFinishTime = -1;
+            currentBestLap = -1;
+            wasOnLine = false;
+            lastCar = null;
+            return;
+        }
+        if (lastCar != c) {
+            lastLapFinishTime = -1;
+            currentBestLap = -1;
+            wasOnLine = false;
+            lastCar = c;
+        }
         int sw = mc.getWindow().getGuiScaledWidth(), sh = mc.getWindow().getGuiScaledHeight(), cx = sw / 2;
         smoothedSpeed += (c.getSpeedKmh() - smoothedSpeed) * 0.20f;
         
@@ -19,6 +35,35 @@ public class CarHudOverlay {
         float rpm = c.getRPM(), rL = c.getRedlineRPM(), fp = c.getFuelPercent(); int g = c.getCurrentGear();
         boolean blink = (System.currentTimeMillis() % 150L) < 75L, revLimit = rpm >= rL;
         int pW = 180, pH = 76, px = cx - pW / 2, py = sh - pH - 56;
+
+        assert mc.level != null;
+        net.minecraft.world.level.block.Block bf = mc.level.getBlockState(c.blockPosition()).getBlock();
+        net.minecraft.world.level.block.Block bb = mc.level.getBlockState(c.blockPosition().below()).getBlock();
+        boolean onLine = bf == cz.maxtechnik.dif.init.basic.DifModBlocks.LAP_TIMER.get() || bb == cz.maxtechnik.dif.init.basic.DifModBlocks.LAP_TIMER.get();
+        long now = System.currentTimeMillis();
+        
+        if (onLine && !wasOnLine) {
+            if (lastLapFinishTime != -1) {
+                long lap = now - lastLapFinishTime;
+                if (lap > 2000) {
+                    if (currentBestLap == -1 || lap < currentBestLap) currentBestLap = lap;
+                    lastLapFinishTime = now;
+                }
+            } else {
+                lastLapFinishTime = now;
+            }
+        }
+        wasOnLine = onLine;
+
+        if (lastLapFinishTime != -1) {
+            long curLap = now - lastLapFinishTime;
+            String curStr = String.format("%02d:%02d.%02d", (curLap / 60000) % 60, (curLap / 1000) % 60, (curLap % 1000) / 10);
+            gui.drawCenteredString(mc.font, "LAP: " + curStr, cx, py - 12, 0xFFFFFFFF);
+        }
+        if (currentBestLap != -1) {
+            String bestStr = String.format("%02d:%02d.%02d", (currentBestLap / 60000) % 60, (currentBestLap / 1000) % 60, (currentBestLap % 1000) / 10);
+            gui.drawCenteredString(mc.font, "BEST: " + bestStr, cx, py - 24, 0xFFFFDD00);
+        }
 
         gui.fill(px, py, px + pW, py + pH, 0xAA000000);
         gui.fill(px, py, px + pW, py + 1, 0x88FFFFFF); gui.fill(px, py + pH - 1, px + pW, py + pH, 0x88FFFFFF);

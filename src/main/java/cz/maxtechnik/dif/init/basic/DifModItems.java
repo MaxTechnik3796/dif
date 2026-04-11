@@ -98,6 +98,8 @@ public class DifModItems{
 
 	//Vanilla + :
 	public static final RegistryObject<Item> END_PORTAL=V_REGISTRY.register("end_portal",()->new BlockItem(Blocks.END_PORTAL,new Item.Properties()));
+	static final RegistryObject<Item> LAP_TIMER = REGISTRY.register("lap_timer", () -> new net.minecraft.world.item.BlockItem(DifModBlocks.LAP_TIMER.get(), new Item.Properties()));
+
 	public static final RegistryObject<Item> END_GATEWAY=V_REGISTRY.register("end_gateway",()->new BlockItem(Blocks.END_GATEWAY,new Item.Properties()));
 	public static final RegistryObject<Item> NETHER_PORTAL=V_REGISTRY.register("nether_portal",()->new BlockItem(Blocks.NETHER_PORTAL,new Item.Properties()));
 	public static final RegistryObject<Item> WATER=V_REGISTRY.register("water",()->new BlockItem(Blocks.WATER,new Item.Properties()));

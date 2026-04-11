@@ -21,17 +21,12 @@ public class VehicleCameraHandler {
             float lerpPitch = net.minecraft.util.Mth.lerp(pt, car.xRotO, car.getXRot());
             
             event.setYaw(lerpYaw);
+            event.setPitch(lerpPitch);
             
-            if (mc.options.getCameraType().isFirstPerson()) {
-                event.setPitch(lerpPitch);
-                // Nastaví tělo k řidiči
-                mc.player.setYRot(lerpYaw);
-                mc.player.setXRot(lerpPitch);
-                mc.player.setYHeadRot(lerpYaw);
-            } else {
-                // V režimu F5 - kouká mírně ze shora na auto
-                event.setPitch(lerpPitch + 25f);
-            }
+            // Lock the player's head as well so their body visually matches
+            mc.player.setYRot(lerpYaw);
+            mc.player.setXRot(lerpPitch);
+            mc.player.setYHeadRot(lerpYaw);
         }
     }
 

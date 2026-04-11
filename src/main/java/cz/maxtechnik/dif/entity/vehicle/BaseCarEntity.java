@@ -22,8 +22,10 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
+
 public abstract class BaseCarEntity extends Entity{
 	protected static final EntityDataAccessor<Float> DATA_RPM=SynchedEntityData.defineId(BaseCarEntity.class,EntityDataSerializers.FLOAT);
 	protected static final EntityDataAccessor<Integer> DATA_GEAR=SynchedEntityData.defineId(BaseCarEntity.class,EntityDataSerializers.INT);
@@ -41,7 +43,9 @@ public abstract class BaseCarEntity extends Entity{
 	protected int driftRecoveryTimer=0;
 	protected float spinoutDirection=1f;
 	public boolean isSoundPlaying=false;
-	public enum SurfaceType{NORMAL,SOUL_SAND,ICE,CARPET,GRASS}
+
+
+    public enum SurfaceType{NORMAL,SOUL_SAND,ICE,CARPET,GRASS}
 	private static Field jumpingField;
 	static{
 		try{
@@ -68,7 +72,7 @@ public abstract class BaseCarEntity extends Entity{
 		entityData.define(DATA_FUEL,getInitialFuelMb());
 	}
 	@Override
-	public InteractionResult interact(Player p,InteractionHand h){
+	public @NotNull InteractionResult interact(Player p, @NotNull InteractionHand h){
 		if(p.isSecondaryUseActive()){
 			ItemStack s=p.getItemInHand(h);
 			if(!level().isClientSide){
@@ -105,7 +109,7 @@ public abstract class BaseCarEntity extends Entity{
 		return InteractionResult.sidedSuccess(level().isClientSide);
 	}
 	@Override
-	public void removePassenger(Entity p){
+	public void removePassenger(@NotNull Entity p){
 		super.removePassenger(p);
 		if(!isVehicle()){
 			if(!level().isClientSide){
@@ -118,7 +122,7 @@ public abstract class BaseCarEntity extends Entity{
 		}
 	}
 	@Override
-	public boolean hurt(DamageSource src,float amt){
+	public boolean hurt(@NotNull DamageSource src, float amt){
 		if(isInvulnerableTo(src)) return false;
 		if(!level().isClientSide&&!isRemoved()){
 			if(src.getEntity() instanceof Player p&&!p.getAbilities().instabuild) spawnAtLocation(getDropItem());
@@ -175,11 +179,10 @@ public abstract class BaseCarEntity extends Entity{
 			velocity *= 0.985f;
 		} else {
 			if(targetInput!=0f){
-				float target=targetInput;
-				if(Math.abs(currentSteering)<0.25f*Math.abs(target)){
-					currentSteering=Math.signum(target)*0.25f*Math.abs(target);
+                if(Math.abs(currentSteering)<0.25f*Math.abs(targetInput)){
+					currentSteering=Math.signum(targetInput)*0.25f*Math.abs(targetInput);
 				}
-				currentSteering+=(target-currentSteering)*0.15f;
+				currentSteering+=(targetInput -currentSteering)*0.15f;
 			}else{
 				currentSteering+=(0f-currentSteering)*0.35f;
 				if(Math.abs(currentSteering)<0.05f) currentSteering=0f;
@@ -207,17 +210,16 @@ public abstract class BaseCarEntity extends Entity{
 		velocity=Math.max(-0.25f,Math.min(msBT,velocity+thrust-velocity*Math.abs(velocity)*getAeroDrag()-velocity*rRes));
 		if(s==SurfaceType.SOUL_SAND&&Math.abs(velocity)>22f/72f)
 			velocity=velocity*0.82f+Math.signum(velocity)*(22f/72f)*0.18f;
-		boolean isDrifting = false;
-		if(Math.abs(velocity)>0.015f){
+        if(Math.abs(velocity)>0.015f){
 			float speedKmh = Math.abs(velocity) * 72f;
-			float steeringMult = Math.max(0.35f, 1f - (speedKmh / 500f));
+			float steeringMult = Math.max(0.20f, 1f - (speedKmh / 400f));
 			setYRot(getYRot()+getBaseHandling()*(1f+getDownforceCoefficient()*(velocity/msBT)*(velocity/msBT))*lGrip*currentSteering*steeringMult);
 			
 			float safeLimit;
 			if (speedKmh <= 150f) safeLimit = 1.0f;
-			else if (speedKmh <= 250f) safeLimit = 1.0f - ((speedKmh - 150f) / 100f) * 0.44f;
-			else if (speedKmh <= 300f) safeLimit = 0.56f - ((speedKmh - 250f) / 50f) * 0.23f;
-			else safeLimit = 0.30f;
+			else if (speedKmh <= 250f) safeLimit = 1.0f - ((speedKmh - 150f) / 100f) * 0.50f;
+			else if (speedKmh <= 300f) safeLimit = 0.50f - ((speedKmh - 250f) / 50f) * 0.30f;
+			else safeLimit = 0.15f;
 			
 			float absSteer = Math.abs(currentSteering);
 			boolean oversteerDanger = absSteer > safeLimit;
