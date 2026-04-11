@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 
 public class ModNetworking {
     private static final String PROTOCOL_VERSION = "1";
-    public static final String MOD_ID = "dif"; // !!! MUSÍ BÝT MALÝMI PÍSMENY !!!
+    public static final String MOD_ID = "dif";
 
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
             ResourceLocation.fromNamespaceAndPath(MOD_ID, "main"),
@@ -65,9 +65,9 @@ public class ModNetworking {
         @OnlyIn(Dist.CLIENT)
         private static void applyMove(SyncCarPositionPacket p) {
             Minecraft mc = Minecraft.getInstance();
-            if (mc.level != null && mc.level.getEntity(p.entityId) instanceof BaseCarEntity c) {
-                if (mc.player == null || mc.player.getVehicle() != c) c.lerpTo(p.x, p.y, p.z, p.yRot, c.getXRot(), 3, true);
-                c.setVelocityFromPacket(p.velocity);
+            if (mc.level != null && mc.level.getEntity(p.entityId()) instanceof BaseCarEntity c) {
+                if (mc.player == null || mc.player.getVehicle() != c) c.lerpTo(p.x(), p.y(), p.z(), p.yRot(), c.getXRot(), 3, true);
+                c.setVelocityFromPacket(p.velocity());
             }
         }
     }
