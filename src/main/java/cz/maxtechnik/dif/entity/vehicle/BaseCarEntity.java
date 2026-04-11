@@ -35,6 +35,8 @@ public abstract class BaseCarEntity extends Entity{
 	private float prevVelocity=0f, fuelAccumulator=0f;
 	private int crashDamageCooldown=0, fuelSyncTick=0;
 	protected float currentSteering=0f;
+	protected float motionYaw=0f;
+	protected int spinoutTimer=0;
 	public boolean isSoundPlaying=false;
 	public enum SurfaceType{NORMAL,SOUL_SAND,ICE,CARPET}
 	private static Field jumpingField;
@@ -151,6 +153,7 @@ public abstract class BaseCarEntity extends Entity{
 		entityData.set(DATA_SPEED,velocity);
 	}
 	private void simulateIdlePhysics(){
+		motionYaw = getYRot();
 		velocity=Math.abs(velocity)<0.0005f?0f:velocity*0.88f;
 		setRPM(Math.max(0f,getRPM()-getMaxRPM()*0.04f));
 		double yaw=Math.toRadians(getYRot()), yMot=Math.max(-1.5,onGround()?-0.05:getDeltaMovement().y-0.04);
@@ -159,15 +162,24 @@ public abstract class BaseCarEntity extends Entity{
 	}
 	protected void simulateActivePhysics(LivingEntity d){
 		float throttle=Math.max(0f,d.zza), targetInput=-d.xxa;
-		if(targetInput!=0f){
-			float target=targetInput;
-			if(Math.abs(currentSteering)<0.25f*Math.abs(target)){
-				currentSteering=Math.signum(target)*0.25f*Math.abs(target);
+		if (spinoutTimer > 0) {
+			spinoutTimer--;
+			throttle = 0f;
+			targetInput = 0f;
+			currentSteering = Math.signum(currentSteering);
+			setYRot(getYRot() + 25f * currentSteering);
+			velocity *= 0.95f;
+		} else {
+			if(targetInput!=0f){
+				float target=targetInput;
+				if(Math.abs(currentSteering)<0.25f*Math.abs(target)){
+					currentSteering=Math.signum(target)*0.25f*Math.abs(target);
+				}
+				currentSteering+=(target-currentSteering)*0.15f;
+			}else{
+				currentSteering+=(0f-currentSteering)*0.35f;
+				if(Math.abs(currentSteering)<0.05f) currentSteering=0f;
 			}
-			currentSteering+=(target-currentSteering)*0.15f;
-		}else{
-			currentSteering+=(0f-currentSteering)*0.35f;
-			if(Math.abs(currentSteering)<0.05f) currentSteering=0f;
 		}
 		SurfaceType s=detectSurface();
 		int g=getCurrentGear();
@@ -184,15 +196,47 @@ public abstract class BaseCarEntity extends Entity{
 			thrust=g==-1?-base*0.4f:base;
 		}else if(getFuelMb()<=0f) setRPM(Math.max(0f,getRPM()-getMaxRPM()*0.04f));
 		if(getJumping(d)){
-			velocity*=0.87f;
-			lGrip*=0.22f;
+			velocity *= 0.97f;
+			velocity = Math.signum(velocity) * Math.max(0f, Math.abs(velocity) - getBrakingDeceleration() * 0.15f);
+			lGrip *= 0.6f;
 		}
 		velocity=Math.max(-0.25f,Math.min(msBT,velocity+thrust-velocity*Math.abs(velocity)*getAeroDrag()-velocity*rRes));
 		if(s==SurfaceType.SOUL_SAND&&Math.abs(velocity)>22f/72f)
 			velocity=velocity*0.82f+Math.signum(velocity)*(22f/72f)*0.18f;
-		if(Math.abs(velocity)>0.015f)
+		boolean isDrifting = false;
+		if(Math.abs(velocity)>0.015f){
 			setYRot(getYRot()+getBaseHandling()*(1f+getDownforceCoefficient()*(velocity/msBT)*(velocity/msBT))*lGrip*currentSteering*Math.max(0.05f,1f-Math.abs(velocity)/msBT*getHighSpeedSteerReduction()));
-		double yaw=Math.toRadians(getYRot()), preX=getX(), preZ=getZ();
+			
+			float speedKmh = Math.abs(velocity) * 72f;
+			float safeAngle;
+			if (speedKmh <= 130f) safeAngle = 25f;
+			else if (speedKmh <= 200f) safeAngle = 25f - ((speedKmh - 130f) / 70f) * 10f;
+			else if (speedKmh <= 250f) safeAngle = 15f - ((speedKmh - 200f) / 50f) * 5f;
+			else if (speedKmh <= 300f) safeAngle = 10f - ((speedKmh - 250f) / 50f) * 5f;
+			else safeAngle = 5f;
+			
+			float safeLimit = safeAngle / 25f;
+			float absSteer = Math.abs(currentSteering);
+			if (absSteer > safeLimit && spinoutTimer == 0) {
+				float oversteer = absSteer - safeLimit;
+				if (oversteer > safeLimit * 0.3f) {
+					spinoutTimer = 40;
+				} else {
+					isDrifting = true;
+					float driftSec = oversteer / (safeLimit * 0.3f);
+					setYRot(getYRot() + Math.signum(currentSteering) * 4f * driftSec);
+					velocity *= 0.99f;
+				}
+			}
+		}
+		
+		float yawDiff = net.minecraft.util.Mth.wrapDegrees(getYRot() - motionYaw);
+		float alignSpeed = 0.2f;
+		if (spinoutTimer > 0) alignSpeed = 0.01f;
+		else if (isDrifting) alignSpeed = 0.04f;
+		motionYaw += yawDiff * alignSpeed;
+		
+		double yaw=Math.toRadians(motionYaw), preX=getX(), preZ=getZ();
 		Vec3 mot=new Vec3(-Math.sin(yaw)*velocity,Math.max(-1.5,onGround()?-0.05:getDeltaMovement().y-0.04),Math.cos(yaw)*velocity);
 		setDeltaMovement(mot);
 		move(MoverType.SELF,getDeltaMovement());

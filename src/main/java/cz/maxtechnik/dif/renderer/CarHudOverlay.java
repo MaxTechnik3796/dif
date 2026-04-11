@@ -58,7 +58,7 @@ public class CarHudOverlay {
 
         gui.drawString(mc.font, "Fuel " + (int)(fp * 100f) + "%", px + 8, py + 59, fp > 0.5f ? 0xFF00CC00 : fp > 0.25f ? 0xFFFFDD00 : 0xFFFF4444);
         gui.drawCenteredString(mc.font, "BRAKE", cx, py + 59, mc.options.keyJump.isDown() ? 0xFFFF1111 : 0xFF444444);
-        String angleText = Math.round(Math.abs(steeringRaw) * 20) + "°";
+        String angleText = Math.round(Math.abs(steeringRaw) * 25) + "°";
         gui.drawString(mc.font, angleText, px + pW - 8 - mc.font.width(angleText), py + 59, 0xFFFFFFFF);
     }
 }
