@@ -7,12 +7,14 @@ import net.minecraft.client.gui.GuiGraphics;
 
 public class CarHudOverlay {
     private static float smoothedSpeed = 0.0f;
+    private static float smoothedSteering = 0.0f;
 
     public static void render(GuiGraphics gui, float tick) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.options.hideGui || !(mc.player.getVehicle() instanceof BaseCarEntity c)) return;
         int sw = mc.getWindow().getGuiScaledWidth(), sh = mc.getWindow().getGuiScaledHeight(), cx = sw / 2;
         smoothedSpeed += (c.getSpeedKmh() - smoothedSpeed) * 0.20f;
+        smoothedSteering += (mc.player.xxa - smoothedSteering) * 0.40f;
         
         float rpm = c.getRPM(), rL = c.getRedlineRPM(), fp = c.getFuelPercent(); int g = c.getCurrentGear();
         boolean blink = (System.currentTimeMillis() % 150L) < 75L, revLimit = rpm >= rL;
@@ -33,9 +35,30 @@ public class CarHudOverlay {
         int gc = revLimit ? (blink ? 0xFFFF1111 : 0xFFAA0000) : g == -1 ? 0xFFFF4444 : g == 0 ? 0xFFFFDD00 : 0xFFFFFFFF;
         
         PoseStack ps = gui.pose(); ps.pushPose(); ps.translate(cx, py + 22, 0); ps.scale(2f, 2f, 1f);
-        gui.drawCenteredString(mc.font, gt, 0, 0, gc); ps.popPose();
+        gui.drawCenteredString(mc.font, gt, 0, 0, gc);
+
+        int colL0 = smoothedSteering > 0.85f ? 0xFFFF1111 : 0xFF444444;
+        int colL1 = smoothedSteering > 0.50f ? 0xFFFFDD00 : 0xFF444444;
+        int colL2 = smoothedSteering > 0.15f ? 0xFF00DD00 : 0xFF444444;
+        gui.drawCenteredString(mc.font, "<", -26, 0, colL0);
+        gui.drawCenteredString(mc.font, "<", -18, 0, colL1);
+        gui.drawCenteredString(mc.font, "<", -10, 0, colL2);
+
+        float rS = -smoothedSteering;
+        int colR0 = rS > 0.15f ? 0xFF00DD00 : 0xFF444444;
+        int colR1 = rS > 0.50f ? 0xFFFFDD00 : 0xFF444444;
+        int colR2 = rS > 0.85f ? 0xFFFF1111 : 0xFF444444;
+        gui.drawCenteredString(mc.font, ">", 10, 0, colR0);
+        gui.drawCenteredString(mc.font, ">", 18, 0, colR1);
+        gui.drawCenteredString(mc.font, ">", 26, 0, colR2);
+
+        ps.popPose();
 
         gui.drawCenteredString(mc.font, (int) smoothedSpeed + " km/h", cx, py + 44, 0xFFCCCCCC);
+
         gui.drawString(mc.font, "Fuel " + (int)(fp * 100f) + "%", px + 8, py + 59, fp > 0.5f ? 0xFF00CC00 : fp > 0.25f ? 0xFFFFDD00 : 0xFFFF4444);
+        gui.drawCenteredString(mc.font, "BRAKE", cx, py + 59, mc.options.keyJump.isDown() ? 0xFFFF1111 : 0xFF444444);
+        String angleText = Math.round(Math.abs(smoothedSteering) * 40) + "°";
+        gui.drawString(mc.font, angleText, px + pW - 8 - mc.font.width(angleText), py + 59, 0xFFFFFFFF);
     }
 }
