@@ -15,7 +15,7 @@ import cz.maxtechnik.dif.init.other.*;
 import cz.maxtechnik.dif.init.events.JetpackHandler;
 import cz.maxtechnik.dif.network.CameraExitPacket;
 import cz.maxtechnik.dif.network.RemoteControlPacket;
-import cz.maxtechnik.dif.network.SyncCarPositionPacket;
+import cz.maxtechnik.dif.network.ModNetworking.SyncCarPositionPacket;
 import cz.maxtechnik.dif.renderer.*;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -111,10 +111,10 @@ public class DifMod{
 
 		// PŘIDÁNO: Registrace řazení
 		event.enqueueWork(() ->addNetworkMessage(
-				cz.maxtechnik.dif.network.ShiftGearPacket.class,
-				cz.maxtechnik.dif.network.ShiftGearPacket::encode,
-				cz.maxtechnik.dif.network.ShiftGearPacket::decode,
-				cz.maxtechnik.dif.network.ShiftGearPacket::handle
+				cz.maxtechnik.dif.network.ModNetworking.ShiftGearPacket.class,
+				cz.maxtechnik.dif.network.ModNetworking.ShiftGearPacket::encode,
+				cz.maxtechnik.dif.network.ModNetworking.ShiftGearPacket::decode,
+				cz.maxtechnik.dif.network.ModNetworking.ShiftGearPacket::handle
 		));
 		event.enqueueWork(() -> addNetworkMessage(
 				SyncCarPositionPacket.class,
