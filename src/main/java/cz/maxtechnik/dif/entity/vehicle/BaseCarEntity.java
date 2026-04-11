@@ -37,6 +37,7 @@ public abstract class BaseCarEntity extends Entity{
 	protected float currentSteering=0f;
 	protected float motionYaw=0f;
 	protected int spinoutTimer=0;
+	protected int oversteerTimer=0;
 	public boolean isSoundPlaying=false;
 	public enum SurfaceType{NORMAL,SOUL_SAND,ICE,CARPET}
 	private static Field jumpingField;
@@ -168,7 +169,7 @@ public abstract class BaseCarEntity extends Entity{
 			targetInput = 0f;
 			currentSteering = Math.signum(currentSteering);
 			setYRot(getYRot() + 25f * currentSteering);
-			velocity *= 0.95f;
+			velocity *= 0.985f;
 		} else {
 			if(targetInput!=0f){
 				float target=targetInput;
@@ -218,15 +219,20 @@ public abstract class BaseCarEntity extends Entity{
 			float safeLimit = safeAngle / 25f;
 			float absSteer = Math.abs(currentSteering);
 			if (absSteer > safeLimit && spinoutTimer == 0) {
-				float oversteer = absSteer - safeLimit;
-				if (oversteer > safeLimit * 0.3f) {
-					spinoutTimer = 40;
-				} else {
-					isDrifting = true;
-					float driftSec = oversteer / (safeLimit * 0.3f);
-					setYRot(getYRot() + Math.signum(currentSteering) * 4f * driftSec);
-					velocity *= 0.99f;
+				oversteerTimer++;
+				if (oversteerTimer > 10) {
+					float oversteer = absSteer - safeLimit;
+					if (oversteer > safeLimit * 0.3f) {
+						spinoutTimer = 120;
+					} else {
+						isDrifting = true;
+						float driftSec = oversteer / (safeLimit * 0.3f);
+						setYRot(getYRot() + Math.signum(currentSteering) * 4f * driftSec);
+						velocity *= 0.99f;
+					}
 				}
+			} else {
+				oversteerTimer = Math.max(0, oversteerTimer - 2);
 			}
 		}
 		
@@ -236,13 +242,15 @@ public abstract class BaseCarEntity extends Entity{
 		else if (isDrifting) alignSpeed = 0.04f;
 		motionYaw += yawDiff * alignSpeed;
 		
-		double yaw=Math.toRadians(motionYaw), preX=getX(), preZ=getZ();
+		double yaw=Math.toRadians(motionYaw), preX=getX(), preY=getY(), preZ=getZ();
 		Vec3 mot=new Vec3(-Math.sin(yaw)*velocity,Math.max(-1.5,onGround()?-0.05:getDeltaMovement().y-0.04),Math.cos(yaw)*velocity);
 		setDeltaMovement(mot);
 		move(MoverType.SELF,getDeltaMovement());
-		if(horizontalCollision){
+		if(horizontalCollision && getY() - preY <= 0.001){
 			double cs=Math.sqrt(Math.pow(getX()-preX,2)+Math.pow(getZ()-preZ,2));
 			velocity=(float)cs*Math.signum(velocity);
+			spinoutTimer = 0;
+			oversteerTimer = 0;
 			if(!level().isClientSide&&crashDamageCooldown==0&&(Math.sqrt(mot.x*mot.x+mot.z*mot.z)-cs)*72.0>getCrashDamageThresholdKmh()){
 				d.hurt(level().damageSources().generic(),(float)((Math.sqrt(mot.x*mot.x+mot.z*mot.z)-cs)*72.0-getCrashDamageThresholdKmh())*getCrashDamageMultiplier());
 				crashDamageCooldown=10;
