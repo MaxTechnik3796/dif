@@ -305,6 +305,8 @@ public class DifModItems{
 	public static final RegistryObject<Item> REDSTONE=REGISTRY.register("redstone",()->new MusicDiscDesc2(15,3960,DifMod.MODID,"redstone"));
 	public static final RegistryObject<Item> DOG=REGISTRY.register("dog",()->new MusicDiscDesc2(2,2900,DifMod.MODID,"dog"));
 
+	public static final RegistryObject<Item> FORMULA_ITEM = REGISTRY.register("formula", () -> new cz.maxtechnik.dif.item.FormulaItem(new Item.Properties().stacksTo(1)));
+
 	public static final RegistryObject<Item>CREMEKA=REGISTRY.register("cremeka",Update::new);
 
 	//Weapons:
