@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.entity.vehicle;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.client.CarEngineSoundInstance;
 import cz.maxtechnik.dif.network.ModNetworking.SyncCarPositionPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -98,7 +99,7 @@ public abstract class BaseCarEntity extends Entity {
             }
             DifMod.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new SyncCarPositionPacket(getId(), getX(), getY(), getZ(), getYRot(), velocity));
         } else {
-            if (isEngineOn() && !isSoundPlaying && getEngineSound() != null) { cz.maxtechnik.dif.client.sound.SoundPlayHelper.playEngineSound(this); isSoundPlaying = true; }
+            if (isEngineOn() && !isSoundPlaying && getEngineSound() != null) { CarEngineSoundInstance.play(this); isSoundPlaying = true; }
             if (!isEngineOn()) isSoundPlaying = false;
         }
         hasImpulse = true; entityData.set(DATA_SPEED, velocity);
