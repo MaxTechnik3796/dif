@@ -34,6 +34,7 @@ public abstract class BaseCarEntity extends Entity{
 	protected int shiftCooldown=0;
 	private float prevVelocity=0f, fuelAccumulator=0f;
 	private int crashDamageCooldown=0, fuelSyncTick=0;
+	protected float currentSteering=0f;
 	public boolean isSoundPlaying=false;
 	public enum SurfaceType{NORMAL,SOUL_SAND,ICE,CARPET}
 	private static Field jumpingField;
@@ -157,7 +158,17 @@ public abstract class BaseCarEntity extends Entity{
 		move(MoverType.SELF,getDeltaMovement());
 	}
 	protected void simulateActivePhysics(LivingEntity d){
-		float throttle=Math.max(0f,d.zza), input=-d.xxa;
+		float throttle=Math.max(0f,d.zza), targetInput=-d.xxa;
+		if(targetInput!=0f){
+			float target=targetInput;
+			if(Math.abs(currentSteering)<0.25f*Math.abs(target)){
+				currentSteering=Math.signum(target)*0.25f*Math.abs(target);
+			}
+			currentSteering+=(target-currentSteering)*0.15f;
+		}else{
+			currentSteering+=(0f-currentSteering)*0.35f;
+			if(Math.abs(currentSteering)<0.05f) currentSteering=0f;
+		}
 		SurfaceType s=detectSurface();
 		int g=getCurrentGear();
 		float sMult=s==SurfaceType.SOUL_SAND?0.35f:s==SurfaceType.CARPET?0.88f:1f, lGrip=s==SurfaceType.ICE?0.1f:s==SurfaceType.SOUL_SAND?0.5f:s==SurfaceType.CARPET?0.75f:1f, rRes=s==SurfaceType.SOUL_SAND?0.025f:s==SurfaceType.ICE?0.0004f:s==SurfaceType.CARPET?0.006f:0.002f;
@@ -180,7 +191,7 @@ public abstract class BaseCarEntity extends Entity{
 		if(s==SurfaceType.SOUL_SAND&&Math.abs(velocity)>22f/72f)
 			velocity=velocity*0.82f+Math.signum(velocity)*(22f/72f)*0.18f;
 		if(Math.abs(velocity)>0.015f)
-			setYRot(getYRot()+getBaseHandling()*(1f+getDownforceCoefficient()*(velocity/msBT)*(velocity/msBT))*lGrip*input*Math.max(0.05f,1f-Math.abs(velocity)/msBT*getHighSpeedSteerReduction()));
+			setYRot(getYRot()+getBaseHandling()*(1f+getDownforceCoefficient()*(velocity/msBT)*(velocity/msBT))*lGrip*currentSteering*Math.max(0.05f,1f-Math.abs(velocity)/msBT*getHighSpeedSteerReduction()));
 		double yaw=Math.toRadians(getYRot()), preX=getX(), preZ=getZ();
 		Vec3 mot=new Vec3(-Math.sin(yaw)*velocity,Math.max(-1.5,onGround()?-0.05:getDeltaMovement().y-0.04),Math.cos(yaw)*velocity);
 		setDeltaMovement(mot);
@@ -304,5 +315,8 @@ public abstract class BaseCarEntity extends Entity{
 	@Override
 	protected void addAdditionalSaveData(net.minecraft.nbt.CompoundTag n){
 		n.putFloat("FuelMb",getFuelMb());
+	}
+	public float getCurrentSteering(){
+		return currentSteering;
 	}
 }
