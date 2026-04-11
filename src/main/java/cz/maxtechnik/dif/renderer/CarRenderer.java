@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class CarRenderer<T extends BaseCarEntity> extends EntityRenderer<T> {
     private final MinecartModel<T> model;
@@ -19,10 +20,10 @@ public class CarRenderer<T extends BaseCarEntity> extends EntityRenderer<T> {
         super(ctx); this.shadowRadius = 0.7F; this.model = new MinecartModel<>(ctx.bakeLayer(ModelLayers.MINECART));
     }
 
-    @Override public void render(T e, float y, float pt, PoseStack ps, MultiBufferSource b, int l) {
+    @Override public void render(@NotNull T e, float y, float pt, PoseStack ps, MultiBufferSource b, int l) {
         ps.pushPose(); ps.mulPose(Axis.YP.rotationDegrees(180F - y)); ps.translate(0D, 0.5D, 0D);
         model.renderToBuffer(ps, b.getBuffer(model.renderType(TEX)), l, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
         ps.popPose(); super.render(e, y, pt, ps, b, l);
     }
-    @Override public ResourceLocation getTextureLocation(T e) { return TEX; }
+    @Override public @NotNull ResourceLocation getTextureLocation(@NotNull T e) { return TEX; }
 }
