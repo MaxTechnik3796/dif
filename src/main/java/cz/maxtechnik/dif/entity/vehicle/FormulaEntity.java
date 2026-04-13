@@ -15,26 +15,24 @@ import net.minecraft.world.phys.AABB;
 
 public class FormulaEntity extends BaseCarEntity {
     private static final EntityDataAccessor<Integer> DATA_COLOR = SynchedEntityData.defineId(FormulaEntity.class, EntityDataSerializers.INT);
-    // Půlrozměry auta – zmenšeno aby při 45° hitbox nepřečníval přes model
-    private static final float HW = 0.6F, HL = 1.8F, HH = 1.4F;
+    // Konstantní hitbox – velikost jako při 45° rotaci (nejhorší případ), nikdy se nemění
+    // sqrt(0.6² + 1.8²) ≈ 1.9 jako poloměr
+    private static final double HALF_BOX = 1.7D;
+    private static final float HH = 1.4F;
 
     public FormulaEntity(EntityType<?> t, Level l) { super(t, l); }
 
-    // === Dynamický AABB podle rotace (Create-style) ===
-    private AABB buildRotatedAABB() {
-        float r = getYRot() * 0.017453292F; // PI/180
-        float c = Math.abs((float)Math.cos(r)), s = Math.abs((float)Math.sin(r));
-        double hx = HW*c + HL*s, hz = HW*s + HL*c;
-        return new AABB(getX()-hx, getY(), getZ()-hz, getX()+hx, getY()+HH, getZ()+hz);
+    // Konstantní AABB – nemění se s rotací, vždy stejně velký
+    private AABB buildAABB() {
+        return new AABB(getX()-HALF_BOX, getY(), getZ()-HALF_BOX, getX()+HALF_BOX, getY()+HH, getZ()+HALF_BOX);
     }
-    @Override public void tick() { super.tick(); setBoundingBox(buildRotatedAABB()); }
-    @Override protected AABB makeBoundingBox() { return buildRotatedAABB(); }
+    @Override public void tick() { super.tick(); setBoundingBox(buildAABB()); }
+    @Override protected AABB makeBoundingBox() { return buildAABB(); }
 
     // === Barva ===
     @Override protected void defineSynchedData() { super.defineSynchedData(); entityData.define(DATA_COLOR, 0xFFFFFF); }
     public int getColor() { return entityData.get(DATA_COLOR); }
     public void setColor(int c) { entityData.set(DATA_COLOR, c); }
-
     @Override protected void readAdditionalSaveData(CompoundTag n) { super.readAdditionalSaveData(n); if(n.contains("Color")) setColor(n.getInt("Color")); }
     @Override protected void addAdditionalSaveData(CompoundTag n) { super.addAdditionalSaveData(n); n.putInt("Color", getColor()); }
 
@@ -56,7 +54,7 @@ public class FormulaEntity extends BaseCarEntity {
     @Override public SoundEvent getEngineSound() { return DifModSounds.FORMULA_ENGINE.get(); }
     @Override public net.minecraft.world.item.Item getDropItem() { return cz.maxtechnik.dif.init.basic.DifModItems.FORMULA_ITEM.get(); }
     @Override public float getCustomStepHeight() { return 0.75f; }
-    @Override public float getMaxSpeedKmh() { return 330.0f; }
+    @Override public float getMaxSpeedKmh() { return 330f; }
     @Override public float getBaseAcceleration() { return 0.042f; }
     @Override public float[] getGearRatios() { return new float[]{3.35f,2.47f,1.97f,1.63f,1.39f,1.23f,1.18f}; }
     @Override public int getShiftCooldownTicks() { return 2; }
@@ -68,7 +66,7 @@ public class FormulaEntity extends BaseCarEntity {
     @Override public float getBrakingDeceleration() { return 0.10f; }
     @Override public float getBaseHandling() { return 5.5f; }
     @Override public float getHighSpeedSteerReduction() { return 0.30f; }
-    @Override public float getCrashDamageThresholdKmh() { return 60.0f; }
+    @Override public float getCrashDamageThresholdKmh() { return 60f; }
     @Override public float getCrashDamageMultiplier() { return 0.12f; }
     @Override public Fluid getFuelFluid() { return Fluids.LAVA; }
     @Override public float getMaxFuelMb() { return 24000f; }

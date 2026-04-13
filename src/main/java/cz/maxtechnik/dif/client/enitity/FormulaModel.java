@@ -176,15 +176,19 @@ public class FormulaModel<T extends BaseCarEntity> extends EntityModel<T> {
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		float wheelRotation = limbSwing; // We use limbSwing which accumulates velocity as rotation
-		this.W1.xRot = wheelRotation;
-		this.W2.xRot = wheelRotation;
-		this.w3.xRot = wheelRotation;
-		this.W4.xRot = wheelRotation;
+		// Rotace kol podle rychlosti (limbSwing = akumulovaná rychlost)
+		this.W1.xRot = limbSwing;
+		this.W2.xRot = limbSwing;
+		this.w3.xRot = limbSwing;
+		this.W4.xRot = limbSwing;
 
-		float steeringAngle = entity.getCurrentSteering(); // Steer wheels base on car's steering
-		this.W1.yRot = steeringAngle;
-		this.W2.yRot = steeringAngle;
+		// Zatáčení předních kol – max ±25° (0.4363 rad), realisticky jako auto
+		float steer = entity.getCurrentSteering() * 0.4363F;
+		this.W1.yRot = steer;
+		this.W2.yRot = steer;
+		// Zadní kola se nezatáčejí
+		this.w3.yRot = 0;
+		this.W4.yRot = 0;
 	}
 
 	@Override
