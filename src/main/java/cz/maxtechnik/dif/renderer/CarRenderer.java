@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import cz.maxtechnik.dif.client.enitity.FormulaModel;
 import cz.maxtechnik.dif.entity.vehicle.BaseCarEntity;
@@ -32,21 +31,24 @@ public class CarRenderer<T extends BaseCarEntity> extends EntityRenderer<T> {
     @Override
     public void render(@NotNull T e, float y, float pt, PoseStack ps, MultiBufferSource b, int l) {
         ps.pushPose();
+
         // Rotace modelu podle yaw
         ps.mulPose(Axis.YP.rotationDegrees(180F - y));
-        // Pozice modelu (uprav Y hodnotu pro výšku)
-        ps.translate(0D, 1.5D, 0D);
-        // Flip (Blockbench export je vzhůru nohama)
+
+        // Snížili jsme hodnotu z 1.5D na cca 1.35D až 1.4D.
+        // Tím se model posune dolů vzhledem k hráči a hitboxu.
+        ps.translate(0D, 1.38D, 0D);
+
+        // Flip modelu (Blockbench standard)
         ps.scale(-1F, -1F, 1F);
 
-        // Animace kol – rotace podle rychlosti
+        // Animace kol
         float wheelSpin = (e.tickCount + pt) * e.getSpeedKmh() * 0.02f;
         model.setupAnim(e, wheelSpin, 0F, e.tickCount + pt, 0F, 0F);
 
-        // Base textura (vždy)
+        // Vykreslení modelu
         model.renderToBuffer(ps, b.getBuffer(model.renderType(TEX_BASE)), l, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 
-        // Barevná vrstva (pokud obarvená)
         if (e instanceof FormulaEntity f) {
             int c = f.getColor();
             float r = (c >> 16 & 255) / 255F, g = (c >> 8 & 255) / 255F, bl = (c & 255) / 255F;
@@ -56,7 +58,6 @@ public class CarRenderer<T extends BaseCarEntity> extends EntityRenderer<T> {
         ps.popPose();
         super.render(e, y, pt, ps, b, l);
     }
-
     @Override public @NotNull ResourceLocation getTextureLocation(@NotNull T e) { return TEX_BASE; }
 
     @SubscribeEvent
