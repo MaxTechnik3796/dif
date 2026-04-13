@@ -27,7 +27,7 @@ public class DifModEntities {
                     .build("wither_titan"));
     public static final RegistryObject<EntityType<FormulaEntity>> FORMULA =REGISTRY.register("formula",
 					() -> EntityType.Builder.of(FormulaEntity::new, MobCategory.MISC)
-                    .sized(2.0F, 0.8F) // Široké a nízké auto
+                    .sized(2.0F, 1.8F) // Zvýšeno o 1 block (původně 0.8F)
                     .clientTrackingRange(10)
                     .build("formula"));
 }
