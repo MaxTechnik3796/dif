@@ -29,6 +29,27 @@ public class FormulaEntity extends BaseCarEntity {
     @Override public void tick() { super.tick(); setBoundingBox(buildAABB()); }
     @Override protected AABB makeBoundingBox() { return buildAABB(); }
 
+    @Override
+    protected void positionRider(net.minecraft.world.entity.Entity rider, net.minecraft.world.entity.Entity.MoveFunction moveFunction) {
+        if (this.hasPassenger(rider)) {
+            // offsetZ: Kladné číslo posouvá hráče DOPŘEDU.
+            // Pokud je teď moc vzadu, zvyšte toto číslo (např. z -0.2F na 0.3F nebo 0.5F).
+            float offsetZ = 0.55F;
+            float offsetY = -0.525F; // Výška zůstává, aby seděl v díře
+
+            double x = this.getX() + (double)(net.minecraft.util.Mth.sin(-this.getYRot() * ((float)Math.PI / 180F)) * offsetZ);
+            double z = this.getZ() + (double)(net.minecraft.util.Mth.cos(this.getYRot() * ((float)Math.PI / 180F)) * offsetZ);
+
+            moveFunction.accept(rider, x, this.getY() + this.getPassengersRidingOffset() + rider.getMyRidingOffset() + offsetY, z);
+        }
+    }
+
+    @Override
+    public double getPassengersRidingOffset() {
+        // Základní výška sedu nad středem (originem) entity
+        return 0.4D;
+    }
+
     // === Barva ===
     @Override protected void defineSynchedData() { super.defineSynchedData(); entityData.define(DATA_COLOR, 0xFFFFFF); }
     public int getColor() { return entityData.get(DATA_COLOR); }
