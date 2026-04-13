@@ -10,16 +10,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-/**
- * Klientský handler vstupu pro vozidla – řazení.
- *
- * Sekvence: R(-1) ↔ N(0) ↔ 1 ↔ 2 ↔ … ↔ 7
- *   F (GEAR_DOWN) = řadit dolů  → N → R
- *   R (GEAR_UP)   = řadit nahoru → R → N → 1 → …
- *
- * Zpátečka (R = -1): pouze stojíš + máš palivo.
- * W v R = jede dozadu. S = nic.
- */
 @Mod.EventBusSubscriber(modid = DifMod.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CarInputHandler {
 
@@ -40,13 +30,25 @@ public class CarInputHandler {
         }
     }
 
-    /**
-     * Optimistická klientská predikce řazení.
-     * Pravidla jsou zrcadlem ShiftGearPacket na serveru.
-     *
-     * Sekvence: R(-1) – N(0) – 1 – 2 – … – maxGear
-     * Zpátečka: jen při stání (< 0.5 km/h) a s palivem.
-     */
+    @SubscribeEvent
+    public static void onMovementInput(net.minecraftforge.client.event.MovementInputUpdateEvent event) {
+        if (event.getEntity().getVehicle() instanceof BaseCarEntity) {
+            net.minecraft.client.player.Input input = event.getInput();
+            // Override vanilla inputs with custom car keys
+            input.up = DifModKeys.CAR_GAS.isDown();
+            input.jumping = DifModKeys.CAR_BRAKE.isDown();
+
+            // Recompute forward impulse for client-side syncing and packet sending
+            input.forwardImpulse = 0.0f;
+            if (input.up) {
+                input.forwardImpulse += 1.0f;
+            }
+            if (input.down) {
+                input.forwardImpulse -= 1.0f;
+            }
+        }
+    }
+
     private static void handleShift(BaseCarEntity car, int direction) {
         int   current  = car.getCurrentGear();
         int   maxGear  = car.getGearRatios().length;

@@ -31,6 +31,9 @@ public class DifModKeys {
 	// NOVÉ KLÁVESY PRO AUTO
 	public static final KeyMapping GEAR_UP = new KeyMapping("key.dif.gear_up", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, CATEGORY);
 	public static final KeyMapping GEAR_DOWN = new KeyMapping("key.dif.gear_down", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F, CATEGORY);
+	public static final KeyMapping CAMERA_LOCK = new KeyMapping("key.dif.camera_lock", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_H, CATEGORY);
+	public static final KeyMapping CAR_GAS = new KeyMapping("key.dif.car_gas", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_W, CATEGORY);
+	public static final KeyMapping CAR_BRAKE = new KeyMapping("key.dif.car_brake", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_SPACE, CATEGORY);
 
 	@SubscribeEvent
 	public static void registerKeys(RegisterKeyMappingsEvent event) {
@@ -40,6 +43,9 @@ public class DifModKeys {
 		event.register(MINE_BACKWARD);
 		event.register(GEAR_UP);
 		event.register(GEAR_DOWN);
+		event.register(CAMERA_LOCK);
+		event.register(CAR_GAS);
+		event.register(CAR_BRAKE);
 	}
 
 	@Mod.EventBusSubscriber(modid = DifMod.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -71,6 +77,10 @@ public class DifModKeys {
 					if (MINE_BACKWARD.consumeClick()) {
 						DifMod.PACKET_HANDLER.sendToServer(new RemoteControlPacket(0.0, true));
 					}
+				}
+
+				while(CAMERA_LOCK.consumeClick()) {
+					cz.maxtechnik.dif.init.events.client.VehicleCameraHandler.vehicleCameraLocked = !cz.maxtechnik.dif.init.events.client.VehicleCameraHandler.vehicleCameraLocked;
 				}
 			}
 		}

@@ -98,6 +98,8 @@ public class DifModItems{
 
 	//Vanilla + :
 	public static final RegistryObject<Item> END_PORTAL=V_REGISTRY.register("end_portal",()->new BlockItem(Blocks.END_PORTAL,new Item.Properties()));
+	static final RegistryObject<Item> LAP_TIMER = REGISTRY.register("lap_timer", () -> new net.minecraft.world.item.BlockItem(DifModBlocks.LAP_TIMER.get(), new Item.Properties()));
+
 	public static final RegistryObject<Item> END_GATEWAY=V_REGISTRY.register("end_gateway",()->new BlockItem(Blocks.END_GATEWAY,new Item.Properties()));
 	public static final RegistryObject<Item> NETHER_PORTAL=V_REGISTRY.register("nether_portal",()->new BlockItem(Blocks.NETHER_PORTAL,new Item.Properties()));
 	public static final RegistryObject<Item> WATER=V_REGISTRY.register("water",()->new BlockItem(Blocks.WATER,new Item.Properties()));
@@ -304,6 +306,8 @@ public class DifModItems{
 	public static final RegistryObject<Item> MATY_CREATE=REGISTRY.register("maty_create",()->new MusicDiscDesc2(10,1900,DifMod.MODID,"maty_create"));
 	public static final RegistryObject<Item> REDSTONE=REGISTRY.register("redstone",()->new MusicDiscDesc2(15,3960,DifMod.MODID,"redstone"));
 	public static final RegistryObject<Item> DOG=REGISTRY.register("dog",()->new MusicDiscDesc2(2,2900,DifMod.MODID,"dog"));
+
+	public static final RegistryObject<Item> FORMULA_ITEM = REGISTRY.register("formula", () -> new cz.maxtechnik.dif.item.FormulaItem(new Item.Properties().stacksTo(1)));
 
 	public static final RegistryObject<Item>CREMEKA=REGISTRY.register("cremeka",Update::new);
 

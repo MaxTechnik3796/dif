@@ -194,5 +194,6 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>BROKEN_TRACK00=REGISTRY.register("broken_track00",BrokenTrack::new);
 	public static final RegistryObject<Block>BROKEN_TRACK01=REGISTRY.register("broken_track01",BrokenTrack::new);
 	public static final RegistryObject<Block>BROKEN_TRACK02=REGISTRY.register("broken_track02",BrokenTrack::new);
-
+	
+	public static final RegistryObject<Block>LAP_TIMER=REGISTRY.register("lap_timer",()->new Block(BlockBehaviour.Properties.copy(net.minecraft.world.level.block.Blocks.NETHERITE_BLOCK)));
 }
