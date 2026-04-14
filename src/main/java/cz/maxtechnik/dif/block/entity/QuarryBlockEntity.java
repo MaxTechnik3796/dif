@@ -13,10 +13,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -26,37 +31,63 @@ public class QuarryBlockEntity extends BlockEntity {
 	private final int speed = 10;
 	private final int range = 5;
 
+	// Energie: Kapacita 100k, příjem 1k, spotřeba na blok 500 FE
+	private final EnergyStorage energy = new EnergyStorage(100000, 1000, 1000);
+	private final LazyOptional<IEnergyStorage> energyHandler = LazyOptional.of(() -> energy);
+
 	public QuarryBlockEntity(BlockPos pos, BlockState state) {
 		super(DifModBlockEntities.QUARRY.get(), pos, state);
 	}
 
-	public int getRange() { return range; }
-	public BlockPos getMiningPos() { return miningPos; }
-
 	public static void tick(Level level, BlockPos pos, BlockState state, QuarryBlockEntity be) {
 		if (level.isClientSide) return;
 
-		// Inicializace při prvním ticku
 		if (be.miningPos == null) {
 			be.resetMiningArea(state);
-			Direction facing = state.getValue(QuarryBlock.FACING);
-			be.buildFrame(level, pos.relative(facing, be.range + 1));
+			be.buildBuildCraftFrame(level, state);
 		}
 
 		be.timer++;
 		if (be.timer >= be.speed) {
-			be.timer = 0;
-			be.mineNextBlock(level);
-			// Pošle info klientovi o změně miningPos
-			level.sendBlockUpdated(pos, state, state, 3);
+			// KONTROLA ENERGIE (500 FE na operaci)
+			if (be.energy.getEnergyStored() >= 500) {
+				be.timer = 0;
+				be.mineNextBlock(level);
+				be.energy.extractEnergy(500, false); // Odečtení energie
+				level.sendBlockUpdated(pos, state, state, 3);
+			}
 		}
 	}
 
-	private void resetMiningArea(BlockState state) {
+	private void buildBuildCraftFrame(Level level, BlockState state) {
 		Direction facing = state.getValue(QuarryBlock.FACING);
 		BlockPos center = worldPosition.relative(facing, range + 1);
-		this.miningPos = new BlockPos(center.getX() - range, worldPosition.getY() - 1, center.getZ() - range);
-		setChanged();
+		int yBase = worldPosition.getY();
+
+		for (int x = center.getX() - range; x <= center.getX() + range; x++) {
+			for (int z = center.getZ() - range; z <= center.getZ() + range; z++) {
+				boolean isEdgeX = (x == center.getX() - range || x == center.getX() + range);
+				boolean isEdgeZ = (z == center.getZ() - range || z == center.getZ() + range);
+
+				if (isEdgeX || isEdgeZ) {
+					// Spodní patro (na úrovni quarry)
+					placeFrame(level, new BlockPos(x, yBase, z));
+					// Horní patro (o 1 výš)
+					placeFrame(level, new BlockPos(x, yBase + 1, z));
+
+					// Propojení rohů (v rozích už máme 2, toto je jen pojistka)
+					if (isEdgeX && isEdgeZ) {
+						placeFrame(level, new BlockPos(x, yBase, z));
+					}
+				}
+			}
+		}
+	}
+
+	private void placeFrame(Level level, BlockPos pos) {
+		if (level.isEmptyBlock(pos)) {
+			level.setBlock(pos, DifModBlocks.QUARRY_FRAME.get().defaultBlockState(), 3);
+		}
 	}
 
 	private void mineNextBlock(Level level) {
@@ -68,16 +99,15 @@ public class QuarryBlockEntity extends BlockEntity {
 		if (!targetState.isAir() && targetState.getDestroySpeed(level, miningPos) >= 0) {
 			if (level instanceof ServerLevel serverLevel) {
 				List<ItemStack> drops = Block.getDrops(targetState, serverLevel, miningPos, level.getBlockEntity(miningPos));
-				BlockEntity inventoryAbove = level.getBlockEntity(worldPosition.above());
+				BlockEntity invAbove = level.getBlockEntity(worldPosition.above());
 
-				if (inventoryAbove != null) {
-					IItemHandler handler = inventoryAbove.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(null);
-					if (handler != null) {
+				if (invAbove != null) {
+					invAbove.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
 						for (ItemStack stack : drops) {
-							ItemStack remaining = ItemHandlerHelper.insertItemStacked(handler, stack, false);
-							if (!remaining.isEmpty()) Block.popResource(level, worldPosition.above(), remaining);
+							ItemStack rem = ItemHandlerHelper.insertItemStacked(handler, stack, false);
+							if (!rem.isEmpty()) Block.popResource(level, worldPosition.above(), rem);
 						}
-					}
+					});
 				}
 				level.removeBlock(miningPos, false);
 			}
@@ -113,23 +143,23 @@ public class QuarryBlockEntity extends BlockEntity {
 		return y > level.getMinBuildHeight();
 	}
 
-	private void buildFrame(Level level, BlockPos center) {
-		int y = worldPosition.getY();
-		for (int x = center.getX() - range; x <= center.getX() + range; x++) {
-			for (int z = center.getZ() - range; z <= center.getZ() + range; z++) {
-				if (x == center.getX() - range || x == center.getX() + range || z == center.getZ() - range || z == center.getZ() + range) {
-					BlockPos framePos = new BlockPos(x, y, z);
-					if (level.isEmptyBlock(framePos)) {
-						level.setBlock(framePos, DifModBlocks.QUARRY_FRAME.get().defaultBlockState(), 3);
-					}
-				}
-			}
-		}
+	private void resetMiningArea(BlockState state) {
+		Direction facing = state.getValue(QuarryBlock.FACING);
+		BlockPos center = worldPosition.relative(facing, range + 1);
+		this.miningPos = new BlockPos(center.getX() - range, worldPosition.getY() - 1, center.getZ() - range);
+		setChanged();
+	}
+
+	@Override
+	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+		if (cap == ForgeCapabilities.ENERGY) return energyHandler.cast();
+		return super.getCapability(cap, side);
 	}
 
 	@Override
 	public void load(@NotNull CompoundTag tag) {
 		super.load(tag);
+		energy.receiveEnergy(tag.getInt("Energy"), false);
 		if (tag.contains("MineX")) {
 			this.miningPos = new BlockPos(tag.getInt("MineX"), tag.getInt("MineY"), tag.getInt("MineZ"));
 		}
@@ -138,6 +168,7 @@ public class QuarryBlockEntity extends BlockEntity {
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag) {
 		super.saveAdditional(tag);
+		tag.putInt("Energy", energy.getEnergyStored());
 		if (miningPos != null) {
 			tag.putInt("MineX", miningPos.getX());
 			tag.putInt("MineY", miningPos.getY());
@@ -145,13 +176,9 @@ public class QuarryBlockEntity extends BlockEntity {
 		}
 	}
 
-	@Override
-	public CompoundTag getUpdateTag() {
-		return saveWithoutMetadata();
-	}
+	public int getRange() { return range; }
+	public BlockPos getMiningPos() { return miningPos; }
 
-	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
+	@Override public CompoundTag getUpdateTag() { return saveWithoutMetadata(); }
+	@Override public ClientboundBlockEntityDataPacket getUpdatePacket() { return ClientboundBlockEntityDataPacket.create(this); }
 }
