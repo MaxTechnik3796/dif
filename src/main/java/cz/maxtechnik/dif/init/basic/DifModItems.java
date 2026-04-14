@@ -36,6 +36,8 @@ public class DifModItems{
 	}
 	public static final RegistryObject<Item> SLEEPING_BAG = block(DifModBlocks.SLEEPING_BAG);
 
+	public static final RegistryObject<Item>QUARRY=block(DifModBlocks.QUARRY);
+
 	public static final RegistryObject<Item>REMOTE_MINECART=REGISTRY.register("remote_minecart",()->new RemoteMinecartItem(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<Item>REMOTE_CONTROLLER=REGISTRY.register("remote_controller",()->new StackSize(1));
 	public static final RegistryObject<Item>REMOTE_MINECART_BLOCK=block(DifModBlocks.REMOTE_MINECART_BLOCK);
