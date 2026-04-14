@@ -60,7 +60,7 @@ public class FormulaEntity extends BaseCarEntity {
     @Override
     public InteractionResult interact(Player p, InteractionHand h) {
         ItemStack s = p.getItemInHand(h);
-        if (!p.isSecondaryUseActive() && s.getItem() instanceof DyeItem dye) {
+        if (s.getItem() instanceof DyeItem dye) {
             if (!level().isClientSide) {
                 float[] c = dye.getDyeColor().getTextureDiffuseColors();
                 setColor(((int)(c[0]*255)<<16)|((int)(c[1]*255)<<8)|(int)(c[2]*255));
@@ -75,8 +75,6 @@ public class FormulaEntity extends BaseCarEntity {
     @Override public SoundEvent getEngineSound() { return DifModSounds.FORMULA_ENGINE.get(); }
     @Override public net.minecraft.world.item.Item getDropItem() { return cz.maxtechnik.dif.init.basic.DifModItems.FORMULA_ITEM.get(); }
     @Override public float getCustomStepHeight() { return 0.75f; }
-    @Override public float getWheelbase() { return 3.2f; }
-    @Override public float getMaxSteerAngleDegrees() { return 25f; }
     @Override public float getMaxSpeedKmh() { return 330f; }
     @Override public float getBaseAcceleration() { return 0.042f; }
     @Override public float[] getGearRatios() { return new float[]{3.35f,2.47f,1.97f,1.63f,1.39f,1.23f,1.18f}; }
