@@ -84,7 +84,38 @@ public class QuarryBlockEntity extends BlockEntity {
 			}
 		}
 	}
+	private void continuousFrameCheck(Level level) {
+		// Definujeme střed oblasti (stejně jako při stavbě)
+		Direction facing = getBlockState().getValue(QuarryBlock.FACING).getOpposite();
+		BlockPos center = worldPosition.relative(facing, range + 1);
+		int yBase = worldPosition.getY();
 
+		// Vygenerujeme náhodnou souřadnici v rámci těžebního čtverce (včetně okrajů)
+		int x = center.getX() + (level.random.nextInt(range * 2 + 1) - range);
+		int z = center.getZ() + (level.random.nextInt(range * 2 + 1) - range);
+
+		// Zkontrolujeme, zda tato náhodná souřadnice (x, z) odpovídá okraji
+		boolean isEdgeX = (x == center.getX() - range || x == center.getX() + range);
+		boolean isEdgeZ = (z == center.getZ() - range || z == center.getZ() + range);
+
+		if (isEdgeX || isEdgeZ) {
+			// Zkusíme opravit spodní patro, horní patro nebo náhodnou výšku v rohu
+			int[] yCheck = {yBase, yBase + 3, yBase + 1, yBase + 2};
+			for (int y : yCheck) {
+				BlockPos checkPos = new BlockPos(x, y, z);
+
+				// Podmínka pro svislé rohy
+				boolean isCorner = isEdgeX && isEdgeZ;
+				boolean isTopOrBottom = (y == yBase || y == yBase + 3);
+
+				if (isTopOrBottom || isCorner) {
+					if (level.isEmptyBlock(checkPos)) {
+						level.setBlock(checkPos, DifModBlocks.QUARRY_FRAME.get().defaultBlockState(), 3);
+					}
+				}
+			}
+		}
+	}
 	private void placeFrame(Level level, BlockPos pos) {
 		if (level.isEmptyBlock(pos)) {
 			level.setBlock(pos, DifModBlocks.QUARRY_FRAME.get().defaultBlockState(), 3);
@@ -92,6 +123,7 @@ public class QuarryBlockEntity extends BlockEntity {
 	}
 
 	private void mineNextBlock(Level level) {
+		continuousFrameCheck(level);
 		// 1. Přeskočení prázdných bloků
 		while (level.isEmptyBlock(miningPos) && miningPos.getY() > level.getMinBuildHeight()) {
 			if (!advanceMiningPos()) return;
@@ -99,46 +131,33 @@ public class QuarryBlockEntity extends BlockEntity {
 
 		BlockState targetState = level.getBlockState(miningPos);
 
-		// 2. Kontrola, zda netěžíme vlastní Frame
-		if (targetState.is(DifModBlocks.QUARRY_FRAME.get())) {
-			advanceMiningPos();
-			return;
-		}
-
-		// 3. Obnova Frame (pokud byl zničen hráčem v úrovni rámu)
-		// Pokud jsme v Y úrovni stroje a na okraji range, ale je tam AIR -> položíme frame
-		if (miningPos.getY() == worldPosition.getY() && isOnFrameEdge()) {
-			if (level.isEmptyBlock(miningPos)) {
-				level.setBlock(miningPos, DifModBlocks.QUARRY_FRAME.get().defaultBlockState(), 3);
-				return;
-			}
-		}
-
-		// 4. Samotné těžení a dropy
+		// 4. Samotné těžení a distribuce itemů
 		if (!targetState.isAir() && targetState.getDestroySpeed(level, miningPos) >= 0) {
 			if (level instanceof ServerLevel serverLevel) {
 				List<ItemStack> drops = Block.getDrops(targetState, serverLevel, miningPos, level.getBlockEntity(miningPos));
 
-				// Hledání inventáře nad Quarry
-				BlockEntity inventoryAbove = level.getBlockEntity(worldPosition.above());
-				IItemHandler handler = null;
-				if (inventoryAbove != null) {
-					handler = inventoryAbove.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(null);
-				}
-
 				for (ItemStack stack : drops) {
 					ItemStack remaining = stack;
-					if (handler != null) {
-						// Zkusíme vložit do truhly nahoře
-						remaining = ItemHandlerHelper.insertItemStacked(handler, stack, false);
+
+					// Procházíme všech 6 stran stroje
+					for (Direction direction : Direction.values()) {
+						if (remaining.isEmpty()) break; // Item už byl kompletně uložen
+
+						BlockEntity targetEntity = level.getBlockEntity(worldPosition.relative(direction));
+						if (targetEntity != null) {
+							// Získáme ItemHandler pro danou stranu (používáme oposite direction pro správný přístup k side-aware inventářům)
+							IItemHandler handler = targetEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, direction.getOpposite()).orElse(null);
+							// Pokusíme se vložit item
+							remaining = ItemHandlerHelper.insertItemStacked(handler, remaining, false);
+						}
 					}
 
-					// Pokud není truhla, nebo je plná, vyhodíme itemy z Quarry bloku
+					// Pokud po vyzkoušení všech stran stále něco zbylo (nebo nebyly bedny), dropneme to na zem
 					if (!remaining.isEmpty()) {
 						Block.popResource(level, worldPosition, remaining);
 					}
 				}
-				// Odstranění bloku bez defaultních dropů (už jsme je pořešili ručně)
+				// Odstranění bloku
 				level.removeBlock(miningPos, false);
 			}
 		}
