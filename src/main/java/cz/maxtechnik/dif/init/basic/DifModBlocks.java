@@ -36,6 +36,7 @@ public class DifModBlocks{
 
 	public static final RegistryObject<Block>SLEEPING_BAG=REGISTRY.register("sleeping_bag",SleepingBagBlock::new);
 	public static final RegistryObject<Block>QUARRY=REGISTRY.register("quarry",()->new QuarryBlock(BlockBehaviour.Properties.of()));
+	public static final RegistryObject<Block>QUARRY_FRAME=REGISTRY.register("quarry_frame",QuarryFrame::new);
 
 	public static final RegistryObject<Block>CAMERA_MONITOR=REGISTRY.register("camera_monitor",()->new CameraMonitor(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block>CAMERA=REGISTRY.register("camera",()->new Camera(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3F,3F).requiresCorrectToolForDrops()));

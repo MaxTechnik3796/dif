@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.block.entity;
 
 import cz.maxtechnik.dif.block.QuarryBlock;
+import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,17 +36,23 @@ public class QuarryBlockEntity extends BlockEntity {
 	}
 	public static void tick(Level level, BlockPos pos, BlockState state, QuarryBlockEntity be) {
 		if (level.isClientSide) return;
-		if (be.miningPos.equals(pos.below())) {
+
+		// Pokud miningPos ještě nebyl nastaven (je null nebo na výchozí pozici)
+		if (be.miningPos == null || be.miningPos.equals(pos.offset(-5, -1, -5))) {
 			be.resetMiningArea(state);
+
+			// VÝPOČET STŘEDU PRO RÁM
+			Direction facing = state.getValue(QuarryBlock.FACING);
+			BlockPos center = pos.relative(facing, be.range + 1);
+
+			// Teď už předáváme správný typ: Level a BlockPos
+			be.buildFrame(level, center);
 		}
-		if (be.energy.getEnergyStored() >= 500) {
-			be.timer++;
-			if (be.timer >= be.speed) {
-				be.timer = 0;
-				if (be.mineNextBlock(level)) {
-					be.energy.extractEnergy(500, false);
-				}
-			}
+
+		be.timer++;
+		if (be.timer >= be.speed) {
+			be.timer = 0;
+			be.mineNextBlock(level);
 		}
 	}
 	public int getRange() {
@@ -58,20 +65,47 @@ public class QuarryBlockEntity extends BlockEntity {
 		}
 		return super.getCapability(cap, side);
 	}
+	private void buildFrame(Level level, BlockPos center) {
+		int y = worldPosition.getY();
+		// Vytvoříme čtverec z QuarryFrame bloků po obvodu
+		for (int x = center.getX() - range; x <= center.getX() + range; x++) {
+			for (int z = center.getZ() - range; z <= center.getZ() + range; z++) {
+				// Pouze okraje čtverce (X jsou kraje nebo Z jsou kraje)
+				if (x == center.getX() - range || x == center.getX() + range ||
+						z == center.getZ() - range || z == center.getZ() + range) {
 
+					BlockPos framePos = new BlockPos(x, y, z);
+					if (level.isEmptyBlock(framePos)) {
+						// Tady se ujisti, že DifModBlocks.QUARRY_FRAME existuje v registru
+						level.setBlock(framePos, DifModBlocks.QUARRY_FRAME.get().defaultBlockState(), 3);
+					}
+				}
+			}
+		}
+	}
 	@Override
 	public void invalidateCaps() {
 		super.invalidateCaps();
 		energyHolder.invalidate();
 	}
+	// 1. Přidej tento getter kamkoliv do QuarryBlockEntity
+	public BlockPos getMiningPos() {
+		return miningPos;
+	}
+	// 2. Uprav metodu resetMiningArea, aby brala v úvahu směr (FACING)
 	private void resetMiningArea(BlockState state) {
 		Direction facing = state.getValue(QuarryBlock.FACING);
-		// Střed oblasti je 6 bloků před strojem
+		// Posun o range+1 bloků DOPŘEDU
 		BlockPos center = worldPosition.relative(facing, range + 1);
-		// Začneme v "rohu" (North-West) této oblasti
+
+		// Nastavíme začátek těžby (v rohu pole o 1 níž než quarry)
 		this.miningPos = new BlockPos(center.getX() - range, worldPosition.getY() - 1, center.getZ() - range);
+
+		// Tady rovnou postavíme rám!
+		buildFrame(level, center);
 	}
 
+	// 3. Uprav advanceMiningPos, aby se držela v definovaných mezích před strojem
 	private boolean advanceMiningPos() {
 		Direction facing = getBlockState().getValue(QuarryBlock.FACING);
 		BlockPos center = worldPosition.relative(facing, range + 1);
