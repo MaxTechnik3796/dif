@@ -8,6 +8,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -97,6 +99,9 @@ public abstract class BaseCarEntity extends Entity{
 								p.drop(new ItemStack(Items.LAVA_BUCKET),false);
 						}
 					}
+				} else if (s.is(ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", "tools/wrench")))) {
+					spawnAtLocation(getDropItem());
+					discard();
 				}
 			}
 			return InteractionResult.sidedSuccess(level().isClientSide);
@@ -125,9 +130,10 @@ public abstract class BaseCarEntity extends Entity{
 	public boolean hurt(@NotNull DamageSource src, float amt){
 		if(isInvulnerableTo(src)) return false;
 		if(!level().isClientSide&&!isRemoved()){
-			if(src.getEntity() instanceof Player p&&!p.getAbilities().instabuild) spawnAtLocation(getDropItem());
-			discard();
-			return true;
+			if(src.getEntity() instanceof Player p && p.getAbilities().instabuild) {
+				discard();
+				return true;
+			}
 		}
 		return false;
 	}
@@ -178,14 +184,15 @@ public abstract class BaseCarEntity extends Entity{
 			setYRot(getYRot() + 6f * spinoutDirection);
 			velocity *= 0.985f;
 		} else {
-			if(targetInput!=0f){
-                if(Math.abs(currentSteering)<0.25f*Math.abs(targetInput)){
-					currentSteering=Math.signum(targetInput)*0.25f*Math.abs(targetInput);
-				}
-				currentSteering+=(targetInput -currentSteering)*0.15f;
-			}else{
-				currentSteering+=(0f-currentSteering)*0.35f;
-				if(Math.abs(currentSteering)<0.05f) currentSteering=0f;
+			if(targetInput != 0f){
+				// Faster accumulation at lower speeds, more precise at high speeds
+				float speedFactor = Math.max(0.4f, 1f - (Math.abs(velocity) * 72f / 400f));
+				float steerSpeed = 0.08f * speedFactor;
+				currentSteering += (targetInput - currentSteering) * steerSpeed;
+			} else {
+				// Smooth return to center
+				currentSteering += (0f - currentSteering) * 0.15f;
+				if(Math.abs(currentSteering) < 0.01f) currentSteering = 0f;
 			}
 		}
 		SurfaceType s=detectSurface();
@@ -213,7 +220,17 @@ public abstract class BaseCarEntity extends Entity{
         if(Math.abs(velocity)>0.015f){
 			float speedKmh = Math.abs(velocity) * 72f;
 			float steeringMult = Math.max(0.20f, 1f - (speedKmh / 400f));
-			setYRot(getYRot()+getBaseHandling()*(1f+getDownforceCoefficient()*(velocity/msBT)*(velocity/msBT))*lGrip*currentSteering*steeringMult);
+			
+			// Ackermann-like steering calculation
+			float maxSteerAngleDegrees = getMaxSteerAngleDegrees();
+			float currentSteerAngle = currentSteering * maxSteerAngleDegrees;
+			float steerRad = (float)Math.toRadians(currentSteerAngle);
+			
+			// Delta Yaw = (v / L) * tan(theta)
+			float deltaYawRad = (velocity / getWheelbase()) * (float)Math.tan(steerRad);
+			float handlingFactor = (1f + getDownforceCoefficient() * (velocity/msBT) * (velocity/msBT)) * lGrip * steeringMult;
+			float deltaYaw = (float)Math.toDegrees(deltaYawRad) * handlingFactor;
+			setYRot(getYRot() + deltaYaw);
 			
 			float safeLimit;
 			if (speedKmh <= 150f) safeLimit = 1.0f;
@@ -228,7 +245,6 @@ public abstract class BaseCarEntity extends Entity{
 				oversteerTimer++;
 				int timeLimit = getJumping(d) ? 30 : 10;
 				if (oversteerTimer > timeLimit) {
-					// HODINY (Spinout) - striktně překročení limitů přináší hodiny, zrušen lehký drift
 					spinoutTimer = 120;
 					spinoutDirection = Math.signum(currentSteering);
 				}
@@ -239,14 +255,23 @@ public abstract class BaseCarEntity extends Entity{
 		
 		if (driftRecoveryTimer > 0) driftRecoveryTimer--;
 		
+		// Align motionYaw with YRot for Ackermann steering (no carousel lag)
 		float yawDiff = net.minecraft.util.Mth.wrapDegrees(getYRot() - motionYaw);
-		float alignSpeed = 0.2f;
-		if (spinoutTimer > 0) alignSpeed = 0.01f;
-		else if (driftRecoveryTimer > 0) alignSpeed = 0.04f;
+		float alignSpeed = (spinoutTimer > 0) ? 0.01f : 1.0f; // Snap to rotation unless spinning out
 		motionYaw += yawDiff * alignSpeed;
 		
 		double yaw=Math.toRadians(motionYaw), preX=getX(), preY=getY(), preZ=getZ();
-		Vec3 mot=new Vec3(-Math.sin(yaw)*velocity,Math.max(-1.5,onGround()?-0.05:getDeltaMovement().y-0.04),Math.cos(yaw)*velocity);
+		
+		// Pivot points logic: The center of the car orbits the rear axle
+		// Lateral velocity at center = omega * distance_to_rear_axle
+		float omega = (float)Math.toRadians(net.minecraft.util.Mth.wrapDegrees(getYRot() - yRotO));
+		float lateralVelocity = (spinoutTimer > 0) ? 0 : -omega * (getWheelbase() / 2f);
+		
+		Vec3 mot=new Vec3(
+			-Math.sin(yaw) * velocity + Math.cos(yaw) * lateralVelocity,
+			Math.max(-1.5,onGround()?-0.05:getDeltaMovement().y-0.04),
+			Math.cos(yaw) * velocity + Math.sin(yaw) * lateralVelocity
+		);
 		setDeltaMovement(mot);
 		move(MoverType.SELF,getDeltaMovement());
 		if(horizontalCollision && getY() - preY <= 0.001){
@@ -284,6 +309,8 @@ public abstract class BaseCarEntity extends Entity{
 	}
 	public abstract SoundEvent getEngineSound();
 	public abstract float getCustomStepHeight();
+	public abstract float getWheelbase();
+	public float getMaxSteerAngleDegrees() { return 30f; }
 	public abstract float getMaxSpeedKmh();
 	public abstract float getBaseAcceleration();
 	public abstract float[] getGearRatios();
