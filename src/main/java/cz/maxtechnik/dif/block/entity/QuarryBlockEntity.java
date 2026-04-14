@@ -18,7 +18,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +37,6 @@ public class QuarryBlockEntity extends BlockEntity {
 	public QuarryBlockEntity(BlockPos pos, BlockState state) {
 		super(DifModBlockEntities.QUARRY.get(), pos, state);
 	}
-
 	public static void tick(Level level, BlockPos pos, BlockState state, QuarryBlockEntity be) {
 		if (level.isClientSide) return;
 
@@ -60,8 +58,8 @@ public class QuarryBlockEntity extends BlockEntity {
 	}
 
 	private void buildBuildCraftFrame(Level level, BlockState state) {
-		Direction facing = state.getValue(QuarryBlock.FACING);
-		// Střed těžební oblasti je posunutý před stroj
+		Direction facing = state.getValue(QuarryBlock.FACING).getOpposite();
+		// Střed těžební oblasti je posunutý před stroj o (range + 1)
 		BlockPos center = worldPosition.relative(facing, range + 1);
 		int yBase = worldPosition.getY();
 
@@ -71,14 +69,15 @@ public class QuarryBlockEntity extends BlockEntity {
 				boolean isEdgeZ = (z == center.getZ() - range || z == center.getZ() + range);
 
 				if (isEdgeX || isEdgeZ) {
-					// Spodní patro (úroveň země)
+					// Spodní patro
 					placeFrame(level, new BlockPos(x, yBase, z));
-					// Horní patro (o 2 bloky výš, aby tam byla mezera jako v BC)
-					placeFrame(level, new BlockPos(x, yBase + 2, z));
+					// Horní patro s mezerou 2 bloky (Y, Y+1=vzduch, Y+2=vzduch, Y+3=frame)
+					placeFrame(level, new BlockPos(x, yBase + 3, z));
 
-					// Propojovací sloupek v rozích
+					// Rohové sloupky
 					if (isEdgeX && isEdgeZ) {
 						placeFrame(level, new BlockPos(x, yBase + 1, z));
+						placeFrame(level, new BlockPos(x, yBase + 2, z));
 					}
 				}
 			}
@@ -117,7 +116,7 @@ public class QuarryBlockEntity extends BlockEntity {
 	}
 
 	private boolean advanceMiningPos() {
-		Direction facing = getBlockState().getValue(QuarryBlock.FACING);
+		Direction facing = getBlockState().getValue(QuarryBlock.FACING).getOpposite();
 		BlockPos center = worldPosition.relative(facing, range + 1);
 
 		int minX = center.getX() - range;
@@ -141,13 +140,14 @@ public class QuarryBlockEntity extends BlockEntity {
 
 		miningPos = new BlockPos(x, y, z);
 		setChanged();
+		assert level!=null;
 		return y > level.getMinBuildHeight();
 	}
 
 	private void resetMiningArea(BlockState state) {
 		Direction facing = state.getValue(QuarryBlock.FACING);
 		BlockPos center = worldPosition.relative(facing, range + 1);
-		// Těžba začíná o 1 blok NÍŽE než je spodní frame (yBase - 1)
+		// Těžba začíná v rohu oblasti, ale Y je o 1 nižší než stroj (pod úrovní spodního rámu)
 		this.miningPos = new BlockPos(center.getX() - range, worldPosition.getY() - 1, center.getZ() - range);
 		setChanged();
 	}
@@ -180,7 +180,15 @@ public class QuarryBlockEntity extends BlockEntity {
 
 	public int getRange() { return range; }
 	public BlockPos getMiningPos() { return miningPos; }
-
-	@Override public CompoundTag getUpdateTag() { return saveWithoutMetadata(); }
+	@Override
+	public @NotNull CompoundTag getUpdateTag() {
+		CompoundTag tag = super.getUpdateTag();
+		if (miningPos != null) {
+			tag.putInt("MineX", miningPos.getX());
+			tag.putInt("MineY", miningPos.getY());
+			tag.putInt("MineZ", miningPos.getZ());
+		}
+		return tag;
+	}
 	@Override public ClientboundBlockEntityDataPacket getUpdatePacket() { return ClientboundBlockEntityDataPacket.create(this); }
 }
