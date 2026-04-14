@@ -155,6 +155,7 @@ public class DifMod{
 		@SubscribeEvent
 		public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event){
 			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(),context->new FryingTableRenderer());
+			event.registerBlockEntityRenderer(DifModBlockEntities.QUARRY.get(),context->new QuarryRenderer());
 			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(),context->new ChunkLoaderRenderer());
 			event.registerEntityRenderer(DifModEntities.WITHER_TITAN.get(), WitherTitanRenderer::new);
 			event.registerEntityRenderer(DifModEntities.FORMULA.get(), CarRenderer::new);
