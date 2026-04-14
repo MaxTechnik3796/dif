@@ -43,7 +43,7 @@ public class QuarryBlock extends BaseEntityBlock {
 	@Nullable
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		// Postaví se čelem k hráči
+		// Stroj bude koukat směrem od hráče (klasické chování bloků jako Pec)
 		return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
 	}
     @Nullable

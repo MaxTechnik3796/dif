@@ -61,6 +61,7 @@ public class QuarryBlockEntity extends BlockEntity {
 
 	private void buildBuildCraftFrame(Level level, BlockState state) {
 		Direction facing = state.getValue(QuarryBlock.FACING);
+		// Střed těžební oblasti je posunutý před stroj
 		BlockPos center = worldPosition.relative(facing, range + 1);
 		int yBase = worldPosition.getY();
 
@@ -70,14 +71,14 @@ public class QuarryBlockEntity extends BlockEntity {
 				boolean isEdgeZ = (z == center.getZ() - range || z == center.getZ() + range);
 
 				if (isEdgeX || isEdgeZ) {
-					// Spodní patro (na úrovni quarry)
+					// Spodní patro (úroveň země)
 					placeFrame(level, new BlockPos(x, yBase, z));
-					// Horní patro (o 1 výš)
-					placeFrame(level, new BlockPos(x, yBase + 1, z));
+					// Horní patro (o 2 bloky výš, aby tam byla mezera jako v BC)
+					placeFrame(level, new BlockPos(x, yBase + 2, z));
 
-					// Propojení rohů (v rozích už máme 2, toto je jen pojistka)
+					// Propojovací sloupek v rozích
 					if (isEdgeX && isEdgeZ) {
-						placeFrame(level, new BlockPos(x, yBase, z));
+						placeFrame(level, new BlockPos(x, yBase + 1, z));
 					}
 				}
 			}
@@ -146,6 +147,7 @@ public class QuarryBlockEntity extends BlockEntity {
 	private void resetMiningArea(BlockState state) {
 		Direction facing = state.getValue(QuarryBlock.FACING);
 		BlockPos center = worldPosition.relative(facing, range + 1);
+		// Těžba začíná o 1 blok NÍŽE než je spodní frame (yBase - 1)
 		this.miningPos = new BlockPos(center.getX() - range, worldPosition.getY() - 1, center.getZ() - range);
 		setChanged();
 	}
