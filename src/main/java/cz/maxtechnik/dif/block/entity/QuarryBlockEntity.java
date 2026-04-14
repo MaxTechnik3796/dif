@@ -31,19 +31,13 @@ public class QuarryBlockEntity extends BlockEntity {
 	private final LazyOptional<IEnergyStorage> energyHolder = LazyOptional.of(() -> energy);
 	public QuarryBlockEntity(BlockPos pos, BlockState state) {
 		super(DifModBlockEntities.QUARRY.get(), pos, state);
-		resetMiningArea(state);
-	}
-	private void resetMiningArea(BlockState state) {
-		Direction facing = state.getValue(QuarryBlock.FACING);
-		// Posuneme startovní bod před Quarry podle toho, kam se dívá
-		// Oblast 11x11, kde střed je 6 bloků před strojem
-		BlockPos centerOfArea = worldPosition.relative(facing, range + 1);
-		this.miningPos = centerOfArea.offset(-range, -1, -range);
+		this.miningPos = pos.below();
 	}
 	public static void tick(Level level, BlockPos pos, BlockState state, QuarryBlockEntity be) {
 		if (level.isClientSide) return;
-
-// Spotřeba 500 FE za jeden vytěžený blok
+		if (be.miningPos.equals(pos.below())) {
+			be.resetMiningArea(state);
+		}
 		if (be.energy.getEnergyStored() >= 500) {
 			be.timer++;
 			if (be.timer >= be.speed) {
@@ -53,6 +47,9 @@ public class QuarryBlockEntity extends BlockEntity {
 				}
 			}
 		}
+	}
+	public int getRange() {
+		return range;
 	}
 	@Override
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap,@Nullable Direction side) {
@@ -67,32 +64,38 @@ public class QuarryBlockEntity extends BlockEntity {
 		super.invalidateCaps();
 		energyHolder.invalidate();
 	}
+	private void resetMiningArea(BlockState state) {
+		Direction facing = state.getValue(QuarryBlock.FACING);
+		// Střed oblasti je 6 bloků před strojem
+		BlockPos center = worldPosition.relative(facing, range + 1);
+		// Začneme v "rohu" (North-West) této oblasti
+		this.miningPos = new BlockPos(center.getX() - range, worldPosition.getY() - 1, center.getZ() - range);
+	}
+
 	private boolean advanceMiningPos() {
-		int minX = worldPosition.getX() - range;
-		int maxX = worldPosition.getX() + range;
-		int minZ = worldPosition.getZ() - range;
-		int maxZ = worldPosition.getZ() + range;
+		Direction facing = getBlockState().getValue(QuarryBlock.FACING);
+		BlockPos center = worldPosition.relative(facing, range + 1);
+
+		int minX = center.getX() - range;
+		int maxX = center.getX() + range;
+		int minZ = center.getZ() - range;
+		int maxZ = center.getZ() + range;
 
 		int x = miningPos.getX();
 		int y = miningPos.getY();
 		int z = miningPos.getZ();
 
-		x++; // Posun v řádku
-
+		x++;
 		if (x > maxX) {
 			x = minX;
-			z++; // Posun na další řádek
+			z++;
 		}
-
 		if (z > maxZ) {
 			z = minZ;
-			y--; // Posun o patro níž
+			y--;
 		}
 
 		miningPos = new BlockPos(x, y, z);
-
-		// Pokud jsme pod limitem světa, zastavíme stroj
-		assert level!=null;
 		return y > level.getMinBuildHeight();
 	}
 
