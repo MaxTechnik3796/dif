@@ -27,7 +27,7 @@ import java.util.List;
 public class QuarryBlockEntity extends BlockEntity {
 	private BlockPos miningPos;
 	private int timer = 0;
-	private final int speed = 10;
+	private final int speed = 8;
 	private final int range = 5;
 
 	// Energie: Kapacita 100k, příjem 1k, spotřeba na blok 500 FE
@@ -117,12 +117,13 @@ public class QuarryBlockEntity extends BlockEntity {
 
 	private boolean advanceMiningPos() {
 		Direction facing = getBlockState().getValue(QuarryBlock.FACING).getOpposite();
+		// Musí být stejný výpočet jako v resetMiningArea!
 		BlockPos center = worldPosition.relative(facing, range + 1);
 
-		int minX = center.getX() - range;
-		int maxX = center.getX() + range;
-		int minZ = center.getZ() - range;
-		int maxZ = center.getZ() + range;
+		int minX = center.getX() - (range-1);
+		int maxX = center.getX() + (range-1);
+		int minZ = center.getZ() - (range-1);
+		int maxZ = center.getZ() + (range-1);
 
 		int x = miningPos.getX();
 		int y = miningPos.getY();
@@ -146,9 +147,15 @@ public class QuarryBlockEntity extends BlockEntity {
 
 	private void resetMiningArea(BlockState state) {
 		Direction facing = state.getValue(QuarryBlock.FACING);
-		BlockPos center = worldPosition.relative(facing, range + 1);
-		// Těžba začíná v rohu oblasti, ale Y je o 1 nižší než stroj (pod úrovní spodního rámu)
-		this.miningPos = new BlockPos(center.getX() - range, worldPosition.getY() - 1, center.getZ() - range);
+		// Pokud to těží na opačné straně, změň .relative(facing, ...) na .relative(facing.getOpposite(), ...)
+		BlockPos center = worldPosition.relative(facing.getOpposite(), range + 1);
+
+		// Nastavíme miningPos do "nejmenšího" rohu oblasti (minX, minY, minZ)
+		this.miningPos = new BlockPos(
+				center.getX() - (range-1),
+				worldPosition.getY()-1,
+				center.getZ() - (range-1)
+		);
 		setChanged();
 	}
 
