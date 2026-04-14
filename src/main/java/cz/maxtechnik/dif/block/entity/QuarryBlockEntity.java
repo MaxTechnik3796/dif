@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.block.entity;
 
-import cz.maxtechnik.dif.block.QuarryBlock;
+import cz.maxtechnik.dif.block.Quarry;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -59,7 +59,7 @@ public class QuarryBlockEntity extends BlockEntity {
 	}
 
 	private void buildBuildCraftFrame(Level level, BlockState state) {
-		Direction facing = state.getValue(QuarryBlock.FACING).getOpposite();
+		Direction facing = state.getValue(Quarry.FACING).getOpposite();
 		// Střed těžební oblasti je posunutý před stroj o (range + 1)
 		BlockPos center = worldPosition.relative(facing, range + 1);
 		int yBase = worldPosition.getY();
@@ -86,7 +86,7 @@ public class QuarryBlockEntity extends BlockEntity {
 	}
 	private void continuousFrameCheck(Level level) {
 		// Definujeme střed oblasti (stejně jako při stavbě)
-		Direction facing = getBlockState().getValue(QuarryBlock.FACING).getOpposite();
+		Direction facing = getBlockState().getValue(Quarry.FACING).getOpposite();
 		BlockPos center = worldPosition.relative(facing, range + 1);
 		int yBase = worldPosition.getY();
 
@@ -170,7 +170,7 @@ public class QuarryBlockEntity extends BlockEntity {
 		return dx == range || dz == range;
 	}
 	private boolean advanceMiningPos() {
-		Direction facing = getBlockState().getValue(QuarryBlock.FACING).getOpposite();
+		Direction facing = getBlockState().getValue(Quarry.FACING).getOpposite();
 		// Musí být stejný výpočet jako v resetMiningArea!
 		BlockPos center = worldPosition.relative(facing, range + 1);
 
@@ -200,7 +200,7 @@ public class QuarryBlockEntity extends BlockEntity {
 	}
 
 	private void resetMiningArea(BlockState state) {
-		Direction facing = state.getValue(QuarryBlock.FACING);
+		Direction facing = state.getValue(Quarry.FACING);
 		// Pokud to těží na opačné straně, změň .relative(facing, ...) na .relative(facing.getOpposite(), ...)
 		BlockPos center = worldPosition.relative(facing.getOpposite(), range + 1);
 

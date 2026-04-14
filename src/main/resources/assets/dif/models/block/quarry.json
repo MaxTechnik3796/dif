@@ -1,0 +1,13 @@
+{
+	"parent":"block/cube",
+	"textures":{
+		"down":"dif:block/quarry_bottom",
+		"up":"dif:block/quarry_top",
+		"north":"dif:block/quarry_front",
+		"east":"dif:block/quarry_side",
+		"south":"dif:block/quarry_back",
+		"west":"dif:block/quarry_side",
+		"particle":"dif:block/quarry_top"
+	},
+	"render_type":"solid"
+}

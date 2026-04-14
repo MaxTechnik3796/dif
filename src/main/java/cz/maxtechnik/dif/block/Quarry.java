@@ -19,9 +19,9 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("deprecation")
-public class QuarryBlock extends BaseEntityBlock {
+public class Quarry extends BaseEntityBlock {
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-    public QuarryBlock(Properties properties) {
+    public Quarry(Properties properties) {
         super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }

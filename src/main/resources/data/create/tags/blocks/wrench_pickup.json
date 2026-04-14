@@ -31,6 +31,7 @@
 		"dif:fast_rail",
 		"dif:remote_minecart_block",
 		"dif:camera",
-		"dif:camera_monitor"
+		"dif:camera_monitor",
+		"dif:quarry"
 	]
 }

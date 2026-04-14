@@ -327,5 +327,7 @@
 	"item.dif.god_totel": "God Totem",
 	"item.dif.phantom_ring": "Phantom Ring",
 	"block.dif.lap_timer": "Lap Timer Finish Line",
-	"block.dif.sleeping_bag": "Sleeping Bag"
+	"block.dif.sleeping_bag": "Sleeping Bag",
+	"block.dif.quarry":"Quarry",
+	"block.dif.quarry_frame":"Quarry Frame"
 }
