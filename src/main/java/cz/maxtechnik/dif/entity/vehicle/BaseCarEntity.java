@@ -219,31 +219,44 @@ public abstract class BaseCarEntity extends Entity{
 			velocity=velocity*0.82f+Math.signum(velocity)*(22f/72f)*0.18f;
         if(Math.abs(velocity)>0.015f){
 			float speedKmh = Math.abs(velocity) * 72f;
-			float steeringMult = Math.max(0.20f, 1f - (speedKmh / 400f));
 			
-			// Ackermann-like steering calculation
+			// Dynamic steering angle reduction based on speed (as requested)
+			float steeringMult;
+			if (speedKmh < 100f) steeringMult = 1f;
+			else if (speedKmh < 200f) steeringMult = 1f - ((speedKmh - 100f) / 100f) * 0.20f; // 20% reduction at 200
+			else if (speedKmh < 250f) steeringMult = 0.80f - ((speedKmh - 200f) / 50f) * 0.10f; // 30% reduction at 250
+			else if (speedKmh < 300f) steeringMult = 0.70f - ((speedKmh - 250f) / 50f) * 0.05f; // 35% reduction at 300
+			else steeringMult = Math.max(0.55f, 0.65f - ((speedKmh - 300f) / 100f) * 0.05f); 
+			
+			// Ackermann steering calculation
 			float maxSteerAngleDegrees = getMaxSteerAngleDegrees();
-			float currentSteerAngle = currentSteering * maxSteerAngleDegrees;
+			// We apply steeringMult to the angle itself for realistic curvature
+			float currentSteerAngle = currentSteering * maxSteerAngleDegrees * steeringMult;
 			float steerRad = (float)Math.toRadians(currentSteerAngle);
 			
 			// Delta Yaw = (v / L) * tan(theta)
 			float deltaYawRad = (velocity / getWheelbase()) * (float)Math.tan(steerRad);
-			float handlingFactor = (1f + getDownforceCoefficient() * (velocity/msBT) * (velocity/msBT)) * lGrip * steeringMult;
+			// Handling factor based on surface grip and downforce (without doubling steeringMult)
+			float handlingFactor = (1f + getDownforceCoefficient() * (velocity/msBT) * (velocity/msBT)) * lGrip;
 			float deltaYaw = (float)Math.toDegrees(deltaYawRad) * handlingFactor;
 			setYRot(getYRot() + deltaYaw);
 			
+			// Oversteer / Spinout protection logic - significantly tighter at high speeds
+			// Forced braking: at high speeds, even moderate steering leads to loss of control
 			float safeLimit;
-			if (speedKmh <= 150f) safeLimit = 1.0f;
-			else if (speedKmh <= 250f) safeLimit = 1.0f - ((speedKmh - 150f) / 100f) * 0.50f;
-			else if (speedKmh <= 300f) safeLimit = 0.50f - ((speedKmh - 250f) / 50f) * 0.30f;
-			else safeLimit = 0.15f;
+			if (speedKmh <= 80f) safeLimit = 1.0f;
+			else if (speedKmh <= 160f) safeLimit = 1.0f - ((speedKmh - 80f) / 80f) * 0.40f; // 1.0 -> 0.6
+			else if (speedKmh <= 240f) safeLimit = 0.60f - ((speedKmh - 160f) / 80f) * 0.35f; // 0.6 -> 0.25
+			else if (speedKmh <= 320f) safeLimit = 0.25f - ((speedKmh - 240f) / 80f) * 0.15f; // 0.25 -> 0.1
+			else safeLimit = 0.10f;
 			
 			float absSteer = Math.abs(currentSteering);
 			boolean oversteerDanger = absSteer > safeLimit;
 			
 			if (oversteerDanger && spinoutTimer == 0) {
 				oversteerTimer++;
-				int timeLimit = getJumping(d) ? 30 : 10;
+				// At very high speeds, spinouts happen faster
+				int timeLimit = getJumping(d) ? 20 : (speedKmh > 200f ? 6 : 12);
 				if (oversteerTimer > timeLimit) {
 					spinoutTimer = 120;
 					spinoutDirection = Math.signum(currentSteering);
