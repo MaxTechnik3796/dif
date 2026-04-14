@@ -18,6 +18,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -91,30 +92,64 @@ public class QuarryBlockEntity extends BlockEntity {
 	}
 
 	private void mineNextBlock(Level level) {
+		// 1. Přeskočení prázdných bloků
 		while (level.isEmptyBlock(miningPos) && miningPos.getY() > level.getMinBuildHeight()) {
-			if (!advanceMiningPos()) break;
+			if (!advanceMiningPos()) return;
 		}
 
 		BlockState targetState = level.getBlockState(miningPos);
+
+		// 2. Kontrola, zda netěžíme vlastní Frame
+		if (targetState.is(DifModBlocks.QUARRY_FRAME.get())) {
+			advanceMiningPos();
+			return;
+		}
+
+		// 3. Obnova Frame (pokud byl zničen hráčem v úrovni rámu)
+		// Pokud jsme v Y úrovni stroje a na okraji range, ale je tam AIR -> položíme frame
+		if (miningPos.getY() == worldPosition.getY() && isOnFrameEdge()) {
+			if (level.isEmptyBlock(miningPos)) {
+				level.setBlock(miningPos, DifModBlocks.QUARRY_FRAME.get().defaultBlockState(), 3);
+				return;
+			}
+		}
+
+		// 4. Samotné těžení a dropy
 		if (!targetState.isAir() && targetState.getDestroySpeed(level, miningPos) >= 0) {
 			if (level instanceof ServerLevel serverLevel) {
 				List<ItemStack> drops = Block.getDrops(targetState, serverLevel, miningPos, level.getBlockEntity(miningPos));
-				BlockEntity invAbove = level.getBlockEntity(worldPosition.above());
 
-				if (invAbove != null) {
-					invAbove.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
-						for (ItemStack stack : drops) {
-							ItemStack rem = ItemHandlerHelper.insertItemStacked(handler, stack, false);
-							if (!rem.isEmpty()) Block.popResource(level, worldPosition.above(), rem);
-						}
-					});
+				// Hledání inventáře nad Quarry
+				BlockEntity inventoryAbove = level.getBlockEntity(worldPosition.above());
+				IItemHandler handler = null;
+				if (inventoryAbove != null) {
+					handler = inventoryAbove.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(null);
 				}
+
+				for (ItemStack stack : drops) {
+					ItemStack remaining = stack;
+					if (handler != null) {
+						// Zkusíme vložit do truhly nahoře
+						remaining = ItemHandlerHelper.insertItemStacked(handler, stack, false);
+					}
+
+					// Pokud není truhla, nebo je plná, vyhodíme itemy z Quarry bloku
+					if (!remaining.isEmpty()) {
+						Block.popResource(level, worldPosition, remaining);
+					}
+				}
+				// Odstranění bloku bez defaultních dropů (už jsme je pořešili ručně)
 				level.removeBlock(miningPos, false);
 			}
 		}
 		advanceMiningPos();
 	}
-
+	private boolean isOnFrameEdge() {
+		int dx = Math.abs(miningPos.getX() - worldPosition.getX());
+		int dz = Math.abs(miningPos.getZ() - worldPosition.getZ());
+		// Pokud jsme přesně na okraji range v X nebo Z
+		return dx == range || dz == range;
+	}
 	private boolean advanceMiningPos() {
 		Direction facing = getBlockState().getValue(QuarryBlock.FACING).getOpposite();
 		// Musí být stejný výpočet jako v resetMiningArea!
