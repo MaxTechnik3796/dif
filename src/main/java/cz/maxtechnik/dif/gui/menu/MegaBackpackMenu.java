@@ -42,10 +42,9 @@ public class MegaBackpackMenu extends AbstractContainerMenu {
 		this.backpackInventory = new SimpleContainer(SLOTS_PER_PAGE);
 
 		// NAČTENÍ DAT ZE SERVERU
-		if (!player.level().isClientSide) {
-			BackpackSavedData data = BackpackSavedData.get(player.level());
-			NonNullList<ItemStack> allItems = data.getOrCreateInventory(player.getUUID());
-			loadPage(allItems);
+		if (!playerInv.player.level().isClientSide) {
+			BackpackSavedData data = BackpackSavedData.get(playerInv.player.level());
+			loadPage(data.getOrCreateInventory(playerInv.player.getUUID()));
 		}
 
 		// 1. Sloty Batohu (13x9)
@@ -71,17 +70,17 @@ public class MegaBackpackMenu extends AbstractContainerMenu {
 	}
 
 
-	public void saveCurrentPage() {
+	private void saveCurrentPage() {
 		if (player.level().isClientSide) return;
-
 		BackpackSavedData data = BackpackSavedData.get(player.level());
 		NonNullList<ItemStack> allItems = data.getOrCreateInventory(player.getUUID());
 
 		int startOffset = currentPage * SLOTS_PER_PAGE;
 		for (int i = 0; i < SLOTS_PER_PAGE; i++) {
-			allItems.set(startOffset + i, backpackInventory.getItem(i));
+			// Ukládáme z malého containeru (0-220) do velkého seznamu na správné pozice
+			allItems.set(startOffset + i, backpackInventory.getItem(i).copy());
 		}
-		data.setDirty(); // Toto zajistí uložení na disk
+		data.setDirty();
 	}
 
 	private void loadPage(NonNullList<ItemStack> allItems) {

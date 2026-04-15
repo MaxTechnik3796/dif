@@ -54,9 +54,9 @@ public class MegaBackpackScreen extends AbstractContainerScreen<MegaBackpackMenu
         graphics.blit(BACKGROUND00, leftPos, topPos, 0, 0, 256, 256);
 		graphics.blit(BACKGROUND01, leftPos+256, topPos, 0, 0, 256, 256);
 
-		int playerX = leftPos + 70;  // X pozice středu postavy
-		int playerY = topPos + 100; // Y pozice nohou postavy
-		int size = 45;              // Velikost (vanilla používá cca 30)
+		int playerX = leftPos + 47;  // X pozice středu postavy
+		int playerY = topPos + 142; // Y pozice nohou postavy
+		int size = 30;              // Velikost (vanilla používá cca 30)
 
 		// Tato metoda se postará o všechno: 3D model, rotaci za myší i osvětlení
 		assert this.minecraft!=null;
