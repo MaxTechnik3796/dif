@@ -7,10 +7,8 @@ import cz.maxtechnik.dif.block.entity.barrel.BrassBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.barrel.CopperBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.dev.SpecialCraftingBlockEntity;
 import cz.maxtechnik.dif.block.entity.dev.XpStorageBlockEntity;
-import cz.maxtechnik.dif.block.industrial.entity.*;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -34,12 +32,8 @@ public class DifModBlockEntities{
 	public static final RegistryObject<BlockEntityType<CameraBlockEntity>>CAMERA=REGISTRY.register("camera",()->BlockEntityType.Builder.of(CameraBlockEntity::new,DifModBlocks.CAMERA.get()).build(null));
 	public static final RegistryObject<BlockEntityType<QuarryBlockEntity>>QUARRY=REGISTRY.register("quarry",()->BlockEntityType.Builder.of(QuarryBlockEntity::new,DifModBlocks.QUARRY.get()).build(null));
 
-	// V souboru DifModBlockEntities.java
-	public static final RegistryObject<BlockEntityType<ReinforcedShaftBlockEntity>> REINFORCED_SHAFT = 	REGISTRY.register("reinforced_shaft", () -> BlockEntityType.Builder.of(ReinforcedShaftBlockEntity::new, DifModBlocks.REINFORCED_SHAFT.get()).build(null));
-
 	public static final RegistryObject<BlockEntityType<BurningGeneratorBlockEntity>> BURNING_GENERATOR=REGISTRY.register("burning_generator",()->BlockEntityType.Builder.of(BurningGeneratorBlockEntity::new,DifModBlocks.BURNING_GENERATOR.get()).build(null));
-	public static final RegistryObject<BlockEntityType<?>>SPECIAL_CRAFTING=REGISTRY.register("special_crafting",()->BlockEntityType.Builder.of(SpecialCraftingBlockEntity::new,DifModBlocks.XP_STORAGE.get()).build(null));
-
+	public static final RegistryObject<BlockEntityType<?>>SPECIAL_CRAFTING=register("special_crafting",DifModBlocks.XP_STORAGE,SpecialCraftingBlockEntity::new);
 	private static RegistryObject<BlockEntityType<?>>register(String registryname,RegistryObject<Block> block,BlockEntityType.BlockEntitySupplier<?> supplier){
 		return REGISTRY.register(registryname,()->BlockEntityType.Builder.of(supplier,block.get()).build(null));
 	}

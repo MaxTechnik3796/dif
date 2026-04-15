@@ -7,7 +7,6 @@ import cz.maxtechnik.dif.block.barrel.BrassBarrel;
 import cz.maxtechnik.dif.block.barrel.CopperBarrel;
 import cz.maxtechnik.dif.block.dev.Test;
 import cz.maxtechnik.dif.block.dev.XpStorage;
-import cz.maxtechnik.dif.block.industrial.*;
 import cz.maxtechnik.dif.block.mata.MataPlant;
 import cz.maxtechnik.dif.block.mata.MatyBlock;
 import cz.maxtechnik.dif.block.rails.FastPoweredRailBlock;
@@ -35,8 +34,6 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>EXAMPLE_BLOCK=REGISTRY.register("example_block",Test::new);
 	public static final RegistryObject<Block>REMOTE_MINECART_BLOCK=REGISTRY.register("remote_minecart_block",RemoteMinecartBlock::new);
 
-	//reinforced
-	public static final RegistryObject<Block> REINFORCED_SHAFT = REGISTRY.register("reinforced_shaft", () -> new ReinforcedShaftBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).noOcclusion()));
 	public static final RegistryObject<Block>SLEEPING_BAG=REGISTRY.register("sleeping_bag",SleepingBagBlock::new);
 	public static final RegistryObject<Block>QUARRY=REGISTRY.register("quarry",()->new Quarry(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block>QUARRY_FRAME=REGISTRY.register("quarry_frame",QuarryFrame::new);
