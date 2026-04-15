@@ -1,0 +1,1 @@
+﻿import com.simibubi.create.content.kinetics.KineticNetwork; import java.lang.reflect.*; public class Dump { @org.junit.jupiter.api.Test public void test() { try { for(Field f : KineticNetwork.class.getDeclaredFields()) { System.out.println(f.getName() + " " + f.getType().getName()); } } catch(Exception e) {} } } 

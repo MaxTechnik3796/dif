@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "axis=x": { "model": "dif:block/reinforced_shaft", "x": 90, "y": 90 },
+    "axis=y": { "model": "dif:block/reinforced_shaft" },
+    "axis=z": { "model": "dif:block/reinforced_shaft", "x": 90, "y": 180 }
+  }
+}
