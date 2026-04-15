@@ -9,6 +9,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +50,17 @@ public class MegaBackpackMenu extends AbstractContainerMenu {
 				this.addSlot(new Slot(backpackInventory, j + i * COLS, 8 + j * 18, 18 + i * 18));
 			}
 		}
+		this.addDataSlot(new DataSlot() {
+			@Override
+			public int get() {
+				return currentPage;
+			}
 
+			@Override
+			public void set(int value) {
+				currentPage = value;
+			}
+		});
 		// 2. Sloty Hráče
 		addPlayerInventory(playerInv);
 	}
@@ -83,15 +94,21 @@ public class MegaBackpackMenu extends AbstractContainerMenu {
 		}
 	}
 
-	// Metoda pro změnu stránky (budeš volat z paketu)
 	public void changePage(int delta) {
+		if (player.level().isClientSide) return;
+
+		// 1. Uložit itemy z aktuální stránky do celkového seznamu
 		saveCurrentPage();
+
+		// 2. Posunout index stránky (0-15 pro 16 stránek)
 		this.currentPage = Math.max(0, Math.min(15, currentPage + delta));
 
+		// 3. Načíst itemy z nové stránky do slotů
 		BackpackSavedData data = BackpackSavedData.get(player.level());
 		loadPage(data.getOrCreateInventory(player.getUUID()));
 
-		this.broadcastChanges(); // Synchronizace se sloty u klienta
+		// 4. Klíčový krok: Poslat změnu klientovi, aby se mu překreslily ikonky itemů
+		this.broadcastChanges();
 	}
 
 	private void addPlayerInventory(Inventory playerInv) {
@@ -107,7 +124,9 @@ public class MegaBackpackMenu extends AbstractContainerMenu {
 			this.addSlot(new Slot(playerInv, k, startX + k * 18, startY + 58));
 		}
 	}
-
+	public int getCurrentPage() {
+		return this.currentPage;
+	}
 	@Override
 	public boolean stillValid(@NotNull Player pPlayer) {
 		return true;

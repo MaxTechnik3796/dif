@@ -7,6 +7,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class BackpackSavedData extends SavedData {
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag tag) {
+	public @NotNull CompoundTag save(@NotNull CompoundTag tag) {
 		CompoundTag backpacks = new CompoundTag();
 		for (Map.Entry<UUID, NonNullList<ItemStack>> entry : playerBackpacks.entrySet()) {
 			CompoundTag playerTag = new CompoundTag();
