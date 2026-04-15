@@ -90,6 +90,10 @@ repositories {
     maven {
         url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
     }
+    maven {
+        name = "Create Maven"
+        url = "https://maven.createmod.net"
+    }
 }
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
@@ -115,6 +119,9 @@ dependencies {
 
     runtimeOnly fg.deobf("curse.maven:worldedit-225608:4586218")
     runtimeOnly fg.deobf("curse.maven:mtt-1380280:7468659")
+    
+    // Dependencies for Create 6.0.8 compatibility
+    implementation fg.deobf("net.createmod.ponder:Ponder-Forge-1.20.1:${ponder_version}")
 }
 tasks.named('processResources', ProcessResources).configure {
     var replaceProperties = [minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
@@ -146,3 +153,4 @@ tasks.named('jar', Jar).configure {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
+task dumpKineticNetwork { doLast { println 'DUMP START'; Class.forName('com.simibubi.create.content.kinetics.KineticNetwork').getDeclaredFields().each { println 'FIELD: ' + it.getName() + ' TYPE: ' + it.getType().getName() }; println 'DUMP END' } }
