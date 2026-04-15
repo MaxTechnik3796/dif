@@ -14,6 +14,7 @@ import cz.maxtechnik.dif.init.gui.DifModMenus;
 import cz.maxtechnik.dif.init.other.*;
 import cz.maxtechnik.dif.init.events.JetpackHandler;
 import cz.maxtechnik.dif.network.CameraExitPacket;
+import cz.maxtechnik.dif.network.OpenMegaBackpackPacket;
 import cz.maxtechnik.dif.network.RemoteControlPacket;
 import cz.maxtechnik.dif.network.ModNetworking.SyncCarPositionPacket;
 import cz.maxtechnik.dif.renderer.*;
@@ -94,6 +95,7 @@ public class DifMod{
 		bus.addListener(DifModTabs::addCreative);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON,DifModCommonConfig.SPEC);
 	}
+
 	private void commonSetup(final FMLCommonSetupEvent event){
 		LOGGER.info("DIF MOD: Common Setup");
 		event.enqueueWork(() ->addNetworkMessage(

@@ -5,6 +5,7 @@ import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.network.EnderOpenMessage;
 import cz.maxtechnik.dif.network.JetpackFlyMessage;
+import cz.maxtechnik.dif.network.OpenMegaBackpackPacket;
 import cz.maxtechnik.dif.network.RemoteControlPacket;
 
 import net.minecraft.client.KeyMapping;
@@ -35,6 +36,13 @@ public class DifModKeys {
 	public static final KeyMapping CAR_GAS = new KeyMapping("key.dif.car_gas", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_W, CATEGORY);
 	public static final KeyMapping CAR_BRAKE = new KeyMapping("key.dif.car_brake", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_SPACE, CATEGORY);
 
+	public static final KeyMapping MEGA_BACKPACK_KEY = new KeyMapping(
+			"key.dif.mega_backpack",
+			InputConstants.Type.KEYSYM,
+			GLFW.GLFW_KEY_B, // Výchozí klávesa B
+			CATEGORY
+	);
+
 	@SubscribeEvent
 	public static void registerKeys(RegisterKeyMappingsEvent event) {
 		event.register(JETPACK_FLY);
@@ -46,6 +54,7 @@ public class DifModKeys {
 		event.register(CAMERA_LOCK);
 		event.register(CAR_GAS);
 		event.register(CAR_BRAKE);
+		event.register(MEGA_BACKPACK_KEY);
 	}
 
 	@Mod.EventBusSubscriber(modid = DifMod.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -81,6 +90,9 @@ public class DifModKeys {
 
 				while(CAMERA_LOCK.consumeClick()) {
 					cz.maxtechnik.dif.init.events.client.VehicleCameraHandler.vehicleCameraLocked = !cz.maxtechnik.dif.init.events.client.VehicleCameraHandler.vehicleCameraLocked;
+				}
+				while (MEGA_BACKPACK_KEY.consumeClick()) {
+					DifMod.PACKET_HANDLER.sendToServer(new OpenMegaBackpackPacket(0, 0));
 				}
 			}
 		}

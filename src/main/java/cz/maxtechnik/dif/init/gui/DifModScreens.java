@@ -19,6 +19,7 @@ public class DifModScreens{
 			MenuScreens.register(DifModMenus.SPECIAL_CRAFTING.get(),SpecialCraftingScreen::new);
 			MenuScreens.register(DifModMenus.OLD_CHEST.get(),OldChestScreen::new);
 			MenuScreens.register(DifModMenus.SPACESHIP.get(),SpaceshipScreen::new);
+			MenuScreens.register(DifModMenus.MEGA_BACKPACK.get(),MegaBackpackScreen::new);
 		});
 	}
 }
