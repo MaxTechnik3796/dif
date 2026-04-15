@@ -16,37 +16,33 @@ import net.minecraftforge.network.NetworkHooks;
 import java.util.Objects;
 import java.util.function.Supplier;
 @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
-public class OpenMegaBackpackPacket{
+public class MegaBackpackOpenPacket{
 	int type, pressedms;
-	public OpenMegaBackpackPacket(int type, int pressedms) {
-		this.type = type;
-		this.pressedms = pressedms;
+	public MegaBackpackOpenPacket(int type,int pressedms){
+		this.type=type;
+		this.pressedms=pressedms;
 	}
-
-	public OpenMegaBackpackPacket(FriendlyByteBuf buffer) {
-		this.type = buffer.readInt();
-		this.pressedms = buffer.readInt();
+	public MegaBackpackOpenPacket(FriendlyByteBuf buffer){
+		this.type=buffer.readInt();
+		this.pressedms=buffer.readInt();
 	}
-
-	public static void buffer(OpenMegaBackpackPacket message, FriendlyByteBuf buffer) {
+	public static void buffer(MegaBackpackOpenPacket message,FriendlyByteBuf buffer){
 		buffer.writeInt(message.type);
 		buffer.writeInt(message.pressedms);
 	}
-
-	public static void handler(OpenMegaBackpackPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
-		NetworkEvent.Context context = contextSupplier.get();
-		context.enqueueWork(() -> pressAction(Objects.requireNonNull(context.getSender()), message.type));
+	public static void handler(MegaBackpackOpenPacket message,Supplier<NetworkEvent.Context> contextSupplier){
+		NetworkEvent.Context context=contextSupplier.get();
+		context.enqueueWork(()->pressAction(Objects.requireNonNull(context.getSender()),message.type));
 		context.setPacketHandled(true);
 	}
-
-	public static void pressAction(Player player, int type) {
-		if (type == 0 && player instanceof ServerPlayer serverPlayer) {
+	public static void pressAction(Player player,int type){
+		if(type==0&&player instanceof ServerPlayer serverPlayer){
 			// Tady je ten hlavní rozdíl oproti Enderce:
 			// Musíme použít NetworkHooks.openScreen, abychom uspokojili IForgeMenuType
-			NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider(
-					(id, inventory, p) -> new MegaBackpackMenu(id, inventory),
+			NetworkHooks.openScreen(serverPlayer,new SimpleMenuProvider(
+					(id,inventory,p)->new MegaBackpackMenu(id,inventory),
 					Component.literal("Mega Backpack")
-			), buf -> {
+			),buf->{
 				// Zapíšeme jeden int, aby klient (IForgeMenuType) věděl, že data přišla
 				buf.writeInt(0);
 			});
@@ -54,6 +50,6 @@ public class OpenMegaBackpackPacket{
 	}
 	@SubscribeEvent
 	public static void registerMessage(FMLCommonSetupEvent event){
-		DifMod.addNetworkMessage(OpenMegaBackpackPacket.class,OpenMegaBackpackPacket::buffer,OpenMegaBackpackPacket::new,OpenMegaBackpackPacket::handler);
+		DifMod.addNetworkMessage(MegaBackpackOpenPacket.class,MegaBackpackOpenPacket::buffer,MegaBackpackOpenPacket::new,MegaBackpackOpenPacket::handler);
 	}
 }

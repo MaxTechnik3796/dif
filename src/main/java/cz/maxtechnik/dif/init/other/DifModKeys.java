@@ -5,7 +5,7 @@ import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.network.EnderOpenMessage;
 import cz.maxtechnik.dif.network.JetpackFlyMessage;
-import cz.maxtechnik.dif.network.OpenMegaBackpackPacket;
+import cz.maxtechnik.dif.network.MegaBackpackOpenPacket;
 import cz.maxtechnik.dif.network.RemoteControlPacket;
 
 import net.minecraft.client.KeyMapping;
@@ -92,7 +92,7 @@ public class DifModKeys {
 					cz.maxtechnik.dif.init.events.client.VehicleCameraHandler.vehicleCameraLocked = !cz.maxtechnik.dif.init.events.client.VehicleCameraHandler.vehicleCameraLocked;
 				}
 				while (MEGA_BACKPACK_KEY.consumeClick()) {
-					DifMod.PACKET_HANDLER.sendToServer(new OpenMegaBackpackPacket(0, 0));
+					DifMod.PACKET_HANDLER.sendToServer(new MegaBackpackOpenPacket(0, 0));
 				}
 			}
 		}
