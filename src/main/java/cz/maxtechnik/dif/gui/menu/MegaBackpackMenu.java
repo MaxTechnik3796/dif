@@ -1,6 +1,8 @@
 package cz.maxtechnik.dif.gui.menu;
 
+import cz.maxtechnik.dif.init.events.BackpackSavedData;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -10,24 +12,36 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
 public class MegaBackpackMenu extends AbstractContainerMenu {
 	public static final int ROWS = 9;
 	public static final int COLS = 13;
 	public static final int SLOTS_PER_PAGE = ROWS * COLS;
-	// Uprav tento konstruktor v MegaBackpackMenu.java
+
+	private int currentPage = 0;
+	private final Container backpackInventory;
+	private final Player player;
+
+	// Konstruktor pro klienta (Forge ho volá při otevírání)
 	public MegaBackpackMenu(int id, Inventory playerInv, FriendlyByteBuf extraData) {
-		this(id, playerInv);
-		if (extraData != null) {
-			extraData.readInt(); // Tady se přečte ta nula z paketu (4 bajty)
+		this(id, playerInv); // Volá hlavní konstruktor níže
+		if (extraData != null && extraData.readableBytes() >= 4) {
+			extraData.readInt();
 		}
 	}
+
+	// Hlavní konstruktor
 	public MegaBackpackMenu(int id, Inventory playerInv) {
 		super(DifModMenus.MEGA_BACKPACK.get(), id);
+		this.player = playerInv.player;
+		this.backpackInventory = new SimpleContainer(SLOTS_PER_PAGE);
 
-		// Vytvoříme dočasný container pro 117 slotů (na straně klienta)
-		// Na serveru se sem pak nahrají data z .dat souboru
-		// Tohle je virtuální inventář pro zobrazení v GUI
-		Container backpackInventory=new SimpleContainer(SLOTS_PER_PAGE);
+		// NAČTENÍ DAT ZE SERVERU
+		if (!player.level().isClientSide) {
+			BackpackSavedData data = BackpackSavedData.get(player.level());
+			NonNullList<ItemStack> allItems = data.getOrCreateInventory(player.getUUID());
+			loadPage(allItems);
+		}
 
 		// 1. Sloty Batohu (13x9)
 		for (int i = 0; i < ROWS; i++) {
@@ -36,34 +50,72 @@ public class MegaBackpackMenu extends AbstractContainerMenu {
 			}
 		}
 
-		// 2. Sloty Hráče (posuneme je dolů pod batoh)
+		// 2. Sloty Hráče
 		addPlayerInventory(playerInv);
 	}
 
-	private void addPlayerInventory(Inventory playerInv) {
-		int startY = 18 + (ROWS * 18) + 10; // Dynamický výpočet pod batoh
-		int startX = 8 + (2 * 18); // Vycentrování (protože batoh je širší než hráč)
+	// ULOŽENÍ DAT PŘI ZAVŘENÍ
+	@Override
+	public void removed(Player pPlayer) {
+		super.removed(pPlayer);
+		if (!pPlayer.level().isClientSide) {
+			saveCurrentPage();
+		}
+	}
 
-		// Player Inventory
+	public void saveCurrentPage() {
+		if (player.level().isClientSide) return;
+
+		BackpackSavedData data = BackpackSavedData.get(player.level());
+		NonNullList<ItemStack> allItems = data.getOrCreateInventory(player.getUUID());
+
+		int startOffset = currentPage * SLOTS_PER_PAGE;
+		for (int i = 0; i < SLOTS_PER_PAGE; i++) {
+			allItems.set(startOffset + i, backpackInventory.getItem(i));
+		}
+		data.setDirty(); // Toto zajistí uložení na disk
+	}
+
+	private void loadPage(NonNullList<ItemStack> allItems) {
+		int startOffset = currentPage * SLOTS_PER_PAGE;
+		for (int i = 0; i < SLOTS_PER_PAGE; i++) {
+			backpackInventory.setItem(i, allItems.get(startOffset + i));
+		}
+	}
+
+	// Metoda pro změnu stránky (budeš volat z paketu)
+	public void changePage(int delta) {
+		saveCurrentPage();
+		this.currentPage = Math.max(0, Math.min(15, currentPage + delta));
+
+		BackpackSavedData data = BackpackSavedData.get(player.level());
+		loadPage(data.getOrCreateInventory(player.getUUID()));
+
+		this.broadcastChanges(); // Synchronizace se sloty u klienta
+	}
+
+	private void addPlayerInventory(Inventory playerInv) {
+		int startY = 18 + (ROWS * 18) + 10;
+		int startX = 8 + (2 * 18);
+
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 9; ++j) {
 				this.addSlot(new Slot(playerInv, j + i * 9 + 9, startX + j * 18, startY + i * 18));
 			}
 		}
-		// Hotbar
 		for (int k = 0; k < 9; ++k) {
 			this.addSlot(new Slot(playerInv, k, startX + k * 18, startY + 58));
 		}
 	}
 
 	@Override
-	public @NotNull ItemStack quickMoveStack(@NotNull Player player,int index) {
-		// Základní logika pro Shift+Click (zjednodušeno)
-		return ItemStack.EMPTY;
+	public boolean stillValid(@NotNull Player pPlayer) {
+		return true;
 	}
 
 	@Override
-	public boolean stillValid(@NotNull Player player) {
-		return true; // Pro testování zatím true, aby se menu nezavíralo
+	public @NotNull ItemStack quickMoveStack(@NotNull Player pPlayer, int pIndex) {
+		// Tady by měla být logika pro Shift-Click, zatím vracíme prázdno
+		return ItemStack.EMPTY;
 	}
 }
