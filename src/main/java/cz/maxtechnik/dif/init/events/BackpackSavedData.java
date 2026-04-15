@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.init.events;
 
+import cz.maxtechnik.dif.gui.menu.MegaBackpackMenu;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -45,14 +46,17 @@ public class BackpackSavedData extends SavedData {
 		return tag;
 	}
 
+	// Místo fixního čísla použij dynamický výpočet
 	public NonNullList<ItemStack> getOrCreateInventory(UUID uuid) {
-		return playerBackpacks.computeIfAbsent(uuid, k -> NonNullList.withSize(13 * 9 * 16, ItemStack.EMPTY));
+		// 13 * 17 * 16 stránek = 3536
+		int totalSize = MegaBackpackMenu.SLOTS_PER_PAGE * 16;
+		return playerBackpacks.computeIfAbsent(uuid, k -> NonNullList.withSize(totalSize, ItemStack.EMPTY));
 	}
 
 	public static BackpackSavedData get(Level level) {
 		if (level instanceof ServerLevel serverLevel) {
 			return serverLevel.getServer().overworld().getDataStorage()
-					.computeIfAbsent(BackpackSavedData::load, BackpackSavedData::new, "mega_backpacks");
+					.computeIfAbsent(BackpackSavedData::load, BackpackSavedData::new, "dif_mega_backpacks");
 		}
 		return null;
 	}

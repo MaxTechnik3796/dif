@@ -43,7 +43,6 @@ public class OpenMegaBackpackPacket{
 		if (type == 0 && player instanceof ServerPlayer serverPlayer) {
 			// Tady je ten hlavní rozdíl oproti Enderce:
 			// Musíme použít NetworkHooks.openScreen, abychom uspokojili IForgeMenuType
-			DifMod.LOGGER.debug("dsd");
 			NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider(
 					(id, inventory, p) -> new MegaBackpackMenu(id, inventory),
 					Component.literal("Mega Backpack")

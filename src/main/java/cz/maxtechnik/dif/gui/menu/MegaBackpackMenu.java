@@ -1,24 +1,28 @@
 package cz.maxtechnik.dif.gui.menu;
 
+import com.mojang.datafixers.util.Pair;
 import cz.maxtechnik.dif.init.events.BackpackSavedData;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.DataSlot;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
 
 public class MegaBackpackMenu extends AbstractContainerMenu {
-	public static final int ROWS = 9;
-	public static final int COLS = 13;
+	public static final int ROWS = 13;
+	public static final int COLS = 17;
 	public static final int SLOTS_PER_PAGE = ROWS * COLS;
-
+	private final CraftingContainer craftSlots = new TransientCraftingContainer(this, 3, 3);
+	private final ResultContainer resultSlots = new ResultContainer();
 	private int currentPage = 0;
 	private final Container backpackInventory;
 	private final Player player;
@@ -47,7 +51,7 @@ public class MegaBackpackMenu extends AbstractContainerMenu {
 		// 1. Sloty Batohu (13x9)
 		for (int i = 0; i < ROWS; i++) {
 			for (int j = 0; j < COLS; j++) {
-				this.addSlot(new Slot(backpackInventory, j + i * COLS, 8 + j * 18, 18 + i * 18));
+				this.addSlot(new Slot(backpackInventory, j + i * COLS, 171 + j * 18, 13 + i * 18));
 			}
 		}
 		this.addDataSlot(new DataSlot() {
@@ -63,16 +67,9 @@ public class MegaBackpackMenu extends AbstractContainerMenu {
 		});
 		// 2. Sloty Hráče
 		addPlayerInventory(playerInv);
+		addCrafting(playerInv);
 	}
 
-	// ULOŽENÍ DAT PŘI ZAVŘENÍ
-	@Override
-	public void removed(Player pPlayer) {
-		super.removed(pPlayer);
-		if (!pPlayer.level().isClientSide) {
-			saveCurrentPage();
-		}
-	}
 
 	public void saveCurrentPage() {
 		if (player.level().isClientSide) return;
@@ -112,8 +109,8 @@ public class MegaBackpackMenu extends AbstractContainerMenu {
 	}
 
 	private void addPlayerInventory(Inventory playerInv) {
-		int startY = 18 + (ROWS * 18) + 10;
-		int startX = 8 + (2 * 18);
+		int startY = 171;
+		int startX = 5;
 
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 9; ++j) {
@@ -122,6 +119,42 @@ public class MegaBackpackMenu extends AbstractContainerMenu {
 		}
 		for (int k = 0; k < 9; ++k) {
 			this.addSlot(new Slot(playerInv, k, startX + k * 18, startY + 58));
+		}
+		for (int i = 0; i < 4; i++) {
+			final EquipmentSlot slotType = EquipmentSlot.values()[5 - i]; // START_INDEX pro armor
+			int finalI=i;
+			this.addSlot(new Slot(playerInv, 39 -finalI, 5, 81 + finalI* 18) {
+				@Override
+				public int getMaxStackSize() { return 1; }
+				@Override
+				public boolean mayPlace(@NotNull ItemStack stack) {
+					return stack.canEquip(slotType, player);
+				}
+				@Override
+				public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+					return switch(finalI){
+						case 0->Pair.of(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_HELMET);
+						case 1->Pair.of(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE);
+						case 2->Pair.of(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS);
+						case 3->Pair.of(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS);
+						default -> throw new IllegalStateException("Unexpected value: " + finalI);
+					};
+				}
+			});
+		}
+		this.addSlot(new Slot(playerInv, 40, 74, 135){
+			@Override
+			public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+				return Pair.of(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD);
+			}
+		});
+	}
+	private void addCrafting(Inventory playerInv) {
+		this.addSlot(new ResultSlot(playerInv.player, this.craftSlots, this.resultSlots, 0, 131, 107));
+		for (int row = 0; row < 3; row++) {
+			for (int col = 0; col < 3; col++) {
+				this.addSlot(new Slot(this.craftSlots, col + row * 3, 113 + col * 18, 28 + row * 18));
+			}
 		}
 	}
 	public int getCurrentPage() {
@@ -136,5 +169,30 @@ public class MegaBackpackMenu extends AbstractContainerMenu {
 	public @NotNull ItemStack quickMoveStack(@NotNull Player pPlayer, int pIndex) {
 		// Tady by měla být logika pro Shift-Click, zatím vracíme prázdno
 		return ItemStack.EMPTY;
+	}
+	@Override
+	public void slotsChanged(@NotNull Container container) {
+		if (!this.player.level().isClientSide) {
+			// Získáme recept jako Optional
+			var recipeOptional = this.player.level().getRecipeManager()
+					.getRecipeFor(RecipeType.CRAFTING, this.craftSlots, this.player.level());
+
+			if (recipeOptional.isPresent()) {
+				// Zkus .value() nebo .get() podle toho, co tvoje verze podporuje
+				CraftingRecipe recipe = recipeOptional.get();
+				this.resultSlots.setItem(0, recipe.assemble(this.craftSlots, this.player.level().registryAccess()));
+			} else {
+				this.resultSlots.setItem(0, ItemStack.EMPTY);
+			}
+			this.broadcastChanges();
+		}
+	}
+	@Override
+	public void removed(@NotNull Player player) {
+		super.removed(player);
+		if (!player.level().isClientSide) {
+			saveCurrentPage();
+		}
+		this.clearContainer(player, this.craftSlots);
 	}
 }
