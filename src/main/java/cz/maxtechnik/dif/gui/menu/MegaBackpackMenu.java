@@ -77,7 +77,7 @@ public class MegaBackpackMenu extends AbstractContainerMenu {
 
 		int startOffset = currentPage * SLOTS_PER_PAGE;
 		for (int i = 0; i < SLOTS_PER_PAGE; i++) {
-			// Ukládáme z malého containeru (0-220) do velkého seznamu na správné pozice
+			// ZDE: Vždy používej .copy(), jinak se itemy "přesouvají" místo ukládání
 			allItems.set(startOffset + i, backpackInventory.getItem(i).copy());
 		}
 		data.setDirty();
@@ -86,7 +86,8 @@ public class MegaBackpackMenu extends AbstractContainerMenu {
 	private void loadPage(NonNullList<ItemStack> allItems) {
 		int startOffset = currentPage * SLOTS_PER_PAGE;
 		for (int i = 0; i < SLOTS_PER_PAGE; i++) {
-			backpackInventory.setItem(i, allItems.get(startOffset + i));
+			// ZDE: Také při načítání je lepší copy, aby container vlastnil unikátní instanci
+			backpackInventory.setItem(i, allItems.get(startOffset + i).copy());
 		}
 	}
 

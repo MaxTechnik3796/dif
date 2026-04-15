@@ -25,10 +25,23 @@ public class BackpackSavedData extends SavedData {
 		for (String key : backpacks.getAllKeys()) {
 			UUID uuid = UUID.fromString(key);
 			CompoundTag playerTag = backpacks.getCompound(key);
-			int size = playerTag.getInt("Size");
-			NonNullList<ItemStack> items = NonNullList.withSize(size, ItemStack.EMPTY);
-			ContainerHelper.loadAllItems(playerTag, items);
-			data.playerBackpacks.put(uuid, items);
+
+			int totalSize = MegaBackpackMenu.SLOTS_PER_PAGE * 16;
+			NonNullList<ItemStack> allItems = NonNullList.withSize(totalSize, ItemStack.EMPTY);
+
+			for (int p = 0; p < 16; p++) {
+				if (playerTag.contains("Page" + p)) {
+					CompoundTag pageTag = playerTag.getCompound("Page" + p);
+					NonNullList<ItemStack> pageItems = NonNullList.withSize(MegaBackpackMenu.SLOTS_PER_PAGE, ItemStack.EMPTY);
+					ContainerHelper.loadAllItems(pageTag, pageItems);
+
+					// Zkopírujeme načtenou stránku do velkého pole
+					for (int i = 0; i < MegaBackpackMenu.SLOTS_PER_PAGE; i++) {
+						allItems.set(p * MegaBackpackMenu.SLOTS_PER_PAGE + i, pageItems.get(i));
+					}
+				}
+			}
+			data.playerBackpacks.put(uuid, allItems);
 		}
 		return data;
 	}
@@ -38,8 +51,22 @@ public class BackpackSavedData extends SavedData {
 		CompoundTag backpacks = new CompoundTag();
 		for (Map.Entry<UUID, NonNullList<ItemStack>> entry : playerBackpacks.entrySet()) {
 			CompoundTag playerTag = new CompoundTag();
-			playerTag.putInt("Size", entry.getValue().size());
-			ContainerHelper.saveAllItems(playerTag, entry.getValue());
+			NonNullList<ItemStack> allItems = entry.getValue();
+
+			// Rozdělíme velký seznam na jednotlivé stránky do NBT
+			for (int p = 0; p < 16; p++) {
+				CompoundTag pageTag = new CompoundTag();
+				int start = p * MegaBackpackMenu.SLOTS_PER_PAGE;
+
+				// Vytvoříme sub-list pro jednu stránku
+				NonNullList<ItemStack> pageItems = NonNullList.withSize(MegaBackpackMenu.SLOTS_PER_PAGE, ItemStack.EMPTY);
+				for (int i = 0; i < MegaBackpackMenu.SLOTS_PER_PAGE; i++) {
+					pageItems.set(i, allItems.get(start + i));
+				}
+
+				ContainerHelper.saveAllItems(pageTag, pageItems);
+				playerTag.put("Page" + p, pageTag);
+			}
 			backpacks.put(entry.getKey().toString(), playerTag);
 		}
 		tag.put("Backpacks", backpacks);
