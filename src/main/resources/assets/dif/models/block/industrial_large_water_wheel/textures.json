@@ -1,0 +1,13 @@
+{
+	"parent": "block/block",
+	"ambientocclusion": false,
+	"textures": {
+		"axis": "create:block/axis",
+		"axis_top": "create:block/axis_top",
+		"metal": "create:block/waterwheel_metal",
+		"log": "dif:block/industrial_iron_block",
+		"planks": "dif:block/industrial_iron_block",
+		"log_top": "dif:block/industrial_iron_block",
+		"particle": "#planks"
+	}
+}

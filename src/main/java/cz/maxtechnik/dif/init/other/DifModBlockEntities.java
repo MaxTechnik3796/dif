@@ -35,7 +35,7 @@ public class DifModBlockEntities{
 	public static final RegistryObject<BlockEntityType<IndustrialLargeWaterWheelBlockEntity>>
 			INDUSTRIAL_LARGE_WATER_WHEEL = REGISTRY.register("industrial_large_water_wheel",
 			() -> BlockEntityType.Builder
-					.of(IndustrialLargeWaterWheelBlockEntity::new, DifModBlocks.INDUSTRIAL_LARGE_WATER_WHEEL.get()));
+					.of(IndustrialLargeWaterWheelBlockEntity::new, DifModBlocks.INDUSTRIAL_LARGE_WATER_WHEEL.get()).build(null));
 
 	public static final RegistryObject<BlockEntityType<BurningGeneratorBlockEntity>> BURNING_GENERATOR=REGISTRY.register("burning_generator",()->BlockEntityType.Builder.of(BurningGeneratorBlockEntity::new,DifModBlocks.BURNING_GENERATOR.get()).build(null));
 	public static final RegistryObject<BlockEntityType<?>>SPECIAL_CRAFTING=register("special_crafting",DifModBlocks.XP_STORAGE,SpecialCraftingBlockEntity::new);

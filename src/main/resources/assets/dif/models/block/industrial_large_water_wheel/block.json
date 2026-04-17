@@ -1,0 +1,6 @@
+{
+	"parent": "dif:block/industrial_large_water_wheel/textures",
+	"loader": "forge:obj",
+	"flip_v": true,
+	"model": "dif:models/block/industrial_large_water_wheel/waterwheel_large.obj"
+}
