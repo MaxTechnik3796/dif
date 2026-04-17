@@ -14,6 +14,7 @@ import cz.maxtechnik.dif.block.rails.FastRailBlock;
 import cz.maxtechnik.dif.block.space.*;
 import cz.maxtechnik.dif.block.template.*;
 import cz.maxtechnik.dif.fluid.block.*;
+import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -40,6 +41,10 @@ public class DifModBlocks{
 
 	public static final RegistryObject<Block>CAMERA_MONITOR=REGISTRY.register("camera_monitor",()->new CameraMonitor(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block>CAMERA=REGISTRY.register("camera",()->new Camera(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3F,3F).requiresCorrectToolForDrops()));
+
+	public static final RegistryObject<Block> INDUSTRIAL_LARGE_WATER_WHEEL =
+			REGISTRY.register("industrial_large_water_wheel",
+					IndustrialLargeWaterWheelBlock::new);
 
 	public static final RegistryObject<Block>FUEL_FLUID=REGISTRY.register("fuel_fluid",FuelBlock::new);
 	public static final RegistryObject<Block>BEER_FLUID=REGISTRY.register("beer_fluid",BeerBlock::new);
