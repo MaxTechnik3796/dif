@@ -1,7 +1,0 @@
-{
-  "parent": "create:block/large_water_wheel",
-  "textures": {
-    "particle": "dif:block/industrial_large_water_wheel",
-    "0": "dif:block/industrial_large_water_wheel"
-  }
-}
