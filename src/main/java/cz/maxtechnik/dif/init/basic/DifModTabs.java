@@ -19,6 +19,8 @@ public class DifModTabs{
 	public static final DeferredRegister<CreativeModeTab>REGISTER=DeferredRegister.create(Registries.CREATIVE_MODE_TAB,DifMod.MODID);
 	public static final RegistryObject<CreativeModeTab>MAIN=REGISTER.register("main",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.main")).icon(()->new ItemStack(DifModItems.THE_DIFFERENTIAL.get())).displayItems(((parameters,tabData)->{
 		tabData.accept(DifModItems.THE_DIFFERENTIAL.get());
+		tabData.accept(DifModItems.BRASS_LARGE_WATER_WHEEL.get());
+		tabData.accept(DifModItems.BRASS_WATER_WHEEL.get());
 		tabData.accept(DifModItems.MEGA_TORCH.get());
 		tabData.accept(DifModItems.BAN_HAMMER.get());
 		tabData.accept(DifModItems.PORTAL_GUN.get());
@@ -432,7 +434,11 @@ public class DifModTabs{
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
 			tabData.getEntries().putAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(DifModItems.TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 		}else if(tabData.getTab().equals(AllCreativeModeTabs.BASE_CREATIVE_TAB.get())){
-			tabData.getEntries().putAfter(new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("create","item_hatch")))),new ItemStack(DifModItems.FLUID_HATCH.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("create","item_hatch")))),new ItemStack[]{new ItemStack(DifModItems.FLUID_HATCH.get())});
+			addItemStacksBehind(tabData, new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("create","water_wheel")))), new ItemStack[]{new ItemStack(DifModItems.BRASS_WATER_WHEEL.get())});
+			addItemStacksBehind(tabData, new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("create","large_water_wheel")))), new ItemStack[]{new ItemStack(DifModItems.BRASS_LARGE_WATER_WHEEL.get())});
+			addItemStacksBehind(tabData, new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("create","mechanical_press")))), new ItemStack[]{new ItemStack(DifModItems.BRASS_MECHANICAL_PRESS.get())});
+			addItemStacksBehind(tabData, new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("create","mechanical_mixer")))), new ItemStack[]{new ItemStack(DifModItems.BRASS_MECHANICAL_MIXER.get())});
 		}else if(tabData.getTab().equals(AllCreativeModeTabs.PALETTES_CREATIVE_TAB.get())){
 			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("create","framed_glass_trapdoor")))),
 					new ItemStack[]{

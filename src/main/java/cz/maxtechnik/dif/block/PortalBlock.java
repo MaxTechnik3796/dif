@@ -71,6 +71,6 @@ public class PortalBlock extends BaseEntityBlock{
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level l,@NotNull BlockState s,@NotNull BlockEntityType<T> t){
-		return !l.isClientSide&&s.getValue(HALF)==DoubleBlockHalf.LOWER?createTickerHelper(t,(BlockEntityType<PortalBlockEntity>)DifModBlockEntities.PORTAL.get(),PortalBlockEntity::tick):null;
+		return !l.isClientSide&&s.getValue(HALF)==DoubleBlockHalf.LOWER?createTickerHelper(t,DifModBlockEntities.PORTAL.get(),PortalBlockEntity::tick):null;
 	}
 }
