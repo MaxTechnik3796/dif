@@ -20,7 +20,7 @@ public class DifModBlockEntities{
 	public static final RegistryObject<BlockEntityType<?>>COPPER_BARREL=register("copper_barrel",DifModBlocks.COPPER_BARREL,CopperBarrelBlockEntity::new);
 	public static final RegistryObject<BlockEntityType<?>>BRASS_BARREL=register("brass_barrel",DifModBlocks.BRASS_BARREL,BrassBarrelBlockEntity::new);
 	public static final RegistryObject<BlockEntityType<?>>OLD_CHEST=register("old_chest",DifModBlocks.OLD_CHEST,OldChestBlockEntity::new);
-	public static final RegistryObject<BlockEntityType<?>>PORTAL=register("portal",DifModBlocks.PORTAL_BLOCK,PortalBlockEntity::new);
+	public static final RegistryObject<BlockEntityType<PortalBlockEntity>>PORTAL=REGISTRY.register("portal",()->BlockEntityType.Builder.of(PortalBlockEntity::new,DifModBlocks.PORTAL_BLOCK.get()).build(null));
 	public static final RegistryObject<BlockEntityType<?>>SPACESHIP=register("spaceship",DifModBlocks.SPACESHIP,SpaceshipBlockEntity::new);
 	public static final RegistryObject<BlockEntityType<ChunkLoaderBlockEntity>> CHUNK_LOADER_BE = REGISTRY.register("chunk_loader_be", () -> BlockEntityType.Builder.of(ChunkLoaderBlockEntity::new, DifModBlocks.CHUNK_LOADER_1X1.get(), DifModBlocks.CHUNK_LOADER_3X3.get()).build(null));
 
