@@ -21,11 +21,6 @@ public class IndustrialLargeWaterWheelBlockEntity extends LargeWaterWheelBlockEn
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        // Zavoláme parent behaviours (KineticBlockEntity věci jako stress, speed atd.)
-        // ale NEpřidáváme WaterWheelVisual behaviour od Create, které by přepsalo náš renderer.
-        // LargeWaterWheelBlockEntity.addBehaviours přidává pouze standardní kinetic behaviours,
-        // Flywheel visual je registrován separátně v AllBlockEntityTypes - pro náš custom typ
-        // se neregistruje automaticky, takže super.addBehaviours() je bezpečné.
         super.addBehaviours(behaviours);
         initializeMaterial();
     }
@@ -36,12 +31,6 @@ public class IndustrialLargeWaterWheelBlockEntity extends LargeWaterWheelBlockEn
         initializeMaterial();
     }
 
-    /**
-     * Nastaví material na náš vlastní blok.
-     * Create čte tuto hodnotu pro dynamické generování modelu, ale my ji ignorujeme
-     * protože IndustrialWaterWheelRenderer používá pevný OBJ PartialModel.
-     * Hodnota musí být non-null a non-air aby Create nepřekrýval render svým fallbackem.
-     */
     private void initializeMaterial() {
         if (this.material == null || this.material.isAir()) {
             this.material = DifModBlocks.INDUSTRIAL_LARGE_WATER_WHEEL.get().defaultBlockState();

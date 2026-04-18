@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.Direction;
-import com.simibubi.create.content.kinetics.base.IRotate;
 import net.createmod.catnip.render.SuperByteBufferCache;
 import net.createmod.catnip.render.SuperBufferFactory;
 import net.minecraftforge.api.distmarker.Dist;
@@ -32,14 +31,6 @@ public class IndustrialWaterWheelRenderer extends KineticBlockEntityRenderer<Ind
     public IndustrialWaterWheelRenderer(BlockEntityRendererProvider.Context context) {
         super(context);
     }
-
-    /**
-     * Přepsán přímo — voláme celý render pipeline sami.
-     *
-     * Proč: KineticBlockEntityRenderer.renderSafe() v Create 6.x v určitých případech
-     * přeskočí renderování pokud Flywheel Visual systém je aktivní.
-     * Přepsáním renderSafe() vynucujeme náš BER render vždy bez ohledu na Flywheel stav.
-     */
     @Override
     protected void renderSafe(IndustrialLargeWaterWheelBlockEntity be, float partialTicks, PoseStack ms,
                               MultiBufferSource buffer, int light, int overlay) {

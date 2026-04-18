@@ -18,7 +18,6 @@ import cz.maxtechnik.dif.network.CameraExitPacket;
 import cz.maxtechnik.dif.network.RemoteControlPacket;
 import cz.maxtechnik.dif.network.ModNetworking.SyncCarPositionPacket;
 import cz.maxtechnik.dif.renderer.*;
-import dev.engine_room.flywheel.api.visualization.VisualizationManager;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
