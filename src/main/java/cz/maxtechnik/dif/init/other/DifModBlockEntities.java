@@ -5,6 +5,8 @@ import cz.maxtechnik.dif.block.entity.*;
 import cz.maxtechnik.dif.block.entity.barrel.AndesiteBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.barrel.BrassBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.barrel.CopperBarrelBlockEntity;
+import cz.maxtechnik.dif.block.entity.BrassMechanicalMixerBlockEntity;
+import cz.maxtechnik.dif.block.entity.BrassMechanicalPressBlockEntity;
 import cz.maxtechnik.dif.block.entity.dev.SpecialCraftingBlockEntity;
 import cz.maxtechnik.dif.block.entity.dev.XpStorageBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
@@ -41,6 +43,16 @@ public class DifModBlockEntities{
 			BRASS_WATER_WHEEL = REGISTRY.register("brass_water_wheel",
 			() -> BlockEntityType.Builder
 					.of(cz.maxtechnik.dif.block.entity.BrassWaterWheelBlockEntity::new, DifModBlocks.BRASS_WATER_WHEEL.get()).build(null));
+
+	public static final RegistryObject<BlockEntityType<BrassMechanicalPressBlockEntity>>
+			BRASS_MECHANICAL_PRESS = REGISTRY.register("brass_mechanical_press",
+			() -> BlockEntityType.Builder
+					.of(BrassMechanicalPressBlockEntity::new, DifModBlocks.BRASS_MECHANICAL_PRESS.get()).build(null));
+
+	public static final RegistryObject<BlockEntityType<BrassMechanicalMixerBlockEntity>>
+			BRASS_MECHANICAL_MIXER = REGISTRY.register("brass_mechanical_mixer",
+			() -> BlockEntityType.Builder
+					.of(BrassMechanicalMixerBlockEntity::new, DifModBlocks.BRASS_MECHANICAL_MIXER.get()).build(null));
 
 	public static final RegistryObject<BlockEntityType<BurningGeneratorBlockEntity>> BURNING_GENERATOR=REGISTRY.register("burning_generator",()->BlockEntityType.Builder.of(BurningGeneratorBlockEntity::new,DifModBlocks.BURNING_GENERATOR.get()).build(null));
 	public static final RegistryObject<BlockEntityType<?>>SPECIAL_CRAFTING=register("special_crafting",DifModBlocks.XP_STORAGE,SpecialCraftingBlockEntity::new);

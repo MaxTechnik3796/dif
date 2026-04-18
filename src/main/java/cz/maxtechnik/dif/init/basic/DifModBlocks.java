@@ -14,7 +14,6 @@ import cz.maxtechnik.dif.block.rails.FastRailBlock;
 import cz.maxtechnik.dif.block.space.*;
 import cz.maxtechnik.dif.block.template.*;
 import cz.maxtechnik.dif.fluid.block.*;
-import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -49,6 +48,14 @@ public class DifModBlocks{
 	public static final RegistryObject<Block> BRASS_WATER_WHEEL =
 			REGISTRY.register("brass_water_wheel",
 					cz.maxtechnik.dif.block.BrassWaterWheelBlock::new);
+
+	public static final RegistryObject<Block> BRASS_MECHANICAL_PRESS =
+			REGISTRY.register("brass_mechanical_press",
+					() -> new BrassMechanicalPressBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PODZOL).requiresCorrectToolForDrops().strength(4.0F).sound(SoundType.NETHERITE_BLOCK).noOcclusion()));
+
+	public static final RegistryObject<Block> BRASS_MECHANICAL_MIXER =
+			REGISTRY.register("brass_mechanical_mixer",
+					() -> new BrassMechanicalMixerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PODZOL).requiresCorrectToolForDrops().strength(4.0F).sound(SoundType.NETHERITE_BLOCK).noOcclusion()));
 
 	public static final RegistryObject<Block>FUEL_FLUID=REGISTRY.register("fuel_fluid",FuelBlock::new);
 	public static final RegistryObject<Block>BEER_FLUID=REGISTRY.register("beer_fluid",BeerBlock::new);

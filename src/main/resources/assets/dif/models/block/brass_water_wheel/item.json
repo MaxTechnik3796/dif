@@ -4,6 +4,7 @@
 	"flip_v": true,
 	"model": "create:models/block/water_wheel/water_wheel_item.obj",
 	"textures": {
+		"gearbox": "create:block/brass_gearbox",
 		"log": "minecraft:block/dark_oak_log",
 		"planks": "minecraft:block/dark_oak_planks",
 		"log_top": "minecraft:block/dark_oak_log_top",

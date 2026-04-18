@@ -42,6 +42,9 @@ public class DifModItems{
 	public static final RegistryObject<Item> BRASS_LARGE_WATER_WHEEL = block(DifModBlocks.BRASS_LARGE_WATER_WHEEL);
 	public static final RegistryObject<Item> BRASS_WATER_WHEEL = block(DifModBlocks.BRASS_WATER_WHEEL);
 
+	public static final RegistryObject<Item> BRASS_MECHANICAL_PRESS = block(DifModBlocks.BRASS_MECHANICAL_PRESS);
+	public static final RegistryObject<Item> BRASS_MECHANICAL_MIXER = block(DifModBlocks.BRASS_MECHANICAL_MIXER);
+
 	public static final RegistryObject<Item>REMOTE_MINECART=REGISTRY.register("remote_minecart",()->new RemoteMinecartItem(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<Item>REMOTE_CONTROLLER=REGISTRY.register("remote_controller",()->new StackSize(1));
 	public static final RegistryObject<Item>REMOTE_MINECART_BLOCK=block(DifModBlocks.REMOTE_MINECART_BLOCK);

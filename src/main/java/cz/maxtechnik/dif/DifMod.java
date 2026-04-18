@@ -18,6 +18,7 @@ import cz.maxtechnik.dif.network.CameraExitPacket;
 import cz.maxtechnik.dif.network.RemoteControlPacket;
 import cz.maxtechnik.dif.network.ModNetworking.SyncCarPositionPacket;
 import cz.maxtechnik.dif.renderer.*;
+import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -158,6 +159,10 @@ public class DifMod {
 
 	@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 	public static class ClientModEvents {
+		public static final PartialModel BRASS_PRESS_HEAD = PartialModel.of(new ResourceLocation("dif", "block/brass_mechanical_press/head"));
+		public static final PartialModel BRASS_MIXER_POLE = PartialModel.of(new ResourceLocation("dif", "block/brass_mechanical_mixer/pole"));
+		public static final PartialModel BRASS_MIXER_HEAD = PartialModel.of(new ResourceLocation("dif", "block/brass_mechanical_mixer/head"));
+
 		@SubscribeEvent
 		public static void onClientSetup(FMLClientSetupEvent event) {
 			LOGGER.info("DIF MOD: Client Setup");
@@ -179,6 +184,8 @@ public class DifMod {
 
 					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.BRASS_LARGE_WATER_WHEEL.get(), RenderType.cutout());
 					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.BRASS_WATER_WHEEL.get(), RenderType.cutout());
+					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.BRASS_MECHANICAL_PRESS.get(), RenderType.cutout());
+					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.BRASS_MECHANICAL_MIXER.get(), RenderType.cutout());
 				} catch (Exception e) {
 					LOGGER.error("DIF MOD: Chyba při Flywheel setup", e);
 				}
@@ -191,6 +198,9 @@ public class DifMod {
 			event.register(new ResourceLocation("dif", "block/brass_large_water_wheel/block_extension"));
 			event.register(new ResourceLocation("dif", "block/brass_water_wheel/block"));
 			event.register(new ResourceLocation("dif", "block/brass_water_wheel/wheel"));
+			event.register(new ResourceLocation("dif", "block/brass_mechanical_press/head"));
+			event.register(new ResourceLocation("dif", "block/brass_mechanical_mixer/pole"));
+			event.register(new ResourceLocation("dif", "block/brass_mechanical_mixer/head"));
 		}
 
 		@SubscribeEvent
@@ -200,6 +210,8 @@ public class DifMod {
 			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(), context -> new ChunkLoaderRenderer());
 			event.registerBlockEntityRenderer(DifModBlockEntities.BRASS_LARGE_WATER_WHEEL.get(), BrassWaterWheelRenderer::new);
 			event.registerBlockEntityRenderer(DifModBlockEntities.BRASS_WATER_WHEEL.get(), BrassWaterWheelRenderer::new);
+			event.registerBlockEntityRenderer(DifModBlockEntities.BRASS_MECHANICAL_PRESS.get(), cz.maxtechnik.dif.renderer.BrassMechanicalPressRenderer::new);
+			event.registerBlockEntityRenderer(DifModBlockEntities.BRASS_MECHANICAL_MIXER.get(), cz.maxtechnik.dif.renderer.BrassMechanicalMixerRenderer::new);
 			event.registerEntityRenderer(DifModEntities.WITHER_TITAN.get(), WitherTitanRenderer::new);
 			event.registerEntityRenderer(DifModEntities.FORMULA.get(), CarRenderer::new);
 			event.registerEntityRenderer(DifModEntities.REMOTE_MINECART.get(),

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "dif:block/brass_mechanical_press/block",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "dif:block/brass_mechanical_press/block"
+    },
+    "facing=south": {
+      "model": "dif:block/brass_mechanical_press/block",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "dif:block/brass_mechanical_press/block",
+      "y": 270
+    }
+  }
+}
