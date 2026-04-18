@@ -329,5 +329,9 @@
 	"block.dif.lap_timer": "Lap Timer Finish Line",
 	"block.dif.sleeping_bag": "Sleeping Bag",
 	"block.dif.quarry":"Quarry",
-	"block.dif.quarry_frame":"Quarry Frame"
+	"block.dif.quarry_frame":"Quarry Frame",
+	"block.dif.brass_large_water_wheel":"Brass Large Water Wheel",
+	"block.dif.brass_water_wheel":"Brass Water Wheel",
+	"block.dif.brass_mechanical_press":"Brass Mechanical Press",
+	"block.dif.brass_mechanical_mixer":"Brass Mechanical Mixer"
 }
