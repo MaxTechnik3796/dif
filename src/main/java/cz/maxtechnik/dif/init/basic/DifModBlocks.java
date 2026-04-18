@@ -44,7 +44,11 @@ public class DifModBlocks{
 
 	public static final RegistryObject<Block> INDUSTRIAL_LARGE_WATER_WHEEL =
 			REGISTRY.register("industrial_large_water_wheel",
-					IndustrialLargeWaterWheelBlock::new);
+					cz.maxtechnik.dif.block.IndustrialLargeWaterWheelBlock::new);
+
+	public static final RegistryObject<Block> INDUSTRIAL_WATER_WHEEL =
+			REGISTRY.register("industrial_water_wheel",
+					cz.maxtechnik.dif.block.IndustrialWaterWheelBlock::new);
 
 	public static final RegistryObject<Block>FUEL_FLUID=REGISTRY.register("fuel_fluid",FuelBlock::new);
 	public static final RegistryObject<Block>BEER_FLUID=REGISTRY.register("beer_fluid",BeerBlock::new);

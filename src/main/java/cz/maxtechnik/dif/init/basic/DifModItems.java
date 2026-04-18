@@ -40,6 +40,7 @@ public class DifModItems{
 	public static final RegistryObject<Item>QUARRY_FRAME=block(DifModBlocks.QUARRY_FRAME);
 
 	public static final RegistryObject<Item> INDUSTRIAL_LARGE_WATER_WHEEL = block(DifModBlocks.INDUSTRIAL_LARGE_WATER_WHEEL);
+	public static final RegistryObject<Item> INDUSTRIAL_WATER_WHEEL = block(DifModBlocks.INDUSTRIAL_WATER_WHEEL);
 
 	public static final RegistryObject<Item>REMOTE_MINECART=REGISTRY.register("remote_minecart",()->new RemoteMinecartItem(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<Item>REMOTE_CONTROLLER=REGISTRY.register("remote_controller",()->new StackSize(1));

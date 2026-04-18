@@ -37,6 +37,11 @@ public class DifModBlockEntities{
 			() -> BlockEntityType.Builder
 					.of(IndustrialLargeWaterWheelBlockEntity::new, DifModBlocks.INDUSTRIAL_LARGE_WATER_WHEEL.get()).build(null));
 
+	public static final RegistryObject<BlockEntityType<cz.maxtechnik.dif.block.entity.IndustrialWaterWheelBlockEntity>>
+			INDUSTRIAL_WATER_WHEEL = REGISTRY.register("industrial_water_wheel",
+			() -> BlockEntityType.Builder
+					.of(cz.maxtechnik.dif.block.entity.IndustrialWaterWheelBlockEntity::new, DifModBlocks.INDUSTRIAL_WATER_WHEEL.get()).build(null));
+
 	public static final RegistryObject<BlockEntityType<BurningGeneratorBlockEntity>> BURNING_GENERATOR=REGISTRY.register("burning_generator",()->BlockEntityType.Builder.of(BurningGeneratorBlockEntity::new,DifModBlocks.BURNING_GENERATOR.get()).build(null));
 	public static final RegistryObject<BlockEntityType<?>>SPECIAL_CRAFTING=register("special_crafting",DifModBlocks.XP_STORAGE,SpecialCraftingBlockEntity::new);
 	private static RegistryObject<BlockEntityType<?>>register(String registryname,RegistryObject<Block> block,BlockEntityType.BlockEntitySupplier<?> supplier){

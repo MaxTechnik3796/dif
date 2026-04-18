@@ -4,10 +4,10 @@
 	"textures": {
 		"axis": "create:block/axis",
 		"axis_top": "create:block/axis_top",
-		"metal": "create:block/waterwheel_metal",
-		"log": "dif:block/industrial_iron_block",
-		"planks": "dif:block/industrial_iron_block",
-		"log_top": "dif:block/industrial_iron_block",
+		"metal": "dif:block/waterwheel_metal",
+		"log": "minecraft:block/dark_oak_log",
+		"planks": "minecraft:block/dark_oak_planks",
+		"log_top": "minecraft:block/dark_oak_log_top",
 		"particle": "#planks"
 	}
 }

@@ -3,8 +3,7 @@ package cz.maxtechnik.dif.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import com.simibubi.create.content.kinetics.waterwheel.LargeWaterWheelBlock;
-import cz.maxtechnik.dif.block.entity.IndustrialLargeWaterWheelBlockEntity;
-import dev.engine_room.flywheel.lib.model.baked.PartialModel;
+import com.simibubi.create.content.kinetics.waterwheel.WaterWheelBlockEntity;
 import net.createmod.catnip.render.CachedBuffers;
 import net.createmod.catnip.render.SuperByteBuffer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -17,40 +16,54 @@ import net.createmod.catnip.render.SuperByteBufferCache;
 import net.createmod.catnip.render.SuperBufferFactory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 
 @OnlyIn(Dist.CLIENT)
-public class IndustrialWaterWheelRenderer extends KineticBlockEntityRenderer<IndustrialLargeWaterWheelBlockEntity> {
+public class IndustrialWaterWheelRenderer extends KineticBlockEntityRenderer<WaterWheelBlockEntity> {
 
-    // PartialModel.of() registruje model do Flywheel/Create systému při game startu.
-    // Model musí být zaregistrován i v ModelEvent.RegisterAdditional (viz DifMod.java).
     public static final PartialModel INDUSTRIAL_WHEEL =
             PartialModel.of(ResourceLocation.fromNamespaceAndPath("dif", "block/industrial_large_water_wheel/block"));
     public static final PartialModel INDUSTRIAL_WHEEL_EXTENSION =
             PartialModel.of(ResourceLocation.fromNamespaceAndPath("dif", "block/industrial_large_water_wheel/block_extension"));
+    public static final PartialModel INDUSTRIAL_SMALL_WHEEL =
+            PartialModel.of(ResourceLocation.fromNamespaceAndPath("dif", "block/industrial_water_wheel/wheel"));
 
     public IndustrialWaterWheelRenderer(BlockEntityRendererProvider.Context context) {
         super(context);
     }
     @Override
-    protected void renderSafe(IndustrialLargeWaterWheelBlockEntity be, float partialTicks, PoseStack ms,
+    protected void renderSafe(WaterWheelBlockEntity be, float partialTicks, PoseStack ms,
                               MultiBufferSource buffer, int light, int overlay) {
         BlockState state = be.getBlockState();
-        if (!state.hasProperty(LargeWaterWheelBlock.EXTENSION)) return;
+        if (be instanceof cz.maxtechnik.dif.block.entity.IndustrialLargeWaterWheelBlockEntity && !state.hasProperty(LargeWaterWheelBlock.EXTENSION)) return;
 
         RenderType type = getRenderType(be, state);
         SuperByteBuffer model = getRotatedModel(be, state);
         standardKineticRotationTransform(model, be, light)
-                .renderInto(ms, buffer.getBuffer(type));
+                .renderInto( ms, buffer.getBuffer(type));
     }
 
     @Override
-    protected SuperByteBuffer getRotatedModel(IndustrialLargeWaterWheelBlockEntity be, BlockState state) {
-        boolean extension = state.getValue(LargeWaterWheelBlock.EXTENSION);
-        PartialModel partial = extension ? INDUSTRIAL_WHEEL_EXTENSION : INDUSTRIAL_WHEEL;
+    protected SuperByteBuffer getRotatedModel(WaterWheelBlockEntity be, BlockState state) {
+        boolean large = be instanceof cz.maxtechnik.dif.block.entity.IndustrialLargeWaterWheelBlockEntity;
+        PartialModel partial = null;
 
+        if (large) {
+            boolean extension = state.getValue(LargeWaterWheelBlock.EXTENSION);
+            partial = extension ? INDUSTRIAL_WHEEL_EXTENSION : INDUSTRIAL_WHEEL;
+        } else {
+            partial = INDUSTRIAL_SMALL_WHEEL;
+        }
+
+        PartialModel finalPartial = partial;
         return SuperByteBufferCache.getInstance().get(KineticBlockEntityRenderer.KINETIC_BLOCK, state, () -> {
-            net.minecraft.client.resources.model.BakedModel model = partial.get();
-            Direction dir = Direction.fromAxisAndDirection(state.getValue(LargeWaterWheelBlock.AXIS), Direction.AxisDirection.POSITIVE);
+            net.minecraft.client.resources.model.BakedModel model = finalPartial.get();
+            Direction dir;
+            if (large) {
+                dir = Direction.fromAxisAndDirection(state.getValue(LargeWaterWheelBlock.AXIS), Direction.AxisDirection.POSITIVE);
+            } else {
+                dir = state.getValue(com.simibubi.create.content.kinetics.waterwheel.WaterWheelBlock.FACING);
+            }
             PoseStack transform = CachedBuffers.rotateToFaceVertical(dir).get();
             return SuperBufferFactory.getInstance().createForBlock(model, state, transform);
         });

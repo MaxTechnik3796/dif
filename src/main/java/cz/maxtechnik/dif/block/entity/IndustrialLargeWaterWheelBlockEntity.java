@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class IndustrialLargeWaterWheelBlockEntity extends LargeWaterWheelBlockEn
 
     private void initializeMaterial() {
         if (this.material == null || this.material.isAir()) {
-            this.material = DifModBlocks.INDUSTRIAL_LARGE_WATER_WHEEL.get().defaultBlockState();
+            this.material = Blocks.DARK_OAK_PLANKS.defaultBlockState();
         }
     }
 
@@ -62,6 +63,6 @@ public class IndustrialLargeWaterWheelBlockEntity extends LargeWaterWheelBlockEn
 
     @Override
     public float calculateAddedStressCapacity() {
-        return 512f;
+        return 2048f;
     }
 }

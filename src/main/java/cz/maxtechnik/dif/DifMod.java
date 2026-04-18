@@ -45,6 +45,8 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -174,6 +176,9 @@ public class DifMod {
 					// v Create's AllBlockEntityTypes, takže by měl projít BER automaticky.
 					// Tento log nám pomůže potvrdit že se client setup zavolal.
 					LOGGER.info("DIF MOD: Flywheel BER fallback setup pro IndustrialLargeWaterWheel");
+
+					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.INDUSTRIAL_LARGE_WATER_WHEEL.get(), RenderType.cutout());
+					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.INDUSTRIAL_WATER_WHEEL.get(), RenderType.cutout());
 				} catch (Exception e) {
 					LOGGER.error("DIF MOD: Chyba při Flywheel setup", e);
 				}
@@ -184,6 +189,8 @@ public class DifMod {
 		public static void onRegisterAdditionalModels(ModelEvent.RegisterAdditional event) {
 			event.register(new ResourceLocation("dif", "block/industrial_large_water_wheel/block"));
 			event.register(new ResourceLocation("dif", "block/industrial_large_water_wheel/block_extension"));
+			event.register(new ResourceLocation("dif", "block/industrial_water_wheel/block"));
+			event.register(new ResourceLocation("dif", "block/industrial_water_wheel/wheel"));
 		}
 
 		@SubscribeEvent
@@ -192,6 +199,7 @@ public class DifMod {
 			event.registerBlockEntityRenderer(DifModBlockEntities.QUARRY.get(), context -> new QuarryRenderer());
 			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(), context -> new ChunkLoaderRenderer());
 			event.registerBlockEntityRenderer(DifModBlockEntities.INDUSTRIAL_LARGE_WATER_WHEEL.get(), IndustrialWaterWheelRenderer::new);
+			event.registerBlockEntityRenderer(DifModBlockEntities.INDUSTRIAL_WATER_WHEEL.get(), IndustrialWaterWheelRenderer::new);
 			event.registerEntityRenderer(DifModEntities.WITHER_TITAN.get(), WitherTitanRenderer::new);
 			event.registerEntityRenderer(DifModEntities.FORMULA.get(), CarRenderer::new);
 			event.registerEntityRenderer(DifModEntities.REMOTE_MINECART.get(),
