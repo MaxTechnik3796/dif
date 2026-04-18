@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
-import cz.maxtechnik.dif.renderer.IndustrialWaterWheelRenderer;
+import cz.maxtechnik.dif.renderer.BrassWaterWheelRenderer;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
 import cz.maxtechnik.dif.command.ConfigReloadCommand;
 import cz.maxtechnik.dif.command.IsChunkLoadedCommand;
@@ -163,7 +163,7 @@ public class DifMod {
 			LOGGER.info("DIF MOD: Client Setup");
 
 			// KLÍČOVÉ: Říkáme Flywheel, aby pro náš BE nepoužíval instancing visual,
-			// ale přenechal rendering našemu BlockEntityRenderer (IndustrialWaterWheelRenderer).
+			// ale přenechal rendering našemu BlockEntityRenderer (BrassWaterWheelRenderer).
 			// Bez tohoto Flywheel buď nic nevykreslí (nenajde visual pro náš typ),
 			// nebo se pokusí použít Create's LargeWaterWheel visual, který generuje
 			// dynamický model ze dřeva – ne náš OBJ.
@@ -172,13 +172,13 @@ public class DifMod {
 					// Flywheel 1.0.5 API: VisualizationManager nemá přímé "skip" API,
 					// ale pokud pro daný BlockEntityType není registrován žádný VisualType,
 					// Flywheel automaticky fallbackuje na standardní BER rendering.
-					// Náš INDUSTRIAL_LARGE_WATER_WHEEL BlockEntityType NENÍ registrován
+					// Náš BRASS_LARGE_WATER_WHEEL BlockEntityType NENÍ registrován
 					// v Create's AllBlockEntityTypes, takže by měl projít BER automaticky.
 					// Tento log nám pomůže potvrdit že se client setup zavolal.
-					LOGGER.info("DIF MOD: Flywheel BER fallback setup pro IndustrialLargeWaterWheel");
+					LOGGER.info("DIF MOD: Flywheel BER fallback setup pro BrassLargeWaterWheel");
 
-					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.INDUSTRIAL_LARGE_WATER_WHEEL.get(), RenderType.cutout());
-					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.INDUSTRIAL_WATER_WHEEL.get(), RenderType.cutout());
+					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.BRASS_LARGE_WATER_WHEEL.get(), RenderType.cutout());
+					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.BRASS_WATER_WHEEL.get(), RenderType.cutout());
 				} catch (Exception e) {
 					LOGGER.error("DIF MOD: Chyba při Flywheel setup", e);
 				}
@@ -187,10 +187,10 @@ public class DifMod {
 
 		@SubscribeEvent
 		public static void onRegisterAdditionalModels(ModelEvent.RegisterAdditional event) {
-			event.register(new ResourceLocation("dif", "block/industrial_large_water_wheel/block"));
-			event.register(new ResourceLocation("dif", "block/industrial_large_water_wheel/block_extension"));
-			event.register(new ResourceLocation("dif", "block/industrial_water_wheel/block"));
-			event.register(new ResourceLocation("dif", "block/industrial_water_wheel/wheel"));
+			event.register(new ResourceLocation("dif", "block/brass_large_water_wheel/block"));
+			event.register(new ResourceLocation("dif", "block/brass_large_water_wheel/block_extension"));
+			event.register(new ResourceLocation("dif", "block/brass_water_wheel/block"));
+			event.register(new ResourceLocation("dif", "block/brass_water_wheel/wheel"));
 		}
 
 		@SubscribeEvent
@@ -198,8 +198,8 @@ public class DifMod {
 			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(), context -> new FryingTableRenderer());
 			event.registerBlockEntityRenderer(DifModBlockEntities.QUARRY.get(), context -> new QuarryRenderer());
 			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(), context -> new ChunkLoaderRenderer());
-			event.registerBlockEntityRenderer(DifModBlockEntities.INDUSTRIAL_LARGE_WATER_WHEEL.get(), IndustrialWaterWheelRenderer::new);
-			event.registerBlockEntityRenderer(DifModBlockEntities.INDUSTRIAL_WATER_WHEEL.get(), IndustrialWaterWheelRenderer::new);
+			event.registerBlockEntityRenderer(DifModBlockEntities.BRASS_LARGE_WATER_WHEEL.get(), BrassWaterWheelRenderer::new);
+			event.registerBlockEntityRenderer(DifModBlockEntities.BRASS_WATER_WHEEL.get(), BrassWaterWheelRenderer::new);
 			event.registerEntityRenderer(DifModEntities.WITHER_TITAN.get(), WitherTitanRenderer::new);
 			event.registerEntityRenderer(DifModEntities.FORMULA.get(), CarRenderer::new);
 			event.registerEntityRenderer(DifModEntities.REMOTE_MINECART.get(),

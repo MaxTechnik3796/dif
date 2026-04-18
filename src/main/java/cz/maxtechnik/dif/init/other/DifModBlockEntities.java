@@ -32,15 +32,15 @@ public class DifModBlockEntities{
 	public static final RegistryObject<BlockEntityType<CameraBlockEntity>>CAMERA=REGISTRY.register("camera",()->BlockEntityType.Builder.of(CameraBlockEntity::new,DifModBlocks.CAMERA.get()).build(null));
 	public static final RegistryObject<BlockEntityType<QuarryBlockEntity>>QUARRY=REGISTRY.register("quarry",()->BlockEntityType.Builder.of(QuarryBlockEntity::new,DifModBlocks.QUARRY.get()).build(null));
 
-	public static final RegistryObject<BlockEntityType<IndustrialLargeWaterWheelBlockEntity>>
-			INDUSTRIAL_LARGE_WATER_WHEEL = REGISTRY.register("industrial_large_water_wheel",
+	public static final RegistryObject<BlockEntityType<BrassLargeWaterWheelBlockEntity>>
+			BRASS_LARGE_WATER_WHEEL = REGISTRY.register("brass_large_water_wheel",
 			() -> BlockEntityType.Builder
-					.of(IndustrialLargeWaterWheelBlockEntity::new, DifModBlocks.INDUSTRIAL_LARGE_WATER_WHEEL.get()).build(null));
+					.of(BrassLargeWaterWheelBlockEntity::new, DifModBlocks.BRASS_LARGE_WATER_WHEEL.get()).build(null));
 
-	public static final RegistryObject<BlockEntityType<cz.maxtechnik.dif.block.entity.IndustrialWaterWheelBlockEntity>>
-			INDUSTRIAL_WATER_WHEEL = REGISTRY.register("industrial_water_wheel",
+	public static final RegistryObject<BlockEntityType<cz.maxtechnik.dif.block.entity.BrassWaterWheelBlockEntity>>
+			BRASS_WATER_WHEEL = REGISTRY.register("brass_water_wheel",
 			() -> BlockEntityType.Builder
-					.of(cz.maxtechnik.dif.block.entity.IndustrialWaterWheelBlockEntity::new, DifModBlocks.INDUSTRIAL_WATER_WHEEL.get()).build(null));
+					.of(cz.maxtechnik.dif.block.entity.BrassWaterWheelBlockEntity::new, DifModBlocks.BRASS_WATER_WHEEL.get()).build(null));
 
 	public static final RegistryObject<BlockEntityType<BurningGeneratorBlockEntity>> BURNING_GENERATOR=REGISTRY.register("burning_generator",()->BlockEntityType.Builder.of(BurningGeneratorBlockEntity::new,DifModBlocks.BURNING_GENERATOR.get()).build(null));
 	public static final RegistryObject<BlockEntityType<?>>SPECIAL_CRAFTING=register("special_crafting",DifModBlocks.XP_STORAGE,SpecialCraftingBlockEntity::new);

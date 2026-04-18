@@ -42,13 +42,13 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>CAMERA_MONITOR=REGISTRY.register("camera_monitor",()->new CameraMonitor(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block>CAMERA=REGISTRY.register("camera",()->new Camera(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3F,3F).requiresCorrectToolForDrops()));
 
-	public static final RegistryObject<Block> INDUSTRIAL_LARGE_WATER_WHEEL =
-			REGISTRY.register("industrial_large_water_wheel",
-					cz.maxtechnik.dif.block.IndustrialLargeWaterWheelBlock::new);
+	public static final RegistryObject<Block> BRASS_LARGE_WATER_WHEEL =
+			REGISTRY.register("brass_large_water_wheel",
+					cz.maxtechnik.dif.block.BrassLargeWaterWheelBlock::new);
 
-	public static final RegistryObject<Block> INDUSTRIAL_WATER_WHEEL =
-			REGISTRY.register("industrial_water_wheel",
-					cz.maxtechnik.dif.block.IndustrialWaterWheelBlock::new);
+	public static final RegistryObject<Block> BRASS_WATER_WHEEL =
+			REGISTRY.register("brass_water_wheel",
+					cz.maxtechnik.dif.block.BrassWaterWheelBlock::new);
 
 	public static final RegistryObject<Block>FUEL_FLUID=REGISTRY.register("fuel_fluid",FuelBlock::new);
 	public static final RegistryObject<Block>BEER_FLUID=REGISTRY.register("beer_fluid",BeerBlock::new);

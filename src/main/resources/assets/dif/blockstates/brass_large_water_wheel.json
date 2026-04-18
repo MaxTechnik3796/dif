@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "axis=x,extension=false": {
+      "model": "dif:block/brass_large_water_wheel/block",
+      "x": 90,
+      "y": 90
+    },
+    "axis=x,extension=true": {
+      "model": "dif:block/brass_large_water_wheel/block_extension",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y,extension=false": {
+      "model": "dif:block/brass_large_water_wheel/block"
+    },
+    "axis=y,extension=true": {
+      "model": "dif:block/brass_large_water_wheel/block_extension"
+    },
+    "axis=z,extension=false": {
+      "model": "dif:block/brass_large_water_wheel/block",
+      "x": 90,
+      "y": 180
+    },
+    "axis=z,extension=true": {
+      "model": "dif:block/brass_large_water_wheel/block_extension",
+      "x": 90,
+      "y": 180
+    }
+  }
+}

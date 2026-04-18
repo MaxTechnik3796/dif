@@ -19,8 +19,8 @@ public class DifModTabs{
 	public static final DeferredRegister<CreativeModeTab>REGISTER=DeferredRegister.create(Registries.CREATIVE_MODE_TAB,DifMod.MODID);
 	public static final RegistryObject<CreativeModeTab>MAIN=REGISTER.register("main",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.main")).icon(()->new ItemStack(DifModItems.THE_DIFFERENTIAL.get())).displayItems(((parameters,tabData)->{
 		tabData.accept(DifModItems.THE_DIFFERENTIAL.get());
-		tabData.accept(DifModItems.INDUSTRIAL_LARGE_WATER_WHEEL.get());
-		tabData.accept(DifModItems.INDUSTRIAL_WATER_WHEEL.get());
+		tabData.accept(DifModItems.BRASS_LARGE_WATER_WHEEL.get());
+		tabData.accept(DifModItems.BRASS_WATER_WHEEL.get());
 		tabData.accept(DifModItems.MEGA_TORCH.get());
 		tabData.accept(DifModItems.BAN_HAMMER.get());
 		tabData.accept(DifModItems.PORTAL_GUN.get());

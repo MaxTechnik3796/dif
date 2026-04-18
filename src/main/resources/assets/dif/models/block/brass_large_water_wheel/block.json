@@ -1,6 +1,7 @@
 {
-	"parent": "block/block",
-	"ambientocclusion": false,
+	"loader": "forge:obj",
+	"flip_v": true,
+	"model": "create:models/block/large_water_wheel/waterwheel_large.obj",
 	"textures": {
 		"axis": "create:block/axis",
 		"axis_top": "create:block/axis_top",
@@ -8,6 +9,6 @@
 		"log": "minecraft:block/dark_oak_log",
 		"planks": "minecraft:block/dark_oak_planks",
 		"log_top": "minecraft:block/dark_oak_log_top",
-		"particle": "#planks"
+		"particle": "minecraft:block/dark_oak_planks"
 	}
 }

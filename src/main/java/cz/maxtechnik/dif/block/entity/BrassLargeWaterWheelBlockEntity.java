@@ -2,7 +2,6 @@ package cz.maxtechnik.dif.block.entity;
 
 import com.simibubi.create.content.kinetics.waterwheel.LargeWaterWheelBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -14,10 +13,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
-public class IndustrialLargeWaterWheelBlockEntity extends LargeWaterWheelBlockEntity {
+public class BrassLargeWaterWheelBlockEntity extends LargeWaterWheelBlockEntity {
 
-    public IndustrialLargeWaterWheelBlockEntity(BlockPos pos, BlockState state) {
-        super(DifModBlockEntities.INDUSTRIAL_LARGE_WATER_WHEEL.get(), pos, state);
+    public BrassLargeWaterWheelBlockEntity(BlockPos pos, BlockState state) {
+        super(DifModBlockEntities.BRASS_LARGE_WATER_WHEEL.get(), pos, state);
     }
 
     @Override

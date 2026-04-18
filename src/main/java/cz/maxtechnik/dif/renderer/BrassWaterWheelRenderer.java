@@ -19,23 +19,23 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 
 @OnlyIn(Dist.CLIENT)
-public class IndustrialWaterWheelRenderer extends KineticBlockEntityRenderer<WaterWheelBlockEntity> {
+public class BrassWaterWheelRenderer extends KineticBlockEntityRenderer<WaterWheelBlockEntity> {
 
-    public static final PartialModel INDUSTRIAL_WHEEL =
-            PartialModel.of(ResourceLocation.fromNamespaceAndPath("dif", "block/industrial_large_water_wheel/block"));
-    public static final PartialModel INDUSTRIAL_WHEEL_EXTENSION =
-            PartialModel.of(ResourceLocation.fromNamespaceAndPath("dif", "block/industrial_large_water_wheel/block_extension"));
-    public static final PartialModel INDUSTRIAL_SMALL_WHEEL =
-            PartialModel.of(ResourceLocation.fromNamespaceAndPath("dif", "block/industrial_water_wheel/wheel"));
+    public static final PartialModel BRASS_WHEEL =
+            PartialModel.of(ResourceLocation.fromNamespaceAndPath("dif", "block/brass_large_water_wheel/block"));
+    public static final PartialModel BRASS_WHEEL_EXTENSION =
+            PartialModel.of(ResourceLocation.fromNamespaceAndPath("dif", "block/brass_large_water_wheel/block_extension"));
+    public static final PartialModel BRASS_SMALL_WHEEL =
+            PartialModel.of(ResourceLocation.fromNamespaceAndPath("dif", "block/brass_water_wheel/wheel"));
 
-    public IndustrialWaterWheelRenderer(BlockEntityRendererProvider.Context context) {
+    public BrassWaterWheelRenderer(BlockEntityRendererProvider.Context context) {
         super(context);
     }
     @Override
     protected void renderSafe(WaterWheelBlockEntity be, float partialTicks, PoseStack ms,
                               MultiBufferSource buffer, int light, int overlay) {
         BlockState state = be.getBlockState();
-        if (be instanceof cz.maxtechnik.dif.block.entity.IndustrialLargeWaterWheelBlockEntity && !state.hasProperty(LargeWaterWheelBlock.EXTENSION)) return;
+        if (be instanceof cz.maxtechnik.dif.block.entity.BrassLargeWaterWheelBlockEntity && !state.hasProperty(LargeWaterWheelBlock.EXTENSION)) return;
 
         RenderType type = getRenderType(be, state);
         SuperByteBuffer model = getRotatedModel(be, state);
@@ -45,14 +45,14 @@ public class IndustrialWaterWheelRenderer extends KineticBlockEntityRenderer<Wat
 
     @Override
     protected SuperByteBuffer getRotatedModel(WaterWheelBlockEntity be, BlockState state) {
-        boolean large = be instanceof cz.maxtechnik.dif.block.entity.IndustrialLargeWaterWheelBlockEntity;
-        PartialModel partial = null;
+        boolean large = be instanceof cz.maxtechnik.dif.block.entity.BrassLargeWaterWheelBlockEntity;
+        PartialModel partial;
 
         if (large) {
             boolean extension = state.getValue(LargeWaterWheelBlock.EXTENSION);
-            partial = extension ? INDUSTRIAL_WHEEL_EXTENSION : INDUSTRIAL_WHEEL;
+            partial = extension ? BRASS_WHEEL_EXTENSION : BRASS_WHEEL;
         } else {
-            partial = INDUSTRIAL_SMALL_WHEEL;
+            partial = BRASS_SMALL_WHEEL;
         }
 
         PartialModel finalPartial = partial;
