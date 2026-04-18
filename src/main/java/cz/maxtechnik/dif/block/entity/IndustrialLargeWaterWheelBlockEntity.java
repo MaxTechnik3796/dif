@@ -62,6 +62,6 @@ public class IndustrialLargeWaterWheelBlockEntity extends LargeWaterWheelBlockEn
 
     @Override
     public float calculateAddedStressCapacity() {
-        return super.calculateAddedStressCapacity() * 4.0f;
+        return 512f;
     }
 }
