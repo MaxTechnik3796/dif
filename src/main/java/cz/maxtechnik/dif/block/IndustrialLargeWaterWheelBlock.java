@@ -20,6 +20,7 @@ public class IndustrialLargeWaterWheelBlock extends LargeWaterWheelBlock {
                 .sound(SoundType.METAL)
                 .strength(1.5F, 6.0F)
                 .requiresCorrectToolForDrops()
+                .noOcclusion()
         );
     }
 

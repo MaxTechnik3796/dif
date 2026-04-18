@@ -12,6 +12,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Direction;
+import com.simibubi.create.content.kinetics.base.IRotate;
+import net.createmod.catnip.render.SuperByteBufferCache;
+import net.createmod.catnip.render.SuperBufferFactory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -42,15 +46,22 @@ public class IndustrialWaterWheelRenderer extends KineticBlockEntityRenderer<Ind
         BlockState state = be.getBlockState();
         if (!state.hasProperty(LargeWaterWheelBlock.EXTENSION)) return;
 
+        RenderType type = getRenderType(be, state);
         SuperByteBuffer model = getRotatedModel(be, state);
         standardKineticRotationTransform(model, be, light)
-                .renderInto(ms, buffer.getBuffer(RenderType.cutoutMipped()));
+                .renderInto(ms, buffer.getBuffer(type));
     }
 
     @Override
     protected SuperByteBuffer getRotatedModel(IndustrialLargeWaterWheelBlockEntity be, BlockState state) {
         boolean extension = state.getValue(LargeWaterWheelBlock.EXTENSION);
         PartialModel partial = extension ? INDUSTRIAL_WHEEL_EXTENSION : INDUSTRIAL_WHEEL;
-        return CachedBuffers.partial(partial, state);
+
+        return SuperByteBufferCache.getInstance().get(KineticBlockEntityRenderer.KINETIC_BLOCK, state, () -> {
+            net.minecraft.client.resources.model.BakedModel model = partial.get();
+            Direction dir = Direction.fromAxisAndDirection(state.getValue(LargeWaterWheelBlock.AXIS), Direction.AxisDirection.POSITIVE);
+            PoseStack transform = CachedBuffers.rotateToFaceVertical(dir).get();
+            return SuperBufferFactory.getInstance().createForBlock(model, state, transform);
+        });
     }
 }
