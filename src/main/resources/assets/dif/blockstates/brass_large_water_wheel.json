@@ -1,12 +1,12 @@
 {
   "variants": {
     "axis=x,extension=false": {
-      "model": "dif:block/brass_large_water_wheel/block",
+      "model": "dif:block/brass_large_water_wheel",
       "x": 90,
       "y": 90
     },
     "axis=x,extension=true": {
-      "model": "dif:block/brass_large_water_wheel/block_extension",
+      "model": "dif:block/brass_large_water_wheel_extension",
       "x": 90,
       "y": 90
     },
@@ -17,12 +17,12 @@
       "model": "dif:block/brass_large_water_wheel/block_extension"
     },
     "axis=z,extension=false": {
-      "model": "dif:block/brass_large_water_wheel/block",
+      "model": "dif:block/brass_large_water_wheel",
       "x": 90,
       "y": 180
     },
     "axis=z,extension=true": {
-      "model": "dif:block/brass_large_water_wheel/block_extension",
+      "model": "dif:block/brass_large_water_wheel_extension",
       "x": 90,
       "y": 180
     }

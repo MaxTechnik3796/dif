@@ -159,9 +159,9 @@ public class DifMod {
 
 	@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 	public static class ClientModEvents {
-		public static final PartialModel BRASS_PRESS_HEAD = PartialModel.of(new ResourceLocation("dif", "block/brass_mechanical_press/head"));
-		public static final PartialModel BRASS_MIXER_POLE = PartialModel.of(new ResourceLocation("dif", "block/brass_mechanical_mixer/pole"));
-		public static final PartialModel BRASS_MIXER_HEAD = PartialModel.of(new ResourceLocation("dif", "block/brass_mechanical_mixer/head"));
+		public static final PartialModel BRASS_PRESS_HEAD = PartialModel.of(new ResourceLocation("dif", "block/brass_mechanical_press_head"));
+		public static final PartialModel BRASS_MIXER_POLE = PartialModel.of(new ResourceLocation("dif", "block/brass_mechanical_mixer_pole"));
+		public static final PartialModel BRASS_MIXER_HEAD = PartialModel.of(new ResourceLocation("dif", "block/brass_mechanical_mixer_head"));
 
 		@SubscribeEvent
 		public static void onClientSetup(FMLClientSetupEvent event) {
@@ -194,13 +194,13 @@ public class DifMod {
 
 		@SubscribeEvent
 		public static void onRegisterAdditionalModels(ModelEvent.RegisterAdditional event) {
-			event.register(new ResourceLocation("dif", "block/brass_large_water_wheel/block"));
-			event.register(new ResourceLocation("dif", "block/brass_large_water_wheel/block_extension"));
-			event.register(new ResourceLocation("dif", "block/brass_water_wheel/block"));
-			event.register(new ResourceLocation("dif", "block/brass_water_wheel/wheel"));
-			event.register(new ResourceLocation("dif", "block/brass_mechanical_press/head"));
-			event.register(new ResourceLocation("dif", "block/brass_mechanical_mixer/pole"));
-			event.register(new ResourceLocation("dif", "block/brass_mechanical_mixer/head"));
+			event.register(new ResourceLocation("dif", "block/brass_large_water_wheel"));
+			event.register(new ResourceLocation("dif", "block/brass_large_water_wheel_extension"));
+			event.register(new ResourceLocation("dif", "block/brass_water_wheel"));
+			event.register(new ResourceLocation("dif", "block/brass_water_wheel_wheel"));
+			event.register(new ResourceLocation("dif", "block/brass_mechanical_press_head"));
+			event.register(new ResourceLocation("dif", "block/brass_mechanical_mixer_pole"));
+			event.register(new ResourceLocation("dif", "block/brass_mechanical_mixer_head"));
 		}
 
 		@SubscribeEvent

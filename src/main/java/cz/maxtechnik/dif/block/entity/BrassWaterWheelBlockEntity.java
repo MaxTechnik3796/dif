@@ -61,6 +61,6 @@ public class BrassWaterWheelBlockEntity extends WaterWheelBlockEntity {
 
     @Override
     public float calculateAddedStressCapacity() {
-        return 256f;
+        return 128f;
     }
 }

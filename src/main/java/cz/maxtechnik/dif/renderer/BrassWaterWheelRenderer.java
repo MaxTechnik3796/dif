@@ -22,11 +22,11 @@ import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 public class BrassWaterWheelRenderer extends KineticBlockEntityRenderer<WaterWheelBlockEntity> {
 
     public static final PartialModel BRASS_WHEEL =
-            PartialModel.of(ResourceLocation.fromNamespaceAndPath("dif", "block/brass_large_water_wheel/block"));
+            PartialModel.of(ResourceLocation.fromNamespaceAndPath("dif", "block/brass_large_water_wheel"));
     public static final PartialModel BRASS_WHEEL_EXTENSION =
-            PartialModel.of(ResourceLocation.fromNamespaceAndPath("dif", "block/brass_large_water_wheel/block_extension"));
+            PartialModel.of(ResourceLocation.fromNamespaceAndPath("dif", "block/brass_large_water_wheel_extension"));
     public static final PartialModel BRASS_SMALL_WHEEL =
-            PartialModel.of(ResourceLocation.fromNamespaceAndPath("dif", "block/brass_water_wheel/wheel"));
+            PartialModel.of(ResourceLocation.fromNamespaceAndPath("dif", "block/brass_water_wheel_wheel"));
 
     public BrassWaterWheelRenderer(BlockEntityRendererProvider.Context context) {
         super(context);
