@@ -62,6 +62,6 @@ public class BrassLargeWaterWheelBlockEntity extends LargeWaterWheelBlockEntity 
 
     @Override
     public float calculateAddedStressCapacity() {
-        return 2048f;
+        return 512f;
     }
 }

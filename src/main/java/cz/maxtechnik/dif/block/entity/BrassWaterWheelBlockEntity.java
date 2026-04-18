@@ -61,6 +61,6 @@ public class BrassWaterWheelBlockEntity extends WaterWheelBlockEntity {
 
     @Override
     public float calculateAddedStressCapacity() {
-        return 512f; // Base single wheel capacity * 4? Wait. Vanilla is 128 (maybe, or maybe 128 * 4 flow?). Wait, vanilla is 128? Wait, large wheel was 2048f which is 4x 512f. Small wheel is usually 4x 128 = 512f. Let's do 512f.
+        return 256f;
     }
 }
