@@ -143,7 +143,6 @@ public class DifModItems{
 	public static final RegistryObject<Item> CREATE_BOWL=REGISTRY.register("create_bowl",Bowl::new);
 	public static final RegistryObject<Item> SUPER_HEATED_CREATE_BOWL=REGISTRY.register("super_heated_create_bowl",Super::new);
 
-	public static final RegistryObject<Item> JADERNEJ_SUTR=REGISTRY.register("jadernej_sutr",JadernejSutr::new);
 	public static final RegistryObject<Item> VHS=REGISTRY.register("vhs",()->new StackSize(16));
 	public static final RegistryObject<Item> QUESTION_MARK=REGISTRY.register("question_mark",Basic::new);
 
