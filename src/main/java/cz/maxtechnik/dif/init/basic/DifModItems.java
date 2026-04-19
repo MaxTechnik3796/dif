@@ -35,6 +35,7 @@ public class DifModItems{
 		return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));
 	}
 	public static final RegistryObject<Item> SLEEPING_BAG = block(DifModBlocks.SLEEPING_BAG);
+	public static final RegistryObject<Item> LAP_TIMER = REGISTRY.register("lap_timer", () -> new BlockItem(DifModBlocks.LAP_TIMER.get(), new Item.Properties()));
 
 	public static final RegistryObject<Item>QUARRY=block(DifModBlocks.QUARRY);
 	public static final RegistryObject<Item>QUARRY_FRAME=block(DifModBlocks.QUARRY_FRAME);
@@ -107,7 +108,7 @@ public class DifModItems{
 
 	//Vanilla + :
 	public static final RegistryObject<Item> END_PORTAL=V_REGISTRY.register("end_portal",()->new BlockItem(Blocks.END_PORTAL,new Item.Properties()));
-	static final RegistryObject<Item> LAP_TIMER = REGISTRY.register("lap_timer", () -> new net.minecraft.world.item.BlockItem(DifModBlocks.LAP_TIMER.get(), new Item.Properties()));
+
 
 	public static final RegistryObject<Item> END_GATEWAY=V_REGISTRY.register("end_gateway",()->new BlockItem(Blocks.END_GATEWAY,new Item.Properties()));
 	public static final RegistryObject<Item> NETHER_PORTAL=V_REGISTRY.register("nether_portal",()->new BlockItem(Blocks.NETHER_PORTAL,new Item.Properties()));
