@@ -311,13 +311,14 @@ public class DifModItems{
 
 
 	//MusicDiscs:
-	public static final RegistryObject<Item> FURT_TA_STEJNA_HRA=REGISTRY.register("furt_ta_stejna_hra",()->new MusicDiscDesc2(15,2100,DifMod.MODID,"furt_ta_stejna_hra"));
-	public static final RegistryObject<Item> MATY_CREATE=REGISTRY.register("maty_create",()->new MusicDiscDesc2(10,1900,DifMod.MODID,"maty_create"));
-	public static final RegistryObject<Item> REDSTONE=REGISTRY.register("redstone",()->new MusicDiscDesc2(15,3960,DifMod.MODID,"redstone"));
 	public static final RegistryObject<Item> DOG=REGISTRY.register("dog",()->new MusicDiscDesc2(2,2900,DifMod.MODID,"dog"));
 
 	public static final RegistryObject<Item> FORMULA_ITEM = REGISTRY.register("formula", () -> new cz.maxtechnik.dif.item.FormulaItem(new Item.Properties().stacksTo(1)));
 
+
+	public static final RegistryObject<Item> FURT_TA_STEJNA_HRA=REGISTRY.register("furt_ta_stejna_hra",Update::new);
+	public static final RegistryObject<Item> MATY_CREATE=REGISTRY.register("maty_create",Update::new);
+	public static final RegistryObject<Item> REDSTONE=REGISTRY.register("redstone",Update::new);
 	public static final RegistryObject<Item>CREMEKA=REGISTRY.register("cremeka",Update::new);
 
 	//Weapons:

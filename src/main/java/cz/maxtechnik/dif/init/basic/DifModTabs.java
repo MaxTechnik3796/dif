@@ -335,9 +335,6 @@ public class DifModTabs{
 							new ItemStack(DifModItems.JETPACK_TURBO_FUEL_BUCKET.get()),
 							new ItemStack(DifModItems.SUNFLOWER_OIL_BUCKET.get())
 					});
-			tabData.accept(DifModItems.MATY_CREATE.get());
-			tabData.accept(DifModItems.REDSTONE.get());
-			tabData.accept(DifModItems.FURT_TA_STEJNA_HRA.get());
 			tabData.accept(DifModItems.DOG.get());
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.COMBAT)){
 			tabData.getEntries().putAfter(new ItemStack(Items.STONE_SWORD),new ItemStack(DifModItems.COPPER_SWORD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);

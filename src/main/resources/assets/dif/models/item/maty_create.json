@@ -1,6 +1,6 @@
 {
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "dif:item/maty_create"
-  }
+	"parent":"item/generated",
+	"textures":{
+		"layer0":"dif:item/update"
+	}
 }

@@ -1,28 +1,4 @@
 {
-	"furt_ta_stejna_hra":{
-		"sounds":[
-			{
-				"name":"dif:records/furt_ta_stejna_hra",
-				"stream":true
-			}
-		]
-	},
-	"maty_create":{
-		"sounds":[
-			{
-				"name":"dif:records/maty_create",
-				"stream":true
-			}
-		]
-	},
-	"redstone":{
-		"sounds":[
-			{
-				"name":"dif:records/redstone",
-				"stream":true
-			}
-		]
-	},
 	"dog":{
 		"sounds":[
 			{
