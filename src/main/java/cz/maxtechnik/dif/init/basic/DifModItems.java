@@ -180,8 +180,7 @@ public class DifModItems{
 	public static final RegistryObject<Item> THE_DIFFERENTIAL=block(DifModBlocks.THE_DIFFERENTIAL);
 	public static final RegistryObject<Item> EVENT_BUS=block(DifModBlocks.EVENT_BUS);
 	public static final RegistryObject<Item> VENT=block(DifModBlocks.VENT);
-	public static final RegistryObject<Item> WASHING_MACHINE=block(DifModBlocks.WASHING_MACHINE);
-	public static final RegistryObject<Item> AIR_CONDITIONING=block(DifModBlocks.AIR_CONDITIONING);
+
 	public static final RegistryObject<Item> SINGULARITATOR=block(DifModBlocks.SINGULARITATOR);
 
 	public static final RegistryObject<Item> BITCOIN_BLOCK=block(DifModBlocks.BITCOIN_BLOCK);
