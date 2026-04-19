@@ -212,8 +212,7 @@ public class DifModItems{
 	public static final RegistryObject<Item> RUBY_ORE=block(DifModBlocks.RUBY_ORE);
 	public static final RegistryObject<Item> RUBY_BLOCK=block(DifModBlocks.RUBY_BLOCK);
 
-	public static final RegistryObject<Item> RAM=REGISTRY.register("ram",()->new StackSize(16));
-	public static final RegistryObject<Item> EXPLOSIVE_RAM=REGISTRY.register("explosive_ram",ExplosiveRam::new);
+
 
 	public static final RegistryObject<Item> SOLAR_PANEL_INC=REGISTRY.register("solar_panel_inc",Basic::new);
 	public static final RegistryObject<Item> SOLAR_PANEL_00=block(DifModBlocks.SOLAR_PANEL_00);

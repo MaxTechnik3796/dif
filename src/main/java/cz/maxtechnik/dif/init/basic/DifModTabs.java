@@ -54,8 +54,6 @@ public class DifModTabs{
 		tabData.accept(DifModItems.BLUESTONE.get());
 		tabData.accept(DifModItems.BLUE_PLATE.get());
 		tabData.accept(DifModItems.COIN_00.get());
-		tabData.accept(DifModItems.RAM.get());
-		tabData.accept(DifModItems.EXPLOSIVE_RAM.get());
 		tabData.accept(DifModItems.ROTTEN_BELT.get());
 		tabData.accept(DifModItems.QUESTION_MARK.get());
 
