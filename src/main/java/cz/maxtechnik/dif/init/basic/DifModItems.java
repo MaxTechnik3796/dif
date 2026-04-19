@@ -143,13 +143,11 @@ public class DifModItems{
 	public static final RegistryObject<Item> CREATE_BOWL=REGISTRY.register("create_bowl",Bowl::new);
 	public static final RegistryObject<Item> SUPER_HEATED_CREATE_BOWL=REGISTRY.register("super_heated_create_bowl",Super::new);
 
-	public static final RegistryObject<Item> VHS=REGISTRY.register("vhs",()->new StackSize(16));
 	public static final RegistryObject<Item> QUESTION_MARK=REGISTRY.register("question_mark",Basic::new);
 
 
 	public static final RegistryObject<Item> INCOMPLETE_UNIVERSAL=REGISTRY.register("incomplete_universal",Basic::new);
 
-	public static final RegistryObject<Item> COIN_00=REGISTRY.register("coin_00",Basic::new);
 
 	public static final RegistryObject<Item> MATY_DRINK=REGISTRY.register("maty_drink",MatyDrink::new);
 	public static final RegistryObject<Item> MATA=REGISTRY.register("mata",()->new Custom(1,0.2F));

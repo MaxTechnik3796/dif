@@ -28,8 +28,6 @@ public class DifModTabs{
 		tabData.accept(DifModItems.CHUNK_LOADER_3X3.get());
 		tabData.accept(DifModItems.EVENT_BUS.get());
 		tabData.accept(DifModItems.VENT.get());
-		tabData.accept(DifModItems.WASHING_MACHINE.get());
-		tabData.accept(DifModItems.AIR_CONDITIONING.get());
 		tabData.accept(DifModItems.BURNING_GENERATOR.get());
 		tabData.accept(DifModItems.ANDESITE_LATTICE.get());
 		tabData.accept(DifModItems.ANDESITE_WINDOW.get());
@@ -53,7 +51,6 @@ public class DifModTabs{
 		tabData.accept(DifModItems.MITHRIL_PLATE.get());
 		tabData.accept(DifModItems.BLUESTONE.get());
 		tabData.accept(DifModItems.BLUE_PLATE.get());
-		tabData.accept(DifModItems.COIN_00.get());
 		tabData.accept(DifModItems.ROTTEN_BELT.get());
 		tabData.accept(DifModItems.QUESTION_MARK.get());
 
