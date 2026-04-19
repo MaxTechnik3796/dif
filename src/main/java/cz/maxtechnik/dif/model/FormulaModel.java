@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.client.enitity;// Made with Blockbench 5.1.2
+package cz.maxtechnik.dif.model;// Made with Blockbench 5.1.2
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 

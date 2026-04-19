@@ -17,6 +17,6 @@ public class DifModModels{
 		event.registerLayerDefinition(ModelSpaceChestplate.LAYER_LOCATION, ModelSpaceChestplate::createBodyLayer);
 		event.registerLayerDefinition(ModelJetpack.LAYER_LOCATION, ModelJetpack::createBodyLayer);
 		event.registerLayerDefinition(ModelElectroRunners.LAYER_LOCATION,ModelElectroRunners::createBodyLayer);
-		event.registerLayerDefinition(cz.maxtechnik.dif.client.enitity.FormulaModel.LAYER_LOCATION, cz.maxtechnik.dif.client.enitity.FormulaModel::createBodyLayer);
+		event.registerLayerDefinition(FormulaModel.LAYER_LOCATION, FormulaModel::createBodyLayer);
 	}
 }

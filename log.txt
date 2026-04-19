@@ -1419,7 +1419,7 @@ java.lang.IllegalAccessException: class io.netty.util.internal.PlatformDependent
 [17:06:04] [modloading-worker-0/DEBUG] [co.tt.re.AbstractRegistrate/REGISTRATE.REGISTER]: Captured registration for entry depot of type minecraft:item
 [17:06:04] [modloading-worker-0/DEBUG] [co.tt.re.AbstractRegistrate/REGISTRATE.REGISTER]: Captured registration for entry depot of type minecraft:block
 [17:06:04] [modloading-worker-0/DEBUG] [ne.mi.fm.ja.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.mrh0.createaddition.config.Config to FORGE
-[17:06:04] [modloading-worker-0/DEBUG] [ne.mi.fm.ja.AutomaticEventSubscriber/LOADING]: Auto-subscribing cz.maxtechnik.dif.client.CarInputHandler to FORGE
+[17:06:04] [modloading-worker-0/DEBUG] [ne.mi.fm.ja.AutomaticEventSubscriber/LOADING]: Auto-subscribing cz.maxtechnik.dif.init.events.client.CarInputHandler to FORGE
 [17:06:04] [modloading-worker-0/DEBUG] [co.tt.re.AbstractRegistrate/REGISTRATE.REGISTER]: Captured registration for entry weighted_ejector of type minecraft:item
 [17:06:04] [modloading-worker-0/DEBUG] [ne.mi.fm.ja.AutomaticEventSubscriber/LOADING]: Auto-subscribing cz.maxtechnik.dif.DifModCommonConfig to MOD
 [17:06:04] [modloading-worker-0/DEBUG] [co.tt.re.AbstractRegistrate/REGISTRATE.REGISTER]: Captured registration for entry weighted_ejector of type minecraft:block

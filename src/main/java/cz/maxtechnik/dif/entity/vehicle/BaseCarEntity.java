@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.entity.vehicle;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.client.CarEngineSoundInstance;
+import cz.maxtechnik.dif.init.events.client.CarEngineSoundInstance;
 import cz.maxtechnik.dif.network.ModNetworking.SyncCarPositionPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;

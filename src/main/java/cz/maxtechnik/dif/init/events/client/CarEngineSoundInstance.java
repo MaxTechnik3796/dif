@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.client;
+package cz.maxtechnik.dif.init.events.client;
 
 import cz.maxtechnik.dif.entity.vehicle.BaseCarEntity;
 import net.minecraft.client.Minecraft;

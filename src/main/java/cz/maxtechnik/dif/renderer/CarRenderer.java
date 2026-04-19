@@ -2,7 +2,7 @@ package cz.maxtechnik.dif.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import cz.maxtechnik.dif.client.enitity.FormulaModel;
+import cz.maxtechnik.dif.model.FormulaModel;
 import cz.maxtechnik.dif.entity.vehicle.BaseCarEntity;
 import cz.maxtechnik.dif.entity.vehicle.FormulaEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
