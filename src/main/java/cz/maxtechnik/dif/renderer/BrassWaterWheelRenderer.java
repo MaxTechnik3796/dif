@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import com.simibubi.create.content.kinetics.waterwheel.LargeWaterWheelBlock;
 import com.simibubi.create.content.kinetics.waterwheel.WaterWheelBlockEntity;
+import cz.maxtechnik.dif.DifMod;
 import net.createmod.catnip.render.CachedBuffers;
 import net.createmod.catnip.render.SuperByteBuffer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -22,11 +23,11 @@ import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 public class BrassWaterWheelRenderer extends KineticBlockEntityRenderer<WaterWheelBlockEntity> {
 
     public static final PartialModel BRASS_WHEEL =
-            PartialModel.of(ResourceLocation.fromNamespaceAndPath("dif", "block/brass_large_water_wheel"));
+            PartialModel.of(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/brass_large_water_wheel"));
     public static final PartialModel BRASS_WHEEL_EXTENSION =
-            PartialModel.of(ResourceLocation.fromNamespaceAndPath("dif", "block/brass_large_water_wheel_extension"));
+            PartialModel.of(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/brass_large_water_wheel_extension"));
     public static final PartialModel BRASS_SMALL_WHEEL =
-            PartialModel.of(ResourceLocation.fromNamespaceAndPath("dif", "block/brass_water_wheel_wheel"));
+            PartialModel.of(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/brass_water_wheel_wheel"));
 
     public BrassWaterWheelRenderer(BlockEntityRendererProvider.Context context) {
         super(context);
