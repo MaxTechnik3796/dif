@@ -232,55 +232,6 @@ public class DifModTabs{
 			tabData.accept(DifModItems.WOODED_ARROW.get());
 			tabData.accept(DifModItems.GLITCH_BLOCK.get());
 
-			tabData.accept(DifModItems.C1_COBBLESTONE.get());
-			tabData.accept(DifModItems.C2_COBBLESTONE.get());
-			tabData.accept(DifModItems.C3_COBBLESTONE.get());
-			tabData.accept(DifModItems.C4_COBBLESTONE.get());
-			tabData.accept(DifModItems.C5_COBBLESTONE.get());
-			tabData.accept(DifModItems.C6_COBBLESTONE.get());
-			tabData.accept(DifModItems.C7_COBBLESTONE.get());
-			tabData.accept(DifModItems.C8_COBBLESTONE.get());
-			tabData.accept(DifModItems.C9_COBBLESTONE.get());
-
-			tabData.accept(DifModItems.C1_DIRT.get());
-			tabData.accept(DifModItems.C2_DIRT.get());
-			tabData.accept(DifModItems.C3_DIRT.get());
-			tabData.accept(DifModItems.C4_DIRT.get());
-			tabData.accept(DifModItems.C5_DIRT.get());
-			tabData.accept(DifModItems.C6_DIRT.get());
-			tabData.accept(DifModItems.C7_DIRT.get());
-			tabData.accept(DifModItems.C8_DIRT.get());
-			tabData.accept(DifModItems.C9_DIRT.get());
-
-			tabData.accept(DifModItems.C1_GRAVEL.get());
-			tabData.accept(DifModItems.C2_GRAVEL.get());
-			tabData.accept(DifModItems.C3_GRAVEL.get());
-			tabData.accept(DifModItems.C4_GRAVEL.get());
-			tabData.accept(DifModItems.C5_GRAVEL.get());
-			tabData.accept(DifModItems.C6_GRAVEL.get());
-			tabData.accept(DifModItems.C7_GRAVEL.get());
-			tabData.accept(DifModItems.C8_GRAVEL.get());
-			tabData.accept(DifModItems.C9_GRAVEL.get());
-
-			tabData.accept(DifModItems.C1_DEEPSLATE.get());
-			tabData.accept(DifModItems.C2_DEEPSLATE.get());
-			tabData.accept(DifModItems.C3_DEEPSLATE.get());
-			tabData.accept(DifModItems.C4_DEEPSLATE.get());
-			tabData.accept(DifModItems.C5_DEEPSLATE.get());
-			tabData.accept(DifModItems.C6_DEEPSLATE.get());
-			tabData.accept(DifModItems.C7_DEEPSLATE.get());
-			tabData.accept(DifModItems.C8_DEEPSLATE.get());
-			tabData.accept(DifModItems.C9_DEEPSLATE.get());
-
-			tabData.accept(DifModItems.C1_COBBLED_DEEPSLATE.get());
-			tabData.accept(DifModItems.C2_COBBLED_DEEPSLATE.get());
-			tabData.accept(DifModItems.C3_COBBLED_DEEPSLATE.get());
-			tabData.accept(DifModItems.C4_COBBLED_DEEPSLATE.get());
-			tabData.accept(DifModItems.C5_COBBLED_DEEPSLATE.get());
-			tabData.accept(DifModItems.C6_COBBLED_DEEPSLATE.get());
-			tabData.accept(DifModItems.C7_COBBLED_DEEPSLATE.get());
-			tabData.accept(DifModItems.C8_COBBLED_DEEPSLATE.get());
-			tabData.accept(DifModItems.C9_COBBLED_DEEPSLATE.get());
 
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.NATURAL_BLOCKS)){
 			tabData.getEntries().putAfter(new ItemStack(Items.BEDROCK),new ItemStack(DifModItems.PEDROCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);

@@ -251,56 +251,6 @@ public class DifModItems{
 	public static final RegistryObject<Item> SMALL_ENERGY_BUD=block(DifModBlocks.SMALL_ENERGY_BUD);
 	public static final RegistryObject<Item> ENERGY_SHARD=REGISTRY.register("energy_shard",Basic::new);
 
-	//Compressed:
-	public static final RegistryObject<Item> C1_COBBLESTONE=block(DifModBlocks.C1_COBBLESTONE);
-	public static final RegistryObject<Item> C2_COBBLESTONE=block(DifModBlocks.C2_COBBLESTONE);
-	public static final RegistryObject<Item> C3_COBBLESTONE=block(DifModBlocks.C3_COBBLESTONE);
-	public static final RegistryObject<Item> C4_COBBLESTONE=block(DifModBlocks.C4_COBBLESTONE);
-	public static final RegistryObject<Item> C5_COBBLESTONE=block(DifModBlocks.C5_COBBLESTONE);
-	public static final RegistryObject<Item> C6_COBBLESTONE=block(DifModBlocks.C6_COBBLESTONE);
-	public static final RegistryObject<Item> C7_COBBLESTONE=block(DifModBlocks.C7_COBBLESTONE);
-	public static final RegistryObject<Item> C8_COBBLESTONE=block(DifModBlocks.C8_COBBLESTONE);
-	public static final RegistryObject<Item> C9_COBBLESTONE=block(DifModBlocks.C9_COBBLESTONE);
-
-	public static final RegistryObject<Item> C1_DIRT=block(DifModBlocks.C1_DIRT);
-	public static final RegistryObject<Item> C2_DIRT=block(DifModBlocks.C2_DIRT);
-	public static final RegistryObject<Item> C3_DIRT=block(DifModBlocks.C3_DIRT);
-	public static final RegistryObject<Item> C4_DIRT=block(DifModBlocks.C4_DIRT);
-	public static final RegistryObject<Item> C5_DIRT=block(DifModBlocks.C5_DIRT);
-	public static final RegistryObject<Item> C6_DIRT=block(DifModBlocks.C6_DIRT);
-	public static final RegistryObject<Item> C7_DIRT=block(DifModBlocks.C7_DIRT);
-	public static final RegistryObject<Item> C8_DIRT=block(DifModBlocks.C8_DIRT);
-	public static final RegistryObject<Item> C9_DIRT=block(DifModBlocks.C9_DIRT);
-
-	public static final RegistryObject<Item> C1_GRAVEL=block(DifModBlocks.C1_GRAVEL);
-	public static final RegistryObject<Item> C2_GRAVEL=block(DifModBlocks.C2_GRAVEL);
-	public static final RegistryObject<Item> C3_GRAVEL=block(DifModBlocks.C3_GRAVEL);
-	public static final RegistryObject<Item> C4_GRAVEL=block(DifModBlocks.C4_GRAVEL);
-	public static final RegistryObject<Item> C5_GRAVEL=block(DifModBlocks.C5_GRAVEL);
-	public static final RegistryObject<Item> C6_GRAVEL=block(DifModBlocks.C6_GRAVEL);
-	public static final RegistryObject<Item> C7_GRAVEL=block(DifModBlocks.C7_GRAVEL);
-	public static final RegistryObject<Item> C8_GRAVEL=block(DifModBlocks.C8_GRAVEL);
-	public static final RegistryObject<Item> C9_GRAVEL=block(DifModBlocks.C9_GRAVEL);
-
-	public static final RegistryObject<Item> C1_DEEPSLATE=block(DifModBlocks.C1_DEEPSLATE);
-	public static final RegistryObject<Item> C2_DEEPSLATE=block(DifModBlocks.C2_DEEPSLATE);
-	public static final RegistryObject<Item> C3_DEEPSLATE=block(DifModBlocks.C3_DEEPSLATE);
-	public static final RegistryObject<Item> C4_DEEPSLATE=block(DifModBlocks.C4_DEEPSLATE);
-	public static final RegistryObject<Item> C5_DEEPSLATE=block(DifModBlocks.C5_DEEPSLATE);
-	public static final RegistryObject<Item> C6_DEEPSLATE=block(DifModBlocks.C6_DEEPSLATE);
-	public static final RegistryObject<Item> C7_DEEPSLATE=block(DifModBlocks.C7_DEEPSLATE);
-	public static final RegistryObject<Item> C8_DEEPSLATE=block(DifModBlocks.C8_DEEPSLATE);
-	public static final RegistryObject<Item> C9_DEEPSLATE=block(DifModBlocks.C9_DEEPSLATE);
-
-	public static final RegistryObject<Item> C1_COBBLED_DEEPSLATE=block(DifModBlocks.C1_COBBLED_DEEPSLATE);
-	public static final RegistryObject<Item> C2_COBBLED_DEEPSLATE=block(DifModBlocks.C2_COBBLED_DEEPSLATE);
-	public static final RegistryObject<Item> C3_COBBLED_DEEPSLATE=block(DifModBlocks.C3_COBBLED_DEEPSLATE);
-	public static final RegistryObject<Item> C4_COBBLED_DEEPSLATE=block(DifModBlocks.C4_COBBLED_DEEPSLATE);
-	public static final RegistryObject<Item> C5_COBBLED_DEEPSLATE=block(DifModBlocks.C5_COBBLED_DEEPSLATE);
-	public static final RegistryObject<Item> C6_COBBLED_DEEPSLATE=block(DifModBlocks.C6_COBBLED_DEEPSLATE);
-	public static final RegistryObject<Item> C7_COBBLED_DEEPSLATE=block(DifModBlocks.C7_COBBLED_DEEPSLATE);
-	public static final RegistryObject<Item> C8_COBBLED_DEEPSLATE=block(DifModBlocks.C8_COBBLED_DEEPSLATE);
-	public static final RegistryObject<Item> C9_COBBLED_DEEPSLATE=block(DifModBlocks.C9_COBBLED_DEEPSLATE);
 
 
 

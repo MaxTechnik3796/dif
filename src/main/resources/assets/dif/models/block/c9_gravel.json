@@ -1,8 +1,0 @@
-{
-	"parent": "block/cube_all",
-	"textures": {
-		"all": "dif:block/c9_gravel",
-		"particle": "dif:block/c9_gravel"
-	},
-	"render_type": "solid"
-}

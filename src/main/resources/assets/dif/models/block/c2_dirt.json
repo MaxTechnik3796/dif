@@ -1,8 +1,0 @@
-{
-	"parent": "block/cube_all",
-	"textures": {
-		"all": "dif:block/c2_dirt",
-		"particle": "dif:block/c2_dirt"
-	},
-	"render_type": "solid"
-}
