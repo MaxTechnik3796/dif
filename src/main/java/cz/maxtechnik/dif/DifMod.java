@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
+import cz.maxtechnik.dif.network.ModNetworking;
 import cz.maxtechnik.dif.renderer.BrassWaterWheelRenderer;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
 import cz.maxtechnik.dif.command.ConfigReloadCommand;
@@ -19,6 +20,8 @@ import cz.maxtechnik.dif.network.RemoteControlPacket;
 import cz.maxtechnik.dif.network.ModNetworking.SyncCarPositionPacket;
 import cz.maxtechnik.dif.renderer.*;
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -117,10 +120,10 @@ public class DifMod {
 				CameraExitPacket::handle
 		));
 		event.enqueueWork(() -> addNetworkMessage(
-				cz.maxtechnik.dif.network.ModNetworking.ShiftGearPacket.class,
-				cz.maxtechnik.dif.network.ModNetworking.ShiftGearPacket::encode,
-				cz.maxtechnik.dif.network.ModNetworking.ShiftGearPacket::decode,
-				cz.maxtechnik.dif.network.ModNetworking.ShiftGearPacket::handle
+				ModNetworking.ShiftGearPacket.class,
+				ModNetworking.ShiftGearPacket::encode,
+				ModNetworking.ShiftGearPacket::decode,
+				ModNetworking.ShiftGearPacket::handle
 		));
 		event.enqueueWork(() -> addNetworkMessage(
 				SyncCarPositionPacket.class,
@@ -159,9 +162,9 @@ public class DifMod {
 
 	@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 	public static class ClientModEvents {
-		public static final PartialModel BRASS_PRESS_HEAD = PartialModel.of(new ResourceLocation("dif", "block/brass_mechanical_press_head"));
-		public static final PartialModel BRASS_MIXER_POLE = PartialModel.of(new ResourceLocation("dif", "block/brass_mechanical_mixer_pole"));
-		public static final PartialModel BRASS_MIXER_HEAD = PartialModel.of(new ResourceLocation("dif", "block/brass_mechanical_mixer_head"));
+		public static final PartialModel BRASS_PRESS_HEAD = PartialModel.of(new ResourceLocation(MODID,"block/brass_mechanical_press_head"));
+		public static final PartialModel BRASS_MIXER_POLE = PartialModel.of(new ResourceLocation(MODID, "block/brass_mechanical_mixer_pole"));
+		public static final PartialModel BRASS_MIXER_HEAD = PartialModel.of(new ResourceLocation(MODID, "block/brass_mechanical_mixer_head"));
 
 		@SubscribeEvent
 		public static void onClientSetup(FMLClientSetupEvent event) {
@@ -214,11 +217,7 @@ public class DifMod {
 			event.registerBlockEntityRenderer(DifModBlockEntities.BRASS_MECHANICAL_MIXER.get(), cz.maxtechnik.dif.renderer.BrassMechanicalMixerRenderer::new);
 			event.registerEntityRenderer(DifModEntities.WITHER_TITAN.get(), WitherTitanRenderer::new);
 			event.registerEntityRenderer(DifModEntities.FORMULA.get(), CarRenderer::new);
-			event.registerEntityRenderer(DifModEntities.REMOTE_MINECART.get(),
-					context -> new net.minecraft.client.renderer.entity.MinecartRenderer<>(
-							context,
-							net.minecraft.client.model.geom.ModelLayers.MINECART
-					)
+			event.registerEntityRenderer(DifModEntities.REMOTE_MINECART.get(),context -> new MinecartRenderer<>(context,ModelLayers.MINECART)
 			);
 		}
 	}
