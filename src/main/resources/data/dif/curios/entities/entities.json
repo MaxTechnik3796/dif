@@ -1,8 +1,8 @@
 {
-	"entities": [
+	"entities":[
 		"minecraft:player"
 	],
-	"slots": [
+	"slots":[
 		"back",
 		"ring"
 	]

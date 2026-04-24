@@ -1,11 +1,9 @@
 {
 	"replace":false,
 	"values":[
-		"dif:bitcoin_block",
 		"dif:the_differential",
 		"dif:air_conditioning",
 		"dif:washing_machine",
-		"dif:solana_block",
 		"dif:maty_block",
 		"minecraft:jukebox",
 		"dif:andesite_lattice",

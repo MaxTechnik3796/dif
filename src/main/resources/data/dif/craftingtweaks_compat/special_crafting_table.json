@@ -1,6 +1,6 @@
 {
-	"modid": "dif",
-	"containerClass": "cz.maxtechnik.dif.gui.menu.SpecialCraftingMenu",
-	"gridSlotNumber": 1,
-	"gridSize": 9
+	"modid":"dif",
+	"containerClass":"cz.maxtechnik.dif.gui.menu.SpecialCraftingMenu",
+	"gridSlotNumber":1,
+	"gridSize":9
 }

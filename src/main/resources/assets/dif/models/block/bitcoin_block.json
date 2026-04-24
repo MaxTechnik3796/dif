@@ -1,8 +1,0 @@
-{
-	"parent":"block/cube_all",
-	"textures":{
-		"all":"dif:block/bitcoin_block",
-		"particle":"dif:block/bitcoin_block"
-	},
-	"render_type":"solid"
-}

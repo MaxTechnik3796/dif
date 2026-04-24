@@ -2,7 +2,6 @@ package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.fluid.bucket.*;
-import cz.maxtechnik.dif.init.other.DifModEntities;
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
@@ -10,14 +9,12 @@ import cz.maxtechnik.dif.item.food.create.*;
 import cz.maxtechnik.dif.item.tool.GodTotemItem;
 import cz.maxtechnik.dif.item.modular.ModularPart;
 import cz.maxtechnik.dif.item.modular.tool.*;
-import cz.maxtechnik.dif.item.random.*;
 import cz.maxtechnik.dif.item.tool.*;
 import cz.maxtechnik.dif.item.armor.*;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -125,7 +122,6 @@ public class DifModItems{
 	public static final RegistryObject<Item> SUGAR_MUSHROOM=REGISTRY.register("sugar_mushroom",()->new Custom(3,0.5F));
 	public static final RegistryObject<Item> CHERRY=REGISTRY.register("cherry",()->new Custom(1,0.1F));
 
-	public static final RegistryObject<Item> ROTTEN_BELT=REGISTRY.register("rotten_belt",Bad::new);
 
 	public static final RegistryObject<Item> BOTTLE_OF_MOLOTOVUV_KOKTEJL=REGISTRY.register("bottle_of_molotovuv_koktejl",MolotovuvKoktejl::new);
 	public static final RegistryObject<Item> BOTTLE_OF_URANOVEJ_KOKTEJL=REGISTRY.register("bottle_of_uranovej_koktejl",UranovejKoktejl::new);
@@ -181,8 +177,6 @@ public class DifModItems{
 
 	public static final RegistryObject<Item> SINGULARITATOR=block(DifModBlocks.SINGULARITATOR);
 
-	public static final RegistryObject<Item> BITCOIN_BLOCK=block(DifModBlocks.BITCOIN_BLOCK);
-	public static final RegistryObject<Item> SOLANA_BLOCK=block(DifModBlocks.SOLANA_BLOCK);
 
 	public static final RegistryObject<Item> CINDER_FLOUR_BLOCK=block(DifModBlocks.CINDER_FLOUR_BLOCK);
 	public static final RegistryObject<Item> PEDROCK=block(DifModBlocks.PEDROCK);

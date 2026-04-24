@@ -31,8 +31,6 @@ public class DifModTabs{
 		tabData.accept(DifModItems.ANDESITE_WINDOW.get());
 		tabData.accept(DifModItems.SUPER_BOX.get());
 		tabData.accept(DifModItems.SINGULARITATOR.get());
-		tabData.accept(DifModItems.SOLANA_BLOCK.get());
-		tabData.accept(DifModItems.BITCOIN_BLOCK.get());
 		tabData.accept(DifModItems.SOLAR_PANEL_00.get());
 		tabData.accept(DifModItems.SOLAR_PANEL_01.get());
 		tabData.accept(DifModItems.SOLAR_PANEL_02.get());
@@ -49,7 +47,7 @@ public class DifModTabs{
 		tabData.accept(DifModItems.MITHRIL_PLATE.get());
 		tabData.accept(DifModItems.BLUESTONE.get());
 		tabData.accept(DifModItems.BLUE_PLATE.get());
-		tabData.accept(DifModItems.ROTTEN_BELT.get());
+
 		tabData.accept(DifModItems.QUESTION_MARK.get());
 
 

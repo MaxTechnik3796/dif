@@ -1,24 +1,29 @@
 {
-	"has_precipitation": false,
-	"temperature": 0.5,
-	"downfall": 0.0,
-	"effects": {
-		"sky_color": 0,
-		"fog_color": 0,
-		"water_color": 4159204,
-		"water_fog_color": 329011,
-		"grass_color": 10526880,
-		"foliage_color": 10526880
+	"has_precipitation":false,
+	"temperature":0.5,
+	"downfall":0.0,
+	"effects":{
+		"sky_color":0,
+		"fog_color":0,
+		"water_color":4159204,
+		"water_fog_color":329011,
+		"grass_color":10526880,
+		"foliage_color":10526880
 	},
-	"carvers": {
-		"air": [
+	"carvers":{
+		"air":[
 			"minecraft:cave",
 			"minecraft:cave_extra_underground",
 			"minecraft:canyon"
 		]
 	},
-	"features": [
-		[], [], [], [], [], [],
+	"features":[
+		[],
+		[],
+		[],
+		[],
+		[],
+		[],
 		[
 			"minecraft:ore_iron_small",
 			"minecraft:ore_gold_lower",
@@ -28,8 +33,11 @@
 			"minecraft:ore_diamond_buried",
 			"minecraft:ore_lapis_buried"
 		],
-		[], [], [], []
+		[],
+		[],
+		[],
+		[]
 	],
-	"spawners": {},
-	"spawn_costs": {}
+	"spawners":{},
+	"spawn_costs":{}
 }
