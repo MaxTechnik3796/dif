@@ -59,16 +59,13 @@ public class ModNetworking {
             buf.writeInt(entityId); buf.writeDouble(x); buf.writeDouble(y); buf.writeDouble(z); buf.writeFloat(yRot); buf.writeFloat(velocity);
         }
         public void handle(Supplier<NetworkEvent.Context> ctx) {
-            ctx.get().enqueueWork(() -> applyMove(this));
+            ctx.get().enqueueWork(() -> {
+                net.minecraftforge.fml.DistExecutor.unsafeRunWhenOn(
+                        net.minecraftforge.api.distmarker.Dist.CLIENT,
+                        () -> () -> ClientPacketHandler.handleSyncCarPosition(this)
+                );
+            });
             ctx.get().setPacketHandled(true);
-        }
-        @OnlyIn(Dist.CLIENT)
-        private static void applyMove(SyncCarPositionPacket p) {
-            Minecraft mc = Minecraft.getInstance();
-            if (mc.level != null && mc.level.getEntity(p.entityId()) instanceof BaseCarEntity c) {
-                if (mc.player == null || mc.player.getVehicle() != c) c.lerpTo(p.x(), p.y(), p.z(), p.yRot(), c.getXRot(), 3, true);
-                c.setVelocityFromPacket(p.velocity());
-            }
         }
     }
 }

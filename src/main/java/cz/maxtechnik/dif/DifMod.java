@@ -153,10 +153,13 @@ public class DifMod {
 		}
 	}
 
-	@SubscribeEvent
-	public void onRenderGui(RenderGuiOverlayEvent.Post event) {
-		if (event.getOverlay().id().getPath().equals("hotbar")) {
-			CarHudOverlay.render(event.getGuiGraphics());
+	@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+	public static class ClientForgeEvents {
+		@SubscribeEvent
+		public static void onRenderGui(RenderGuiOverlayEvent.Post event) {
+			if (event.getOverlay().id().getPath().equals("hotbar")) {
+				CarHudOverlay.render(event.getGuiGraphics());
+			}
 		}
 	}
 
