@@ -262,5 +262,7 @@
 	"block.dif.brass_large_water_wheel":"Brass Large Water Wheel",
 	"block.dif.brass_water_wheel":"Brass Water Wheel",
 	"block.dif.brass_mechanical_press":"Brass Mechanical Press",
-	"block.dif.brass_mechanical_mixer":"Brass Mechanical Mixer"
+	"block.dif.brass_mechanical_mixer":"Brass Mechanical Mixer",
+	"biome.dif.moon_plains":"Moon Plains",
+	"biome.dif.orbit_void":"Space"
 }
