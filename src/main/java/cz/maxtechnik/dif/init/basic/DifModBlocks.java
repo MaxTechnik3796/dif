@@ -33,27 +33,19 @@ public class DifModBlocks{
 	public static final RegistryObject<Block>REMOTE_MINECART_BLOCK=REGISTRY.register("remote_minecart_block",RemoteMinecartBlock::new);
 
 	public static final RegistryObject<Block>SLEEPING_BAG=REGISTRY.register("sleeping_bag",SleepingBagBlock::new);
+
 	public static final RegistryObject<Block>QUARRY=REGISTRY.register("quarry",()->new Quarry(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block>QUARRY_FRAME=REGISTRY.register("quarry_frame",QuarryFrame::new);
+	public static final RegistryObject<Block>QUARRY_LANDMARK=REGISTRY.register("quarry_landmark",QuarryLandmark::new);
+
 
 	public static final RegistryObject<Block>CAMERA_MONITOR=REGISTRY.register("camera_monitor",()->new CameraMonitor(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block>CAMERA=REGISTRY.register("camera",()->new Camera(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3F,3F).requiresCorrectToolForDrops()));
 
-	public static final RegistryObject<Block> BRASS_LARGE_WATER_WHEEL =
-			REGISTRY.register("brass_large_water_wheel",
-					cz.maxtechnik.dif.block.BrassLargeWaterWheelBlock::new);
-
-	public static final RegistryObject<Block> BRASS_WATER_WHEEL =
-			REGISTRY.register("brass_water_wheel",
-					cz.maxtechnik.dif.block.BrassWaterWheelBlock::new);
-
-	public static final RegistryObject<Block> BRASS_MECHANICAL_PRESS =
-			REGISTRY.register("brass_mechanical_press",
-					() -> new BrassMechanicalPressBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PODZOL).requiresCorrectToolForDrops().strength(4.0F).sound(SoundType.NETHERITE_BLOCK).noOcclusion()));
-
-	public static final RegistryObject<Block> BRASS_MECHANICAL_MIXER =
-			REGISTRY.register("brass_mechanical_mixer",
-					() -> new BrassMechanicalMixerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PODZOL).requiresCorrectToolForDrops().strength(4.0F).sound(SoundType.NETHERITE_BLOCK).noOcclusion()));
+	public static final RegistryObject<Block> BRASS_LARGE_WATER_WHEEL = REGISTRY.register("brass_large_water_wheel", cz.maxtechnik.dif.block.BrassLargeWaterWheelBlock::new);
+	public static final RegistryObject<Block> BRASS_WATER_WHEEL = REGISTRY.register("brass_water_wheel", cz.maxtechnik.dif.block.BrassWaterWheelBlock::new);
+	public static final RegistryObject<Block> BRASS_MECHANICAL_PRESS = REGISTRY.register("brass_mechanical_press", () -> new BrassMechanicalPressBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PODZOL).requiresCorrectToolForDrops().strength(4.0F).sound(SoundType.NETHERITE_BLOCK).noOcclusion()));
+	public static final RegistryObject<Block> BRASS_MECHANICAL_MIXER = REGISTRY.register("brass_mechanical_mixer", () -> new BrassMechanicalMixerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PODZOL).requiresCorrectToolForDrops().strength(4.0F).sound(SoundType.NETHERITE_BLOCK).noOcclusion()));
 
 	public static final RegistryObject<Block>FUEL_FLUID=REGISTRY.register("fuel_fluid",FuelBlock::new);
 	public static final RegistryObject<Block>BEER_FLUID=REGISTRY.register("beer_fluid",BeerBlock::new);

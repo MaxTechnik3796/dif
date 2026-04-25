@@ -368,6 +368,7 @@ public class DifModTabs{
 			tabData.accept(DifModItems.SLEEPING_BAG.get());
 			tabData.accept(DifModItems.QUARRY.get());
 			tabData.accept(DifModItems.QUARRY_FRAME.get());
+			tabData.accept(DifModItems.QUARRY_LANDMARK.get());
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
 			tabData.getEntries().putAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(DifModItems.TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);

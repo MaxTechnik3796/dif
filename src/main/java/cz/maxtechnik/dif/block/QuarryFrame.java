@@ -23,13 +23,16 @@ public class QuarryFrame extends BaseEntityBlock {
 
 	@Override public @NotNull RenderShape getRenderShape(@NotNull BlockState state) { return RenderShape.MODEL; }
 
-	@Nullable @Override public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
+	@Nullable @Override
+	public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
 		return new QuarryFrameBlockEntity(pos, state);
 	}
 
-	@Nullable @Override public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+	@Nullable @Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
 			@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
 		return level.isClientSide ? null
-				: createTickerHelper(type, DifModBlockEntities.QUARRY_FRAME.get(), (level1, pos, state1, be) -> QuarryFrameBlockEntity.tick(level1, pos, be));
+				: createTickerHelper(type, DifModBlockEntities.QUARRY_FRAME.get(),
+				(l, p, s, be) -> QuarryFrameBlockEntity.tick(l, p, be));
 	}
 }

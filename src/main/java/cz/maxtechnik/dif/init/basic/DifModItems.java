@@ -36,6 +36,7 @@ public class DifModItems{
 
 	public static final RegistryObject<Item>QUARRY=block(DifModBlocks.QUARRY);
 	public static final RegistryObject<Item>QUARRY_FRAME=block(DifModBlocks.QUARRY_FRAME);
+	public static final RegistryObject<Item>QUARRY_LANDMARK=block(DifModBlocks.QUARRY_LANDMARK);
 
 	public static final RegistryObject<Item> BRASS_LARGE_WATER_WHEEL = block(DifModBlocks.BRASS_LARGE_WATER_WHEEL);
 	public static final RegistryObject<Item> BRASS_WATER_WHEEL = block(DifModBlocks.BRASS_WATER_WHEEL);
