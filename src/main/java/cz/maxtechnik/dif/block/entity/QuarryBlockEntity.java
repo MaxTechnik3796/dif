@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -29,6 +30,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import cz.maxtechnik.dif.gui.menu.QuarryMenu;
 import cz.maxtechnik.dif.init.basic.DifModItems;
+import cz.maxtechnik.dif.init.events.QuarryStats;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,8 +55,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 
 
 	// ── Energie ──────────────────────────────────────────────────────────────
-	private static final int ENERGY_CAPACITY  = 1_000_000;
-	private static final int ENERGY_INPUT     = 10_000;   // RF/t přijatých
+	private static final int ENERGY_CAPACITY  = QuarryStats.QUARRY_ENERGY_CAPACITY;
+	private static final int ENERGY_INPUT     = QuarryStats.QUARRY_ENERGY_INPUT;
 	private static final int ENERGY_PER_CLEAR =     25;
 	private static final int ENERGY_PER_FRAME =     50;
 	private static final int ENERGY_PER_MINE  =    500;
@@ -106,9 +108,27 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 	private final ItemStackHandler inventory = new ItemStackHandler(3) {
 		@Override
 		protected void onContentsChanged(int slot) {
+			updateCaches();
 			setChanged();
 		}
 	};
+	private boolean hasSilkTouch = false;
+	private boolean hasLiquidRemover = false;
+
+	private void updateCaches() {
+		hasSilkTouch = false;
+		hasLiquidRemover = false;
+		
+		ItemStack upgrade = inventory.getStackInSlot(2);
+		if (upgrade.getItem() == cz.maxtechnik.dif.init.basic.DifModItems.LIQUID_REMOVER.get()) {
+			hasLiquidRemover = true;
+		} else if (upgrade.is(net.minecraft.world.item.Items.ENCHANTED_BOOK)) {
+			if (net.minecraft.world.item.enchantment.EnchantmentHelper.getItemEnchantmentLevel(net.minecraft.world.item.enchantment.Enchantments.SILK_TOUCH, upgrade) > 0) {
+				hasSilkTouch = true;
+			}
+		}
+	}
+
 	private final LazyOptional<IItemHandler> inventoryCap = LazyOptional.of(() -> inventory);
 
 	// ── Energie (Forge) ────────────────────────────────────────────────────────
@@ -145,12 +165,17 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 		public int get(int index) {
 			switch (index) {
 				case 0: return quarryState.ordinal();
-				case 1: return getActiveDPMod(); // Speed = DP
+				case 1: return (int)(getActiveProgressPerTick() * 100); 
 				case 2: return lastEnergyOutput;
 				case 3: return lastEnergyInput;
-				case 4: return getFrameHalfX() * 2;
-				case 5: return getFrameHalfZ() * 2;
-				case 6: return getTotalDPGen() == 0 ? 1 : 0; // indikátor chybějícího enginu
+				case 4: return getFrameHalfX() * 2 + 1;
+				case 5: return getFrameHalfZ() * 2 + 1;
+				case 6: {
+                    if (getTotalDPGen() == 0) return 1;
+                    if (getHeadDPReq() == 0) return 2;
+                    if (getTotalDPGen() < getHeadDPReq()) return 3;
+                    return 0;
+                }
 				default: return 0;
 			}
 		}
@@ -178,17 +203,30 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 		return 0; // No head
 	}
 
-	public int getActiveDPMod() {
+	public float getActiveProgressPerTick() {
 		int gen = getTotalDPGen();
 		int req = getHeadDPReq();
 		if (req == 0 || gen < req) return 0;
-		return 1 + (gen - req); // 1 + excess DP. Pokud mám přesně DP co to žere, bude rychlost 1. Čím víc, tím víc.
+		
+		int excess = gen - req;
+		// Rychlost: MIN = 0.1, MAX = 2.0 (při excess = MAX_DP)
+		float t = Math.min(1.0f, (float)excess / (float)QuarryStats.MAX_ACTIVE_DP);
+		return QuarryStats.MIN_PROGRESS_PER_TICK + t * (QuarryStats.MAX_PROGRESS_PER_TICK - QuarryStats.MIN_PROGRESS_PER_TICK);
 	}
 
 	private int getTotalFECost() {
 		int e = 0;
-		if (inventory.getStackInSlot(1).getItem() instanceof cz.maxtechnik.dif.item.quarry.EngineItem eng) e += eng.feCost;
-		if (inventory.getStackInSlot(2).getItem() instanceof cz.maxtechnik.dif.item.quarry.EngineItem eng) e += eng.feCost;
+		Item item1 = inventory.getStackInSlot(1).getItem();
+		Item item2 = inventory.getStackInSlot(2).getItem();
+		
+		if (item1 instanceof cz.maxtechnik.dif.item.quarry.EngineItem eng) e += eng.feCost;
+		if (item2 instanceof cz.maxtechnik.dif.item.quarry.EngineItem eng) e += eng.feCost;
+		
+		// Penalty for duplicate engines
+		if (item1 == item2 && item1 != net.minecraft.world.item.Items.AIR && item1 instanceof cz.maxtechnik.dif.item.quarry.EngineItem) {
+			e = (int)(e * QuarryStats.DUP_ENGINE_PENALTY);
+		}
+		
 		return e; // FE per tick
 	}
 
@@ -200,17 +238,37 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 		else if (head.is(cz.maxtechnik.dif.init.basic.DifModItems.IRON_DRILL_HEAD.get())) tool = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_PICKAXE);
 		else if (head.is(cz.maxtechnik.dif.init.basic.DifModItems.DIAMOND_DRILL_HEAD.get())) tool = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIAMOND_PICKAXE);
 		
-		net.minecraft.world.item.ItemStack upgrade = inventory.getStackInSlot(2);
-		if (upgrade.is(net.minecraft.world.item.Items.ENCHANTED_BOOK) &&
-			net.minecraft.world.item.enchantment.EnchantmentHelper.getItemEnchantmentLevel(net.minecraft.world.item.enchantment.Enchantments.SILK_TOUCH, upgrade) > 0) {
+		if (hasSilkTouch) {
 			tool.enchant(net.minecraft.world.item.enchantment.Enchantments.SILK_TOUCH, 1);
 		}
 		return tool;
 	}
 
+
 	private boolean hasLiquidRemover() {
-		return inventory.getStackInSlot(2).is(cz.maxtechnik.dif.init.basic.DifModItems.LIQUID_REMOVER.get());
+		return hasLiquidRemover;
 	}
+
+    private boolean shouldSkipViaFilter(BlockState state) {
+        ItemStack filter = inventory.getStackInSlot(2);
+        if (filter.isEmpty()) return false;
+        
+        net.minecraft.world.item.Item item = state.getBlock().asItem();
+        if (item == net.minecraft.world.item.Items.AIR) return false;
+
+        net.minecraft.nbt.CompoundTag tag = filter.getOrCreateTag();
+        net.minecraft.nbt.ListTag list = null;
+        if (tag.contains("Items")) list = tag.getList("Items", 10);
+        else if (tag.contains("FilterItems")) list = tag.getList("FilterItems", 10);
+        
+        if (list == null) return false;
+
+        for (int i = 0; i < list.size(); i++) {
+            ItemStack s = ItemStack.of(list.getCompound(i));
+            if (s.getItem() == item) return true;
+        }
+        return false;
+    }
 
 	public QuarryBlockEntity(BlockPos pos, BlockState state) {
 		super(DifModBlockEntities.QUARRY.get(), pos, state);
@@ -225,30 +283,53 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 		if (level.isClientSide) return;
 
 		be.tickCounter++;
-		if (be.tickCounter >= 20) {
-			be.lastEnergyInput = be.energyInputAccumulator / 20;
-			be.energyInputAccumulator = 0;
-			be.lastEnergyOutput = be.energyOutputAccumulator / 20;
-			be.energyOutputAccumulator = 0;
+		if (be.tickCounter >= 10) {
 			be.tickCounter = 0;
+
+			// Sync stats pro GUI (průměr za 10 ticků)
+			be.lastEnergyInput = be.energyInputAccumulator / 10;
+			be.energyInputAccumulator = 0;
+			be.lastEnergyOutput = be.energyOutputAccumulator / 10;
+			be.energyOutputAccumulator = 0;
+
+			// Výpočet a stržení energie na dalších 10 ticků práce
+			int totalEngineFe = be.getTotalFECost() * 10;
+			
+			// Pokud stroj běží a má nějaký odběr, zkusíme strhnout FE
+			if (be.quarryState != State.DONE && be.quarryState != State.NO_ENERGY) {
+				if (be.energy.getEnergyStored() >= totalEngineFe) {
+					be.energy.extractEnergy(totalEngineFe, false);
+					be.has10TickEnergy = true;
+				} else {
+					be.has10TickEnergy = false;
+					be.activeState = be.quarryState;
+					be.quarryState = State.NO_ENERGY;
+					be.sync(level, pos, state);
+				}
+			} else if (be.quarryState == State.NO_ENERGY) {
+				// Pokus o restart z NO_ENERGY
+				if (be.energy.getEnergyStored() >= totalEngineFe) {
+					be.energy.extractEnergy(totalEngineFe, false);
+					be.has10TickEnergy = true;
+					be.quarryState = be.activeState;
+					be.sync(level, pos, state);
+				}
+			} else {
+				be.has10TickEnergy = true; // Pro DONE nepotřebujeme energii
+			}
 		}
 
 		// Obnovení adj cache
 		if (++be.adjCacheTimer >= ADJ_CACHE_INTERVAL) { be.adjCacheTimer = 0; be.adjHandlers = null; }
 
-		boolean hasEnergy = be.energy.getEnergyStored() > 0;
-
-		if (!hasEnergy) {
-			if (be.quarryState != State.NO_ENERGY) { be.quarryState = State.NO_ENERGY; be.sync(level, pos, state); }
-			return;
-		}
+		// Pokud nemáme zaplaceno na tento cyklus (10 ticků), stroj stojí
+		if (!be.has10TickEnergy && be.quarryState != State.DONE) return;
 
 		switch (be.quarryState) {
-			case NO_ENERGY      -> be.startClearing(level, state, pos);
 			case CLEARING       -> be.tickClearing(level, pos, state);
 			case BUILDING_FRAME -> be.tickBuildFrame(level, pos, state);
 			case MINING         -> be.tickMine(level, pos, state);
-			case DONE           -> { /* nic */ }
+			case DONE, NO_ENERGY -> { /* nic */ }
 		}
 	}
 
@@ -356,8 +437,11 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 		if (workQueue.isEmpty()) { startClearing(level, bs, pos); return; }
 		int processed = 0;
 
-		// Clearing rychlost odvozujeme od getTotalDPGen() bez vlivu heady (stavi frame/cisti vzduch)
-		int speed = Math.max(1, getTotalDPGen() / 15);
+		float progress = getActiveProgressPerTick();
+		if (progress <= 0) return; // Need head + engine + positive DP
+
+		// Speed scale for clearing/building
+		int speed = Math.max(1, (int)(progress * 10));
 
 		while (workIndex < workQueue.size() && processed < speed) {
 			BlockPos t = workQueue.get(workIndex++);
@@ -387,7 +471,11 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 	private void tickBuildFrame(Level level, BlockPos pos, BlockState bs) {
 		if (workQueue.isEmpty()) { startBuildingFrame(level, bs, pos); return; }
 		int processed = 0;
-		int speed = Math.max(1, getTotalDPGen() / 15);
+		
+		float progress = getActiveProgressPerTick();
+		if (progress <= 0) return;
+
+		int speed = Math.max(1, (int)(progress * 10));
 
 		while (workIndex < workQueue.size() && processed < speed) {
 			BlockPos fPos = workQueue.get(workIndex++);
@@ -418,8 +506,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 			}
 		}
 
-		int activeDP = getActiveDPMod();
-		if (activeDP <= 0) return; // Nemá správnou kombinaci hlavy a enginu
+		float progressStep = getActiveProgressPerTick();
+		if (progressStep <= 0) return; // Nemá správnou kombinaci hlavy a enginu
 		
 		if (miningPos == null) resetMiningArea(bs);
 		if (miningPos == null) return;
@@ -427,7 +515,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 		net.minecraft.world.item.ItemStack simulatedTool = getSimulatedTool();
 		boolean liquidRemover = hasLiquidRemover();
 
-		miningProgressAccumulator += activeDP;
+		miningProgressAccumulator += progressStep;
 
 		while (true) {
 			while (level.isEmptyBlock(miningPos)) {
@@ -440,17 +528,24 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 			// Kapaliny
 			if (!target.getFluidState().isEmpty()) {
 				if (target.getFluidState().isSource() && liquidRemover) {
-					if (miningProgressAccumulator >= 5) { // Trochu DP stojí smáznutí
-						miningProgressAccumulator -= 5;
+					if (miningProgressAccumulator >= 0.1f) {
+						miningProgressAccumulator -= 0.1f;
 						level.removeBlock(miningPos, false);
 					} else {
-						return; // Zkusí dodělat příště tick
+						return; 
 					}
 				}
 				miningProgressAccumulator = 0;
 				if (!advanceMiningPos(bs)) { finishMining(level, pos, bs); return; }
 				continue;
 			}
+
+            // Create Filter Check
+            if (shouldSkipViaFilter(target)) {
+                miningProgressAccumulator = 0;
+                if (!advanceMiningPos(bs)) { finishMining(level, pos, bs); return; }
+                continue;
+            }
 
 			float hardness = target.getDestroySpeed(level, miningPos);
 			if (hardness < 0 && !target.isAir()) {
@@ -468,7 +563,12 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 				if (level instanceof ServerLevel sl) {
 					boolean canMine = !target.requiresCorrectToolForDrops() || simulatedTool.isCorrectToolForDrops(target);
 					if (canMine) {
-						List<net.minecraft.world.item.ItemStack> drops = Block.getDrops(target, sl, miningPos, level.getBlockEntity(miningPos), null, simulatedTool);
+                        net.minecraft.world.level.storage.loot.LootParams.Builder builder = new net.minecraft.world.level.storage.loot.LootParams.Builder(sl)
+                            .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.ORIGIN, net.minecraft.world.phys.Vec3.atCenterOf(miningPos))
+                            .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.TOOL, simulatedTool)
+                            .withOptionalParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.BLOCK_ENTITY, level.getBlockEntity(miningPos));
+                        
+						List<net.minecraft.world.item.ItemStack> drops = target.getDrops(builder);
 						distributeDrops(level, drops);
 					}
 					level.removeBlock(miningPos, false);
@@ -526,6 +626,10 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 
 	public void onQuarryRemoved() {
 		if (level == null || level.isClientSide) return;
+		for (int i = 0; i < inventory.getSlots(); i++) {
+			ItemStack stack = inventory.getStackInSlot(i);
+			if (!stack.isEmpty()) Block.popResource(level, worldPosition, stack);
+		}
 		for (BlockPos fp : computeFramePositions(getBlockState()))
 			if (level.getBlockEntity(fp) instanceof QuarryFrameBlockEntity f
 					&& worldPosition.equals(f.getOwnerPos())) f.scheduleRemoval();
@@ -610,11 +714,11 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
-	@Override public void load(@NotNull CompoundTag tag) {
+	@Override
+	public void load(@NotNull CompoundTag tag) {
 		super.load(tag);
-		if (tag.contains("Inventory")) {
-			inventory.deserializeNBT(tag.getCompound("Inventory"));
-		}
+		if (tag.contains("Inventory")) inventory.deserializeNBT(tag.getCompound("Inventory"));
+		updateCaches();
 		// Energie – workaround: EnergyStorage nemá setter, použijeme receiveEnergy
 		int stored = tag.getInt("Energy");
 		energy.receiveEnergy(stored - energy.getEnergyStored(), false);

@@ -57,44 +57,50 @@ public class QuarryScreen extends AbstractContainerScreen<QuarryMenu> {
 		guiGraphics.drawString(this.font, this.playerInventoryTitle, 8, this.imageHeight - 94, 0x404040, false);
 
 		int state = this.menu.getStateOrdinal();
+		int statusMode = this.menu.getStatusMode();
 		String stateMsg;
 		int stateColor;
 
-		// 0 = NO_ENERGY, 1 = CLEARING, 2 = BUILDING_FRAME, 3 = MINING, 4 = DONE
-		if (state == 0) {
+		if (state == 0) { // NO_ENERGY
 			stateMsg = "Out of Energy!";
 			stateColor = 0xFF5555; // Red
-		} else if (state == 4) {
-			stateMsg = "Finished (Dotěženo)";
+		} else if (state == 4) { // DONE
+			stateMsg = "Finished";
 			stateColor = 0xFFFF55; // Yellow
-		} else {
-			if (this.menu.hasNoEngine()) {
-                stateMsg = "Missing Engine!"; // Rychlost = 0
-                stateColor = 0xFF5555; // Red
-            } else {
-                stateMsg = "Active";
-                stateColor = 0x55FF55; // Lime
-            }
+		} else if (statusMode == 1) {
+            stateMsg = "Missing Engine!"; 
+            stateColor = 0xFF5555; // Red
+        } else if (statusMode == 2) {
+            stateMsg = "Missing Drill Head!";
+            stateColor = 0xFF5555; // Red
+        } else if (statusMode == 3) {
+            stateMsg = "Low Drill Power!";
+            stateColor = 0xFF5555; // Red
+        } else {
+            stateMsg = "Active";
+            stateColor = 0x55FF55; // Lime
 		}
 
 		int textX = 34;
 		guiGraphics.drawString(this.font, stateMsg, textX, 21, stateColor, false);
 
-		// Rozměry
+		// Dimensions
 		int areaX = this.menu.getAreaX();
 		int areaZ = this.menu.getAreaZ();
 		guiGraphics.drawString(this.font, "Area: " + areaX + " x " + areaZ, textX, 33, 0xFFFFFF, false);
 
-		// Statistiky
-		int speed = this.menu.getSpeed();
+		// Stats
+		int speedVal = this.menu.getSpeed(); 
 		int in = this.menu.getFEInput();
-		int out = this.menu.getFEOutput(); // Spotřeba za 10 ticků (nyní per tick ekvivalent)
+		int out = this.menu.getFEOutput(); 
 
 		if (stateMsg.equals("Active") || stateMsg.equals("Out of Energy!")) {
-			guiGraphics.drawString(this.font, "Active DP: " + speed, textX, 45, 0xFFFFFF, false);
-			guiGraphics.drawString(this.font, "Input: " + in + " FE/t", textX, 57, 0xFFFFFF, false);
-            guiGraphics.drawString(this.font, "Output (Avg): " + out + " FE/t", 100, 57, 0xFFFFFF, false);
+			guiGraphics.drawString(this.font, "Power: " + speedVal + "%", textX, 45, 0xFFFFFF, false);
+			guiGraphics.drawString(this.font, "In " + in + " FE", textX, 57, 0xFFFFFF, false);
+            guiGraphics.drawString(this.font, "Out " + out + " FE", 100, 57, 0xFFFFFF, false);
 		}
+
+
 
 	}
 }
