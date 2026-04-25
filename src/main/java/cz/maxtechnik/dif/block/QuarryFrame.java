@@ -91,11 +91,12 @@ public class QuarryFrame extends BaseEntityBlock{
 		if(state.getValue(DOWN)) shape=Shapes.or(shape,DOWN_SHAPE);
 		return shape;
 	}
-	@Nullable @Override
+	@Nullable
+	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
-			@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
-		return level.isClientSide ? null
-				: createTickerHelper(type, DifModBlockEntities.QUARRY_FRAME.get(),
-				(l, p, s, be) -> QuarryFrameBlockEntity.tick(l, p, be));
+			@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T> type){
+		return level.isClientSide?null
+				:createTickerHelper(type,DifModBlockEntities.QUARRY_FRAME.get(),
+				(l,p,s,be)->QuarryFrameBlockEntity.tick(l,p,be));
 	}
 }
