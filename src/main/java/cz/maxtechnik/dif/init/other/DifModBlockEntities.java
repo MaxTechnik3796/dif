@@ -35,6 +35,7 @@ public class DifModBlockEntities{
 
 	public static final RegistryObject<BlockEntityType<QuarryBlockEntity>>QUARRY=REGISTRY.register("quarry",()->BlockEntityType.Builder.of(QuarryBlockEntity::new,DifModBlocks.QUARRY.get()).build(null));
 	public static final RegistryObject<BlockEntityType<QuarryFrameBlockEntity>>QUARRY_FRAME=REGISTRY.register("quarry_frame",()->BlockEntityType.Builder.of(QuarryFrameBlockEntity::new,DifModBlocks.QUARRY_FRAME.get()).build(null));
+	public static final RegistryObject<BlockEntityType<QuarryLandmarkBlockEntity>>QUARRY_LANDMARK=REGISTRY.register("quarry_landmark",()->BlockEntityType.Builder.of(QuarryLandmarkBlockEntity::new,DifModBlocks.QUARRY_LANDMARK.get()).build(null));
 
 	public static final RegistryObject<BlockEntityType<BrassLargeWaterWheelBlockEntity>> BRASS_LARGE_WATER_WHEEL = REGISTRY.register("brass_large_water_wheel", () -> BlockEntityType.Builder.of(BrassLargeWaterWheelBlockEntity::new, DifModBlocks.BRASS_LARGE_WATER_WHEEL.get()).build(null));
 	public static final RegistryObject<BlockEntityType<cz.maxtechnik.dif.block.entity.BrassWaterWheelBlockEntity>> BRASS_WATER_WHEEL = REGISTRY.register("brass_water_wheel", () -> BlockEntityType.Builder.of(cz.maxtechnik.dif.block.entity.BrassWaterWheelBlockEntity::new, DifModBlocks.BRASS_WATER_WHEEL.get()).build(null));

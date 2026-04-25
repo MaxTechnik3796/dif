@@ -47,11 +47,7 @@ public class QuarryFrame extends BaseEntityBlock{
 	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
 		return new QuarryFrameBlockEntity(pos,state);
 	}
-	@Nullable
-	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level world,@NotNull BlockState blockState,@NotNull BlockEntityType<T> type){
-		return world.isClientSide?null:createTickerHelper(type,DifModBlockEntities.QUARRY_FRAME.get(),(level,pos,state,blockEntity)->QuarryFrameBlockEntity.tick(level,pos,blockEntity));
-	}
+
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
 		builder.add(NORTH,EAST,SOUTH,WEST,UP,DOWN);
@@ -94,5 +90,12 @@ public class QuarryFrame extends BaseEntityBlock{
 		if(state.getValue(UP)) shape=Shapes.or(shape,UP_SHAPE);
 		if(state.getValue(DOWN)) shape=Shapes.or(shape,DOWN_SHAPE);
 		return shape;
+	}
+	@Nullable @Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+			@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
+		return level.isClientSide ? null
+				: createTickerHelper(type, DifModBlockEntities.QUARRY_FRAME.get(),
+				(l, p, s, be) -> QuarryFrameBlockEntity.tick(l, p, be));
 	}
 }

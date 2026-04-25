@@ -23,6 +23,8 @@ public class DifModMenus<T extends AbstractContainerMenu> implements FeatureElem
 	public static final RegistryObject<MenuType<SpecialCraftingMenu>> SPECIAL_CRAFTING=REGISTRY.register("special_crafting",()->IForgeMenuType.create(SpecialCraftingMenu::new));
 	public static final RegistryObject<MenuType<SpaceshipMenu>> SPACESHIP=REGISTRY.register("spaceship",()->IForgeMenuType.create(SpaceshipMenu::new));
 	public static final RegistryObject<MenuType<MegaBackpackMenu>> MEGA_BACKPACK = REGISTRY.register("mega_backpack",() -> IForgeMenuType.create(MegaBackpackMenu::new));
+	public static final RegistryObject<MenuType<cz.maxtechnik.dif.gui.menu.QuarryMenu>> QUARRY=REGISTRY.register("quarry",()->IForgeMenuType.create(cz.maxtechnik.dif.gui.menu.QuarryMenu::new));
+
 
 
 

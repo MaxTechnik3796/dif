@@ -263,6 +263,13 @@
 	"block.dif.brass_water_wheel":"Brass Water Wheel",
 	"block.dif.brass_mechanical_press":"Brass Mechanical Press",
 	"block.dif.brass_mechanical_mixer":"Brass Mechanical Mixer",
+	"item.dif.stone_drill_head": "Stone Drill Head",
+	"item.dif.iron_drill_head": "Iron Drill Head",
+	"item.dif.diamond_drill_head": "Diamond Drill Head",
+	"item.dif.iron_engine": "Iron Engine",
+	"item.dif.gold_engine": "Gold Engine",
+	"item.dif.diamond_engine": "Diamond Engine",
+	"item.dif.liquid_remover": "Liquid Remover",
 	"biome.dif.moon_plains":"Moon Plains",
 	"biome.dif.orbit_void":"Space"
 }
