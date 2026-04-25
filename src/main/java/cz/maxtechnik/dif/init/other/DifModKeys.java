@@ -92,7 +92,8 @@ public class DifModKeys {
 					cz.maxtechnik.dif.init.events.client.VehicleCameraHandler.vehicleCameraLocked = !cz.maxtechnik.dif.init.events.client.VehicleCameraHandler.vehicleCameraLocked;
 				}
 				while (MEGA_BACKPACK_KEY.consumeClick()) {
-					DifMod.PACKET_HANDLER.sendToServer(new MegaBackpackOpenPacket(0, 0));
+					//Only Creative (TEMP)
+					if(player.getAbilities().instabuild) DifMod.PACKET_HANDLER.sendToServer(new MegaBackpackOpenPacket(0, 0));
 				}
 			}
 		}
