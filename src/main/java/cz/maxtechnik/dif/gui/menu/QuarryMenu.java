@@ -94,6 +94,7 @@ public class QuarryMenu extends AbstractContainerMenu {
 	public int getFEInput()        { return this.data.get(3); }
 	public int getAreaX()          { return this.data.get(4); }
 	public int getAreaZ()          { return this.data.get(5); }
+	public boolean hasNoEngine()   { return this.data.get(6) == 1; }
 
 	@Override
 	public @NotNull ItemStack quickMoveStack(@NotNull Player player, int index) {

@@ -68,8 +68,13 @@ public class QuarryScreen extends AbstractContainerScreen<QuarryMenu> {
 			stateMsg = "Finished (Dotěženo)";
 			stateColor = 0xFFFF55; // Yellow
 		} else {
-			stateMsg = "Active";
-			stateColor = 0x55FF55; // Lime
+			if (this.menu.hasNoEngine()) {
+                stateMsg = "Missing Engine!";
+                stateColor = 0xFF5555; // Red
+            } else {
+                stateMsg = "Active";
+                stateColor = 0x55FF55; // Lime
+            }
 		}
 
 		int textX = 34;

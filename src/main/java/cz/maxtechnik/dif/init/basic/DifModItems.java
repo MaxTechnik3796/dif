@@ -37,6 +37,15 @@ public class DifModItems{
 	public static final RegistryObject<Item>QUARRY=block(DifModBlocks.QUARRY);
 	public static final RegistryObject<Item>QUARRY_FRAME=block(DifModBlocks.QUARRY_FRAME);
 	public static final RegistryObject<Item>QUARRY_LANDMARK=block(DifModBlocks.QUARRY_LANDMARK);
+	
+	// Quarry Upgrades & Components
+	public static final RegistryObject<Item> STONE_DRILL_HEAD = REGISTRY.register("stone_drill_head", Basic::new);
+	public static final RegistryObject<Item> IRON_DRILL_HEAD = REGISTRY.register("iron_drill_head", Basic::new);
+	public static final RegistryObject<Item> DIAMOND_DRILL_HEAD = REGISTRY.register("diamond_drill_head", Basic::new);
+	public static final RegistryObject<Item> IRON_ENGINE = REGISTRY.register("iron_engine", Basic::new);
+	public static final RegistryObject<Item> GOLD_ENGINE = REGISTRY.register("gold_engine", Basic::new);
+	public static final RegistryObject<Item> DIAMOND_ENGINE = REGISTRY.register("diamond_engine", Basic::new);
+	public static final RegistryObject<Item> LIQUID_REMOVER = REGISTRY.register("liquid_remover", Basic::new);
 
 	public static final RegistryObject<Item> BRASS_LARGE_WATER_WHEEL = block(DifModBlocks.BRASS_LARGE_WATER_WHEEL);
 	public static final RegistryObject<Item> BRASS_WATER_WHEEL = block(DifModBlocks.BRASS_WATER_WHEEL);
