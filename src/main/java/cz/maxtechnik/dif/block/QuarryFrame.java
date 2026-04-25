@@ -7,7 +7,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -22,6 +21,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("deprecation")
 public class QuarryFrame extends BaseEntityBlock{
+	private static final VoxelShape CORE_SHAPE=Block.box(4,4,4,12,12,12);
+	private static final VoxelShape NORTH_SHAPE=Block.box(4,4,0,12,12,4);
+	private static final VoxelShape SOUTH_SHAPE=Block.box(4,4,12,12,12,16);
+	private static final VoxelShape EAST_SHAPE=Block.box(12,4,4,16,12,12);
+	private static final VoxelShape WEST_SHAPE=Block.box(0,4,4,4,12,12);
+	private static final VoxelShape UP_SHAPE=Block.box(4,12,4,12,16,12);
+	private static final VoxelShape DOWN_SHAPE=Block.box(4,0,4,12,4,12);
 	public static final BooleanProperty NORTH=BooleanProperty.create("north");
 	public static final BooleanProperty EAST=BooleanProperty.create("east");
 	public static final BooleanProperty SOUTH=BooleanProperty.create("south");
@@ -29,7 +35,7 @@ public class QuarryFrame extends BaseEntityBlock{
 	public static final BooleanProperty UP=BooleanProperty.create("up");
 	public static final BooleanProperty DOWN=BooleanProperty.create("down");
 	public QuarryFrame(){
-		super(Properties.of().strength(1F,1F).noLootTable().noOcclusion().sound(SoundType.METAL));
+		super(Properties.of().strength(0.2F,0.8F).noLootTable().noOcclusion().sound(SoundType.METAL));
 		this.registerDefaultState(this.stateDefinition.any().setValue(NORTH,false).setValue(EAST,false).setValue(SOUTH,false).setValue(WEST,false).setValue(UP,false).setValue(DOWN,false));
 	}
 	@Override
@@ -43,8 +49,8 @@ public class QuarryFrame extends BaseEntityBlock{
 	}
 	@Nullable
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T> type){
-		return level.isClientSide?null:createTickerHelper(type,DifModBlockEntities.QUARRY_FRAME.get(),(level1,pos,state1,be)->QuarryFrameBlockEntity.tick(level1,pos,be));
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level world,@NotNull BlockState blockState,@NotNull BlockEntityType<T> type){
+		return world.isClientSide?null:createTickerHelper(type,DifModBlockEntities.QUARRY_FRAME.get(),(level,pos,state,blockEntity)->QuarryFrameBlockEntity.tick(level,pos,blockEntity));
 	}
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
@@ -59,23 +65,34 @@ public class QuarryFrame extends BaseEntityBlock{
 		return Shapes.empty();
 	}
 	@Override
-	public boolean skipRendering(@NotNull BlockState state,BlockState adjacentBlockState,@NotNull Direction side){
-		return adjacentBlockState.getBlock()==this||super.skipRendering(state,adjacentBlockState,side);
+	public boolean skipRendering(@NotNull BlockState blockState,BlockState adjacentBlockState,@NotNull Direction side){
+		return adjacentBlockState.getBlock()==this||super.skipRendering(blockState,adjacentBlockState,side);
 	}
 	@Override
-	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
+	public int getLightBlock(@NotNull BlockState blockState,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
 		return 0;
 	}
 	@Override
-	public @NotNull BlockState updateShape(@NotNull BlockState state,Direction direction,BlockState neighborState,@NotNull LevelAccessor world,@NotNull BlockPos pos,@NotNull BlockPos neighborPos){
-		boolean shouldConnect=neighborState.is(this)||neighborState.is(DifModBlocks.QUARRY.get());
-		return switch(direction){
-			case NORTH -> state.setValue(NORTH,shouldConnect);
-			case SOUTH -> state.setValue(SOUTH,shouldConnect);
-			case WEST -> state.setValue(WEST,shouldConnect);
-			case EAST -> state.setValue(EAST,shouldConnect);
-			case UP -> state.setValue(UP,shouldConnect);
-			case DOWN -> state.setValue(DOWN,shouldConnect);
-		};
+	public void neighborChanged(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Block neighborBlock,@NotNull BlockPos fromPos,boolean moving){
+		super.neighborChanged(blockState,world,pos,neighborBlock,fromPos,moving);
+		BlockState newState=blockState
+				.setValue(NORTH,world.getBlockState(pos.north()).getBlock().equals(this)||world.getBlockState(pos.north()).getBlock().equals(DifModBlocks.QUARRY.get()))
+				.setValue(EAST,world.getBlockState(pos.east()).getBlock().equals(this)||world.getBlockState(pos.east()).getBlock().equals(DifModBlocks.QUARRY.get()))
+				.setValue(SOUTH,world.getBlockState(pos.south()).getBlock().equals(this)||world.getBlockState(pos.south()).getBlock().equals(DifModBlocks.QUARRY.get()))
+				.setValue(WEST,world.getBlockState(pos.west()).getBlock().equals(this)||world.getBlockState(pos.west()).getBlock().equals(DifModBlocks.QUARRY.get()))
+				.setValue(UP,world.getBlockState(pos.above()).getBlock().equals(this)||world.getBlockState(pos.above()).getBlock().equals(DifModBlocks.QUARRY.get()))
+				.setValue(DOWN,world.getBlockState(pos.below()).getBlock().equals(this)||world.getBlockState(pos.below()).getBlock().equals(DifModBlocks.QUARRY.get()));
+		if(newState!=blockState) world.setBlock(pos,newState,3);
+	}
+	@Override
+	public @NotNull VoxelShape getShape(BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
+		VoxelShape shape=CORE_SHAPE;
+		if(state.getValue(NORTH)) shape=Shapes.or(shape,NORTH_SHAPE);
+		if(state.getValue(SOUTH)) shape=Shapes.or(shape,SOUTH_SHAPE);
+		if(state.getValue(EAST)) shape=Shapes.or(shape,EAST_SHAPE);
+		if(state.getValue(WEST)) shape=Shapes.or(shape,WEST_SHAPE);
+		if(state.getValue(UP)) shape=Shapes.or(shape,UP_SHAPE);
+		if(state.getValue(DOWN)) shape=Shapes.or(shape,DOWN_SHAPE);
+		return shape;
 	}
 }
