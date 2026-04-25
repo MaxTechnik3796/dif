@@ -30,6 +30,8 @@
 		"dif:remote_minecart_block",
 		"dif:camera",
 		"dif:camera_monitor",
-		"dif:quarry"
+		"dif:quarry",
+		"dif:aurora_casing",
+		"#dif:space_industrial_blocks"
 	]
 }
