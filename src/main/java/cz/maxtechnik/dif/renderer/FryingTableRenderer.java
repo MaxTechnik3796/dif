@@ -12,7 +12,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.NotNull;
 public class FryingTableRenderer implements BlockEntityRenderer<FryingTableBlockEntity>{
-	public FryingTableRenderer(){}
+	public FryingTableRenderer(){
+	}
 	@Override
 	public void render(FryingTableBlockEntity blockEntity,float partialTick,@NotNull PoseStack poseStack,@NotNull MultiBufferSource buffer,int combinedLight,int combinedOverlay){
 		blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler->{

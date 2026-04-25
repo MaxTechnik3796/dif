@@ -14,35 +14,29 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
-
-public class BrassMechanicalMixerRenderer extends MechanicalMixerRenderer {
-    public BrassMechanicalMixerRenderer(BlockEntityRendererProvider.Context context) {
-        super(context);
-    }
-
-    @Override
-    protected void renderSafe(MechanicalMixerBlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
-        BlockState blockState = be.getBlockState();
-        VertexConsumer vb = buffer.getBuffer(RenderType.solid());
-
-        SuperByteBuffer superBuffer = CachedBuffers.partial(AllPartialModels.SHAFTLESS_COGWHEEL, blockState);
-        standardKineticRotationTransform(superBuffer, be, light).renderInto(ms, vb);
-
-        float renderedHeadOffset = be.getRenderedHeadOffset(partialTicks);
-        float speed = be.getRenderedHeadRotationSpeed(partialTicks);
-        float time = AnimationTickHolder.getRenderTime(be.getLevel());
-        float angle = ((time * speed * 6 / 10f) % 360) / 180 * (float) Math.PI;
-
-        SuperByteBuffer poleRender = CachedBuffers.partial(DifMod.ClientModEvents.BRASS_MIXER_POLE, blockState);
-        poleRender.translate(0, -renderedHeadOffset, 0)
-                .light(light)
-                .renderInto(ms, vb);
-
-        VertexConsumer vbCutout = buffer.getBuffer(RenderType.cutoutMipped());
-        SuperByteBuffer headRender = CachedBuffers.partial(DifMod.ClientModEvents.BRASS_MIXER_HEAD, blockState);
-        headRender.rotateCentered(angle, Direction.UP)
-                .translate(0, -renderedHeadOffset, 0)
-                .light(light)
-                .renderInto(ms, vbCutout);
-    }
+public class BrassMechanicalMixerRenderer extends MechanicalMixerRenderer{
+	public BrassMechanicalMixerRenderer(BlockEntityRendererProvider.Context context){
+		super(context);
+	}
+	@Override
+	protected void renderSafe(MechanicalMixerBlockEntity be,float partialTicks,PoseStack ms,MultiBufferSource buffer,int light,int overlay){
+		BlockState blockState=be.getBlockState();
+		VertexConsumer vb=buffer.getBuffer(RenderType.solid());
+		SuperByteBuffer superBuffer=CachedBuffers.partial(AllPartialModels.SHAFTLESS_COGWHEEL,blockState);
+		standardKineticRotationTransform(superBuffer,be,light).renderInto(ms,vb);
+		float renderedHeadOffset=be.getRenderedHeadOffset(partialTicks);
+		float speed=be.getRenderedHeadRotationSpeed(partialTicks);
+		float time=AnimationTickHolder.getRenderTime(be.getLevel());
+		float angle=((time*speed*6/10f)%360)/180*(float)Math.PI;
+		SuperByteBuffer poleRender=CachedBuffers.partial(DifMod.ClientModEvents.BRASS_MIXER_POLE,blockState);
+		poleRender.translate(0,-renderedHeadOffset,0)
+				.light(light)
+				.renderInto(ms,vb);
+		VertexConsumer vbCutout=buffer.getBuffer(RenderType.cutoutMipped());
+		SuperByteBuffer headRender=CachedBuffers.partial(DifMod.ClientModEvents.BRASS_MIXER_HEAD,blockState);
+		headRender.rotateCentered(angle,Direction.UP)
+				.translate(0,-renderedHeadOffset,0)
+				.light(light)
+				.renderInto(ms,vbCutout);
+	}
 }
