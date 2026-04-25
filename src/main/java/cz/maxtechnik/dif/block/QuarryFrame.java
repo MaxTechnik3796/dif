@@ -47,7 +47,6 @@ public class QuarryFrame extends BaseEntityBlock{
 	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
 		return new QuarryFrameBlockEntity(pos,state);
 	}
-
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
 		builder.add(NORTH,EAST,SOUTH,WEST,UP,DOWN);
