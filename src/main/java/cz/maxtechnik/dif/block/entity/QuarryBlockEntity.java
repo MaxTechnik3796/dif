@@ -79,6 +79,7 @@ public class QuarryBlockEntity extends BlockEntity {
 	// Uloženo jako offset od worldPosition (pro snadnou serializaci).
 	private int customHalfX = -1; // -1 = neaktivní (použije DEFAULT_RANGE)
 	private int customHalfZ = -1;
+	private BlockPos customCenter = null;
 
 	// ── Cache ──────────────────────────────────────────────────────────────────
 	private List<BlockPos>  cachedFramePos  = null;
@@ -135,12 +136,16 @@ public class QuarryBlockEntity extends BlockEntity {
 	private int halfZ() { return customHalfZ > 0 ? customHalfZ : DEFAULT_RANGE; }
 
 	/** Nastaví oblast z landmarků a invaliduje cache. */
-	public void setLandmarkArea(int halfX, int halfZ) {
+	public void setLandmarkArea(int halfX, int halfZ, BlockPos center) {
 		// Minimum 1×1 těžící oblast → frame musí být o 2 bloky větší (stěny)
 		this.customHalfX = Math.max(2, Math.min(halfX, MAX_AREA_SIDE / 2));
 		this.customHalfZ = Math.max(2, Math.min(halfZ, MAX_AREA_SIDE / 2));
+		this.customCenter = center;
 		invalidateCache();
 		setChanged();
+		if (level != null && !level.isClientSide) {
+			level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+		}
 	}
 
 	private void invalidateCache() {
@@ -159,8 +164,14 @@ public class QuarryBlockEntity extends BlockEntity {
 			cachedFacing = facing;
 			cachedHalfX  = hx;
 			cachedHalfZ  = hz;
-			// Střed těžící oblasti leží (hx+1) bloků před quarry (ve směru facing.getOpposite())
-			cachedCenter = worldPosition.relative(facing.getOpposite(), hx + 1);
+			
+			if (customCenter != null) {
+				cachedCenter = customCenter;
+			} else {
+				// Střed těžící oblasti leží (hx+1) bloků před quarry (ve směru facing.getOpposite())
+				cachedCenter = worldPosition.relative(facing.getOpposite(), hx + 1);
+			}
+			
 			cachedFramePos = buildFramePositions(cachedCenter, hx, hz);
 		}
 		return cachedFramePos;
@@ -415,6 +426,15 @@ public class QuarryBlockEntity extends BlockEntity {
 			tag.putInt("MineY", miningPos.getY());
 			tag.putInt("MineZ", miningPos.getZ());
 		}
+		if (customHalfX > 0) {
+			tag.putInt("LmHX", customHalfX);
+			tag.putInt("LmHZ", customHalfZ);
+		}
+		if (customCenter != null) {
+			tag.putInt("LmCX", customCenter.getX());
+			tag.putInt("LmCY", customCenter.getY());
+			tag.putInt("LmCZ", customCenter.getZ());
+		}
 		return tag;
 	}
 
@@ -436,6 +456,11 @@ public class QuarryBlockEntity extends BlockEntity {
 
 		workIndex = tag.getInt("WI");
 		if (tag.contains("LmHX")) { customHalfX = tag.getInt("LmHX"); customHalfZ = tag.getInt("LmHZ"); }
+		if (tag.contains("LmCX")) {
+			customCenter = new BlockPos(tag.getInt("LmCX"), tag.getInt("LmCY"), tag.getInt("LmCZ"));
+		} else {
+			customCenter = null;
+		}
 	}
 
 	@Override protected void saveAdditional(@NotNull CompoundTag tag) {
@@ -449,6 +474,11 @@ public class QuarryBlockEntity extends BlockEntity {
 			tag.putInt("MineZ", miningPos.getZ());
 		}
 		if (customHalfX > 0) { tag.putInt("LmHX", customHalfX); tag.putInt("LmHZ", customHalfZ); }
+		if (customCenter != null) {
+			tag.putInt("LmCX", customCenter.getX());
+			tag.putInt("LmCY", customCenter.getY());
+			tag.putInt("LmCZ", customCenter.getZ());
+		}
 	}
 
 	// ══════════════════════════════════════════════════════════════════════════

@@ -193,7 +193,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity {
                     if (!level.getBlockState(qp).is(DifModBlocks.QUARRY.get())) continue;
                     if (!(level.getBlockEntity(qp) instanceof QuarryBlockEntity qbe)) continue;
 
-                    qbe.setLandmarkArea(result.halfX, result.halfZ);
+                    qbe.setLandmarkArea(result.halfX, result.halfZ, result.center);
                     for (BlockPos lm : all) {
                         net.minecraft.world.level.block.Block.popResource(level, lm,
                                 new net.minecraft.world.item.ItemStack(
@@ -223,7 +223,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity {
         if (!formed || formedCenter == null) return;
         if (!(level.getBlockEntity(quarryPos) instanceof QuarryBlockEntity qbe)) return;
 
-        qbe.setLandmarkArea(formedHalfX, formedHalfZ);
+        qbe.setLandmarkArea(formedHalfX, formedHalfZ, formedCenter);
 
         // Zruš všechny landmarky skupiny
         List<BlockPos> all = new ArrayList<>(partners);
