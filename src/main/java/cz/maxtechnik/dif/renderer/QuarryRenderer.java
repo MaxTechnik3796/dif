@@ -11,31 +11,69 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 
 public class QuarryRenderer implements BlockEntityRenderer<QuarryBlockEntity> {
+
 	@Override
-	public void render(QuarryBlockEntity be, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-		BlockPos mPos = be.getMiningPos();
-		if (mPos == null) return;
+	public void render(QuarryBlockEntity be, float pt, @NotNull PoseStack ps,
+	                   @NotNull MultiBufferSource buf, int light, int overlay) {
+		QuarryBlockEntity.State state = be.getQuarryState();
+		if (state == QuarryBlockEntity.State.NO_ENERGY || state == QuarryBlockEntity.State.DONE) return;
 
-		poseStack.pushPose();
+		BlockPos qp = be.getBlockPos(), center = be.getAreaCenter();
+		int range = be.getRange();
+		float cx = center.getX() - qp.getX(), cz = center.getZ() - qp.getZ();
+		float x0 = cx - range + .5f, x1 = cx + range + .5f;
+		float z0 = cz - range + .5f, z1 = cz + range + .5f;
 
-		// Relativní pozice k bloku Quarry (v metrech/blocích)
-		double dx = mPos.getX() - be.getBlockPos().getX() + 0.5;
-		double dz = mPos.getZ() - be.getBlockPos().getZ() + 0.5;
-		double dy = mPos.getY() - be.getBlockPos().getY();
+		ps.pushPose();
+		Matrix4f m = ps.last().pose();
 
-		poseStack.translate(dx, 0, dz);
+		// Žlutý obrys oblasti – viditelný dokud není frame postaven (CLEARING + BUILDING_FRAME)
+		if (state == QuarryBlockEntity.State.CLEARING || state == QuarryBlockEntity.State.BUILDING_FRAME) {
+			VertexConsumer vc = buf.getBuffer(RenderType.lines());
+			for (float y : new float[]{0f, 3f}) {
+				rect(m, vc, x0, y, z0, x1, z1);
+			}
+			pillar(m, vc, x0, z0); pillar(m, vc, x1, z0);
+			pillar(m, vc, x0, z1); pillar(m, vc, x1, z1);
+		}
 
-		// Použijeme tlustší čáru pro vrták
-		VertexConsumer drillBuilder = buffer.getBuffer(RenderType.debugLineStrip(6.0));
-		Matrix4f matrix = poseStack.last().pose();
+		// Vrták – bílá čára od vrcholu frame dolů na aktuální pozici těžby
+		if (state == QuarryBlockEntity.State.MINING) {
+			BlockPos mp = be.getMiningPos();
+			if (mp != null) {
+				VertexConsumer drill = buf.getBuffer(RenderType.lines());
+				float dx = mp.getX() - qp.getX() + .5f, dz = mp.getZ() - qp.getZ() + .5f;
+				float dy = mp.getY() - qp.getY();
+				line(m, drill, dx, 3f, dz, dx, dy, dz, 255, 255, 255, 200);
+			}
+		}
 
-		// Začátek vrtáku (v úrovni horního rámu Y+3)
-		float startY = 3.0f;
-
-		// Vykreslíme svislou tyč
-		drillBuilder.vertex(matrix, 0, startY, 0).color(255, 255, 255, 255).endVertex();
-		drillBuilder.vertex(matrix, 0, (float)dy, 0).color(255, 255, 255, 255).endVertex();
-
-		poseStack.popPose();
+		ps.popPose();
 	}
+
+	private void rect(Matrix4f m, VertexConsumer vc, float x0, float y, float z0, float x1, float z1) {
+		line(m, vc, x0, y, z0, x1, y, z0, 255, 200, 0, 255);
+		line(m, vc, x1, y, z0, x1, y, z1, 255, 200, 0, 255);
+		line(m, vc, x1, y, z1, x0, y, z1, 255, 200, 0, 255);
+		line(m, vc, x0, y, z1, x0, y, z0, 255, 200, 0, 255);
+	}
+
+	private void pillar(Matrix4f m, VertexConsumer vc, float x, float z) {
+		line(m, vc, x, 0, z, x, 3, z, 255, 200, 0, 255);
+	}
+
+	private void line(Matrix4f m, VertexConsumer vc,
+	                  float x0, float y0, float z0,
+	                  float x1, float y1, float z1,
+	                  int r, int g, int b, int a) {
+		float dx = x1-x0, dy = y1-y0, dz = z1-z0;
+		float len = (float) Math.sqrt(dx*dx + dy*dy + dz*dz);
+		if (len < 0.001f) return;
+		float nx = dx/len, ny = dy/len, nz = dz/len;
+		vc.vertex(m, x0, y0, z0).color(r, g, b, a).normal(nx, ny, nz).endVertex();
+		vc.vertex(m, x1, y1, z1).color(r, g, b, a).normal(nx, ny, nz).endVertex();
+	}
+
+	@Override public boolean shouldRenderOffScreen(@NotNull QuarryBlockEntity be) { return true; }
+	@Override public int getViewDistance() { return 128; }
 }

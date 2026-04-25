@@ -18,38 +18,39 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 @SuppressWarnings("deprecation")
 public class Quarry extends BaseEntityBlock {
-	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+
+    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+
     public Quarry(Properties properties) {
         super(properties);
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
-    @Override
-    public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
-        return RenderShape.MODEL;
-    }
+    @Override public @NotNull RenderShape getRenderShape(@NotNull BlockState state) { return RenderShape.MODEL; }
 
-    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state) {
+    @Nullable @Override public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
         return new QuarryBlockEntity(pos, state);
     }
-	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		builder.add(FACING);
-	}
-	@Nullable
-	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		// Stroj bude koukat směrem od hráče (klasické chování bloků jako Pec)
-		return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
-	}
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T> type) {
-        // Propojíme statickou metodu tick z BlockEntity s tímto blokem
+
+    @Override protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
+    }
+
+    @Nullable @Override public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+        return this.defaultBlockState().setValue(FACING, ctx.getHorizontalDirection().getOpposite());
+    }
+
+    @Override public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean moving) {
+        if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof QuarryBlockEntity q)
+            q.onQuarryRemoved();
+        super.onRemove(state, level, pos, newState, moving);
+    }
+
+    @Nullable @Override public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+            @NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
         return createTickerHelper(type, DifModBlockEntities.QUARRY.get(), QuarryBlockEntity::tick);
     }
 }
