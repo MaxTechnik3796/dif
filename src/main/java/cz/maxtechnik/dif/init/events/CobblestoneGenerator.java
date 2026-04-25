@@ -5,7 +5,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-@Mod.EventBusSubscriber(modid=DifMod.MODID,bus=Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid=DifMod.MODID, bus=Mod.EventBusSubscriber.Bus.FORGE)
 public class CobblestoneGenerator{
 	@SubscribeEvent
 	public static void cobbleGeneratorEvent(BlockEvent.FluidPlaceBlockEvent event){

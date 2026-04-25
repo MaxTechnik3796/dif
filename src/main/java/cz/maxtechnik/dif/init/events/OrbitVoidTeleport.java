@@ -29,7 +29,8 @@ public class OrbitVoidTeleport{
 				entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS,100,0,true,false));
 				entity.setSecondsOnFire(10);
 				entity.fallDistance=0;
-				if(entity instanceof ServerPlayer serverPlayer)serverPlayer.displayClientMessage(Component.literal("§6You are falling back to Overworld!"),true);
+				if(entity instanceof ServerPlayer serverPlayer)
+					serverPlayer.displayClientMessage(Component.literal("§6You are falling back to Overworld!"),true);
 			}
 		}
 	}

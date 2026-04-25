@@ -24,9 +24,9 @@ public class JetpackHandler{
 		int thrust=Jetpack.Chestplate.getThrustFuel(chest);
 		boolean turbo=Jetpack.Chestplate.getTurbo(chest);
 		// 1. REFUEL
-		if(main<=0&&!player.level().isClientSide())handleRefuel(player,chest);
+		if(main<=0&&!player.level().isClientSide()) handleRefuel(player,chest);
 		// 2. RECHARGE ON GROUND
-		if(player.onGround())handleCharging(player,chest,main,thrust,turbo);
+		if(player.onGround()) handleCharging(player,chest,main,thrust,turbo);
 	}
 	private static void handleRefuel(Player player,ItemStack chest){
 		for(int i=0;i<player.getInventory().getContainerSize();i++){
@@ -80,7 +80,7 @@ public class JetpackHandler{
 			if(thrust>0&&!player.getAbilities().flying){
 				player.setDeltaMovement(player.getDeltaMovement().x,0.45,player.getDeltaMovement().z);
 				player.fallDistance=0;
-				if(!player.level().isClientSide())Jetpack.Chestplate.setThrustFuel(chest,thrust-1);
+				if(!player.level().isClientSide()) Jetpack.Chestplate.setThrustFuel(chest,thrust-1);
 				showOverlay(player,thrust-1,false,turbo);
 			}
 		}

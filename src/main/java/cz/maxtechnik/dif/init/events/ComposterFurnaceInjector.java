@@ -10,7 +10,7 @@ import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-@Mod.EventBusSubscriber(modid=DifMod.MODID,bus=Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid=DifMod.MODID, bus=Mod.EventBusSubscriber.Bus.FORGE)
 public class ComposterFurnaceInjector{
 	@SubscribeEvent
 	public static void addComposterItems(FMLCommonSetupEvent event){
@@ -25,6 +25,6 @@ public class ComposterFurnaceInjector{
 	@SubscribeEvent
 	public static void furnaceFuelBurnTimeEvent(FurnaceFuelBurnTimeEvent event){
 		ItemStack itemstack=event.getItemStack();
-		if(itemstack.getItem().equals(Items.PAPER))event.setBurnTime(5);
+		if(itemstack.getItem().equals(Items.PAPER)) event.setBurnTime(5);
 	}
 }

@@ -15,14 +15,15 @@ import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
 import java.awt.Color;
-@Mod.EventBusSubscriber(modid=DifMod.MODID,value=Dist.CLIENT)
+@Mod.EventBusSubscriber(modid=DifMod.MODID, value=Dist.CLIENT)
 public class ClientVisualEffectsRenderer{
 	private static boolean wasWTFActive=false;
 	private static SoundInstance playingWTFSound=null;
 	@SubscribeEvent
 	public static void onClientTick(TickEvent.ClientTickEvent event){
-		if(event.phase!=TickEvent.Phase.START)return;
+		if(event.phase!=TickEvent.Phase.START) return;
 		Minecraft mc=Minecraft.getInstance();
 		Player player=mc.player;
 		if(player==null) return;
@@ -49,7 +50,7 @@ public class ClientVisualEffectsRenderer{
 	public static void onCameraSetup(ViewportEvent.ComputeCameraAngles event){
 		Minecraft mc=Minecraft.getInstance();
 		Player player=mc.player;
-		if(player==null)return;
+		if(player==null) return;
 		if(player.hasEffect(DifModMobEffects.WTF.get())){
 			float t=player.tickCount;
 			float yaw=(t*5F)%360F;
@@ -64,7 +65,7 @@ public class ClientVisualEffectsRenderer{
 	public static void onRenderGuiOverlay(RenderGuiEvent.Post event){
 		Minecraft mc=Minecraft.getInstance();
 		Player player=mc.player;
-		if(player==null)return;
+		if(player==null) return;
 		GuiGraphics gg=event.getGuiGraphics();
 		int w=event.getWindow().getGuiScaledWidth();
 		int h=event.getWindow().getGuiScaledHeight();

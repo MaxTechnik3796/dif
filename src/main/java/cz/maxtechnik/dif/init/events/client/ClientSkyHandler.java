@@ -27,7 +27,9 @@ public class ClientSkyHandler{
 					return Vec3.ZERO;
 				}
 				@Override
-				public boolean isFoggyAt(int x,int z){return false;}
+				public boolean isFoggyAt(int x,int z){
+					return false;
+				}
 			};
 			event.register(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"orbit"),spaceEffects);
 			event.register(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"moon"),spaceEffects);

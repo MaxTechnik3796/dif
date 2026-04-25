@@ -189,10 +189,10 @@ public class ClientCameraHandler{
 		}
 	}
 	@SubscribeEvent
-	public static void onRenderGui(Pre event) {
-		if (isViewing) {
+	public static void onRenderGui(Pre event){
+		if(isViewing){
 			// Pokud to NENÍ zaměřovač, tak to zruš
-			if (event.getOverlay().id().getPath().equals("crosshair")) return;
+			if(event.getOverlay().id().getPath().equals("crosshair")) return;
 			event.setCanceled(true);
 		}
 	}
