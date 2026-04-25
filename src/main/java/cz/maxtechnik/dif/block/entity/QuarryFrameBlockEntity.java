@@ -17,13 +17,12 @@ public class QuarryFrameBlockEntity extends BlockEntity {
         super(DifModBlockEntities.QUARRY_FRAME.get(), pos, state);
     }
 
-    // Tik jen při isDying – jinak nulová zátěž
     public static void tick(Level level, BlockPos pos, QuarryFrameBlockEntity be) {
         if (!level.isClientSide && be.isDying) level.removeBlock(pos, false);
     }
 
     public void setOwner(BlockPos quarryPos) {
-        if (ownerPos != null) return; // majitel již nastaven, ignorovat
+        if (ownerPos != null) return; // majitel již nastaven – ignorovat
         ownerPos = quarryPos;
         setChanged();
     }

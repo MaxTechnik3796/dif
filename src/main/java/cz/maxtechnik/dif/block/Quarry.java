@@ -43,7 +43,37 @@ public class Quarry extends BaseEntityBlock {
         return this.defaultBlockState().setValue(FACING, ctx.getHorizontalDirection().getOpposite());
     }
 
-    @Override public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean moving) {
+    /** Zkontroluje pouze oblast kde budou stát frame bloky (ne celou hloubku šachty).
+     *  Vrátí true pokud tam je blok s destroySpeed < 0 (bedrock, barrier...). */
+    private static boolean hasUnbreakableInFrameArea(Level level, BlockPos pos, BlockState state) {
+        Direction facing = state.getValue(FACING);
+        BlockPos center = pos.relative(facing.getOpposite(), QuarryBlockEntity.RANGE + 1);
+        int range = QuarryBlockEntity.RANGE;
+        int yBase = pos.getY();
+        int yTop  = yBase + 3; // FRAME_HEIGHT = 3
+
+        for (int y = yBase; y <= yTop; y++) {
+            for (int x = center.getX() - range; x <= center.getX() + range; x++) {
+                for (int z = center.getZ() - range; z <= center.getZ() + range; z++) {
+                    BlockPos p = new BlockPos(x, y, z);
+                    BlockState bs = level.getBlockState(p);
+                    if (!bs.isAir() && bs.getDestroySpeed(level, p) < 0) return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override public void onPlace(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
+                                  @NotNull BlockState oldState, boolean moving) {
+        super.onPlace(state, level, pos, oldState, moving);
+        if (!level.isClientSide && hasUnbreakableInFrameArea(level, pos, state)) {
+            level.removeBlock(pos, false);
+            Block.popResource(level, pos, new net.minecraft.world.item.ItemStack(this));
+        }
+    }
+
+    @Override public void onRemove(BlockState state, @NotNull Level level, @NotNull BlockPos pos, BlockState newState, boolean moving) {
         if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof QuarryBlockEntity q)
             q.onQuarryRemoved();
         super.onRemove(state, level, pos, newState, moving);

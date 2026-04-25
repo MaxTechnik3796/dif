@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("deprecation")
 public class QuarryFrame extends BaseEntityBlock {
 
 	public QuarryFrame() {

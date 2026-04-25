@@ -3,10 +3,12 @@ package cz.maxtechnik.dif.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import cz.maxtechnik.dif.block.entity.QuarryBlockEntity;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 
@@ -16,7 +18,15 @@ public class QuarryRenderer implements BlockEntityRenderer<QuarryBlockEntity> {
 	public void render(QuarryBlockEntity be, float pt, @NotNull PoseStack ps,
 	                   @NotNull MultiBufferSource buf, int light, int overlay) {
 		QuarryBlockEntity.State state = be.getQuarryState();
-		if (state == QuarryBlockEntity.State.NO_ENERGY || state == QuarryBlockEntity.State.DONE) return;
+		// Obrys se skryje jen ve stavu DONE, nebo pokud je frame kompletní (MINING).
+		// Ve všech ostatních stavech (i NO_ENERGY!) se zobrazuje.
+		if (state == QuarryBlockEntity.State.DONE) return;
+
+		Level level = Minecraft.getInstance().level;
+		boolean frameIntact = (state == QuarryBlockEntity.State.MINING)
+				&& level != null
+				&& be.isFrameIntact(level, be.getBlockState());
+		if (frameIntact) return; // frame kompletní – obrys schovat
 
 		BlockPos qp = be.getBlockPos(), center = be.getAreaCenter();
 		int range = be.getRange();
@@ -26,25 +36,20 @@ public class QuarryRenderer implements BlockEntityRenderer<QuarryBlockEntity> {
 
 		ps.pushPose();
 		Matrix4f m = ps.last().pose();
+		VertexConsumer vc = buf.getBuffer(RenderType.lines());
 
-		// Žlutý obrys oblasti – viditelný dokud není frame postaven (CLEARING + BUILDING_FRAME)
-		if (state == QuarryBlockEntity.State.CLEARING || state == QuarryBlockEntity.State.BUILDING_FRAME) {
-			VertexConsumer vc = buf.getBuffer(RenderType.lines());
-			for (float y : new float[]{0f, 3f}) {
-				rect(m, vc, x0, y, z0, x1, z1);
-			}
-			pillar(m, vc, x0, z0); pillar(m, vc, x1, z0);
-			pillar(m, vc, x0, z1); pillar(m, vc, x1, z1);
-		}
+		// Dolní a horní obdélník + 4 sloupy
+		for (float y : new float[]{0f, 3f}) rect(m, vc, x0, y, z0, x1, z1);
+		pillar(m, vc, x0, z0); pillar(m, vc, x1, z0);
+		pillar(m, vc, x0, z1); pillar(m, vc, x1, z1);
 
-		// Vrták – bílá čára od vrcholu frame dolů na aktuální pozici těžby
+		// Vrták jen při těžbě
 		if (state == QuarryBlockEntity.State.MINING) {
 			BlockPos mp = be.getMiningPos();
 			if (mp != null) {
-				VertexConsumer drill = buf.getBuffer(RenderType.lines());
 				float dx = mp.getX() - qp.getX() + .5f, dz = mp.getZ() - qp.getZ() + .5f;
 				float dy = mp.getY() - qp.getY();
-				line(m, drill, dx, 3f, dz, dx, dy, dz, 255, 255, 255, 200);
+				line(m, vc, dx, 3f, dz, dx, dy, dz, 255, 255, 255, 200);
 			}
 		}
 
