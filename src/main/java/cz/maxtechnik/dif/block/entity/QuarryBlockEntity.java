@@ -1,82 +1,80 @@
 package cz.maxtechnik.dif.block.entity;
 
 import cz.maxtechnik.dif.block.Quarry;
+import cz.maxtechnik.dif.gui.menu.QuarryMenu;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
+import cz.maxtechnik.dif.init.basic.DifModItems;
+import cz.maxtechnik.dif.init.events.QuarryStats;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
+import cz.maxtechnik.dif.item.quarry.DrillHeadItem;
+import cz.maxtechnik.dif.item.quarry.EngineItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
-import cz.maxtechnik.dif.gui.menu.QuarryMenu;
-import cz.maxtechnik.dif.init.basic.DifModItems;
-import cz.maxtechnik.dif.init.events.QuarryStats;
+import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
- * QuarryBlockEntity – optimalizovaná verze.
+ * QuarryBlockEntity
  *
- * TPS optimalizations:
- *  - Frame check jen jednou za FRAME_CHECK_INTERVAL ticků (ne každý tick).
- *  - Clearing/building zpracovává BATCH_SIZE bloků za tick → méně ticků na přípravu.
- *  - Adjacent-inventory cache (obnoví se jednou za ADJ_CACHE_INTERVAL ticků).
- *  - workQueue je reusable ArrayList, nekonstruuje se každý tick.
- *  - Žádné zbytečné sync() při bežném těžení – jen při změně stavu nebo dokončení.
- *  - MINE_INTERVAL = 1 tick (quarry tice 20× za sekundu), ale energetická bariéra
- *    přirozeně omezuje rychlost; přidán konfigurovatelný BLOCKS_PER_TICK.
+ * Slots:
+ *   0 = DrillHead
+ *   1 = Engine (slot A)
+ *   2 = Engine (slot B) OR upgrade (SilkTouch book / LiquidRemover)
+ *
+ * Landmark oblasti: asymetrické, střed uložen absolutně.
+ * Performance: frame check přes HashSet, batch mining, adj-inv cache.
  */
 public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 
 	public enum State { NO_ENERGY, CLEARING, BUILDING_FRAME, MINING, DONE }
 
-
 	// ── Energie ──────────────────────────────────────────────────────────────
 	private static final int ENERGY_CAPACITY  = QuarryStats.QUARRY_ENERGY_CAPACITY;
 	private static final int ENERGY_INPUT     = QuarryStats.QUARRY_ENERGY_INPUT;
-	private static final int ENERGY_PER_CLEAR =     25;
-	private static final int ENERGY_PER_FRAME =     50;
-	private static final int ENERGY_PER_MINE  =    500;
 
 	// ── Výkon ─────────────────────────────────────────────────────────────────
-	/** Počet bloků vytěžených (nebo přeskočených) za jeden game-tick při těžení. */
-	private static final int BLOCKS_PER_TICK      =  4;
-	/** Počet bloků zpracovaných při clearing/building za jeden tick. */
-	private static final int BATCH_SIZE           =  8;
-	/** Každých N ticků se kontroluje celistvost framu. */
-	private static final int FRAME_CHECK_INTERVAL = 40;  // 2 sekundy
-	/** Každých N ticků se obnovuje cache sousedních inventářů. */
-	private static final int ADJ_CACHE_INTERVAL   = 60;
+	private static final int FRAME_CHECK_INTERVAL = 40;   // 2 s
+	private static final int ADJ_CACHE_INTERVAL   = 60;   // 3 s
 
 	// ── Geometrie ─────────────────────────────────────────────────────────────
 	private static final int FRAME_HEIGHT = 3;
-	/** Výchozí dosah (poloměr) – přepsatelný landmarky. */
-	public  static final int DEFAULT_RANGE = 5;
-	/** Maximální povolená šířka/délka těžící oblasti (exkluzivní). 64×64 = 4096 bloků. */
-	public  static final int MAX_AREA_SIDE = 64;
+	public  static final int DEFAULT_RANGE  = 5;
+	/** Maximální povolená polovina strany těžební oblasti. 128/2 = 64 → 128×128. */
+	public  static final int MAX_AREA_SIDE  = 128;
 
 	// ── Stav ──────────────────────────────────────────────────────────────────
 	private State    quarryState = State.NO_ENERGY;
@@ -87,193 +85,155 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 	private final ArrayList<BlockPos> workQueue = new ArrayList<>();
 	private int workIndex = 0;
 
-	// Landmark-definovaná oblast (null = výchozí čtverec dle DEFAULT_RANGE)
-	// Uloženo jako offset od worldPosition (pro snadnou serializaci).
-	private int customHalfX = -1; // -1 = neaktivní (použije DEFAULT_RANGE)
-	private int customHalfZ = -1;
-	private BlockPos customCenter = null;
+	// Landmark oblast (absolutní souřadnice středu, -1 = neaktivní)
+	private int      customHalfX = -1;
+	private int      customHalfZ = -1;
+	@Nullable private BlockPos customCenter = null;
 
 	// ── Cache ──────────────────────────────────────────────────────────────────
-	private List<BlockPos>  cachedFramePos  = null;
-	private BlockPos        cachedCenter    = null;
-	private Direction       cachedFacing    = null;
-	// Halfx/z při posledním výpočtu cache (aby se cache invalidovala po změně landmarku)
-	private int             cachedHalfX     = Integer.MIN_VALUE;
-	private int             cachedHalfZ     = Integer.MIN_VALUE;
+	/** Pozice frame bloků jako HashSet pro O(1) lookup při isFrameIntact. */
+	@Nullable private Set<BlockPos>  cachedFrameSet  = null;
+	/** Seřazený seznam (pro postupné stavění). */
+	@Nullable private List<BlockPos> cachedFrameList = null;
+	@Nullable private BlockPos       cachedCenter    = null;
+	@Nullable private Direction      cachedFacing    = null;
+	private int cachedHalfX = Integer.MIN_VALUE;
+	private int cachedHalfZ = Integer.MIN_VALUE;
 
-	// Cache sousedních inventářů pro distribuci dropů
 	@Nullable private IItemHandler[] adjHandlers = null;
 
-	// ── Inventář ───────────────────────────────────────────────────────────────
+	// ── Inventář (3 sloty: vrták | motor A | motor B nebo upgrade) ─────────────
+	private boolean hasSilkTouch    = false;
+	private boolean hasLiquidRemover = false;
+
 	private final ItemStackHandler inventory = new ItemStackHandler(3) {
-		@Override
-		protected void onContentsChanged(int slot) {
-			updateCaches();
+		@Override protected void onContentsChanged(int slot) {
+			rebuildUpgradeCache();
 			setChanged();
 		}
 	};
-	private boolean hasSilkTouch = false;
-	private boolean hasLiquidRemover = false;
 
-	private void updateCaches() {
-		hasSilkTouch = false;
+	/** Přepočítá hasSilkTouch / hasLiquidRemover ze slotu 2. */
+	private void rebuildUpgradeCache() {
+		hasSilkTouch     = false;
 		hasLiquidRemover = false;
-		
 		ItemStack upgrade = inventory.getStackInSlot(2);
-		if (upgrade.getItem() == cz.maxtechnik.dif.init.basic.DifModItems.LIQUID_REMOVER.get()) {
+		if (upgrade.isEmpty()) return;
+		if (upgrade.getItem() == DifModItems.LIQUID_REMOVER.get()) {
 			hasLiquidRemover = true;
-		} else if (upgrade.is(net.minecraft.world.item.Items.ENCHANTED_BOOK)) {
-			if (net.minecraft.world.item.enchantment.EnchantmentHelper.getItemEnchantmentLevel(net.minecraft.world.item.enchantment.Enchantments.SILK_TOUCH, upgrade) > 0) {
-				hasSilkTouch = true;
-			}
+		} else if (upgrade.is(Items.ENCHANTED_BOOK)
+				&& EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, upgrade) > 0) {
+			hasSilkTouch = true;
 		}
 	}
 
 	private final LazyOptional<IItemHandler> inventoryCap = LazyOptional.of(() -> inventory);
 
-	// ── Energie (Forge) ────────────────────────────────────────────────────────
-	private int lastEnergyInput = 0;
-	private int energyInputAccumulator = 0;
-	private int lastEnergyOutput = 0;
-	private int energyOutputAccumulator = 0;
-	private int tickCounter = 0;
+	// ── Energie ────────────────────────────────────────────────────────────────
+	private int FEInputLast  = 0;
+	private int FEInputAcc   = 0;
+	private int FEOutputLast = 0;
+	private int FEOutputAcc  = 0;
+	private int tickCounter  = 0;
 
 	private final EnergyStorage energy = new EnergyStorage(ENERGY_CAPACITY, ENERGY_INPUT, ENERGY_CAPACITY) {
-		@Override
-		public int receiveEnergy(int maxReceive, boolean simulate) {
-			int received = super.receiveEnergy(maxReceive, simulate);
-			if (!simulate) energyInputAccumulator += received;
-			return received;
+		@Override public int receiveEnergy(int maxReceive, boolean simulate) {
+			int rcv = super.receiveEnergy(maxReceive, simulate);
+			if (!simulate) FEInputAcc += rcv;
+			return rcv;
 		}
-
-		@Override
-		public int extractEnergy(int maxExtract, boolean simulate) {
-			int extracted = super.extractEnergy(maxExtract, simulate);
-			if (!simulate) energyOutputAccumulator += extracted;
-			return extracted;
+		@Override public int extractEnergy(int maxExtract, boolean simulate) {
+			int ext = super.extractEnergy(maxExtract, simulate);
+			if (!simulate) FEOutputAcc += ext;
+			return ext;
 		}
 	};
 	private final LazyOptional<IEnergyStorage> energyCap = LazyOptional.of(() -> energy);
 
-	private float miningProgressAccumulator = 0;
-	private State activeState = State.CLEARING;
+	private float miningProgressAcc = 0f;
+	private State activeState       = State.CLEARING;
 	private boolean has10TickEnergy = false;
 
-	// ── Container Data (GUI Sync) ─────────────────────────────────────────────
+	// ── Container Data ─────────────────────────────────────────────────────────
 	public final ContainerData dataAccess = new ContainerData() {
-		@Override
-		public int get(int index) {
-			switch (index) {
-				case 0: return quarryState.ordinal();
-				case 1: return (int)(getActiveProgressPerTick() * 100); 
-				case 2: return lastEnergyOutput;
-				case 3: return lastEnergyInput;
-				case 4: return getFrameHalfX() * 2 + 1;
-				case 5: return getFrameHalfZ() * 2 + 1;
-				case 6: {
-                    if (getTotalDPGen() == 0) return 1;
-                    if (getHeadDPReq() == 0) return 2;
-                    if (getTotalDPGen() < getHeadDPReq()) return 3;
-                    return 0;
-                }
-				default: return 0;
-			}
+		@Override public int get(int index) {
+			return switch (index) {
+				case 0 -> quarryState.ordinal();
+				case 1 -> (int)(getProgressPerTick() * 100);
+				case 2 -> FEOutputLast;
+				case 3 -> FEInputLast;
+				case 4 -> getFrameHalfX() * 2 + 1;
+				case 5 -> getFrameHalfZ() * 2 + 1;
+				case 6 -> {
+					if (getTotalDPGen() == 0) yield 1;
+					if (getHeadDPReq() == 0)  yield 2;
+					if (getTotalDPGen() < getHeadDPReq()) yield 3;
+					yield 0;
+				}
+				default -> 0;
+			};
 		}
-
-		@Override
-		public void set(int index, int value) {}
-
-		@Override
-		public int getCount() {
-			return 7;
-		}
+		@Override public void set(int index, int value) {}
+		@Override public int getCount() { return 7; }
 	};
 
-	// ── Pomocné metody pro enginy a drilly ─────────────────────────────────────
-
-	public int getTotalDPGen() {
-		int bpt = 0;
-		if (inventory.getStackInSlot(1).getItem() instanceof cz.maxtechnik.dif.item.quarry.EngineItem e) bpt += e.dpGen;
-		if (inventory.getStackInSlot(2).getItem() instanceof cz.maxtechnik.dif.item.quarry.EngineItem e) bpt += e.dpGen;
-		return Math.max(0, bpt); 
-	}
-
-	public int getHeadDPReq() {
-		if (inventory.getStackInSlot(0).getItem() instanceof cz.maxtechnik.dif.item.quarry.DrillHeadItem d) return d.dpReq;
-		return 0; // No head
-	}
-
-	public float getActiveProgressPerTick() {
-		int gen = getTotalDPGen();
-		int req = getHeadDPReq();
-		if (req == 0 || gen < req) return 0;
-		
-		int excess = gen - req;
-		// Rychlost: MIN = 0.1, MAX = 2.0 (při excess = MAX_DP)
-		float t = Math.min(1.0f, (float)excess / (float)QuarryStats.MAX_ACTIVE_DP);
-		return QuarryStats.MIN_PROGRESS_PER_TICK + t * (QuarryStats.MAX_PROGRESS_PER_TICK - QuarryStats.MIN_PROGRESS_PER_TICK);
-	}
-
-	private int getTotalFECost() {
-		int e = 0;
-		Item item1 = inventory.getStackInSlot(1).getItem();
-		Item item2 = inventory.getStackInSlot(2).getItem();
-		
-		if (item1 instanceof cz.maxtechnik.dif.item.quarry.EngineItem eng) e += eng.feCost;
-		if (item2 instanceof cz.maxtechnik.dif.item.quarry.EngineItem eng) e += eng.feCost;
-		
-		// Penalty for duplicate engines
-		if (item1 == item2 && item1 != net.minecraft.world.item.Items.AIR && item1 instanceof cz.maxtechnik.dif.item.quarry.EngineItem) {
-			e = (int)(e * QuarryStats.DUP_ENGINE_PENALTY);
-		}
-		
-		return e; // FE per tick
-	}
-
-	private net.minecraft.world.item.ItemStack getSimulatedTool() {
-		net.minecraft.world.item.ItemStack tool = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.WOODEN_PICKAXE);
-		net.minecraft.world.item.ItemStack head = inventory.getStackInSlot(0);
-		
-		if (head.is(cz.maxtechnik.dif.init.basic.DifModItems.STONE_DRILL_HEAD.get())) tool = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.STONE_PICKAXE);
-		else if (head.is(cz.maxtechnik.dif.init.basic.DifModItems.IRON_DRILL_HEAD.get())) tool = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_PICKAXE);
-		else if (head.is(cz.maxtechnik.dif.init.basic.DifModItems.DIAMOND_DRILL_HEAD.get())) tool = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIAMOND_PICKAXE);
-		
-		if (hasSilkTouch) {
-			tool.enchant(net.minecraft.world.item.enchantment.Enchantments.SILK_TOUCH, 1);
-		}
-		return tool;
-	}
-
-
-	private boolean hasLiquidRemover() {
-		return hasLiquidRemover;
-	}
-
-    private boolean shouldSkipViaFilter(BlockState state) {
-        ItemStack filter = inventory.getStackInSlot(2);
-        if (filter.isEmpty()) return false;
-        
-        net.minecraft.world.item.Item item = state.getBlock().asItem();
-        if (item == net.minecraft.world.item.Items.AIR) return false;
-
-        net.minecraft.nbt.CompoundTag tag = filter.getOrCreateTag();
-        net.minecraft.nbt.ListTag list = null;
-        if (tag.contains("Items")) list = tag.getList("Items", 10);
-        else if (tag.contains("FilterItems")) list = tag.getList("FilterItems", 10);
-        
-        if (list == null) return false;
-
-        for (int i = 0; i < list.size(); i++) {
-            ItemStack s = ItemStack.of(list.getCompound(i));
-            if (s.getItem() == item) return true;
-        }
-        return false;
-    }
-
+	// ── Konstruktor ───────────────────────────────────────────────────────────
 	public QuarryBlockEntity(BlockPos pos, BlockState state) {
 		super(DifModBlockEntities.QUARRY.get(), pos, state);
 	}
 
+	// ══════════════════════════════════════════════════════════════════════════
+	//  Enginy / Vrták – pomocné metody
+	// ══════════════════════════════════════════════════════════════════════════
+
+	public int getTotalDPGen() {
+		int dp = 0;
+		// Slot 1 vždy engine; slot 2 jen pokud není upgrade
+		if (inventory.getStackInSlot(1).getItem() instanceof EngineItem eng) dp += eng.dpGen;
+		if (!hasSilkTouch && !hasLiquidRemover
+				&& inventory.getStackInSlot(2).getItem() instanceof EngineItem eng) dp += eng.dpGen;
+		return Math.max(0, dp);
+	}
+
+	public int getHeadDPReq() {
+		if (inventory.getStackInSlot(0).getItem() instanceof DrillHeadItem head) return head.dpReq;
+		return 0;
+	}
+
+	public float getProgressPerTick() {
+		int gen = getTotalDPGen();
+		int req = getHeadDPReq();
+		if (req == 0 || gen < req) return 0f;
+		int excess = gen - req;
+		float t = Math.min(1f, (float) excess / QuarryStats.MAX_ACTIVE_DP);
+		return QuarryStats.MIN_PROGRESS_PER_TICK + t * (QuarryStats.MAX_PROGRESS_PER_TICK - QuarryStats.MIN_PROGRESS_PER_TICK);
+	}
+
+	private int getTotalFECost() {
+		Item eng1 = inventory.getStackInSlot(1).getItem();
+		Item eng2 = inventory.getStackInSlot(2).getItem();
+		int feCost = 0;
+		if (eng1 instanceof EngineItem e) feCost += e.feCost;
+		// Slot 2 jako engine jen pokud není upgrade
+		if (!hasSilkTouch && !hasLiquidRemover && eng2 instanceof EngineItem e) feCost += e.feCost;
+		// Penalizace za duplicitní enginy
+		if (eng1 == eng2 && eng1 != Items.AIR && eng1 instanceof EngineItem) {
+			feCost = (int)(feCost * QuarryStats.DUP_ENGINE_PENALTY);
+		}
+		return feCost;
+	}
+
+	/** Sestaví simulovaný nástroj (správný typ vrták + silk touch pokud aktivní). */
+	private ItemStack buildSimulatedTool() {
+		ItemStack head = inventory.getStackInSlot(0);
+		ItemStack tool;
+		if      (head.is(DifModItems.STONE_DRILL_HEAD.get()))   tool = new ItemStack(Items.STONE_PICKAXE);
+		else if (head.is(DifModItems.IRON_DRILL_HEAD.get()))    tool = new ItemStack(Items.IRON_PICKAXE);
+		else if (head.is(DifModItems.DIAMOND_DRILL_HEAD.get())) tool = new ItemStack(Items.DIAMOND_PICKAXE);
+		else                                                     tool = new ItemStack(Items.WOODEN_PICKAXE);
+		if (hasSilkTouch) tool.enchant(Enchantments.SILK_TOUCH, 1);
+		return tool;
+	}
 
 	// ══════════════════════════════════════════════════════════════════════════
 	//  Tick
@@ -285,20 +245,14 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 		be.tickCounter++;
 		if (be.tickCounter >= 10) {
 			be.tickCounter = 0;
+			be.FEInputLast  = be.FEInputAcc  / 10; be.FEInputAcc  = 0;
+			be.FEOutputLast = be.FEOutputAcc / 10; be.FEOutputAcc = 0;
 
-			// Sync stats pro GUI (průměr za 10 ticků)
-			be.lastEnergyInput = be.energyInputAccumulator / 10;
-			be.energyInputAccumulator = 0;
-			be.lastEnergyOutput = be.energyOutputAccumulator / 10;
-			be.energyOutputAccumulator = 0;
+			int FENeeded = be.getTotalFECost() * 10;
 
-			// Výpočet a stržení energie na dalších 10 ticků práce
-			int totalEngineFe = be.getTotalFECost() * 10;
-			
-			// Pokud stroj běží a má nějaký odběr, zkusíme strhnout FE
 			if (be.quarryState != State.DONE && be.quarryState != State.NO_ENERGY) {
-				if (be.energy.getEnergyStored() >= totalEngineFe) {
-					be.energy.extractEnergy(totalEngineFe, false);
+				if (be.energy.getEnergyStored() >= FENeeded) {
+					be.energy.extractEnergy(FENeeded, false);
 					be.has10TickEnergy = true;
 				} else {
 					be.has10TickEnergy = false;
@@ -307,29 +261,26 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 					be.sync(level, pos, state);
 				}
 			} else if (be.quarryState == State.NO_ENERGY) {
-				// Pokus o restart z NO_ENERGY
-				if (be.energy.getEnergyStored() >= totalEngineFe) {
-					be.energy.extractEnergy(totalEngineFe, false);
+				if (be.energy.getEnergyStored() >= FENeeded) {
+					be.energy.extractEnergy(FENeeded, false);
 					be.has10TickEnergy = true;
 					be.quarryState = be.activeState;
 					be.sync(level, pos, state);
 				}
 			} else {
-				be.has10TickEnergy = true; // Pro DONE nepotřebujeme energii
+				be.has10TickEnergy = true; // DONE nepotřebuje energii
 			}
 		}
 
-		// Obnovení adj cache
 		if (++be.adjCacheTimer >= ADJ_CACHE_INTERVAL) { be.adjCacheTimer = 0; be.adjHandlers = null; }
 
-		// Pokud nemáme zaplaceno na tento cyklus (10 ticků), stroj stojí
 		if (!be.has10TickEnergy && be.quarryState != State.DONE) return;
 
 		switch (be.quarryState) {
 			case CLEARING       -> be.tickClearing(level, pos, state);
 			case BUILDING_FRAME -> be.tickBuildFrame(level, pos, state);
 			case MINING         -> be.tickMine(level, pos, state);
-			case DONE, NO_ENERGY -> { /* nic */ }
+			default -> {}
 		}
 	}
 
@@ -337,64 +288,67 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 	//  Geometrie & Cache
 	// ══════════════════════════════════════════════════════════════════════════
 
-	/** Vrátí aktuální "půl-rozměr" v ose X (od středu k okraji, včetně). */
 	private int halfX() { return customHalfX > 0 ? customHalfX : DEFAULT_RANGE; }
-	/** Vrátí aktuální "půl-rozměr" v ose Z (od středu k okraji, včetně). */
 	private int halfZ() { return customHalfZ > 0 ? customHalfZ : DEFAULT_RANGE; }
 
-	/** Nastaví oblast z landmarků a invaliduje cache. */
+	/** Nastaví oblast z landmarků (absolutní střed). Invaliduje cache. */
 	public void setLandmarkArea(int halfX, int halfZ, BlockPos center) {
-		// Minimum 1×1 těžící oblast → frame musí být o 2 bloky větší (stěny)
 		this.customHalfX = Math.max(2, Math.min(halfX, MAX_AREA_SIDE / 2));
 		this.customHalfZ = Math.max(2, Math.min(halfZ, MAX_AREA_SIDE / 2));
 		this.customCenter = center;
 		invalidateCache();
 		setChanged();
-		if (level != null && !level.isClientSide) {
+		if (level != null && !level.isClientSide)
 			level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
-		}
 	}
 
 	private void invalidateCache() {
-		cachedFramePos = null;
-		cachedCenter   = null;
-		cachedFacing   = null;
-		cachedHalfX    = Integer.MIN_VALUE;
-		cachedHalfZ    = Integer.MIN_VALUE;
+		cachedFrameSet  = null;
+		cachedFrameList = null;
+		cachedCenter    = null;
+		cachedFacing    = null;
+		cachedHalfX     = Integer.MIN_VALUE;
+		cachedHalfZ     = Integer.MIN_VALUE;
 	}
 
-	/** Vrátí (a zakešuje) seznam pozic frame bloků. */
-	public List<BlockPos> computeFramePositions(BlockState state) {
+	private void ensureFrameCache(BlockState state) {
 		Direction facing = state.getValue(Quarry.FACING);
 		int hx = halfX(), hz = halfZ();
-		if (cachedFramePos == null || facing != cachedFacing || hx != cachedHalfX || hz != cachedHalfZ) {
-			cachedFacing = facing;
-			cachedHalfX  = hx;
-			cachedHalfZ  = hz;
-			
-			if (customCenter != null) {
-				cachedCenter = customCenter;
-			} else {
-				// Střed těžící oblasti leží (hx+1) bloků před quarry (ve směru facing.getOpposite())
-				cachedCenter = worldPosition.relative(facing.getOpposite(), hx + 1);
-			}
-			
-			cachedFramePos = buildFramePositions(cachedCenter, hx, hz);
-		}
-		return cachedFramePos;
+		if (cachedFrameList != null && facing == cachedFacing && hx == cachedHalfX && hz == cachedHalfZ) return;
+
+		cachedFacing = facing;
+		cachedHalfX  = hx;
+		cachedHalfZ  = hz;
+		cachedCenter = (customCenter != null) ? customCenter
+				: worldPosition.relative(facing.getOpposite(), hx + 1);
+
+		cachedFrameList = buildFramePositionList(cachedCenter, hx, hz);
+		cachedFrameSet  = new HashSet<>(cachedFrameList);
 	}
 
-	private List<BlockPos> buildFramePositions(BlockPos c, int hx, int hz) {
+	/** Vrátí seřazený seznam pozic framu (pro stavění). */
+	public List<BlockPos> computeFramePositions(BlockState state) {
+		ensureFrameCache(state);
+		return cachedFrameList;
+	}
+
+	private BlockPos getAreaCenter(BlockState state) {
+		ensureFrameCache(state);
+		return cachedCenter;
+	}
+
+	private List<BlockPos> buildFramePositionList(BlockPos center, int hx, int hz) {
 		int yBase = worldPosition.getY();
+		int yTop  = yBase + FRAME_HEIGHT;
 		List<BlockPos> result = new ArrayList<>();
-		for (int x = c.getX() - hx; x <= c.getX() + hx; x++) {
-			for (int z = c.getZ() - hz; z <= c.getZ() + hz; z++) {
-				boolean eX = (x == c.getX() - hx || x == c.getX() + hx);
-				boolean eZ = (z == c.getZ() - hz || z == c.getZ() + hz);
-				if (!eX && !eZ) continue;
+		for (int x = center.getX() - hx; x <= center.getX() + hx; x++) {
+			for (int z = center.getZ() - hz; z <= center.getZ() + hz; z++) {
+				boolean edgeX = (x == center.getX() - hx || x == center.getX() + hx);
+				boolean edgeZ = (z == center.getZ() - hz || z == center.getZ() + hz);
+				if (!edgeX && !edgeZ) continue;
 				result.add(new BlockPos(x, yBase, z));
-				result.add(new BlockPos(x, yBase + FRAME_HEIGHT, z));
-				if (eX && eZ) {
+				result.add(new BlockPos(x, yTop,  z));
+				if (edgeX && edgeZ) {
 					result.add(new BlockPos(x, yBase + 1, z));
 					result.add(new BlockPos(x, yBase + 2, z));
 				}
@@ -403,29 +357,24 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 		return result;
 	}
 
-	private BlockPos getAreaCenter(BlockState state) {
-		computeFramePositions(state);
-		return cachedCenter;
-	}
-
 	// ══════════════════════════════════════════════════════════════════════════
 	//  CLEARING
 	// ══════════════════════════════════════════════════════════════════════════
 
 	private void startClearing(Level level, BlockState state, BlockPos pos) {
-		BlockPos center = getAreaCenter(state);
+		ensureFrameCache(state);
+		BlockPos center = cachedCenter;
 		int hx = halfX(), hz = halfZ();
-		// +1 blok nahoru oproti původnímu: yTop = worldPosition.getY() + FRAME_HEIGHT
-		int yTop = worldPosition.getY() + FRAME_HEIGHT;
 		int yBot = worldPosition.getY();
+		int yTop = yBot + FRAME_HEIGHT;
 
 		workQueue.clear();
 		workIndex = 0;
 		for (int y = yTop; y >= yBot; y--)
 			for (int x = center.getX() - hx; x <= center.getX() + hx; x++)
 				for (int z = center.getZ() - hz; z <= center.getZ() + hz; z++) {
-					BlockPos p = new BlockPos(x, y, z);
-					if (!level.isEmptyBlock(p) && !isOwnedFrame(level, p)) workQueue.add(p);
+					BlockPos bp = new BlockPos(x, y, z);
+					if (!level.isEmptyBlock(bp) && !isOwnedFrame(level, bp)) workQueue.add(bp);
 				}
 
 		if (workQueue.isEmpty()) { startBuildingFrame(level, state, pos); return; }
@@ -433,25 +382,20 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 		sync(level, pos, state);
 	}
 
-	private void tickClearing(Level level, BlockPos pos, BlockState bs) {
-		if (workQueue.isEmpty()) { startClearing(level, bs, pos); return; }
-		int processed = 0;
-
-		float progress = getActiveProgressPerTick();
-		if (progress <= 0) return; // Need head + engine + positive DP
-
-		// Speed scale for clearing/building
+	private void tickClearing(Level level, BlockPos pos, BlockState state) {
+		if (workQueue.isEmpty()) { startClearing(level, state, pos); return; }
+		float progress = getProgressPerTick();
+		if (progress <= 0f) return;
 		int speed = Math.max(1, (int)(progress * 10));
-
+		int processed = 0;
 		while (workIndex < workQueue.size() && processed < speed) {
-			BlockPos t = workQueue.get(workIndex++);
-			if (level.isEmptyBlock(t) || isOwnedFrame(level, t)) { processed++; continue; }
-			level.removeBlock(t, false);
+			BlockPos bp = workQueue.get(workIndex++);
+			if (!level.isEmptyBlock(bp) && !isOwnedFrame(level, bp)) level.removeBlock(bp, false);
 			processed++;
 		}
 		if (workIndex >= workQueue.size()) {
 			workQueue.clear(); workIndex = 0;
-			startBuildingFrame(level, bs, pos);
+			startBuildingFrame(level, state, pos);
 		}
 	}
 
@@ -461,35 +405,33 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 
 	private void startBuildingFrame(Level level, BlockState state, BlockPos pos) {
 		quarryState = State.BUILDING_FRAME;
-		List<BlockPos> fp = computeFramePositions(state);
 		workQueue.clear();
-		workQueue.addAll(fp);
+		workQueue.addAll(computeFramePositions(state));
 		workIndex = 0;
 		sync(level, pos, state);
 	}
 
-	private void tickBuildFrame(Level level, BlockPos pos, BlockState bs) {
-		if (workQueue.isEmpty()) { startBuildingFrame(level, bs, pos); return; }
-		int processed = 0;
-		
-		float progress = getActiveProgressPerTick();
-		if (progress <= 0) return;
-
+	private void tickBuildFrame(Level level, BlockPos pos, BlockState state) {
+		if (workQueue.isEmpty()) { startBuildingFrame(level, state, pos); return; }
+		float progress = getProgressPerTick();
+		if (progress <= 0f) return;
 		int speed = Math.max(1, (int)(progress * 10));
-
+		int processed = 0;
 		while (workIndex < workQueue.size() && processed < speed) {
-			BlockPos fPos = workQueue.get(workIndex++);
-			if (isFrameBlock(level, fPos)) { processed++; continue; }
-			level.setBlock(fPos, DifModBlocks.QUARRY_FRAME.get().defaultBlockState(), 3);
-			if (level.getBlockEntity(fPos) instanceof QuarryFrameBlockEntity f) f.setOwner(worldPosition);
+			BlockPos framePos = workQueue.get(workIndex++);
+			if (!isFrameBlock(level, framePos)) {
+				level.setBlock(framePos, DifModBlocks.QUARRY_FRAME.get().defaultBlockState(), 3);
+				if (level.getBlockEntity(framePos) instanceof QuarryFrameBlockEntity frame)
+					frame.setOwner(worldPosition);
+			}
 			processed++;
 		}
 		if (workIndex >= workQueue.size()) {
 			workQueue.clear(); workIndex = 0;
 			activeState = State.MINING;
 			quarryState = State.MINING;
-			resetMiningArea(bs);
-			sync(level, pos, bs);
+			resetMiningPos(state);
+			sync(level, pos, state);
 		}
 	}
 
@@ -497,96 +439,86 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 	//  MINING
 	// ══════════════════════════════════════════════════════════════════════════
 
-	private void tickMine(Level level, BlockPos pos, BlockState bs) {
+	private void tickMine(Level level, BlockPos pos, BlockState state) {
 		if (++frameCheckTimer >= FRAME_CHECK_INTERVAL) {
 			frameCheckTimer = 0;
-			if (!isFrameIntact(level, bs)) {
-				quarryState = State.CLEARING; activeState = State.CLEARING; workQueue.clear(); workIndex = 0; miningPos = null;
-				sync(level, pos, bs); return;
+			if (!isFrameIntact(level, state)) {
+				quarryState = State.CLEARING; activeState = State.CLEARING;
+				workQueue.clear(); workIndex = 0; miningPos = null;
+				sync(level, pos, state); return;
 			}
 		}
 
-		float progressStep = getActiveProgressPerTick();
-		if (progressStep <= 0) return; // Nemá správnou kombinaci hlavy a enginu
-		
-		if (miningPos == null) resetMiningArea(bs);
+		float progressStep = getProgressPerTick();
+		if (progressStep <= 0f) return;
+		if (miningPos == null) resetMiningPos(state);
 		if (miningPos == null) return;
 
-		net.minecraft.world.item.ItemStack simulatedTool = getSimulatedTool();
-		boolean liquidRemover = hasLiquidRemover();
+		ItemStack simulatedTool = buildSimulatedTool();
 
-		miningProgressAccumulator += progressStep;
+		miningProgressAcc += progressStep;
 
+		outer:
 		while (true) {
+			// Přeskakuj prázdné bloky
 			while (level.isEmptyBlock(miningPos)) {
-				miningProgressAccumulator = 0;
-				if (!advanceMiningPos(bs)) { finishMining(level, pos, bs); return; }
+				miningProgressAcc = 0f;
+				if (!advanceMiningPos(state)) { finishMining(level, pos, state); return; }
 			}
 
 			BlockState target = level.getBlockState(miningPos);
 
 			// Kapaliny
 			if (!target.getFluidState().isEmpty()) {
-				if (target.getFluidState().isSource() && liquidRemover) {
-					if (miningProgressAccumulator >= 0.1f) {
-						miningProgressAccumulator -= 0.1f;
+				if (target.getFluidState().isSource() && hasLiquidRemover) {
+					if (miningProgressAcc >= 0.1f) {
+						miningProgressAcc -= 0.1f;
 						level.removeBlock(miningPos, false);
+						if (!advanceMiningPos(state)) { finishMining(level, pos, state); return; }
+						continue;
 					} else {
-						return; 
+						break; // Čekáme na více energie
 					}
 				}
-				miningProgressAccumulator = 0;
-				if (!advanceMiningPos(bs)) { finishMining(level, pos, bs); return; }
+				// Tekoucí tekutina nebo bez liquid removeru – přeskoč
+				miningProgressAcc = 0f;
+				if (!advanceMiningPos(state)) { finishMining(level, pos, state); return; }
 				continue;
 			}
 
-            // Create Filter Check
-            if (shouldSkipViaFilter(target)) {
-                miningProgressAccumulator = 0;
-                if (!advanceMiningPos(bs)) { finishMining(level, pos, bs); return; }
-                continue;
-            }
-
+			// Bedrock a neničitelné bloky
 			float hardness = target.getDestroySpeed(level, miningPos);
-			if (hardness < 0 && !target.isAir()) {
-				miningProgressAccumulator = 0;
-				if (!advanceMiningPos(bs)) { finishMining(level, pos, bs); return; }
-				continue; // Bedrock
+			if (hardness < 0) {
+				miningProgressAcc = 0f;
+				if (!advanceMiningPos(state)) { finishMining(level, pos, state); return; }
+				continue;
 			}
 
-			// Required progress to break: hardness * 10
-			float requiredProgress = Math.max(1, hardness * 10);
-
-			if (miningProgressAccumulator >= requiredProgress) {
-				miningProgressAccumulator -= requiredProgress;
-				
+			float requiredProgress = Math.max(1f, hardness * 10f);
+			if (miningProgressAcc >= requiredProgress) {
+				miningProgressAcc -= requiredProgress;
 				if (level instanceof ServerLevel sl) {
 					boolean canMine = !target.requiresCorrectToolForDrops() || simulatedTool.isCorrectToolForDrops(target);
 					if (canMine) {
-                        net.minecraft.world.level.storage.loot.LootParams.Builder builder = new net.minecraft.world.level.storage.loot.LootParams.Builder(sl)
-                            .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.ORIGIN, net.minecraft.world.phys.Vec3.atCenterOf(miningPos))
-                            .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.TOOL, simulatedTool)
-                            .withOptionalParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.BLOCK_ENTITY, level.getBlockEntity(miningPos));
-                        
-						List<net.minecraft.world.item.ItemStack> drops = target.getDrops(builder);
-						distributeDrops(level, drops);
+						LootParams.Builder lootBuilder = new LootParams.Builder(sl)
+								.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(miningPos))
+								.withParameter(LootContextParams.TOOL, simulatedTool)
+								.withOptionalParameter(LootContextParams.BLOCK_ENTITY, level.getBlockEntity(miningPos));
+						distributeDrops(level, target.getDrops(lootBuilder));
 					}
 					level.removeBlock(miningPos, false);
-				} 
-				
-				if (!advanceMiningPos(bs)) { finishMining(level, pos, bs); return; }
+				}
+				if (!advanceMiningPos(state)) { finishMining(level, pos, state); return; }
 			} else {
-				break; // Done this tick
+				break; // Nestačí energie na tento tick
 			}
 		}
 
-		level.sendBlockUpdated(pos, bs, bs, 3);
+		level.sendBlockUpdated(pos, state, state, 3);
 	}
 
 	private void distributeDrops(Level level, List<ItemStack> drops) {
 		if (drops.isEmpty()) return;
-
-		// Lazy-build adjacent handler cache
 		if (adjHandlers == null) {
 			adjHandlers = new IItemHandler[Direction.values().length];
 			for (Direction dir : Direction.values()) {
@@ -595,22 +527,21 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 					adjHandlers[dir.ordinal()] = adj.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite()).orElse(null);
 			}
 		}
-
 		for (ItemStack stack : drops) {
 			if (stack.isEmpty()) continue;
 			ItemStack rem = stack;
-			for (IItemHandler h : adjHandlers) {
-				if (h == null || rem.isEmpty()) continue;
-				rem = ItemHandlerHelper.insertItemStacked(h, rem, false);
+			for (IItemHandler handler : adjHandlers) {
+				if (handler == null || rem.isEmpty()) continue;
+				rem = ItemHandlerHelper.insertItemStacked(handler, rem, false);
 			}
 			if (!rem.isEmpty()) Block.popResource(level, worldPosition, rem);
 		}
 	}
 
-	private void finishMining(Level level, BlockPos pos, BlockState bs) {
+	private void finishMining(Level level, BlockPos pos, BlockState state) {
 		quarryState = State.DONE;
 		miningPos = null;
-		sync(level, pos, bs);
+		sync(level, pos, state);
 	}
 
 	// ══════════════════════════════════════════════════════════════════════════
@@ -620,6 +551,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 	public void onFrameDestroyed(Level level) {
 		if (level == null || level.isClientSide) return;
 		quarryState = State.CLEARING; workQueue.clear(); workIndex = 0; miningPos = null;
+		invalidateCache();
 		setChanged();
 		level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
 	}
@@ -630,17 +562,22 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 			ItemStack stack = inventory.getStackInSlot(i);
 			if (!stack.isEmpty()) Block.popResource(level, worldPosition, stack);
 		}
-		for (BlockPos fp : computeFramePositions(getBlockState()))
-			if (level.getBlockEntity(fp) instanceof QuarryFrameBlockEntity f
-					&& worldPosition.equals(f.getOwnerPos())) f.scheduleRemoval();
+		for (BlockPos fp : computeFramePositions(getBlockState())) {
+			if (level.getBlockEntity(fp) instanceof QuarryFrameBlockEntity frame
+					&& worldPosition.equals(frame.getOwnerPos()))
+				frame.scheduleRemoval();
+		}
 	}
 
 	// ══════════════════════════════════════════════════════════════════════════
 	//  Frame helpers
 	// ══════════════════════════════════════════════════════════════════════════
 
+	/** O(1) díky HashSet cache. */
 	public boolean isFrameIntact(Level level, BlockState state) {
-		for (BlockPos fp : computeFramePositions(state))
+		ensureFrameCache(state);
+		if (cachedFrameSet == null) return false;
+		for (BlockPos fp : cachedFrameSet)
 			if (!isFrameBlock(level, fp)) return false;
 		return true;
 	}
@@ -651,34 +588,54 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 
 	private boolean isOwnedFrame(Level level, BlockPos pos) {
 		return isFrameBlock(level, pos)
-				&& level.getBlockEntity(pos) instanceof QuarryFrameBlockEntity f
-				&& worldPosition.equals(f.getOwnerPos());
+				&& level.getBlockEntity(pos) instanceof QuarryFrameBlockEntity frame
+				&& worldPosition.equals(frame.getOwnerPos());
 	}
 
 	// ══════════════════════════════════════════════════════════════════════════
-	//  Mining position
+	//  Mining position – iterace po vrstvách (Y→X→Z)
 	// ══════════════════════════════════════════════════════════════════════════
 
-	private void resetMiningArea(BlockState state) {
-		BlockPos center = getAreaCenter(state);
-		int hx = halfX() - 1, hz = halfZ() - 1;
-		miningPos = new BlockPos(center.getX() - hx, worldPosition.getY() - 1, center.getZ() - hz);
+	/** Resetuje miningPos na první blok těžební oblasti (1 blok pod quarry, NW roh). */
+	private void resetMiningPos(BlockState state) {
+		ensureFrameCache(state);
+		if (cachedCenter == null) return;
+		// Těžební oblast je uvnitř framu: od (center-hx+1) do (center+hx-1)
+		int innerHX = halfX() - 1;
+		int innerHZ = halfZ() - 1;
+		miningPos = new BlockPos(
+				cachedCenter.getX() - innerHX,
+				worldPosition.getY() - 1,
+				cachedCenter.getZ() - innerHZ);
 		setChanged();
 	}
 
+	/**
+	 * Posune miningPos na další pozici v pořadí X→Z→Y↓.
+	 * @return false pokud jsme dosáhli dna světa.
+	 */
 	private boolean advanceMiningPos(BlockState state) {
 		if (miningPos == null || level == null) return false;
-		BlockPos center = getAreaCenter(state);
-		int hx = halfX() - 1, hz = halfZ() - 1;
-		int minX = center.getX() - hx, maxX = center.getX() + hx;
-		int minZ = center.getZ() - hz, maxZ = center.getZ() + hz;
+		ensureFrameCache(state);
+		if (cachedCenter == null) return false;
 
-		int x = miningPos.getX() + 1, z = miningPos.getZ(), y = miningPos.getY();
-		if (x > maxX) { x = minX; z++; }
-		if (z > maxZ) { z = minZ; y--; }
-		miningPos = new BlockPos(x, y, z);
+		int innerHX = halfX() - 1;
+		int innerHZ = halfZ() - 1;
+		int minX = cachedCenter.getX() - innerHX;
+		int maxX = cachedCenter.getX() + innerHX;
+		int minZ = cachedCenter.getZ() - innerHZ;
+		int maxZ = cachedCenter.getZ() + innerHZ;
+
+		int nx = miningPos.getX() + 1;
+		int nz = miningPos.getZ();
+		int ny = miningPos.getY();
+
+		if (nx > maxX) { nx = minX; nz++; }
+		if (nz > maxZ) { nz = minZ; ny--; }
+
+		miningPos = new BlockPos(nx, ny, nz);
 		setChanged();
-		return y > level.getMinBuildHeight();
+		return ny > level.getMinBuildHeight();
 	}
 
 	// ══════════════════════════════════════════════════════════════════════════
@@ -698,10 +655,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 			tag.putInt("MineY", miningPos.getY());
 			tag.putInt("MineZ", miningPos.getZ());
 		}
-		if (customHalfX > 0) {
-			tag.putInt("LmHX", customHalfX);
-			tag.putInt("LmHZ", customHalfZ);
-		}
+		if (customHalfX > 0) { tag.putInt("LmHX", customHalfX); tag.putInt("LmHZ", customHalfZ); }
 		if (customCenter != null) {
 			tag.putInt("LmCX", customCenter.getX());
 			tag.putInt("LmCY", customCenter.getY());
@@ -714,12 +668,10 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
-	@Override
-	public void load(@NotNull CompoundTag tag) {
+	@Override public void load(@NotNull CompoundTag tag) {
 		super.load(tag);
 		if (tag.contains("Inventory")) inventory.deserializeNBT(tag.getCompound("Inventory"));
-		updateCaches();
-		// Energie – workaround: EnergyStorage nemá setter, použijeme receiveEnergy
+		rebuildUpgradeCache();
 		int stored = tag.getInt("Energy");
 		energy.receiveEnergy(stored - energy.getEnergyStored(), false);
 
@@ -731,19 +683,17 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 
 		workIndex = tag.getInt("WI");
 		if (tag.contains("LmHX")) { customHalfX = tag.getInt("LmHX"); customHalfZ = tag.getInt("LmHZ"); }
-		if (tag.contains("LmCX")) {
-			customCenter = new BlockPos(tag.getInt("LmCX"), tag.getInt("LmCY"), tag.getInt("LmCZ"));
-		} else {
-			customCenter = null;
-		}
+		customCenter = tag.contains("LmCX")
+				? new BlockPos(tag.getInt("LmCX"), tag.getInt("LmCY"), tag.getInt("LmCZ"))
+				: null;
 	}
 
 	@Override protected void saveAdditional(@NotNull CompoundTag tag) {
 		super.saveAdditional(tag);
 		tag.put("Inventory", inventory.serializeNBT());
 		tag.putInt("Energy", energy.getEnergyStored());
-		tag.putInt("QS",     quarryState.ordinal());
-		tag.putInt("WI",     workIndex);
+		tag.putInt("QS", quarryState.ordinal());
+		tag.putInt("WI", workIndex);
 		if (miningPos != null) {
 			tag.putInt("MineX", miningPos.getX());
 			tag.putInt("MineY", miningPos.getY());
@@ -762,36 +712,33 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 	// ══════════════════════════════════════════════════════════════════════════
 
 	@Override public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-		if (cap == ForgeCapabilities.ENERGY) return energyCap.cast();
+		if (cap == ForgeCapabilities.ENERGY)       return energyCap.cast();
 		if (cap == ForgeCapabilities.ITEM_HANDLER) return inventoryCap.cast();
 		return super.getCapability(cap, side);
 	}
 
-	@Override public void invalidateCaps() { super.invalidateCaps(); energyCap.invalidate(); inventoryCap.invalidate(); }
+	@Override public void invalidateCaps() {
+		super.invalidateCaps();
+		energyCap.invalidate();
+		inventoryCap.invalidate();
+	}
 
 	// ══════════════════════════════════════════════════════════════════════════
-	//  Getters (pro renderer + veřejné API)
+	//  Gettery
 	// ══════════════════════════════════════════════════════════════════════════
 
 	public BlockPos getMiningPos()   { return miningPos; }
 	public State    getQuarryState() { return quarryState; }
-	public BlockPos getAreaCenter()  { return getAreaCenter(getBlockState()); }
-	/** Vrátí half-rozměr těžící oblasti v ose X (bez frame stěny). */
-	public int      getHalfX()       { return halfX() - 1; }
-	/** Vrátí half-rozměr těžící oblasti v ose Z (bez frame stěny). */
-	public int      getHalfZ()       { return halfZ() - 1; }
-	/** Pro renderer – half-rozměr včetně frame stěny. */
-	public int      getFrameHalfX()  { return halfX(); }
-	public int      getFrameHalfZ()  { return halfZ(); }
-	
+	public BlockPos getAreaCenter()  { ensureFrameCache(getBlockState()); return cachedCenter; }
+	public int      getFrameHalfX() { return halfX(); }
+	public int      getFrameHalfZ() { return halfZ(); }
+
 	// ── MenuProvider ───────────────────────────────────────────────────────────
-	@Override
-	public @NotNull Component getDisplayName() {
+	@Override public @NotNull Component getDisplayName() {
 		return Component.translatable("block.dif.quarry");
 	}
 
-	@Nullable
-	@Override
+	@Nullable @Override
 	public AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInv, @NotNull Player player) {
 		return new QuarryMenu(id, playerInv, this);
 	}
