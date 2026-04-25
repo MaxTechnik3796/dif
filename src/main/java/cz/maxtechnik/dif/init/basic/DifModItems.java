@@ -18,6 +18,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import cz.maxtechnik.dif.init.events.QuarryStats;
+import cz.maxtechnik.dif.item.quarry.DrillHeadItem;
+import cz.maxtechnik.dif.item.quarry.EngineItem;
 import org.jetbrains.annotations.NotNull;
 
 public class DifModItems{
@@ -38,14 +41,16 @@ public class DifModItems{
 	public static final RegistryObject<Item>QUARRY_FRAME=block(DifModBlocks.QUARRY_FRAME);
 	public static final RegistryObject<Item>QUARRY_LANDMARK=block(DifModBlocks.QUARRY_LANDMARK);
 	
+
 	// Quarry Upgrades & Components
-	public static final RegistryObject<Item> STONE_DRILL_HEAD = REGISTRY.register("stone_drill_head", Basic::new);
-	public static final RegistryObject<Item> IRON_DRILL_HEAD = REGISTRY.register("iron_drill_head", Basic::new);
-	public static final RegistryObject<Item> DIAMOND_DRILL_HEAD = REGISTRY.register("diamond_drill_head", Basic::new);
-	public static final RegistryObject<Item> IRON_ENGINE = REGISTRY.register("iron_engine", Basic::new);
-	public static final RegistryObject<Item> GOLD_ENGINE = REGISTRY.register("gold_engine", Basic::new);
-	public static final RegistryObject<Item> DIAMOND_ENGINE = REGISTRY.register("diamond_engine", Basic::new);
+	public static final RegistryObject<Item> STONE_DRILL_HEAD = REGISTRY.register("stone_drill_head", () -> new DrillHeadItem(QuarryStats.STONE_HEAD_DP_REQ));
+	public static final RegistryObject<Item> IRON_DRILL_HEAD = REGISTRY.register("iron_drill_head", () -> new DrillHeadItem(QuarryStats.IRON_HEAD_DP_REQ));
+	public static final RegistryObject<Item> DIAMOND_DRILL_HEAD = REGISTRY.register("diamond_drill_head", () -> new DrillHeadItem(QuarryStats.DIAMOND_HEAD_DP_REQ));
+	public static final RegistryObject<Item> IRON_ENGINE = REGISTRY.register("iron_engine", () -> new EngineItem(QuarryStats.IRON_ENGINE_DP_GEN, QuarryStats.IRON_ENGINE_FE_COST));
+	public static final RegistryObject<Item> GOLD_ENGINE = REGISTRY.register("gold_engine", () -> new EngineItem(QuarryStats.GOLD_ENGINE_DP_GEN, QuarryStats.GOLD_ENGINE_FE_COST));
+	public static final RegistryObject<Item> DIAMOND_ENGINE = REGISTRY.register("diamond_engine", () -> new EngineItem(QuarryStats.DIAMOND_ENGINE_DP_GEN, QuarryStats.DIAMOND_ENGINE_FE_COST));
 	public static final RegistryObject<Item> LIQUID_REMOVER = REGISTRY.register("liquid_remover", Basic::new);
+
 
 	public static final RegistryObject<Item> BRASS_LARGE_WATER_WHEEL = block(DifModBlocks.BRASS_LARGE_WATER_WHEEL);
 	public static final RegistryObject<Item> BRASS_WATER_WHEEL = block(DifModBlocks.BRASS_WATER_WHEEL);

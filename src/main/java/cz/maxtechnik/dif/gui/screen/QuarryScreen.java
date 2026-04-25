@@ -62,14 +62,14 @@ public class QuarryScreen extends AbstractContainerScreen<QuarryMenu> {
 
 		// 0 = NO_ENERGY, 1 = CLEARING, 2 = BUILDING_FRAME, 3 = MINING, 4 = DONE
 		if (state == 0) {
-			stateMsg = "Inactive";
+			stateMsg = "Out of Energy!";
 			stateColor = 0xFF5555; // Red
 		} else if (state == 4) {
 			stateMsg = "Finished (Dotěženo)";
 			stateColor = 0xFFFF55; // Yellow
 		} else {
 			if (this.menu.hasNoEngine()) {
-                stateMsg = "Missing Engine!";
+                stateMsg = "Missing Engine!"; // Rychlost = 0
                 stateColor = 0xFF5555; // Red
             } else {
                 stateMsg = "Active";
@@ -88,13 +88,13 @@ public class QuarryScreen extends AbstractContainerScreen<QuarryMenu> {
 		// Statistiky
 		int speed = this.menu.getSpeed();
 		int in = this.menu.getFEInput();
-		int out = this.menu.getFEOutput(); // Spotřeba
+		int out = this.menu.getFEOutput(); // Spotřeba za 10 ticků (nyní per tick ekvivalent)
 
-		if (state != 0 && state != 4) {
-			guiGraphics.drawString(this.font, "Speed: " + speed + " blk/t", textX, 45, 0xFFFFFF, false);
+		if (stateMsg.equals("Active") || stateMsg.equals("Out of Energy!")) {
+			guiGraphics.drawString(this.font, "Active DP: " + speed, textX, 45, 0xFFFFFF, false);
 			guiGraphics.drawString(this.font, "Input: " + in + " FE/t", textX, 57, 0xFFFFFF, false);
-            // Spotřeba neboli "žere FE"
-            guiGraphics.drawString(this.font, "Output: " + out + " FE/t", 90, 57, 0xFFFFFF, false);
+            guiGraphics.drawString(this.font, "Output (Avg): " + out + " FE/t", 100, 57, 0xFFFFFF, false);
 		}
+
 	}
 }

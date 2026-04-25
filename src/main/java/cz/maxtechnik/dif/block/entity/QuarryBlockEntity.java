@@ -135,18 +135,22 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 	};
 	private final LazyOptional<IEnergyStorage> energyCap = LazyOptional.of(() -> energy);
 
+	private float miningProgressAccumulator = 0;
+	private State activeState = State.CLEARING;
+	private boolean has10TickEnergy = false;
+
 	// ── Container Data (GUI Sync) ─────────────────────────────────────────────
 	public final ContainerData dataAccess = new ContainerData() {
 		@Override
 		public int get(int index) {
 			switch (index) {
 				case 0: return quarryState.ordinal();
-				case 1: return getBlocksPerTick(); // dynamická rychlost z enginů
+				case 1: return getActiveDPMod(); // Speed = DP
 				case 2: return lastEnergyOutput;
 				case 3: return lastEnergyInput;
 				case 4: return getFrameHalfX() * 2;
 				case 5: return getFrameHalfZ() * 2;
-				case 6: return getBlocksPerTick() == 0 ? 1 : 0; // indikátor chybějícího enginu
+				case 6: return getTotalDPGen() == 0 ? 1 : 0; // indikátor chybějícího enginu
 				default: return 0;
 			}
 		}
@@ -162,41 +166,39 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 
 	// ── Pomocné metody pro enginy a drilly ─────────────────────────────────────
 
-	public int getBlocksPerTick() {
+	public int getTotalDPGen() {
 		int bpt = 0;
-		bpt += getEngineSpeedModifier(inventory.getStackInSlot(1));
-		bpt += getEngineSpeedModifier(inventory.getStackInSlot(2));
+		if (inventory.getStackInSlot(1).getItem() instanceof cz.maxtechnik.dif.item.quarry.EngineItem e) bpt += e.dpGen;
+		if (inventory.getStackInSlot(2).getItem() instanceof cz.maxtechnik.dif.item.quarry.EngineItem e) bpt += e.dpGen;
 		return Math.max(0, bpt); 
 	}
 
-	private int getEnergyPerMine() {
-		int e = 100; // Základ
-		e += getEngineEnergyModifier(inventory.getStackInSlot(1));
-		e += getEngineEnergyModifier(inventory.getStackInSlot(2));
-		return e; // FE
+	public int getHeadDPReq() {
+		if (inventory.getStackInSlot(0).getItem() instanceof cz.maxtechnik.dif.item.quarry.DrillHeadItem d) return d.dpReq;
+		return 0; // No head
 	}
 
-	private int getEngineSpeedModifier(net.minecraft.world.item.ItemStack stack) {
-		if (stack.is(DifModItems.IRON_ENGINE.get())) return 1;
-		if (stack.is(DifModItems.GOLD_ENGINE.get())) return 4;
-		if (stack.is(DifModItems.DIAMOND_ENGINE.get())) return 12;
-		return 0;
+	public int getActiveDPMod() {
+		int gen = getTotalDPGen();
+		int req = getHeadDPReq();
+		if (req == 0 || gen < req) return 0;
+		return 1 + (gen - req); // 1 + excess DP. Pokud mám přesně DP co to žere, bude rychlost 1. Čím víc, tím víc.
 	}
 
-	private int getEngineEnergyModifier(net.minecraft.world.item.ItemStack stack) {
-		if (stack.is(DifModItems.IRON_ENGINE.get())) return 200;
-		if (stack.is(DifModItems.GOLD_ENGINE.get())) return 600;
-		if (stack.is(DifModItems.DIAMOND_ENGINE.get())) return 2000;
-		return 0;
+	private int getTotalFECost() {
+		int e = 0;
+		if (inventory.getStackInSlot(1).getItem() instanceof cz.maxtechnik.dif.item.quarry.EngineItem eng) e += eng.feCost;
+		if (inventory.getStackInSlot(2).getItem() instanceof cz.maxtechnik.dif.item.quarry.EngineItem eng) e += eng.feCost;
+		return e; // FE per tick
 	}
 
 	private net.minecraft.world.item.ItemStack getSimulatedTool() {
 		net.minecraft.world.item.ItemStack tool = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.WOODEN_PICKAXE);
 		net.minecraft.world.item.ItemStack head = inventory.getStackInSlot(0);
 		
-		if (head.is(DifModItems.STONE_DRILL_HEAD.get())) tool = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.STONE_PICKAXE);
-		else if (head.is(DifModItems.IRON_DRILL_HEAD.get())) tool = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_PICKAXE);
-		else if (head.is(DifModItems.DIAMOND_DRILL_HEAD.get())) tool = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIAMOND_PICKAXE);
+		if (head.is(cz.maxtechnik.dif.init.basic.DifModItems.STONE_DRILL_HEAD.get())) tool = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.STONE_PICKAXE);
+		else if (head.is(cz.maxtechnik.dif.init.basic.DifModItems.IRON_DRILL_HEAD.get())) tool = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.IRON_PICKAXE);
+		else if (head.is(cz.maxtechnik.dif.init.basic.DifModItems.DIAMOND_DRILL_HEAD.get())) tool = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIAMOND_PICKAXE);
 		
 		net.minecraft.world.item.ItemStack upgrade = inventory.getStackInSlot(2);
 		if (upgrade.is(net.minecraft.world.item.Items.ENCHANTED_BOOK) &&
@@ -207,7 +209,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 	}
 
 	private boolean hasLiquidRemover() {
-		return inventory.getStackInSlot(2).is(DifModItems.LIQUID_REMOVER.get());
+		return inventory.getStackInSlot(2).is(cz.maxtechnik.dif.init.basic.DifModItems.LIQUID_REMOVER.get());
 	}
 
 	public QuarryBlockEntity(BlockPos pos, BlockState state) {
@@ -353,11 +355,13 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 	private void tickClearing(Level level, BlockPos pos, BlockState bs) {
 		if (workQueue.isEmpty()) { startClearing(level, bs, pos); return; }
 		int processed = 0;
-		while (workIndex < workQueue.size() && processed < BATCH_SIZE) {
+
+		// Clearing rychlost odvozujeme od getTotalDPGen() bez vlivu heady (stavi frame/cisti vzduch)
+		int speed = Math.max(1, getTotalDPGen() / 15);
+
+		while (workIndex < workQueue.size() && processed < speed) {
 			BlockPos t = workQueue.get(workIndex++);
 			if (level.isEmptyBlock(t) || isOwnedFrame(level, t)) { processed++; continue; }
-			if (energy.getEnergyStored() < ENERGY_PER_CLEAR) return;
-			energy.extractEnergy(ENERGY_PER_CLEAR, false);
 			level.removeBlock(t, false);
 			processed++;
 		}
@@ -383,17 +387,18 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 	private void tickBuildFrame(Level level, BlockPos pos, BlockState bs) {
 		if (workQueue.isEmpty()) { startBuildingFrame(level, bs, pos); return; }
 		int processed = 0;
-		while (workIndex < workQueue.size() && processed < BATCH_SIZE) {
+		int speed = Math.max(1, getTotalDPGen() / 15);
+
+		while (workIndex < workQueue.size() && processed < speed) {
 			BlockPos fPos = workQueue.get(workIndex++);
 			if (isFrameBlock(level, fPos)) { processed++; continue; }
-			if (energy.getEnergyStored() < ENERGY_PER_FRAME) return;
-			energy.extractEnergy(ENERGY_PER_FRAME, false);
 			level.setBlock(fPos, DifModBlocks.QUARRY_FRAME.get().defaultBlockState(), 3);
 			if (level.getBlockEntity(fPos) instanceof QuarryFrameBlockEntity f) f.setOwner(worldPosition);
 			processed++;
 		}
 		if (workIndex >= workQueue.size()) {
 			workQueue.clear(); workIndex = 0;
+			activeState = State.MINING;
 			quarryState = State.MINING;
 			resetMiningArea(bs);
 			sync(level, pos, bs);
@@ -408,66 +413,71 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 		if (++frameCheckTimer >= FRAME_CHECK_INTERVAL) {
 			frameCheckTimer = 0;
 			if (!isFrameIntact(level, bs)) {
-				quarryState = State.CLEARING; workQueue.clear(); workIndex = 0; miningPos = null;
+				quarryState = State.CLEARING; activeState = State.CLEARING; workQueue.clear(); workIndex = 0; miningPos = null;
 				sync(level, pos, bs); return;
 			}
 		}
 
-		int bpt = getBlocksPerTick();
-		if (bpt <= 0) return; // Nemá enginy -> pozastaveno
+		int activeDP = getActiveDPMod();
+		if (activeDP <= 0) return; // Nemá správnou kombinaci hlavy a enginu
 		
-		int epm = getEnergyPerMine();
-		if (energy.getEnergyStored() < epm) return; // Nedostatek FE
-
 		if (miningPos == null) resetMiningArea(bs);
 		if (miningPos == null) return;
 
-		int mined = 0;
 		net.minecraft.world.item.ItemStack simulatedTool = getSimulatedTool();
 		boolean liquidRemover = hasLiquidRemover();
 
-		while (mined < bpt) {
+		miningProgressAccumulator += activeDP;
+
+		while (true) {
 			while (level.isEmptyBlock(miningPos)) {
+				miningProgressAccumulator = 0;
 				if (!advanceMiningPos(bs)) { finishMining(level, pos, bs); return; }
 			}
 
 			BlockState target = level.getBlockState(miningPos);
 
-			// Řešení kapalin
+			// Kapaliny
 			if (!target.getFluidState().isEmpty()) {
 				if (target.getFluidState().isSource() && liquidRemover) {
-					// Má liquid remover a je to zdrojový blok -> smazat za FE
-					if (energy.getEnergyStored() < epm) return;
-					level.removeBlock(miningPos, false);
-					energy.extractEnergy(epm, false);
-					mined++;
+					if (miningProgressAccumulator >= 5) { // Trochu DP stojí smáznutí
+						miningProgressAccumulator -= 5;
+						level.removeBlock(miningPos, false);
+					} else {
+						return; // Zkusí dodělat příště tick
+					}
 				}
-				// Tekoucí voda se prostě přeskočí zdarma (rozteklé tekutiny), zdrojová taky, pokud nemá upgrade
+				miningProgressAccumulator = 0;
 				if (!advanceMiningPos(bs)) { finishMining(level, pos, bs); return; }
 				continue;
 			}
 
-			// Těžba pevných bloků
-			if (target.getDestroySpeed(level, miningPos) >= 0 && level instanceof ServerLevel sl) {
-				
-				boolean canMine = !target.requiresCorrectToolForDrops() || simulatedTool.isCorrectToolForDrops(target);
-				if (!canMine) {
-					// Zasekne se, protože neumí rozbít blok aktuální vrtnou hlavicí (čeká na lepší)
-					return;
-				}
+			float hardness = target.getDestroySpeed(level, miningPos);
+			if (hardness < 0 && !target.isAir()) {
+				miningProgressAccumulator = 0;
+				if (!advanceMiningPos(bs)) { finishMining(level, pos, bs); return; }
+				continue; // Bedrock
+			}
 
-				if (energy.getEnergyStored() < epm) return;
+			// Required progress to break: hardness * 10
+			float requiredProgress = Math.max(1, hardness * 10);
+
+			if (miningProgressAccumulator >= requiredProgress) {
+				miningProgressAccumulator -= requiredProgress;
 				
-				// U minecraftu potřebujeme null 'Player', takže podáme null
-				List<net.minecraft.world.item.ItemStack> drops = Block.getDrops(target, sl, miningPos, level.getBlockEntity(miningPos), null, simulatedTool);
-				distributeDrops(level, drops);
-				level.removeBlock(miningPos, false);
-				energy.extractEnergy(epm, false);
-				mined++;
-			} 
-			// Bedrock (destroySpeed < 0) se automaticky přeskočí a hledáme dál
-			
-			if (!advanceMiningPos(bs)) { finishMining(level, pos, bs); return; }
+				if (level instanceof ServerLevel sl) {
+					boolean canMine = !target.requiresCorrectToolForDrops() || simulatedTool.isCorrectToolForDrops(target);
+					if (canMine) {
+						List<net.minecraft.world.item.ItemStack> drops = Block.getDrops(target, sl, miningPos, level.getBlockEntity(miningPos), null, simulatedTool);
+						distributeDrops(level, drops);
+					}
+					level.removeBlock(miningPos, false);
+				} 
+				
+				if (!advanceMiningPos(bs)) { finishMining(level, pos, bs); return; }
+			} else {
+				break; // Done this tick
+			}
 		}
 
 		level.sendBlockUpdated(pos, bs, bs, 3);
