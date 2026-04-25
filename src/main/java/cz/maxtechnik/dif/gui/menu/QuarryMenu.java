@@ -43,9 +43,23 @@ public class QuarryMenu extends AbstractContainerMenu {
 		this.addDataSlots(this.data);
 
 		// 3 custom slots on the left
-		this.addSlot(new SlotItemHandler(internal, 0, 8, 17));
-		this.addSlot(new SlotItemHandler(internal, 1, 8, 35));
-		this.addSlot(new SlotItemHandler(internal, 2, 8, 53));
+		this.addSlot(new SlotItemHandler(internal, 0, 8, 17) {
+			@Override public boolean mayPlace(@NotNull ItemStack stack) {
+				return stack.getItem() instanceof cz.maxtechnik.dif.item.quarry.DrillHeadItem;
+			}
+		});
+		this.addSlot(new SlotItemHandler(internal, 1, 8, 35) {
+			@Override public boolean mayPlace(@NotNull ItemStack stack) {
+				return stack.getItem() instanceof cz.maxtechnik.dif.item.quarry.EngineItem;
+			}
+		});
+		this.addSlot(new SlotItemHandler(internal, 2, 8, 53) {
+			@Override public boolean mayPlace(@NotNull ItemStack stack) {
+				return stack.getItem() instanceof cz.maxtechnik.dif.item.quarry.EngineItem ||
+					   stack.getItem() == cz.maxtechnik.dif.init.basic.DifModItems.LIQUID_REMOVER.get() ||
+					   stack.getItem() == net.minecraft.world.item.Items.ENCHANTED_BOOK;
+			}
+		});
 
 		// Player Inventory
 		for (int si = 0; si < 3; ++si)
@@ -69,9 +83,23 @@ public class QuarryMenu extends AbstractContainerMenu {
 		
 		this.addDataSlots(this.data);
 
-		this.addSlot(new SlotItemHandler(internal, 0, 8, 17));
-		this.addSlot(new SlotItemHandler(internal, 1, 8, 35));
-		this.addSlot(new SlotItemHandler(internal, 2, 8, 53));
+		this.addSlot(new SlotItemHandler(internal, 0, 8, 17) {
+			@Override public boolean mayPlace(@NotNull ItemStack stack) {
+				return stack.getItem() instanceof cz.maxtechnik.dif.item.quarry.DrillHeadItem;
+			}
+		});
+		this.addSlot(new SlotItemHandler(internal, 1, 8, 35) {
+			@Override public boolean mayPlace(@NotNull ItemStack stack) {
+				return stack.getItem() instanceof cz.maxtechnik.dif.item.quarry.EngineItem;
+			}
+		});
+		this.addSlot(new SlotItemHandler(internal, 2, 8, 53) {
+			@Override public boolean mayPlace(@NotNull ItemStack stack) {
+				return stack.getItem() instanceof cz.maxtechnik.dif.item.quarry.EngineItem ||
+					   stack.getItem() == cz.maxtechnik.dif.init.basic.DifModItems.LIQUID_REMOVER.get() ||
+					   stack.getItem() == net.minecraft.world.item.Items.ENCHANTED_BOOK;
+			}
+		});
 
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)
