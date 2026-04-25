@@ -30,6 +30,6 @@
 		"dif:camera_monitor",
 		"dif:quarry",
 		"dif:aurora_casing",
-		"#dif:space_industrial_blocks",
+		"#dif:space_industrial_blocks"
 	]
 }
