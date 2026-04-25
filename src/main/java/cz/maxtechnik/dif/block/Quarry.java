@@ -94,18 +94,18 @@ public class Quarry extends BaseEntityBlock {
      * a landmarky dropnou a zmizí.
      */
     private static void tryApplyNearbyLandmarks(Level level, BlockPos quarryPos) {
-        int search = QuarryBlockEntity.MAX_AREA_SIDE + 4;
+        int search = 4; // Zvětšené okolí
         int baseY  = quarryPos.getY();
 
         for (int dx = -search; dx <= search; dx++) {
             for (int dz = -search; dz <= search; dz++) {
-                for (int dy = -8; dy <= 8; dy++) {
-                    BlockPos p = new BlockPos(quarryPos.getX() + dx, baseY + dy, quarryPos.getZ() + dz);
+                for (int dy = -search; dy <= search; dy++) {
+                    BlockPos p = new BlockPos(quarryPos.getX() + dx, quarryPos.getY() + dy, quarryPos.getZ() + dz);
                     if (!level.getBlockState(p).is(DifModBlocks.QUARRY_LANDMARK.get())) continue;
                     if (!(level.getBlockEntity(p) instanceof QuarryLandmarkBlockEntity lbe)) continue;
                     if (!lbe.isFormed()) continue;
 
-                    // Najden formed landmark – aplikuj oblast na quarry a zruš landmarky
+                    // Našel sformovaný landmark!
                     lbe.applyToQuarry(level, quarryPos);
                     return;
                 }

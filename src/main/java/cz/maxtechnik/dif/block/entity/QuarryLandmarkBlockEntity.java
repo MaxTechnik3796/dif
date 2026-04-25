@@ -83,8 +83,6 @@ public class QuarryLandmarkBlockEntity extends BlockEntity {
         player.sendSystemMessage(Component.literal(
                 "§aFormace: §f" + result.sizeX + "§ax§f" + result.sizeZ +
                         " §abloků. Polož Quarry ke kraji oblasti."));
-
-        tryApplyToNearbyQuarry(all, result);
     }
 
     // ── Scan ─────────────────────────────────────────────────────────────────
@@ -118,18 +116,18 @@ public class QuarryLandmarkBlockEntity extends BlockEntity {
         int totalX = maxX - minX;
         int totalZ = maxZ - minZ;
 
-        if (totalX < 3 || totalZ < 3) return null;
+        if (totalX < 2 || totalZ < 2) return null;
         if (totalX > MAX_SEARCH || totalZ > MAX_SEARCH) return null;
 
-        // L-tvar: jeden bod je roh – sdílí X s jedním a Z s druhým
+        // L-tvar: jeden bod je roh
         if (!isLShape(a, b, c) && !isLShape(b, a, c) && !isLShape(c, a, b)) return null;
 
         int centerX = (minX + maxX) / 2;
         int centerZ = (minZ + maxZ) / 2;
-        int halfX   = (totalX + 1) / 2;
-        int halfZ   = (totalZ + 1) / 2;
-        int mineX   = Math.max(1, totalX - 2);
-        int mineZ   = Math.max(1, totalZ - 2);
+        int halfX   = totalX / 2;
+        int halfZ   = totalZ / 2;
+        int mineX   = totalX; 
+        int mineZ   = totalZ;
 
         return new FormResult(mineX, mineZ, halfX, halfZ,
                 new BlockPos(centerX, a.getY(), centerZ));
@@ -175,45 +173,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity {
 
     // ── Připojení k quarry ────────────────────────────────────────────────────
 
-    private void tryApplyToNearbyQuarry(List<BlockPos> all, FormResult result) {
-        if (level == null || result.center == null) return;
-
-        // Quarry musí být na kraji oblasti → hledáme ve velkém okolí všech LM pozic
-        // Prohledáme oblast 2× větší než MAX_SEARCH kolem středu formace
-        int baseY  = worldPosition.getY();
-        int search = MAX_SEARCH * 2 + 8;
-
-        for (int dx = -search; dx <= search; dx++) {
-            for (int dz = -search; dz <= search; dz++) {
-                for (int dy = -8; dy <= 8; dy++) {
-                    BlockPos qp = new BlockPos(
-                            result.center.getX() + dx,
-                            baseY + dy,
-                            result.center.getZ() + dz);
-                    if (!level.getBlockState(qp).is(DifModBlocks.QUARRY.get())) continue;
-                    if (!(level.getBlockEntity(qp) instanceof QuarryBlockEntity qbe)) continue;
-
-                    qbe.setLandmarkArea(result.halfX, result.halfZ, result.center);
-                    for (BlockPos lm : all) {
-                        net.minecraft.world.level.block.Block.popResource(level, lm,
-                                new net.minecraft.world.item.ItemStack(
-                                        DifModBlocks.QUARRY_LANDMARK.get().asItem()));
-                        level.removeBlock(lm, false);
-                    }
-                    return;
-                }
-            }
-        }
-    }
-
-    /** Voláno z LandmarkPlacementHandler – pokusí se aktivovat quarry pokud je formace hotová. */
-    public void tryActivateNearbyQuarry() {
-        if (!formed || formedCenter == null || level == null || level.isClientSide) return;
-        List<BlockPos> all = new ArrayList<>(partners);
-        all.add(worldPosition);
-        FormResult result = new FormResult(formedSizeX, formedSizeZ, formedHalfX, formedHalfZ, formedCenter);
-        tryApplyToNearbyQuarry(all, result);
-    }
+    // ── Připojení k quarry ────────────────────────────────────────────────────
 
     /**
      * Voláno z Quarry.onPlace – aplikuje tuto formaci na quarry na dané pozici

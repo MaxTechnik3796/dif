@@ -97,7 +97,8 @@ public class QuarryMenu extends AbstractContainerMenu {
 			@Override public boolean mayPlace(@NotNull ItemStack stack) {
 				return stack.getItem() instanceof cz.maxtechnik.dif.item.quarry.EngineItem ||
 					   stack.getItem() == cz.maxtechnik.dif.init.basic.DifModItems.LIQUID_REMOVER.get() ||
-					   stack.getItem() == net.minecraft.world.item.Items.ENCHANTED_BOOK;
+					   stack.getItem() == net.minecraft.world.item.Items.ENCHANTED_BOOK ||
+                       stack.getDescriptionId().contains("filter");
 			}
 		});
 
@@ -122,6 +123,7 @@ public class QuarryMenu extends AbstractContainerMenu {
 	public int getFEInput()        { return this.data.get(3); }
 	public int getAreaX()          { return this.data.get(4); }
 	public int getAreaZ()          { return this.data.get(5); }
+    public int getStatusMode()     { return this.data.get(6); }
 	public boolean hasNoEngine()   { return this.data.get(6) == 1; }
 
 	@Override
