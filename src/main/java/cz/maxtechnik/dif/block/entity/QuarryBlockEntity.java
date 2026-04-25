@@ -19,7 +19,15 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import cz.maxtechnik.dif.gui.menu.QuarryMenu;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,9 +46,10 @@ import java.util.List;
  *  - MINE_INTERVAL = 1 tick (quarry tice 20× za sekundu), ale energetická bariéra
  *    přirozeně omezuje rychlost; přidán konfigurovatelný BLOCKS_PER_TICK.
  */
-public class QuarryBlockEntity extends BlockEntity {
+public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 
 	public enum State { NO_ENERGY, CLEARING, BUILDING_FRAME, MINING, DONE }
+
 
 	// ── Energie ──────────────────────────────────────────────────────────────
 	private static final int ENERGY_CAPACITY  = 1_000_000;
@@ -92,13 +101,67 @@ public class QuarryBlockEntity extends BlockEntity {
 	// Cache sousedních inventářů pro distribuci dropů
 	@Nullable private IItemHandler[] adjHandlers = null;
 
+	// ── Inventář ───────────────────────────────────────────────────────────────
+	private final ItemStackHandler inventory = new ItemStackHandler(3) {
+		@Override
+		protected void onContentsChanged(int slot) {
+			setChanged();
+		}
+	};
+	private final LazyOptional<IItemHandler> inventoryCap = LazyOptional.of(() -> inventory);
+
 	// ── Energie (Forge) ────────────────────────────────────────────────────────
-	private final EnergyStorage        energy        = new EnergyStorage(ENERGY_CAPACITY, ENERGY_INPUT, 0);
+	private int lastEnergyInput = 0;
+	private int energyInputAccumulator = 0;
+	private int lastEnergyOutput = 0;
+	private int energyOutputAccumulator = 0;
+	private int tickCounter = 0;
+
+	private final EnergyStorage energy = new EnergyStorage(ENERGY_CAPACITY, ENERGY_INPUT, ENERGY_CAPACITY) {
+		@Override
+		public int receiveEnergy(int maxReceive, boolean simulate) {
+			int received = super.receiveEnergy(maxReceive, simulate);
+			if (!simulate) energyInputAccumulator += received;
+			return received;
+		}
+
+		@Override
+		public int extractEnergy(int maxExtract, boolean simulate) {
+			int extracted = super.extractEnergy(maxExtract, simulate);
+			if (!simulate) energyOutputAccumulator += extracted;
+			return extracted;
+		}
+	};
 	private final LazyOptional<IEnergyStorage> energyCap = LazyOptional.of(() -> energy);
+
+	// ── Container Data (GUI Sync) ─────────────────────────────────────────────
+	public final ContainerData dataAccess = new ContainerData() {
+		@Override
+		public int get(int index) {
+			switch (index) {
+				case 0: return quarryState.ordinal();
+				case 1: return BLOCKS_PER_TICK; // or actual speed calculation
+				case 2: return lastEnergyOutput;
+				case 3: return lastEnergyInput;
+				case 4: return getFrameHalfX() * 2;
+				case 5: return getFrameHalfZ() * 2;
+				default: return 0;
+			}
+		}
+
+		@Override
+		public void set(int index, int value) {}
+
+		@Override
+		public int getCount() {
+			return 6;
+		}
+	};
 
 	public QuarryBlockEntity(BlockPos pos, BlockState state) {
 		super(DifModBlockEntities.QUARRY.get(), pos, state);
 	}
+
 
 	// ══════════════════════════════════════════════════════════════════════════
 	//  Tick
@@ -106,6 +169,15 @@ public class QuarryBlockEntity extends BlockEntity {
 
 	public static void tick(Level level, BlockPos pos, BlockState state, QuarryBlockEntity be) {
 		if (level.isClientSide) return;
+
+		be.tickCounter++;
+		if (be.tickCounter >= 20) {
+			be.lastEnergyInput = be.energyInputAccumulator / 20;
+			be.energyInputAccumulator = 0;
+			be.lastEnergyOutput = be.energyOutputAccumulator / 20;
+			be.energyOutputAccumulator = 0;
+			be.tickCounter = 0;
+		}
 
 		// Obnovení adj cache
 		if (++be.adjCacheTimer >= ADJ_CACHE_INTERVAL) { be.adjCacheTimer = 0; be.adjHandlers = null; }
@@ -444,6 +516,9 @@ public class QuarryBlockEntity extends BlockEntity {
 
 	@Override public void load(@NotNull CompoundTag tag) {
 		super.load(tag);
+		if (tag.contains("Inventory")) {
+			inventory.deserializeNBT(tag.getCompound("Inventory"));
+		}
 		// Energie – workaround: EnergyStorage nemá setter, použijeme receiveEnergy
 		int stored = tag.getInt("Energy");
 		energy.receiveEnergy(stored - energy.getEnergyStored(), false);
@@ -465,6 +540,7 @@ public class QuarryBlockEntity extends BlockEntity {
 
 	@Override protected void saveAdditional(@NotNull CompoundTag tag) {
 		super.saveAdditional(tag);
+		tag.put("Inventory", inventory.serializeNBT());
 		tag.putInt("Energy", energy.getEnergyStored());
 		tag.putInt("QS",     quarryState.ordinal());
 		tag.putInt("WI",     workIndex);
@@ -486,10 +562,12 @@ public class QuarryBlockEntity extends BlockEntity {
 	// ══════════════════════════════════════════════════════════════════════════
 
 	@Override public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-		return cap == ForgeCapabilities.ENERGY ? energyCap.cast() : super.getCapability(cap, side);
+		if (cap == ForgeCapabilities.ENERGY) return energyCap.cast();
+		if (cap == ForgeCapabilities.ITEM_HANDLER) return inventoryCap.cast();
+		return super.getCapability(cap, side);
 	}
 
-	@Override public void invalidateCaps() { super.invalidateCaps(); energyCap.invalidate(); }
+	@Override public void invalidateCaps() { super.invalidateCaps(); energyCap.invalidate(); inventoryCap.invalidate(); }
 
 	// ══════════════════════════════════════════════════════════════════════════
 	//  Getters (pro renderer + veřejné API)
@@ -505,4 +583,16 @@ public class QuarryBlockEntity extends BlockEntity {
 	/** Pro renderer – half-rozměr včetně frame stěny. */
 	public int      getFrameHalfX()  { return halfX(); }
 	public int      getFrameHalfZ()  { return halfZ(); }
+	
+	// ── MenuProvider ───────────────────────────────────────────────────────────
+	@Override
+	public @NotNull Component getDisplayName() {
+		return Component.translatable("block.dif.quarry");
+	}
+
+	@Nullable
+	@Override
+	public AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInv, @NotNull Player player) {
+		return new QuarryMenu(id, playerInv, this);
+	}
 }
