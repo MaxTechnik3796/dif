@@ -2,8 +2,6 @@
 	"replace":false,
 	"values":[
 		"dif:the_differential",
-		"dif:air_conditioning",
-		"dif:washing_machine",
 		"dif:maty_block",
 		"minecraft:jukebox",
 		"dif:andesite_lattice",
@@ -32,6 +30,6 @@
 		"dif:camera_monitor",
 		"dif:quarry",
 		"dif:aurora_casing",
-		"#dif:space_industrial_blocks"
+		"#dif:space_industrial_blocks",
 	]
 }
