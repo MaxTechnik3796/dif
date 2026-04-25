@@ -31,6 +31,9 @@ public class DifModTabs{
 		tabData.accept(DifModItems.ANDESITE_WINDOW.get());
 		tabData.accept(DifModItems.SUPER_BOX.get());
 		tabData.accept(DifModItems.SINGULARITATOR.get());
+		tabData.accept(DifModItems.CAMERA_MONITOR.get());
+		tabData.accept(DifModItems.CAMERA.get());
+		tabData.accept(DifModItems.CAMERA_LINK.get());
 		tabData.accept(DifModItems.SOLAR_PANEL_00.get());
 		tabData.accept(DifModItems.SOLAR_PANEL_01.get());
 		tabData.accept(DifModItems.SOLAR_PANEL_02.get());
@@ -361,10 +364,6 @@ public class DifModTabs{
 			tabData.accept(DifModItems.REMOTE_CONTROLLER.get());
 			tabData.accept(DifModItems.REMOTE_MINECART.get());
 			tabData.accept(DifModItems.REMOTE_MINECART_BLOCK.get());
-
-			tabData.accept(DifModItems.CAMERA_MONITOR.get());
-			tabData.accept(DifModItems.CAMERA.get());
-			tabData.accept(DifModItems.CAMERA_LINK.get());
 
 			tabData.accept(DifModItems.SLEEPING_BAG.get());
 			tabData.accept(DifModItems.QUARRY.get());

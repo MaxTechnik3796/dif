@@ -18,6 +18,7 @@ import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent.Pre;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(value=Dist.CLIENT)
@@ -184,6 +185,14 @@ public class ClientCameraHandler{
 	@SubscribeEvent
 	public static void onRenderHand(RenderHandEvent event){
 		if(isViewing){
+			event.setCanceled(true);
+		}
+	}
+	@SubscribeEvent
+	public static void onRenderGui(Pre event) {
+		if (isViewing) {
+			// Pokud to NENÍ zaměřovač, tak to zruš
+			if (event.getOverlay().id().getPath().equals("crosshair")) return;
 			event.setCanceled(true);
 		}
 	}
