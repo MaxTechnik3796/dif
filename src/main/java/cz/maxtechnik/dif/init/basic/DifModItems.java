@@ -5,13 +5,14 @@ import cz.maxtechnik.dif.fluid.bucket.*;
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
-import cz.maxtechnik.dif.item.food.create.*;
 import cz.maxtechnik.dif.item.tool.GodTotemItem;
 import cz.maxtechnik.dif.item.modular.ModularPart;
 import cz.maxtechnik.dif.item.modular.tool.*;
 import cz.maxtechnik.dif.item.tool.*;
 import cz.maxtechnik.dif.item.armor.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -23,6 +24,7 @@ import cz.maxtechnik.dif.item.quarry.DrillHeadItem;
 import cz.maxtechnik.dif.item.quarry.EngineItem;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 public class DifModItems{
 	public static final DeferredRegister<Item> REGISTRY=DeferredRegister.create(ForgeRegistries.ITEMS,DifMod.MODID);
 	public static final DeferredRegister<Item> V_REGISTRY=DeferredRegister.create(ForgeRegistries.ITEMS,"minecraft");
@@ -127,63 +129,59 @@ public class DifModItems{
 	public static final RegistryObject<Item> WATER=V_REGISTRY.register("water",()->new BlockItem(Blocks.WATER,new Item.Properties()));
 	public static final RegistryObject<Item> LAVA=V_REGISTRY.register("lava",()->new BlockItem(Blocks.LAVA,new Item.Properties().fireResistant()));
 	public static final RegistryObject<Item> FIRE=V_REGISTRY.register("fire",()->new BlockItem(Blocks.FIRE,new Item.Properties().fireResistant()));
+
 	//Food:
 	public static final RegistryObject<Item> BEER=REGISTRY.register("beer",()->new Beer(DifModBlocks.BEER.get(),new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationMod(1F).alwaysEat().build())));
 
-	public static final RegistryObject<Item> CHERRY_BOTTLE=REGISTRY.register("cherry_bottle",CherryBottle::new);
-	public static final RegistryObject<Item> NETHER_WART_BOTTLE=REGISTRY.register("nether_wart_bottle",NetherWartBottle::new);
-	public static final RegistryObject<Item> WINE=REGISTRY.register("wine",Wine::new);
-	public static final RegistryObject<Item> FERNET=REGISTRY.register("fernet",Fernet::new);
-	public static final RegistryObject<Item> SUGAR_MUSHROOM=REGISTRY.register("sugar_mushroom",()->new Custom(3,0.5F));
-	public static final RegistryObject<Item> CHERRY=REGISTRY.register("cherry",()->new Custom(1,0.1F));
+	public static final RegistryObject<Item> CHERRY_BOTTLE=REGISTRY.register("cherry_bottle",()->new RetvalFoods(new Item.Properties().rarity(Rarity.UNCOMMON).food(DifModFoods.CHERRY_BOTTLE),Items.GLASS_BOTTLE,UseAnim.DRINK));
+	public static final RegistryObject<Item> NETHER_WART_BOTTLE=REGISTRY.register("nether_wart_bottle",()->new RetvalFoods(new Item.Properties().rarity(Rarity.UNCOMMON).food(DifModFoods.NETHER_WART_BOTTLE),Items.GLASS_BOTTLE,UseAnim.DRINK));
+	public static final RegistryObject<Item> WINE=REGISTRY.register("wine",()->new RetvalFoods(new Item.Properties().rarity(Rarity.UNCOMMON),Items.GLASS_BOTTLE,UseAnim.DRINK));
+	public static final RegistryObject<Item> FERNET=REGISTRY.register("fernet",()->new RetvalFoods(new Item.Properties().food(DifModFoods.WINE).rarity(Rarity.UNCOMMON).food(DifModFoods.FERNET),Items.GLASS_BOTTLE,UseAnim.DRINK));
+	public static final RegistryObject<Item> SUGAR_MUSHROOM=REGISTRY.register("sugar_mushroom",()->new Item(new Item.Properties().food(DifModFoods.SUGAR_MUSHROOM)));
+	public static final RegistryObject<Item> CHERRY=REGISTRY.register("cherry",()->new Item(new Item.Properties().food(DifModFoods.CHERRY)));
 
+	public static final RegistryObject<Item>FLAT_DOUGH=REGISTRY.register("flat_dough",()->new Item((new Item.Properties()).food(DifModFoods.FLAT_DOUGH)));
 
 	public static final RegistryObject<Item> BOTTLE_OF_MOLOTOVUV_KOKTEJL=REGISTRY.register("bottle_of_molotovuv_koktejl",MolotovuvKoktejl::new);
 	public static final RegistryObject<Item> BOTTLE_OF_URANOVEJ_KOKTEJL=REGISTRY.register("bottle_of_uranovej_koktejl",UranovejKoktejl::new);
 
-	public static final RegistryObject<Item> BUCKET_OF_CHICKEN=REGISTRY.register("bucket_of_chicken",BucketOfChicken::new);
-	public static final RegistryObject<Item> FRIES=REGISTRY.register("fries",()->new Custom(3,0.45F));
-	public static final RegistryObject<Item> RIZEK=REGISTRY.register("rizek",()->new CustomMeat(5,0.4F));
+	public static final RegistryObject<Item> BUCKET_OF_CHICKEN=REGISTRY.register("bucket_of_chicken",()->new RetvalFoods(new Item.Properties().food(DifModFoods.BUCKET_OF_CHICKEN),Items.BUCKET,UseAnim.EAT));
+	public static final RegistryObject<Item> FRIES=REGISTRY.register("fries",()->new Item(new Item.Properties().food(DifModFoods.FRIES)));
+	public static final RegistryObject<Item> RIZEK=REGISTRY.register("rizek",()->new Item(new Item.Properties().food(DifModFoods.RIZEK)));
 
-	public static final RegistryObject<Item> HORSE_MEAT=REGISTRY.register("horse_meat",()->new CustomMeat(2,0.1F));
-	public static final RegistryObject<Item> COOKED_HORSE_MEAT=REGISTRY.register("cooked_horse_meat",()->new CustomMeat(6,0.8F));
+	public static final RegistryObject<Item> HORSE_MEAT=REGISTRY.register("horse_meat",()->new Item(new Item.Properties().food(DifModFoods.HORSE_MEAT)));
+	public static final RegistryObject<Item> COOKED_HORSE_MEAT=REGISTRY.register("cooked_horse_meat",()->new Item(new Item.Properties().food(DifModFoods.COOKED_HORSE_MEAT)));
 
-	public static final RegistryObject<Item> CIDER_BOTTLE=REGISTRY.register("cider_bottle",CiderBottle::new);
-	public static final RegistryObject<Item> BURNED_TOAST=REGISTRY.register("burned_toast",()->new Custom(3,0.1F));
+	public static final RegistryObject<Item> CIDER_BOTTLE=REGISTRY.register("cider_bottle",()->new RetvalFoods(new Item.Properties().food(DifModFoods.CIDER_BOTTLE),Items.GLASS_BOTTLE,UseAnim.DRINK));
+	public static final RegistryObject<Item> BURNED_TOAST=REGISTRY.register("burned_toast",()->new Item(new Item.Properties().food(DifModFoods.BURNED_TOAST)));
 
-	public static final RegistryObject<Item> CREATE_CAN=REGISTRY.register("create_can",Can::new);
-	public static final RegistryObject<Item> CREATE_BOWL=REGISTRY.register("create_bowl",Bowl::new);
-	public static final RegistryObject<Item> SUPER_HEATED_CREATE_BOWL=REGISTRY.register("super_heated_create_bowl",Super::new);
+	public static final RegistryObject<Item> CREATE_CAN=REGISTRY.register("create_can",()->new RetvalFoods(new Item.Properties().food(DifModFoods.CRETE_CAN),Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("create","andesite_alloy"))),UseAnim.EAT));
+	public static final RegistryObject<Item> CREATE_BOWL=REGISTRY.register("create_bowl",()->new RetvalFoods(new Item.Properties().food(DifModFoods.CREATE_BOWL),Items.BOWL,UseAnim.EAT));
+	public static final RegistryObject<Item> SUPER_HEATED_CREATE_BOWL=REGISTRY.register("super_heated_create_bowl",()->new RetvalFoods(new  Item.Properties().food(DifModFoods.CREATE_SUPER),Items.BOWL,UseAnim.EAT));
 
-	public static final RegistryObject<Item> QUESTION_MARK=REGISTRY.register("question_mark",Basic::new);
-
-
-	public static final RegistryObject<Item> INCOMPLETE_UNIVERSAL=REGISTRY.register("incomplete_universal",Basic::new);
-
-
-	public static final RegistryObject<Item> MATY_DRINK=REGISTRY.register("maty_drink",MatyDrink::new);
-	public static final RegistryObject<Item> MATA=REGISTRY.register("mata",()->new Custom(1,0.2F));
+	public static final RegistryObject<Item> MATY_DRINK=REGISTRY.register("maty_drink",()->new RetvalFoods(new Item.Properties().rarity(Rarity.UNCOMMON).food(DifModFoods.MATY_DRINK),Items.GLASS_BOTTLE,UseAnim.DRINK));
+	public static final RegistryObject<Item> MATA=REGISTRY.register("mata",()->new Item(new Item.Properties().food(DifModFoods.MATA)));
 	public static final RegistryObject<Item> MATA_PLANT=block(DifModBlocks.MATA_PLANT);
 	public static final RegistryObject<Item> MATY_BLOCK=block(DifModBlocks.MATY_BLOCK);
 
 	public static final RegistryObject<Item> CANOLA_SEEDS=REGISTRY.register("canola_seeds",Canola::new);
 	public static final RegistryObject<Item> CANOLA_PLANT=block(DifModBlocks.CANOLA_PLANT);
 
+	//Tech & Stuff:
+	public static final RegistryObject<Item> QUESTION_MARK=REGISTRY.register("question_mark",Basic::new);
+	public static final RegistryObject<Item> INCOMPLETE_UNIVERSAL=REGISTRY.register("incomplete_universal",Basic::new);
 	public static final RegistryObject<Item> ELECTRUM_DESTROYER=REGISTRY.register("electrum_destroyer",ElectrumDestroyer::new);
-
+	public static final RegistryObject<Item> BLUESTONE=REGISTRY.register("bluestone",Basic::new);
+	public static final RegistryObject<Item> BLUE_PLATE=REGISTRY.register("blue_plate",Basic::new);
+	public static final RegistryObject<Item> HEAVY_PLATE=REGISTRY.register("heavy_plate",Basic::new);
 
 	public static final RegistryObject<Item> MITHRIL=REGISTRY.register("mithril",Basic::new);
 	public static final RegistryObject<Item> MITHRIL_PLATE=REGISTRY.register("mithril_plate",Basic::new);
 	public static final RegistryObject<Item> INCOMPLETE_MITHRIL_PLATE=REGISTRY.register("incomplete_mithril_plate",Basic::new);
 
-	public static final RegistryObject<Item> BLUESTONE=REGISTRY.register("bluestone",Basic::new);
-
 	public static final RegistryObject<Item> CPU_SINGULARITY=REGISTRY.register("cpu_singularity",Basic::new);
 	public static final RegistryObject<Item> INCOMPLETE_CPU_SINGULARITY=REGISTRY.register("incomplete_cpu_singularity",Basic::new);
 
-
-	public static final RegistryObject<Item> BLUE_PLATE=REGISTRY.register("blue_plate",Basic::new);
-	public static final RegistryObject<Item> HEAVY_PLATE=REGISTRY.register("heavy_plate",Basic::new);
 
 	//Main:
 	public static final RegistryObject<Item> THE_DIFFERENTIAL=block(DifModBlocks.THE_DIFFERENTIAL);

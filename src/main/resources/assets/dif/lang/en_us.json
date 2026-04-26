@@ -5,10 +5,11 @@
 	"key.dif.open_ender": "Open Ender Chest",
 	"key.dif.remote_minecart_boost": "Remote Minecart: Boost",
 	"key.dif.remote_minecart_invert": "Remote Minecart: Invert",
-	"key.dif.gear_up": "Gear Up",
-	"key.dif.gear_down": "Gear Down",
-	"key.dif.car_gas": "Gas",
-	"key.dif.car_brake": "Brake",
+	"key.dif.gear_up":"Car: Gear Up",
+	"key.dif.gear_down":"Car: Gear Down",
+	"key.dif.car_gas":"Car: Gas",
+	"key.dif.car_brake":"Car: Brake",
+	"key.dif.camera_lock":"Car: Camera Lock",
 	"key.dif.mega_backpack":"Open Mega Backpack",
 	"effect.dif.redstone_iq": "Redstone Boost",
 	"effect.dif.redstone_not_iq": "Redstonenot Anti-Boost",
@@ -271,5 +272,6 @@
 	"item.dif.diamond_engine": "Diamond Engine",
 	"item.dif.liquid_remover": "Liquid Remover",
 	"biome.dif.moon_plains":"Moon Plains",
-	"biome.dif.orbit_void":"Space"
+	"biome.dif.orbit_void":"Space",
+	"item.dif.flat_dough":"Flat Dough"
 }
