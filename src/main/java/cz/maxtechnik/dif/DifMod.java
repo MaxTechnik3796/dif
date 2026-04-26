@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
+import cz.maxtechnik.dif.init.events.OilWellFeature;
 import cz.maxtechnik.dif.network.ModNetworking;
 import cz.maxtechnik.dif.renderer.BrassWaterWheelRenderer;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
@@ -33,6 +34,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
@@ -55,6 +58,9 @@ import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 
 import java.util.function.BiConsumer;
@@ -98,6 +104,7 @@ public class DifMod {
 		DifModRecipes.REGISTRY.register(bus);
 		DifModRecipes.TYPE_REGISTRY.register(bus);
 		DifModEntities.REGISTRY.register(bus);
+		ModFeatures.register(bus);
 		// REGISTRACE EVENTŮ
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(JetpackHandler.class);
@@ -168,6 +175,7 @@ public class DifMod {
 		public static final PartialModel BRASS_PRESS_HEAD = PartialModel.of(new ResourceLocation(MODID,"block/brass_mechanical_press_head"));
 		public static final PartialModel BRASS_MIXER_POLE = PartialModel.of(new ResourceLocation(MODID, "block/brass_mechanical_mixer_pole"));
 		public static final PartialModel BRASS_MIXER_HEAD = PartialModel.of(new ResourceLocation(MODID, "block/brass_mechanical_mixer_head"));
+
 
 		@SubscribeEvent
 		public static void onClientSetup(FMLClientSetupEvent event) {
