@@ -56,15 +56,17 @@ public class Quarry extends BaseEntityBlock {
     }
 
     private static boolean hasUnbreakableInFrameArea(Level level, BlockPos pos, BlockState state) {
-        Direction facing = state.getValue(FACING);
-        int range = QuarryBlockEntity.DEFAULT_RANGE;
-        BlockPos center = pos.relative(facing.getOpposite(), range + 1);
+        if (!(level.getBlockEntity(pos) instanceof QuarryBlockEntity qbe)) return false;
+        BlockPos center = qbe.getAreaCenter();
+        if (center == null) return false;
+        int halfX = qbe.getFrameHalfX();
+        int halfZ = qbe.getFrameHalfZ();
         int yBase = pos.getY();
         int yTop  = yBase + 3;
 
         for (int y = yBase; y <= yTop; y++)
-            for (int x = center.getX() - range; x <= center.getX() + range; x++)
-                for (int z = center.getZ() - range; z <= center.getZ() + range; z++) {
+            for (int x = center.getX() - halfX; x <= center.getX() + halfX; x++)
+                for (int z = center.getZ() - halfZ; z <= center.getZ() + halfZ; z++) {
                     BlockPos p = new BlockPos(x, y, z);
                     BlockState bs = level.getBlockState(p);
                     if (!bs.isAir() && bs.getDestroySpeed(level, p) < 0) return true;
@@ -78,37 +80,55 @@ public class Quarry extends BaseEntityBlock {
         super.onPlace(state, level, pos, oldState, moving);
         if (level.isClientSide) return;
 
+        // Nejdřív najdi a aplikuj landmarky (nastaví customCenter/halfX/halfZ)
+        tryApplyNearbyLandmarks(level, pos);
+
+        // Až poté zkontroluj unbreakable bloky ve skutečné oblasti
         if (hasUnbreakableInFrameArea(level, pos, state)) {
             level.removeBlock(pos, false);
             Block.popResource(level, pos, new net.minecraft.world.item.ItemStack(this));
             return;
         }
-
-        // Hledej formed landmarky v okolí a aplikuj jejich oblast
-        tryApplyNearbyLandmarks(level, pos);
     }
 
     /**
-     * Po položení quarry prohledá okolí (±MAX_SEARCH bloků) na formed landmarky.
-     * Pokud najde skupinu se sformovanou oblastí, aplikuje ji na quarry
-     * a landmarky dropnou a zmizí.
+     * Prohledá okolí (±MAX_AREA_SIDE bloků, pouze stejný Y) na formed landmarky.
+     * Quarry musí být přímo na hraně frame oblasti (dotýká se jí) a na stejné Y úrovni.
      */
     private static void tryApplyNearbyLandmarks(Level level, BlockPos quarryPos) {
-        int search = 4; // Zvětšené okolí
+        int search = QuarryBlockEntity.MAX_AREA_SIDE;
         int baseY  = quarryPos.getY();
 
         for (int dx = -search; dx <= search; dx++) {
             for (int dz = -search; dz <= search; dz++) {
-                for (int dy = -search; dy <= search; dy++) {
-                    BlockPos p = new BlockPos(quarryPos.getX() + dx, quarryPos.getY() + dy, quarryPos.getZ() + dz);
-                    if (!level.getBlockState(p).is(DifModBlocks.QUARRY_LANDMARK.get())) continue;
-                    if (!(level.getBlockEntity(p) instanceof QuarryLandmarkBlockEntity lbe)) continue;
-                    if (!lbe.isFormed()) continue;
+                BlockPos p = new BlockPos(quarryPos.getX() + dx, baseY, quarryPos.getZ() + dz);
+                if (!level.getBlockState(p).is(DifModBlocks.QUARRY_LANDMARK.get())) continue;
+                if (!(level.getBlockEntity(p) instanceof QuarryLandmarkBlockEntity lbe)) continue;
+                if (!lbe.isFormed()) continue;
 
-                    // Našel sformovaný landmark!
-                    lbe.applyToQuarry(level, quarryPos);
-                    return;
-                }
+                BlockPos center = lbe.getFormedCenter();
+                int halfX = lbe.getFormedHalfX();
+                int halfZ = lbe.getFormedHalfZ();
+                if (center == null) continue;
+
+                // Musí být na stejné Y úrovni
+                if (quarryPos.getY() != center.getY()) continue;
+
+                // Quarry musí být přesně 1 blok za hranou frame oblasti
+                int qx = quarryPos.getX(), qz = quarryPos.getZ();
+                int minX = center.getX() - halfX, maxX = center.getX() + halfX;
+                int minZ = center.getZ() - halfZ, maxZ = center.getZ() + halfZ;
+
+                boolean onEdge =
+                    (qz == minZ - 1 && qx >= minX && qx <= maxX) ||  // sever
+                    (qz == maxZ + 1 && qx >= minX && qx <= maxX) ||  // jih
+                    (qx == minX - 1 && qz >= minZ && qz <= maxZ) ||  // západ
+                    (qx == maxX + 1 && qz >= minZ && qz <= maxZ);    // východ
+
+                if (!onEdge) continue;
+
+                lbe.applyToQuarry(level, quarryPos);
+                return;
             }
         }
     }

@@ -141,7 +141,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 		@Override public int get(int index) {
 			return switch (index) {
 				case 0 -> quarryState.ordinal();
-				case 1 -> (int)(getProgressPerTick() * 100);
+				case 1 -> Math.max(0, getTotalDPGen() - getHeadDPReq());
 				case 2 -> (short)(energy.getEnergyStored() & 0xFFFF);
 				case 3 -> (short)((energy.getEnergyStored() >> 16) & 0xFFFF);
 				case 4 -> getTotalFECost();
