@@ -13,6 +13,7 @@ import cz.maxtechnik.dif.item.tool.*;
 import cz.maxtechnik.dif.item.armor.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -131,7 +132,7 @@ public class DifModItems{
 	public static final RegistryObject<Item> FIRE=V_REGISTRY.register("fire",()->new BlockItem(Blocks.FIRE,new Item.Properties().fireResistant()));
 
 	//Food:
-	public static final RegistryObject<Item> BEER=REGISTRY.register("beer",()->new Beer(DifModBlocks.BEER.get(),new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationMod(1F).alwaysEat().build())));
+	public static final RegistryObject<Item> BEER=REGISTRY.register("beer",()->new Beer(DifModBlocks.BEER.get(),new Item.Properties().food(DifModFoods.BEER)));
 
 	public static final RegistryObject<Item> CHERRY_BOTTLE=REGISTRY.register("cherry_bottle",()->new RetvalFoods(new Item.Properties().rarity(Rarity.UNCOMMON).food(DifModFoods.CHERRY_BOTTLE),Items.GLASS_BOTTLE,UseAnim.DRINK));
 	public static final RegistryObject<Item> NETHER_WART_BOTTLE=REGISTRY.register("nether_wart_bottle",()->new RetvalFoods(new Item.Properties().rarity(Rarity.UNCOMMON).food(DifModFoods.NETHER_WART_BOTTLE),Items.GLASS_BOTTLE,UseAnim.DRINK));
@@ -141,6 +142,7 @@ public class DifModItems{
 	public static final RegistryObject<Item> CHERRY=REGISTRY.register("cherry",()->new Item(new Item.Properties().food(DifModFoods.CHERRY)));
 
 	public static final RegistryObject<Item>FLAT_DOUGH=REGISTRY.register("flat_dough",()->new Item((new Item.Properties()).food(DifModFoods.FLAT_DOUGH)));
+	public static final RegistryObject<Item>BAGUETTE=REGISTRY.register("baguette",()->new Item(new Item.Properties().food(Foods.BREAD)));
 
 	public static final RegistryObject<Item> BOTTLE_OF_MOLOTOVUV_KOKTEJL=REGISTRY.register("bottle_of_molotovuv_koktejl",MolotovuvKoktejl::new);
 	public static final RegistryObject<Item> BOTTLE_OF_URANOVEJ_KOKTEJL=REGISTRY.register("bottle_of_uranovej_koktejl",UranovejKoktejl::new);

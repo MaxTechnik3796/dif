@@ -20,26 +20,9 @@ public class Beer extends BlockItem{
 		super(block,properties);
 	}
 	@Override
-	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemstack,@NotNull Level world,@NotNull LivingEntity entity){
-		ItemStack retval=new ItemStack(Items.GLASS_BOTTLE);
-		super.finishUsingItem(itemstack,world,entity);
-		if(!world.isClientSide()){
-			if(DifMod.rouletteBoolean(4)){
-				entity.addEffect(new MobEffectInstance(DifModMobEffects.DRANK.get(),600,0));
-			}else{
-				entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION,100,0));
-			}
-		}
-		if(itemstack.isEmpty()){
-			return retval;
-		}else{
-			if(entity instanceof Player player&&!player.getAbilities().instabuild){
-				if(!player.getInventory().add(retval)){
-					player.drop(retval,false);
-				}
-			}
-			return itemstack;
-		}
+	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemStack,@NotNull Level level,@NotNull LivingEntity entity){
+		ItemStack itemstack=super.finishUsingItem(itemStack,level,entity);
+		return entity instanceof Player&&((Player)entity).getAbilities().instabuild?itemstack:new ItemStack(Items.GLASS_BOTTLE);
 	}
 	@Override
 	public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemstack){

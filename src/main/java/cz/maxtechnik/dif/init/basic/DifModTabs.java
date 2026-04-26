@@ -326,7 +326,11 @@ public class DifModTabs{
 					});
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.FOOD_AND_DRINKS)){
 			tabData.getEntries().putAfter(new ItemStack(Items.POISONOUS_POTATO),new ItemStack(FRIES.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			tabData.getEntries().putAfter(new ItemStack(Items.BREAD),new ItemStack(BURNED_TOAST.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			addItemStacksBehind(tabData,new ItemStack(Items.BREAD),
+					new ItemStack[]{
+							new ItemStack(BAGUETTE.get()),
+							new ItemStack(BURNED_TOAST.get())
+					});
 			addItemStacksBehind(tabData,new ItemStack(Items.COOKED_CHICKEN),
 					new ItemStack[]{
 							new ItemStack(BUCKET_OF_CHICKEN.get()),
