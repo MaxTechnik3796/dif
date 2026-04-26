@@ -7,6 +7,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.BucketItem;
 public class BeerBucket extends BucketItem{
 	public BeerBucket(){
-		super(DifModFluids.BEER,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).rarity(Rarity.COMMON));
+		super(DifModFluids.BEER,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
 	}
 }

@@ -16,15 +16,13 @@ public class CiderFluidType extends FluidType{
 	@Override
 	public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer){
 		consumer.accept(new IClientFluidTypeExtensions(){
-			private static final ResourceLocation STILL_TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/cider_fluid_still");
-			private static final ResourceLocation FLOWING_TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/cider_fluid_flow");
 			@Override
 			public ResourceLocation getStillTexture(){
-				return STILL_TEXTURE;
+				return ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/cider_fluid_still");
 			}
 			@Override
 			public ResourceLocation getFlowingTexture(){
-				return FLOWING_TEXTURE;
+				return ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/cider_fluid_flow");
 			}
 		});
 	}

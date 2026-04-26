@@ -293,7 +293,8 @@ public class DifModTabs{
 							new ItemStack(FUEL_BUCKET.get()),
 							new ItemStack(JETPACK_FUEL_BUCKET.get()),
 							new ItemStack(JETPACK_TURBO_FUEL_BUCKET.get()),
-							new ItemStack(SUNFLOWER_OIL_BUCKET.get())
+							new ItemStack(SUNFLOWER_OIL_BUCKET.get()),
+							new ItemStack(CRUDE_OIL_BUCKET.get())
 					});
 			tabData.accept(DOG.get());
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.COMBAT)){

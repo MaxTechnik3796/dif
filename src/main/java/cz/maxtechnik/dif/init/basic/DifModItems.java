@@ -115,6 +115,7 @@ public class DifModItems{
 	public static final RegistryObject<Item> XP_BUCKET=REGISTRY.register("xp_bucket",XpBucket::new);
 	public static final RegistryObject<Item> FUEL_BUCKET=REGISTRY.register("fuel_bucket",FuelBucket::new);
 	public static final RegistryObject<Item>CIDER_BUCKET=REGISTRY.register("cider_bucket",CiderBucket::new);
+	public static final RegistryObject<Item>CRUDE_OIL_BUCKET=REGISTRY.register("crude_oil_bucket",CrudeOilBucket::new);
 	public static final RegistryObject<Item>JETPACK_FUEL_BUCKET=REGISTRY.register("jetpack_fuel_bucket",JetpackFuelBucket::new);
 	public static final RegistryObject<Item>JETPACK_TURBO_FUEL_BUCKET=REGISTRY.register("jetpack_turbo_fuel_bucket",JetpackTurboFuelBucket::new);
 	public static final RegistryObject<Item>SUNFLOWER_OIL_BUCKET=REGISTRY.register("sunflower_oil_bucket",SunflowerOilBucket::new);

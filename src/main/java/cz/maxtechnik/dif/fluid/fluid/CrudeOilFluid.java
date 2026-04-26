@@ -10,11 +10,11 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import org.jetbrains.annotations.NotNull;
-public abstract class SunflowerOilFluid extends ForgeFlowingFluid{
-	private SunflowerOilFluid(){
-		super(new Properties(DifModFluidTypes.SUNFLOWER_OIL_TYPE,DifModFluids.SUNFLOWER_OIL,DifModFluids.FLOWING_SUNFLOWER_OIL).explosionResistance(100F).bucket(DifModItems.SUNFLOWER_OIL_BUCKET).tickRate(3).block(()->(LiquidBlock)DifModBlocks.SUNFLOWER_OIL_FLUID.get()));
+public abstract class CrudeOilFluid extends ForgeFlowingFluid{
+	private CrudeOilFluid(){
+		super(new Properties(DifModFluidTypes.CRUDE_OIL_TYPE,DifModFluids.CRUDE_OIL,DifModFluids.FLOWING_CRUDE_OIL).explosionResistance(100F).bucket(DifModItems.CRUDE_OIL_BUCKET).tickRate(28).block(()->(LiquidBlock)DifModBlocks.CRUDE_OIL_FLUID.get()));
 	}
-	public static class Source extends SunflowerOilFluid{
+	public static class Source extends CrudeOilFluid{
 		public int getAmount(@NotNull FluidState state){
 			return 8;
 		}
@@ -22,7 +22,7 @@ public abstract class SunflowerOilFluid extends ForgeFlowingFluid{
 			return true;
 		}
 	}
-	public static class Flowing extends SunflowerOilFluid{
+	public static class Flowing extends CrudeOilFluid{
 		protected void createFluidStateDefinition(StateDefinition.@NotNull Builder<Fluid,FluidState> builder){
 			super.createFluidStateDefinition(builder);
 			builder.add(LEVEL);

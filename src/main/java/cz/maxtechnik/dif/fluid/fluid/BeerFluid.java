@@ -11,9 +11,8 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import org.jetbrains.annotations.NotNull;
 public abstract class BeerFluid extends ForgeFlowingFluid{
-	public static final Properties PROPERTIES=new Properties(DifModFluidTypes.BEER_TYPE,DifModFluids.BEER,DifModFluids.FLOWING_BEER).explosionResistance(100f).bucket(DifModItems.BEER_BUCKET).block(()->(LiquidBlock)DifModBlocks.BEER_FLUID.get());
 	private BeerFluid(){
-		super(PROPERTIES);
+		super(new Properties(DifModFluidTypes.BEER_TYPE,DifModFluids.BEER,DifModFluids.FLOWING_BEER).explosionResistance(100F).bucket(DifModItems.BEER_BUCKET).block(()->(LiquidBlock)DifModBlocks.BEER_FLUID.get()));
 	}
 	public static class Source extends BeerFluid{
 		public int getAmount(@NotNull FluidState state){

@@ -6,6 +6,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 public class SunflowerOilBucket extends BucketItem{
 	public SunflowerOilBucket(){
-		super(DifModFluids.SUNFLOWER_OIL,new Properties().craftRemainder(Items.BUCKET).stacksTo(1).rarity(Rarity.COMMON));
+		super(DifModFluids.SUNFLOWER_OIL,new Properties().craftRemainder(Items.BUCKET).stacksTo(1));
 	}
 }

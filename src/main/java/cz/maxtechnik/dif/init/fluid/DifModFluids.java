@@ -32,6 +32,9 @@ public class DifModFluids{
 	public static final RegistryObject<FlowingFluid>CIDER=REGISTRY.register("cider_fluid",CiderFluid.Source::new);
 	public static final RegistryObject<FlowingFluid>FLOWING_CIDER=REGISTRY.register("flowing_cider_fluid",CiderFluid.Flowing::new);
 
+	public static final RegistryObject<FlowingFluid>CRUDE_OIL=REGISTRY.register("crude_oil_fluid",CrudeOilFluid.Source::new);
+	public static final RegistryObject<FlowingFluid>FLOWING_CRUDE_OIL=REGISTRY.register("flowing_crude_oil_fluid",CrudeOilFluid.Flowing::new);
+
 	public static final RegistryObject<FlowingFluid>XP=REGISTRY.register("xp_fluid",XpFluid.Source::new);
 	public static final RegistryObject<FlowingFluid>FLOWING_XP=REGISTRY.register("flowing_xp_fluid",XpFluid.Flowing::new);
 

@@ -11,9 +11,8 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import org.jetbrains.annotations.NotNull;
 public abstract class CiderFluid extends ForgeFlowingFluid{
-	public static final Properties PROPERTIES=new Properties(DifModFluidTypes.CIDER_TYPE,DifModFluids.CIDER,DifModFluids.FLOWING_CIDER).explosionResistance(100f).bucket(DifModItems.CIDER_BUCKET).block(()->(LiquidBlock)DifModBlocks.CIDER_FLUID.get());
 	private CiderFluid(){
-		super(PROPERTIES);
+		super(new Properties(DifModFluidTypes.CIDER_TYPE,DifModFluids.CIDER,DifModFluids.FLOWING_CIDER).explosionResistance(100F).bucket(DifModItems.CIDER_BUCKET).block(()->(LiquidBlock)DifModBlocks.CIDER_FLUID.get()));
 	}
 	public static class Source extends CiderFluid{
 		public int getAmount(@NotNull FluidState state){

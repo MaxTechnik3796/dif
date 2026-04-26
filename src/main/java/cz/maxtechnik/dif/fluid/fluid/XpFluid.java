@@ -11,9 +11,8 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import org.jetbrains.annotations.NotNull;
 public abstract class XpFluid extends ForgeFlowingFluid{
-	public static final Properties PROPERTIES=new Properties(DifModFluidTypes.XP_TYPE,DifModFluids.XP,DifModFluids.FLOWING_XP).explosionResistance(100f).bucket(DifModItems.XP_BUCKET).block(()->(LiquidBlock)DifModBlocks.XP_FLUID.get());
 	private XpFluid(){
-		super(PROPERTIES);
+		super(new Properties(DifModFluidTypes.XP_TYPE,DifModFluids.XP,DifModFluids.FLOWING_XP).explosionResistance(100F).bucket(DifModItems.XP_BUCKET).block(()->(LiquidBlock)DifModBlocks.XP_FLUID.get()));
 	}
 	public static class Source extends XpFluid{
 		public int getAmount(@NotNull FluidState state){

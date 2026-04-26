@@ -2,13 +2,11 @@
 package cz.maxtechnik.dif.fluid.type;
 
 import cz.maxtechnik.dif.DifMod;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fluids.FluidType;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 public class BeerFluidType extends FluidType{
@@ -18,14 +16,13 @@ public class BeerFluidType extends FluidType{
 	@Override
 	public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer){
 		consumer.accept(new IClientFluidTypeExtensions(){
-			private static final ResourceLocation STILL_TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/beer_fluid_still"), FLOWING_TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/beer_fluid_flow");
 			@Override
 			public ResourceLocation getStillTexture(){
-				return STILL_TEXTURE;
+				return ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/beer_fluid_still");
 			}
 			@Override
 			public ResourceLocation getFlowingTexture(){
-				return FLOWING_TEXTURE;
+				return ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/beer_fluid_flow");
 			}
 		});
 	}

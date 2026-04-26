@@ -7,6 +7,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.BucketItem;
 public class FuelBucket extends BucketItem{
 	public FuelBucket(){
-		super(DifModFluids.FUEL,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).rarity(Rarity.COMMON));
+		super(DifModFluids.FUEL,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1));
 	}
 }

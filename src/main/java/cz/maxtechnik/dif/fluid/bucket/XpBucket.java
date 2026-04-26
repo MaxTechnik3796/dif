@@ -6,6 +6,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 public class XpBucket extends BucketItem{
 	public XpBucket(){
-		super(DifModFluids.XP,new Properties().craftRemainder(Items.BUCKET).stacksTo(1).rarity(Rarity.COMMON));
+		super(DifModFluids.XP,new Properties().craftRemainder(Items.BUCKET).stacksTo(1));
 	}
 }

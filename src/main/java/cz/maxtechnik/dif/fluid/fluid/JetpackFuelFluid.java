@@ -11,10 +11,8 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import org.jetbrains.annotations.NotNull;
 public abstract class JetpackFuelFluid extends ForgeFlowingFluid{
-	public static final Properties PROPERTIES=new Properties(DifModFluidTypes.JETPACK_FUEL_TYPE,DifModFluids.JETPACK_FUEL,DifModFluids.FLOWING_JETPACK_FUEL)
-			.explosionResistance(100f).bucket(DifModItems.JETPACK_FUEL_BUCKET).block(()->(LiquidBlock)DifModBlocks.JETPACK_FUEL_FLUID.get());
 	private JetpackFuelFluid(){
-		super(PROPERTIES);
+		super(new Properties(DifModFluidTypes.JETPACK_FUEL_TYPE,DifModFluids.JETPACK_FUEL,DifModFluids.FLOWING_JETPACK_FUEL).explosionResistance(100F).bucket(DifModItems.JETPACK_FUEL_BUCKET).tickRate(7).block(()->(LiquidBlock)DifModBlocks.JETPACK_FUEL_FLUID.get()));
 	}
 	public static class Source extends JetpackFuelFluid{
 		public int getAmount(@NotNull FluidState state){
