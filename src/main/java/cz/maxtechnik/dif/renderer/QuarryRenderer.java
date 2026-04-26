@@ -3,6 +3,7 @@ package cz.maxtechnik.dif.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import cz.maxtechnik.dif.block.entity.QuarryBlockEntity;
+import cz.maxtechnik.dif.block.entity.QuarryBlockEntity.State;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -14,95 +15,100 @@ import org.joml.Matrix4f;
 
 public class QuarryRenderer implements BlockEntityRenderer<QuarryBlockEntity> {
 
-	// Box je posunut o 0.5 bloku (8px) nahoru oproti základní Y pozici
+	// Box je posunut o půl bloku nahoru od základní Y pozice quarry
 	private static final float BOX_Y_OFFSET = 0.5f;
+	private static final float BOX_HEIGHT    = 3.0f;
 
 	@Override
-	public void render(QuarryBlockEntity be, float pt, @NotNull PoseStack ps,
-	                   @NotNull MultiBufferSource buf, int light, int overlay) {
+	public void render(QuarryBlockEntity blockEntity, float partialTick, @NotNull PoseStack poseStack,
+	                   @NotNull MultiBufferSource bufferSource, int light, int overlay) {
 
-		QuarryBlockEntity.State state = be.getQuarryState();
+		State quarryState = blockEntity.getQuarryState();
 
-		// DONE → nikdy nezobrazuj
-		if (state == QuarryBlockEntity.State.DONE) return;
+		// DONE → nic nevykresluj
+		if (quarryState == State.DONE) return;
 
 		Level level = Minecraft.getInstance().level;
 
-		// Pokud se těží a frame je kompletní → box nepotřebujeme (je fyzicky postaven)
-		if (state == QuarryBlockEntity.State.MINING && level != null
-				&& be.isFrameIntact(level, be.getBlockState())) return;
+		// Fyzický frame je kompletní → box je postaven, není třeba ho kreslit
+		if (quarryState == State.MINING && level != null
+				&& blockEntity.isFrameIntact(level, blockEntity.getBlockState())) return;
 
-		// NO_ENERGY: zobraz box jen pokud frame NENÍ kompletní (signalizuje problém)
-		// Pokud frame je ok a jen chybí energie → nic nezobrazuj
-		if (state == QuarryBlockEntity.State.NO_ENERGY && level != null
-				&& be.isFrameIntact(level, be.getBlockState())) return;
+		// Chybí pouze energie a frame je ok → nic nezobrazuj
+		if (quarryState == State.NO_ENERGY && level != null
+				&& blockEntity.isFrameIntact(level, blockEntity.getBlockState())) return;
 
-		BlockPos qp = be.getBlockPos();
-		BlockPos center = be.getAreaCenter();
-		if (center == null) return;
+		BlockPos quarryPos = blockEntity.getBlockPos();
+		BlockPos areaCenter = blockEntity.getAreaCenter();
+		if (areaCenter == null) return;
 
-		int hx = be.getFrameHalfX();
-		int hz = be.getFrameHalfZ();
+		int halfX = blockEntity.getFrameHalfX();
+		int halfZ = blockEntity.getFrameHalfZ();
 
-		float cx = center.getX() - qp.getX();
-		float cz = center.getZ() - qp.getZ();
-		float x0 = cx - hx + .5f, x1 = cx + hx + .5f;
-		float z0 = cz - hz + .5f, z1 = cz + hz + .5f;
+		// Souřadnice relativní k pozici quarry
+		float relCenterX = areaCenter.getX() - quarryPos.getX();
+		float relCenterZ = areaCenter.getZ() - quarryPos.getZ();
+		float minX = relCenterX - halfX + 0.5f;
+		float maxX = relCenterX + halfX + 0.5f;
+		float minZ = relCenterZ - halfZ + 0.5f;
+		float maxZ = relCenterZ + halfZ + 0.5f;
 
-		ps.pushPose();
-		Matrix4f m = ps.last().pose();
-		VertexConsumer vc = buf.getBuffer(RenderType.lines());
+		poseStack.pushPose();
+		Matrix4f matrix = poseStack.last().pose();
+		VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.lines());
 
-		float yBot = BOX_Y_OFFSET;
-		float yTop = BOX_Y_OFFSET + 3f;
+		float yBottom = BOX_Y_OFFSET;
+		float yTop    = BOX_Y_OFFSET + BOX_HEIGHT;
 
-		// Dolní a horní obdélník
-		rect(m, vc, x0, yBot, z0, x1, z1);
-		rect(m, vc, x0, yTop, z0, x1, z1);
+		// Dolní a horní obdélník framu
+		rect(matrix, vertexConsumer, minX, yBottom, minZ, maxX, maxZ);
+		rect(matrix, vertexConsumer, minX, yTop,    minZ, maxX, maxZ);
 
-		// 4 svislé sloupy
-		pillar(m, vc, x0, z0, yBot, yTop);
-		pillar(m, vc, x1, z0, yBot, yTop);
-		pillar(m, vc, x0, z1, yBot, yTop);
-		pillar(m, vc, x1, z1, yBot, yTop);
+		// Čtyři svislé sloupy rohů
+		pillar(matrix, vertexConsumer, minX, minZ, yBottom, yTop);
+		pillar(matrix, vertexConsumer, maxX, minZ, yBottom, yTop);
+		pillar(matrix, vertexConsumer, minX, maxZ, yBottom, yTop);
+		pillar(matrix, vertexConsumer, maxX, maxZ, yBottom, yTop);
 
-		// Vrták – jen při těžení
-		if (state == QuarryBlockEntity.State.MINING) {
-			BlockPos mp = be.getMiningPos();
-			if (mp != null) {
-				float dx = mp.getX() - qp.getX() + .5f;
-				float dz = mp.getZ() - qp.getZ() + .5f;
-				float dy = mp.getY() - qp.getY();
-				line(m, vc, dx, yTop, dz, dx, dy, dz, 255, 255, 255, 200);
+		// Vrták – zobraz čáru k aktuálnímu těženému bloku
+		if (quarryState == State.MINING) {
+			BlockPos miningPos = blockEntity.getMiningPos();
+			if (miningPos != null) {
+				float drillX = miningPos.getX() - quarryPos.getX() + 0.5f;
+				float drillZ = miningPos.getZ() - quarryPos.getZ() + 0.5f;
+				float drillY = miningPos.getY() - quarryPos.getY();
+				line(matrix, vertexConsumer, drillX, yTop, drillZ, drillX, drillY, drillZ, 255, 255, 200);
 			}
 		}
 
-		ps.popPose();
+		poseStack.popPose();
 	}
 
-	private void rect(Matrix4f m, VertexConsumer vc, float x0, float y, float z0, float x1, float z1) {
-		line(m, vc, x0, y, z0, x1, y, z0, 255, 200, 0, 255);
-		line(m, vc, x1, y, z0, x1, y, z1, 255, 200, 0, 255);
-		line(m, vc, x1, y, z1, x0, y, z1, 255, 200, 0, 255);
-		line(m, vc, x0, y, z1, x0, y, z0, 255, 200, 0, 255);
+	private void rect(Matrix4f matrix, VertexConsumer vertexConsumer,
+	                  float minX, float yLevel, float minZ, float maxX, float maxZ) {
+		line(matrix, vertexConsumer, minX, yLevel, minZ, maxX, yLevel, minZ, 200, 0, 255);
+		line(matrix, vertexConsumer, maxX, yLevel, minZ, maxX, yLevel, maxZ, 200, 0, 255);
+		line(matrix, vertexConsumer, maxX, yLevel, maxZ, minX, yLevel, maxZ, 200, 0, 255);
+		line(matrix, vertexConsumer, minX, yLevel, maxZ, minX, yLevel, minZ, 200, 0, 255);
 	}
 
-	private void pillar(Matrix4f m, VertexConsumer vc, float x, float z, float yBot, float yTop) {
-		line(m, vc, x, yBot, z, x, yTop, z, 255, 200, 0, 255);
+	private void pillar(Matrix4f matrix, VertexConsumer vertexConsumer,
+	                    float cornerX, float cornerZ, float yBottom, float yTop) {
+		line(matrix, vertexConsumer, cornerX, yBottom, cornerZ, cornerX, yTop, cornerZ, 200, 0, 255);
 	}
 
-	private void line(Matrix4f m, VertexConsumer vc,
+	private void line(Matrix4f matrix, VertexConsumer vertexConsumer,
 	                  float x0, float y0, float z0,
 	                  float x1, float y1, float z1,
-	                  int r, int g, int b, int a) {
+	                  int colorG, int colorB, int colorA) {
 		float dx = x1 - x0, dy = y1 - y0, dz = z1 - z0;
 		float len = (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
 		if (len < 0.001f) return;
-		float nx = dx / len, ny = dy / len, nz = dz / len;
-		vc.vertex(m, x0, y0, z0).color(r, g, b, a).normal(nx, ny, nz).endVertex();
-		vc.vertex(m, x1, y1, z1).color(r, g, b, a).normal(nx, ny, nz).endVertex();
+		float normX = dx / len, normY = dy / len, normZ = dz / len;
+		vertexConsumer.vertex(matrix, x0, y0, z0).color(255, colorG, colorB, colorA).normal(normX, normY, normZ).endVertex();
+		vertexConsumer.vertex(matrix, x1, y1, z1).color(255, colorG, colorB, colorA).normal(normX, normY, normZ).endVertex();
 	}
 
-	@Override public boolean shouldRenderOffScreen(@NotNull QuarryBlockEntity be) { return true; }
+	@Override public boolean shouldRenderOffScreen(@NotNull QuarryBlockEntity blockEntity) { return true; }
 	@Override public int getViewDistance() { return 128; }
 }

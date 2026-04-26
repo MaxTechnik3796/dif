@@ -60,7 +60,6 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 	private static final int ADJ_CACHE_INTERVAL   = 60;
 	private static final int FE_TICK_INTERVAL     = 5;
 	private static final int FRAME_HEIGHT         = 3;
-	private static final int PREPARE_SPEED_DIV    = 4;
 
 	public static final int DEFAULT_RANGE = 5;
 	public static final int MAX_AREA_SIDE = 128;
@@ -126,37 +125,35 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 
 	private final LazyOptional<IItemHandler> inventoryCap = LazyOptional.of(() -> inventory);
 
-	private int FEInAcc   = 0;
-	private int FEOutAcc  = 0;
-	private int feTickCounter = 0;
+	private int feInAcc   = 0;
+	private int feOutAcc  = 0;
+	private int feTickTimer = 0;
 
 	private final EnergyStorage energy = new EnergyStorage(ENERGY_CAPACITY, ENERGY_INPUT, ENERGY_CAPACITY) {
 		@Override public int receiveEnergy(int max, boolean sim) {
 			int rcv = super.receiveEnergy(max, sim);
-			if (!sim) FEInAcc += rcv;
+			if (!sim) feInAcc += rcv;
 			return rcv;
 		}
 		@Override public int extractEnergy(int max, boolean sim) {
 			int ext = super.extractEnergy(max, sim);
-			if (!sim) FEOutAcc += ext;
+			if (!sim) feOutAcc += ext;
 			return ext;
 		}
 	};
 	private final LazyOptional<IEnergyStorage> energyCap = LazyOptional.of(() -> energy);
 
 	// GUI data:
-	// 0=stav, 1=rychlost%, 2=FE storage, 3=FE cost motorů, 4=areaX, 5=areaZ, 6=statusMode
+	// 0=stav, 1=excessDP, 2=feCost, 3=areaX, 4=areaZ, 5=statusMode
 	public final ContainerData dataAccess = new ContainerData() {
 		@Override public int get(int index) {
 			return switch (index) {
 				case 0 -> quarryState.ordinal();
 				case 1 -> Math.max(0, getTotalDPGen() - getHeadDPReq());
-				case 2 -> (short)(energy.getEnergyStored() & 0xFFFF);
-				case 3 -> (short)((energy.getEnergyStored() >> 16) & 0xFFFF);
-				case 4 -> getTotalFECost();
-				case 5 -> getFrameHalfX() * 2 + 1;
-				case 6 -> getFrameHalfZ() * 2 + 1;
-				case 7 -> {
+				case 2 -> getTotalFECost();
+				case 3 -> getFrameHalfX() * 2 + 1;
+				case 4 -> getFrameHalfZ() * 2 + 1;
+				case 5 -> {
 					if (getTotalDPGen() == 0)             yield 1;
 					if (getHeadDPReq()  == 0)             yield 2;
 					if (getTotalDPGen() < getHeadDPReq()) yield 3;
@@ -166,7 +163,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 			};
 		}
 		@Override public void set(int index, int value) {}
-		@Override public int getCount() { return 8; }
+		@Override public int getCount() { return 6; }
 	};
 
 	public QuarryBlockEntity(BlockPos pos, BlockState state) {
@@ -194,8 +191,6 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 		float t = Math.min(1f, (float)(gen - req) / QuarryStats.MAX_ACTIVE_DP);
 		return QuarryStats.MIN_PROGRESS_PER_TICK + t * (QuarryStats.MAX_PROGRESS_PER_TICK - QuarryStats.MIN_PROGRESS_PER_TICK);
 	}
-
-	public float getActiveProgressPerTick() { return getProgressPerTick(); }
 
 	public int getTotalFECost() {
 		Item eng1Item = inventory.getStackInSlot(1).getItem();
@@ -225,16 +220,16 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 	public static void tick(Level level, BlockPos pos, BlockState state, QuarryBlockEntity be) {
 		if (level.isClientSide) return;
 
-		if (++be.feTickCounter >= FE_TICK_INTERVAL) {
-			be.feTickCounter = 0;
-			be.FEInAcc  = 0;
-			be.FEOutAcc = 0;
+		if (++be.feTickTimer >= FE_TICK_INTERVAL) {
+			be.feTickTimer = 0;
+			be.feInAcc  = 0;
+			be.feOutAcc = 0;
 
-			int FENeeded = be.getTotalFECost() * FE_TICK_INTERVAL;
+			int feNeeded = be.getTotalFECost() * FE_TICK_INTERVAL;
 
 			if (be.quarryState != State.DONE && be.quarryState != State.NO_ENERGY) {
-				if (be.energy.getEnergyStored() >= FENeeded) {
-					be.energy.extractEnergy(FENeeded, false);
+				if (be.energy.getEnergyStored() >= feNeeded) {
+					be.energy.extractEnergy(feNeeded, false);
 					be.hasFEThisCycle = true;
 				} else {
 					be.hasFEThisCycle = false;
@@ -243,8 +238,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 					be.sync(level, pos, state);
 				}
 			} else if (be.quarryState == State.NO_ENERGY) {
-				if (be.energy.getEnergyStored() >= FENeeded) {
-					be.energy.extractEnergy(FENeeded, false);
+				if (be.energy.getEnergyStored() >= feNeeded) {
+					be.energy.extractEnergy(feNeeded, false);
 					be.hasFEThisCycle = true;
 					be.quarryState = be.activeState;
 					be.sync(level, pos, state);
@@ -310,8 +305,14 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 				: worldPosition.relative(facing.getOpposite(), hx + 1);
 
 		int yBase = worldPosition.getY();
+        cachedFramePos = getBlockPos(hx, hz, yBase);
+		return cachedFramePos;
+	}
+
+	private @NotNull List<BlockPos> getBlockPos(int hx, int hz, int yBase) {
 		List<BlockPos> result = new ArrayList<>();
-		for (int x = cachedCenter.getX() - hx; x <= cachedCenter.getX() + hx; x++) {
+        assert cachedCenter != null;
+        for (int x = cachedCenter.getX() - hx; x <= cachedCenter.getX() + hx; x++) {
 			for (int z = cachedCenter.getZ() - hz; z <= cachedCenter.getZ() + hz; z++) {
 				boolean edgeX = (x == cachedCenter.getX() - hx || x == cachedCenter.getX() + hx);
 				boolean edgeZ = (z == cachedCenter.getZ() - hz || z == cachedCenter.getZ() + hz);
@@ -324,8 +325,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 				}
 			}
 		}
-		cachedFramePos = result;
-		return cachedFramePos;
+		return result;
 	}
 
 	private BlockPos getAreaCenter(BlockState state) {
@@ -415,7 +415,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 			activeState = State.MINING;
 			quarryState = State.MINING;
 			initSections(state);
-			resetMiningPos(state);
+			resetMiningPos();
 			if (level instanceof ServerLevel sl) loadSectionChunks(sl);
 			sync(level, pos, state);
 		}
@@ -436,7 +436,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 
 		float progressStep = getProgressPerTick();
 		if (progressStep <= 0f) return;
-		if (miningPos == null) resetMiningPos(state);
+		if (miningPos == null) resetMiningPos();
 		if (miningPos == null) return;
 
 		ItemStack tool = buildSimulatedTool();
@@ -500,8 +500,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 	 * Vrátí false pokud jsou všechny sekce hotové.
 	 */
 	private boolean handleMiningAdvance(Level level, BlockPos pos, BlockState state) {
-		if (advanceMiningPos(state)) return true;
-		if (advanceToNextSection(level, pos, state)) return true;
+		if (advanceMiningPos()) return true;
+		if (advanceToNextSection(level, state)) return true;
 		finishMining(level, pos, state);
 		return false;
 	}
@@ -580,12 +580,12 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 
 	// Mining position (X→Z→Y↓) - pracuje v rámci aktuální sekce
 
-	private void resetMiningPos(BlockState state) {
+	private void resetMiningPos() {
 		miningPos = new BlockPos(sectionMinX, worldPosition.getY() - 1, sectionMinZ);
 		setChanged();
 	}
 
-	private boolean advanceMiningPos(BlockState state) {
+	private boolean advanceMiningPos() {
 		if (miningPos == null || level == null) return false;
 		int nx = miningPos.getX() + 1, nz = miningPos.getZ(), ny = miningPos.getY();
 		if (nx > sectionMaxX) { nx = sectionMinX; nz++; }
@@ -641,7 +641,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 		}
 	}
 
-	private boolean advanceToNextSection(Level level, BlockPos pos, BlockState state) {
+	private boolean advanceToNextSection(Level level, BlockState state) {
 		currentSection++;
 		if (currentSection >= totalSections) return false;
 		applySectionBounds(state);
@@ -779,8 +779,6 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 	public BlockPos getAreaCenter()  { return getAreaCenter(getBlockState()); }
 	public int      getFrameHalfX() { return halfX(); }
 	public int      getFrameHalfZ() { return halfZ(); }
-	public int      getEnergyStored() { return energy.getEnergyStored(); }
-	public int      getEnergyCapacity() { return ENERGY_CAPACITY; }
 
 	@Override public @NotNull Component getDisplayName() {
 		return Component.translatable("block.dif.quarry");

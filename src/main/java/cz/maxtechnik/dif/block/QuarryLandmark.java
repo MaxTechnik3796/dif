@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.block;
 
 import cz.maxtechnik.dif.block.entity.QuarryLandmarkBlockEntity;
-import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -18,15 +17,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * QuarryLandmark – blok (model torch) sloužící k definici těžební oblasti quarry.
- *
- * Pravidla:
- *  - Musí být 3 landmarky na stejné Y úrovni v L-tvaru.
- *  - Pravý klik spustí scan + zobrazí zprávu nebo formaci.
- *  - Po přiřazení k quarry se landmarky zničí a droppí item.
- *  - Při zničení po formaci: ostatní LM ztratí formaci, ale nezničí se.
- */
+// Musí být 3 landmarky na stejné Y v L-tvaru; pravý klik spustí scan/formaci.
 @SuppressWarnings("deprecation")
 public class QuarryLandmark extends BaseEntityBlock {
 
@@ -35,7 +26,7 @@ public class QuarryLandmark extends BaseEntityBlock {
                 .strength(0.5F, 0.5F)
                 .sound(SoundType.WOOD)
                 .noOcclusion()
-                .lightLevel(s -> 14));
+                .lightLevel(state -> 14));
     }
 
     @Override
@@ -43,42 +34,35 @@ public class QuarryLandmark extends BaseEntityBlock {
         return RenderShape.MODEL;
     }
 
-    @Nullable
-    @Override
+    @Nullable @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
         return new QuarryLandmarkBlockEntity(pos, state);
     }
 
-    @Nullable
-    @Override
+    @Nullable @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
             @NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
-        // Landmark nemá vlastní tick
-        return null;
+        return null; // Landmark nemá vlastní tick
     }
 
-    /**
-     * Pravý klik → scan + formace (nebo zpráva o stavu).
-     */
+    // Pravý klik → scan a pokus o formaci
     @Override
     public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level,
                                           @NotNull BlockPos pos, @NotNull Player player,
                                           @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
-        if (!level.isClientSide && level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity lbe) {
-            lbe.onRightClick(player);
+        if (!level.isClientSide && level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity lmEntity) {
+            lmEntity.onRightClick(player);
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
-    /**
-     * Při zničení → informuj partnery aby ztratili formaci.
-     */
+    // Při zničení informuj partnery aby ztratili formaci
     @Override
     public void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
                          @NotNull BlockState newState, boolean moving) {
         if (!state.is(newState.getBlock()) && !level.isClientSide) {
-            if (level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity lbe) {
-                lbe.onRemoved();
+            if (level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity lmEntity) {
+                lmEntity.onRemoved();
             }
         }
         super.onRemove(state, level, pos, newState, moving);

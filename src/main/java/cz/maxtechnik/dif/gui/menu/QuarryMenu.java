@@ -1,13 +1,17 @@
 package cz.maxtechnik.dif.gui.menu;
 
 import cz.maxtechnik.dif.block.entity.QuarryBlockEntity;
+import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
+import cz.maxtechnik.dif.item.quarry.DrillHeadItem;
+import cz.maxtechnik.dif.item.quarry.EngineItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -37,38 +41,12 @@ public class QuarryMenu extends AbstractContainerMenu {
 			this.data = qbe.dataAccess;
 		} else {
 			this.internal = new ItemStackHandler(3);
-			this.data = new SimpleContainerData(8);
+			this.data = new SimpleContainerData(6);
 		}
 		
 		this.addDataSlots(this.data);
-
-		// 3 custom slots on the left
-		this.addSlot(new SlotItemHandler(internal, 0, 8, 17) {
-			@Override public boolean mayPlace(@NotNull ItemStack stack) {
-				return stack.getItem() instanceof cz.maxtechnik.dif.item.quarry.DrillHeadItem;
-			}
-		});
-		this.addSlot(new SlotItemHandler(internal, 1, 8, 35) {
-			@Override public boolean mayPlace(@NotNull ItemStack stack) {
-				return stack.getItem() instanceof cz.maxtechnik.dif.item.quarry.EngineItem;
-			}
-		});
-		this.addSlot(new SlotItemHandler(internal, 2, 8, 53) {
-			@Override public boolean mayPlace(@NotNull ItemStack stack) {
-				return stack.getItem() instanceof cz.maxtechnik.dif.item.quarry.EngineItem ||
-					   stack.getItem() == cz.maxtechnik.dif.init.basic.DifModItems.LIQUID_REMOVER.get() ||
-					   stack.getItem() == net.minecraft.world.item.Items.ENCHANTED_BOOK;
-			}
-		});
-
-		// Player Inventory
-		for (int si = 0; si < 3; ++si)
-			for (int sj = 0; sj < 9; ++sj)
-				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 8 + sj * 18, 84 + si * 18));
-
-		// Player Hotbar
-		for (int si = 0; si < 9; ++si)
-			this.addSlot(new Slot(inv, si, 8 + si * 18, 142));
+		addQuarrySlots();
+		addPlayerSlots(inv);
 	}
 
 	public QuarryMenu(int id, Inventory inv, QuarryBlockEntity qbe) {
@@ -82,30 +60,36 @@ public class QuarryMenu extends AbstractContainerMenu {
 		this.data = qbe.dataAccess;
 		
 		this.addDataSlots(this.data);
+		addQuarrySlots();
+		addPlayerSlots(inv);
+	}
 
+	private void addQuarrySlots() {
 		this.addSlot(new SlotItemHandler(internal, 0, 8, 17) {
 			@Override public boolean mayPlace(@NotNull ItemStack stack) {
-				return stack.getItem() instanceof cz.maxtechnik.dif.item.quarry.DrillHeadItem;
+				return stack.getItem() instanceof DrillHeadItem;
 			}
 		});
 		this.addSlot(new SlotItemHandler(internal, 1, 8, 35) {
 			@Override public boolean mayPlace(@NotNull ItemStack stack) {
-				return stack.getItem() instanceof cz.maxtechnik.dif.item.quarry.EngineItem;
+				return stack.getItem() instanceof EngineItem;
 			}
 		});
 		this.addSlot(new SlotItemHandler(internal, 2, 8, 53) {
 			@Override public boolean mayPlace(@NotNull ItemStack stack) {
-				return stack.getItem() instanceof cz.maxtechnik.dif.item.quarry.EngineItem ||
-					   stack.getItem() == cz.maxtechnik.dif.init.basic.DifModItems.LIQUID_REMOVER.get() ||
-					   stack.getItem() == net.minecraft.world.item.Items.ENCHANTED_BOOK;
+				return stack.getItem() instanceof EngineItem ||
+					   stack.getItem() == DifModItems.LIQUID_REMOVER.get() ||
+					   stack.getItem() == Items.ENCHANTED_BOOK;
 			}
 		});
+	}
 
-		for (int si = 0; si < 3; ++si)
-			for (int sj = 0; sj < 9; ++sj)
-				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 8 + sj * 18, 84 + si * 18));
-		for (int si = 0; si < 9; ++si)
-			this.addSlot(new Slot(inv, si, 8 + si * 18, 142));
+	private void addPlayerSlots(Inventory inv) {
+		for (int row = 0; row < 3; ++row)
+			for (int col = 0; col < 9; ++col)
+				this.addSlot(new Slot(inv, col + (row + 1) * 9, 8 + col * 18, 84 + row * 18));
+		for (int col = 0; col < 9; ++col)
+			this.addSlot(new Slot(inv, col, 8 + col * 18, 142));
 	}
 
 	@Override
@@ -118,18 +102,16 @@ public class QuarryMenu extends AbstractContainerMenu {
 
 	public int getStateOrdinal()   { return this.data.get(0); }
 	public int getSpeed()          { return this.data.get(1); }
-	public int getFEStorage() 	   { return (data.get(3) << 16) | (data.get(2) & 0xFFFF); }
-	public int getFECost()   	   { return data.get(4); }
-	public int getAreaX()          { return this.data.get(5); }
-	public int getAreaZ()          { return this.data.get(6); }
-    public int getStatusMode()     { return this.data.get(7); }
-	public boolean hasNoEngine()   { return this.data.get(7) == 1; }
+	public int getFECost()         { return this.data.get(2); }
+	public int getAreaX()          { return this.data.get(3); }
+	public int getAreaZ()          { return this.data.get(4); }
+	public int getStatusMode()     { return this.data.get(5); }
 
 	@Override
 	public @NotNull ItemStack quickMoveStack(@NotNull Player player, int index) {
 		ItemStack itemstack = ItemStack.EMPTY;
 		Slot slot = this.slots.get(index);
-		if (slot != null && slot.hasItem()) {
+		if (slot.hasItem()) {
 			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
 			if (index < 3) {

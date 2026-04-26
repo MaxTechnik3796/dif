@@ -15,77 +15,82 @@ import org.joml.Matrix4f;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-/**
- * Client-side overlay: pokud je landmark ve stavu "formed", vykreslí modrý rám.
- * <p>
- * Tracking: QuarryLandmarkBlockEntity volá register/unregister při každé změně
- * stavu (sync paket, onLoad, setRemoved). Renderer pak pouze iteruje malý set
- * – žádné skenování světa ani iterace přes blockEntityList.
- */
-@Mod.EventBusSubscriber(value=Dist.CLIENT)
-public class LandmarkOverlayRenderer{
-	private static final Map<BlockPos,QuarryLandmarkBlockEntity> FORMED=
+
+// Klientský overlay – formed landmarky vykreslí modrý obdélník v jejich rovině.
+@Mod.EventBusSubscriber(value = Dist.CLIENT)
+public class LandmarkOverlayRenderer {
+
+	// Aktivní formed landmarky sledované rendererem
+	private static final Map<BlockPos, QuarryLandmarkBlockEntity> FORMED_LANDMARKS =
 			new ConcurrentHashMap<>();
-	/**
-	 * Voláno z QuarryLandmarkBlockEntity na klientu po sync paketu (formed=true).
-	 */
-	public static void register(QuarryLandmarkBlockEntity lbe){
-		FORMED.put(lbe.getBlockPos(),lbe);
+
+	// Voláno z QuarryLandmarkBlockEntity na klientu po sync paketu (formed=true)
+	public static void register(QuarryLandmarkBlockEntity landmark) {
+		FORMED_LANDMARKS.put(landmark.getBlockPos(), landmark);
 	}
-	/**
-	 * Voláno při ztrátě formace nebo zničení bloku.
-	 */
-	public static void unregister(BlockPos pos){
-		FORMED.remove(pos);
+
+	// Voláno při ztrátě formace nebo zničení bloku
+	public static void unregister(BlockPos pos) {
+		FORMED_LANDMARKS.remove(pos);
 	}
+
 	@SubscribeEvent
-	public static void onRenderLevel(RenderLevelStageEvent event){
-		if(event.getStage()!=RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) return;
-		if(FORMED.isEmpty()) return;
-		Minecraft mc=Minecraft.getInstance();
-		if(mc.level==null) return;
-		var camPos=mc.gameRenderer.getMainCamera().getPosition();
-		PoseStack ps=event.getPoseStack();
-		MultiBufferSource.BufferSource buf=mc.renderBuffers().bufferSource();
-		ps.pushPose();
-		ps.translate(-camPos.x,-camPos.y,-camPos.z);
-		Matrix4f m=ps.last().pose();
-		VertexConsumer vc=buf.getBuffer(RenderType.lines());
-		for(QuarryLandmarkBlockEntity lbe: FORMED.values()){
-			if(!lbe.isFormed()) continue;
-			BlockPos center=lbe.getFormedCenter();
-			if(center==null) continue;
-			int hx=lbe.getFormedHalfX();
-			int hz=lbe.getFormedHalfZ();
-			int y=lbe.getBlockPos().getY();
-			float x0=center.getX()-hx+0.5f;
-			float x1=center.getX()+hx+0.5f;
-			float z0=center.getZ()-hz+0.5f;
-			float z1=center.getZ()+hz+0.5f;
-			float yf=y+0.5f;
-			drawRect(m,vc,x0,yf,z0,x1,z1);
+	public static void onRenderLevel(RenderLevelStageEvent event) {
+		if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) return;
+		if (FORMED_LANDMARKS.isEmpty()) return;
+
+		Minecraft mc = Minecraft.getInstance();
+		if (mc.level == null) return;
+
+		var camPos = mc.gameRenderer.getMainCamera().getPosition();
+		PoseStack poseStack = event.getPoseStack();
+		MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
+
+		poseStack.pushPose();
+		poseStack.translate(-camPos.x, -camPos.y, -camPos.z);
+		Matrix4f matrix = poseStack.last().pose();
+		VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.lines());
+
+		for (QuarryLandmarkBlockEntity landmark : FORMED_LANDMARKS.values()) {
+			if (!landmark.isFormed()) continue;
+			BlockPos center = landmark.getFormedCenter();
+			if (center == null) continue;
+
+			int halfX = landmark.getFormedHalfX();
+			int halfZ = landmark.getFormedHalfZ();
+			float landmarkY = landmark.getBlockPos().getY() + 0.5f;
+
+			float minX = center.getX() - halfX + 0.5f;
+			float maxX = center.getX() + halfX + 0.5f;
+			float minZ = center.getZ() - halfZ + 0.5f;
+			float maxZ = center.getZ() + halfZ + 0.5f;
+
+			drawRect(matrix, vertexConsumer, minX, landmarkY, minZ, maxX, maxZ);
 		}
-		ps.popPose();
-		buf.endBatch(RenderType.lines());
+
+		poseStack.popPose();
+		bufferSource.endBatch(RenderType.lines());
 	}
-	private static void drawRect(Matrix4f m,VertexConsumer vc,
-	                             float x0,float y,float z0,
-	                             float x1,float z1){
-		int r=50, g=120, b=255, a=220;
-		line(m,vc,x0,y,z0,x1,y,z0,r,g,b,a);
-		line(m,vc,x1,y,z0,x1,y,z1,r,g,b,a);
-		line(m,vc,x1,y,z1,x0,y,z1,r,g,b,a);
-		line(m,vc,x0,y,z1,x0,y,z0,r,g,b,a);
+
+	private static void drawRect(Matrix4f matrix, VertexConsumer vertexConsumer,
+	                             float minX, float yLevel, float minZ,
+	                             float maxX, float maxZ) {
+		int colorR = 50, colorG = 120, colorB = 255, colorA = 220;
+		line(matrix, vertexConsumer, minX, yLevel, minZ, maxX, yLevel, minZ, colorR, colorG, colorB, colorA);
+		line(matrix, vertexConsumer, maxX, yLevel, minZ, maxX, yLevel, maxZ, colorR, colorG, colorB, colorA);
+		line(matrix, vertexConsumer, maxX, yLevel, maxZ, minX, yLevel, maxZ, colorR, colorG, colorB, colorA);
+		line(matrix, vertexConsumer, minX, yLevel, maxZ, minX, yLevel, minZ, colorR, colorG, colorB, colorA);
 	}
-	private static void line(Matrix4f m,VertexConsumer vc,
-	                         float x0,float y0,float z0,
-	                         float x1,float y1,float z1,
-	                         int r,int g,int b,int a){
-		float dx=x1-x0, dy=y1-y0, dz=z1-z0;
-		float len=(float)Math.sqrt(dx*dx+dy*dy+dz*dz);
-		if(len<0.0001f) return;
-		float nx=dx/len, ny=dy/len, nz=dz/len;
-		vc.vertex(m,x0,y0,z0).color(r,g,b,a).normal(nx,ny,nz).endVertex();
-		vc.vertex(m,x1,y1,z1).color(r,g,b,a).normal(nx,ny,nz).endVertex();
+
+	private static void line(Matrix4f matrix, VertexConsumer vertexConsumer,
+	                         float x0, float y0, float z0,
+	                         float x1, float y1, float z1,
+	                         int colorR, int colorG, int colorB, int colorA) {
+		float dx = x1 - x0, dy = y1 - y0, dz = z1 - z0;
+		float len = (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
+		if (len < 0.0001f) return;
+		float normX = dx / len, normY = dy / len, normZ = dz / len;
+		vertexConsumer.vertex(matrix, x0, y0, z0).color(colorR, colorG, colorB, colorA).normal(normX, normY, normZ).endVertex();
+		vertexConsumer.vertex(matrix, x1, y1, z1).color(colorR, colorG, colorB, colorA).normal(normX, normY, normZ).endVertex();
 	}
 }

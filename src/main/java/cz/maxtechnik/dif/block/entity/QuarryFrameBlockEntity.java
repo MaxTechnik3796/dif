@@ -10,46 +10,47 @@ import org.jetbrains.annotations.NotNull;
 
 public class QuarryFrameBlockEntity extends BlockEntity {
 
-    private BlockPos ownerPos = null;
-    private boolean  isDying  = false;
+    private BlockPos ownerQuarryPos = null;
+    private boolean  scheduledForRemoval = false;
 
     public QuarryFrameBlockEntity(BlockPos pos, BlockState state) {
         super(DifModBlockEntities.QUARRY_FRAME.get(), pos, state);
     }
 
-    public static void tick(Level level, BlockPos pos, QuarryFrameBlockEntity be) {
-        if (!level.isClientSide && be.isDying) level.removeBlock(pos, false);
+    public static void tick(Level level, BlockPos pos, QuarryFrameBlockEntity frameEntity) {
+        if (!level.isClientSide && frameEntity.scheduledForRemoval) level.removeBlock(pos, false);
     }
 
-    /** Nastaví majitele – lze nastavit pouze jednou (ochrání před přepsáním cizí quarry). */
+    // Nastaví vlastníka – lze nastavit pouze jednou (ochrana před přepsáním cizí quarry)
     public void setOwner(BlockPos quarryPos) {
-        if (ownerPos != null) return;
-        ownerPos = quarryPos;
+        if (ownerQuarryPos != null) return;
+        ownerQuarryPos = quarryPos;
         setChanged();
     }
 
+    // Označí frame pro odstranění v příštím ticku
     public void scheduleRemoval() {
-        isDying = true;
-        ownerPos = null;
+        scheduledForRemoval = true;
+        ownerQuarryPos = null;
         setChanged();
     }
 
-    public BlockPos getOwnerPos() { return ownerPos; }
+    public BlockPos getOwnerPos() { return ownerQuarryPos; }
 
     @Override protected void saveAdditional(@NotNull CompoundTag tag) {
         super.saveAdditional(tag);
-        if (ownerPos != null) {
-            tag.putInt("OwnX", ownerPos.getX());
-            tag.putInt("OwnY", ownerPos.getY());
-            tag.putInt("OwnZ", ownerPos.getZ());
+        if (ownerQuarryPos != null) {
+            tag.putInt("OwnX", ownerQuarryPos.getX());
+            tag.putInt("OwnY", ownerQuarryPos.getY());
+            tag.putInt("OwnZ", ownerQuarryPos.getZ());
         }
-        tag.putBoolean("Dying", isDying);
+        tag.putBoolean("Dying", scheduledForRemoval);
     }
 
     @Override public void load(@NotNull CompoundTag tag) {
         super.load(tag);
         if (tag.contains("OwnX"))
-            ownerPos = new BlockPos(tag.getInt("OwnX"), tag.getInt("OwnY"), tag.getInt("OwnZ"));
-        isDying = tag.getBoolean("Dying");
+            ownerQuarryPos = new BlockPos(tag.getInt("OwnX"), tag.getInt("OwnY"), tag.getInt("OwnZ"));
+        scheduledForRemoval = tag.getBoolean("Dying");
     }
 }

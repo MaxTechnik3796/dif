@@ -15,11 +15,14 @@ public class QuarryFrameBreakHandler {
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         if (!event.getState().is(DifModBlocks.QUARRY_FRAME.get())) return;
+
         Level level = (Level) event.getLevel();
         if (level.isClientSide) return;
-        if (!(level.getBlockEntity(event.getPos()) instanceof QuarryFrameBlockEntity frame)) return;
-        BlockPos ownerPos = frame.getOwnerPos();
-        if (ownerPos != null && level.getBlockEntity(ownerPos) instanceof QuarryBlockEntity quarry)
-            quarry.onFrameDestroyed(level);
+
+        if (!(level.getBlockEntity(event.getPos()) instanceof QuarryFrameBlockEntity frameEntity)) return;
+
+        BlockPos ownerPos = frameEntity.getOwnerPos();
+        if (ownerPos != null && level.getBlockEntity(ownerPos) instanceof QuarryBlockEntity quarryEntity)
+            quarryEntity.onFrameDestroyed(level);
     }
 }

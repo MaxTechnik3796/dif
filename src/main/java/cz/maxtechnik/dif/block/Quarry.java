@@ -20,7 +20,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
@@ -55,21 +54,22 @@ public class Quarry extends BaseEntityBlock {
         return this.defaultBlockState().setValue(FACING, ctx.getHorizontalDirection().getOpposite());
     }
 
-    private static boolean hasUnbreakableInFrameArea(Level level, BlockPos pos, BlockState state) {
-        if (!(level.getBlockEntity(pos) instanceof QuarryBlockEntity qbe)) return false;
-        BlockPos center = qbe.getAreaCenter();
-        if (center == null) return false;
-        int halfX = qbe.getFrameHalfX();
-        int halfZ = qbe.getFrameHalfZ();
-        int yBase = pos.getY();
-        int yTop  = yBase + 3;
+    // Zkontroluje jestli je v oblasti framu nějaký neničitelný blok
+    private static boolean hasUnbreakableInFrameArea(Level level, BlockPos quarryPos) {
+        if (!(level.getBlockEntity(quarryPos) instanceof QuarryBlockEntity quarryEntity)) return false;
+        BlockPos areaCenter = quarryEntity.getAreaCenter();
+        if (areaCenter == null) return false;
+        int halfX  = quarryEntity.getFrameHalfX();
+        int halfZ  = quarryEntity.getFrameHalfZ();
+        int yBase  = quarryPos.getY();
+        int yTop   = yBase + 3;
 
-        for (int y = yBase; y <= yTop; y++)
-            for (int x = center.getX() - halfX; x <= center.getX() + halfX; x++)
-                for (int z = center.getZ() - halfZ; z <= center.getZ() + halfZ; z++) {
-                    BlockPos p = new BlockPos(x, y, z);
-                    BlockState bs = level.getBlockState(p);
-                    if (!bs.isAir() && bs.getDestroySpeed(level, p) < 0) return true;
+        for (int scanY = yBase; scanY <= yTop; scanY++)
+            for (int scanX = areaCenter.getX() - halfX; scanX <= areaCenter.getX() + halfX; scanX++)
+                for (int scanZ = areaCenter.getZ() - halfZ; scanZ <= areaCenter.getZ() + halfZ; scanZ++) {
+                    BlockPos scanPos = new BlockPos(scanX, scanY, scanZ);
+                    BlockState scannedBlock = level.getBlockState(scanPos);
+                    if (!scannedBlock.isAir() && scannedBlock.getDestroySpeed(level, scanPos) < 0) return true;
                 }
         return false;
     }
@@ -80,54 +80,49 @@ public class Quarry extends BaseEntityBlock {
         super.onPlace(state, level, pos, oldState, moving);
         if (level.isClientSide) return;
 
-        // Nejdřív najdi a aplikuj landmarky (nastaví customCenter/halfX/halfZ)
+        // Nejdřív aplikuj landmarky (nastaví oblast quarry)
         tryApplyNearbyLandmarks(level, pos);
 
-        // Až poté zkontroluj unbreakable bloky ve skutečné oblasti
-        if (hasUnbreakableInFrameArea(level, pos, state)) {
+        // Pak teprve zkontroluj neničitelné bloky ve výsledné oblasti
+        if (hasUnbreakableInFrameArea(level, pos)) {
             level.removeBlock(pos, false);
             Block.popResource(level, pos, new net.minecraft.world.item.ItemStack(this));
-            return;
         }
     }
 
-    /**
-     * Prohledá okolí (±MAX_AREA_SIDE bloků, pouze stejný Y) na formed landmarky.
-     * Quarry musí být přímo na hraně frame oblasti (dotýká se jí) a na stejné Y úrovni.
-     */
+    // Hledá formed landmarky v okolí a aplikuje první vyhovující na tuto quarry
     private static void tryApplyNearbyLandmarks(Level level, BlockPos quarryPos) {
-        int search = QuarryBlockEntity.MAX_AREA_SIDE;
-        int baseY  = quarryPos.getY();
+        int searchRange = QuarryBlockEntity.MAX_AREA_SIDE;
+        int baseY       = quarryPos.getY();
 
-        for (int dx = -search; dx <= search; dx++) {
-            for (int dz = -search; dz <= search; dz++) {
-                BlockPos p = new BlockPos(quarryPos.getX() + dx, baseY, quarryPos.getZ() + dz);
-                if (!level.getBlockState(p).is(DifModBlocks.QUARRY_LANDMARK.get())) continue;
-                if (!(level.getBlockEntity(p) instanceof QuarryLandmarkBlockEntity lbe)) continue;
-                if (!lbe.isFormed()) continue;
+        for (int dx = -searchRange; dx <= searchRange; dx++) {
+            for (int dz = -searchRange; dz <= searchRange; dz++) {
+                BlockPos scanPos = new BlockPos(quarryPos.getX() + dx, baseY, quarryPos.getZ() + dz);
+                if (!level.getBlockState(scanPos).is(DifModBlocks.QUARRY_LANDMARK.get())) continue;
+                if (!(level.getBlockEntity(scanPos) instanceof QuarryLandmarkBlockEntity lmEntity)) continue;
+                if (!lmEntity.isFormed()) continue;
 
-                BlockPos center = lbe.getFormedCenter();
-                int halfX = lbe.getFormedHalfX();
-                int halfZ = lbe.getFormedHalfZ();
-                if (center == null) continue;
+                BlockPos areaCenter = lmEntity.getFormedCenter();
+                int halfX = lmEntity.getFormedHalfX();
+                int halfZ = lmEntity.getFormedHalfZ();
+                if (areaCenter == null) continue;
 
-                // Musí být na stejné Y úrovni
-                if (quarryPos.getY() != center.getY()) continue;
+                if (quarryPos.getY() != areaCenter.getY()) continue;
 
                 // Quarry musí být přesně 1 blok za hranou frame oblasti
-                int qx = quarryPos.getX(), qz = quarryPos.getZ();
-                int minX = center.getX() - halfX, maxX = center.getX() + halfX;
-                int minZ = center.getZ() - halfZ, maxZ = center.getZ() + halfZ;
+                int qPosX = quarryPos.getX(), qPosZ = quarryPos.getZ();
+                int edgeMinX = areaCenter.getX() - halfX, edgeMaxX = areaCenter.getX() + halfX;
+                int edgeMinZ = areaCenter.getZ() - halfZ, edgeMaxZ = areaCenter.getZ() + halfZ;
 
                 boolean onEdge =
-                    (qz == minZ - 1 && qx >= minX && qx <= maxX) ||  // sever
-                    (qz == maxZ + 1 && qx >= minX && qx <= maxX) ||  // jih
-                    (qx == minX - 1 && qz >= minZ && qz <= maxZ) ||  // západ
-                    (qx == maxX + 1 && qz >= minZ && qz <= maxZ);    // východ
+                        (qPosZ == edgeMinZ - 1 && qPosX >= edgeMinX && qPosX <= edgeMaxX) || // sever
+                                (qPosZ == edgeMaxZ + 1 && qPosX >= edgeMinX && qPosX <= edgeMaxX) || // jih
+                                (qPosX == edgeMinX - 1 && qPosZ >= edgeMinZ && qPosZ <= edgeMaxZ) || // západ
+                                (qPosX == edgeMaxX + 1 && qPosZ >= edgeMinZ && qPosZ <= edgeMaxZ);   // východ
 
                 if (!onEdge) continue;
 
-                lbe.applyToQuarry(level, quarryPos);
+                lmEntity.applyToQuarry(level, quarryPos);
                 return;
             }
         }
@@ -136,17 +131,17 @@ public class Quarry extends BaseEntityBlock {
     @Override
     public void onRemove(BlockState state, @NotNull Level level, @NotNull BlockPos pos,
                          BlockState newState, boolean moving) {
-        if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof QuarryBlockEntity q)
-            q.onQuarryRemoved();
+        if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof QuarryBlockEntity quarryEntity)
+            quarryEntity.onQuarryRemoved();
         super.onRemove(state, level, pos, newState, moving);
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, 
+    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
                                           @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         if (!level.isClientSide) {
-            if (level.getBlockEntity(pos) instanceof QuarryBlockEntity qbe) {
-                NetworkHooks.openScreen((ServerPlayer) player, qbe, pos);
+            if (level.getBlockEntity(pos) instanceof QuarryBlockEntity quarryEntity) {
+                NetworkHooks.openScreen((ServerPlayer) player, quarryEntity, pos);
             }
         }
         return InteractionResult.sidedSuccess(level.isClientSide);

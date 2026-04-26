@@ -83,9 +83,8 @@ public class QuarryScreen extends AbstractContainerScreen<QuarryMenu> {
 		int areaZ = this.menu.getAreaZ();
 		g.drawString(this.font, "Area: " + areaX + " x " + areaZ, tx, 33, 0xFFFFFF, false);
 
-		int speedVal  = this.menu.getSpeed();
-		int feStorage = this.menu.getFEStorage();   // aktuální FE v batterce
-		int feCost    = this.menu.getFECost();      // FE/t spotřeba motorů (s penalizací)
+		int speedVal = this.menu.getSpeed();
+		int feCost   = this.menu.getFECost();
 
 		if (!stateMsg.equals("Finished")) {
 			g.drawString(this.font, "Power: " + speedVal + " DP",        tx,  45, 0xFFFFFF, false);
