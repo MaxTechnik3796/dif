@@ -84,7 +84,7 @@ repositories {
         url = "https://modmaven.dev/"
     }
     maven {
-        url = "https://maven.createmod.net"
+        url = "https://maven.createmod.net/"
     }
     maven {
         url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
@@ -92,7 +92,7 @@ repositories {
 }
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    implementation fg.deobf("net.createmod.ponder:Ponder-Forge-1.20.1:1.0.46")
+    implementation fg.deobf("net.createmod.ponder:Ponder-Forge-1.20.1:1.0.92")
     implementation fg.deobf("dev.engine-room.flywheel:flywheel-forge-1.20.1:1.0.5")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
