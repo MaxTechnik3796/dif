@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.init.events;
 
 public class QuarryStats {
-    public static int STONE_HEAD_DP_REQ = 5;
     public static int IRON_HEAD_DP_REQ = 10;
     public static int DIAMOND_HEAD_DP_REQ = 25;
 

@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.item;
+package cz.maxtechnik.dif.item.tool;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

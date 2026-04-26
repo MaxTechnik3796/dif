@@ -60,6 +60,20 @@ public class DifModTabs{
 		tabData.accept(SOLAR_PANEL_INC.get());
 
 		tabData.accept(INCOMPLETE_UNIVERSAL.get());
+
+		tabData.accept(QUARRY.get());
+		tabData.accept(QUARRY_FRAME.get());
+		tabData.accept(QUARRY_LANDMARK.get());
+
+		tabData.accept(QUARRY_DRILL_IRON.get());
+		tabData.accept(QUARRY_DRILL_DIAMOND.get());
+		tabData.accept(QUARRY_ENGINE_IRON.get());
+		tabData.accept(QUARRY_ENGINE_GOLD.get());
+		tabData.accept(QUARRY_ENGINE_DIAMOND.get());
+		tabData.accept(QUARRY_LIQUID_REMOVER.get());
+
+
+
 	})).build());
 	public static final RegistryObject<CreativeModeTab>SPACE=REGISTER.register("space",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.space")).icon(()->new ItemStack(SPACESHIP.get())).displayItems(((parameters,tabData)->{
 		tabData.accept(SPACESHIP.get());
@@ -368,9 +382,7 @@ public class DifModTabs{
 			tabData.accept(REMOTE_MINECART_BLOCK.get());
 
 			tabData.accept(SLEEPING_BAG.get());
-			tabData.accept(QUARRY.get());
-			tabData.accept(QUARRY_FRAME.get());
-			tabData.accept(QUARRY_LANDMARK.get());
+
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
 			tabData.getEntries().putAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);

@@ -52,7 +52,7 @@ public class LandmarkOverlayRenderer {
 		VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.lines());
 
 		for (QuarryLandmarkBlockEntity landmark : FORMED_LANDMARKS.values()) {
-			if (!landmark.isFormed()) continue;
+			if (landmark.isFormed()) continue;
 			BlockPos center = landmark.getFormedCenter();
 			if (center == null) continue;
 

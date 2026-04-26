@@ -260,6 +260,17 @@
 	"block.dif.sleeping_bag": "Sleeping Bag",
 	"block.dif.quarry":"Quarry",
 	"block.dif.quarry_frame":"Quarry Frame",
+
+	"item.dif.quarry_drill_iron":"Quarry Iron Drill",
+	"item.dif.quarry_drill_diamond":"Quarry Diamond Drill",
+	"item.dif.quarry_engine_iron":"Quarry Iron Engine",
+	"item.dif.quarry_engine_gold":"Quarry Gold Engine",
+	"item.dif.quarry_engine_diamond":"Quarry Diamond Engine",
+	"item.dif.quarry_liquid_remover":"Quarry Upgrade",
+	"item.dif.quarry_liquid_remover.desc":"Liquid Remover",
+
+
+
 	"block.dif.brass_large_water_wheel":"Brass Large Water Wheel",
 	"block.dif.brass_water_wheel":"Brass Water Wheel",
 	"block.dif.brass_mechanical_press":"Brass Mechanical Press",

@@ -78,7 +78,7 @@ public class QuarryMenu extends AbstractContainerMenu {
 		this.addSlot(new SlotItemHandler(internal, 2, 8, 53) {
 			@Override public boolean mayPlace(@NotNull ItemStack stack) {
 				return stack.getItem() instanceof EngineItem ||
-					   stack.getItem() == DifModItems.LIQUID_REMOVER.get() ||
+					   stack.getItem() == DifModItems.QUARRY_LIQUID_REMOVER.get() ||
 					   stack.getItem() == Items.ENCHANTED_BOOK;
 			}
 		});

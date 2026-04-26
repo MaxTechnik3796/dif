@@ -5,6 +5,7 @@ import cz.maxtechnik.dif.fluid.bucket.*;
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
+import cz.maxtechnik.dif.item.quarry.Upgrade;
 import cz.maxtechnik.dif.item.tool.GodTotemItem;
 import cz.maxtechnik.dif.item.modular.ModularPart;
 import cz.maxtechnik.dif.item.modular.tool.*;
@@ -12,7 +13,6 @@ import cz.maxtechnik.dif.item.tool.*;
 import cz.maxtechnik.dif.item.armor.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -44,21 +44,20 @@ public class DifModItems{
 	public static final RegistryObject<Item>QUARRY_LANDMARK=block(DifModBlocks.QUARRY_LANDMARK);
 	
 
-	// Quarry Upgrades & Components
-	public static final RegistryObject<Item> STONE_DRILL_HEAD = REGISTRY.register("stone_drill_head", () -> new DrillHeadItem(QuarryStats.STONE_HEAD_DP_REQ));
-	public static final RegistryObject<Item> IRON_DRILL_HEAD = REGISTRY.register("iron_drill_head", () -> new DrillHeadItem(QuarryStats.IRON_HEAD_DP_REQ));
-	public static final RegistryObject<Item> DIAMOND_DRILL_HEAD = REGISTRY.register("diamond_drill_head", () -> new DrillHeadItem(QuarryStats.DIAMOND_HEAD_DP_REQ));
-	public static final RegistryObject<Item> IRON_ENGINE = REGISTRY.register("iron_engine", () -> new EngineItem(QuarryStats.IRON_ENGINE_DP_GEN, QuarryStats.IRON_ENGINE_FE_COST));
-	public static final RegistryObject<Item> GOLD_ENGINE = REGISTRY.register("gold_engine", () -> new EngineItem(QuarryStats.GOLD_ENGINE_DP_GEN, QuarryStats.GOLD_ENGINE_FE_COST));
-	public static final RegistryObject<Item> DIAMOND_ENGINE = REGISTRY.register("diamond_engine", () -> new EngineItem(QuarryStats.DIAMOND_ENGINE_DP_GEN, QuarryStats.DIAMOND_ENGINE_FE_COST));
-	public static final RegistryObject<Item> LIQUID_REMOVER = REGISTRY.register("liquid_remover", Basic::new);
+	// Quarry Upgrades & Components:
+	public static final RegistryObject<Item> QUARRY_DRILL_IRON=REGISTRY.register("quarry_drill_iron",()->new DrillHeadItem(new Item.Properties().stacksTo(1),QuarryStats.IRON_HEAD_DP_REQ));
+	public static final RegistryObject<Item> QUARRY_DRILL_DIAMOND=REGISTRY.register("quarry_drill_diamond",()->new DrillHeadItem(new Item.Properties().stacksTo(1),QuarryStats.DIAMOND_HEAD_DP_REQ));
+	public static final RegistryObject<Item> QUARRY_ENGINE_IRON=REGISTRY.register("quarry_engine_iron",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.IRON_ENGINE_DP_GEN,QuarryStats.IRON_ENGINE_FE_COST));
+	public static final RegistryObject<Item> QUARRY_ENGINE_GOLD=REGISTRY.register("quarry_engine_gold",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.GOLD_ENGINE_DP_GEN,QuarryStats.GOLD_ENGINE_FE_COST));
+	public static final RegistryObject<Item> QUARRY_ENGINE_DIAMOND=REGISTRY.register("quarry_engine_diamond",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.DIAMOND_ENGINE_DP_GEN,QuarryStats.DIAMOND_ENGINE_FE_COST));
+	public static final RegistryObject<Item> QUARRY_LIQUID_REMOVER=REGISTRY.register("quarry_liquid_remover",()->new Upgrade(new Item.Properties().stacksTo(1)));
 
 
-	public static final RegistryObject<Item> BRASS_LARGE_WATER_WHEEL = block(DifModBlocks.BRASS_LARGE_WATER_WHEEL);
-	public static final RegistryObject<Item> BRASS_WATER_WHEEL = block(DifModBlocks.BRASS_WATER_WHEEL);
+	public static final RegistryObject<Item> BRASS_LARGE_WATER_WHEEL=block(DifModBlocks.BRASS_LARGE_WATER_WHEEL);
+	public static final RegistryObject<Item> BRASS_WATER_WHEEL=block(DifModBlocks.BRASS_WATER_WHEEL);
 
-	public static final RegistryObject<Item> BRASS_MECHANICAL_PRESS = block(DifModBlocks.BRASS_MECHANICAL_PRESS);
-	public static final RegistryObject<Item> BRASS_MECHANICAL_MIXER = block(DifModBlocks.BRASS_MECHANICAL_MIXER);
+	public static final RegistryObject<Item> BRASS_MECHANICAL_PRESS=block(DifModBlocks.BRASS_MECHANICAL_PRESS);
+	public static final RegistryObject<Item> BRASS_MECHANICAL_MIXER=block(DifModBlocks.BRASS_MECHANICAL_MIXER);
 
 	public static final RegistryObject<Item>REMOTE_MINECART=REGISTRY.register("remote_minecart",()->new RemoteMinecartItem(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<Item>REMOTE_CONTROLLER=REGISTRY.register("remote_controller",()->new StackSize(1));
