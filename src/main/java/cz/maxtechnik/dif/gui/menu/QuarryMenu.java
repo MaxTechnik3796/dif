@@ -119,8 +119,8 @@ public class QuarryMenu extends AbstractContainerMenu {
 
 	public int getStateOrdinal()   { return this.data.get(0); }
 	public int getSpeed()          { return this.data.get(1); }
-	public int getFEOutput()       { return this.data.get(2); }
-	public int getFEInput()        { return this.data.get(3); }
+	public int getFEStorage() 	   { return data.get(2); }
+	public int getFECost()   	   { return data.get(3); }
 	public int getAreaX()          { return this.data.get(4); }
 	public int getAreaZ()          { return this.data.get(5); }
     public int getStatusMode()     { return this.data.get(6); }
