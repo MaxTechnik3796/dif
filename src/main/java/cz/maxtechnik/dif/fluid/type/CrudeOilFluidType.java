@@ -11,7 +11,7 @@ import net.minecraftforge.fluids.FluidType;
 import java.util.function.Consumer;
 public class CrudeOilFluidType extends FluidType{
 	public CrudeOilFluidType(){
-		super(Properties.create().fallDistanceModifier(0F).canExtinguish(true).supportsBoating(true).canHydrate(false).canDrown(true).motionScale(0.002D).sound(SoundActions.BUCKET_FILL,SoundEvents.BUCKET_FILL).sound(SoundActions.BUCKET_EMPTY,SoundEvents.BUCKET_EMPTY).sound(SoundActions.FLUID_VAPORIZE,SoundEvents.FIRE_EXTINGUISH));
+		super(Properties.create().fallDistanceModifier(0F).canExtinguish(true).supportsBoating(true).canHydrate(false).canDrown(true).motionScale(0.0002D).sound(SoundActions.BUCKET_FILL,SoundEvents.BUCKET_FILL).sound(SoundActions.BUCKET_EMPTY,SoundEvents.BUCKET_EMPTY).sound(SoundActions.FLUID_VAPORIZE,SoundEvents.FIRE_EXTINGUISH));
 	}
 	@Override
 	public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer){
