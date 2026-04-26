@@ -141,11 +141,12 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 			return switch (index) {
 				case 0 -> quarryState.ordinal();
 				case 1 -> (int)(getProgressPerTick() * 100);
-				case 2 -> energy.getEnergyStored();
-				case 3 -> getTotalFECost();
-				case 4 -> getFrameHalfX() * 2 + 1;
-				case 5 -> getFrameHalfZ() * 2 + 1;
-				case 6 -> {
+				case 2 -> (short)(energy.getEnergyStored() & 0xFFFF);
+				case 3 -> (short)((energy.getEnergyStored() >> 16) & 0xFFFF);
+				case 4 -> getTotalFECost();
+				case 5 -> getFrameHalfX() * 2 + 1;
+				case 6 -> getFrameHalfZ() * 2 + 1;
+				case 7 -> {
 					if (getTotalDPGen() == 0)             yield 1;
 					if (getHeadDPReq()  == 0)             yield 2;
 					if (getTotalDPGen() < getHeadDPReq()) yield 3;
@@ -155,7 +156,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 			};
 		}
 		@Override public void set(int index, int value) {}
-		@Override public int getCount() { return 7; }
+		@Override public int getCount() { return 8; }
 	};
 
 	public QuarryBlockEntity(BlockPos pos, BlockState state) {
@@ -330,6 +331,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 
 		if (workQueue.isEmpty()) { startBuildingFrame(level, state, pos); return; }
 		quarryState = State.CLEARING;
+		miningProgressAcc = 0f;
 		sync(level, pos, state);
 	}
 
@@ -337,14 +339,25 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 		if (workQueue.isEmpty()) { startClearing(level, state, pos); return; }
 		float progress = getProgressPerTick();
 		if (progress <= 0f) return;
-		int speed = Math.max(1, (int)(progress * 10) / PREPARE_SPEED_DIV);
-		int done = 0;
-		while (workIndex < workQueue.size() && done < speed) {
+
+		miningProgressAcc += progress;
+		float costPerBlock = 10.0f; // Ekvivalent tvrdosti 1.0
+
+		while (workIndex < workQueue.size() && miningProgressAcc >= costPerBlock) {
 			BlockPos bp = workQueue.get(workIndex++);
-			if (!level.isEmptyBlock(bp) && !isOwnedFrame(level, bp)) level.removeBlock(bp, false);
-			done++;
+			if (!level.isEmptyBlock(bp) && !isOwnedFrame(level, bp)) {
+				level.removeBlock(bp, false);
+				miningProgressAcc -= costPerBlock;
+			}
+			// Pokud je blok prázdný, neodečítáme progress a pokračujeme v cyklu (rychlé přeskakování)
 		}
-		if (workIndex >= workQueue.size()) { workQueue.clear(); workIndex = 0; startBuildingFrame(level, state, pos); }
+		
+		if (workIndex >= workQueue.size()) {
+			workQueue.clear();
+			workIndex = 0;
+			miningProgressAcc = 0f;
+			startBuildingFrame(level, state, pos);
+		}
 	}
 
 	// BUILDING_FRAME
@@ -361,19 +374,25 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 		if (workQueue.isEmpty()) { startBuildingFrame(level, state, pos); return; }
 		float progress = getProgressPerTick();
 		if (progress <= 0f) return;
-		int speed = Math.max(1, (int)(progress * 10) / PREPARE_SPEED_DIV);
-		int done = 0;
-		while (workIndex < workQueue.size() && done < speed) {
+
+		miningProgressAcc += progress;
+		float costPerFrame = 15.0f; // O něco náročnější než čištění
+
+		while (workIndex < workQueue.size() && miningProgressAcc >= costPerFrame) {
 			BlockPos framePos = workQueue.get(workIndex++);
 			if (!isFrameBlock(level, framePos)) {
 				level.setBlock(framePos, DifModBlocks.QUARRY_FRAME.get().defaultBlockState(), 3);
 				if (level.getBlockEntity(framePos) instanceof QuarryFrameBlockEntity frame)
 					frame.setOwner(worldPosition);
+				miningProgressAcc -= costPerFrame;
 			}
-			done++;
+			// Pokud tam rám už je, neodečítáme progress
 		}
+
 		if (workIndex >= workQueue.size()) {
-			workQueue.clear(); workIndex = 0;
+			workQueue.clear();
+			workIndex = 0;
+			miningProgressAcc = 0f;
 			activeState = State.MINING;
 			quarryState = State.MINING;
 			resetMiningPos(state);
@@ -405,7 +424,6 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 			// Přeskoč bloky které jsou skutečně prázdné (vzduch, void air) a NEJSOU tekutina
 			// isEmptyBlock() vrací true i pro vodu, proto musíme kontrolovat fluid zvlášť
 			while (level.isEmptyBlock(miningPos) && level.getBlockState(miningPos).getFluidState().isEmpty()) {
-				miningProgressAcc = 0f;
 				if (!advanceMiningPos(state)) { finishMining(level, pos, state); return; }
 			}
 

@@ -37,7 +37,7 @@ public class QuarryMenu extends AbstractContainerMenu {
 			this.data = qbe.dataAccess;
 		} else {
 			this.internal = new ItemStackHandler(3);
-			this.data = new SimpleContainerData(6);
+			this.data = new SimpleContainerData(8);
 		}
 		
 		this.addDataSlots(this.data);
@@ -97,8 +97,7 @@ public class QuarryMenu extends AbstractContainerMenu {
 			@Override public boolean mayPlace(@NotNull ItemStack stack) {
 				return stack.getItem() instanceof cz.maxtechnik.dif.item.quarry.EngineItem ||
 					   stack.getItem() == cz.maxtechnik.dif.init.basic.DifModItems.LIQUID_REMOVER.get() ||
-					   stack.getItem() == net.minecraft.world.item.Items.ENCHANTED_BOOK ||
-                       stack.getDescriptionId().contains("filter");
+					   stack.getItem() == net.minecraft.world.item.Items.ENCHANTED_BOOK;
 			}
 		});
 
@@ -119,12 +118,12 @@ public class QuarryMenu extends AbstractContainerMenu {
 
 	public int getStateOrdinal()   { return this.data.get(0); }
 	public int getSpeed()          { return this.data.get(1); }
-	public int getFEStorage() 	   { return data.get(2); }
-	public int getFECost()   	   { return data.get(3); }
-	public int getAreaX()          { return this.data.get(4); }
-	public int getAreaZ()          { return this.data.get(5); }
-    public int getStatusMode()     { return this.data.get(6); }
-	public boolean hasNoEngine()   { return this.data.get(6) == 1; }
+	public int getFEStorage() 	   { return (data.get(3) << 16) | (data.get(2) & 0xFFFF); }
+	public int getFECost()   	   { return data.get(4); }
+	public int getAreaX()          { return this.data.get(5); }
+	public int getAreaZ()          { return this.data.get(6); }
+    public int getStatusMode()     { return this.data.get(7); }
+	public boolean hasNoEngine()   { return this.data.get(7) == 1; }
 
 	@Override
 	public @NotNull ItemStack quickMoveStack(@NotNull Player player, int index) {

@@ -89,8 +89,17 @@ public class QuarryScreen extends AbstractContainerScreen<QuarryMenu> {
 
 		if (!stateMsg.equals("Finished")) {
 			g.drawString(this.font, "Power: " + speedVal + "%",          tx,  45, 0xFFFFFF, false);
-			g.drawString(this.font, "Storage " + feStorage + " FE",      tx,  57, 0xFFFFFF, false);
-			g.drawString(this.font, "QE " + feCost + " FE",             100,  57, 0xFFFFFF, false);
+			g.drawString(this.font, "Usage: " + formatValue(feCost) + " FE/t", tx, 57, 0xFFFFFF, false);
 		}
+	}
+
+	private String formatValue(int value) {
+		if (value >= 1000000) {
+			return String.format("%.1fM", value / 1000000.0f);
+		}
+		if (value >= 1000) {
+			return String.format("%.1fK", value / 1000.0f);
+		}
+		return String.valueOf(value);
 	}
 }
