@@ -28,6 +28,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
@@ -429,22 +430,24 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider {
 
 			BlockState target = level.getBlockState(miningPos);
 
-			// Tekutiny:
-			// - zdroj + liquid remover → smaž a pokračuj
-			// - cokoliv jiného (flow nebo bez removeru) → přeskoč
+			// Tekutiny (voda/láva):
+			// - s liquid removerem → smaž bez neighbor update (zabrání regeneraci z nekonečného zdroje)
+			// - bez liquid removeru → přeskoč
 			if (!target.getFluidState().isEmpty()) {
-				if (target.getFluidState().isSource() && hasLiquidRemover) {
-					if (miningProgressAcc >= 0.1f) {
-						miningProgressAcc -= 0.1f;
-						level.removeBlock(miningPos, false);
+				if (hasLiquidRemover) {
+					float fluidCost = target.getFluidState().isSource() ? 5.0f : 1.0f;
+					if (miningProgressAcc >= fluidCost) {
+						miningProgressAcc -= fluidCost;
+						// Flag 2 = UPDATE_CLIENTS only, bez neighbor update
+						// Okolní voda/láva se nedozví o změně → nezaplní díru zpět
+						level.setBlock(miningPos, Blocks.AIR.defaultBlockState(), 2);
 						if (!advanceMiningPos(state)) { finishMining(level, pos, state); return; }
 						continue;
 					} else {
 						break;
 					}
 				}
-				// Flow blok nebo zdroj bez removeru → přeskoč
-				miningProgressAcc = 0f;
+				// Bez liquid removeru → přeskoč
 				if (!advanceMiningPos(state)) { finishMining(level, pos, state); return; }
 				continue;
 			}
