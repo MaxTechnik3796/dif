@@ -171,7 +171,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 	public int getTotalDPGen(){
 		int dp=0;
 		if(inventory.getStackInSlot(1).getItem() instanceof EngineItem eng) dp+=eng.dpGen;
-		if(!hasSilkTouch&&!hasLiquidRemover&&inventory.getStackInSlot(2).getItem() instanceof EngineItem eng) dp+=eng.dpGen;
+		if(!hasSilkTouch&&!hasLiquidRemover&&inventory.getStackInSlot(2).getItem() instanceof EngineItem eng)
+			dp+=eng.dpGen;
 		return Math.max(0,dp);
 	}
 	public int getHeadDPReq(){
@@ -191,7 +192,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		if(eng1Item instanceof EngineItem eng) feCost+=eng.feCost;
 		if(!hasSilkTouch&&!hasLiquidRemover&&eng2Item instanceof EngineItem eng) feCost+=eng.feCost;
 		// 2 různé = +25%, 2 stejné = +50%
-		if(eng1Item instanceof EngineItem&&eng2Item instanceof EngineItem) feCost=(int)(feCost*(eng1Item==eng2Item?1.5f:1.25f));
+		if(eng1Item instanceof EngineItem&&eng2Item instanceof EngineItem)
+			feCost=(int)(feCost*(eng1Item==eng2Item?1.5f:1.25f));
 		return feCost;
 	}
 	private ItemStack buildSimulatedTool(){
@@ -371,7 +373,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 			BlockPos framePos=workQueue.get(workIndex++);
 			if(isFrameBlock(level,framePos)){
 				level.setBlock(framePos,DifModBlocks.QUARRY_FRAME.get().defaultBlockState(),3);
-				if(level.getBlockEntity(framePos) instanceof QuarryFrameBlockEntity frame) frame.setOwner(worldPosition);
+				if(level.getBlockEntity(framePos) instanceof QuarryFrameBlockEntity frame)
+					frame.setOwner(worldPosition);
 				miningProgressAcc-=costPerFrame;
 			}
 			// Pokud tam rám už je, neodečítáme progress
@@ -410,7 +413,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		ItemStack tool=buildSimulatedTool();
 		miningProgressAcc+=progressStep;
 		while(true){
-			while(level.isEmptyBlock(miningPos)&&level.getBlockState(miningPos).getFluidState().isEmpty()) if(handleMiningAdvance(level,pos,state)) return;
+			while(level.isEmptyBlock(miningPos)&&level.getBlockState(miningPos).getFluidState().isEmpty())
+				if(handleMiningAdvance(level,pos,state)) return;
 			BlockState target=level.getBlockState(miningPos);
 			if(!target.getFluidState().isEmpty()){
 				if(hasLiquidRemover){
@@ -459,7 +463,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 			adjHandlers=new IItemHandler[Direction.values().length];
 			for(Direction dir: Direction.values()){
 				BlockEntity adjBE=level.getBlockEntity(worldPosition.relative(dir));
-				if(adjBE!=null) adjHandlers[dir.ordinal()]=adjBE.getCapability(ForgeCapabilities.ITEM_HANDLER,dir.getOpposite()).orElse(null);
+				if(adjBE!=null)
+					adjHandlers[dir.ordinal()]=adjBE.getCapability(ForgeCapabilities.ITEM_HANDLER,dir.getOpposite()).orElse(null);
 			}
 		}
 		for(ItemStack dropStack: drops){
@@ -497,7 +502,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 			if(!stack.isEmpty()) Block.popResource(level,worldPosition,stack);
 		}
 		for(BlockPos fp: computeFramePositions(getBlockState()))
-			if(level.getBlockEntity(fp) instanceof QuarryFrameBlockEntity frame&&worldPosition.equals(frame.getOwnerPos())) frame.scheduleRemoval();
+			if(level.getBlockEntity(fp) instanceof QuarryFrameBlockEntity frame&&worldPosition.equals(frame.getOwnerPos()))
+				frame.scheduleRemoval();
 	}
 	// Frame helpers
 	public boolean isFrameIntact(Level level,BlockState state){

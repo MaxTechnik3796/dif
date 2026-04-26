@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.entity.WitherTitanEntity; // PŘIDAT IMPORT
 import cz.maxtechnik.dif.entity.vehicle.FormulaEntity;
 import cz.maxtechnik.dif.entity.vehicle.RemoteControlMinecart;
 import net.minecraft.world.entity.EntityType;
@@ -18,13 +17,6 @@ public class DifModEntities {
             REGISTRY.register("remote_minecart", () -> EntityType.Builder.<RemoteControlMinecart>of(RemoteControlMinecart::new, MobCategory.MISC)
                     .sized(0.98F, 0.7F)
                     .build("remote_minecart"));
-
-    public static final RegistryObject<EntityType<WitherTitanEntity>> WITHER_TITAN =
-            REGISTRY.register("wither_titan", () -> EntityType.Builder.of(WitherTitanEntity::new, MobCategory.MONSTER)
-                    .sized(2.0F, 8.0F) // BOX 1: Collision box u země
-                    .clientTrackingRange(128)
-                    .fireImmune()
-                    .build("wither_titan"));
     public static final RegistryObject<EntityType<FormulaEntity>> FORMULA =REGISTRY.register("formula",
 					() -> EntityType.Builder.of(FormulaEntity::new, MobCategory.MISC)
                     .sized(2.0F, 1.8F) // Zvýšeno o 1 block (původně 0.8F)

@@ -9,32 +9,22 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-
-
-public class BrassWaterWheelBlock extends WaterWheelBlock {
-
-    public BrassWaterWheelBlock() {
-        super(BlockBehaviour.Properties.of()
-                .sound(SoundType.METAL)
-                .strength(1.5F, 6.0F)
-                .requiresCorrectToolForDrops()
-                .noOcclusion()
-        );
-    }
-
-    @Override
-    public net.minecraft.world.level.block.entity.BlockEntityType<? extends WaterWheelBlockEntity> getBlockEntityType() {
-        return DifModBlockEntities.BRASS_WATER_WHEEL.get();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public Class<WaterWheelBlockEntity> getBlockEntityClass() {
-        return (Class<WaterWheelBlockEntity>) (Class<?>) BrassWaterWheelBlockEntity.class;
-    }
-
-    @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new BrassWaterWheelBlockEntity(pos, state);
-    }
+@SuppressWarnings("unchecked")
+public class BrassWaterWheelBlock extends WaterWheelBlock{
+	public BrassWaterWheelBlock(){
+		super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1.5F,6F).requiresCorrectToolForDrops().noOcclusion()
+		);
+	}
+	@Override
+	public net.minecraft.world.level.block.entity.BlockEntityType<? extends WaterWheelBlockEntity> getBlockEntityType(){
+		return DifModBlockEntities.BRASS_WATER_WHEEL.get();
+	}
+	@Override
+	public Class<WaterWheelBlockEntity> getBlockEntityClass(){
+		return (Class<WaterWheelBlockEntity>)(Class<?>)BrassWaterWheelBlockEntity.class;
+	}
+	@Override
+	public BlockEntity newBlockEntity(BlockPos pos,BlockState state){
+		return new BrassWaterWheelBlockEntity(pos,state);
+	}
 }

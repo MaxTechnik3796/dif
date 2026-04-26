@@ -22,24 +22,16 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 @OnlyIn(Dist.CLIENT)
 public class BrassWaterWheelRenderer extends KineticBlockEntityRenderer<WaterWheelBlockEntity>{
-	public static final PartialModel BRASS_WHEEL=
-			PartialModel.of(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/brass_large_water_wheel"));
-	public static final PartialModel BRASS_WHEEL_EXTENSION=
-			PartialModel.of(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/brass_large_water_wheel_extension"));
-	public static final PartialModel BRASS_SMALL_WHEEL=
-			PartialModel.of(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/brass_water_wheel_wheel"));
 	public BrassWaterWheelRenderer(BlockEntityRendererProvider.Context context){
 		super(context);
 	}
 	@Override
-	protected void renderSafe(WaterWheelBlockEntity be,float partialTicks,PoseStack ms,
-	                          MultiBufferSource buffer,int light,int overlay){
+	protected void renderSafe(WaterWheelBlockEntity be,float partialTicks,PoseStack ms,MultiBufferSource buffer,int light,int overlay){
 		BlockState state=be.getBlockState();
 		if(be instanceof BrassLargeWaterWheelBlockEntity&&!state.hasProperty(LargeWaterWheelBlock.EXTENSION)) return;
 		RenderType type=getRenderType(be,state);
 		SuperByteBuffer model=getRotatedModel(be,state);
-		standardKineticRotationTransform(model,be,light)
-				.renderInto(ms,buffer.getBuffer(type));
+		standardKineticRotationTransform(model,be,light).renderInto(ms,buffer.getBuffer(type));
 	}
 	@Override
 	protected SuperByteBuffer getRotatedModel(WaterWheelBlockEntity be,BlockState state){
@@ -47,19 +39,14 @@ public class BrassWaterWheelRenderer extends KineticBlockEntityRenderer<WaterWhe
 		PartialModel partial;
 		if(large){
 			boolean extension=state.getValue(LargeWaterWheelBlock.EXTENSION);
-			partial=extension?BRASS_WHEEL_EXTENSION:BRASS_WHEEL;
-		}else{
-			partial=BRASS_SMALL_WHEEL;
-		}
+			partial=extension?PartialModel.of(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/brass_large_water_wheel_extension")):PartialModel.of(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/brass_large_water_wheel"));
+		}else partial=PartialModel.of(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/brass_water_wheel_wheel"));
 		PartialModel finalPartial=partial;
 		return SuperByteBufferCache.getInstance().get(KineticBlockEntityRenderer.KINETIC_BLOCK,state,()->{
 			net.minecraft.client.resources.model.BakedModel model=finalPartial.get();
 			Direction dir;
-			if(large){
-				dir=Direction.fromAxisAndDirection(state.getValue(LargeWaterWheelBlock.AXIS),Direction.AxisDirection.POSITIVE);
-			}else{
-				dir=state.getValue(WaterWheelBlock.FACING);
-			}
+			if(large) dir=Direction.fromAxisAndDirection(state.getValue(LargeWaterWheelBlock.AXIS),Direction.AxisDirection.POSITIVE);
+			else dir=state.getValue(WaterWheelBlock.FACING);
 			PoseStack transform=CachedBuffers.rotateToFaceVertical(dir).get();
 			return SuperBufferFactory.getInstance().createForBlock(model,state,transform);
 		});

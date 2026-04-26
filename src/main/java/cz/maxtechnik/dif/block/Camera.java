@@ -29,7 +29,7 @@ public class Camera extends BaseEntityBlock{
 		return this.defaultBlockState().setValue(FACING,context.getHorizontalDirection().getOpposite());
 	}
 	@Override
-	public @NotNull RenderShape getRenderShape(@NotNull BlockState blockState) {
+	public @NotNull RenderShape getRenderShape(@NotNull BlockState blockState){
 		return RenderShape.MODEL;
 	}
 	public @NotNull BlockState rotate(BlockState state,Rotation rot){

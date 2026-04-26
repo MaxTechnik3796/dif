@@ -1,6 +1,6 @@
 {
-  "type": "forge:add_features",
-  "biomes": "#minecraft:is_plains",
-  "features": "dif:oil_well_placed_rare",
-  "step": "underground_structures"
+	"type":"forge:add_features",
+	"biomes":"#dif:has_feature/has_oil_rare",
+	"features":"dif:oil_well_placed_rare",
+	"step":"underground_structures"
 }

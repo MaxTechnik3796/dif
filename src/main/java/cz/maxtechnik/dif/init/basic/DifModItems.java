@@ -12,7 +12,6 @@ import cz.maxtechnik.dif.item.modular.tool.*;
 import cz.maxtechnik.dif.item.tool.*;
 import cz.maxtechnik.dif.item.armor.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
@@ -268,7 +267,7 @@ public class DifModItems{
 	//MusicDiscs:
 	public static final RegistryObject<Item> DOG=REGISTRY.register("dog",()->new MusicDiscDesc2(2,2900,DifMod.MODID,"dog"));
 
-	public static final RegistryObject<Item> FORMULA_ITEM = REGISTRY.register("formula", () -> new cz.maxtechnik.dif.item.FormulaItem(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<Item>FORMULA_ITEM=REGISTRY.register("formula",()->new FormulaItem(new Item.Properties().stacksTo(1)));
 
 
 	public static final RegistryObject<Item> FURT_TA_STEJNA_HRA=REGISTRY.register("furt_ta_stejna_hra",Update::new);

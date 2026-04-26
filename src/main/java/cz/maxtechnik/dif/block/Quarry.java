@@ -109,12 +109,14 @@ public class Quarry extends BaseEntityBlock{
 	}
 	@Override
 	public void onRemove(BlockState state,@NotNull Level level,@NotNull BlockPos pos,BlockState newState,boolean moving){
-		if(!state.is(newState.getBlock())&&level.getBlockEntity(pos) instanceof QuarryBlockEntity quarryEntity) quarryEntity.onQuarryRemoved();
+		if(!state.is(newState.getBlock())&&level.getBlockEntity(pos) instanceof QuarryBlockEntity quarryEntity)
+			quarryEntity.onQuarryRemoved();
 		super.onRemove(state,level,pos,newState,moving);
 	}
 	@Override
 	public @NotNull InteractionResult use(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
-		if(!level.isClientSide) if(level.getBlockEntity(pos) instanceof QuarryBlockEntity quarryEntity) NetworkHooks.openScreen((ServerPlayer)player,quarryEntity,pos);
+		if(!level.isClientSide) if(level.getBlockEntity(pos) instanceof QuarryBlockEntity quarryEntity)
+			NetworkHooks.openScreen((ServerPlayer)player,quarryEntity,pos);
 		return InteractionResult.sidedSuccess(level.isClientSide);
 	}
 	@Nullable

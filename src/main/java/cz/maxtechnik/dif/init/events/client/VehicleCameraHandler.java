@@ -2,6 +2,7 @@ package cz.maxtechnik.dif.init.events.client;
 
 import cz.maxtechnik.dif.entity.vehicle.BaseCarEntity;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.ViewportEvent;
@@ -14,9 +15,9 @@ public class VehicleCameraHandler{
 	public static void onComputeAngles(ViewportEvent.ComputeCameraAngles event){
 		Minecraft mc=Minecraft.getInstance();
 		if(vehicleCameraLocked&&mc.player!=null&&mc.player.getVehicle() instanceof BaseCarEntity car){
-			float pt=(float)event.getPartialTick();
-			float lerpYaw=net.minecraft.util.Mth.lerp(pt,car.yRotO,car.getYRot());
-			float lerpPitch=net.minecraft.util.Mth.lerp(pt,car.xRotO,car.getXRot());
+			float partialTick=(float)event.getPartialTick();
+			float lerpYaw=Mth.lerp(partialTick,car.yRotO,car.getYRot());
+			float lerpPitch=Mth.lerp(partialTick,car.xRotO,car.getXRot());
 			event.setYaw(lerpYaw);
 			event.setPitch(lerpPitch);
 			// Lock the player's head as well so their body visually matches
@@ -28,8 +29,6 @@ public class VehicleCameraHandler{
 	@SubscribeEvent
 	public static void onRenderHand(RenderHandEvent event){
 		Minecraft mc=Minecraft.getInstance();
-		if(vehicleCameraLocked&&mc.player!=null&&mc.player.getVehicle() instanceof BaseCarEntity){
-			event.setCanceled(true);
-		}
+		if(vehicleCameraLocked&&mc.player!=null&&mc.player.getVehicle() instanceof BaseCarEntity) event.setCanceled(true);
 	}
 }

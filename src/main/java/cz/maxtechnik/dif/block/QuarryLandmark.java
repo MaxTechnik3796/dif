@@ -37,12 +37,14 @@ public class QuarryLandmark extends BaseEntityBlock{
 	}
 	@Override
 	public @NotNull InteractionResult use(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
-		if(!level.isClientSide&&level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity lmEntity) lmEntity.onRightClick(player);
+		if(!level.isClientSide&&level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity lmEntity)
+			lmEntity.onRightClick(player);
 		return InteractionResult.sidedSuccess(level.isClientSide);
 	}
 	@Override
 	public void onRemove(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState newState,boolean moving){
-		if(!state.is(newState.getBlock())&&!level.isClientSide) if(level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity lmEntity) lmEntity.onRemoved();
+		if(!state.is(newState.getBlock())&&!level.isClientSide)
+			if(level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity lmEntity) lmEntity.onRemoved();
 		super.onRemove(state,level,pos,newState,moving);
 	}
 }

@@ -2,6 +2,7 @@ package cz.maxtechnik.dif.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.model.FormulaModel;
 import cz.maxtechnik.dif.entity.vehicle.BaseCarEntity;
 import cz.maxtechnik.dif.entity.vehicle.FormulaEntity;
@@ -18,35 +19,28 @@ import org.jetbrains.annotations.NotNull;
 @Mod.EventBusSubscriber(value=Dist.CLIENT)
 public class CarRenderer<T extends BaseCarEntity> extends EntityRenderer<T>{
 	private final FormulaModel<T> model;
-	private static final ResourceLocation TEX_BASE=ResourceLocation.fromNamespaceAndPath("dif","textures/entity/f1_base.png");
-	private static final ResourceLocation TEX_COLOR=ResourceLocation.fromNamespaceAndPath("dif","textures/entity/f1_collored.png");
+	private static final ResourceLocation TEX_BASE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/entity/f1_base.png");
+	private static final ResourceLocation TEX_COLOR=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/entity/f1_collored.png");
 	public CarRenderer(EntityRendererProvider.Context ctx){
 		super(ctx);
 		this.shadowRadius=0.7F;
 		this.model=new FormulaModel<>(ctx.bakeLayer(FormulaModel.LAYER_LOCATION));
 	}
 	@Override
-	public void render(@NotNull T e,float y,float pt,PoseStack ps,MultiBufferSource b,int l){
-		ps.pushPose();
-		// Rotace modelu podle yaw
-		ps.mulPose(Axis.YP.rotationDegrees(180F-y));
-		// Snížili jsme hodnotu z 1.5D na cca 1.35D až 1.4D.
-		// Tím se model posune dolů vzhledem k hráči a hitboxu.
-		ps.translate(0D,1.38D,0D);
-		// Flip modelu (Blockbench standard)
-		ps.scale(-1F,-1F,1F);
-		// Animace kol
-		float wheelSpin=(e.tickCount+pt)*e.getSpeedKmh()*0.02f;
-		model.setupAnim(e,wheelSpin,0F,e.tickCount+pt,0F,0F);
-		// Vykreslení modelu
-		model.renderToBuffer(ps,b.getBuffer(model.renderType(TEX_BASE)),l,OverlayTexture.NO_OVERLAY,1F,1F,1F,1F);
-		if(e instanceof FormulaEntity f){
-			int c=f.getColor();
-			float r=(c>>16&255)/255F, g=(c>>8&255)/255F, bl=(c&255)/255F;
-			model.renderToBuffer(ps,b.getBuffer(model.renderType(TEX_COLOR)),l,OverlayTexture.NO_OVERLAY,r,g,bl,1F);
+	public void render(@NotNull T entity,float y,float partialTick,PoseStack poseStack,MultiBufferSource buffer,int l){
+		poseStack.pushPose();
+		poseStack.mulPose(Axis.YP.rotationDegrees(180F-y));
+		poseStack.translate(0D,1.38D,0D);
+		poseStack.scale(-1F,-1F,1F);
+		float wheelSpin=(entity.tickCount+partialTick)*entity.getSpeedKmh()*0.02f;
+		model.setupAnim(entity,wheelSpin,0F,entity.tickCount+partialTick,0F,0F);
+		model.renderToBuffer(poseStack,buffer.getBuffer(model.renderType(TEX_BASE)),l,OverlayTexture.NO_OVERLAY,1F,1F,1F,1F);
+		if(entity instanceof FormulaEntity formula){
+			int color=formula.getColor();
+			model.renderToBuffer(poseStack,buffer.getBuffer(model.renderType(TEX_COLOR)),l,OverlayTexture.NO_OVERLAY,(color>>16&255)/255F,(color>>8&255)/255F,(color&255)/255F,1F);
 		}
-		ps.popPose();
-		super.render(e,y,pt,ps,b,l);
+		poseStack.popPose();
+		super.render(entity,y,partialTick,poseStack,buffer,l);
 	}
 	@Override
 	public @NotNull ResourceLocation getTextureLocation(@NotNull T e){
@@ -58,13 +52,13 @@ public class CarRenderer<T extends BaseCarEntity> extends EntityRenderer<T>{
 			float yaw=net.minecraft.util.Mth.lerp(event.getPartialTick(),car.yRotO,car.getYRot());
 			event.getEntity().yBodyRot=yaw;
 			event.getEntity().yBodyRotO=yaw;
-			var m=event.getRenderer().getModel();
-			m.rightLeg.yScale=m.leftLeg.yScale=m.rightPants.yScale=m.leftPants.yScale=0.5F;
+			var model=event.getRenderer().getModel();
+			model.rightLeg.yScale=model.leftLeg.yScale=model.rightPants.yScale=model.leftPants.yScale=0.5F;
 		}
 	}
 	@SubscribeEvent
 	public static void onPlayerRenderPost(RenderPlayerEvent.Post event){
-		var m=event.getRenderer().getModel();
-		m.rightLeg.yScale=m.leftLeg.yScale=m.rightPants.yScale=m.leftPants.yScale=1.0F;
+		var model=event.getRenderer().getModel();
+		model.rightLeg.yScale=model.leftLeg.yScale=model.rightPants.yScale=model.leftPants.yScale=1.0F;
 	}
 }

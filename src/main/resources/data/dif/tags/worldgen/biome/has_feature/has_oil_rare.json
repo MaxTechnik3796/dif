@@ -1,0 +1,10 @@
+{
+	"values":[
+		"#minecraft:is_savanna",
+		"#minecraft:is_forest",
+		"minecraft:plains",
+		"minecraft:meadow",
+		"minecraft:sunflower_plains",
+		"minecraft:beach"
+	]
+}

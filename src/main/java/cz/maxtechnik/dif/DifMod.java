@@ -1,8 +1,6 @@
 package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
-import cz.maxtechnik.dif.init.events.OilWellFeature;
-import cz.maxtechnik.dif.network.ModNetworking;
 import cz.maxtechnik.dif.renderer.BrassWaterWheelRenderer;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
 import cz.maxtechnik.dif.command.ConfigReloadCommand;
@@ -19,6 +17,7 @@ import cz.maxtechnik.dif.init.events.JetpackHandler;
 import cz.maxtechnik.dif.network.CameraExitPacket;
 import cz.maxtechnik.dif.network.RemoteControlPacket;
 import cz.maxtechnik.dif.network.ModNetworking.SyncCarPositionPacket;
+import cz.maxtechnik.dif.network.ModNetworking.ShiftGearPacket;
 import cz.maxtechnik.dif.renderer.*;
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -34,8 +33,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
@@ -58,9 +55,6 @@ import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 
 import java.util.function.BiConsumer;
@@ -104,7 +98,7 @@ public class DifMod {
 		DifModRecipes.REGISTRY.register(bus);
 		DifModRecipes.TYPE_REGISTRY.register(bus);
 		DifModEntities.REGISTRY.register(bus);
-		ModFeatures.register(bus);
+		DifModFeatures.REGISTRY.register(bus);
 		// REGISTRACE EVENTŮ
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(JetpackHandler.class);
@@ -127,10 +121,10 @@ public class DifMod {
 				CameraExitPacket::handle
 		));
 		event.enqueueWork(() -> addNetworkMessage(
-				ModNetworking.ShiftGearPacket.class,
-				ModNetworking.ShiftGearPacket::encode,
-				ModNetworking.ShiftGearPacket::decode,
-				ModNetworking.ShiftGearPacket::handle
+				ShiftGearPacket.class,
+				ShiftGearPacket::encode,
+				ShiftGearPacket::decode,
+				ShiftGearPacket::handle
 		));
 		event.enqueueWork(() -> addNetworkMessage(
 				SyncCarPositionPacket.class,
@@ -151,15 +145,6 @@ public class DifMod {
 		IsChunkLoadedCommand.register(event.getDispatcher());
 		ConfigReloadCommand.register(event.getDispatcher());
 	}
-
-	@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-	public static class ModBusEvents {
-		@SubscribeEvent
-		public static void entityAttributes(net.minecraftforge.event.entity.EntityAttributeCreationEvent event) {
-			event.put(DifModEntities.WITHER_TITAN.get(), cz.maxtechnik.dif.entity.WitherTitanEntity.createAttributes().build());
-		}
-	}
-
 	@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 	public static class ClientForgeEvents {
 		@SubscribeEvent
@@ -226,7 +211,6 @@ public class DifMod {
 			event.registerBlockEntityRenderer(DifModBlockEntities.BRASS_WATER_WHEEL.get(), BrassWaterWheelRenderer::new);
 			event.registerBlockEntityRenderer(DifModBlockEntities.BRASS_MECHANICAL_PRESS.get(), cz.maxtechnik.dif.renderer.BrassMechanicalPressRenderer::new);
 			event.registerBlockEntityRenderer(DifModBlockEntities.BRASS_MECHANICAL_MIXER.get(), cz.maxtechnik.dif.renderer.BrassMechanicalMixerRenderer::new);
-			event.registerEntityRenderer(DifModEntities.WITHER_TITAN.get(), WitherTitanRenderer::new);
 			event.registerEntityRenderer(DifModEntities.FORMULA.get(), CarRenderer::new);
 			event.registerEntityRenderer(DifModEntities.REMOTE_MINECART.get(),context -> new MinecartRenderer<>(context,ModelLayers.MINECART)
 			);

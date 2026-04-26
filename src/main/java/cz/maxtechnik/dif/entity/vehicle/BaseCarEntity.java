@@ -25,7 +25,6 @@ import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
-
 public abstract class BaseCarEntity extends Entity{
 	protected static final EntityDataAccessor<Float> DATA_RPM=SynchedEntityData.defineId(BaseCarEntity.class,EntityDataSerializers.FLOAT);
 	protected static final EntityDataAccessor<Integer> DATA_GEAR=SynchedEntityData.defineId(BaseCarEntity.class,EntityDataSerializers.INT);
@@ -43,8 +42,6 @@ public abstract class BaseCarEntity extends Entity{
 	protected int driftRecoveryTimer=0;
 	protected float spinoutDirection=1f;
 	public boolean isSoundPlaying=false;
-
-
 	public enum SurfaceType{NORMAL,SOUL_SAND,ICE,CARPET,GRASS}
 	private static Field jumpingField;
 	static{
@@ -67,41 +64,41 @@ public abstract class BaseCarEntity extends Entity{
 	protected void defineSynchedData(){
 		entityData.define(DATA_RPM,getIdleRPM());
 		entityData.define(DATA_GEAR,0);
-		entityData.define(DATA_SPEED,0f);
+		entityData.define(DATA_SPEED,0F);
 		entityData.define(DATA_ENGINE_ON,false);
 		entityData.define(DATA_FUEL,getInitialFuelMb());
 	}
 	@Override
-	public @NotNull InteractionResult interact(Player p, @NotNull InteractionHand h){
-		if(p.isSecondaryUseActive()){
-			ItemStack s=p.getItemInHand(h);
+	public @NotNull InteractionResult interact(Player player,@NotNull InteractionHand hand){
+		if(player.isSecondaryUseActive()){
+			ItemStack itemStack=player.getItemInHand(hand);
 			if(!level().isClientSide){
-				if(s.is(Items.LAVA_BUCKET)){
-					if(getFuelMb()>=getMaxFuelMb()) p.displayClientMessage(Component.literal("Nádrž je plná!"),true);
+				if(itemStack.is(Items.LAVA_BUCKET)){
+					if(getFuelMb()>=getMaxFuelMb()) player.displayClientMessage(Component.literal("Nádrž je plná!"),true);
 					else{
-						setFuelMb(getFuelMb()+1000f);
-						if(!p.getAbilities().instabuild){
-							s.shrink(1);
-							if(!p.getInventory().add(new ItemStack(Items.BUCKET)))
-								p.drop(new ItemStack(Items.BUCKET),false);
+						setFuelMb(getFuelMb()+1000F);
+						if(!player.getAbilities().instabuild){
+							itemStack.shrink(1);
+							if(!player.getInventory().add(new ItemStack(Items.BUCKET)))
+								player.drop(new ItemStack(Items.BUCKET),false);
 						}
 					}
-				}else if(s.is(Items.BUCKET)){
-					if(getFuelMb()<1000f)
-						p.displayClientMessage(Component.literal("Nestačí palivo na odebrání celého bucketu!"),true);
+				}else if(itemStack.is(Items.BUCKET)){
+					if(getFuelMb()<1000F)
+						player.displayClientMessage(Component.literal("Nestačí palivo na odebrání celého bucketu!"),true);
 					else{
-						setFuelMb(getFuelMb()-1000f);
-						if(!p.getAbilities().instabuild){
-							s.shrink(1);
-							if(!p.getInventory().add(new ItemStack(Items.LAVA_BUCKET)))
-								p.drop(new ItemStack(Items.LAVA_BUCKET),false);
+						setFuelMb(getFuelMb()-1000F);
+						if(!player.getAbilities().instabuild){
+							itemStack.shrink(1);
+							if(!player.getInventory().add(new ItemStack(Items.LAVA_BUCKET)))
+								player.drop(new ItemStack(Items.LAVA_BUCKET),false);
 						}
 					}
 				}
 			}
 			return InteractionResult.sidedSuccess(level().isClientSide);
 		}
-		if(!level().isClientSide&&p.startRiding(this)){
+		if(!level().isClientSide&&player.startRiding(this)){
 			setEngineOn(true);
 			setCurrentGear(0);
 			return InteractionResult.SUCCESS;
@@ -109,23 +106,23 @@ public abstract class BaseCarEntity extends Entity{
 		return InteractionResult.sidedSuccess(level().isClientSide);
 	}
 	@Override
-	public void removePassenger(@NotNull Entity p){
-		super.removePassenger(p);
+	public void removePassenger(@NotNull Entity entity){
+		super.removePassenger(entity);
 		if(!isVehicle()){
 			if(!level().isClientSide){
 				setEngineOn(false);
-				DifMod.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->this),new SyncCarPositionPacket(getId(),getX(),getY(),getZ(),getYRot(),0f));
+				DifMod.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->this),new SyncCarPositionPacket(getId(),getX(),getY(),getZ(),getYRot(),0F));
 			}
-			velocity=prevVelocity=0f;
+			velocity=prevVelocity=0F;
 			setDeltaMovement(Vec3.ZERO);
 			hasImpulse=true;
 		}
 	}
 	@Override
-	public boolean hurt(@NotNull DamageSource src, float amt){
-		if(isInvulnerableTo(src)) return false;
+	public boolean hurt(@NotNull DamageSource damageSource,float amount){
+		if(isInvulnerableTo(damageSource)) return false;
 		if(!level().isClientSide&&!isRemoved()){
-			if(src.getEntity() instanceof Player p&&!p.getAbilities().instabuild) spawnAtLocation(getDropItem());
+			if(damageSource.getEntity() instanceof Player p&&!p.getAbilities().instabuild) spawnAtLocation(getDropItem());
 			discard();
 			return true;
 		}
@@ -143,7 +140,7 @@ public abstract class BaseCarEntity extends Entity{
 		else simulateIdlePhysics();
 		if(!level().isClientSide){
 			if(isVehicle()&&isEngineOn()){
-				if(getFuelMb()>0f&&(fuelAccumulator+=(getSpeedKmh()>=getFuelSpeedThresholdKmh()||getCurrentGear()==-1?getFuelConsumptionHighMbPerTick():getFuelConsumptionLowMbPerTick()))>=1f||++fuelSyncTick>=5){
+				if(getFuelMb()>0F&&(fuelAccumulator+=(getSpeedKmh()>=getFuelSpeedThresholdKmh()||getCurrentGear()==-1?getFuelConsumptionHighMbPerTick():getFuelConsumptionLowMbPerTick()))>=1F||++fuelSyncTick>=5){
 					setFuelMb(getFuelMb()-fuelAccumulator);
 					fuelAccumulator=fuelSyncTick=0;
 				}
@@ -160,102 +157,97 @@ public abstract class BaseCarEntity extends Entity{
 		entityData.set(DATA_SPEED,velocity);
 	}
 	private void simulateIdlePhysics(){
-		motionYaw = getYRot();
-		velocity=Math.abs(velocity)<0.0005f?0f:velocity*0.88f;
-		setRPM(Math.max(0f,getRPM()-getMaxRPM()*0.04f));
+		motionYaw=getYRot();
+		velocity=Math.abs(velocity)<0.0005F?0F:velocity*0.88F;
+		setRPM(Math.max(0F,getRPM()-getMaxRPM()*0.04F));
 		double yaw=Math.toRadians(getYRot()), yMot=Math.max(-1.5,onGround()?-0.05:getDeltaMovement().y-0.04);
 		setDeltaMovement(-Math.sin(yaw)*velocity,yMot,Math.cos(yaw)*velocity);
 		move(MoverType.SELF,getDeltaMovement());
 	}
 	protected void simulateActivePhysics(LivingEntity d){
-		float throttle=Math.max(0f,d.zza), targetInput=-d.xxa;
-		if (spinoutTimer > 0) {
+		float throttle=Math.max(0F,d.zza), targetInput=-d.xxa;
+		if(spinoutTimer>0){
 			spinoutTimer--;
-			if (spinoutTimer > 60) {
-				throttle = 0f;
-				targetInput = 0f;
+			if(spinoutTimer>60){
+				throttle=0F;
+				targetInput=0F;
 			}
-			setYRot(getYRot() + 6f * spinoutDirection);
-			velocity *= 0.985f;
-		} else {
-			if(targetInput!=0f){
-				if(Math.abs(currentSteering)<0.25f*Math.abs(targetInput)){
-					currentSteering=Math.signum(targetInput)*0.25f*Math.abs(targetInput);
+			setYRot(getYRot()+6F*spinoutDirection);
+			velocity*=0.985F;
+		}else{
+			if(targetInput!=0F){
+				if(Math.abs(currentSteering)<0.25F*Math.abs(targetInput)){
+					currentSteering=Math.signum(targetInput)*0.25F*Math.abs(targetInput);
 				}
-				currentSteering+=(targetInput -currentSteering)*0.15f;
+				currentSteering+=(targetInput-currentSteering)*0.15F;
 			}else{
-				currentSteering+=(0f-currentSteering)*0.35f;
-				if(Math.abs(currentSteering)<0.05f) currentSteering=0f;
+				currentSteering+=(0F-currentSteering)*0.35F;
+				if(Math.abs(currentSteering)<0.05F) currentSteering=0F;
 			}
 		}
 		SurfaceType s=detectSurface();
 		int g=getCurrentGear();
-		float sMult=s==SurfaceType.SOUL_SAND?0.35f:s==SurfaceType.CARPET?0.88f:1f, lGrip=s==SurfaceType.ICE?0.1f:s==SurfaceType.GRASS?0.7f:s==SurfaceType.SOUL_SAND?0.5f:s==SurfaceType.CARPET?0.75f:1f, rRes=s==SurfaceType.SOUL_SAND?0.025f:s==SurfaceType.ICE?0.0004f:s==SurfaceType.GRASS?0.0015f:s==SurfaceType.CARPET?0.006f:0.002f;
-		float msBT=(getMaxSpeedKmh()*sMult)/72f, rpmC=getMaxRPM()/((getMaxSpeedKmh()/72f)*getGearRatios()[getGearRatios().length-1]);
-		if(g==0) setRPM(getRPM()+(getIdleRPM()+(getMaxRPM()-getIdleRPM())*throttle*0.25f-getRPM())*0.15f);
+		float sMult=s==SurfaceType.SOUL_SAND?0.35F:s==SurfaceType.CARPET?0.88F:1F, lGrip=s==SurfaceType.ICE?0.1F:s==SurfaceType.GRASS?0.7F:s==SurfaceType.SOUL_SAND?0.5F:s==SurfaceType.CARPET?0.75F:1F, rRes=s==SurfaceType.SOUL_SAND?0.025F:s==SurfaceType.ICE?0.0004F:s==SurfaceType.GRASS?0.0015F:s==SurfaceType.CARPET?0.006F:0.002F;
+		float msBT=(getMaxSpeedKmh()*sMult)/72F, rpmC=getMaxRPM()/((getMaxSpeedKmh()/72F)*getGearRatios()[getGearRatios().length-1]);
+		if(g==0) setRPM(getRPM()+(getIdleRPM()+(getMaxRPM()-getIdleRPM())*throttle*0.25F-getRPM())*0.15F);
 		else{
 			float tRPM=Math.abs(velocity)*getGearRatios()[g==-1?0:g-1]*rpmC;
-			setRPM(Math.max(getIdleRPM(),Math.min(getMaxRPM(),Math.abs(velocity)<0.05f&&throttle>0f?Math.max(tRPM,getIdleRPM()+(getMaxRPM()-getIdleRPM())*throttle*0.25f):tRPM)));
+			setRPM(Math.max(getIdleRPM(),Math.min(getMaxRPM(),Math.abs(velocity)<0.05F&&throttle>0F?Math.max(tRPM,getIdleRPM()+(getMaxRPM()-getIdleRPM())*throttle*0.25F):tRPM)));
 		}
-		float thrust=0f;
-		if(g!=0&&throttle>0f&&getFuelMb()>0f){
-			float base=throttle*getBaseAcceleration()*(getGearRatios()[g==-1?0:g-1]/getGearRatios()[0])*Math.max(0.25f,Math.min(1f,(float)(-4.0*Math.pow(getRPM()/getMaxRPM()-0.75,2)+1.0)))*(getRPM()>=getMaxRPM()*0.999f?0f:shiftCooldown>0?(float)shiftCooldown/getShiftCooldownTicks():1f);
-			thrust=g==-1?-base*0.4f:base;
-		}else if(getFuelMb()<=0f) setRPM(Math.max(0f,getRPM()-getMaxRPM()*0.04f));
+		float thrust=0F;
+		if(g!=0&&throttle>0f&&getFuelMb()>0F){
+			float base=throttle*getBaseAcceleration()*(getGearRatios()[g==-1?0:g-1]/getGearRatios()[0])*Math.max(0.25F,Math.min(1F,(float)(-4.0*Math.pow(getRPM()/getMaxRPM()-0.75,2)+1.0)))*(getRPM()>=getMaxRPM()*0.999F?0F:shiftCooldown>0?(float)shiftCooldown/getShiftCooldownTicks():1F);
+			thrust=g==-1?-base*0.4F:base;
+		}else if(getFuelMb()<=0F) setRPM(Math.max(0F,getRPM()-getMaxRPM()*0.04F));
 		if(getJumping(d)){
-			velocity *= 0.97f;
-			velocity = Math.signum(velocity) * Math.max(0f, Math.abs(velocity) - getBrakingDeceleration() * 0.15f);
-			lGrip *= 0.6f;
+			velocity*=0.97F;
+			velocity=Math.signum(velocity)*Math.max(0F,Math.abs(velocity)-getBrakingDeceleration()*0.15F);
+			lGrip*=0.6F;
 		}
-		velocity=Math.max(-0.25f,Math.min(msBT,velocity+thrust-velocity*Math.abs(velocity)*getAeroDrag()-velocity*rRes));
-		if(s==SurfaceType.SOUL_SAND&&Math.abs(velocity)>22f/72f)
-			velocity=velocity*0.82f+Math.signum(velocity)*(22f/72f)*0.18f;
-		if(Math.abs(velocity)>0.015f){
-			float speedKmh = Math.abs(velocity) * 72f;
-			float steeringMult = Math.max(0.20f, 1f - (speedKmh / 400f));
-			setYRot(getYRot()+getBaseHandling()*(1f+getDownforceCoefficient()*(velocity/msBT)*(velocity/msBT))*lGrip*currentSteering*steeringMult);
-
+		velocity=Math.max(-0.25F,Math.min(msBT,velocity+thrust-velocity*Math.abs(velocity)*getAeroDrag()-velocity*rRes));
+		if(s==SurfaceType.SOUL_SAND&&Math.abs(velocity)>22F/72F)
+			velocity=velocity*0.82F+Math.signum(velocity)*(22F/72F)*0.18F;
+		if(Math.abs(velocity)>0.015F){
+			float speedKmh=Math.abs(velocity)*72F;
+			float steeringMult=Math.max(0.2F,1F-(speedKmh/400F));
+			setYRot(getYRot()+getBaseHandling()*(1F+getDownforceCoefficient()*(velocity/msBT)*(velocity/msBT))*lGrip*currentSteering*steeringMult);
 			float safeLimit;
-			if (speedKmh <= 150f) safeLimit = 1.0f;
-			else if (speedKmh <= 250f) safeLimit = 1.0f - ((speedKmh - 150f) / 100f) * 0.50f;
-			else if (speedKmh <= 300f) safeLimit = 0.50f - ((speedKmh - 250f) / 50f) * 0.30f;
-			else safeLimit = 0.15f;
-
-			float absSteer = Math.abs(currentSteering);
-			boolean oversteerDanger = absSteer > safeLimit;
-
-			if (oversteerDanger && spinoutTimer == 0) {
+			if(speedKmh<=150F) safeLimit=1F;
+			else if(speedKmh<=250F) safeLimit=1F-((speedKmh-150F)/100F)*0.5F;
+			else if(speedKmh<=300F) safeLimit=0.5F-((speedKmh-250F)/50F)*0.3F;
+			else safeLimit=0.15F;
+			float absSteer=Math.abs(currentSteering);
+			boolean oversteerDanger=absSteer>safeLimit;
+			if(oversteerDanger&&spinoutTimer==0){
 				oversteerTimer++;
-				int timeLimit = getJumping(d) ? 30 : 10;
-				if (oversteerTimer > timeLimit) {
+				int timeLimit=getJumping(d)?30:10;
+				if(oversteerTimer>timeLimit){
 					// HODINY (Spinout) - striktně překročení limitů přináší hodiny, zrušen lehký drift
-					spinoutTimer = 120;
-					spinoutDirection = Math.signum(currentSteering);
+					spinoutTimer=120;
+					spinoutDirection=Math.signum(currentSteering);
 				}
-			} else {
-				oversteerTimer = Math.max(0, oversteerTimer - 2);
+			}else{
+				oversteerTimer=Math.max(0,oversteerTimer-2);
 			}
 		}
-
-		if (driftRecoveryTimer > 0) driftRecoveryTimer--;
-
-		float yawDiff = net.minecraft.util.Mth.wrapDegrees(getYRot() - motionYaw);
-		float alignSpeed = 0.2f;
-		if (spinoutTimer > 0) alignSpeed = 0.01f;
-		else if (driftRecoveryTimer > 0) alignSpeed = 0.04f;
-		motionYaw += yawDiff * alignSpeed;
-
+		if(driftRecoveryTimer>0) driftRecoveryTimer--;
+		float yawDiff=net.minecraft.util.Mth.wrapDegrees(getYRot()-motionYaw);
+		float alignSpeed=0.2F;
+		if(spinoutTimer>0) alignSpeed=0.01F;
+		else if(driftRecoveryTimer>0) alignSpeed=0.04F;
+		motionYaw+=yawDiff*alignSpeed;
 		double yaw=Math.toRadians(motionYaw), preX=getX(), preY=getY(), preZ=getZ();
 		Vec3 mot=new Vec3(-Math.sin(yaw)*velocity,Math.max(-1.5,onGround()?-0.05:getDeltaMovement().y-0.04),Math.cos(yaw)*velocity);
 		setDeltaMovement(mot);
 		move(MoverType.SELF,getDeltaMovement());
-		if(horizontalCollision && getY() - preY <= 0.001){
+		if(horizontalCollision&&getY()-preY<=0.001){
 			double cs=Math.sqrt(Math.pow(getX()-preX,2)+Math.pow(getZ()-preZ,2));
 			velocity=(float)cs*Math.signum(velocity);
-			spinoutTimer = 0;
-			oversteerTimer = 0;
-			if(!level().isClientSide&&crashDamageCooldown==0&&(Math.sqrt(mot.x*mot.x+mot.z*mot.z)-cs)*72.0>getCrashDamageThresholdKmh()){
-				d.hurt(level().damageSources().generic(),(float)((Math.sqrt(mot.x*mot.x+mot.z*mot.z)-cs)*72.0-getCrashDamageThresholdKmh())*getCrashDamageMultiplier());
+			spinoutTimer=0;
+			oversteerTimer=0;
+			double v=(Math.sqrt(mot.x*mot.x+mot.z*mot.z)-cs)*72.0;
+			if(!level().isClientSide&&crashDamageCooldown==0&&v>getCrashDamageThresholdKmh()){
+				d.hurt(level().damageSources().generic(),(float)(v-getCrashDamageThresholdKmh())*getCrashDamageMultiplier());
 				crashDamageCooldown=10;
 			}
 		}
@@ -300,16 +292,16 @@ public abstract class BaseCarEntity extends Entity{
 		return getMaxFuelMb();
 	}
 	public float getDownforceCoefficient(){
-		return 0f;
+		return 0F;
 	}
 	public float getAeroDrag(){
-		return 0.0002f;
+		return 0.0002F;
 	}
 	public float getBrakingDeceleration(){
-		return 0.05f;
+		return 0.05F;
 	}
 	public float getHighSpeedSteerReduction(){
-		return 0.55f;
+		return 0.55F;
 	}
 	public int getShiftCooldownTicks(){
 		return 8;
@@ -318,10 +310,10 @@ public abstract class BaseCarEntity extends Entity{
 		shiftCooldown=getShiftCooldownTicks();
 	}
 	public float getCrashDamageThresholdKmh(){
-		return 40f;
+		return 40F;
 	}
 	public float getCrashDamageMultiplier(){
-		return 0.15f;
+		return 0.15F;
 	}
 	public float getRPM(){
 		return entityData.get(DATA_RPM);
@@ -336,7 +328,7 @@ public abstract class BaseCarEntity extends Entity{
 		entityData.set(DATA_GEAR,v);
 	}
 	public float getSpeedKmh(){
-		return Math.abs(entityData.get(DATA_SPEED))*72f;
+		return Math.abs(entityData.get(DATA_SPEED))*72F;
 	}
 	public boolean isEngineOn(){
 		return entityData.get(DATA_ENGINE_ON);
@@ -348,10 +340,10 @@ public abstract class BaseCarEntity extends Entity{
 		return entityData.get(DATA_FUEL);
 	}
 	public void setFuelMb(float v){
-		entityData.set(DATA_FUEL,Math.max(0f,Math.min(getMaxFuelMb(),v)));
+		entityData.set(DATA_FUEL,Math.max(0F,Math.min(getMaxFuelMb(),v)));
 	}
 	public float getFuelPercent(){
-		return getMaxFuelMb()>0?getFuelMb()/getMaxFuelMb():0f;
+		return getMaxFuelMb()>0?getFuelMb()/getMaxFuelMb():0F;
 	}
 	@Override
 	public LivingEntity getControllingPassenger(){
