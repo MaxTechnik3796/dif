@@ -29,6 +29,9 @@ public class DifModFoods{
 	public static final FoodProperties CRETE_CAN=new FoodProperties.Builder().nutrition(9).saturationMod(1.2F).effect(new MobEffectInstance(MobEffects.DIG_SPEED,900,0),1F).effect(new MobEffectInstance(MobEffects.NIGHT_VISION,1500,0),1F).effect(new MobEffectInstance(MobEffects.HEALTH_BOOST,1200,0),1F).meat().alwaysEat().build();
 	public static final FoodProperties CREATE_BOWL=new FoodProperties.Builder().nutrition(18).saturationMod(1.2F).effect(new MobEffectInstance(MobEffects.DIG_SPEED,1800,1),1F).effect(new MobEffectInstance(MobEffects.NIGHT_VISION,3000,0),1F).effect(new MobEffectInstance(MobEffects.HEALTH_BOOST,2400,0),1F).meat().alwaysEat().build();
 	public static final FoodProperties CREATE_SUPER=new FoodProperties.Builder().nutrition(20).saturationMod(2F).effect(new MobEffectInstance(MobEffects.DIG_SPEED,1800,1),1F).effect(new MobEffectInstance(MobEffects.NIGHT_VISION,6000,0),1F).effect(new MobEffectInstance(MobEffects.HEALTH_BOOST,4800,1),1F).effect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE,6000,0),1F).meat().alwaysEat().build();
-	
+
+	public static final FoodProperties BOTTLE_OF_MOLOTOVUV_KOKTEJL=new FoodProperties.Builder().nutrition(4).saturationMod(3F).alwaysEat().build();
+	public static final FoodProperties BOTTLE_OF_URANOVEJ_KOKTEJL=new FoodProperties.Builder().nutrition(4).saturationMod(3F).effect(new MobEffectInstance(DifModMobEffects.WTF.get(),1200,0),1F).alwaysEat().build();
+
 	public static final FoodProperties FLAT_DOUGH=new FoodProperties.Builder().nutrition(2).saturationMod(0.1F).effect(new MobEffectInstance(MobEffects.HUNGER,600,0),0.8F).build();
 }

@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 public class MolotovuvKoktejl extends Item{
 	public MolotovuvKoktejl(){
-		super(new Properties().food((new FoodProperties.Builder()).nutrition(4).saturationMod(3f).alwaysEat().build()));
+		super(new Properties().food((DifModFoods.BOTTLE_OF_MOLOTOVUV_KOKTEJL)));
 	}
 	@Override
 	public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemstack){

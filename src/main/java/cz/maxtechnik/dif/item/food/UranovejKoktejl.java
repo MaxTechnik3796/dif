@@ -1,20 +1,16 @@
 package cz.maxtechnik.dif.item.food;
 
-import cz.maxtechnik.dif.init.other.DifModMobEffects;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-@SuppressWarnings("deprecation")
 public class UranovejKoktejl extends Item{
 	public UranovejKoktejl(){
-		super(new Properties().food((new FoodProperties.Builder()).nutrition(4).saturationMod(3f).effect(new MobEffectInstance(DifModMobEffects.WTF.get(),1200,0),1F).alwaysEat().build()));
+		super(new Properties().food((DifModFoods.BOTTLE_OF_URANOVEJ_KOKTEJL)));
 	}
 	@Override
 	public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemstack){
@@ -27,17 +23,8 @@ public class UranovejKoktejl extends Item{
 		list.add(Component.literal("§8- §aZvýšené množství radiace!"));
 	}
 	@Override
-	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemstack,@NotNull Level world,@NotNull LivingEntity entity){
-		ItemStack retval=new ItemStack(Items.GLASS_BOTTLE);
-		super.finishUsingItem(itemstack,world,entity);
-		if(itemstack.isEmpty()){
-			return retval;
-		}else{
-			if(entity instanceof Player player&&!player.getAbilities().instabuild){
-				if(!player.getInventory().add(retval))
-					player.drop(retval,false);
-			}
-			return itemstack;
-		}
+	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemStack,@NotNull Level level,@NotNull LivingEntity entity){
+		ItemStack itemstack=super.finishUsingItem(itemStack,level,entity);
+		return entity instanceof Player&&((Player)entity).getAbilities().instabuild?itemstack:new ItemStack(Items.GLASS_BOTTLE);
 	}
 }
