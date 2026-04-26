@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.fluid.bucket.*;
+import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
@@ -111,14 +111,14 @@ public class DifModItems{
 	public static final RegistryObject<Item> XP_STORAGE=block(DifModBlocks.XP_STORAGE);
 
 	//Fluid:
-	public static final RegistryObject<Item> BEER_BUCKET=REGISTRY.register("beer_bucket",BeerBucket::new);
-	public static final RegistryObject<Item> XP_BUCKET=REGISTRY.register("xp_bucket",XpBucket::new);
-	public static final RegistryObject<Item> FUEL_BUCKET=REGISTRY.register("fuel_bucket",FuelBucket::new);
-	public static final RegistryObject<Item>CIDER_BUCKET=REGISTRY.register("cider_bucket",CiderBucket::new);
-	public static final RegistryObject<Item>CRUDE_OIL_BUCKET=REGISTRY.register("crude_oil_bucket",CrudeOilBucket::new);
-	public static final RegistryObject<Item>JETPACK_FUEL_BUCKET=REGISTRY.register("jetpack_fuel_bucket",JetpackFuelBucket::new);
-	public static final RegistryObject<Item>JETPACK_TURBO_FUEL_BUCKET=REGISTRY.register("jetpack_turbo_fuel_bucket",JetpackTurboFuelBucket::new);
-	public static final RegistryObject<Item>SUNFLOWER_OIL_BUCKET=REGISTRY.register("sunflower_oil_bucket",SunflowerOilBucket::new);
+	public static final RegistryObject<Item> BEER_BUCKET=REGISTRY.register("beer_bucket",()->new BucketItem(DifModFluids.BEER,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final RegistryObject<Item> XP_BUCKET=REGISTRY.register("xp_bucket",()->new BucketItem(DifModFluids.XP,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final RegistryObject<Item> FUEL_BUCKET=REGISTRY.register("fuel_bucket",()->new BucketItem(DifModFluids.FUEL,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final RegistryObject<Item>CIDER_BUCKET=REGISTRY.register("cider_bucket",()->new BucketItem(DifModFluids.CIDER,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final RegistryObject<Item>CRUDE_OIL_BUCKET=REGISTRY.register("crude_oil_bucket",()->new BucketItem(DifModFluids.CRUDE_OIL,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final RegistryObject<Item>JETPACK_FUEL_BUCKET=REGISTRY.register("jetpack_fuel_bucket",()->new BucketItem(DifModFluids.JETPACK_FUEL,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final RegistryObject<Item>JETPACK_TURBO_FUEL_BUCKET=REGISTRY.register("jetpack_turbo_fuel_bucket",()->new BucketItem(DifModFluids.JETPACK_TURBO_FUEL,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final RegistryObject<Item>SUNFLOWER_OIL_BUCKET=REGISTRY.register("sunflower_oil_bucket",()->new BucketItem(DifModFluids.SUNFLOWER_OIL,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 
 	//Vanilla + :
 	public static final RegistryObject<Item> END_PORTAL=V_REGISTRY.register("end_portal",()->new BlockItem(Blocks.END_PORTAL,new Item.Properties()));

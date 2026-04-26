@@ -13,7 +13,7 @@ import cz.maxtechnik.dif.block.rails.FastPoweredRailBlock;
 import cz.maxtechnik.dif.block.rails.FastRailBlock;
 import cz.maxtechnik.dif.block.space.*;
 import cz.maxtechnik.dif.block.template.*;
-import cz.maxtechnik.dif.fluid.block.*;
+import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -51,14 +51,14 @@ public class DifModBlocks{
 	public static final RegistryObject<Block> BRASS_MECHANICAL_MIXER = REGISTRY.register("brass_mechanical_mixer", () -> new BrassMechanicalMixerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PODZOL).requiresCorrectToolForDrops().strength(4.0F).sound(SoundType.NETHERITE_BLOCK).noOcclusion()));
 
 	//Fluids:
-	public static final RegistryObject<Block>FUEL_FLUID=REGISTRY.register("fuel_fluid",FuelBlock::new);
-	public static final RegistryObject<Block>BEER_FLUID=REGISTRY.register("beer_fluid",BeerBlock::new);
-	public static final RegistryObject<Block>XP_FLUID=REGISTRY.register("xp_fluid",XpBlock::new);
-	public static final RegistryObject<Block>CIDER_FLUID=REGISTRY.register("cider_fluid",CiderBlock::new);
-	public static final RegistryObject<Block>CRUDE_OIL_FLUID=REGISTRY.register("crude_oil_fluid",CrudeOilBlock::new);
-	public static final RegistryObject<Block>JETPACK_FUEL_FLUID=REGISTRY.register("jetpack_fuel_fluid",JetpackFuelBlock::new);
-	public static final RegistryObject<Block>JETPACK_TURBO_FUEL_FLUID=REGISTRY.register("jetpack_turbo_fuel_fluid",JetpackTurboFuelBlock::new);
-	public static final RegistryObject<Block>SUNFLOWER_OIL_FLUID=REGISTRY.register("sunflower_oil_fluid",SunflowerOilBlock::new);
+	public static final RegistryObject<Block>FUEL_FLUID=REGISTRY.register("fuel_fluid",()->new LiquidBlock(DifModFluids.FUEL,BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable()));
+	public static final RegistryObject<Block>BEER_FLUID=REGISTRY.register("beer_fluid",()->new LiquidBlock(DifModFluids.BEER,BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable()));
+	public static final RegistryObject<Block>XP_FLUID=REGISTRY.register("xp_fluid",()->new LiquidBlock(DifModFluids.XP,BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable().lightLevel(s->15)));
+	public static final RegistryObject<Block>CIDER_FLUID=REGISTRY.register("cider_fluid",()->new LiquidBlock(DifModFluids.CIDER,BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable()));
+	public static final RegistryObject<Block>CRUDE_OIL_FLUID=REGISTRY.register("crude_oil_fluid",()->new LiquidBlock(DifModFluids.CRUDE_OIL,BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable()));
+	public static final RegistryObject<Block>JETPACK_FUEL_FLUID=REGISTRY.register("jetpack_fuel_fluid",()->new LiquidBlock(DifModFluids.JETPACK_FUEL,BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable()));
+	public static final RegistryObject<Block>JETPACK_TURBO_FUEL_FLUID=REGISTRY.register("jetpack_turbo_fuel_fluid",()->new LiquidBlock(DifModFluids.JETPACK_TURBO_FUEL,BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable()));
+	public static final RegistryObject<Block>SUNFLOWER_OIL_FLUID=REGISTRY.register("sunflower_oil_fluid",()->new LiquidBlock(DifModFluids.SUNFLOWER_OIL,BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable()));
 
 	//Random (0):
 	public static final RegistryObject<Block> MEGA_TORCH = REGISTRY.register("mega_torch", () -> new MegaTorch(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(2F,3F).sound(SoundType.WOOD).lightLevel(state->15)));

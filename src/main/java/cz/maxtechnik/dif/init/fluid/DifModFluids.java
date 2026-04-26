@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.init.fluid;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.fluid.fluid.*;
+import cz.maxtechnik.dif.fluid.*;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -17,29 +17,29 @@ import net.minecraftforge.registries.RegistryObject;
 public class DifModFluids{
 	public static final DeferredRegister<Fluid>REGISTRY=DeferredRegister.create(ForgeRegistries.FLUIDS,DifMod.MODID);
 
-	public static final RegistryObject<FlowingFluid>BEER=REGISTRY.register("beer_fluid",BeerFluid.Source::new);
-	public static final RegistryObject<FlowingFluid>FLOWING_BEER=REGISTRY.register("flowing_beer_fluid",BeerFluid.Flowing::new);
+	public static final RegistryObject<FlowingFluid>BEER=REGISTRY.register("beer_fluid",Beer.Fluid.Source::new);
+	public static final RegistryObject<FlowingFluid>FLOWING_BEER=REGISTRY.register("flowing_beer_fluid",Beer.Fluid.Flowing::new);
 
-	public static final RegistryObject<FlowingFluid>FUEL=REGISTRY.register("fuel_fluid",FuelFluid.Source::new);
-	public static final RegistryObject<FlowingFluid>FLOWING_FUEL=REGISTRY.register("flowing_fuel_fluid",FuelFluid.Flowing::new);
+	public static final RegistryObject<FlowingFluid>FUEL=REGISTRY.register("fuel_fluid",Fuel.Fluid.Source::new);
+	public static final RegistryObject<FlowingFluid>FLOWING_FUEL=REGISTRY.register("flowing_fuel_fluid",Fuel.Fluid.Flowing::new);
 
-	public static final RegistryObject<FlowingFluid>JETPACK_FUEL=REGISTRY.register("jetpack_fuel_fluid",JetpackFuelFluid.Source::new);
-	public static final RegistryObject<FlowingFluid>FLOWING_JETPACK_FUEL=REGISTRY.register("flowing_jetpack_fuel_fluid",JetpackFuelFluid.Flowing::new);
+	public static final RegistryObject<FlowingFluid>JETPACK_FUEL=REGISTRY.register("jetpack_fuel_fluid",JetpackFuel.Fluid.Source::new);
+	public static final RegistryObject<FlowingFluid>FLOWING_JETPACK_FUEL=REGISTRY.register("flowing_jetpack_fuel_fluid",JetpackFuel.Fluid.Flowing::new);
 
-	public static final RegistryObject<FlowingFluid>JETPACK_TURBO_FUEL=REGISTRY.register("jetpack_turbo_fuel_fluid",JetpackTurboFuelFluid.Source::new);
-	public static final RegistryObject<FlowingFluid>FLOWING_JETPACK_TURBO_FUEL=REGISTRY.register("flowing_jetpack_turbo_fuel_fluid",JetpackTurboFuelFluid.Flowing::new);
+	public static final RegistryObject<FlowingFluid>JETPACK_TURBO_FUEL=REGISTRY.register("jetpack_turbo_fuel_fluid",JetpackTurboFuel.Fluid.Source::new);
+	public static final RegistryObject<FlowingFluid>FLOWING_JETPACK_TURBO_FUEL=REGISTRY.register("flowing_jetpack_turbo_fuel_fluid",JetpackTurboFuel.Fluid.Flowing::new);
 
-	public static final RegistryObject<FlowingFluid>CIDER=REGISTRY.register("cider_fluid",CiderFluid.Source::new);
-	public static final RegistryObject<FlowingFluid>FLOWING_CIDER=REGISTRY.register("flowing_cider_fluid",CiderFluid.Flowing::new);
+	public static final RegistryObject<FlowingFluid>CIDER=REGISTRY.register("cider_fluid",Cider.Fluid.Source::new);
+	public static final RegistryObject<FlowingFluid>FLOWING_CIDER=REGISTRY.register("flowing_cider_fluid",Cider.Fluid.Flowing::new);
 
-	public static final RegistryObject<FlowingFluid>CRUDE_OIL=REGISTRY.register("crude_oil_fluid",CrudeOilFluid.Source::new);
-	public static final RegistryObject<FlowingFluid>FLOWING_CRUDE_OIL=REGISTRY.register("flowing_crude_oil_fluid",CrudeOilFluid.Flowing::new);
+	public static final RegistryObject<FlowingFluid>CRUDE_OIL=REGISTRY.register("crude_oil_fluid",CrudeOil.Fluid.Source::new);
+	public static final RegistryObject<FlowingFluid>FLOWING_CRUDE_OIL=REGISTRY.register("flowing_crude_oil_fluid",CrudeOil.Fluid.Flowing::new);
 
-	public static final RegistryObject<FlowingFluid>XP=REGISTRY.register("xp_fluid",XpFluid.Source::new);
-	public static final RegistryObject<FlowingFluid>FLOWING_XP=REGISTRY.register("flowing_xp_fluid",XpFluid.Flowing::new);
+	public static final RegistryObject<FlowingFluid>XP=REGISTRY.register("xp_fluid",Xp.Fluid.Source::new);
+	public static final RegistryObject<FlowingFluid>FLOWING_XP=REGISTRY.register("flowing_xp_fluid",Xp.Fluid.Flowing::new);
 
-	public static final RegistryObject<FlowingFluid>SUNFLOWER_OIL=REGISTRY.register("sunflower_oil_fluid",SunflowerOilFluid.Source::new);
-	public static final RegistryObject<FlowingFluid>FLOWING_SUNFLOWER_OIL=REGISTRY.register("flowing_sunflower_oil_fluid",SunflowerOilFluid.Flowing::new);
+	public static final RegistryObject<FlowingFluid>SUNFLOWER_OIL=REGISTRY.register("sunflower_oil_fluid",SunflowerOil.Fluid.Source::new);
+	public static final RegistryObject<FlowingFluid>FLOWING_SUNFLOWER_OIL=REGISTRY.register("flowing_sunflower_oil_fluid",SunflowerOil.Fluid.Flowing::new);
 
 	@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD,value=Dist.CLIENT)
 	public static class FluidsClientSideHandler{
