@@ -50,7 +50,7 @@ public class DifModItems{
 	public static final RegistryObject<Item> QUARRY_ENGINE_IRON=REGISTRY.register("quarry_engine_iron",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.IRON_ENGINE_DP_GEN,QuarryStats.IRON_ENGINE_FE_COST));
 	public static final RegistryObject<Item> QUARRY_ENGINE_GOLD=REGISTRY.register("quarry_engine_gold",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.GOLD_ENGINE_DP_GEN,QuarryStats.GOLD_ENGINE_FE_COST));
 	public static final RegistryObject<Item> QUARRY_ENGINE_DIAMOND=REGISTRY.register("quarry_engine_diamond",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.DIAMOND_ENGINE_DP_GEN,QuarryStats.DIAMOND_ENGINE_FE_COST));
-	public static final RegistryObject<Item> QUARRY_LIQUID_REMOVER=REGISTRY.register("quarry_liquid_remover",()->new Upgrade(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<Item> QUARRY_LIQUID_REMOVER=RegistryObject.create(ResourceLocation.fromNamespaceAndPath("minecraft","sponge"),ForgeRegistries.ITEMS);
 
 
 	public static final RegistryObject<Item> BRASS_LARGE_WATER_WHEEL=block(DifModBlocks.BRASS_LARGE_WATER_WHEEL);

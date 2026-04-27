@@ -185,6 +185,7 @@ public class DifMod {
 					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.BRASS_WATER_WHEEL.get(), RenderType.cutout());
 					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.BRASS_MECHANICAL_PRESS.get(), RenderType.cutout());
 					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.BRASS_MECHANICAL_MIXER.get(), RenderType.cutout());
+					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.QUARRY_LANDMARK.get(), RenderType.cutout());
 				} catch (Exception e) {
 					LOGGER.error("DIF MOD: Chyba při Flywheel setup", e);
 				}

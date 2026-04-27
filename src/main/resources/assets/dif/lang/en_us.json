@@ -273,14 +273,15 @@
 	"block.dif.sleeping_bag": "Sleeping Bag",
 	"block.dif.quarry":"Quarry",
 	"block.dif.quarry_frame":"Quarry Frame",
+	"block.dif.quarry_landmark":"Quarry Landmark",
+	"item.dif.quarry_landmark":"Quarry Landmark",
 
 	"item.dif.quarry_drill_iron":"Quarry Iron Drill",
 	"item.dif.quarry_drill_diamond":"Quarry Diamond Drill",
 	"item.dif.quarry_engine_iron":"Quarry Iron Engine",
 	"item.dif.quarry_engine_gold":"Quarry Gold Engine",
 	"item.dif.quarry_engine_diamond":"Quarry Diamond Engine",
-	"item.dif.quarry_liquid_remover":"Quarry Upgrade",
-	"item.dif.quarry_liquid_remover.desc":"Liquid Remover",
+
 
 	"entity.dif.formula":"Formula",
 	"item.dif.formula":"Formula",
@@ -297,7 +298,7 @@
 	"item.dif.iron_engine": "Iron Engine",
 	"item.dif.gold_engine": "Gold Engine",
 	"item.dif.diamond_engine": "Diamond Engine",
-	"item.dif.liquid_remover": "Liquid Remover",
+
 	"biome.dif.moon_plains":"Moon Plains",
 	"biome.dif.orbit_void":"Space",
 	"item.dif.flat_dough":"Flat Dough",

@@ -70,7 +70,6 @@ public class DifModTabs{
 		tabData.accept(QUARRY_ENGINE_IRON.get());
 		tabData.accept(QUARRY_ENGINE_GOLD.get());
 		tabData.accept(QUARRY_ENGINE_DIAMOND.get());
-		tabData.accept(QUARRY_LIQUID_REMOVER.get());
 
 
 
