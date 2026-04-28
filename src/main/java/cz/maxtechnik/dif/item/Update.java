@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.item;
 
+import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -19,6 +20,7 @@ public class Update extends Item{
 		Item item=switch(Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(itemStack.getItem())).toString()){
 			case "dif:furt_ta_stejna_hra"->ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("random","furt_ta_stejna_hra"));
 			case "dif:maty_create"->ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("random","maty_create"));
+			case "dif:cremeka"-> DifModItems.DOG.get();
 			case "dif:redstone"->ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("random","redstone"));
 			default -> throw new IllegalStateException("Unexpected value: " +Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(itemStack.getItem())));
 		};
