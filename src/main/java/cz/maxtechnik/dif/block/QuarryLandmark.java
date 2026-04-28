@@ -40,7 +40,7 @@ public class QuarryLandmark extends BaseEntityBlock {
 	protected static final VoxelShape EAST_SHAPE = Block.box(0.0D, 6.0D, 6.0D, 10.0D, 10.0D, 10.0D);
 
 	public QuarryLandmark() {
-		super(Properties.of().strength(0.5F, 0.5F).sound(SoundType.WOOD).noOcclusion().lightLevel(state -> 14));
+		super(Properties.of().strength(0.5F, 0.5F).sound(SoundType.WOOD).noCollission().noOcclusion().lightLevel(state -> 14));
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.UP));
 	}
 
