@@ -1,6 +1,0 @@
-{
-	"type":"forge:add_features",
-	"biomes":"#dif:has_feature/has_oil",
-	"features":"dif:oil_well_placed",
-	"step":"underground_structures"
-}
