@@ -6,10 +6,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import vectorwing.farmersdelight.common.registry.ModCreativeTabs;
 import vectorwing.farmersdelight.common.registry.ModItems;
 import java.util.Objects;
@@ -18,7 +17,7 @@ import static cz.maxtechnik.dif.init.basic.DifModItems.*;
 import static cz.maxtechnik.dif.item.modular.ModularBase.*;
 public class DifModTabs{
 	public static final DeferredRegister<CreativeModeTab>REGISTER=DeferredRegister.create(Registries.CREATIVE_MODE_TAB,DifMod.MODID);
-	public static final RegistryObject<CreativeModeTab>MAIN=REGISTER.register("main",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.main")).icon(()->new ItemStack(THE_DIFFERENTIAL.get())).displayItems(((parameters,tabData)->{
+	public static final DeferredHolder<CreativeModeTab,CreativeModeTab> MAIN=REGISTER.register("main",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.main")).icon(()->new ItemStack(THE_DIFFERENTIAL.get())).displayItems(((parameters,tabData)->{
 		tabData.accept(THE_DIFFERENTIAL.get());
 		tabData.accept(MEGA_TORCH.get());
 		tabData.accept(BAN_HAMMER.get());
@@ -74,7 +73,7 @@ public class DifModTabs{
 
 
 	})).build());
-	public static final RegistryObject<CreativeModeTab>SPACE=REGISTER.register("space",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.space")).icon(()->new ItemStack(SPACESHIP.get())).displayItems(((parameters,tabData)->{
+	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>SPACE=REGISTER.register("space",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.space")).icon(()->new ItemStack(SPACESHIP.get())).displayItems(((parameters,tabData)->{
 		tabData.accept(SPACESHIP.get());
 		tabData.accept(SPACE_ENGINE.get());
 		tabData.accept(SPACE_SCAFFOLDING.get());
@@ -112,7 +111,7 @@ public class DifModTabs{
 
 		tabData.accept(ELECTRO_RUNNERS.get());
 	})).build());
-	public static final RegistryObject<CreativeModeTab>MODULAR_TOOLS=REGISTER.register("modular_tools",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.SPACE.getKey()).title(Component.translatable("creative_tab.dif.modular_tools")).icon(()->newToolFromMaterials(MODULAR_PICKAXE.get(),"Diamond","Gold","Obsidian")).displayItems(((parameters,tabData)->{
+	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>MODULAR_TOOLS=REGISTER.register("modular_tools",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.SPACE.getKey()).title(Component.translatable("creative_tab.dif.modular_tools")).icon(()->newToolFromMaterials(MODULAR_PICKAXE.get(),"Diamond","Gold","Obsidian")).displayItems(((parameters,tabData)->{
 		tabData.accept(Items.SMITHING_TABLE);
 
 		tabData.accept(MODULAR_PICKAXE.get());
