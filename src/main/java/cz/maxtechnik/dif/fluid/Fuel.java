@@ -10,16 +10,17 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.common.SoundActions;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.common.SoundActions;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
+@SuppressWarnings("removal")
 public class Fuel{
-	public abstract static class Fluid extends ForgeFlowingFluid{
+	public abstract static class Fluid extends BaseFlowingFluid {
 		private Fluid(){
-			super(new Properties(DifModFluidTypes.FUEL_TYPE,DifModFluids.FUEL,DifModFluids.FLOWING_FUEL).explosionResistance(100F).bucket(DifModItems.FUEL_BUCKET).tickRate(7).block(()->(LiquidBlock)DifModBlocks.FUEL_FLUID.get()));
+			super(new Properties(DifModFluidTypes.FUEL_TYPE, DifModFluids.FUEL,DifModFluids.FLOWING_FUEL).explosionResistance(100F).bucket(DifModItems.FUEL_BUCKET).tickRate(7).block(()->(LiquidBlock)DifModBlocks.FUEL_FLUID.get()));
 		}
 		public static class Source extends Fluid{
 			public int getAmount(@NotNull FluidState state){
@@ -42,7 +43,7 @@ public class Fuel{
 			}
 		}
 	}
-	public static class FluidType extends net.minecraftforge.fluids.FluidType{
+	public static class FluidType extends net.neoforged.neoforge.fluids.FluidType{
 		public FluidType(){
 			super(Properties.create().fallDistanceModifier(0F).canExtinguish(true).supportsBoating(true).canHydrate(true).canDrown(true).motionScale(0.007D).sound(SoundActions.BUCKET_FILL,SoundEvents.BUCKET_FILL).sound(SoundActions.BUCKET_EMPTY,SoundEvents.BUCKET_EMPTY).sound(SoundActions.FLUID_VAPORIZE,SoundEvents.FIRE_EXTINGUISH));
 		}
@@ -50,11 +51,11 @@ public class Fuel{
 		public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer){
 			consumer.accept(new IClientFluidTypeExtensions(){
 				@Override
-				public ResourceLocation getStillTexture(){
+				public @NotNull ResourceLocation getStillTexture(){
 					return ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/fuel_fluid_still");
 				}
 				@Override
-				public ResourceLocation getFlowingTexture(){
+				public @NotNull ResourceLocation getFlowingTexture(){
 					return ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/fuel_fluid_flow");
 				}
 			});

@@ -16,7 +16,7 @@ import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
-
+@SuppressWarnings("removal")
 public class Cider{
 	public abstract static class Fluid extends BaseFlowingFluid {
 		private Fluid(){
@@ -51,11 +51,11 @@ public class Cider{
 		public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer){
 			consumer.accept(new IClientFluidTypeExtensions(){
 				@Override
-				public ResourceLocation getStillTexture(){
+				public @NotNull ResourceLocation getStillTexture(){
 					return ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/cider_fluid_still");
 				}
 				@Override
-				public ResourceLocation getFlowingTexture(){
+				public @NotNull ResourceLocation getFlowingTexture(){
 					return ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/cider_fluid_flow");
 				}
 			});

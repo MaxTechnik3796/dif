@@ -23,8 +23,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
+
+import javax.swing.plaf.basic.BasicComboBoxUI;
+
 @SuppressWarnings("deprecation")
 public class Beer extends Block implements SimpleWaterloggedBlock{
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
@@ -78,10 +80,10 @@ public class Beer extends Block implements SimpleWaterloggedBlock{
 	private void pickUp(Level world,BlockPos pos,Player player,boolean destroy){
 		if(destroy)
 			world.setBlock(pos,Blocks.AIR.defaultBlockState(),3);
-		ItemHandler.giveItemToPlayer(player,new ItemStack(DifModItems.BEER.get()));
+		BasicComboBoxUI.ItemHandler.giveItemToPlayer(player,new ItemStack(DifModItems.BEER.get()));
 	}
 	@Override
-	public boolean onDestroyedByPlayer(BlockState blockstate,Level world,BlockPos pos,Player player,boolean willHarvest,FluidState fluid){
+	public boolean onDestroyedByPlayer(@NotNull BlockState blockstate, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, boolean willHarvest, @NotNull FluidState fluid){
 		pickUp(world,pos,player,false);
 		return super.onDestroyedByPlayer(blockstate,world,pos,player,willHarvest,fluid);
 	}

@@ -13,9 +13,8 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.minecraft.core.registries.Registries;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-
+@SuppressWarnings("removal")
 public class DifModFluids{
 	public static final DeferredRegister<Fluid> REGISTRY = DeferredRegister.create(Registries.FLUID, DifMod.MODID);
 

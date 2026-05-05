@@ -10,6 +10,7 @@ import cz.maxtechnik.dif.item.modular.ModularPart;
 import cz.maxtechnik.dif.item.modular.tool.*;
 import cz.maxtechnik.dif.item.tool.*;
 import cz.maxtechnik.dif.item.armor.*;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.*;
@@ -18,20 +19,20 @@ import net.minecraft.world.level.block.Blocks;
 import cz.maxtechnik.dif.init.events.QuarryStats;
 import cz.maxtechnik.dif.item.quarry.DrillHeadItem;
 import cz.maxtechnik.dif.item.quarry.EngineItem;
+import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 public class DifModItems{
 	public static final DeferredRegister.Items REGISTRY=DeferredRegister.createItems(DifMod.MODID);
 	public static final DeferredRegister.Items V_REGISTRY= DeferredRegister.createItems("minecraft");
-	private static DeferredItem<Item> block(DeferredItem<Block> block){
+	private static DeferredItem<Item> block(DeferredBlock<Block> block){
 		assert block.getId()!=null;
 		return REGISTRY.register(block.getId().getPath(),()->new BlockItem(block.get(),new Item.Properties()));
 	}
-	private static DeferredItem<Item> doubleBlock(DeferredItem<Block> block){
+	private static DeferredItem<Item> doubleBlock(DeferredBlock<Block> block){
 		assert block.getId()!=null;
 		return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));
 	}
@@ -49,7 +50,7 @@ public class DifModItems{
 	public static final DeferredItem<Item> QUARRY_ENGINE_IRON=REGISTRY.register("quarry_engine_iron",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.IRON_ENGINE_DP_GEN,QuarryStats.IRON_ENGINE_FE_COST));
 	public static final DeferredItem<Item> QUARRY_ENGINE_GOLD=REGISTRY.register("quarry_engine_gold",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.GOLD_ENGINE_DP_GEN,QuarryStats.GOLD_ENGINE_FE_COST));
 	public static final DeferredItem<Item> QUARRY_ENGINE_DIAMOND=REGISTRY.register("quarry_engine_diamond",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.DIAMOND_ENGINE_DP_GEN,QuarryStats.DIAMOND_ENGINE_FE_COST));
-	public static final DeferredItem<Item> QUARRY_LIQUID_REMOVER=DeferredItem.create(ResourceLocation.fromNamespaceAndPath("minecraft","sponge"),ForgeRegistries.ITEMS);
+	public static final DeferredItem<Item> QUARRY_LIQUID_REMOVER=DeferredItem.create(ResourceLocation.parse("minecraft:sponge"), BuiltInRegistries.ITEM);
 
 
 	public static final DeferredItem<Item> BRASS_LARGE_WATER_WHEEL=block(DifModBlocks.BRASS_LARGE_WATER_WHEEL);
