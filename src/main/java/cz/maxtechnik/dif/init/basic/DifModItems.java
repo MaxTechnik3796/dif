@@ -5,7 +5,6 @@ import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
-import cz.maxtechnik.dif.item.quarry.Upgrade;
 import cz.maxtechnik.dif.item.tool.GodTotemItem;
 import cz.maxtechnik.dif.item.modular.ModularPart;
 import cz.maxtechnik.dif.item.modular.tool.*;
@@ -16,18 +15,17 @@ import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 import cz.maxtechnik.dif.init.events.QuarryStats;
 import cz.maxtechnik.dif.item.quarry.DrillHeadItem;
 import cz.maxtechnik.dif.item.quarry.EngineItem;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 public class DifModItems{
-	public static final DeferredRegister<Item> REGISTRY=DeferredRegister.create(ForgeRegistries.ITEMS,DifMod.MODID);
-	public static final DeferredRegister<Item> V_REGISTRY=DeferredRegister.create(ForgeRegistries.ITEMS,"minecraft");
+	public static final DeferredRegister.Items REGISTRY=DeferredRegister.createItems(DifMod.MODID);
+	public static final DeferredRegister.Items V_REGISTRY= DeferredRegister.createItems("minecraft");
 	private static RegistryObject<Item> block(RegistryObject<Block> block){
 		assert block.getId()!=null;
 		return REGISTRY.register(block.getId().getPath(),()->new BlockItem(block.get(),new Item.Properties()));

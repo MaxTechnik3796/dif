@@ -78,7 +78,7 @@ public class Beer extends Block implements SimpleWaterloggedBlock{
 	private void pickUp(Level world,BlockPos pos,Player player,boolean destroy){
 		if(destroy)
 			world.setBlock(pos,Blocks.AIR.defaultBlockState(),3);
-		ItemHandlerHelper.giveItemToPlayer(player,new ItemStack(DifModItems.BEER.get()));
+		ItemHandler.giveItemToPlayer(player,new ItemStack(DifModItems.BEER.get()));
 	}
 	@Override
 	public boolean onDestroyedByPlayer(BlockState blockstate,Level world,BlockPos pos,Player player,boolean willHarvest,FluidState fluid){
