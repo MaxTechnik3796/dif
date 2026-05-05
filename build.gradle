@@ -1,21 +1,9 @@
-buildscript {
-    repositories {
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
-}
-
 plugins {
+    id 'java-library'
     id 'eclipse'
     id 'idea'
-    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
-    id 'org.parchmentmc.librarian.forgegradle'version'1.+'
+    id 'net.neoforged.moddev' version '1.0.21'
 }
-
-apply plugin: 'org.spongepowered.mixin'
 
 group = mod_group_id
 version = mod_version
@@ -25,44 +13,55 @@ base {
 }
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(17)
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
 }
 
-minecraft {
-    mappings channel: mapping_channel, version: mapping_version
-    copyIdeResources = true
+neoForge {
+    version = project.neo_version
+
+    parchment {
+        mappingsVersion = project.mapping_version
+        minecraftVersion = project.minecraft_version
+    }
+
     runs {
-        configureEach {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                }
-            }
-        }
         client {
-            property 'forge.enabledGameTestNamespaces', mod_id
+            client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
+
         server {
-            property 'forge.enabledGameTestNamespaces', mod_id
-            workingDirectory project.file('run-server')
-            args '--nogui'
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
+
         gameTestServer {
-            property 'forge.enabledGameTestNamespaces', mod_id
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
+
         data {
-            workingDirectory project.file('run-data')
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            data()
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
         }
     }
 }
+
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     mavenCentral()
+    maven {
+        name = "ParchmentMC"
+        url = "https://maven.parchmentmc.org"
+    }
     maven {
         name 'Curios maven'
         url = "https://maven.theillusivec4.top/"
@@ -74,71 +73,71 @@ repositories {
         url = 'https://maven.blamejared.com/'
     }
     maven {
-        name = "Jared's maven"
-        url = "https://maven.blamejared.com/"
-    }
-    maven {
         url = "https://modmaven.dev/"
     }
     maven {
         url = "https://maven.createmod.net/"
     }
-    maven {
-        url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
-    }
 }
+
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    // Create
-    implementation fg.deobf("curse.maven:create-328085:7178761")
-    implementation(fg.deobf("net.createmod.ponder:Ponder-Forge-1.20.1:1.0.92"))
-    compileOnly(fg.deobf("dev.engine-room.flywheel:flywheel-forge-api-1.20.1:1.0.5"))
-    runtimeOnly(fg.deobf("dev.engine-room.flywheel:flywheel-forge-1.20.1:1.0.5"))
+    //Create
+    implementation "curse.maven:create-328085:7963363"
+    implementation("net.createmod.ponder:ponder-neoforge:1.0.82+mc1.21.1")
+    compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-1.21.1:1.0.6")
+    runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-1.21.1:1.0.6")
     // JEI
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    compileOnly ("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly ("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
+    runtimeOnly ("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     // Ostatní mody z CurseMaven (zůstávají stejné)
-    implementation fg.deobf("curse.maven:farmers-delight-398521:6917255")
-    implementation fg.deobf("curse.maven:curios-309927:6418456")
-    runtimeOnly fg.deobf("curse.maven:createaddition-439890:7208610@jar")
-    runtimeOnly fg.deobf("curse.maven:jade-324717:6855440@jar")
-    runtimeOnly fg.deobf("curse.maven:mouse-tweaks-60089:5338457@jar")
-    runtimeOnly fg.deobf("curse.maven:appleskin-248787:4770828@jar")
-    runtimeOnly fg.deobf("curse.maven:pipez-443900:4916633@jar")
-    runtimeOnly fg.deobf("curse.maven:crafting-tweaks-233071:6784525@jar")
-    runtimeOnly fg.deobf("curse.maven:balm-531761:7087245@jar")
-    runtimeOnly fg.deobf("curse.maven:slice-and-dice-659674:7184951@jar")
-    runtimeOnly fg.deobf("curse.maven:kotlin-for-forge-351264:7291067@jar")
-    runtimeOnly fg.deobf("curse.maven:worldedit-225608:4586218@jar")
-    runtimeOnly fg.deobf("curse.maven:mtt-1380280:7468659@jar")
-
+    implementation "curse.maven:farmers-delight-398521:8007613"
+    implementation "curse.maven:curios-continuation-1037991:5888964"
+    runtimeOnly "curse.maven:createaddition-439890:7518252"
+    runtimeOnly "curse.maven:jade-324717:7545219"
+    runtimeOnly "curse.maven:mouse-tweaks-60089:5637846"
+    runtimeOnly "curse.maven:appleskin-248787:7854442"
+    runtimeOnly "curse.maven:pipez-443900:5609056"
+    runtimeOnly "curse.maven:crafting-tweaks-233071:8019498"
+    runtimeOnly "curse.maven:balm-531761:7420963"
+    runtimeOnly "curse.maven:slice-and-dice-659674:7738176"
+    runtimeOnly "curse.maven:kotlin-for-forge-351264:7471280"
+    runtimeOnly "curse.maven:worldedit-225608:5830452"
 }
-tasks.named('processResources', ProcessResources).configure {
-    var replaceProperties = [minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
-                             forge_version       : forge_version, forge_version_range: forge_version_range,
-                             loader_version_range: loader_version_range,
-                             mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
-                             mod_authors         : mod_authors, mod_description: mod_description,]
 
+tasks.named('processResources', ProcessResources).configure {
+    var replaceProperties = [
+            minecraft_version: minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version: neo_version,
+            neo_version_range: neo_version_range,
+            loader_version_range: loader_version_range,
+            mod_id: mod_id,
+            mod_name: mod_name,
+            mod_license: mod_license,
+            mod_version: mod_version,
+            mod_authors: mod_authors,
+            mod_description: mod_description,
+    ]
     inputs.properties replaceProperties
 
-    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
-        expand replaceProperties + [project: project]
+    filesMatching(['META-INF/neoforge.mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties
     }
 }
 
 tasks.named('jar', Jar).configure {
     manifest {
-        attributes(["Specification-Title"     : mod_id,
-                    "Specification-Vendor"    : mod_authors,
-                    "Specification-Version"   : "1",
-                    "Implementation-Title"    : project.name,
-                    "Implementation-Version"  : project.jar.archiveVersion,
-                    "Implementation-Vendor"   : mod_authors,
-                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")])
+        attributes([
+                "Specification-Title"     : mod_id,
+                "Specification-Vendor"    : mod_authors,
+                "Specification-Version"   : "1",
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Vendor"   : mod_authors,
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
     }
-    finalizedBy 'reobfJar'
 }
 
 tasks.withType(JavaCompile).configureEach {
