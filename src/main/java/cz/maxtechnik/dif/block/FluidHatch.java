@@ -32,10 +32,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -98,7 +97,7 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 				FluidStack fluidToFill=new FluidStack(bucket.getFluid(),1000);
 				int simulated=capability.fill(fluidToFill,IFluidHandler.FluidAction.SIMULATE);
 				if(simulated>=1000){
-					capability.fill(fluidToFill,IFluidHandler.FluidAction.EXECUTE);
+					capability.fill(fluidToFill, IFluidHandler.FluidAction.EXECUTE);
 					if(!player.isCreative()){
 						ItemStack emptyBucket=new ItemStack(Items.BUCKET);
 						heldItem.shrink(1);

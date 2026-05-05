@@ -97,7 +97,7 @@ public class PortalGun extends Item{
 		return 0;
 	}
 	@Override
-	public boolean isBookEnchantable(ItemStack itemStack,ItemStack book){
+	public boolean isBookEnchantable(@NotNull ItemStack itemStack, @NotNull ItemStack book){
 		return false;
 	}
 	@Override

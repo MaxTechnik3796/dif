@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
@@ -21,7 +20,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("deprecation")
 public class OldChest extends Block implements EntityBlock{
@@ -99,12 +97,13 @@ public class OldChest extends Block implements EntityBlock{
 		return blockEntity instanceof MenuProvider menuProvider?menuProvider:null;
 	}
 	@Override
-	public @NotNull InteractionResult use(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
-		if(world.isClientSide()) return InteractionResult.SUCCESS;
-		if(player instanceof ServerPlayer serverPlayer){
-			BlockEntity blockEntity=world.getBlockEntity(pos);
-			if(blockEntity instanceof MenuProvider menuProvider){
-				NetworkHooks.openScreen(serverPlayer,menuProvider,pos);
+	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockstate, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
+		if (world.isClientSide()) {
+			return InteractionResult.SUCCESS;}
+		if (player instanceof ServerPlayer serverPlayer) {
+			BlockEntity blockEntity = world.getBlockEntity(pos);
+			if (blockEntity instanceof MenuProvider menuProvider) {
+				serverPlayer.openMenu(menuProvider, pos);
 			}
 		}
 		return InteractionResult.CONSUME;

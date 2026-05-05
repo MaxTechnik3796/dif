@@ -2,11 +2,12 @@ package cz.maxtechnik.dif.item.modular;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModItems;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-@Mod.EventBusSubscriber(modid=DifMod.MODID,bus=Mod.EventBusSubscriber.Bus.MOD,value=Dist.CLIENT)
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+
+@EventBusSubscriber(modid=DifMod.MODID,bus=EventBusSubscriber.Bus.MOD,value= Dist.CLIENT)
 public class ModularToolsColorRenderer{
 	@SubscribeEvent
 	public static void registerItemColors(RegisterColorHandlersEvent.Item event){

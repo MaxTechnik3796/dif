@@ -35,18 +35,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.EnergyStorage;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.energy.EnergyStorage;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.security.DrbgParameters;
 import java.util.ArrayList;
 import java.util.List;
 public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
@@ -700,7 +696,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 	}
 	// Capabilities
 	@Override
-	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap,@Nullable Direction side){
+	public @NotNull <T> LazyOptional<T> getCapability(@NotNull DrbgParameters.Capability cap, @Nullable Direction side){
 		if(cap==ForgeCapabilities.ENERGY) return energyCap.cast();
 		if(cap==ForgeCapabilities.ITEM_HANDLER) return inventoryCap.cast();
 		return super.getCapability(cap,side);

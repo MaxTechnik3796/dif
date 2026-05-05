@@ -36,8 +36,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vectorwing.farmersdelight.common.registry.ModSounds;
@@ -157,7 +157,7 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 			// 1. NALÉVÁNÍ OLEJE (Kýbl s olejem -> Pánev)
 			if(handItem.is(DifModItems.SUNFLOWER_OIL_BUCKET.get())){
 				// Zkusíme naplnit 1000 mB (1 kýbl)
-				int accepted=be.fluidTank.fill(new FluidStack(DifModFluids.SUNFLOWER_OIL.get(),1000),IFluidHandler.FluidAction.EXECUTE);
+				int accepted=be.fluidTank.fill(new FluidStack(DifModFluids.SUNFLOWER_OIL.get(),1000), IFluidHandler.FluidAction.EXECUTE);
 				if(accepted>0){
 					// Pokud hráč není v creativu, vyměníme kýbl s olejem za prázdný
 					if(!player.getAbilities().instabuild){

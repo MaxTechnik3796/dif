@@ -22,7 +22,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -114,9 +113,12 @@ public class Quarry extends BaseEntityBlock{
 		super.onRemove(state,level,pos,newState,moving);
 	}
 	@Override
-	public @NotNull InteractionResult use(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
-		if(!level.isClientSide) if(level.getBlockEntity(pos) instanceof QuarryBlockEntity quarryEntity)
-			NetworkHooks.openScreen((ServerPlayer)player,quarryEntity,pos);
+	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
+		if (!level.isClientSide) {
+			if (level.getBlockEntity(pos) instanceof QuarryBlockEntity quarryEntity) {
+				player.openMenu(quarryEntity, pos);
+			}
+		}
 		return InteractionResult.sidedSuccess(level.isClientSide);
 	}
 	@Nullable
