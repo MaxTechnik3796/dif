@@ -11,6 +11,6 @@
 		"item":"minecraft:barrier"
 	},
 	"result":{
-		"item":"minecraft:barrier"
+		"id":"minecraft:barrier"
 	}
 }
