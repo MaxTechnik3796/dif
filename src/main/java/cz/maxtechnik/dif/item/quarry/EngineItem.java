@@ -4,9 +4,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 public class EngineItem extends Item{
@@ -18,9 +18,10 @@ public class EngineItem extends Item{
 		this.feCost=feCost;
 	}
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack,@Nullable Level level,List<Component> tooltips,@NotNull TooltipFlag flag){
-		tooltips.add(Component.literal("§7Drill Power Generated: §a+"+dpGen+" DP"));
-		tooltips.add(Component.literal("§7Energy Consumption: §e-"+feCost+" FE/t"));
-		super.appendHoverText(stack,level,tooltips,flag);
+	@OnlyIn(Dist.CLIENT)
+	public void appendHoverText(@NotNull ItemStack itemStack,Item.@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
+		super.appendHoverText(itemStack,context,list,flag);
+		list.add(Component.literal("§7Drill Power Generated: §a+"+dpGen+" DP"));
+		list.add(Component.literal("§7Energy Consumption: §e-"+feCost+" FE/t"));
 	}
 }

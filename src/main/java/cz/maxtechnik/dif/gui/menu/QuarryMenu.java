@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.gui.menu;
 
 import cz.maxtechnik.dif.block.entity.QuarryBlockEntity;
-import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import cz.maxtechnik.dif.item.quarry.DrillHeadItem;
 import cz.maxtechnik.dif.item.quarry.EngineItem;
@@ -14,10 +13,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class QuarryMenu extends AbstractContainerMenu {
@@ -78,7 +76,7 @@ public class QuarryMenu extends AbstractContainerMenu {
 		this.addSlot(new SlotItemHandler(internal, 2, 8, 53) {
 			@Override public boolean mayPlace(@NotNull ItemStack stack) {
 				return stack.getItem() instanceof EngineItem ||
-					   stack.getItem() == DifModItems.QUARRY_LIQUID_REMOVER.get() ||
+					   stack.getItem() == Items.SPONGE ||
 					   stack.getItem() == Items.ENCHANTED_BOOK;
 			}
 		});

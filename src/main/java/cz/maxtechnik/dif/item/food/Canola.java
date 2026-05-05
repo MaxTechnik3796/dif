@@ -13,11 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 public class Canola extends Item{
 	public Canola(){
-		super(new Item.Properties().rarity(Rarity.RARE).food((new FoodProperties.Builder()).nutrition(1).saturationMod(0.1f).alwaysEat().build()));
-	}
-	@Override
-	public int getUseDuration(@NotNull ItemStack itemstack){
-		return 8;
+		super(new Item.Properties().rarity(Rarity.RARE).food(DifModFoods.CANOLA_SEEDS));
 	}
 	@Override
 	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemstack,@NotNull Level world,@NotNull LivingEntity entity){

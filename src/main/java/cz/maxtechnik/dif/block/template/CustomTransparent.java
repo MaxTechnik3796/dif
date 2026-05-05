@@ -10,7 +10,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-@SuppressWarnings("deprecation")
 public class CustomTransparent extends Block{
 	public CustomTransparent(SoundType sound,float hardness,float resistance,boolean requiresCorrectToolForDrops){
 		super(requiresCorrectToolForDrops?Properties.of().strength(hardness,resistance).sound(sound).noOcclusion().requiresCorrectToolForDrops():Properties.of().strength(hardness,resistance).sound(sound).noOcclusion());

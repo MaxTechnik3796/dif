@@ -7,9 +7,10 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -22,8 +23,9 @@ public class MolotovuvKoktejl extends Item{
 		return UseAnim.DRINK;
 	}
 	@Override
-	public void appendHoverText(@NotNull ItemStack itemstack,Level level,@NotNull List<Component> list,@NotNull TooltipFlag flag){
-		super.appendHoverText(itemstack,level,list,flag);
+	@OnlyIn(Dist.CLIENT)
+	public void appendHoverText(@NotNull ItemStack itemStack,Item.@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
+		super.appendHoverText(itemStack,context,list,flag);
 		list.add(Component.literal("§l§6!!!POZOR!!!"));
 		list.add(Component.literal("§8- §cPijte na vlastní nebezpečí!"));
 	}

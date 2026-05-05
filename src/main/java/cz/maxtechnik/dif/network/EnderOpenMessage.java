@@ -11,10 +11,9 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
 import net.minecraft.sounds.SoundEvents;
@@ -22,8 +21,8 @@ import net.minecraft.world.inventory.MenuType;
 
 import java.util.Objects;
 import java.util.function.Supplier;
-@SuppressWarnings("deprecation")
-@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
+@SuppressWarnings("removal")
+@EventBusSubscriber(bus=EventBusSubscriber.Bus.MOD)
 public class EnderOpenMessage{
 	int type, pressedms;
 	public EnderOpenMessage(int type,int pressedms){

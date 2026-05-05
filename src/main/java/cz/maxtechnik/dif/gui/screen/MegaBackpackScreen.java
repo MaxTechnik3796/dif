@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 public class MegaBackpackScreen extends AbstractContainerScreen<MegaBackpackMenu>{
-	private static final ResourceLocation SLOT=ResourceLocation.fromNamespaceAndPath("minecraft","textures/gui/container/generic_54.png");
+	private static final ResourceLocation SLOT=ResourceLocation.parse("minecraft:textures/gui/container/generic_54.png");
 	private static final ResourceLocation BACKGROUND00=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/mega_backpack_00.png");
 	private static final ResourceLocation BACKGROUND01=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/mega_backpack_01.png");
 	private Button btnPrev;
@@ -32,7 +32,7 @@ public class MegaBackpackScreen extends AbstractContainerScreen<MegaBackpackMenu
 	}
 	@Override
 	public void render(@NotNull GuiGraphics graphics,int mouseX,int mouseY,float partialTicks){
-		this.renderBackground(graphics);
+		this.renderBackground(graphics,mouseX,mouseY,partialTicks);
 		super.render(graphics,mouseX,mouseY,partialTicks);
 		this.renderTooltip(graphics,mouseX,mouseY);
 	}

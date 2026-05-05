@@ -298,9 +298,12 @@ public abstract class ModularBase extends DiggerItem{
 			if(baseTag.getInt("FortuneModifierProgress")==0&&baseTag.getInt("MaxModifiers")==0) return false;
 			return !(baseTag.getInt("FortuneModifier")>=3);
 		}
-		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/silk_touch")&&baseTag.getInt("FortuneModifier")==0&&baseTag.getInt("FortuneModifierProgress")==0&&baseTag.getInt("MaxModifiers")>0&&!baseTag.getBoolean("SilkTouchModifier")) return true;
-		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/diamond")&&baseTag.getInt("MaxModifiers")>0&&!baseTag.getBoolean("DiamondModifier")) return true;
-		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/blazing")&&baseTag.getInt("MaxModifiers")>0&&!baseTag.getBoolean("BlazingModifier")) return true;
+		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/silk_touch")&&baseTag.getInt("FortuneModifier")==0&&baseTag.getInt("FortuneModifierProgress")==0&&baseTag.getInt("MaxModifiers")>0&&!baseTag.getBoolean("SilkTouchModifier"))
+			return true;
+		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/diamond")&&baseTag.getInt("MaxModifiers")>0&&!baseTag.getBoolean("DiamondModifier"))
+			return true;
+		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/blazing")&&baseTag.getInt("MaxModifiers")>0&&!baseTag.getBoolean("BlazingModifier"))
+			return true;
 		return false;
 	}
 	public static String miningLevelColor(CompoundTag tag){
@@ -549,7 +552,7 @@ public abstract class ModularBase extends DiggerItem{
 	}
 	public static void setEnchantmentLevel(ItemStack itemStack,Enchantment enchantment,int level){
 		Map<Enchantment,Integer> enchantments=EnchantmentHelper.getEnchantments(itemStack);
-		if(enchantments.containsKey(enchantment)&&enchantments.get(enchantment).equals(level))return;
+		if(enchantments.containsKey(enchantment)&&enchantments.get(enchantment).equals(level)) return;
 		if(level<=0) enchantments.remove(enchantment);
 		else enchantments.put(enchantment,level);
 		DifMod.LOGGER.debug("gg");
@@ -604,7 +607,8 @@ public abstract class ModularBase extends DiggerItem{
 			//case "Copper"->;
 			case "Iron" ->
 					component=Component.literal("Magnetic").withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial("Iron"))));
-			case "Gold"->component=Component.literal("Speeeed").withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial("Gold"))));
+			case "Gold" ->
+					component=Component.literal("Speeeed").withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial("Gold"))));
 			//case "Diamond"->;
 			//case "Obsidian"->;
 			//case "Netherite"->;
@@ -655,7 +659,8 @@ public abstract class ModularBase extends DiggerItem{
 				tag.putInt("CustomModelData",0);
 			}
 			tag.putInt("SpecialEfficiency",new int[]{0,modularToolsEfficiencyModifierLevel0,modularToolsEfficiencyModifierLevel1,modularToolsEfficiencyModifierLevel2}[tag.getInt("EfficiencyModifier")]);
-			if(tag.getInt("FortuneModifier")>0)setEnchantmentLevel(itemStack,Enchantments.BLOCK_FORTUNE,new int[]{0,modularToolsFortuneModifierLevel0,modularToolsFortuneModifierLevel1,modularToolsFortuneModifierLevel2}[tag.getInt("FortuneModifier")]);
+			if(tag.getInt("FortuneModifier")>0)
+				setEnchantmentLevel(itemStack,Enchantments.BLOCK_FORTUNE,new int[]{0,modularToolsFortuneModifierLevel0,modularToolsFortuneModifierLevel1,modularToolsFortuneModifierLevel2}[tag.getInt("FortuneModifier")]);
 			if(entity instanceof Player player){
 				if(containsMaterial(itemStack,"Wood")&&DifMod.rouletteBoolean(500)&&!(isInMainHand(itemStack,player)))
 					itemStack.setDamageValue(itemStack.getDamageValue()-1);
@@ -758,13 +763,17 @@ public abstract class ModularBase extends DiggerItem{
 		}
 		if(isBinding(partItem.getDefaultInstance())){
 			if(!tag.contains("BindingMaterial")) tag.putString("BindingMaterial",material);
-			if(!tag.contains("BindingDurability")) tag.putInt("BindingDurability",durabilityFromMaterial("Binding",material));
-			if(!tag.contains("BindingColor")) tag.putInt("BindingColor",colorIntFromMaterial(tag.getString("BindingMaterial")));
+			if(!tag.contains("BindingDurability"))
+				tag.putInt("BindingDurability",durabilityFromMaterial("Binding",material));
+			if(!tag.contains("BindingColor"))
+				tag.putInt("BindingColor",colorIntFromMaterial(tag.getString("BindingMaterial")));
 		}
 		if(isHandle(partItem.getDefaultInstance())){
 			if(!tag.contains("HandleMaterial")) tag.putString("HandleMaterial",material);
-			if(!tag.contains("HandleDurability")) tag.putInt("HandleDurability",durabilityFromMaterial("Handle",material));
-			if(!tag.contains("HandleColor")) tag.putInt("HandleColor",colorIntFromMaterial(tag.getString("HandleMaterial")));
+			if(!tag.contains("HandleDurability"))
+				tag.putInt("HandleDurability",durabilityFromMaterial("Handle",material));
+			if(!tag.contains("HandleColor"))
+				tag.putInt("HandleColor",colorIntFromMaterial(tag.getString("HandleMaterial")));
 		}
 		itemStack.setTag(tag);
 		return itemStack;

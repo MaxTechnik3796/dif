@@ -21,7 +21,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-@SuppressWarnings("deprecation")
 public class ChunkLoader extends Block implements EntityBlock{
 	public static final BooleanProperty LIT=BlockStateProperties.LIT;
 	public ChunkLoader(){

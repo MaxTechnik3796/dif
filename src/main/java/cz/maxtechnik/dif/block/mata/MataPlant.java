@@ -18,8 +18,6 @@ import net.minecraft.world.level.block.SugarCaneBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.PlantType;
 import org.jetbrains.annotations.NotNull;
 public class MataPlant extends SugarCaneBlock implements BonemealableBlock{
 	private static final TagKey<net.minecraft.world.level.block.Block> FLOWER_PLANT_SOIL=BlockTags.create(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"flower_plant_soil"));
@@ -27,11 +25,11 @@ public class MataPlant extends SugarCaneBlock implements BonemealableBlock{
 		super(Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN).randomTicks().sound(SoundType.GRASS).instabreak().noCollission().offsetType(OffsetType.XZ).pushReaction(PushReaction.DESTROY));
 	}
 	@Override
-	public int getFlammability(BlockState state,BlockGetter world,BlockPos pos,Direction face){
+	public int getFlammability(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull Direction face){
 		return 100;
 	}
 	@Override
-	public int getFireSpreadSpeed(BlockState state,BlockGetter world,BlockPos pos,Direction face){
+	public int getFireSpreadSpeed(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull Direction face){
 		return 60;
 	}
 	@Override

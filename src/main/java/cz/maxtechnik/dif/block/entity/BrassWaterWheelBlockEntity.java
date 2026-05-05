@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
-@SuppressWarnings("deprecation")
 public class BrassWaterWheelBlockEntity extends WaterWheelBlockEntity{
 	public BrassWaterWheelBlockEntity(BlockPos pos,BlockState state){
 		super(DifModBlockEntities.BRASS_WATER_WHEEL.get(),pos,state);

@@ -10,6 +10,6 @@ public class ModularSword extends ModularBase{
 	}
 	@Override
 	protected TagKey<Block> getMineableTag(){
-		return BlockTags.SWORD_EFFICIENT ;
+		return BlockTags.SWORD_EFFICIENT;
 	}
 }

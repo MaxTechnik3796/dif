@@ -18,7 +18,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-@SuppressWarnings("deprecation")
 public class SleepingBagBlock extends BedBlock{
 	public SleepingBagBlock(){
 		super(DyeColor.WHITE,BlockBehaviour.Properties.of().sound(SoundType.WOOL));

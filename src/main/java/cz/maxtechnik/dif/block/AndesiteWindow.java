@@ -11,7 +11,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-@SuppressWarnings("deprecation")
 public class AndesiteWindow extends Block{
 	public AndesiteWindow(){
 		super(Properties.of().instrument(NoteBlockInstrument.HAT).sound(SoundType.GLASS).strength(0.35f).noOcclusion().isRedstoneConductor((bs,br,bp)->false));

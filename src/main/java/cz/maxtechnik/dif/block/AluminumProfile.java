@@ -21,7 +21,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-@SuppressWarnings("deprecation")
 public class AluminumProfile extends Block implements SimpleWaterloggedBlock{
 	public static final EnumProperty<Direction.Axis> AXIS=BlockStateProperties.AXIS;
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;

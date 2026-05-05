@@ -2,8 +2,8 @@ package cz.maxtechnik.dif.network;
 
 import cz.maxtechnik.dif.entity.vehicle.BaseCarEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ClientPacketHandler{
 	public static void handleSyncCarPosition(ModNetworking.SyncCarPositionPacket packet){

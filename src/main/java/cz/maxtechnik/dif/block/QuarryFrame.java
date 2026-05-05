@@ -19,7 +19,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-@SuppressWarnings("deprecation")
 public class QuarryFrame extends BaseEntityBlock{
 	private static final VoxelShape CORE_SHAPE=Block.box(4,4,4,12,12,12);
 	private static final VoxelShape NORTH_SHAPE=Block.box(4,4,0,12,12,4);

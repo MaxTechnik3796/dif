@@ -6,20 +6,19 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
-
-@EventBusSubscriber(modid=DifMod.MODID,bus=EventBusSubscriber.Bus.MOD,value= Dist.CLIENT)
+@EventBusSubscriber(modid=DifMod.MODID, bus=EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
 public class ModularToolsColorRenderer{
 	@SubscribeEvent
 	public static void registerItemColors(RegisterColorHandlersEvent.Item event){
 		event.register((itemStack,tintIndex)->{
-			if(itemStack.getTag()==null) return -1;
-			return switch(tintIndex){
-				case 0 -> itemStack.getTag().contains("HandleColor")?itemStack.getTag().getInt("HandleColor"):-1;
-				case 1 -> itemStack.getTag().contains("BindingColor")?itemStack.getTag().getInt("BindingColor"):-1;
-				case 2 -> itemStack.getTag().contains("HeadColor")?itemStack.getTag().getInt("HeadColor"):-1;
-				default -> -1;
-			};
-		},
+					if(itemStack.getTag()==null) return -1;
+					return switch(tintIndex){
+						case 0 -> itemStack.getTag().contains("HandleColor")?itemStack.getTag().getInt("HandleColor"):-1;
+						case 1 -> itemStack.getTag().contains("BindingColor")?itemStack.getTag().getInt("BindingColor"):-1;
+						case 2 -> itemStack.getTag().contains("HeadColor")?itemStack.getTag().getInt("HeadColor"):-1;
+						default -> -1;
+					};
+				},
 				DifModItems.MODULAR_PICKAXE.get(),
 				DifModItems.MODULAR_SWORD.get(),
 				DifModItems.MODULAR_SHOVEL.get(),

@@ -13,7 +13,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
-@SuppressWarnings("deprecation")
 public class BuddingEnergyBlock extends AmethystBlock{
 	public static final int GROWTH_CHANCE=5;
 	private static final Direction[] DIRECTIONS=Direction.values();

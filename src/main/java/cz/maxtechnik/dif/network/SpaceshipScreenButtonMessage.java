@@ -3,17 +3,16 @@ package cz.maxtechnik.dif.network;
 import cz.maxtechnik.dif.init.events.SpaceshipControl;
 import cz.maxtechnik.dif.DifMod;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import java.util.function.Supplier;
-@SuppressWarnings("deprecation")
-@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
+@SuppressWarnings("removal")
+@EventBusSubscriber(bus=EventBusSubscriber.Bus.MOD)
 public class SpaceshipScreenButtonMessage{
 	private final int buttonID, x, y, z;
 	public SpaceshipScreenButtonMessage(int buttonID,int x,int y,int z){

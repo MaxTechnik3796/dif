@@ -100,7 +100,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		hasLiquidRemover=false;
 		ItemStack upgradeStack=inventory.getStackInSlot(2);
 		if(upgradeStack.isEmpty()) return;
-		if(upgradeStack.getItem()==DifModItems.QUARRY_LIQUID_REMOVER.get()) hasLiquidRemover=true;
+		if(upgradeStack.getItem()==Items.SPONGE) hasLiquidRemover=true;
 		else if(upgradeStack.is(Items.ENCHANTED_BOOK)){
 			ListTag storedEnchants=EnchantedBookItem.getEnchantments(upgradeStack);
 			ResourceLocation silkKey=ForgeRegistries.ENCHANTMENTS.getKey(Enchantments.SILK_TOUCH);

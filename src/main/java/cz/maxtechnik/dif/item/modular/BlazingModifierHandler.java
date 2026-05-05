@@ -21,7 +21,7 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 
 import java.util.List;
 import java.util.Optional;
-@EventBusSubscriber(modid=DifMod.MODID,bus=EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid=DifMod.MODID, bus=EventBusSubscriber.Bus.FORGE)
 public class BlazingModifierHandler{
 	@SubscribeEvent
 	public static void onBlockBreak(BlockEvent.BreakEvent event){

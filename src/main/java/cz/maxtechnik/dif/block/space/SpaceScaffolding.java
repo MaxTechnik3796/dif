@@ -20,7 +20,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-@SuppressWarnings("deprecation")
 public class SpaceScaffolding extends Block implements EntityBlock{
 	public SpaceScaffolding(){
 		super(Properties.of().strength(0F,0F).sound(SoundType.COPPER).noOcclusion().pushReaction(PushReaction.DESTROY));

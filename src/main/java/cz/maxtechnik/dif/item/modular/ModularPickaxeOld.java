@@ -155,7 +155,8 @@ public class ModularPickaxeOld extends PickaxeItem{
 		if(!itemStack.getTag().contains("MiningLevel")) itemStack.getOrCreateTag().putInt("MiningLevel",MINING_LEVEL);
 		if(!itemStack.getTag().contains("Durability")) itemStack.getOrCreateTag().putInt("Durability",DURABILITY);
 		if(!itemStack.getTag().contains("Efficiency")) itemStack.getOrCreateTag().putFloat("Efficiency",EFFICIENCY);
-		if(!itemStack.getTag().contains("AttackDamage"))itemStack.getOrCreateTag().putFloat("AttackDamage",ATTACK_DAMAGE);
+		if(!itemStack.getTag().contains("AttackDamage"))
+			itemStack.getOrCreateTag().putFloat("AttackDamage",ATTACK_DAMAGE);
 		if(!itemStack.getTag().contains("AttackSpeed")) itemStack.getOrCreateTag().putFloat("AttackSpeed",ATTACK_SPEED);
 		if(!itemStack.getTag().contains("Broken")) itemStack.getOrCreateTag().putBoolean("Broken",false);
 		if(!itemStack.getTag().contains("Unbreakable")) itemStack.getOrCreateTag().putBoolean("Unbreakable",false);

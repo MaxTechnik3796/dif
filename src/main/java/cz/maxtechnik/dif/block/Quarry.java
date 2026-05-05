@@ -25,7 +25,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-@SuppressWarnings("deprecation")
 public class Quarry extends BaseEntityBlock{
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
 	public Quarry(Properties properties){

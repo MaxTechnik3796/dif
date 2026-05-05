@@ -20,9 +20,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.LivingEntity;
 import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.NotNull;
+
 import java.util.Map;
 import java.util.Optional;
-
 public class BattleAxeItem extends SwordItem{
 	private static final Map<Block,Block> AXE_STRIPPABLES=(new ImmutableMap.Builder<Block,Block>())
 			.put(Blocks.OAK_LOG,Blocks.STRIPPED_OAK_LOG)
@@ -38,7 +38,7 @@ public class BattleAxeItem extends SwordItem{
 		super(tier,(int)attackDamage,attackSpeed,properties);
 	}
 	@Override
-	public boolean canDisableShield(ItemStack stack,ItemStack shield,LivingEntity entity,LivingEntity attacker){
+	public boolean canDisableShield(@NotNull ItemStack stack,@NotNull ItemStack shield,@NotNull LivingEntity entity,@NotNull LivingEntity attacker){
 		return true;
 	}
 	@Override
@@ -72,17 +72,17 @@ public class BattleAxeItem extends SwordItem{
 			return InteractionResult.PASS;
 		}
 	}
-    @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        if (enchantment == Enchantments.MENDING ||
-                enchantment == Enchantments.VANISHING_CURSE) {
-            return true;
-        }
-        return
-                enchantment == Enchantments.UNBREAKING ||
-                enchantment == Enchantments.FIRE_ASPECT ||
-                enchantment == Enchantments.SHARPNESS ||
-                enchantment == Enchantments.SWEEPING_EDGE ||
-                enchantment == Enchantments.KNOCKBACK;
-    }
+	@Override
+	public boolean canApplyAtEnchantingTable(ItemStack stack,Enchantment enchantment){
+		if(enchantment==Enchantments.MENDING||
+				enchantment==Enchantments.VANISHING_CURSE){
+			return true;
+		}
+		return
+				enchantment==Enchantments.UNBREAKING||
+						enchantment==Enchantments.FIRE_ASPECT||
+						enchantment==Enchantments.SHARPNESS||
+						enchantment==Enchantments.SWEEPING_EDGE||
+						enchantment==Enchantments.KNOCKBACK;
+	}
 }

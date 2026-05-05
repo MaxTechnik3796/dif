@@ -17,6 +17,7 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
 import static cz.maxtechnik.dif.item.modular.ModularBase.*;
 public class ModularRecipes implements SmithingRecipe{
 	final Ingredient template;
@@ -36,7 +37,7 @@ public class ModularRecipes implements SmithingRecipe{
 		ItemStack template=container.getItem(0);
 		ItemStack base=container.getItem(1);
 		ItemStack addition=container.getItem(2);
-		if(base.getItem().equals(Items.AIR))return false;
+		if(base.getItem().equals(Items.AIR)) return false;
 		assert template.getTag()!=null;
 		assert base.getTag()!=null;
 		assert addition.getTag()!=null;
@@ -80,10 +81,18 @@ public class ModularRecipes implements SmithingRecipe{
 		}
 		return base;
 	}
-	public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess){return this.result;}
-	public boolean isTemplateIngredient(@NotNull ItemStack itemStack){return this.template.test(itemStack)||isTagged(itemStack,DifMod.MODID,"modular_tools_parts")||isTagged(itemStack,DifMod.MODID,"modular_tools_modifiers");}
-	public boolean isBaseIngredient(@NotNull ItemStack itemStack){return this.base.test(itemStack)||isTagged(itemStack,DifMod.MODID,"modular_tools_parts");}
-	public boolean isAdditionIngredient(@NotNull ItemStack itemStack){return this.addition.test(itemStack)||isTagged(itemStack,DifMod.MODID,"modular_tools_parts")||isTagged(itemStack,DifMod.MODID,"modular_tools_materials");}
+	public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess){
+		return this.result;
+	}
+	public boolean isTemplateIngredient(@NotNull ItemStack itemStack){
+		return this.template.test(itemStack)||isTagged(itemStack,DifMod.MODID,"modular_tools_parts")||isTagged(itemStack,DifMod.MODID,"modular_tools_modifiers");
+	}
+	public boolean isBaseIngredient(@NotNull ItemStack itemStack){
+		return this.base.test(itemStack)||isTagged(itemStack,DifMod.MODID,"modular_tools_parts");
+	}
+	public boolean isAdditionIngredient(@NotNull ItemStack itemStack){
+		return this.addition.test(itemStack)||isTagged(itemStack,DifMod.MODID,"modular_tools_parts")||isTagged(itemStack,DifMod.MODID,"modular_tools_materials");
+	}
 	@Override
 	public @NotNull RecipeSerializer<?> getSerializer(){
 		return DifModRecipes.MODULAR_REPAIR_SERIALIZER.get();

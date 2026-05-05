@@ -4,16 +4,15 @@ import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.events.JetpackHandler;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraft.network.FriendlyByteBuf;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import java.util.Objects;
 import java.util.function.Supplier;
-@SuppressWarnings("deprecation")
-@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
+@SuppressWarnings("removal")
+@EventBusSubscriber(bus=EventBusSubscriber.Bus.MOD)
 public class JetpackFlyMessage{
 	int type, pressedms;
 	public JetpackFlyMessage(int type,int pressedms){

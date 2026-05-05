@@ -3,10 +3,6 @@ package cz.maxtechnik.dif.gui.menu;
 import cz.maxtechnik.dif.block.entity.BurningGeneratorBlockEntity;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import net.minecraft.world.inventory.*;
-import net.minecraftforge.items.SlotItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
@@ -20,6 +16,9 @@ import java.util.function.Supplier;
 import java.util.Map;
 import java.util.HashMap;
 
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 public class BurningGeneratorMenu extends AbstractContainerMenu implements Supplier<Map<Integer,Slot>>{
 	public final Level world;

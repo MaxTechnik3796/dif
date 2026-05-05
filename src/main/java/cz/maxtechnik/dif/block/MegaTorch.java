@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import org.jetbrains.annotations.NotNull;
-@SuppressWarnings("deprecation")
 public class MegaTorch extends Block{
 	public static final BooleanProperty FORMED=BooleanProperty.create("formed");
 	public static final IntegerProperty PART=IntegerProperty.create("part",0,4);

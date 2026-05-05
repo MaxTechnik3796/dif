@@ -7,6 +7,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.PoweredRailBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 public class FastPoweredRailBlock extends PoweredRailBlock{
 	public FastPoweredRailBlock(Properties properties){
 		// Druhý parametr 'true' v konstruktoru říká, že jde o napájený (powered) rail
@@ -14,14 +15,14 @@ public class FastPoweredRailBlock extends PoweredRailBlock{
 	}
 	// V 1.20.1 Forge používá tuto metodu pro určení maximální rychlosti na koleji
 	@Override
-	public float getRailMaxSpeed(BlockState state,Level world,BlockPos pos,AbstractMinecart cart){
+	public float getRailMaxSpeed(@NotNull BlockState state,@NotNull Level world,@NotNull BlockPos pos,@NotNull AbstractMinecart cart){
 		// Výchozí hodnota u běžných kolejí je 0.4f
 		// 1.2f je trojnásobná rychlost.
 		// POZOR: Pokud dáš víc než 1.5f, vozíky budou v zatáčkách často vypadávat!
 		return (float)DifModCommonConfig.fastRailTopSpeed;
 	}
 	@Override
-	public void onMinecartPass(BlockState state,Level world,BlockPos pos,AbstractMinecart cart){
+	public void onMinecartPass(BlockState state,@NotNull Level world,@NotNull BlockPos pos,@NotNull AbstractMinecart cart){
 		double multiplier=DifModCommonConfig.fastPoweredRailAcceleration;
 		if(state.getValue(POWERED)){
 			Vec3 motion=cart.getDeltaMovement();

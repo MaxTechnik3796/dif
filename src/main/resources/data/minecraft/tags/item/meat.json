@@ -1,0 +1,12 @@
+{
+	"replace":false,
+	"values":[
+		"dif:bucket_of_chicken",
+		"dif:rizek",
+		"dif:horse_meat",
+		"dif:cooked_horse_meat",
+		"dif:create_can",
+		"dif:create_bowl",
+		"dif:super_heated_create_bowl"
+	]
+}

@@ -23,7 +23,7 @@ public class MatyBlock extends Block{
 		return 15;
 	}
 	@Override
-	public boolean canConnectRedstone(BlockState state,BlockGetter world,BlockPos pos,Direction side){
+	public boolean canConnectRedstone(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,Direction side){
 		return true;
 	}
 	@Override

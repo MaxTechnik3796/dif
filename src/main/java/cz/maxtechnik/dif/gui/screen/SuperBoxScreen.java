@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.gui.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.gui.menu.SuperBoxMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -14,10 +15,10 @@ public class SuperBoxScreen extends AbstractContainerScreen<SuperBoxMenu>{
 		this.imageWidth=424;
 		this.imageHeight=236;
 	}
-	private static final ResourceLocation texture=ResourceLocation.fromNamespaceAndPath("dif","textures/screens/super_box.png");
+	private static final ResourceLocation texture=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/super_box.png");
 	@Override
 	public void render(@NotNull GuiGraphics guiGraphics,int mouseX,int mouseY,float partialTicks){
-		this.renderBackground(guiGraphics);
+		this.renderBackground(guiGraphics,mouseX,mouseY,partialTicks);
 		super.render(guiGraphics,mouseX,mouseY,partialTicks);
 		this.renderTooltip(guiGraphics,mouseX,mouseY);
 	}

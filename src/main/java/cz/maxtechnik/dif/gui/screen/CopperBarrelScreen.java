@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 public class CopperBarrelScreen extends AbstractContainerScreen<CopperBarrelMenu>{
-	private static final ResourceLocation TEXTURE=ResourceLocation.fromNamespaceAndPath("minecraft","textures/gui/container/generic_54.png");
+	private static final ResourceLocation TEXTURE=ResourceLocation.parse("minecraft:textures/gui/container/generic_54.png");
 	public CopperBarrelScreen(CopperBarrelMenu container,Inventory inventory,Component text){
 		super(container,inventory,text);
 		// Získáme počet řádků z menu (4)
@@ -22,7 +22,7 @@ public class CopperBarrelScreen extends AbstractContainerScreen<CopperBarrelMenu
 	}
 	@Override
 	public void render(@NotNull GuiGraphics guiGraphics,int mouseX,int mouseY,float partialTicks){
-		this.renderBackground(guiGraphics);
+		this.renderBackground(guiGraphics,mouseX,mouseY,partialTicks);
 		super.render(guiGraphics,mouseX,mouseY,partialTicks);
 		this.renderTooltip(guiGraphics,mouseX,mouseY);
 	}

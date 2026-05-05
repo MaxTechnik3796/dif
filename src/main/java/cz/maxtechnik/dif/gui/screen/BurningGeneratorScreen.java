@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.gui.screen;
 
+import cz.maxtechnik.dif.DifMod;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -24,11 +25,11 @@ public class BurningGeneratorScreen extends AbstractContainerScreen<BurningGener
 		this.imageWidth=176;
 		this.imageHeight=166;
 	}
-	private static final ResourceLocation GUI_TEXTURE=ResourceLocation.fromNamespaceAndPath("dif","textures/screens/burning_generator.png");
-	private static final ResourceLocation WIDGETS_TEXTURE=ResourceLocation.fromNamespaceAndPath("dif","textures/screens/widgets.png");
+	private static final ResourceLocation GUI_TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/burning_generator.png");
+	private static final ResourceLocation WIDGETS_TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/widgets.png");
 	@Override
 	public void render(@NotNull GuiGraphics guiGraphics,int mouseX,int mouseY,float partialTicks){
-		this.renderBackground(guiGraphics);
+		this.renderBackground(guiGraphics,mouseX,mouseY,partialTicks);
 		super.render(guiGraphics,mouseX,mouseY,partialTicks);
 		this.renderTooltip(guiGraphics,mouseX,mouseY);
 	}

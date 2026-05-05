@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class QuarryScreen extends AbstractContainerScreen<QuarryMenu> {
 
 	private static final ResourceLocation FALLBACK_TEXTURE =
-			ResourceLocation.fromNamespaceAndPath("minecraft", "textures/gui/container/dispenser.png");
+			ResourceLocation.parse("minecraft:textures/gui/container/dispenser.png");
 
 	public QuarryScreen(QuarryMenu menu, Inventory inventory, Component title) {
 		super(menu, inventory, title);
@@ -21,10 +21,10 @@ public class QuarryScreen extends AbstractContainerScreen<QuarryMenu> {
 	}
 
 	@Override
-	public void render(@NotNull GuiGraphics g, int mouseX, int mouseY, float pt) {
-		this.renderBackground(g);
-		super.render(g, mouseX, mouseY, pt);
-		this.renderTooltip(g, mouseX, mouseY);
+	public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		this.renderBackground(guiGraphics,mouseX,mouseY,partialTicks);
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+		this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
 	@Override

@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 public class OldChestScreen extends AbstractContainerScreen<OldChestMenu>{
-	private static final ResourceLocation TEXTURE=ResourceLocation.fromNamespaceAndPath("minecraft","textures/gui/container/generic_54.png");
+	private static final ResourceLocation TEXTURE=ResourceLocation.parse("minecraft:textures/gui/container/generic_54.png");
 	public OldChestScreen(OldChestMenu container,Inventory inventory,Component text){
 		super(container,inventory,text);
 		// Získáme počet řádků z menu
@@ -21,7 +21,7 @@ public class OldChestScreen extends AbstractContainerScreen<OldChestMenu>{
 	}
 	@Override
 	public void render(@NotNull GuiGraphics guiGraphics,int mouseX,int mouseY,float partialTicks){
-		this.renderBackground(guiGraphics);
+		this.renderBackground(guiGraphics,mouseX,mouseY,partialTicks);
 		super.render(guiGraphics,mouseX,mouseY,partialTicks);
 		this.renderTooltip(guiGraphics,mouseX,mouseY);
 	}

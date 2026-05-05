@@ -50,7 +50,6 @@ public class DifModItems{
 	public static final DeferredItem<Item> QUARRY_ENGINE_IRON=REGISTRY.register("quarry_engine_iron",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.IRON_ENGINE_DP_GEN,QuarryStats.IRON_ENGINE_FE_COST));
 	public static final DeferredItem<Item> QUARRY_ENGINE_GOLD=REGISTRY.register("quarry_engine_gold",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.GOLD_ENGINE_DP_GEN,QuarryStats.GOLD_ENGINE_FE_COST));
 	public static final DeferredItem<Item> QUARRY_ENGINE_DIAMOND=REGISTRY.register("quarry_engine_diamond",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.DIAMOND_ENGINE_DP_GEN,QuarryStats.DIAMOND_ENGINE_FE_COST));
-	public static final DeferredItem<Item> QUARRY_LIQUID_REMOVER=DeferredItem.create(ResourceLocation.parse("minecraft:sponge"), BuiltInRegistries.ITEM);
 
 
 	public static final DeferredItem<Item> BRASS_LARGE_WATER_WHEEL=block(DifModBlocks.BRASS_LARGE_WATER_WHEEL);
@@ -111,14 +110,14 @@ public class DifModItems{
 	public static final DeferredItem<Item> XP_STORAGE=block(DifModBlocks.XP_STORAGE);
 
 	//Fluid:
-	public static final DeferredItem<Item> BEER_BUCKET=REGISTRY.register("beer_bucket",()->new BucketItem(DifModFluids.BEER,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
-	public static final DeferredItem<Item> XP_BUCKET=REGISTRY.register("xp_bucket",()->new BucketItem(DifModFluids.XP,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
-	public static final DeferredItem<Item> FUEL_BUCKET=REGISTRY.register("fuel_bucket",()->new BucketItem(DifModFluids.FUEL,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
-	public static final DeferredItem<Item>CIDER_BUCKET=REGISTRY.register("cider_bucket",()->new BucketItem(DifModFluids.CIDER,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
-	public static final DeferredItem<Item>CRUDE_OIL_BUCKET=REGISTRY.register("crude_oil_bucket",()->new BucketItem(DifModFluids.CRUDE_OIL,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
-	public static final DeferredItem<Item>JETPACK_FUEL_BUCKET=REGISTRY.register("jetpack_fuel_bucket",()->new BucketItem(DifModFluids.JETPACK_FUEL,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
-	public static final DeferredItem<Item>JETPACK_TURBO_FUEL_BUCKET=REGISTRY.register("jetpack_turbo_fuel_bucket",()->new BucketItem(DifModFluids.JETPACK_TURBO_FUEL,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
-	public static final DeferredItem<Item>SUNFLOWER_OIL_BUCKET=REGISTRY.register("sunflower_oil_bucket",()->new BucketItem(DifModFluids.SUNFLOWER_OIL,new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final DeferredItem<Item> BEER_BUCKET=REGISTRY.register("beer_bucket",()->new BucketItem(DifModFluids.BEER.get(),new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final DeferredItem<Item> XP_BUCKET=REGISTRY.register("xp_bucket",()->new BucketItem(DifModFluids.XP.get(),new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final DeferredItem<Item> FUEL_BUCKET=REGISTRY.register("fuel_bucket",()->new BucketItem(DifModFluids.FUEL.get(),new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final DeferredItem<Item>CIDER_BUCKET=REGISTRY.register("cider_bucket",()->new BucketItem(DifModFluids.CIDER.get(),new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final DeferredItem<Item>CRUDE_OIL_BUCKET=REGISTRY.register("crude_oil_bucket",()->new BucketItem(DifModFluids.CRUDE_OIL.get(),new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final DeferredItem<Item>JETPACK_FUEL_BUCKET=REGISTRY.register("jetpack_fuel_bucket",()->new BucketItem(DifModFluids.JETPACK_FUEL.get(),new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final DeferredItem<Item>JETPACK_TURBO_FUEL_BUCKET=REGISTRY.register("jetpack_turbo_fuel_bucket",()->new BucketItem(DifModFluids.JETPACK_TURBO_FUEL.get(),new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final DeferredItem<Item>SUNFLOWER_OIL_BUCKET=REGISTRY.register("sunflower_oil_bucket",()->new BucketItem(DifModFluids.SUNFLOWER_OIL.get(),new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 
 	//Vanilla + :
 	public static final DeferredItem<Item> END_PORTAL=V_REGISTRY.register("end_portal",()->new BlockItem(Blocks.END_PORTAL,new Item.Properties()));
@@ -156,7 +155,7 @@ public class DifModItems{
 	public static final DeferredItem<Item> CIDER_BOTTLE=REGISTRY.register("cider_bottle",()->new RetvalFoods(new Item.Properties().food(DifModFoods.CIDER_BOTTLE),Items.GLASS_BOTTLE,UseAnim.DRINK));
 	public static final DeferredItem<Item> BURNED_TOAST=REGISTRY.register("burned_toast",()->new Item(new Item.Properties().food(DifModFoods.BURNED_TOAST)));
 
-	public static final DeferredItem<Item> CREATE_CAN=REGISTRY.register("create_can",()->new RetvalFoods(new Item.Properties().food(DifModFoods.CRETE_CAN),Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("create","andesite_alloy"))),UseAnim.EAT));
+	public static final DeferredItem<Item> CREATE_CAN=REGISTRY.register("create_can",()->new RetvalFoods(new Item.Properties().food(DifModFoods.CRETE_CAN),Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.parse("create:andesite_alloy"))),UseAnim.EAT));
 	public static final DeferredItem<Item> CREATE_BOWL=REGISTRY.register("create_bowl",()->new RetvalFoods(new Item.Properties().food(DifModFoods.CREATE_BOWL),Items.BOWL,UseAnim.EAT));
 	public static final DeferredItem<Item> SUPER_HEATED_CREATE_BOWL=REGISTRY.register("super_heated_create_bowl",()->new RetvalFoods(new  Item.Properties().food(DifModFoods.CREATE_SUPER),Items.BOWL,UseAnim.EAT));
 
