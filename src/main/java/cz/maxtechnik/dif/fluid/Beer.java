@@ -10,14 +10,14 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.common.SoundActions;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.common.SoundActions;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 public class Beer{
-	public abstract static class Fluid extends ForgeFlowingFluid{
+	public abstract static class Fluid extends BaseFlowingFluid{
 		private Fluid(){
 			super(new Properties(DifModFluidTypes.BEER_TYPE,DifModFluids.BEER,DifModFluids.FLOWING_BEER).explosionResistance(100F).bucket(DifModItems.BEER_BUCKET).block(()->(LiquidBlock)DifModBlocks.BEER_FLUID.get()));
 		}
@@ -42,7 +42,7 @@ public class Beer{
 			}
 		}
 	}
-	public static class FluidType extends net.minecraftforge.fluids.FluidType{
+	public static class FluidType extends net.neoforged.neoforge.fluids.FluidType{
 		public FluidType(){
 			super(Properties.create().fallDistanceModifier(0F).canExtinguish(true).supportsBoating(true).canHydrate(true).canDrown(true).motionScale(0.007D).sound(SoundActions.BUCKET_FILL,SoundEvents.BUCKET_FILL).sound(SoundActions.BUCKET_EMPTY,SoundEvents.BUCKET_EMPTY).sound(SoundActions.FLUID_VAPORIZE,SoundEvents.FIRE_EXTINGUISH));
 		}

@@ -6,42 +6,44 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.core.registries.Registries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
+
 
 public class DifModFluids{
-	public static final DeferredRegister<Fluid>REGISTRY=DeferredRegister.create(ForgeRegistries.FLUIDS,DifMod.MODID);
+	public static final DeferredRegister<Fluid> REGISTRY = DeferredRegister.create(Registries.FLUID, DifMod.MODID);
 
-	public static final RegistryObject<FlowingFluid>BEER=REGISTRY.register("beer_fluid",Beer.Fluid.Source::new);
-	public static final RegistryObject<FlowingFluid>FLOWING_BEER=REGISTRY.register("flowing_beer_fluid",Beer.Fluid.Flowing::new);
+	public static final DeferredHolder<Fluid, FlowingFluid> BEER = REGISTRY.register("beer_fluid", Beer.Fluid.Source::new);
+	public static final DeferredHolder<Fluid, FlowingFluid>FLOWING_BEER=REGISTRY.register("flowing_beer_fluid",Beer.Fluid.Flowing::new);
 
-	public static final RegistryObject<FlowingFluid>FUEL=REGISTRY.register("fuel_fluid",Fuel.Fluid.Source::new);
-	public static final RegistryObject<FlowingFluid>FLOWING_FUEL=REGISTRY.register("flowing_fuel_fluid",Fuel.Fluid.Flowing::new);
+	public static final DeferredHolder<Fluid, FlowingFluid>FUEL=REGISTRY.register("fuel_fluid",Fuel.Fluid.Source::new);
+	public static final DeferredHolder<Fluid, FlowingFluid>FLOWING_FUEL=REGISTRY.register("flowing_fuel_fluid",Fuel.Fluid.Flowing::new);
 
-	public static final RegistryObject<FlowingFluid>JETPACK_FUEL=REGISTRY.register("jetpack_fuel_fluid",JetpackFuel.Fluid.Source::new);
-	public static final RegistryObject<FlowingFluid>FLOWING_JETPACK_FUEL=REGISTRY.register("flowing_jetpack_fuel_fluid",JetpackFuel.Fluid.Flowing::new);
+	public static final DeferredHolder<Fluid, FlowingFluid>JETPACK_FUEL=REGISTRY.register("jetpack_fuel_fluid",JetpackFuel.Fluid.Source::new);
+	public static final DeferredHolder<Fluid, FlowingFluid>FLOWING_JETPACK_FUEL=REGISTRY.register("flowing_jetpack_fuel_fluid",JetpackFuel.Fluid.Flowing::new);
 
-	public static final RegistryObject<FlowingFluid>JETPACK_TURBO_FUEL=REGISTRY.register("jetpack_turbo_fuel_fluid",JetpackTurboFuel.Fluid.Source::new);
-	public static final RegistryObject<FlowingFluid>FLOWING_JETPACK_TURBO_FUEL=REGISTRY.register("flowing_jetpack_turbo_fuel_fluid",JetpackTurboFuel.Fluid.Flowing::new);
+	public static final DeferredHolder<Fluid, FlowingFluid>JETPACK_TURBO_FUEL=REGISTRY.register("jetpack_turbo_fuel_fluid",JetpackTurboFuel.Fluid.Source::new);
+	public static final DeferredHolder<Fluid, FlowingFluid>FLOWING_JETPACK_TURBO_FUEL=REGISTRY.register("flowing_jetpack_turbo_fuel_fluid",JetpackTurboFuel.Fluid.Flowing::new);
 
-	public static final RegistryObject<FlowingFluid>CIDER=REGISTRY.register("cider_fluid",Cider.Fluid.Source::new);
-	public static final RegistryObject<FlowingFluid>FLOWING_CIDER=REGISTRY.register("flowing_cider_fluid",Cider.Fluid.Flowing::new);
+	public static final DeferredHolder<Fluid, FlowingFluid>CIDER=REGISTRY.register("cider_fluid",Cider.Fluid.Source::new);
+	public static final DeferredHolder<Fluid, FlowingFluid>FLOWING_CIDER=REGISTRY.register("flowing_cider_fluid",Cider.Fluid.Flowing::new);
 
-	public static final RegistryObject<FlowingFluid>CRUDE_OIL=REGISTRY.register("crude_oil_fluid",CrudeOil.Fluid.Source::new);
-	public static final RegistryObject<FlowingFluid>FLOWING_CRUDE_OIL=REGISTRY.register("flowing_crude_oil_fluid",CrudeOil.Fluid.Flowing::new);
+	public static final DeferredHolder<Fluid, FlowingFluid>CRUDE_OIL=REGISTRY.register("crude_oil_fluid",CrudeOil.Fluid.Source::new);
+	public static final DeferredHolder<Fluid, FlowingFluid>FLOWING_CRUDE_OIL=REGISTRY.register("flowing_crude_oil_fluid",CrudeOil.Fluid.Flowing::new);
 
-	public static final RegistryObject<FlowingFluid>XP=REGISTRY.register("xp_fluid",Xp.Fluid.Source::new);
-	public static final RegistryObject<FlowingFluid>FLOWING_XP=REGISTRY.register("flowing_xp_fluid",Xp.Fluid.Flowing::new);
+	public static final DeferredHolder<Fluid, FlowingFluid>XP=REGISTRY.register("xp_fluid",Xp.Fluid.Source::new);
+	public static final DeferredHolder<Fluid, FlowingFluid>FLOWING_XP=REGISTRY.register("flowing_xp_fluid",Xp.Fluid.Flowing::new);
 
-	public static final RegistryObject<FlowingFluid>SUNFLOWER_OIL=REGISTRY.register("sunflower_oil_fluid",SunflowerOil.Fluid.Source::new);
-	public static final RegistryObject<FlowingFluid>FLOWING_SUNFLOWER_OIL=REGISTRY.register("flowing_sunflower_oil_fluid",SunflowerOil.Fluid.Flowing::new);
+	public static final DeferredHolder<Fluid, FlowingFluid>SUNFLOWER_OIL=REGISTRY.register("sunflower_oil_fluid",SunflowerOil.Fluid.Source::new);
+	public static final DeferredHolder<Fluid, FlowingFluid>FLOWING_SUNFLOWER_OIL=REGISTRY.register("flowing_sunflower_oil_fluid",SunflowerOil.Fluid.Flowing::new);
 
-	@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD,value=Dist.CLIENT)
+	@EventBusSubscriber(bus= EventBusSubscriber.Bus.MOD,value= Dist.CLIENT)
 	public static class FluidsClientSideHandler{
 		@SubscribeEvent
 		public static void clientSetup(FMLClientSetupEvent event) {

@@ -43,8 +43,8 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>CAMERA=REGISTRY.register("camera",()->new Camera(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3F,3F).requiresCorrectToolForDrops()));
 
 	//Create Stuff:
-	public static final DeferredBlock<Block> BRASS_LARGE_WATER_WHEEL = REGISTRY.register("brass_large_water_wheel", cz.maxtechnik.dif.block.BrassLargeWaterWheelBlock::new);
-	public static final DeferredBlock<Block> BRASS_WATER_WHEEL = REGISTRY.register("brass_water_wheel", cz.maxtechnik.dif.block.BrassWaterWheelBlock::new);
+	public static final DeferredBlock<Block> BRASS_LARGE_WATER_WHEEL = REGISTRY.register("brass_large_water_wheel", BrassLargeWaterWheelBlock::new);
+	public static final DeferredBlock<Block> BRASS_WATER_WHEEL = REGISTRY.register("brass_water_wheel", BrassWaterWheelBlock::new);
 	public static final DeferredBlock<Block> BRASS_MECHANICAL_PRESS = REGISTRY.register("brass_mechanical_press", () -> new BrassMechanicalPressBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PODZOL).requiresCorrectToolForDrops().strength(4.0F).sound(SoundType.NETHERITE_BLOCK).noOcclusion()));
 	public static final DeferredBlock<Block> BRASS_MECHANICAL_MIXER = REGISTRY.register("brass_mechanical_mixer", () -> new BrassMechanicalMixerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PODZOL).requiresCorrectToolForDrops().strength(4.0F).sound(SoundType.NETHERITE_BLOCK).noOcclusion()));
 
@@ -119,9 +119,9 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>ENERGY_BLOCK=REGISTRY.register("energy_block",()->new AmethystBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(1.5F).sound(SoundType.AMETHYST).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>BUDDING_ENERGY=REGISTRY.register("budding_energy",()->new BuddingEnergyBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).randomTicks().strength(1.5F).sound(SoundType.AMETHYST).requiresCorrectToolForDrops().pushReaction(PushReaction.DESTROY)));
 	public static final DeferredBlock<Block>ENERGY_CLUSTER=REGISTRY.register("energy_cluster",()->new AmethystClusterBlock(7,3,BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).forceSolidOn().noOcclusion().randomTicks().sound(SoundType.AMETHYST_CLUSTER).strength(1.5F).lightLevel((p_152632_)->5).pushReaction(PushReaction.DESTROY)));
-	public static final DeferredBlock<Block>LARGE_ENERGY_BUD=REGISTRY.register("large_energy_bud",()->new AmethystClusterBlock(5,3,BlockBehaviour.Properties.copy(ENERGY_CLUSTER.get()).sound(SoundType.MEDIUM_AMETHYST_BUD).forceSolidOn().lightLevel((p_152629_)->4).pushReaction(PushReaction.DESTROY)));
-	public static final DeferredBlock<Block>MEDIUM_ENERGY_BUD=REGISTRY.register("medium_energy_bud",()->new AmethystClusterBlock(4,3,BlockBehaviour.Properties.copy(ENERGY_CLUSTER.get()).sound(SoundType.LARGE_AMETHYST_BUD).forceSolidOn().lightLevel((p_152617_)->2).pushReaction(PushReaction.DESTROY)));
-	public static final DeferredBlock<Block>SMALL_ENERGY_BUD=REGISTRY.register("small_energy_bud",()->new AmethystClusterBlock(3,4,BlockBehaviour.Properties.copy(ENERGY_CLUSTER.get()).sound(SoundType.SMALL_AMETHYST_BUD).forceSolidOn().lightLevel((p_187409_)->1).pushReaction(PushReaction.DESTROY)));
+	public static final DeferredBlock<Block>LARGE_ENERGY_BUD=REGISTRY.register("large_energy_bud",()->new AmethystClusterBlock(5,3,BlockBehaviour.Properties.ofFullCopy(ENERGY_CLUSTER.get()).sound(SoundType.MEDIUM_AMETHYST_BUD).forceSolidOn().lightLevel((p_152629_)->4).pushReaction(PushReaction.DESTROY)));
+	public static final DeferredBlock<Block>MEDIUM_ENERGY_BUD=REGISTRY.register("medium_energy_bud",()->new AmethystClusterBlock(4,3,BlockBehaviour.Properties.ofFullCopy(ENERGY_CLUSTER.get()).sound(SoundType.LARGE_AMETHYST_BUD).forceSolidOn().lightLevel((p_152617_)->2).pushReaction(PushReaction.DESTROY)));
+	public static final DeferredBlock<Block>SMALL_ENERGY_BUD=REGISTRY.register("small_energy_bud",()->new AmethystClusterBlock(3,4,BlockBehaviour.Properties.ofFullCopy(ENERGY_CLUSTER.get()).sound(SoundType.SMALL_AMETHYST_BUD).forceSolidOn().lightLevel((p_187409_)->1).pushReaction(PushReaction.DESTROY)));
 
 	//Barrels:
 	public static final DeferredBlock<Block>ANDESITE_BARREL=REGISTRY.register("andesite_barrel",AndesiteBarrel::new);
@@ -160,5 +160,5 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>BROKEN_TRACK02=REGISTRY.register("broken_track02",BrokenTrack::new);
 
 	//Race:
-	public static final DeferredBlock<Block>LAP_TIMER=REGISTRY.register("lap_timer",()->new Block(BlockBehaviour.Properties.copy(net.minecraft.world.level.block.Blocks.NETHERITE_BLOCK)));
+	public static final DeferredBlock<Block>LAP_TIMER=REGISTRY.register("lap_timer",()->new Block(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.NETHERITE_BLOCK)));
 }
