@@ -1,0 +1,20 @@
+{
+	"type":"minecraft:block",
+	"random_sequence":"dif:blocks/space_casing_metal",
+	"pools":[
+		{
+			"rolls":1.0,
+			"conditions":[
+				{
+					"condition":"minecraft:survives_explosion"
+				}
+			],
+			"entries":[
+				{
+					"type":"minecraft:item",
+					"name":"dif:space_casing_metal"
+				}
+			]
+		}
+	]
+}
