@@ -2,7 +2,6 @@ package cz.maxtechnik.dif.block.space;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -57,10 +56,10 @@ public class SpaceshipGhostBlock extends Block{
 		super.onRemove(state,world,pos,newState,isMoving);
 	}
 	@Override
-	public @NotNull InteractionResult use(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
+	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
 		BlockPos masterPos=findMyMaster(world,pos);
 		if(masterPos!=null){
-			return world.getBlockState(masterPos).use(world,player,hand,hit.withPosition(masterPos));
+			return world.getBlockState(masterPos).useWithoutItem(world,player,hit.withPosition(masterPos));
 		}
 		return InteractionResult.PASS;
 	}

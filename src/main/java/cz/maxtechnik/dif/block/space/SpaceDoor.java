@@ -11,7 +11,7 @@ import net.minecraft.core.BlockPos;
 import org.jetbrains.annotations.NotNull;
 public class SpaceDoor extends DoorBlock{
 	public SpaceDoor(){
-		super(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(5F,6F).requiresCorrectToolForDrops().noOcclusion().isRedstoneConductor((bs,br,bp)->false),new BlockSetType("iron",true,SoundType.METAL,SoundEvents.IRON_DOOR_CLOSE,SoundEvents.IRON_DOOR_OPEN,SoundEvents.IRON_TRAPDOOR_CLOSE,SoundEvents.IRON_TRAPDOOR_OPEN,SoundEvents.METAL_PRESSURE_PLATE_CLICK_OFF,SoundEvents.METAL_PRESSURE_PLATE_CLICK_ON,SoundEvents.STONE_BUTTON_CLICK_OFF,SoundEvents.STONE_BUTTON_CLICK_ON));
+		super(BlockSetType.IRON, BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(5F,6F).requiresCorrectToolForDrops().noOcclusion().isRedstoneConductor((bs,br,bp)->false));
 	}
 	@Override
 	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
