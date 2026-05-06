@@ -4,28 +4,38 @@ import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-@Mod.EventBusSubscriber(modid=DifMod.MODID)
-public class GodTotemEventHandler{
-	public static boolean isHoldingGodTotem(LivingEntity entity){
-		if(!(entity instanceof Player player)) return false;
-		return player.getMainHandItem().getItem().equals(DifModItems.GOD_TOTEM.get())||
-				player.getOffhandItem().getItem().equals(DifModItems.GOD_TOTEM.get());
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+
+@EventBusSubscriber(modid = DifMod.MODID)
+public class GodTotemEventHandler {
+
+	public static boolean isHoldingGodTotem(LivingEntity entity) {
+		if (!(entity instanceof Player player)) return false;
+		return player.getMainHandItem().is(DifModItems.GOD_TOTEM.get()) ||
+				player.getOffhandItem().is(DifModItems.GOD_TOTEM.get());
 	}
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public static void onLivingAttack(LivingAttackEvent event){
-		if(event.getEntity() instanceof Player target&&isHoldingGodTotem(target)){
-			// Kontrola našich zbraní
-			if(event.getSource().getEntity() instanceof LivingEntity attacker){
-				var item=attacker.getMainHandItem().getItem();
-				if(item.equals(DifModItems.BAN_HAMMER.get())) return;
-				// ODRAZ (Thorns)
-				if(attacker!=target) attacker.hurt(target.damageSources().thorns(target),event.getAmount()*2F);
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
+		if (event.getEntity() instanceof Player target && isHoldingGodTotem(target)) {
+
+			// Kontrola útočníka
+			if (event.getSource().getEntity() instanceof LivingEntity attacker) {
+				var item = attacker.getMainHandItem();
+
+				// Pokud útočník drží Ban Hammer, imunita neplatí
+				if (item.is(DifModItems.BAN_HAMMER.get())) return;
+
+				// ODRAZ (Thorns) - pouze pokud útočník není sám cíl
+				if (attacker != target) {
+					attacker.hurt(target.damageSources().thorns(target), event.getAmount() * 2.0F);
+				}
 			}
-			// TOTÁLNÍ IMUNITA (Zruší poškození od čehokoliv jiného)
+
+			// TOTÁLNÍ IMUNITA (Zruší poškození)
 			event.setCanceled(true);
 		}
 	}

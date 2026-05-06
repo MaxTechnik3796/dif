@@ -2,11 +2,12 @@ package cz.maxtechnik.dif.init.events;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.item.modular.ModularBase;
-import net.minecraftforge.event.AnvilUpdateEvent;
-import net.minecraftforge.event.GrindstoneEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-@Mod.EventBusSubscriber(modid=DifMod.MODID)
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.AnvilUpdateEvent;
+import net.neoforged.neoforge.event.GrindstoneEvent;
+
+@EventBusSubscriber(modid=DifMod.MODID)
 public class GrindstoneAnvilFixer{
 	@SubscribeEvent
 	public static void onAnvilUpdate(AnvilUpdateEvent event){

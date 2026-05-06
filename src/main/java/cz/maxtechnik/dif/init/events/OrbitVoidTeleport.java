@@ -9,28 +9,36 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 import java.util.HashSet;
-import java.util.Objects;
-@Mod.EventBusSubscriber
-public class OrbitVoidTeleport{
+
+@EventBusSubscriber(modid = DifMod.MODID)
+public class OrbitVoidTeleport {
+
 	@SubscribeEvent
-	public static void onEntityTick(LivingEvent.LivingTickEvent event){
-		LivingEntity entity=event.getEntity();
-		ResourceLocation currentDim=entity.level().dimension().location();
-		if(currentDim.equals(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"orbit"))){
-			if(entity.getY()<=-90){
-				ServerLevel overworld=Objects.requireNonNull(entity.getServer()).getLevel(Level.OVERWORLD);
-				assert overworld!=null;
-				entity.teleportTo(overworld,entity.getX(),500,entity.getZ(),new HashSet<>(),entity.getYRot(),entity.getXRot());
-				entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS,100,0,true,false));
-				entity.setSecondsOnFire(10);
-				entity.fallDistance=0;
-				if(entity instanceof ServerPlayer serverPlayer)
-					serverPlayer.displayClientMessage(Component.literal("§6You are falling back to Overworld!"),true);
+	public static void onEntityTick(EntityTickEvent event) { // Změna na EntityTickEvent
+		if (!(event.getEntity() instanceof LivingEntity entity)) return;
+		ResourceLocation currentDim = entity.level().dimension().location();
+		ResourceLocation orbitDim = ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "orbit");
+		if (currentDim.equals(orbitDim)) {
+			if (entity.getY() <= -90) {
+				if (!entity.level().isClientSide() && entity.getServer() != null) {
+					ServerLevel overworld = entity.getServer().getLevel(Level.OVERWORLD);
+					if (overworld != null) {
+						entity.fallDistance = 0;
+						// Teleportace
+						entity.teleportTo(overworld, entity.getX(), 500, entity.getZ(), new HashSet<>(), entity.getYRot(), entity.getXRot());
+						// Efekty
+						entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100, 0, true, false));
+						entity.setRemainingFireTicks(200); // 10 sekund = 200 ticků
+						if (entity instanceof ServerPlayer serverPlayer) {
+							serverPlayer.displayClientMessage(Component.literal("§6You are falling back to Overworld!"), true);
+						}
+					}
+				}
 			}
 		}
 	}

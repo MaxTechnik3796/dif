@@ -32,4 +32,3 @@ public class XpStorageBlockEntity extends BlockEntity{
 		return this.saveWithFullMetadata(provider);
 	}
 }
-}

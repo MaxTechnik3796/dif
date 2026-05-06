@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -18,48 +17,60 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-public class SleepingBagBlock extends BedBlock{
-	public SleepingBagBlock(){
-		super(DyeColor.WHITE,BlockBehaviour.Properties.of().sound(SoundType.WOOL));
+
+public class SleepingBagBlock extends BedBlock {
+	protected static final VoxelShape SHAPE = Block.box(0D, 0D, 0D, 16D, 2D, 16D);
+
+	public SleepingBagBlock() {
+		super(DyeColor.WHITE, BlockBehaviour.Properties.of()
+				.sound(SoundType.WOOL)
+				.strength(0.2f)
+				.noOcclusion());
 	}
-	protected static final VoxelShape SHAPE=Block.box(0D,0D,0D,16D,2D,16D);
+
 	@Override
-	public @NotNull InteractionResult use(@NotNull BlockState state,Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
-		if(level.isClientSide){
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
+		if (level.isClientSide) {
 			return InteractionResult.CONSUME;
 		}
-		// 1. Oprava FINISHED_HANDLED -> InteractionResult.FAIL nebo PASS (podle kontextu)
-		if(state.getValue(PART)!=BedPart.HEAD){
-			pos=pos.relative(state.getValue(FACING));
-			state=level.getBlockState(pos);
-			if(!state.is(this)){
+
+		// Pokud klikneme na nohy spacáku, najdeme hlavu
+		if (state.getValue(PART) != BedPart.HEAD) {
+			pos = pos.relative(state.getValue(FACING));
+			state = level.getBlockState(pos);
+			if (!state.is(this)) {
 				return InteractionResult.FAIL;
 			}
 		}
-		// 2. Oprava canSleepInBed -> canSetSpawn
-		// V Minecraftu se tato kontrola pro spaní jmenuje BedBlock.canSetSpawn(level)
-		if(!BedBlock.canSetSpawn(level)){
-			level.explode(null,(double)pos.getX()+0.5D,(double)pos.getY()+0.5D,(double)pos.getZ()+0.5D,5.0F,true,Level.ExplosionInteraction.BLOCK);
+
+		// Kontrola, zda lze v této dimenzi spát (výbuch v Netheru)
+		if (!BedBlock.canSetSpawn(level)) {
+			level.explode(null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, 5.0F, true, Level.ExplosionInteraction.BLOCK);
 			return InteractionResult.SUCCESS;
 		}
-		// Pokusíme se hráče uložit ke spánku
-		player.startSleepInBed(pos).ifLeft((problem)->{
-			if(problem!=null&&problem.getMessage()!=null){
-				player.displayClientMessage(problem.getMessage(),true);
+
+		// Uložení hráče ke spánku
+		player.startSleepInBed(pos).ifLeft((problem) -> {
+			if (problem != null && problem.getMessage() != null) {
+				player.displayClientMessage(problem.getMessage(), true);
 			}
 		});
+
 		return InteractionResult.SUCCESS;
 	}
+
 	@Override
-	public @NotNull RenderShape getRenderShape(@NotNull BlockState state){
+	public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
 		return RenderShape.MODEL;
 	}
+
 	@Override
-	public @NotNull VoxelShape getShape(@NotNull BlockState state,@NotNull BlockGetter level,@NotNull BlockPos pos,@NotNull CollisionContext context){
+	public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
 		return SHAPE;
 	}
+
 	@Override
-	public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state,@NotNull BlockGetter level,@NotNull BlockPos pos,@NotNull CollisionContext context){
+	public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
 		return SHAPE;
 	}
 }

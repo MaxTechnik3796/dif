@@ -5,12 +5,13 @@ import cz.maxtechnik.dif.item.armor.ElectroRunners;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-@Mod.EventBusSubscriber(modid=DifMod.MODID)
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+
+@EventBusSubscriber(modid=DifMod.MODID)
 public class ElectroRunnersHandler{
 	@SubscribeEvent
 	public static void onJump(LivingEvent.LivingJumpEvent event){
@@ -36,12 +37,11 @@ public class ElectroRunnersHandler{
 		}
 	}
 	@SubscribeEvent
-	public static void onHurt(LivingHurtEvent event){
-		if(event.getEntity() instanceof Player player){
-			ItemStack boots=player.getItemBySlot(EquipmentSlot.FEET);
-			if(boots.getItem() instanceof ElectroRunners){
-				// Jakýkoliv damage (včetně pádu nad 5 bloků) ubere 10 EU
-				ElectroRunners.Boots.extract(boots,10);
+	public static void onLivingDamage(LivingIncomingDamageEvent event) {
+		if (event.getEntity() instanceof Player player) {
+			ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
+			if (boots.getItem() instanceof ElectroRunners) {
+				ElectroRunners.Boots.extract(boots, 10);
 			}
 		}
 	}

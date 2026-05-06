@@ -2,10 +2,12 @@ package cz.maxtechnik.dif.init.events;
 
 import cz.maxtechnik.dif.DifMod;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-@Mod.EventBusSubscriber(modid=DifMod.MODID, bus=Mod.EventBusSubscriber.Bus.FORGE)
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.level.BlockEvent;
+
+@SuppressWarnings("removal")
+@EventBusSubscriber(modid = DifMod.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class CobblestoneGenerator{
 	@SubscribeEvent
 	public static void cobbleGeneratorEvent(BlockEvent.FluidPlaceBlockEvent event){

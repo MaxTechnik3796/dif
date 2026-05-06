@@ -4,21 +4,19 @@ import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.common.BasicItemListing;
-import net.minecraftforge.event.village.VillagerTradesEvent;
-import net.minecraftforge.event.village.WandererTradesEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-@Mod.EventBusSubscriber(modid=DifMod.MODID, bus=Mod.EventBusSubscriber.Bus.FORGE)
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.BasicItemListing;
+import net.neoforged.neoforge.event.village.VillagerTradesEvent;
+import net.neoforged.neoforge.event.village.WandererTradesEvent;
+@SuppressWarnings("removal")
+@EventBusSubscriber(modid = DifMod.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class VillagerTrades{
 	public static ItemStack emerald(int count){
 		return new ItemStack(Items.EMERALD,count);
 	}
 	@SubscribeEvent
 	public static void registerTrades(VillagerTradesEvent event){
-		/*if(event.getType().equals(VillagerProfession.CARTOGRAPHER)){
-			//event.getTrades().get(3).add(new TrialsMapTrade(12,12,5));
-		}*/
 	}
 	@SubscribeEvent
 	public static void registerWanderingTrades(WandererTradesEvent event){

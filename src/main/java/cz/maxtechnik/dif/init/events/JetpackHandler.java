@@ -9,24 +9,26 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-@Mod.EventBusSubscriber(modid=DifMod.MODID)
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+
+@EventBusSubscriber(modid=DifMod.MODID)
 public class JetpackHandler{
 	@SubscribeEvent
-	public static void onPlayerTick(TickEvent.PlayerTickEvent event){
-		if(event.phase!=TickEvent.Phase.END) return;
-		Player player=event.player;
-		ItemStack chest=player.getItemBySlot(EquipmentSlot.CHEST);
-		if(!(chest.getItem() instanceof Jetpack)) return;
-		int main=Jetpack.Chestplate.getMainFuel(chest);
-		int thrust=Jetpack.Chestplate.getThrustFuel(chest);
-		boolean turbo=Jetpack.Chestplate.getTurbo(chest);
-		// 1. REFUEL
-		if(main<=0&&!player.level().isClientSide()) handleRefuel(player,chest);
-		// 2. RECHARGE ON GROUND
-		if(player.onGround()) handleCharging(player,chest,main,thrust,turbo);
+	public static void onPlayerTick(PlayerTickEvent.Post event) {
+		Player player = event.getEntity();
+		ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+		if (!(chest.getItem() instanceof Jetpack)) return;
+		int main = Jetpack.Chestplate.getMainFuel(chest);
+		int thrust = Jetpack.Chestplate.getThrustFuel(chest);
+		boolean turbo = Jetpack.Chestplate.getTurbo(chest);
+		if (main <= 0 && !player.level().isClientSide()) {
+			handleRefuel(player, chest);
+		}
+		if (player.onGround()) {
+			handleCharging(player, chest, main, thrust, turbo);
+		}
 	}
 	private static void handleRefuel(Player player,ItemStack chest){
 		for(int i=0;i<player.getInventory().getContainerSize();i++){
