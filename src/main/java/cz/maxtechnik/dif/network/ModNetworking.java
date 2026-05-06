@@ -1,61 +1,56 @@
 package cz.maxtechnik.dif.network;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.entity.vehicle.BaseCarEntity;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
-import java.util.function.Supplier;
+@EventBusSubscriber(modid = DifMod.MODID, bus = EventBusSubscriber.Bus.MOD)
+public class ModNetworking {
 
-import static net.minecraftforge.fml.DistExecutor.unsafeRunWhenOn;
-public class ModNetworking{
-	public static void register(){
-		int id=0;
-		DifMod.PACKET_HANDLER.registerMessage(id++,ShiftGearPacket.class,ShiftGearPacket::encode,ShiftGearPacket::decode,ShiftGearPacket::handle);
-		DifMod.PACKET_HANDLER.registerMessage(id++,SyncCarPositionPacket.class,SyncCarPositionPacket::encode,SyncCarPositionPacket::decode,SyncCarPositionPacket::handle);
-	}
-	public record ShiftGearPacket(int direction){
-		public static ShiftGearPacket decode(FriendlyByteBuf buf){
-			return new ShiftGearPacket(buf.readByte());
-		}
-		public void encode(FriendlyByteBuf buf){
-			buf.writeByte(direction);
-		}
-		public void handle(Supplier<NetworkEvent.Context> ctx){
-			ctx.get().enqueueWork(()->{
-				ServerPlayer p=ctx.get().getSender();
-				if(p==null||!(p.getVehicle() instanceof BaseCarEntity c)||!c.isEngineOn()) return;
-				int cur=c.getCurrentGear();
-				int max=c.getGearRatios().length;
-				int newGear=Math.max(-1,Math.min(max,cur+direction));
-				if(newGear==-1&&(c.getSpeedKmh()>0.5f||c.getFuelMb()<=0f)) newGear=0;
-				else if(direction<0&&cur>1&&newGear>0){
-					float rpmC=c.getMaxRPM()/((c.getMaxSpeedKmh()/72f)*c.getGearRatios()[max-1]);
-					if((c.getSpeedKmh()/72f)*c.getGearRatios()[newGear-1]*rpmC>c.getRedlineRPM()*1.02f) return;
-				}
-				if(newGear!=cur){
-					c.setCurrentGear(newGear);
-					if(direction>0&&newGear>1) c.applyShiftCooldown();
-				}
-			});
-			ctx.get().setPacketHandled(true);
-		}
-	}
-	public record SyncCarPositionPacket(int entityId,double x,double y,double z,float yRot,float velocity){
-		public static SyncCarPositionPacket decode(FriendlyByteBuf buf){
-			return new SyncCarPositionPacket(buf.readInt(),buf.readDouble(),buf.readDouble(),buf.readDouble(),buf.readFloat(),buf.readFloat());
-		}
-		public void encode(FriendlyByteBuf buf){
-			buf.writeInt(entityId);
-			buf.writeDouble(x);
-			buf.writeDouble(y);
-			buf.writeDouble(z);
-			buf.writeFloat(yRot);
-			buf.writeFloat(velocity);
-		}
-		public void handle(Supplier<NetworkEvent.Context> ctx){
-			ctx.get().enqueueWork(()->unsafeRunWhenOn(Dist.CLIENT,()->()->ClientPacketHandler.handleSyncCarPosition(this)));
-			ctx.get().setPacketHandled(true);
-		}
-	}
+    @SubscribeEvent
+    public static void register(final RegisterPayloadHandlersEvent event) {
+        final PayloadRegistrar registrar = event.registrar(DifMod.MODID).versioned("1");
+
+        // Server-bound packets (Client -> Server)
+        registrar.playToServer(
+                JetpackFlyMessage.TYPE,
+                JetpackFlyMessage.STREAM_CODEC,
+                JetpackFlyMessage::handle
+        );
+        registrar.playToServer(
+                EnderOpenMessage.TYPE,
+                EnderOpenMessage.STREAM_CODEC,
+                EnderOpenMessage::handle
+        );
+        registrar.playToServer(
+                RemoteControlPacket.TYPE,
+                RemoteControlPacket.STREAM_CODEC,
+                RemoteControlPacket::handle
+        );
+        registrar.playToServer(
+                MegaBackpackOpenPacket.TYPE,
+                MegaBackpackOpenPacket.STREAM_CODEC,
+                MegaBackpackOpenPacket::handle
+        );
+        registrar.playToServer(
+                ShiftGearPacket.TYPE,
+                ShiftGearPacket.STREAM_CODEC,
+                ShiftGearPacket::handle
+        );
+        registrar.playToServer(
+                CameraExitPacket.TYPE,
+                CameraExitPacket.STREAM_CODEC,
+                CameraExitPacket::handle
+        );
+
+        // Client-bound packets (Server -> Client)
+        registrar.playToClient(
+                SyncCarPositionPacket.TYPE,
+                SyncCarPositionPacket.STREAM_CODEC,
+                SyncCarPositionPacket::handle
+        );
+    }
 }

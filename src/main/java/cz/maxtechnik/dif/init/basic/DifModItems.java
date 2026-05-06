@@ -283,20 +283,20 @@ public class DifModItems{
 	public static final DeferredItem<Item> NETHERITE_BATTLE_AXE=REGISTRY.register("netherite_battle_axe",()->new BattleAxeItem(Tiers.NETHERITE,7,-3.3F,new Item.Properties().fireResistant()));
 	public static final DeferredItem<Item> COPPER_BATTLE_AXE=REGISTRY.register("copper_battle_axe",()->new BattleAxeItem(DifModTiers.COPPER,6,-3.3F,new Item.Properties()));
 
-	public static final DeferredItem<Item> WOODEN_KATANA=REGISTRY.register("wooden_katana",()->new SwordItem(Tiers.WOOD,1,-1F,new Item.Properties()));
-	public static final DeferredItem<Item> GOLDEN_KATANA=REGISTRY.register("golden_katana",()->new SwordItem(Tiers.GOLD,2,-1F,new Item.Properties()));
-	public static final DeferredItem<Item> STONE_KATANA=REGISTRY.register("stone_katana",()->new SwordItem(Tiers.STONE,1,-1F,new Item.Properties()));
-	public static final DeferredItem<Item> IRON_KATANA=REGISTRY.register("iron_katana",()->new SwordItem(Tiers.IRON,1,-1F,new Item.Properties()));
-	public static final DeferredItem<Item> DIAMOND_KATANA=REGISTRY.register("diamond_katana",()->new SwordItem(Tiers.DIAMOND,1,-1F,new Item.Properties()));
-	public static final DeferredItem<Item> NETHERITE_KATANA=REGISTRY.register("netherite_katana",()->new SwordItem(Tiers.NETHERITE,1,-1F,new Item.Properties().fireResistant()));
-	public static final DeferredItem<Item> COPPER_KATANA=REGISTRY.register("copper_katana",()->new SwordItem(DifModTiers.COPPER,0,-1F,new Item.Properties()));
+	public static final DeferredItem<Item> WOODEN_KATANA=REGISTRY.register("wooden_katana",()->new SwordItem(Tiers.WOOD, new Item.Properties().attributes(SwordItem.createAttributes(Tiers.WOOD, 1, -1F))));
+	public static final DeferredItem<Item> GOLDEN_KATANA=REGISTRY.register("golden_katana",()->new SwordItem(Tiers.GOLD, new Item.Properties().attributes(SwordItem.createAttributes(Tiers.GOLD, 2, -1F))));
+	public static final DeferredItem<Item> STONE_KATANA=REGISTRY.register("stone_katana",()->new SwordItem(Tiers.STONE, new Item.Properties().attributes(SwordItem.createAttributes(Tiers.STONE, 1, -1F))));
+	public static final DeferredItem<Item> IRON_KATANA=REGISTRY.register("iron_katana",()->new SwordItem(Tiers.IRON, new Item.Properties().attributes(SwordItem.createAttributes(Tiers.IRON, 1, -1F))));
+	public static final DeferredItem<Item> DIAMOND_KATANA=REGISTRY.register("diamond_katana",()->new SwordItem(Tiers.DIAMOND, new Item.Properties().attributes(SwordItem.createAttributes(Tiers.DIAMOND, 1, -1F))));
+	public static final DeferredItem<Item> NETHERITE_KATANA=REGISTRY.register("netherite_katana",()->new SwordItem(Tiers.NETHERITE, new Item.Properties().fireResistant().attributes(SwordItem.createAttributes(Tiers.NETHERITE, 1, -1F))));
+	public static final DeferredItem<Item> COPPER_KATANA=REGISTRY.register("copper_katana",()->new SwordItem(DifModTiers.COPPER, new Item.Properties().attributes(SwordItem.createAttributes(DifModTiers.COPPER, 0, -1F))));
 
 	//Copper Tools:
-	public static final DeferredItem<Item> COPPER_SHOVEL=REGISTRY.register("copper_shovel",()->new ShovelItem(DifModTiers.COPPER,0.5F,-3.0F,new Item.Properties()));
-	public static final DeferredItem<Item> COPPER_PICKAXE=REGISTRY.register("copper_pickaxe",()->new PickaxeItem(DifModTiers.COPPER,0,-2.8F,new Item.Properties()));
-	public static final DeferredItem<Item> COPPER_SWORD=REGISTRY.register("copper_sword",()->new SwordItem(DifModTiers.COPPER,2,-2.4F,new Item.Properties()));
-	public static final DeferredItem<Item> COPPER_AXE=REGISTRY.register("copper_axe",()->new AxeItem(DifModTiers.COPPER,6,-3.0F,new Item.Properties()));
-	public static final DeferredItem<Item> COPPER_HOE=REGISTRY.register("copper_hoe",()->new HoeItem(DifModTiers.COPPER,-2,0.0F,new Item.Properties()));
+	public static final DeferredItem<Item> COPPER_SHOVEL=REGISTRY.register("copper_shovel",()->new ShovelItem(DifModTiers.COPPER, new Item.Properties().attributes(ShovelItem.createAttributes(DifModTiers.COPPER, 0.5F, -3.0F))));
+	public static final DeferredItem<Item> COPPER_PICKAXE=REGISTRY.register("copper_pickaxe",()->new PickaxeItem(DifModTiers.COPPER, new Item.Properties().attributes(PickaxeItem.createAttributes(DifModTiers.COPPER, 0, -2.8F))));
+	public static final DeferredItem<Item> COPPER_SWORD=REGISTRY.register("copper_sword",()->new SwordItem(DifModTiers.COPPER, new Item.Properties().attributes(SwordItem.createAttributes(DifModTiers.COPPER, 2, -2.4F))));
+	public static final DeferredItem<Item> COPPER_AXE=REGISTRY.register("copper_axe",()->new AxeItem(DifModTiers.COPPER, new Item.Properties().attributes(AxeItem.createAttributes(DifModTiers.COPPER, 6, -3.0F))));
+	public static final DeferredItem<Item> COPPER_HOE=REGISTRY.register("copper_hoe",()->new HoeItem(DifModTiers.COPPER, new Item.Properties().attributes(HoeItem.createAttributes(DifModTiers.COPPER, -2, 0.0F))));
 	public static final DeferredItem<Item> COPPER_HELMET=REGISTRY.register("copper_helmet",CopperArmor.Helmet::new);
 	public static final DeferredItem<Item> COPPER_CHESTPLATE=REGISTRY.register("copper_chestplate",CopperArmor.Chestplate::new);
 	public static final DeferredItem<Item> COPPER_LEGGINGS=REGISTRY.register("copper_leggings",CopperArmor.Leggings::new);

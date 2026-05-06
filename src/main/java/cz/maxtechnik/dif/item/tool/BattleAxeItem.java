@@ -35,7 +35,7 @@ public class BattleAxeItem extends SwordItem{
 			.put(Blocks.WARPED_STEM,Blocks.STRIPPED_WARPED_STEM)
 			.build();
 	public BattleAxeItem(Tier tier,float attackDamage,float attackSpeed,Properties properties){
-		super(tier,(int)attackDamage,attackSpeed,properties);
+		super(tier, properties.attributes(SwordItem.createAttributes(tier, attackDamage, attackSpeed)));
 	}
 	@Override
 	public boolean canDisableShield(@NotNull ItemStack stack,@NotNull ItemStack shield,@NotNull LivingEntity entity,@NotNull LivingEntity attacker){

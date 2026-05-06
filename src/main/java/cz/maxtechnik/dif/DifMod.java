@@ -35,52 +35,19 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.ModelEvent;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import net.neoforged.neoforge.network.registration.NetworkRegistry;
-import org.slf4j.Logger;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.client.event.RenderGuiOverlayEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
-@SuppressWarnings("removal")
 @Mod(DifMod.MODID)
 public class DifMod {
 	public static final String MODID = "dif";
 	public static final Logger LOGGER = LogUtils.getLogger();
-	public static final String PROTOCOL_VERSION = "1";
-	public static final SimpleChannel PACKET_HANDLER = NetworkRegistry.newSimpleChannel(
-			new ResourceLocation(MODID, "main"),
-			() -> PROTOCOL_VERSION,
-			PROTOCOL_VERSION::equals,
-			PROTOCOL_VERSION::equals
-	);
-	private static int messageID = 0;
 
-	public static <T> void addNetworkMessage(Class<T> messageType, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<NetworkEvent.Context>> messageConsumer) {
-		PACKET_HANDLER.registerMessage(messageID, messageType, encoder, decoder, messageConsumer);
-		messageID++;
-	}
-
-	public DifMod() {
-		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-		bus.addListener(this::commonSetup);
+	public DifMod(IEventBus bus, ModContainer modContainer) {
 		// Registrace modulů
-		DifModDimensions.register();
 		DifModBlocks.REGISTRY.register(bus);
 		DifModItems.REGISTRY.register(bus);
 		DifModItems.V_REGISTRY.register(bus);
@@ -96,38 +63,10 @@ public class DifMod {
 		DifModEntities.REGISTRY.register(bus);
 		DifModFeatures.REGISTRY.register(bus);
 		// REGISTRACE EVENTŮ
-		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(JetpackHandler.class);
+		NeoForge.EVENT_BUS.register(this);
+		NeoForge.EVENT_BUS.register(JetpackHandler.class);
 		bus.addListener(DifModTabs::addCreative);
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, DifModCommonConfig.SPEC);
-	}
-
-	private void commonSetup(final FMLCommonSetupEvent event){
-		LOGGER.info("DIF MOD: Common Setup");
-		event.enqueueWork(() -> addNetworkMessage(
-				RemoteControlPacket.class,
-				RemoteControlPacket::encode,
-				RemoteControlPacket::decode,
-				RemoteControlPacket::handle
-		));
-		event.enqueueWork(() -> addNetworkMessage(
-				CameraExitPacket.class,
-				CameraExitPacket::encode,
-				CameraExitPacket::decode,
-				CameraExitPacket::handle
-		));
-		event.enqueueWork(() -> addNetworkMessage(
-				ShiftGearPacket.class,
-				ShiftGearPacket::encode,
-				ShiftGearPacket::decode,
-				ShiftGearPacket::handle
-		));
-		event.enqueueWork(() -> addNetworkMessage(
-				SyncCarPositionPacket.class,
-				SyncCarPositionPacket::encode,
-				SyncCarPositionPacket::decode,
-				SyncCarPositionPacket::handle
-		));
+		modContainer.registerConfig(ModConfig.Type.COMMON, DifModCommonConfig.SPEC);
 	}
 
 	@SubscribeEvent

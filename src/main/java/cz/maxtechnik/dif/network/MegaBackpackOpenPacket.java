@@ -7,48 +7,37 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.Objects;
-import java.util.function.Supplier;
-@SuppressWarnings("removal")
-@EventBusSubscriber(bus=EventBusSubscriber.Bus.MOD)
-public class MegaBackpackOpenPacket{
-	int type, pressedms;
-	public MegaBackpackOpenPacket(int type,int pressedms){
-		this.type=type;
-		this.pressedms=pressedms;
+public record MegaBackpackOpenPacket(int type, int pressedms) implements CustomPacketPayload {
+	public static final Type<MegaBackpackOpenPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "mega_backpack_open"));
+	public static final StreamCodec<FriendlyByteBuf, MegaBackpackOpenPacket> STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.INT, MegaBackpackOpenPacket::type,
+			ByteBufCodecs.INT, MegaBackpackOpenPacket::pressedms,
+			MegaBackpackOpenPacket::new
+	);
+
+	@Override
+	public Type<? extends CustomPacketPayload> type() {
+		return TYPE;
 	}
-	public MegaBackpackOpenPacket(FriendlyByteBuf buffer){
-		this.type=buffer.readInt();
-		this.pressedms=buffer.readInt();
+
+	public void handle(IPayloadContext context) {
+		context.enqueueWork(() -> pressAction(context.player(), type));
 	}
-	public static void buffer(MegaBackpackOpenPacket message,FriendlyByteBuf buffer){
-		buffer.writeInt(message.type);
-		buffer.writeInt(message.pressedms);
-	}
-	public static void handler(MegaBackpackOpenPacket message,Supplier<NetworkEvent.Context> contextSupplier){
-		NetworkEvent.Context context=contextSupplier.get();
-		context.enqueueWork(()->pressAction(Objects.requireNonNull(context.getSender()),message.type));
-		context.setPacketHandled(true);
-	}
-	public static void pressAction(Player player,int type){
-		if(type==0&&player instanceof ServerPlayer serverPlayer){
-			// Tady je ten hlavní rozdíl oproti Enderce:
-			// Musíme použít NetworkHooks.openScreen, abychom uspokojili IForgeMenuType
-			NetworkHooks.openScreen(serverPlayer,new SimpleMenuProvider(
-					(id,inventory,p)->new MegaBackpackMenu(id,inventory),
+
+	public static void pressAction(Player player, int type) {
+		if (type == 0 && player instanceof ServerPlayer serverPlayer) {
+			serverPlayer.openMenu(new SimpleMenuProvider(
+					(id, inventory, p) -> new MegaBackpackMenu(id, inventory),
 					Component.literal("Mega Backpack")
-			),buf->{
-				// Zapíšeme jeden int, aby klient (IForgeMenuType) věděl, že data přišla
+			), buf -> {
 				buf.writeInt(0);
 			});
 		}
-	}
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event){
-		DifMod.addNetworkMessage(MegaBackpackOpenPacket.class,MegaBackpackOpenPacket::buffer,MegaBackpackOpenPacket::new,MegaBackpackOpenPacket::handler);
 	}
 }
