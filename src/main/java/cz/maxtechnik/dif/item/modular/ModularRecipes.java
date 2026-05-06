@@ -18,6 +18,8 @@ import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 import static cz.maxtechnik.dif.item.modular.ModularBase.*;
 public class ModularRecipes implements SmithingRecipe{
 	final Ingredient template;
@@ -62,12 +64,9 @@ public class ModularRecipes implements SmithingRecipe{
 		ItemStack template=container.getItem(0).copy();
 		ItemStack base=container.getItem(1).copy();
 		ItemStack addition=container.getItem(2).copy();
-		CompoundTag templateTag=template.getTag();
-		CompoundTag baseTag=base.getTag();
-		CompoundTag additionTag=addition.getTag();
-		assert templateTag!=null;
-		assert baseTag!=null;
-		assert additionTag!=null;
+		CompoundTag templateTag=Objects.requireNonNull(template.get(D)).copyTag();
+		CompoundTag baseTag=Objects.requireNonNull(base.get(D)).copyTag();
+		CompoundTag additionTag=Objects.requireNonNull(addition.get(D)).copyTag();l;
 		if(base.getItem() instanceof ModularBase){
 			if(isTagged(addition,DifMod.MODID,"modular_tools_materials")){
 				toolRepair(template,base,addition,templateTag,baseTag,additionTag);

@@ -12,9 +12,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 import static cz.maxtechnik.dif.item.modular.ModularBase.*;
 public class ModularPart extends Item{
@@ -25,7 +28,7 @@ public class ModularPart extends Item{
 	@Override
 	public void inventoryTick(@NotNull ItemStack itemStack,@NotNull Level world,@NotNull Entity entity,int slot,boolean selected){
 		if(!world.isClientSide()){
-			CompoundTag tag=itemStack.getOrCreateTag();
+			CompoundTag tag=Objects.requireNonNull(itemStack.get(D)).copyTag();
 			if(isHead(itemStack)){
 				if(!tag.contains("HeadMaterial")) tag.putString("HeadMaterial",defaultMaterial);
 				if(!tag.contains("HeadDurability"))
@@ -50,16 +53,17 @@ public class ModularPart extends Item{
 		}
 	}
 	@Override
-	public void appendHoverText(@NotNull ItemStack itemStack,Level world,@NotNull List<Component> list,@NotNull TooltipFlag flag){
-		if(!itemStack.hasTag()) return;
-		assert itemStack.getTag()!=null;
-		CompoundTag tag=itemStack.getTag();
+	@OnlyIn(Dist.CLIENT)
+	public void appendHoverText(@NotNull ItemStack itemStack,Item.@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
+		super.appendHoverText(itemStack,context,list,flag);
+		if(Objects.requireNonNull(itemStack.get(D)).copyTag().isEmpty()) return;
+		CompoundTag tag=Objects.requireNonNull(itemStack.get(D)).copyTag();
 		if(!isHead(itemStack)&&!isBinding(itemStack)&&!isHandle(itemStack)) return;
 		if(isHead(itemStack)&&(!tag.contains("HeadDurability")||!tag.contains("HeadMaterial"))) return;
 		if(isBinding(itemStack)&&(!tag.contains("BindingDurability")||!tag.contains("BindingMaterial"))) return;
 		if(isHandle(itemStack)&&(!tag.contains("HandleDurability")||!tag.contains("HandleMaterial"))) return;
 		String partType=getPartType(itemStack);
-		list.add(Component.literal("Material:").append(CommonComponents.space()).append(Component.literal(tag.getString(partType+"Material")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial(tag.getString(partType+"Material")))))));
+		list.add(Component.literal("Material:").append(CommonComponents.space()).append(Component.literal(tag.getString(partType+"Material")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial(tag.getString(partType+"Material")))))));
 		list.add(Component.literal("Durability:").append(CommonComponents.space()).append(Component.literal(String.valueOf(tag.getInt(partType+"Durability"))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(durabilityColor(partType,tag))))));
 		if(isHead(itemStack))
 			list.add(Component.literal("Efficiency:").append(CommonComponents.space()).append(Component.literal(String.valueOf(ModularBase.efficiencyFromMaterial(tag.getString("HeadMaterial")))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(ChatFormatting.GREEN)))));

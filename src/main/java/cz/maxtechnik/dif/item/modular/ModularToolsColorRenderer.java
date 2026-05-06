@@ -6,31 +6,31 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+
+import java.util.Objects;
+
+import static cz.maxtechnik.dif.item.modular.ModularBase.D;
 @EventBusSubscriber(modid=DifMod.MODID, bus=EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
 public class ModularToolsColorRenderer{
 	@SubscribeEvent
 	public static void registerItemColors(RegisterColorHandlersEvent.Item event){
-		event.register((itemStack,tintIndex)->{
-					if(itemStack.getTag()==null) return -1;
-					return switch(tintIndex){
-						case 0 -> itemStack.getTag().contains("HandleColor")?itemStack.getTag().getInt("HandleColor"):-1;
-						case 1 -> itemStack.getTag().contains("BindingColor")?itemStack.getTag().getInt("BindingColor"):-1;
-						case 2 -> itemStack.getTag().contains("HeadColor")?itemStack.getTag().getInt("HeadColor"):-1;
-						default -> -1;
-					};
-				},
+		event.register((itemStack,tintIndex)->switch(tintIndex){
+			case 0 -> Objects.requireNonNull(itemStack.get(D)).copyTag().contains("HandleColor")?Objects.requireNonNull(itemStack.get(D)).copyTag().getInt("HandleColor"):-1;
+			case 1 -> Objects.requireNonNull(itemStack.get(D)).copyTag().contains("BindingColor")?Objects.requireNonNull(itemStack.get(D)).copyTag().getInt("BindingColor"):-1;
+			case 2 -> Objects.requireNonNull(itemStack.get(D)).copyTag().contains("HeadColor")?Objects.requireNonNull(itemStack.get(D)).copyTag().getInt("HeadColor"):-1;
+			default -> -1;
+		},
 				DifModItems.MODULAR_PICKAXE.get(),
 				DifModItems.MODULAR_SWORD.get(),
 				DifModItems.MODULAR_SHOVEL.get(),
 				DifModItems.MODULAR_AXE.get());
 		event.register((itemStack,tintIndex)->{
-					if(itemStack.getTag()==null) return -1;
-					if(itemStack.getTag().contains("HeadColor")){
-						return itemStack.getTag().getInt("HeadColor");
-					}else if(itemStack.getTag().contains("BindingColor")){
-						return itemStack.getTag().getInt("BindingColor");
-					}else if(itemStack.getTag().contains("HandleColor")){
-						return itemStack.getTag().getInt("HandleColor");
+					if(Objects.requireNonNull(itemStack.get(D)).copyTag().contains("HeadColor")){
+						return Objects.requireNonNull(itemStack.get(D)).copyTag().getInt("HeadColor");
+					}else if(Objects.requireNonNull(itemStack.get(D)).copyTag().contains("BindingColor")){
+						return Objects.requireNonNull(itemStack.get(D)).copyTag().getInt("BindingColor");
+					}else if(Objects.requireNonNull(itemStack.get(D)).copyTag().contains("HandleColor")){
+						return Objects.requireNonNull(itemStack.get(D)).copyTag().getInt("HandleColor");
 					}else{
 						return -1;
 					}

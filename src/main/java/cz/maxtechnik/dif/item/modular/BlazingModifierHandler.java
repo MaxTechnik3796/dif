@@ -20,7 +20,10 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import static cz.maxtechnik.dif.item.modular.ModularBase.D;
 @EventBusSubscriber(modid=DifMod.MODID, bus=EventBusSubscriber.Bus.FORGE)
 public class BlazingModifierHandler{
 	@SubscribeEvent
@@ -30,7 +33,7 @@ public class BlazingModifierHandler{
 		Level world=(Level)event.getLevel();
 		BlockPos pos=event.getPos();
 		BlockState blockState=event.getState();
-		if(itemStack.getOrCreateTag().getBoolean("BlazingModifier")&&itemStack.isCorrectToolForDrops(blockState)){
+		if(Objects.requireNonNull(itemStack.get(D)).copyTag().getBoolean("BlazingModifier")&&itemStack.isCorrectToolForDrops(blockState)){
 			List<ItemStack> drops=Block.getDrops(blockState,(ServerLevel)world,pos,world.getBlockEntity(pos),player,itemStack);
 			boolean smeltedAny=false;
 			for(ItemStack drop: drops){

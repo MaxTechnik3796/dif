@@ -8,11 +8,18 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -20,25 +27,32 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -46,6 +60,7 @@ import java.util.List;
 
 import static cz.maxtechnik.dif.DifModCommonConfig.*;
 public abstract class ModularBase extends DiggerItem{
+	static DataComponentType<CustomData> D=DataComponents.CUSTOM_DATA;
 	protected abstract TagKey<Block> getMineableTag();
 	public String[] materials={
 			"Wood",
@@ -107,7 +122,7 @@ public abstract class ModularBase extends DiggerItem{
 		return 0;
 	}
 	@Override
-	public boolean isBookEnchantable(ItemStack itemStack,ItemStack book){
+	public boolean isBookEnchantable(@NotNull ItemStack itemStack,@NotNull ItemStack book){
 		return false;
 	}
 	@Override
@@ -135,14 +150,12 @@ public abstract class ModularBase extends DiggerItem{
 		return isTagged(itemStack,DifMod.MODID,"modular_tools_parts/handle");
 	}
 	public static boolean isReplacedPartValid(ItemStack template,ItemStack base){
-		assert template.getTag()!=null;
-		assert base.getTag()!=null;
 		if(isTagged(template,DifMod.MODID,"modular_tools_parts/head"))
-			return !template.getTag().getString("HeadMaterial").equals(base.getTag().getString("HeadMaterial"));
+			return !Objects.requireNonNull(template.get(D)).copyTag().getString("HeadMaterial").equals(Objects.requireNonNull(base.get(D)).copyTag().getString("HeadMaterial"));
 		if(isTagged(template,DifMod.MODID,"modular_tools_parts/binding"))
-			return !template.getTag().getString("BindingMaterial").equals(base.getTag().getString("BindingMaterial"));
+			return !Objects.requireNonNull(template.get(D)).copyTag().getString("BindingMaterial").equals(Objects.requireNonNull(base.get(D)).copyTag().getString("BindingMaterial"));
 		if(isTagged(template,DifMod.MODID,"modular_tools_parts/handle"))
-			return !template.getTag().getString("HandleMaterial").equals(base.getTag().getString("HandleMaterial"));
+			return !Objects.requireNonNull(template.get(D)).copyTag().getString("HandleMaterial").equals(Objects.requireNonNull(base.get(D)).copyTag().getString("HandleMaterial"));
 		return false;
 	}
 	public static String getPartType(ItemStack itemStack){
@@ -156,8 +169,8 @@ public abstract class ModularBase extends DiggerItem{
 		int repair=containsMaterial(base,"Stone")?modularToolsCheepRepairAmount:modularToolsRepairAmount;
 		int newDamage=Math.max(0,currentDamage-repair);
 		base.setDamageValue(newDamage);
-		if(base.hasTag()&&base.getTag()!=null){
-			if(base.getTag().getBoolean("Broken")&&newDamage<(base.getMaxDamage()-1)){
+		if(!Objects.requireNonNull(base.get(D)).copyTag().isEmpty()&&base.get(D)!=null){
+			if(Objects.requireNonNull(base.get(D)).copyTag().getBoolean("Broken")&&newDamage<(base.getMaxDamage()-1)){
 				baseTag.putBoolean("Broken",false);
 				baseTag.putBoolean("Unbreakable",false);
 				baseTag.putInt("CustomModelData",0);
@@ -230,7 +243,7 @@ public abstract class ModularBase extends DiggerItem{
 		toolTag.putInt("HeadColor",baseTag.getInt("HeadColor"));
 		toolTag.putInt("BindingColor",additionTag.getInt("BindingColor"));
 		toolTag.putInt("HandleColor",templateTag.getInt("HandleColor"));
-		tool.setTag(toolTag);
+		tool.set(D,CustomData.of(toolTag));
 		return tool;
 	}
 	public static void applyModifiers(ItemStack template,ItemStack base,ItemStack addition,CompoundTag templateTag,CompoundTag baseTag,CompoundTag additionTag){
@@ -306,13 +319,13 @@ public abstract class ModularBase extends DiggerItem{
 			return true;
 		return false;
 	}
-	public static String miningLevelColor(CompoundTag tag){
+	public static int miningLevelColor(CompoundTag tag){
 		int mLevel=tag.getInt("MiningLevel")+tag.getInt("BonusMiningLevel");
 		if(tag.getInt("SpecialMiningLevel")>mLevel) mLevel=tag.getInt("SpecialMiningLevel");
-		String[] levelColors={"#745631","#838383","#DCDCDC","#6DEDE4","#433F41"};
-		return mLevel<levelColors.length?levelColors[mLevel]:"#FFFFFF";
+		int[] levelColors={0x745631,0x838383,0xDCDCDC,0x6DEDE4,0x433F41};
+		return mLevel<levelColors.length?levelColors[mLevel]:0xFFFFFF;
 	}
-	public static String miningLevelColor(String material){
+	public static int miningLevelColor(String material){
 		CompoundTag tag=new CompoundTag();
 		int level=0;
 		switch(material){
@@ -455,20 +468,23 @@ public abstract class ModularBase extends DiggerItem{
 	public static void calculateDurability(CompoundTag tag){
 		tag.putInt("Durability",tag.getInt("HeadDurability")+tag.getInt("HandleDurability")+tag.getInt("BindingDurability")+tag.getInt("SpecialDurability"));
 	}
-	public static void showDurability(ItemStack itemStack,CompoundTag tag,List<Component> list){
-		int currentDamage=itemStack.getDamageValue()+1;
-		int maxDurability=tag.getInt("Durability");
-		int remainingDurability=Math.max(0,maxDurability-currentDamage);
-		float ratio=(float)remainingDurability/maxDurability;
-		int red=(int)(255*(1-ratio));
-		int green=(int)(255*ratio);
-		String hexColor=String.format("#%02X%02X00",red,green);
-		list.add(Component.literal("Durability: ").append(Component.literal(String.valueOf(remainingDurability)).withStyle(Style.EMPTY.withColor(TextColor.parseColor(hexColor)))).append(Component.literal(" / "+(maxDurability-1)).withStyle(Style.EMPTY.withColor(TextColor.parseColor("#AAAAAA")))));
+	public static void showDurability(ItemStack itemStack, CompoundTag tag, List<Component> list) {
+		int maxDurability = tag.getInt("Durability");
+		if (maxDurability <= 0) return; // Ochrana proti dělení nulou
+		int currentDamage = itemStack.getDamageValue();
+		int remainingDurability = Math.max(0, maxDurability - currentDamage);
+		float ratio = Math.min(1.0f, (float) remainingDurability / maxDurability);
+		int red = (int) (255 * (1 - ratio));
+		int green = (int) (255 * ratio);
+		int rgbColor =(red<<16)|(green<<8);
+		Component durabilityValue = Component.literal(String.valueOf(remainingDurability)).withStyle(style -> style.withColor(rgbColor)); // Tady funguje int přímo
+		Component maxDurabilityValue = Component.literal(" / " + maxDurability).withStyle(ChatFormatting.GRAY); // Čistší způsob jak dát šedou barvu
+		list.add(Component.literal("Durability: ").withStyle(ChatFormatting.WHITE).append(durabilityValue).append(maxDurabilityValue));
 	}
 	@Override
 	public boolean isCorrectToolForDrops(ItemStack itemStack,@NotNull BlockState blockState){
-		if(!itemStack.hasTag()) return super.isCorrectToolForDrops(itemStack,blockState);
-		CompoundTag tag=itemStack.getOrCreateTag();
+		if(Objects.requireNonNull(itemStack.get(D)).copyTag().isEmpty()) return super.isCorrectToolForDrops(itemStack,blockState);
+		CompoundTag tag=Objects.requireNonNull(itemStack.get(D)).copyTag();
 		if(tag.getBoolean("Broken")) return false;
 		int level=tag.getInt("MiningLevel")+tag.getInt("BonusMiningLevel");
 		if(tag.getInt("SpecialMiningLevel")>level) level=tag.getInt("SpecialMiningLevel");
@@ -479,26 +495,25 @@ public abstract class ModularBase extends DiggerItem{
 	}
 	@Override
 	public float getDestroySpeed(ItemStack itemStack,@NotNull BlockState blockState){
-		if(!itemStack.hasTag()) return super.getDestroySpeed(itemStack,blockState);
-		CompoundTag tag=itemStack.getOrCreateTag();
+		if(Objects.requireNonNull(itemStack.get(D)).copyTag().isEmpty()) return super.getDestroySpeed(itemStack,blockState);
+		CompoundTag tag=Objects.requireNonNull(itemStack.get(D)).copyTag();
 		if(tag.getBoolean("Broken")) return 1F;
 		int speeeed=containsMaterial(itemStack,"Gold")?8:0;
 		return blockState.is(getMineableTag())?tag.getInt("Efficiency")+tag.getInt("SpecialEfficiency")+speeeed:1F;
 	}
 	@Override
 	public int getMaxDamage(ItemStack itemStack){
-		if(itemStack.hasTag()){
-			assert itemStack.getTag()!=null;
-			if(itemStack.getTag().contains("Durability")){
-				return itemStack.getTag().getInt("Durability");
+		if(!Objects.requireNonNull(itemStack.get(D)).copyTag().isEmpty()){
+			if(Objects.requireNonNull(itemStack.get(D)).copyTag().contains("Durability")){
+				return Objects.requireNonNull(itemStack.get(D)).copyTag().getInt("Durability");
 			}
 		}
 		return this.defaultDurability;
 	}
 	@Override
 	public Multimap<Attribute,AttributeModifier> getAttributeModifiers(EquipmentSlot slot,ItemStack itemStack){
-		if(slot==EquipmentSlot.MAINHAND&&itemStack.hasTag()){
-			CompoundTag tag=itemStack.getOrCreateTag();
+		if(slot!=EquipmentSlot.MAINHAND&&Objects.requireNonNull(itemStack.get(D)).copyTag().isEmpty()){
+			CompoundTag tag=Objects.requireNonNull(itemStack.get(D)).copyTag();
 			ImmutableMultimap.Builder<Attribute,AttributeModifier> builders=ImmutableMultimap.builder();
 			float damage=tag.contains("AttackDamage")?tag.getFloat("AttackDamage"):defaultAttackDamage;
 			float speed=tag.contains("AttackSpeed")?tag.getFloat("AttackSpeed"):defaultAttackSpeed;
@@ -547,17 +562,24 @@ public abstract class ModularBase extends DiggerItem{
 		}else{
 			return InteractionResult.PASS;
 		}
-	}
-	public static void setEnchantmentLevel(ItemStack itemStack,Enchantment enchantment,int level){
-		Map<Enchantment,Integer> enchantments=EnchantmentHelper.getEnchantments(itemStack);
-		if(enchantments.containsKey(enchantment)&&enchantments.get(enchantment).equals(level)) return;
-		if(level<=0) enchantments.remove(enchantment);
-		else enchantments.put(enchantment,level);
-		DifMod.LOGGER.debug("gg");
-		EnchantmentHelper.setEnchantments(enchantments,itemStack);
+	}// Pro NeoForge: net.neoforged.neoforge.server.ServerLifecycleHooks
+
+	public static void setEnchantmentLevel(ItemStack itemStack, ResourceKey<Enchantment> enchantmentKey, int level) {
+		// Získání registrů z aktuálně běžícího serveru
+		assert ServerLifecycleHooks.getCurrentServer()!=null;
+		var registryAccess = ServerLifecycleHooks.getCurrentServer().registryAccess();
+		var lookup = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
+
+		Holder<Enchantment> enchantment = lookup.getOrThrow(enchantmentKey);
+
+		itemStack.update(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY, currentEnchants -> {
+			ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(currentEnchants);
+			mutable.set(enchantment, Math.max(0, level));
+			return mutable.toImmutable();
+		});
 	}
 	public static boolean containsMaterial(ItemStack itemStack,String material){
-		CompoundTag tag=itemStack.getOrCreateTag();
+		CompoundTag tag=Objects.requireNonNull(itemStack.get(D)).copyTag();
 		if(tag.contains("HeadMaterial")&&tag.getString("HeadMaterial").equals(material)) return true;
 		if(tag.contains("BindingMaterial")&&tag.getString("BindingMaterial").equals(material)) return true;
 		return tag.contains("HandleMaterial")&&tag.getString("HandleMaterial").equals(material);
@@ -592,21 +614,21 @@ public abstract class ModularBase extends DiggerItem{
 		tag.putInt("HeadColor",colorIntFromMaterial(headMaterial));
 		tag.putInt("BindingColor",colorIntFromMaterial(bindingMaterial));
 		tag.putInt("HandleColor",colorIntFromMaterial(handleMaterial));
-		modular_tools_icon.setTag(tag);
+		modular_tools_icon.set(D,CustomData.of(tag));
 		return modular_tools_icon;
 	}
 	public static Component modifierTipFormMaterial(String material){
 		Component component=Component.literal("");
 		switch(material){
 			case "Wood" ->
-					component=Component.literal("Natural").withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial("Wood"))));
+					component=Component.literal("Natural").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial("Wood"))));
 			case "Stone" ->
-					component=Component.literal("Cheep").withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial("Stone"))));
+					component=Component.literal("Cheep").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial("Stone"))));
 			//case "Copper"->;
 			case "Iron" ->
-					component=Component.literal("Magnetic").withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial("Iron"))));
+					component=Component.literal("Magnetic").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial("Iron"))));
 			case "Gold" ->
-					component=Component.literal("Speeeed").withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial("Gold"))));
+					component=Component.literal("Speeeed").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial("Gold"))));
 			//case "Diamond"->;
 			//case "Obsidian"->;
 			//case "Netherite"->;
@@ -616,7 +638,7 @@ public abstract class ModularBase extends DiggerItem{
 	@Override
 	public void inventoryTick(@NotNull ItemStack itemStack,@NotNull Level world,@NotNull Entity entity,int slot,boolean selected){
 		if(!world.isClientSide()){
-			CompoundTag tag=itemStack.getOrCreateTag();
+			CompoundTag tag=Objects.requireNonNull(itemStack.get(D)).copyTag();
 			if(!tag.contains("MaxModifiers")) tag.putInt("MaxModifiers",modularToolsDefaultMaxModifiers);
 			if(!tag.contains("SilkTouchModifier")) tag.putBoolean("SilkTouchModifier",false);
 			if(!tag.contains("DiamondModifier")) tag.putBoolean("DiamondModifier",false);
@@ -658,7 +680,7 @@ public abstract class ModularBase extends DiggerItem{
 			}
 			tag.putInt("SpecialEfficiency",new int[]{0,modularToolsEfficiencyModifierLevel0,modularToolsEfficiencyModifierLevel1,modularToolsEfficiencyModifierLevel2}[tag.getInt("EfficiencyModifier")]);
 			if(tag.getInt("FortuneModifier")>0)
-				setEnchantmentLevel(itemStack,Enchantments.BLOCK_FORTUNE,new int[]{0,modularToolsFortuneModifierLevel0,modularToolsFortuneModifierLevel1,modularToolsFortuneModifierLevel2}[tag.getInt("FortuneModifier")]);
+				setEnchantmentLevel(itemStack,Enchantments.FORTUNE,new int[]{0,modularToolsFortuneModifierLevel0,modularToolsFortuneModifierLevel1,modularToolsFortuneModifierLevel2}[tag.getInt("FortuneModifier")]);
 			if(entity instanceof Player player){
 				if(containsMaterial(itemStack,"Wood")&&DifMod.rouletteBoolean(500)&&!(isInMainHand(itemStack,player)))
 					itemStack.setDamageValue(itemStack.getDamageValue()-1);
@@ -689,10 +711,11 @@ public abstract class ModularBase extends DiggerItem{
 		}
 	}
 	@Override
-	public void appendHoverText(@NotNull ItemStack itemStack,Level world,@NotNull List<Component> list,@NotNull TooltipFlag flag){
-		if(!itemStack.hasTag()) return;
-		assert itemStack.getTag()!=null;
-		CompoundTag tag=itemStack.getTag();
+	@OnlyIn(Dist.CLIENT)
+	public void appendHoverText(@NotNull ItemStack itemStack,Item.@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
+		super.appendHoverText(itemStack,context,list,flag);
+		if(Objects.requireNonNull(itemStack.get(D)).copyTag().isEmpty()) return;
+		CompoundTag tag=Objects.requireNonNull(itemStack.get(D)).copyTag();
 		if(!tag.contains("MiningLevel")||!tag.contains("Durability")||!tag.contains("Efficiency")||!tag.contains("AttackDamage")||!tag.contains("AttackSpeed"))
 			return;
 		if(Screen.hasShiftDown()){//Shift
@@ -710,32 +733,32 @@ public abstract class ModularBase extends DiggerItem{
 					list.add(Component.literal("Fortune:").withStyle(ChatFormatting.BLUE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("FortuneModifier"))))));
 			}
 			if(tag.getBoolean("SilkTouchModifier"))
-				list.add(Component.literal("SilkTouch").withStyle(Style.EMPTY.withColor(TextColor.parseColor("#FDFD96"))));
+				list.add(Component.literal("SilkTouch").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xFDFD96))));
 			if(tag.getBoolean("DiamondModifier"))
-				list.add(Component.literal("Diamond").withStyle(Style.EMPTY.withColor(TextColor.parseColor(miningLevelColor("Diamond")))));
+				list.add(Component.literal("Diamond").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(miningLevelColor("Diamond")))));
 			if(tag.getBoolean("BlazingModifier"))
-				list.add(Component.literal("Blazing").withStyle(Style.EMPTY.withColor(TextColor.parseColor("#FF5A00"))));
+				list.add(Component.literal("Blazing").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xFF5A00))));
 			if(tag.contains("HeadMaterial")||tag.contains("HandleMaterial")||tag.contains("BindingMaterial")){
 				list.add(CommonComponents.EMPTY);
 				for(String material: materials)
 					if(containsMaterial(itemStack,material)) list.add(modifierTipFormMaterial(material));
 			}
 		}else if(Screen.hasControlDown()){//Control
-			list.add(Component.literal("Tool Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("Material")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial(tag.getString("Material")))))));
+			list.add(Component.literal("Tool Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("Material")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial(tag.getString("Material")))))));
 			list.add(Component.literal("Head:").withStyle(ChatFormatting.WHITE));
-			list.add(CommonComponents.space().append(Component.literal("Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("HeadMaterial")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial(tag.getString("HeadMaterial"))))))));
+			list.add(CommonComponents.space().append(Component.literal("Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("HeadMaterial")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial(tag.getString("HeadMaterial"))))))));
 			list.add(CommonComponents.space().append(Component.literal("Durability:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(String.valueOf(tag.getInt("HeadDurability"))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(durabilityColor("Head",tag)))))));
 			list.add(Component.literal("Binding:").withStyle(ChatFormatting.WHITE));
-			list.add(CommonComponents.space().append(Component.literal("Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("BindingMaterial")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial(tag.getString("BindingMaterial"))))))));
+			list.add(CommonComponents.space().append(Component.literal("Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("BindingMaterial")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial(tag.getString("BindingMaterial"))))))));
 			list.add(CommonComponents.space().append(Component.literal("Durability:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(String.valueOf(tag.getInt("BindingDurability"))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(durabilityColor("Binding",tag)))))));
 			list.add(Component.literal("Handle:").withStyle(ChatFormatting.WHITE));
-			list.add(CommonComponents.space().append(Component.literal("Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("HandleMaterial")).withStyle(Style.EMPTY.withColor(TextColor.parseColor(colorHexFromMaterial(tag.getString("HandleMaterial"))))))));
+			list.add(CommonComponents.space().append(Component.literal("Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("HandleMaterial")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial(tag.getString("HandleMaterial"))))))));
 			list.add(CommonComponents.space().append(Component.literal("Durability:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(String.valueOf(tag.getInt("HandleDurability"))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(durabilityColor("Handle",tag)))))));
 		}else{//None
 			int miningLevel=tag.getInt("MiningLevel")+tag.getInt("BonusMiningLevel");
 			if(tag.getInt("SpecialMiningLevel")>miningLevel) miningLevel=tag.getInt("SpecialMiningLevel");
 			if(miningLevel>4) miningLevel=4;
-			list.add(Component.literal("Mining Level:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable("dif.mining_level."+miningLevel).withStyle(Style.EMPTY.withColor(TextColor.parseColor(miningLevelColor(tag))))));
+			list.add(Component.literal("Mining Level:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable("dif.mining_level."+miningLevel).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(miningLevelColor(tag))))));
 			showDurability(itemStack,tag,list);
 			int speeeed=containsMaterial(itemStack,"Gold")?8:0;
 			list.add(Component.literal("Efficiency:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.literal(String.valueOf(tag.getInt("Efficiency")+tag.getInt("SpecialEfficiency")+speeeed)).withStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))));
@@ -773,7 +796,7 @@ public abstract class ModularBase extends DiggerItem{
 			if(!tag.contains("HandleColor"))
 				tag.putInt("HandleColor",colorIntFromMaterial(tag.getString("HandleMaterial")));
 		}
-		itemStack.setTag(tag);
+		itemStack.set(D,CustomData.of(tag));
 		return itemStack;
 	}
 }
