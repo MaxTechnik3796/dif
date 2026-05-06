@@ -25,6 +25,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
 public class SolarPanel extends Block implements SimpleWaterloggedBlock{
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
@@ -126,7 +127,7 @@ public class SolarPanel extends Block implements SimpleWaterloggedBlock{
 		if (level == null || level.isClientSide) return;
 
 		// Opravené volání pro NeoForge 1.21.1
-		var energyHandler = level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.Energy.BLOCK, ent.getBlockPos(), ent.getBlockState(), ent, Direction.UP);
+		IEnergyStorage energyHandler = level.getCapability(Capabilities.EnergyStorage.BLOCK, ent.getBlockPos(), ent.getBlockState(), ent, Direction.UP);
 
 		if (energyHandler != null) {
 			energyHandler.receiveEnergy(amount, false);

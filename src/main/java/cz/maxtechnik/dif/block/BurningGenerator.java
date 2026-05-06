@@ -101,19 +101,23 @@ public class BurningGenerator extends Block implements SimpleWaterloggedBlock, E
 		return type==expectedType?(lvl,pos,state,blockEntity)->BurningGeneratorBlockEntity.clientTick(lvl,pos,state):null;
 	}
 	@Override
-	public @NotNull InteractionResult use(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player entity,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
-		super.use(blockstate,world,pos,entity,hand,hit);
-		if(entity instanceof ServerPlayer player){
-			NetworkHooks.openScreen(player,new MenuProvider(){
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
+		if (player instanceof ServerPlayer serverPlayer) {
+			// V NeoForge 1.21.1 otevíráme menu přímo přes hráče.
+			// Třetí parametr (pos) automaticky pošle BlockPos na klienta.
+			serverPlayer.openMenu(new MenuProvider() {
 				@Override
-				public @NotNull Component getDisplayName(){
+				public @NotNull Component getDisplayName() {
 					return Component.literal("Generator");
 				}
+
 				@Override
-				public AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory,@NotNull Player player){
-					return new BurningGeneratorMenu(id,inventory,new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos));
+				public AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory, @NotNull Player player) {
+					// Buffer se v 1.21.1 většinou už nemusí ručně psát v createMenu,
+					// pokud tvoje Menu třída přijímá BlockPos.
+					return new BurningGeneratorMenu(id, inventory, pos);
 				}
-			},pos);
+			}, pos);
 		}
 		return InteractionResult.SUCCESS;
 	}
