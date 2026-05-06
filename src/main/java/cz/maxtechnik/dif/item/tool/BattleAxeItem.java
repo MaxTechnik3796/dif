@@ -10,8 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -49,8 +47,8 @@ public class BattleAxeItem extends SwordItem{
 		return super.getDestroySpeed(stack,state);
 	}
 	@Override
-	public boolean isCorrectToolForDrops(BlockState state){
-		return state.is(BlockTags.MINEABLE_WITH_AXE)||super.isCorrectToolForDrops(state);
+	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state){
+		return state.is(BlockTags.MINEABLE_WITH_AXE)||super.isCorrectToolForDrops(stack, state);
 	}
 	@Override
 	public @NotNull InteractionResult useOn(UseOnContext context){
@@ -64,25 +62,12 @@ public class BattleAxeItem extends SwordItem{
 			if(!level.isClientSide){
 				level.setBlock(blockpos,optional.get(),11);
 				if(player!=null){
-					context.getItemInHand().hurtAndBreak(1,player,(p)->p.broadcastBreakEvent(context.getHand()));
+					context.getItemInHand().hurtAndBreak(1,player,LivingEntity.getSlotForHand(context.getHand()));
 				}
 			}
 			return InteractionResult.sidedSuccess(level.isClientSide);
 		}else{
 			return InteractionResult.PASS;
 		}
-	}
-	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack,Enchantment enchantment){
-		if(enchantment==Enchantments.MENDING||
-				enchantment==Enchantments.VANISHING_CURSE){
-			return true;
-		}
-		return
-				enchantment==Enchantments.UNBREAKING||
-						enchantment==Enchantments.FIRE_ASPECT||
-						enchantment==Enchantments.SHARPNESS||
-						enchantment==Enchantments.SWEEPING_EDGE||
-						enchantment==Enchantments.KNOCKBACK;
 	}
 }

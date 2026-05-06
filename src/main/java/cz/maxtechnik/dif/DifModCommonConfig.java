@@ -2,10 +2,12 @@ package cz.maxtechnik.dif;
 
 
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
-@Mod.EventBusSubscriber(modid=DifMod.MODID,bus=Mod.EventBusSubscriber.Bus.MOD)
+@SuppressWarnings("removal")
+@EventBusSubscriber(modid=DifMod.MODID,bus=EventBusSubscriber.Bus.MOD)
 public class DifModCommonConfig{
 	@SubscribeEvent
 	static void onLoad(final ModConfigEvent event){
@@ -15,8 +17,8 @@ public class DifModCommonConfig{
 	public static void onReload(ModConfigEvent.Reloading event){
 		load();
 	}
-	private static final ForgeConfigSpec.Builder BUILDER=new ForgeConfigSpec.Builder();
-	static final ForgeConfigSpec SPEC;
+	private static final ModConfigSpec.Builder BUILDER=new ModConfigSpec.Builder();
+	static final ModConfigSpec SPEC;
 	public static int MAX=Integer.MAX_VALUE;
 	public static String reload(String defaultValue){
 		return "\nDif-reload required!\nDefault value: "+defaultValue;
@@ -35,45 +37,45 @@ public class DifModCommonConfig{
 		return restart(String.valueOf(defaultValue));
 	}
 
-	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_00;public static int solarPanel_00;
-	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_01;public static int solarPanel_01;
-	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_02;public static int solarPanel_02;
-	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_03;public static int solarPanel_03;
-	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_04;public static int solarPanel_04;
-	private static final ForgeConfigSpec.IntValue SOLAR_PANEL_ORBIT_MULTIPLIER;public static int solarPanel_orbit_multiplier;
+	private static final ModConfigSpec.IntValue SOLAR_PANEL_00;public static int solarPanel_00;
+	private static final ModConfigSpec.IntValue SOLAR_PANEL_01;public static int solarPanel_01;
+	private static final ModConfigSpec.IntValue SOLAR_PANEL_02;public static int solarPanel_02;
+	private static final ModConfigSpec.IntValue SOLAR_PANEL_03;public static int solarPanel_03;
+	private static final ModConfigSpec.IntValue SOLAR_PANEL_04;public static int solarPanel_04;
+	private static final ModConfigSpec.IntValue SOLAR_PANEL_ORBIT_MULTIPLIER;public static int solarPanel_orbit_multiplier;
 
-	private static final ForgeConfigSpec.IntValue BURNING_GENERATOR_ENERGY_PER_TICK;public static int burningGeneratorEnergyPerTick;
-	private static final ForgeConfigSpec.IntValue BURNING_GENERATOR_MAX_ENERGY;public static int burningGeneratorMaxEnergy;
-	private static final ForgeConfigSpec.IntValue BURNING_GENERATOR_MAX_EXTRACT;public static int burningGeneratorMaxExtract;
+	private static final ModConfigSpec.IntValue BURNING_GENERATOR_ENERGY_PER_TICK;public static int burningGeneratorEnergyPerTick;
+	private static final ModConfigSpec.IntValue BURNING_GENERATOR_MAX_ENERGY;public static int burningGeneratorMaxEnergy;
+	private static final ModConfigSpec.IntValue BURNING_GENERATOR_MAX_EXTRACT;public static int burningGeneratorMaxExtract;
 
-	private static final ForgeConfigSpec.IntValue MATA_PLANT_MAX_HEIGHT;public static int mataPlantMaxHeight;
-	private static final ForgeConfigSpec.IntValue SPACE_SCAFFOLDING_LIFE_TIME;public static int spaceScaffoldingLifeTime;
-	private static final ForgeConfigSpec.IntValue MEGA_TORCH_RADIUS;public static int megaTorchRadius;
+	private static final ModConfigSpec.IntValue MATA_PLANT_MAX_HEIGHT;public static int mataPlantMaxHeight;
+	private static final ModConfigSpec.IntValue SPACE_SCAFFOLDING_LIFE_TIME;public static int spaceScaffoldingLifeTime;
+	private static final ModConfigSpec.IntValue MEGA_TORCH_RADIUS;public static int megaTorchRadius;
 
-	private static final ForgeConfigSpec.IntValue JETPACK_MAX_BASIC;public static int jetpackMaxBasic;
-	private static final ForgeConfigSpec.IntValue JETPACK_MAX_TURBO;public static int jetpackMaxTurbo;
-	private static final ForgeConfigSpec.IntValue JETPACK_MAX_THRUST;public static int jetpackMaxThrust;
+	private static final ModConfigSpec.IntValue JETPACK_MAX_BASIC;public static int jetpackMaxBasic;
+	private static final ModConfigSpec.IntValue JETPACK_MAX_TURBO;public static int jetpackMaxTurbo;
+	private static final ModConfigSpec.IntValue JETPACK_MAX_THRUST;public static int jetpackMaxThrust;
 
-	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_DEFAULT_MAX_MODIFIERS;public static int modularToolsDefaultMaxModifiers;
-	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_REPAIR_AMOUNT;public static int modularToolsRepairAmount;
-	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_CHEEP_REPAIR_AMOUNT;public static int modularToolsCheepRepairAmount;
+	private static final ModConfigSpec.IntValue MODULAR_TOOLS_DEFAULT_MAX_MODIFIERS;public static int modularToolsDefaultMaxModifiers;
+	private static final ModConfigSpec.IntValue MODULAR_TOOLS_REPAIR_AMOUNT;public static int modularToolsRepairAmount;
+	private static final ModConfigSpec.IntValue MODULAR_TOOLS_CHEEP_REPAIR_AMOUNT;public static int modularToolsCheepRepairAmount;
 
-	private static final ForgeConfigSpec.DoubleValue FAST_RAIL_TOP_SPEED;public static double fastRailTopSpeed;
-	private static final ForgeConfigSpec.DoubleValue FAST_POWERED_RAIL_ACCELERATION;public static double fastPoweredRailAcceleration;
+	private static final ModConfigSpec.DoubleValue FAST_RAIL_TOP_SPEED;public static double fastRailTopSpeed;
+	private static final ModConfigSpec.DoubleValue FAST_POWERED_RAIL_ACCELERATION;public static double fastPoweredRailAcceleration;
 
-	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_0;public static int modularToolsEfficiencyModifierStage0;
-	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_1;public static int modularToolsEfficiencyModifierStage1;
-	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_2;public static int modularToolsEfficiencyModifierStage2;
-	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_0;public static int modularToolsEfficiencyModifierLevel0;
-	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_1;public static int modularToolsEfficiencyModifierLevel1;
-	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_2;public static int modularToolsEfficiencyModifierLevel2;
+	private static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_0;public static int modularToolsEfficiencyModifierStage0;
+	private static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_1;public static int modularToolsEfficiencyModifierStage1;
+	private static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_2;public static int modularToolsEfficiencyModifierStage2;
+	private static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_0;public static int modularToolsEfficiencyModifierLevel0;
+	private static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_1;public static int modularToolsEfficiencyModifierLevel1;
+	private static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_2;public static int modularToolsEfficiencyModifierLevel2;
 
-	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_0;public static int modularToolsFortuneModifierStage0;
-	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_1;public static int modularToolsFortuneModifierStage1;
-	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_2;public static int modularToolsFortuneModifierStage2;
-	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_0;public static int modularToolsFortuneModifierLevel0;
-	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_1;public static int modularToolsFortuneModifierLevel1;
-	private static final ForgeConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_2;public static int modularToolsFortuneModifierLevel2;
+	private static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_0;public static int modularToolsFortuneModifierStage0;
+	private static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_1;public static int modularToolsFortuneModifierStage1;
+	private static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_2;public static int modularToolsFortuneModifierStage2;
+	private static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_0;public static int modularToolsFortuneModifierLevel0;
+	private static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_1;public static int modularToolsFortuneModifierLevel1;
+	private static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_2;public static int modularToolsFortuneModifierLevel2;
 
 	static{
 		BUILDER.comment("Dif common config.");

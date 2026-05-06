@@ -4,21 +4,9 @@ import cz.maxtechnik.dif.block.entity.CameraMonitorBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 
-import java.util.List;
 public class CameraLink extends Item{
 	public CameraLink(Properties properties){
 		super(properties);
@@ -27,21 +15,21 @@ public class CameraLink extends Item{
 	public @NotNull InteractionResult useOn(UseOnContext context){
 		BlockPos pos=context.getClickedPos();
 		ItemStack stack=context.getItemInHand();
-		CompoundTag tag=stack.getOrCreateTag();
 		Level level=context.getLevel();
 		Player player=context.getPlayer();
 		if(player==null) return InteractionResult.PASS;
 		// 1. Kliknutí na kameru - Uložení pozice
 		if(level.getBlockState(pos).is(DifModBlocks.CAMERA.get())){
-			tag.putLong("LinkedPos",pos.asLong());
+			stack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, data -> data.update(tag -> tag.putLong("LinkedPos", pos.asLong())));
 			player.displayClientMessage(Component.literal("Camera successfully selected!").withStyle(ChatFormatting.GREEN),true);
 			return InteractionResult.SUCCESS;
 		}
 		// 2. Kliknutí na monitor - Propojení
 		if(level.getBlockState(pos).is(DifModBlocks.CAMERA_MONITOR.get())){
-			if(tag.contains("LinkedPos")){
+			CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+			if(data != null && data.copyTag().contains("LinkedPos")){
 				if(level.getBlockEntity(pos) instanceof CameraMonitorBlockEntity monitor){
-					monitor.linkCamera(BlockPos.of(tag.getLong("LinkedPos")));
+					monitor.linkCamera(BlockPos.of(data.copyTag().getLong("LinkedPos")));
 					player.displayClientMessage(Component.literal("Camera successfully connected!").withStyle(ChatFormatting.AQUA),true);
 					return InteractionResult.SUCCESS;
 				}
@@ -56,9 +44,9 @@ public class CameraLink extends Item{
 	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level,Player player,@NotNull InteractionHand hand){
 		ItemStack stack=player.getItemInHand(hand);
 		if(player.isShiftKeyDown()){
-			CompoundTag tag=stack.getOrCreateTag();
-			if(tag.contains("LinkedPos")){
-				tag.remove("LinkedPos");
+			CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+			if(data != null && data.copyTag().contains("LinkedPos")){
+				stack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, d -> d.update(tag -> tag.remove("LinkedPos")));
 				if(level.isClientSide){
 					player.displayClientMessage(Component.literal("Camera successfully unselected!").withStyle(ChatFormatting.YELLOW),true);
 				}
@@ -69,10 +57,10 @@ public class CameraLink extends Item{
 	}
 	// 4. Tooltip - Zobrazení souřadnic vybrané kamery
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack,@Nullable Level level,@NotNull List<Component> tooltip,@NotNull TooltipFlag flag){
-		CompoundTag tag=stack.getTag();
-		if(tag!=null&&tag.contains("LinkedPos")){
-			BlockPos linkedPos=BlockPos.of(tag.getLong("LinkedPos"));
+	public void appendHoverText(@NotNull ItemStack stack,@Nullable Item.TooltipContext context,@NotNull List<Component> tooltip,@NotNull TooltipFlag flag){
+		CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+		if(data != null && data.copyTag().contains("LinkedPos")){
+			BlockPos linkedPos=BlockPos.of(data.copyTag().getLong("LinkedPos"));
 			tooltip.add(Component.literal("Selected Camera: ")
 					.append(Component.literal(linkedPos.getX()+" "+linkedPos.getY()+" "+linkedPos.getZ())
 							.withStyle(ChatFormatting.AQUA)));
@@ -81,6 +69,5 @@ public class CameraLink extends Item{
 			tooltip.add(Component.literal("No Camera selected").withStyle(ChatFormatting.RED));
 			tooltip.add(Component.literal("Right Click on Camera for connection").withStyle(ChatFormatting.GRAY));
 		}
-		super.appendHoverText(stack,level,tooltip,flag);
 	}
 }

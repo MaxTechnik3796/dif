@@ -1,5 +1,4 @@
 package cz.maxtechnik.dif.item.armor;
-
 import cz.maxtechnik.dif.model.ModelSpaceBoots;
 import cz.maxtechnik.dif.model.ModelSpaceChestplate;
 import cz.maxtechnik.dif.model.ModelSpaceHelmet;
@@ -7,58 +6,22 @@ import cz.maxtechnik.dif.model.ModelSpaceLeggings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
-public abstract class SpaceSuit extends ArmorItem{
-	String texture="dif:textures/models/armor/spacesuit.png";
-	public SpaceSuit(Type type,Properties properties){
-		super(new ArmorMaterial(){
-			@Override
-			public int getDurabilityForType(@NotNull Type type){
-				return new int[]{13,15,16,11}[type.getSlot().getIndex()]*37;
-			}
-			@Override
-			public int getDefenseForType(@NotNull Type type){
-				return new int[]{3,6,8,3}[type.getSlot().getIndex()];
-			}
-			@Override
-			public int getEnchantmentValue(){
-				return 12;
-			}
-			@Override
-			public @NotNull SoundEvent getEquipSound(){
-				return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath("minecraft","item.armor.equip_iron")));
-			}
-			@Override
-			public @NotNull Ingredient getRepairIngredient(){
-				return Ingredient.of();
-			}
-			@Override
-			public @NotNull String getName(){
-				return "space_suit";
-			}
-			@Override
-			public float getToughness(){
-				return 2f;
-			}
-			@Override
-			public float getKnockbackResistance(){
-				return 0f;
-			}
-		},type,properties);
+
+public abstract class SpaceSuit extends ArmorItem {
+	public SpaceSuit(Type type, Properties properties) {
+		super(DifModTiers.ARMOR_MATERIAL_SPACE, type, properties);
 	}
 	public static class Helmet extends SpaceSuit{
 		public Helmet(){
@@ -171,10 +134,6 @@ public abstract class SpaceSuit extends ArmorItem{
 					return armorModel;
 				}
 			});
-		}
-		@Override
-		public String getArmorTexture(ItemStack stack,Entity entity,EquipmentSlot slot,String type){
-			return texture;
 		}
 	}
 }

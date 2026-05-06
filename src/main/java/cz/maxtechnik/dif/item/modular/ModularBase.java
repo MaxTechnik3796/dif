@@ -541,9 +541,7 @@ public abstract class ModularBase extends DiggerItem{
 			level.setBlock(blockpos,optional3.get(),11);
 			level.gameEvent(GameEvent.BLOCK_CHANGE,blockpos,GameEvent.Context.of(player,optional3.get()));
 			if(player!=null){
-				itemstack.hurtAndBreak(1,player,(p_150686_)->{
-					p_150686_.broadcastBreakEvent(context.getHand());
-				});
+				itemstack.hurtAndBreak(1,player,LivingEntity.getSlotForHand(context.getHand()));
 			}
 			return InteractionResult.sidedSuccess(level.isClientSide);
 		}else{

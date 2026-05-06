@@ -22,7 +22,7 @@ public class RedstoneNotIQMobEffect extends MobEffect{
 			}else{
 				Level world=entity.level();
 				if(!world.isClientSide()){
-					world.explode(null,entity.getX(),entity.getY(),entity.getZ(),3,Level.ExplosionInteraction.MOB);
+					world.explode(null,entity.getX(),entity.getY(),entity.getZ(),3.0F,Level.ExplosionInteraction.MOB);
 				}
 			}
 		}

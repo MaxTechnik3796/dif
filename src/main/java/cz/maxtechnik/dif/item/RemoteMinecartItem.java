@@ -23,10 +23,9 @@ public class RemoteMinecartItem extends Item{
 			return InteractionResult.FAIL;
 		}else{
 			if(!level.isClientSide){
-				RailShape shape=state.getBlock() instanceof BaseRailBlock?((BaseRailBlock)state.getBlock()).getRailDirection(state,level,pos,null):RailShape.NORTH_SOUTH;
+				RailShape shape = state.is(net.minecraft.tags.BlockTags.RAILS) ? state.getValue(((BaseRailBlock)state.getBlock()).getShapeProperty()) : RailShape.NORTH_SOUTH;
 				double d0=0.0D;
 				if(shape.isAscending()) d0=0.5D;
-				// Tady spawnování TVÉHO minecartu
 				RemoteControlMinecart minecart=new RemoteControlMinecart(level,pos.getX()+0.5D,pos.getY()+0.0625D+d0,pos.getZ()+0.5D);
 				if(context.getItemInHand().hasCustomHoverName()){
 					minecart.setCustomName(context.getItemInHand().getHoverName());

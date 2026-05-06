@@ -264,7 +264,7 @@ public class DifModItems{
 
 
 	//MusicDiscs:
-	public static final DeferredItem<Item> DOG=REGISTRY.register("dog",()->new MusicDiscDesc2(2,2900,DifMod.MODID,"dog"));
+	public static final DeferredItem<Item> DOG=REGISTRY.register("dog",()->new MusicDiscDesc2(DifMod.MODID,"dog"));
 
 	public static final DeferredItem<Item>FORMULA_ITEM=REGISTRY.register("formula",()->new FormulaItem(new Item.Properties().stacksTo(1)));
 

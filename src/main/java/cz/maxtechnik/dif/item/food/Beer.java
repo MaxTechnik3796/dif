@@ -10,6 +10,9 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.food.FoodProperties;
+
 @SuppressWarnings("deprecation")
 public class Beer extends BlockItem{
 	public Beer(Block block,Properties properties){
@@ -38,8 +41,8 @@ public class Beer extends BlockItem{
 		if(player.isShiftKeyDown()){
 			return InteractionResultHolder.pass(itemstack);
 		}
-		assert this.getFoodProperties()!=null;
-		if(player.canEat(this.getFoodProperties().canAlwaysEat())){
+		FoodProperties food = itemstack.get(DataComponents.FOOD);
+		if(food != null && player.canEat(food.canAlwaysEat())){
 			player.startUsingItem(hand);
 			return InteractionResultHolder.consume(itemstack);
 		}else{

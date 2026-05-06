@@ -35,7 +35,7 @@ public class MolotovuvKoktejl extends Item{
 		super.finishUsingItem(itemstack,world,entity);
 		if(!world.isClientSide()){
 			if(DifMod.rouletteBoolean(2)){
-				world.explode(null,entity.getX(),entity.getY(),entity.getZ(),15,Level.ExplosionInteraction.TNT);
+				world.explode(null,entity.getX(),entity.getY(),entity.getZ(),15.0F,Level.ExplosionInteraction.TNT);
 			}else{
 				entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION,100,0));
 			}

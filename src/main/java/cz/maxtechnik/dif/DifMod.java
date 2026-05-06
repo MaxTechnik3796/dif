@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 import cz.maxtechnik.dif.renderer.BrassWaterWheelRenderer;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
 import cz.maxtechnik.dif.command.ConfigReloadCommand;

@@ -46,4 +46,64 @@ public class DifModTiers{
             0.0F,
             0.0F
     ));
+
+    public static final Holder<ArmorMaterial> ARMOR_MATERIAL_SPACE = Holder.direct(new ArmorMaterial(
+            Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
+                map.put(ArmorItem.Type.HELMET, 3);
+                map.put(ArmorItem.Type.CHESTPLATE, 8);
+                map.put(ArmorItem.Type.LEGGINGS, 6);
+                map.put(ArmorItem.Type.BOOTS, 3);
+            }),
+            12,
+            SoundEvents.ARMOR_EQUIP_IRON,
+            () -> Ingredient.of(),
+            List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath("dif", "spacesuit"))),
+            2.0F,
+            0.0F
+    ));
+
+    public static final Holder<ArmorMaterial> ARMOR_MATERIAL_CARBON = Holder.direct(new ArmorMaterial(
+            Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
+                map.put(ArmorItem.Type.HELMET, 4);
+                map.put(ArmorItem.Type.CHESTPLATE, 9);
+                map.put(ArmorItem.Type.LEGGINGS, 7);
+                map.put(ArmorItem.Type.BOOTS, 4);
+            }),
+            15,
+            SoundEvents.ARMOR_EQUIP_DIAMOND,
+            () -> Ingredient.of(),
+            List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath("dif", "carbon_suit"))),
+            3.0F,
+            0.2F
+    ));
+
+    public static final Holder<ArmorMaterial> ARMOR_MATERIAL_ELECTRO = Holder.direct(new ArmorMaterial(
+            Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
+                map.put(ArmorItem.Type.HELMET, 0);
+                map.put(ArmorItem.Type.CHESTPLATE, 0);
+                map.put(ArmorItem.Type.LEGGINGS, 0);
+                map.put(ArmorItem.Type.BOOTS, 0);
+            }),
+            0,
+            SoundEvents.ARMOR_EQUIP_DIAMOND,
+            () -> Ingredient.of(),
+            List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath("dif", "electro_runners"))),
+            0.0F,
+            0.0F
+    ));
+
+    public static final Holder<ArmorMaterial> ARMOR_MATERIAL_JETPACK = Holder.direct(new ArmorMaterial(
+            Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
+                map.put(ArmorItem.Type.HELMET, 0);
+                map.put(ArmorItem.Type.CHESTPLATE, 2);
+                map.put(ArmorItem.Type.LEGGINGS, 0);
+                map.put(ArmorItem.Type.BOOTS, 0);
+            }),
+            0,
+            SoundEvents.ARMOR_EQUIP_IRON,
+            () -> Ingredient.of(),
+            List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath("dif", "jetpack"))),
+            2.0F,
+            0.0F
+    ));
 }
