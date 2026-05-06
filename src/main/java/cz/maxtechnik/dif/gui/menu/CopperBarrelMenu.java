@@ -3,7 +3,8 @@ package cz.maxtechnik.dif.gui.menu;
 import cz.maxtechnik.dif.block.entity.barrel.CopperBarrelBlockEntity;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +35,7 @@ public class CopperBarrelMenu extends AbstractContainerMenu implements Supplier<
 	private final Map<Integer,Slot> customSlots=new HashMap<>();
 	private boolean bound=false;
 	private BlockEntity boundBlockEntity=null;
-	public CopperBarrelMenu(int id,Inventory inv,FriendlyByteBuf extraData){
+	public CopperBarrelMenu(int id,Inventory inv,RegistryFriendlyByteBuf extraData){
 		super(DifModMenus.COPPER_BARREL.get(),id);
 		this.entity=inv.player;
 		this.world=inv.player.level();
@@ -50,10 +51,11 @@ public class CopperBarrelMenu extends AbstractContainerMenu implements Supplier<
 		if(pos!=null){
 			boundBlockEntity=this.world.getBlockEntity(pos);
 			if(boundBlockEntity!=null){
-				boundBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER,null).ifPresent(capability->{
-					this.internal=capability;
-					this.bound=true;
-				});
+				IItemHandler handler = this.world.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
+				if(handler != null) {
+					this.internal = handler;
+					this.bound = true;
+				}
 				if(boundBlockEntity instanceof CopperBarrelBlockEntity be){
 					be.startOpen(inv.player);
 				}

@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +21,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
-@SuppressWarnings("deprecation")
 public class CopperBarrel extends Block implements EntityBlock{
 	public static final DirectionProperty FACING=BlockStateProperties.FACING;
 	public static final BooleanProperty OPEN=BlockStateProperties.OPEN;
@@ -49,14 +47,15 @@ public class CopperBarrel extends Block implements EntityBlock{
 		return state.setValue(FACING,mirrorIn.mirror(state.getValue(FACING)));
 	}
 	@Override
-	public @NotNull InteractionResult use(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player entity,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
-		if(world.isClientSide){
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
+		if (level.isClientSide) {
 			return InteractionResult.SUCCESS;
 		}
-		if(entity instanceof ServerPlayer player){
-			BlockEntity be=world.getBlockEntity(pos);
-			if(be instanceof MenuProvider menuProvider){
-				NetworkHooks.openScreen(player,menuProvider,pos);
+
+		if (player instanceof ServerPlayer serverPlayer) {
+			BlockEntity be = level.getBlockEntity(pos);
+			if (be instanceof MenuProvider menuProvider) {
+				serverPlayer.openMenu(menuProvider, pos);
 			}
 		}
 		return InteractionResult.CONSUME;

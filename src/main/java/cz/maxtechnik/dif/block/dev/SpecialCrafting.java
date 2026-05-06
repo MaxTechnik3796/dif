@@ -28,20 +28,26 @@ public class SpecialCrafting extends Block implements EntityBlock{
 		super(Properties.of());
 	}
 	@Override
-	public @NotNull InteractionResult use(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player entity,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
-		super.use(blockstate,world,pos,entity,hand,hit);
-		if(entity instanceof ServerPlayer player){
-			NetworkHooks.openScreen(player,new MenuProvider(){
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
+		if (level.isClientSide) {
+			return InteractionResult.SUCCESS;
+		}
+
+		if (player instanceof ServerPlayer serverPlayer) {
+			serverPlayer.openMenu(new MenuProvider() {
 				@Override
-				public @NotNull Component getDisplayName(){
+				public @NotNull Component getDisplayName() {
 					return CONTAINER_TITLE;
 				}
+
 				@Override
-				public AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory,@NotNull Player player){
-					return new SpecialCraftingMenu(id,inventory,new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos));
+				public AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory, @NotNull Player player) {
+					// Pokud tvůj konstruktor v SpecialCraftingMenu přijímá BlockPos:
+					return new SpecialCraftingMenu(id, inventory, pos);
 				}
-			},pos);
+			}, pos); // Ta pozice 'pos' na konci říká NeoForgi, co má poslat klientovi
 		}
+
 		return InteractionResult.SUCCESS;
 	}
 	@Override

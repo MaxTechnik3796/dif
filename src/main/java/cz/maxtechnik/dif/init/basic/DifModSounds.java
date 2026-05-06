@@ -1,12 +1,13 @@
 package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 public class DifModSounds{
-    public static final DeferredRegister<SoundEvent> REGISTRY=DeferredRegister.create(ForgeRegistries.SOUND_EVENTS,DifMod.MODID);
+    public static final DeferredRegister<SoundEvent> REGISTRY = DeferredRegister.create(Registries.SOUND_EVENT, DifMod.MODID);
     public static final DeferredHolder<SoundEvent,SoundEvent>FURT_TA_STEJNA_HRA=REGISTRY.register("furt_ta_stejna_hra",()->SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"furt_ta_stejna_hra")));
     public static final DeferredHolder<SoundEvent,SoundEvent>MATY_CREATE=REGISTRY.register("maty_create",()->SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"maty_create")));
     public static final DeferredHolder<SoundEvent,SoundEvent>REDSTONE=REGISTRY.register("redstone",()->SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"redstone")));
