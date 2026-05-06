@@ -4,6 +4,7 @@ import com.simibubi.create.content.kinetics.waterwheel.WaterWheelBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -29,13 +30,13 @@ public class BrassWaterWheelBlockEntity extends WaterWheelBlockEntity{
 		if(this.material==null||this.material.isAir()) this.material=Blocks.DARK_OAK_PLANKS.defaultBlockState();
 	}
 	@Override
-	public void write(CompoundTag compound,boolean clientPacket){
-		super.write(compound,clientPacket);
+	public void write(CompoundTag compound, HolderLookup.Provider provider, boolean clientPacket){
+		super.write(compound, provider, clientPacket);
 		if(material!=null) compound.put("Material",NbtUtils.writeBlockState(material));
 	}
 	@Override
-	public void read(CompoundTag compound,boolean clientPacket){
-		super.read(compound,clientPacket);
+	public void read(CompoundTag compound, HolderLookup.Provider provider, boolean clientPacket){
+		super.read(compound, provider, clientPacket);
 		if(compound.contains("Material"))
 			this.material=NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(),compound.getCompound("Material"));
 		initializeMaterial();
