@@ -8,6 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -67,8 +68,10 @@ public class SuperBoxBlockEntity extends RandomizableContainerBlockEntity implem
 		return Component.translatable("gui.dif.super_box");
 	}
 	@Override
-	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory,@NotNull Player player){
-		return new SuperBoxMenu(id,inventory,new RegistryFriendlyByteBuf(Unpooled.buffer(), this.level.registryAccess()).writeBlockPos(this.worldPosition));
+	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory){
+		FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+		buffer.writeBlockPos(this.worldPosition);
+		return new SuperBoxMenu(id,inventory,buffer);
 	}
 	@Override
 	public @NotNull Component getDisplayName(){

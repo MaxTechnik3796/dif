@@ -30,6 +30,7 @@ import net.minecraft.core.HolderLookup;
 import javax.annotation.Nullable;
 
 import io.netty.buffer.Unpooled;
+import net.minecraft.network.FriendlyByteBuf;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -218,8 +219,10 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 		return Component.literal("generator");
 	}
 	@Override
-	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory,@NotNull Player player){
-		return new BurningGeneratorMenu(id,inventory,new RegistryFriendlyByteBuf(Unpooled.buffer(), this.level.registryAccess()).writeBlockPos(this.worldPosition));
+	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory){
+		FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+		buffer.writeBlockPos(this.worldPosition);
+		return new BurningGeneratorMenu(id,inventory,buffer);
 	}
 	@Override
 	public @NotNull Component getDisplayName(){

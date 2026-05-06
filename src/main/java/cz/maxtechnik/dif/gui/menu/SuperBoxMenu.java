@@ -3,6 +3,7 @@ package cz.maxtechnik.dif.gui.menu;
 
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
@@ -32,7 +33,7 @@ public class SuperBoxMenu extends AbstractContainerMenu implements Supplier<Map<
 	private Supplier<Boolean> boundItemMatcher=null;
 	private Entity boundEntity=null;
 	private BlockEntity boundBlockEntity=null;
-	public SuperBoxMenu(int id, Inventory inv, @NotNull BlockPos extraData){
+	public SuperBoxMenu(int id, Inventory inv, FriendlyByteBuf extraData){
 		super(DifModMenus.SUPER_BOX.get(),id);
 		this.entity=inv.player;
 		this.world=inv.player.level();

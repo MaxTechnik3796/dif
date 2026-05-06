@@ -2,9 +2,7 @@ package cz.maxtechnik.dif.block.dev;
 
 import cz.maxtechnik.dif.block.entity.dev.SpecialCraftingBlockEntity;
 import cz.maxtechnik.dif.gui.menu.SpecialCraftingMenu;
-import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.*;
@@ -18,10 +16,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
-@SuppressWarnings("deprecation")
-/**
- Out of service (Unfinished)
- **/
 public class SpecialCrafting extends Block implements EntityBlock{
 	private static final Component CONTAINER_TITLE=Component.literal("Special Crafting");
 	public SpecialCrafting(){

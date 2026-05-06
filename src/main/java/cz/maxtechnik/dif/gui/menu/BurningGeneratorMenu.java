@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.function.Supplier;
 import java.util.Map;
@@ -29,7 +30,7 @@ public class BurningGeneratorMenu extends AbstractContainerMenu implements Suppl
 	private boolean bound=false;
 	private BlockEntity boundBlockEntity=null;
 	private final ContainerData data;
-	public BurningGeneratorMenu(int id, Inventory inv, @NotNull BlockPos extraData){
+	public BurningGeneratorMenu(int id, Inventory inv, FriendlyByteBuf extraData){
 		super(DifModMenus.GENERATOR.get(),id);
 		this.entity=inv.player;
 		this.world=inv.player.level();
