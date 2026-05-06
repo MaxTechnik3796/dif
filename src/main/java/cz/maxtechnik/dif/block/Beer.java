@@ -25,7 +25,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.plaf.basic.BasicComboBoxUI;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 @SuppressWarnings("deprecation")
 public class Beer extends Block implements SimpleWaterloggedBlock{
@@ -80,7 +80,7 @@ public class Beer extends Block implements SimpleWaterloggedBlock{
 	private void pickUp(Level world,BlockPos pos,Player player,boolean destroy){
 		if(destroy)
 			world.setBlock(pos,Blocks.AIR.defaultBlockState(),3);
-		BasicComboBoxUI.ItemHandler.giveItemToPlayer(player,new ItemStack(DifModItems.BEER.get()));
+		ItemHandlerHelper.giveItemToPlayer(player,new ItemStack(DifModItems.BEER.get()));
 	}
 	@Override
 	public boolean onDestroyedByPlayer(@NotNull BlockState blockstate, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, boolean willHarvest, @NotNull FluidState fluid){
@@ -88,8 +88,7 @@ public class Beer extends Block implements SimpleWaterloggedBlock{
 		return super.onDestroyedByPlayer(blockstate,world,pos,player,willHarvest,fluid);
 	}
 	@Override
-	public @NotNull InteractionResult use(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
-		super.use(blockState,world,pos,player,hand,hit);
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit){
 		pickUp(world,pos,player,true);
 		return InteractionResult.SUCCESS;
 	}

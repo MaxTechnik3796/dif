@@ -7,7 +7,9 @@ import cz.maxtechnik.dif.init.other.DifModEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -87,12 +89,14 @@ public class RemoteControlMinecart extends AbstractMinecart{
 		ItemStack stack=player.getItemInHand(hand);
 		if(stack.is(DifModItems.REMOTE_CONTROLLER.get())){
 			if(!player.level().isClientSide){
-				CompoundTag nbt=stack.getOrCreateTag();
+				CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+				CompoundTag nbt = customData.copyTag();
 				if(nbt.hasUUID("LinkedCart")&&nbt.getUUID("LinkedCart").equals(this.getUUID())){
 					this.flipDirection(); // PŘEPNUTÍ SMĚRU
 					player.displayClientMessage(Component.literal("Direction flipped!"),true);
 				}else{
 					nbt.putUUID("LinkedCart",this.getUUID());
+					stack.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
 					player.displayClientMessage(Component.literal("Minecart linked!"),true);
 				}
 			}
@@ -109,15 +113,15 @@ public class RemoteControlMinecart extends AbstractMinecart{
 		return DifModItems.REMOTE_MINECART.get();
 	}
 	@Override
-	public @NotNull Type getMinecartType(){
-		return Type.RIDEABLE;
-	}
-	@Override
 	public @NotNull ItemStack getPickResult(){
 		return new ItemStack(DifModItems.REMOTE_MINECART.get());
 	}
 	@Override
 	public @NotNull BlockState getDefaultDisplayBlockState(){
 		return DifModBlocks.REMOTE_MINECART_BLOCK.get().defaultBlockState().setValue(RemoteMinecartBlock.FACING,Direction.NORTH).setValue(RemoteMinecartBlock.WATERLOGGED,false).setValue(RemoteMinecartBlock.LIT,this.getDeltaMovement().horizontalDistance()>0.01D);
+	}
+	@Override
+	public @NotNull AbstractMinecart.Type getMinecartType(){
+		return AbstractMinecart.Type.RIDEABLE;
 	}
 }
