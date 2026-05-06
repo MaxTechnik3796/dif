@@ -12,36 +12,20 @@ public abstract class CopperArmor extends ArmorItem{
 		public Helmet(){
 			super(ArmorItem.Type.HELMET,new Item.Properties());
 		}
-		@Override
-		public String getArmorTexture(ItemStack stack,Entity entity,EquipmentSlot slot,String type){
-			return "dif:textures/models/armor/copper_layer_1.png";
-		}
 	}
 	public static class Chestplate extends CopperArmor{
 		public Chestplate(){
 			super(ArmorItem.Type.CHESTPLATE,new Item.Properties());
-		}
-		@Override
-		public String getArmorTexture(ItemStack stack,Entity entity,EquipmentSlot slot,String type){
-			return "dif:textures/models/armor/copper_layer_1.png";
 		}
 	}
 	public static class Leggings extends CopperArmor{
 		public Leggings(){
 			super(ArmorItem.Type.LEGGINGS,new Item.Properties());
 		}
-		@Override
-		public String getArmorTexture(ItemStack stack,Entity entity,EquipmentSlot slot,String type){
-			return "dif:textures/models/armor/copper_layer_2.png";
-		}
 	}
 	public static class Boots extends CopperArmor{
 		public Boots(){
 			super(ArmorItem.Type.BOOTS,new Item.Properties());
-		}
-		@Override
-		public String getArmorTexture(ItemStack stack,Entity entity,EquipmentSlot slot,String type){
-			return "dif:textures/models/armor/copper_layer_1.png";
 		}
 	}
 }

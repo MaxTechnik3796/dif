@@ -108,11 +108,11 @@ public abstract class BaseCarEntity extends Entity{
 	public void removePassenger(@NotNull Entity entity){
 		super.removePassenger(entity);
 		if(!isVehicle()){
-			if(!level().isClientSide){
+			if(!level().isClientSide()){
 				setEngineOn(false);
-				DifMod.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->this),new SyncCarPositionPacket(getId(),getX(),getY(),getZ(),getYRot(),0F));
+				PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, new ModNetworking.SyncCarPositionPacket(getId(), getX(), getY(), getZ(), getYRot(), 0F));
 			}
-			velocity=prevVelocity=0F;
+			velocity = prevVelocity = 0F;
 			setDeltaMovement(Vec3.ZERO);
 			hasImpulse=true;
 		}
@@ -144,7 +144,7 @@ public abstract class BaseCarEntity extends Entity{
 					fuelAccumulator=fuelSyncTick=0;
 				}
 			}
-			DifMod.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY.with(()->this),new SyncCarPositionPacket(getId(),getX(),getY(),getZ(),getYRot(),velocity));
+			PacketDistributor.sendToPlayersTrackingEntity(this, new ModNetworking.SyncCarPositionPacket(getId(), getX(), getY(), getZ(), getYRot(), velocity));
 		}else{
 			if(isEngineOn()&&!isSoundPlaying&&getEngineSound()!=null){
 				CarEngineSoundInstance.play(this);

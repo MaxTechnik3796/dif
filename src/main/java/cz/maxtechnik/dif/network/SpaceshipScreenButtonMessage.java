@@ -10,47 +10,37 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
-import java.util.function.Supplier;
-@SuppressWarnings("removal")
-@EventBusSubscriber(bus=EventBusSubscriber.Bus.MOD)
-public class SpaceshipScreenButtonMessage{
-	private final int buttonID, x, y, z;
-	public SpaceshipScreenButtonMessage(int buttonID,int x,int y,int z){
-		this.buttonID=buttonID;
-		this.x=x;
-		this.y=y;
-		this.z=z;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+
+public record SpaceshipScreenButtonMessage(int buttonID, int x, int y, int z) implements CustomPacketPayload {
+	public static final Type<SpaceshipScreenButtonMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "spaceship_button"));
+	public static final StreamCodec<FriendlyByteBuf, SpaceshipScreenButtonMessage> STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.INT, SpaceshipScreenButtonMessage::buttonID,
+			ByteBufCodecs.INT, SpaceshipScreenButtonMessage::x,
+			ByteBufCodecs.INT, SpaceshipScreenButtonMessage::y,
+			ByteBufCodecs.INT, SpaceshipScreenButtonMessage::z,
+			SpaceshipScreenButtonMessage::new
+	);
+
+	@Override
+	public Type<? extends CustomPacketPayload> type() {
+		return TYPE;
 	}
-	public SpaceshipScreenButtonMessage(FriendlyByteBuf buffer){
-		this.buttonID=buffer.readInt();
-		this.x=buffer.readInt();
-		this.y=buffer.readInt();
-		this.z=buffer.readInt();
-	}
-	public static void buffer(SpaceshipScreenButtonMessage message,FriendlyByteBuf buffer){
-		buffer.writeInt(message.buttonID);
-		buffer.writeInt(message.x);
-		buffer.writeInt(message.y);
-		buffer.writeInt(message.z);
-	}
-	public static void handler(SpaceshipScreenButtonMessage message,Supplier<NetworkEvent.Context> contextSupplier){
-		NetworkEvent.Context context=contextSupplier.get();
-		context.enqueueWork(()->{
-			Player entity=context.getSender();
-			if(entity!=null){
-				LevelAccessor world=entity.level();
-				if(!world.hasChunkAt(new BlockPos(message.x,message.y,message.z))) return;
-				if(message.buttonID>=0&&message.buttonID<=3){
-					SpaceshipControl.planet(world,message.x,message.y,message.z,entity,message.buttonID);
-				}else if(message.buttonID==4||message.buttonID==5){
-					SpaceshipControl.arrow(world,message.x,message.y,message.z,message.buttonID);
-				}
+
+	public void handle(IPayloadContext context) {
+		context.enqueueWork(() -> {
+			Player entity = context.player();
+			LevelAccessor world = entity.level();
+			if (!world.hasChunkAt(new BlockPos(x, y, z))) return;
+			if (buttonID >= 0 && buttonID <= 3) {
+				SpaceshipControl.planet(world, x, y, z, entity, buttonID);
+			} else if (buttonID == 4 || buttonID == 5) {
+				SpaceshipControl.arrow(world, x, y, z, buttonID);
 			}
 		});
-		context.setPacketHandled(true);
-	}
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event){
-		DifMod.addNetworkMessage(SpaceshipScreenButtonMessage.class,SpaceshipScreenButtonMessage::buffer,SpaceshipScreenButtonMessage::new,SpaceshipScreenButtonMessage::handler);
 	}
 }

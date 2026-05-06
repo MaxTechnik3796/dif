@@ -3,19 +3,20 @@ package cz.maxtechnik.dif.init.events.client;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.entity.vehicle.BaseCarEntity;
 import cz.maxtechnik.dif.init.other.DifModKeys;
-import cz.maxtechnik.dif.network.ModNetworking.ShiftGearPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.Input;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.MovementInputUpdateEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-@Mod.EventBusSubscriber(modid=DifMod.MODID,value=Dist.CLIENT,bus=Mod.EventBusSubscriber.Bus.FORGE)
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
+
+@SuppressWarnings("removal")
+@EventBusSubscriber(modid=DifMod.MODID,value=Dist.CLIENT,bus=EventBusSubscriber.Bus.GAME)
 public class CarInputHandler{
 	@SubscribeEvent
-	public static void onClientTick(TickEvent.ClientTickEvent event){
-		if(event.phase!=TickEvent.Phase.END) return;
+	public static void onClientTick(ClientTickEvent.Post event){
 		Minecraft mc=Minecraft.getInstance();
 		if(mc.player==null||mc.screen!=null) return;
 		if(!(mc.player.getVehicle() instanceof BaseCarEntity car)) return;
@@ -57,7 +58,7 @@ public class CarInputHandler{
 			// Okamžitá klientská predikce → HUD se okamžitě aktualizuje
 			car.setCurrentGear(newGear);
 			// Autoritativní potvrzení serveru
-			DifMod.PACKET_HANDLER.sendToServer(new ShiftGearPacket(direction));
+			PacketDistributor.sendToServer(new ModNetworking.ShiftGearPacket(direction));
 		}
 	}
 }

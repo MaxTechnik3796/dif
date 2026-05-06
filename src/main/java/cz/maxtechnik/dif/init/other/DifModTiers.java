@@ -1,16 +1,21 @@
 package cz.maxtechnik.dif.init.other;
-
+ 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
+
+import net.minecraft.Util;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.NotNull;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
-import java.util.Objects;
 public class DifModTiers{
     public static final Tier COPPER = new Tier() {
         @Override
@@ -24,36 +29,21 @@ public class DifModTiers{
         @Override
 		public int getEnchantmentValue() {return 13;}
 		@Override
-        public @NotNull Ingredient getRepairIngredient() {return Ingredient.of(Items.COPPER_INGOT);}
+        public Ingredient getRepairIngredient() {return Ingredient.of(Items.COPPER_INGOT);}
     };
-    public static final ArmorMaterial ARMOR_MATERIAL = new ArmorMaterial() {
-        @Override
-        public int getDurabilityForType(ArmorItem.Type type) {
-			return switch(type){
-				case HELMET -> 121;
-				case CHESTPLATE -> 176;
-				case LEGGINGS -> 165;
-				case BOOTS -> 143;
-			};}
-        @Override
-        public int getDefenseForType(ArmorItem.Type type) {
-			return switch(type){
-				case HELMET -> 2;
-				case CHESTPLATE -> 4;
-				case LEGGINGS -> 3;
-				case BOOTS -> 1;
-			};}
-        @Override
-		public int getEnchantmentValue() {return 8;}
-        @Override
-        public @NotNull SoundEvent getEquipSound() {return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.fromNamespaceAndPath("minecraft","item.armor.equip_iron")));}
-        @Override
-        public @NotNull Ingredient getRepairIngredient() {return Ingredient.of(Items.COPPER_INGOT);}
-        @Override
-        public @NotNull String getName() {return "dif:copper";}
-        @Override
-        public float getToughness() {return 0f;}
-        @Override
-        public float getKnockbackResistance() {return 0f;}
-    };
+
+    public static final Holder<ArmorMaterial> ARMOR_MATERIAL = Holder.direct(new ArmorMaterial(
+            Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
+                map.put(ArmorItem.Type.HELMET, 2);
+                map.put(ArmorItem.Type.CHESTPLATE, 4);
+                map.put(ArmorItem.Type.LEGGINGS, 3);
+                map.put(ArmorItem.Type.BOOTS, 1);
+            }),
+            8,
+            SoundEvents.ARMOR_EQUIP_IRON,
+            () -> Ingredient.of(Items.COPPER_INGOT),
+            List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath("dif", "copper"))),
+            0.0F,
+            0.0F
+    ));
 }

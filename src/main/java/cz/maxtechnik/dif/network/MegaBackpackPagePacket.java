@@ -4,37 +4,29 @@ import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.gui.menu.MegaBackpackMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.function.Supplier;
-@SuppressWarnings("removal")
-@EventBusSubscriber(bus=EventBusSubscriber.Bus.MOD)
-public class MegaBackpackPagePacket{
-	private final int delta;
-	public MegaBackpackPagePacket(int delta){
-		this.delta=delta;
+public record MegaBackpackPagePacket(int delta) implements CustomPacketPayload {
+	public static final Type<MegaBackpackPagePacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "mega_backpack_page"));
+	public static final StreamCodec<FriendlyByteBuf, MegaBackpackPagePacket> STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.INT, MegaBackpackPagePacket::delta,
+			MegaBackpackPagePacket::new
+	);
+
+	@Override
+	public Type<? extends CustomPacketPayload> type() {
+		return TYPE;
 	}
-	public MegaBackpackPagePacket(FriendlyByteBuf buf){
-		this.delta=buf.readInt();
-	}
-	public static void buffer(MegaBackpackPagePacket message,FriendlyByteBuf buf){
-		buf.writeInt(message.delta);
-	}
-	public static void handler(MegaBackpackPagePacket message,Supplier<NetworkEvent.Context> ctx){
-		NetworkEvent.Context context=ctx.get();
-		context.enqueueWork(()->{
-			ServerPlayer player=context.getSender();
-			if(player!=null&&player.containerMenu instanceof MegaBackpackMenu menu){
-				menu.changePage(message.delta);
+
+	public void handle(IPayloadContext context) {
+		context.enqueueWork(() -> {
+			if (context.player() instanceof ServerPlayer player && player.containerMenu instanceof MegaBackpackMenu menu) {
+				menu.changePage(delta);
 			}
 		});
-		context.setPacketHandled(true);
-	}
-	// Registrace paketu (volá se z DifMod)
-	@SubscribeEvent
-	public static void init(FMLCommonSetupEvent event){
-		DifMod.addNetworkMessage(MegaBackpackPagePacket.class,MegaBackpackPagePacket::buffer,MegaBackpackPagePacket::new,MegaBackpackPagePacket::handler);
 	}
 }

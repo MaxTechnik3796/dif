@@ -15,6 +15,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
 @EventBusSubscriber(modid = DifMod.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -69,22 +70,22 @@ public class DifModKeys {
 
 				// 2. Logika Jetpacku
 				if (JETPACK_FLY.isDown()) {
-					DifMod.PACKET_HANDLER.sendToServer(new JetpackFlyMessage(0, 0));
+					PacketDistributor.sendToServer(new JetpackFlyMessage(0, 0));
 					JetpackFlyMessage.pressAction(player, 0);
 				}
 
 				// 3. Logika Ender Chesty
 				while (OPEN_ENDER_CHEST.consumeClick()) {
-					DifMod.PACKET_HANDLER.sendToServer(new EnderOpenMessage(0, 0));
+					PacketDistributor.sendToServer(new EnderOpenMessage(0, 0));
 				}
 
 				// 4. Logika dálkového ovládání Minecartu
 				if (player.getMainHandItem().is(DifModItems.REMOTE_CONTROLLER.get())) {
 					if (MINE_FORWARD.isDown()) {
-						DifMod.PACKET_HANDLER.sendToServer(new RemoteControlPacket(1.0, false));
+						PacketDistributor.sendToServer(new RemoteControlPacket(1.0, false));
 					}
 					if (MINE_BACKWARD.consumeClick()) {
-						DifMod.PACKET_HANDLER.sendToServer(new RemoteControlPacket(0.0, true));
+						PacketDistributor.sendToServer(new RemoteControlPacket(0.0, true));
 					}
 				}
 
@@ -93,10 +94,9 @@ public class DifModKeys {
 				}
 				while (MEGA_BACKPACK_KEY.consumeClick()) {
 					//Only Creative (TEMP)
-					if(player.getAbilities().instabuild) DifMod.PACKET_HANDLER.sendToServer(new MegaBackpackOpenPacket(0, 0));
+					if(player.getAbilities().instabuild) PacketDistributor.sendToServer(new MegaBackpackOpenPacket(0, 0));
 				}
 			}
 		}
 	}
-}
 }
