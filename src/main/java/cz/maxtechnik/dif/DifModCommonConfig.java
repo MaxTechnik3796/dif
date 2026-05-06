@@ -77,6 +77,17 @@ public class DifModCommonConfig{
 	private static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_1;public static int modularToolsFortuneModifierLevel1;
 	private static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_2;public static int modularToolsFortuneModifierLevel2;
 
+	private static final ModConfigSpec.IntValue PORTAL_GUN_MAX_DURABILITY; public static int portalGunMaxDurability;
+	private static final ModConfigSpec.IntValue PORTAL_GUN_ENERGY_PER_SHOT; public static int portalGunEnergyPerShot;
+	private static final ModConfigSpec.IntValue PORTAL_GUN_ENERGY_PER_PEARL; public static int portalGunEnergyPerPearl;
+	private static final ModConfigSpec.IntValue PORTAL_GUN_SHOT_COOLDOWN; public static int portalGunShotCooldown;
+	private static final ModConfigSpec.IntValue PORTAL_TELEPORT_COOLDOWN; public static int portalTeleportCooldown;
+	private static final ModConfigSpec.IntValue PORTAL_MAX_DISTANCE; public static int portalMaxDistance;
+	private static final ModConfigSpec.IntValue PORTAL_CHUNK_LOAD_TIMEOUT; public static int portalChunkLoadTimeout;
+	private static final ModConfigSpec.IntValue PORTAL_MAX_ENTITIES_PER_TICK; public static int portalMaxEntitiesPerTick;
+	private static final ModConfigSpec.BooleanValue PORTAL_ALLOW_MOBS; public static boolean portalAllowMobs;
+	private static final ModConfigSpec.BooleanValue PORTAL_ALLOW_ITEMS_AND_PROJECTILES; public static boolean portalAllowItemsAndProjectiles;
+
 	static{
 		BUILDER.comment("Dif common config.");
 		BUILDER.comment("This configuration is generated, do not overwrite anything except the values!");
@@ -140,6 +151,18 @@ public class DifModCommonConfig{
 				BUILDER.pop();
 			BUILDER.pop();
 		BUILDER.pop();
+		BUILDER.push("PortalGun");
+		PORTAL_GUN_MAX_DURABILITY=BUILDER.comment("Max durability of Portal Gun, (Number.)"+restart(24)).defineInRange("portal_gun_max_durability",24,1,MAX);
+		PORTAL_GUN_ENERGY_PER_SHOT=BUILDER.comment("Energy cost per shot, (Number.)"+restart(1)).defineInRange("portal_gun_energy_per_shot",1,1,MAX);
+		PORTAL_GUN_ENERGY_PER_PEARL=BUILDER.comment("Energy restored per Ender Pearl, (Number.)"+restart(4)).defineInRange("portal_gun_energy_per_pearl",4,1,MAX);
+		PORTAL_GUN_SHOT_COOLDOWN=BUILDER.comment("Cooldown between shots in ticks, (t.)"+restart(10)).defineInRange("portal_gun_shot_cooldown",10,1,MAX);
+		PORTAL_TELEPORT_COOLDOWN=BUILDER.comment("Cooldown between teleports in ticks, (t.)"+reload(20)).defineInRange("portal_teleport_cooldown",20,1,MAX);
+		PORTAL_MAX_DISTANCE=BUILDER.comment("Max distance between linked portals in blocks, (Blocks.)"+reload(256)).defineInRange("portal_max_distance",256,16,MAX);
+		PORTAL_CHUNK_LOAD_TIMEOUT=BUILDER.comment("Max time to wait for chunk to load before teleport fails in ticks, (t.)"+reload(100)).defineInRange("portal_chunk_load_timeout",100,20,MAX);
+		PORTAL_MAX_ENTITIES_PER_TICK=BUILDER.comment("Max entities teleported per tick per portal, (Number.)"+reload(5)).defineInRange("portal_max_entities_per_tick",5,1,MAX);
+		PORTAL_ALLOW_MOBS=BUILDER.comment("Allow mobs to pass through portals."+reload("true")).define("portal_allow_mobs",true);
+		PORTAL_ALLOW_ITEMS_AND_PROJECTILES=BUILDER.comment("Allow items, projectiles and falling blocks to pass through portals."+reload("true")).define("portal_allow_items_and_projectiles",true);
+		BUILDER.pop();
 
 		SPEC=BUILDER.build();
 	}
@@ -186,5 +209,16 @@ public class DifModCommonConfig{
 		modularToolsFortuneModifierLevel0=MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_0.get();
 		modularToolsFortuneModifierLevel1=MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_1.get();
 		modularToolsFortuneModifierLevel2=MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_2.get();
+
+		portalGunMaxDurability=PORTAL_GUN_MAX_DURABILITY.get();
+		portalGunEnergyPerShot=PORTAL_GUN_ENERGY_PER_SHOT.get();
+		portalGunEnergyPerPearl=PORTAL_GUN_ENERGY_PER_PEARL.get();
+		portalGunShotCooldown=PORTAL_GUN_SHOT_COOLDOWN.get();
+		portalTeleportCooldown=PORTAL_TELEPORT_COOLDOWN.get();
+		portalMaxDistance=PORTAL_MAX_DISTANCE.get();
+		portalChunkLoadTimeout=PORTAL_CHUNK_LOAD_TIMEOUT.get();
+		portalMaxEntitiesPerTick=PORTAL_MAX_ENTITIES_PER_TICK.get();
+		portalAllowMobs=PORTAL_ALLOW_MOBS.get();
+		portalAllowItemsAndProjectiles=PORTAL_ALLOW_ITEMS_AND_PROJECTILES.get();
 	}
 }
