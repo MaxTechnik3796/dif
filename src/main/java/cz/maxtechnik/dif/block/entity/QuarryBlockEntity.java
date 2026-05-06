@@ -11,12 +11,9 @@ import cz.maxtechnik.dif.item.quarry.EngineItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -38,7 +35,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.EnergyStorage;
-import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -47,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+
 public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 	public enum State{NO_ENERGY,CLEARING,BUILDING_FRAME,MINING,DONE}
 	private static final int ENERGY_CAPACITY=QuarryStats.QUARRY_ENERGY_CAPACITY;
@@ -106,8 +103,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		else 		if(upgradeStack.is(Items.ENCHANTED_BOOK)){
 			var enchants=upgradeStack.getEnchantments();
 			enchants.keySet().forEach(holder->{
-				ResourceLocation key=BuiltInRegistries.ENCHANTMENT.getKey(holder.value());
-				if(key!=null&&key.equals(ResourceLocation.withDefaultNamespace("silk_touch"))){
+				if(holder.is(Enchantments.SILK_TOUCH)){
 					hasSilkTouch=true;
 				}
 			});
@@ -607,8 +603,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		setChanged();
 	}
 	@Override
-	public @NotNull CompoundTag getUpdateTag(){
-		CompoundTag tag=super.getUpdateTag();
+	public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider provider){
+		CompoundTag tag=new CompoundTag();
 		tag.putInt("QS",quarryState.ordinal());
 		if(miningPos!=null){
 			tag.putInt("MineX",miningPos.getX());

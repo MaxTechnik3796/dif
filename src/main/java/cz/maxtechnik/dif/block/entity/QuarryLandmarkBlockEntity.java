@@ -182,9 +182,9 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 		updateClientRenderer();
 	}
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, @NotNull HolderLookup.Provider lookupProvider){
+	public void onDataPacket(@NotNull Connection net, ClientboundBlockEntityDataPacket pkt, @NotNull HolderLookup.Provider lookupProvider){
 		CompoundTag tag=pkt.getTag();
-		if(tag!=null) loadAdditional(tag, lookupProvider);
+        loadAdditional(tag, lookupProvider);
 		updateClientRenderer();
 	}
 	private void updateClientRenderer(){
@@ -224,13 +224,16 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 		formed=tag.getBoolean("Formed");
 		formedHalfX=tag.getInt("FHX");
 		formedHalfZ=tag.getInt("FHZ");
-		formedCenter=tag.contains("FC")?NbtUtils.readBlockPos(tag.getCompound("FC")):null;
+		formedCenter=tag.contains("FC")?NbtUtils.readBlockPos(tag,"FC").orElse(null):null;
 		partnerPositions.clear();
 		ListTag partnerList=tag.getList("Partners",Tag.TAG_COMPOUND);
-		for(int i=0;i<partnerList.size();i++) partnerPositions.add(NbtUtils.readBlockPos(partnerList.getCompound(i)));
+		for(int i=0;i<partnerList.size();i++){
+			CompoundTag entry=partnerList.getCompound(i);
+			NbtUtils.readBlockPos(entry,"Pos").ifPresent(partnerPositions::add);
+		}
 	}
 	@Override
-	public @NotNull CompoundTag getUpdateTag(){
+	public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider provider){
 		CompoundTag tag=new CompoundTag();
 		tag.putBoolean("Formed",formed);
 		tag.putInt("FHX",formedHalfX);
