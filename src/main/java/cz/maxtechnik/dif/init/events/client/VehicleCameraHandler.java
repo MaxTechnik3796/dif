@@ -9,7 +9,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderHandEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
-
+@SuppressWarnings("removal")
 @EventBusSubscriber(modid=DifMod.MODID,value=Dist.CLIENT,bus=EventBusSubscriber.Bus.GAME)
 public class VehicleCameraHandler{
 	public static boolean vehicleCameraLocked=false;

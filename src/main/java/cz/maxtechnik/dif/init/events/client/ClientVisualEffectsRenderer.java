@@ -9,15 +9,14 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderGuiEvent;
-import net.minecraftforge.client.event.ViewportEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RenderGuiEvent;
+import net.neoforged.neoforge.client.event.ViewportEvent;
 
 import java.awt.Color;
-@Mod.EventBusSubscriber(modid=DifMod.MODID, value=Dist.CLIENT)
+@EventBusSubscriber(modid=DifMod.MODID, value= Dist.CLIENT)
 public class ClientVisualEffectsRenderer{
 	private static boolean wasWTFActive=false;
 	private static SoundInstance playingWTFSound=null;

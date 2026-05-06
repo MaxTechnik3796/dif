@@ -4,13 +4,14 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import cz.maxtechnik.dif.DifMod;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 public class SkyRenderer{
 	private static final ResourceLocation EARTH_TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/environment/earth.png");
-	public static void renderCustomSky(ClientLevel level,float partialTick,PoseStack poseStack,String mode){
+	public static void renderCustomSky(ClientLevel level, DeltaTracker partialTick, PoseStack poseStack, String mode){
 		RenderSystem.disableDepthTest();
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
