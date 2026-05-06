@@ -9,11 +9,11 @@ public class WTFMobEffect extends MobEffect{
 		super(MobEffectCategory.BENEFICIAL,0x1A4D2E);
 	}
 	@Override
-	public void applyEffectTick(@NotNull LivingEntity entity,int amplifier){
-		super.applyEffectTick(entity,amplifier);
+	public boolean applyEffectTick(@NotNull LivingEntity entity,int amplifier){
+		return true;
 	}
 	@Override
-	public boolean isDurationEffectTick(int duration,int amplifier){
+	public boolean shouldApplyEffectTickThisTick(int duration,int amplifier){
 		return true;
 	}
 }

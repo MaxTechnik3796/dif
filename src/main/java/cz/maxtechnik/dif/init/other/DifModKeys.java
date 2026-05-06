@@ -10,14 +10,14 @@ import cz.maxtechnik.dif.network.RemoteControlPacket;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import org.lwjgl.glfw.GLFW;
 
-@Mod.EventBusSubscriber(modid = DifMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = DifMod.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class DifModKeys {
 	public static final String CATEGORY = "key.categories.dif";
 
@@ -57,11 +57,11 @@ public class DifModKeys {
 		event.register(MEGA_BACKPACK_KEY);
 	}
 
-	@Mod.EventBusSubscriber(modid = DifMod.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
+	@EventBusSubscriber(modid = DifMod.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.GAME)
 	public static class ClientTickHandler {
 		@SubscribeEvent
-		public static void onClientTick(TickEvent.ClientTickEvent event) {
-			if (event.phase == TickEvent.Phase.END && Minecraft.getInstance().player != null) {
+		public static void onClientTick(ClientTickEvent.Post event) {
+			if (Minecraft.getInstance().player != null) {
 				var player = Minecraft.getInstance().player;
 
 				// 1. Řazení obsluhuje CarInputHandler přes InputEvent.Key
@@ -98,4 +98,5 @@ public class DifModKeys {
 			}
 		}
 	}
+}
 }

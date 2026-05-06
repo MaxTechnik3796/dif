@@ -1,13 +1,12 @@
 package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.model.*;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.api.distmarker.Dist;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
-
-@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD,value={Dist.CLIENT})
+@EventBusSubscriber(modid = cz.maxtechnik.dif.DifMod.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class DifModModels{
 	@SubscribeEvent
 	public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event){

@@ -8,7 +8,7 @@ public class RedstoneIQMobEffect extends MobEffect{
 		super(MobEffectCategory.BENEFICIAL,-1531648);
 	}
 	@Override
-	public boolean isDurationEffectTick(int duration,int amplifier){
+	public boolean shouldApplyEffectTickThisTick(int duration,int amplifier){
 		return true;
 	}
 }

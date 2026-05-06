@@ -12,13 +12,13 @@ public class DrankMobEffect extends MobEffect{
 		super(MobEffectCategory.BENEFICIAL,-3407668);
 	}
 	@Override
-	public void applyEffectTick(@NotNull LivingEntity entity,int amplifier){
-		super.applyEffectTick(entity,amplifier);
-		if(entity.hasEffect(MobEffects.CONFUSION))return;
+	public boolean applyEffectTick(@NotNull LivingEntity entity,int amplifier){
+		if(entity.hasEffect(MobEffects.CONFUSION)) return true;
 		entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION,200,amplifier));
+		return true;
 	}
 	@Override
-	public boolean isDurationEffectTick(int duration,int amplifier){
+	public boolean shouldApplyEffectTickThisTick(int duration,int amplifier){
 		return true;
 	}
 }

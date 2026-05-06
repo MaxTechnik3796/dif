@@ -13,22 +13,23 @@ public class RedstoneNotIQMobEffect extends MobEffect{
 		super(MobEffectCategory.HARMFUL,-16776961);
 	}
 	@Override
-	public void applyEffectTick(@NotNull LivingEntity entity,int amplifier){
-		if(entity.hasEffect(DifModMobEffects.REDSTONE_IQ.get())){
-			entity.removeEffect(DifModMobEffects.REDSTONE_IQ.get());
-			entity.removeEffect(DifModMobEffects.REDSTONE_NOT_IQ.get());
+	public boolean applyEffectTick(@NotNull LivingEntity entity,int amplifier){
+		if(entity.hasEffect(DifModMobEffects.REDSTONE_IQ)){
+			entity.removeEffect(DifModMobEffects.REDSTONE_IQ);
+			entity.removeEffect(DifModMobEffects.REDSTONE_NOT_IQ);
 			if(DifMod.rouletteBoolean(2)){
-				entity.setSecondsOnFire(10);
+				entity.igniteForSeconds(10);
 			}else{
-				LevelAccessor world=entity.level();
-				if(world instanceof Level level&&!level.isClientSide()){
-					level.explode(null,entity.getX(),entity.getY(),entity.getZ(),3,Level.ExplosionInteraction.MOB);
+				Level world=entity.level();
+				if(!world.isClientSide()){
+					world.explode(null,entity.getX(),entity.getY(),entity.getZ(),3,Level.ExplosionInteraction.MOB);
 				}
 			}
 		}
+		return true;
 	}
 	@Override
-	public boolean isDurationEffectTick(int duration,int amplifier){
+	public boolean shouldApplyEffectTickThisTick(int duration,int amplifier){
 		return true;
 	}
 }
