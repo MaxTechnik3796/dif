@@ -9,6 +9,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
+import net.minecraft.core.component.DataComponents;
 import org.jetbrains.annotations.NotNull;
 public class RemoteMinecartItem extends Item{
 	public RemoteMinecartItem(Properties props){
@@ -27,7 +28,7 @@ public class RemoteMinecartItem extends Item{
 				double d0=0.0D;
 				if(shape.isAscending()) d0=0.5D;
 				RemoteControlMinecart minecart=new RemoteControlMinecart(level,pos.getX()+0.5D,pos.getY()+0.0625D+d0,pos.getZ()+0.5D);
-				if(context.getItemInHand().hasCustomHoverName()){
+				if(context.getItemInHand().has(DataComponents.CUSTOM_NAME)){
 					minecart.setCustomName(context.getItemInHand().getHoverName());
 				}
 				level.addFreshEntity(minecart);

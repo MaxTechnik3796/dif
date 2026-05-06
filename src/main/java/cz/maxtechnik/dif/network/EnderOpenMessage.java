@@ -16,11 +16,14 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-
-public record EnderOpenMessage(int type, int pressedms) implements CustomPacketPayload {
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.inventory.MenuType;
+import org.jetbrains.annotations.NotNull;
+import top.theillusivec4.curios.api.CuriosApi;
+public record EnderOpenMessage(int actionType, int pressedms) implements CustomPacketPayload {
 	public static final Type<EnderOpenMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "ender_open"));
 	public static final StreamCodec<FriendlyByteBuf, EnderOpenMessage> STREAM_CODEC = StreamCodec.composite(
-			ByteBufCodecs.INT, EnderOpenMessage::type,
+			ByteBufCodecs.INT, EnderOpenMessage::actionType,
 			ByteBufCodecs.INT, EnderOpenMessage::pressedms,
 			EnderOpenMessage::new
 	);
@@ -31,13 +34,13 @@ public record EnderOpenMessage(int type, int pressedms) implements CustomPacketP
 	}
 
 	public void handle(IPayloadContext context) {
-		context.enqueueWork(() -> pressAction(context.player(), type));
+		context.enqueueWork(() -> pressAction(context.player(), actionType));
 	}
 
-	public static void pressAction(Player player, int type) {
+	public static void pressAction(Player player, int actionType) {
 		Level world = player.level();
 		if (!world.hasChunkAt(player.blockPosition())) return;
-		if (type == 0 && player instanceof ServerPlayer serverPlayer) {
+		if (actionType == 0 && player instanceof ServerPlayer serverPlayer) {
 			CuriosApi.getCuriosInventory(serverPlayer).ifPresent(handler -> handler.findFirstCurio(stack -> stack.getItem() == Items.ENDER_CHEST).ifPresent(slotResult -> {
 				PlayerEnderChestContainer enderChestInventory = serverPlayer.getEnderChestInventory();
 				SimpleMenuProvider menuProvider = new SimpleMenuProvider(

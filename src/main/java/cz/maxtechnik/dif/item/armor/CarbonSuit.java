@@ -1,7 +1,7 @@
+package cz.maxtechnik.dif.item.armor;
 
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ItemStack;
 
 public abstract class CarbonSuit extends ArmorItem {
 	public CarbonSuit(Type type, Properties properties) {

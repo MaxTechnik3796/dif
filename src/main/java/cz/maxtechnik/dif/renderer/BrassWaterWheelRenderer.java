@@ -17,9 +17,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.Direction;
 import net.createmod.catnip.render.SuperByteBufferCache;
 import net.createmod.catnip.render.SuperBufferFactory;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
 @OnlyIn(Dist.CLIENT)
 public class BrassWaterWheelRenderer extends KineticBlockEntityRenderer<WaterWheelBlockEntity>{
 	public BrassWaterWheelRenderer(BlockEntityRendererProvider.Context context){

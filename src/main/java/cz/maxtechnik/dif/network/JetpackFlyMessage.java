@@ -11,10 +11,10 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record JetpackFlyMessage(int type, int pressedms) implements CustomPacketPayload {
+public record JetpackFlyMessage(int actionType, int pressedms) implements CustomPacketPayload {
 	public static final Type<JetpackFlyMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "jetpack_fly"));
 	public static final StreamCodec<FriendlyByteBuf, JetpackFlyMessage> STREAM_CODEC = StreamCodec.composite(
-			ByteBufCodecs.INT, JetpackFlyMessage::type,
+			ByteBufCodecs.INT, JetpackFlyMessage::actionType,
 			ByteBufCodecs.INT, JetpackFlyMessage::pressedms,
 			JetpackFlyMessage::new
 	);
@@ -25,13 +25,13 @@ public record JetpackFlyMessage(int type, int pressedms) implements CustomPacket
 	}
 
 	public void handle(IPayloadContext context) {
-		context.enqueueWork(() -> pressAction(context.player(), type));
+		context.enqueueWork(() -> pressAction(context.player(), actionType));
 	}
 
-	public static void pressAction(Player player, int type) {
+	public static void pressAction(Player player, int actionType) {
 		Level world = player.level();
 		if (!world.hasChunkAt(player.blockPosition())) return;
-		if (type == 0) {
+		if (actionType == 0) {
 			JetpackHandler.fly(player);
 		}
 	}

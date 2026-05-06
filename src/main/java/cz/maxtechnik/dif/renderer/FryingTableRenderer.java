@@ -9,32 +9,29 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.NotNull;
 public class FryingTableRenderer implements BlockEntityRenderer<FryingTableBlockEntity>{
 	public FryingTableRenderer(){
 	}
 	@Override
 	public void render(FryingTableBlockEntity blockEntity,float partialTick,@NotNull PoseStack poseStack,@NotNull MultiBufferSource buffer,int combinedLight,int combinedOverlay){
-		blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler->{
-			ItemRenderer itemRenderer=Minecraft.getInstance().getItemRenderer();
-			ItemStack inputStack=handler.getStackInSlot(FryingTableBlockEntity.INPUT_SLOT);
-			if(!inputStack.isEmpty()){
-				poseStack.pushPose();
-				poseStack.translate(0.5D,0.75D,0.5D);
-				poseStack.scale(0.6F,0.6F,0.6F);
-				renderItemStack(inputStack,poseStack,buffer,combinedLight,combinedOverlay,itemRenderer,false);
-				poseStack.popPose();
-			}
-			ItemStack outputStack=handler.getStackInSlot(FryingTableBlockEntity.OUTPUT_SLOT);
-			if(!outputStack.isEmpty()){
-				poseStack.pushPose();
-				poseStack.translate(0.75D,0.72D,0.7D);
-				poseStack.scale(0.4F,0.4F,0.4F);
-				renderItemStack(outputStack,poseStack,buffer,combinedLight,combinedOverlay,itemRenderer,true);
-				poseStack.popPose();
-			}
-		});
+		ItemRenderer itemRenderer=Minecraft.getInstance().getItemRenderer();
+		ItemStack inputStack=blockEntity.getItem(FryingTableBlockEntity.INPUT_SLOT);
+		if(!inputStack.isEmpty()){
+			poseStack.pushPose();
+			poseStack.translate(0.5D,0.75D,0.5D);
+			poseStack.scale(0.6F,0.6F,0.6F);
+			renderItemStack(inputStack,poseStack,buffer,combinedLight,combinedOverlay,itemRenderer,false);
+			poseStack.popPose();
+		}
+		ItemStack outputStack=blockEntity.getItem(FryingTableBlockEntity.OUTPUT_SLOT);
+		if(!outputStack.isEmpty()){
+			poseStack.pushPose();
+			poseStack.translate(0.75D,0.72D,0.7D);
+			poseStack.scale(0.4F,0.4F,0.4F);
+			renderItemStack(outputStack,poseStack,buffer,combinedLight,combinedOverlay,itemRenderer,true);
+			poseStack.popPose();
+		}
 	}
 	private void renderItemStack(ItemStack stack,PoseStack poseStack,MultiBufferSource buffer,int combinedLight,int combinedOverlay,ItemRenderer itemRenderer,boolean isOutput){
 		int count=stack.getCount();
