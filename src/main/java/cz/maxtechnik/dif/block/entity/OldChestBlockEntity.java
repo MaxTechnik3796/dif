@@ -5,42 +5,41 @@ import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.stream.IntStream;
 public class OldChestBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer{
 	private NonNullList<ItemStack> stacks=NonNullList.withSize(27,ItemStack.EMPTY);
-	private final LazyOptional<? extends IItemHandler>[] handlers=SidedInvWrapper.create(this,Direction.values());
 	public OldChestBlockEntity(BlockPos position,BlockState state){
 		super(DifModBlockEntities.OLD_CHEST.get(),position,state);
 	}
 	@Override
-	public void load(@NotNull CompoundTag compound){
-		super.load(compound);
+	protected void loadAdditional(@NotNull CompoundTag compound, @NotNull HolderLookup.Provider provider){
+		super.loadAdditional(compound, provider);
 		if(!this.tryLoadLootTable(compound))
 			this.stacks=NonNullList.withSize(this.getContainerSize(),ItemStack.EMPTY);
-		ContainerHelper.loadAllItems(compound,this.stacks);
+		ContainerHelper.loadAllItems(compound,this.stacks, provider);
 	}
 	@Override
-	public void saveAdditional(@NotNull CompoundTag compound){
-		super.saveAdditional(compound);
+	protected void saveAdditional(@NotNull CompoundTag compound, @NotNull HolderLookup.Provider provider){
+		super.saveAdditional(compound, provider);
 		if(!this.trySaveLootTable(compound)){
-			ContainerHelper.saveAllItems(compound,this.stacks);
+			ContainerHelper.saveAllItems(compound,this.stacks, provider);
 		}
 	}
 	@Override
@@ -48,8 +47,8 @@ public class OldChestBlockEntity extends RandomizableContainerBlockEntity implem
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
 	@Override
-	public @NotNull CompoundTag getUpdateTag(){
-		return this.saveWithFullMetadata();
+	public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider provider){
+		return this.saveWithFullMetadata(provider);
 	}
 	@Override
 	public int getContainerSize(){
@@ -67,8 +66,8 @@ public class OldChestBlockEntity extends RandomizableContainerBlockEntity implem
 		return Component.translatable("container.dif.old_chest");
 	}
 	@Override
-	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory){
-		return new OldChestMenu(id,inventory,new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(this.worldPosition));
+	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory,@NotNull Player player){
+		return new OldChestMenu(id,inventory,new RegistryFriendlyByteBuf(Unpooled.buffer(), this.level.registryAccess()).writeBlockPos(this.worldPosition));
 	}
 	@Override
 	public @NotNull Component getDisplayName(){
@@ -97,17 +96,5 @@ public class OldChestBlockEntity extends RandomizableContainerBlockEntity implem
 	@Override
 	public boolean canTakeItemThroughFace(int index,@NotNull ItemStack stack,@NotNull Direction direction){
 		return true;
-	}
-	@Override
-	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability,@Nullable Direction facing){
-		if(!this.remove&&facing!=null&&capability==ForgeCapabilities.ITEM_HANDLER)
-			return handlers[facing.ordinal()].cast();
-		return super.getCapability(capability,facing);
-	}
-	@Override
-	public void setRemoved(){
-		super.setRemoved();
-		for(LazyOptional<? extends IItemHandler> handler: handlers)
-			handler.invalidate();
 	}
 }

@@ -3,6 +3,7 @@ package cz.maxtechnik.dif.block.entity;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Containers;
@@ -25,7 +26,6 @@ public class SpaceshipBlockEntity extends BlockEntity implements MenuProvider{
 			setChanged();
 		}
 	};
-	private LazyOptional<IItemHandler> lazyItemHandler=LazyOptional.empty();
 	public SpaceshipBlockEntity(BlockPos pos,BlockState state){
 		super(DifModBlockEntities.SPACESHIP.get(),pos,state);
 	}
@@ -39,31 +39,16 @@ public class SpaceshipBlockEntity extends BlockEntity implements MenuProvider{
 		return new SpaceshipMenu(id,inventory,this.worldPosition);
 	}
 	@Override
-	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap,@Nullable Direction side){
-		if(cap==ForgeCapabilities.ITEM_HANDLER){
-			return lazyItemHandler.cast();
+	protected void saveAdditional(CompoundTag tag, @NotNull HolderLookup.Provider provider){
+		tag.put("inventory",itemHandler.serializeNBT(provider));
+		super.saveAdditional(tag, provider);
+	}
+	@Override
+	protected void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider){
+		super.loadAdditional(tag, provider);
+		if (tag.contains("inventory")) {
+			itemHandler.deserializeNBT(provider, tag.getCompound("inventory"));
 		}
-		return super.getCapability(cap,side);
-	}
-	@Override
-	public void onLoad(){
-		super.onLoad();
-		lazyItemHandler=LazyOptional.of(()->itemHandler);
-	}
-	@Override
-	public void invalidateCaps(){
-		super.invalidateCaps();
-		lazyItemHandler.invalidate();
-	}
-	@Override
-	protected void saveAdditional(CompoundTag tag){
-		tag.put("inventory",itemHandler.serializeNBT());
-		super.saveAdditional(tag);
-	}
-	@Override
-	public void load(@NotNull CompoundTag tag){
-		super.load(tag);
-		itemHandler.deserializeNBT(tag.getCompound("inventory"));
 	}
 	public void drops(){
 		SimpleContainer inventory=new SimpleContainer(itemHandler.getSlots());
