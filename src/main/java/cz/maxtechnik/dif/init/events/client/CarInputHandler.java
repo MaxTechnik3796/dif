@@ -12,6 +12,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+@SuppressWarnings("removal")
 @EventBusSubscriber(modid=DifMod.MODID,value=Dist.CLIENT,bus=EventBusSubscriber.Bus.GAME)
 public class CarInputHandler{
 	@SubscribeEvent
@@ -25,11 +26,11 @@ public class CarInputHandler{
 	@SubscribeEvent
 	public static void onMovementInput(MovementInputUpdateEvent event){
 		if(event.getEntity().getVehicle() instanceof BaseCarEntity){
-			// In 1.21.1 Input is a record – use event setters instead of mutable fields
 			boolean gas=DifModKeys.CAR_GAS.isDown();
 			boolean brake=DifModKeys.CAR_BRAKE.isDown();
-			event.setForwardImpulse(gas?1.0F:0.0F);
-			event.setJump(brake);
+			net.minecraft.client.player.Input input=event.getInput();
+			input.forwardImpulse=gas?1.0F:0.0F;
+			input.jumping=brake;
 		}
 	}
 	private static void handleShift(BaseCarEntity car,int direction){

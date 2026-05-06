@@ -24,6 +24,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.NotNull;
 public class SolarPanel extends Block implements SimpleWaterloggedBlock{
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
@@ -120,7 +121,15 @@ public class SolarPanel extends Block implements SimpleWaterloggedBlock{
 		}
 		world.scheduleTick(pos,this,1);
 	}
-	private void generate(BlockEntity ent,int amount){
-		ent.getCapability(ForgeCapabilities.ENERGY,Direction.UP).ifPresent(capability->capability.receiveEnergy(amount,false));
+	private void generate(BlockEntity ent, int amount) {
+		Level level = ent.getLevel();
+		if (level == null || level.isClientSide) return;
+
+		// Opravené volání pro NeoForge 1.21.1
+		var energyHandler = level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.Energy.BLOCK, ent.getBlockPos(), ent.getBlockState(), ent, Direction.UP);
+
+		if (energyHandler != null) {
+			energyHandler.receiveEnergy(amount, false);
+		}
 	}
 }
