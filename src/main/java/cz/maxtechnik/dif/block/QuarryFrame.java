@@ -17,9 +17,17 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 public class QuarryFrame extends BaseEntityBlock{
+	public static final MapCodec<QuarryFrame> CODEC = simpleCodec(properties -> new QuarryFrame());
+
+	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec() {
+		return CODEC;
+	}
 	private static final VoxelShape CORE_SHAPE=Block.box(4,4,4,12,12,12);
 	private static final VoxelShape NORTH_SHAPE=Block.box(4,4,0,12,12,4);
 	private static final VoxelShape SOUTH_SHAPE=Block.box(4,4,12,12,12,16);

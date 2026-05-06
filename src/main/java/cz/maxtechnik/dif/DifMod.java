@@ -9,6 +9,8 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
 import cz.maxtechnik.dif.renderer.BrassWaterWheelRenderer;
@@ -75,7 +77,17 @@ public class DifMod {
 		NeoForge.EVENT_BUS.register(JetpackHandler.class);
 		bus.addListener(DifModTabs::addCreative);
 		modContainer.registerConfig(ModConfig.Type.COMMON, DifModCommonConfig.SPEC);
+		// Registrace capabilities (NeoForge 1.21.1)
+		bus.addListener(DifMod::registerCapabilities);
 	}
+
+	private static void registerCapabilities(RegisterCapabilitiesEvent event){
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.QUARRY.get(),
+			(be, side) -> be.getInventory());
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DifModBlockEntities.QUARRY.get(),
+			(be, side) -> be.getEnergyStorage());
+	}
+
 
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event) {

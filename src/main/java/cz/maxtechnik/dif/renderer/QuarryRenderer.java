@@ -85,8 +85,8 @@ public class QuarryRenderer implements BlockEntityRenderer<QuarryBlockEntity>{
 		float len=(float)Math.sqrt(dx*dx+dy*dy+dz*dz);
 		if(len<0.001f) return;
 		float normX=dx/len, normY=dy/len, normZ=dz/len;
-		vertexConsumer.vertex(matrix,x0,y0,z0).color(255,colorG,colorB,colorA).normal(normX,normY,normZ).endVertex();
-		vertexConsumer.vertex(matrix,x1,y1,z1).color(255,colorG,colorB,colorA).normal(normX,normY,normZ).endVertex();
+		vertexConsumer.addVertex(matrix,x0,y0,z0).setColor(255,colorG,colorB,colorA).setNormal(normX,normY,normZ);
+		vertexConsumer.addVertex(matrix,x1,y1,z1).setColor(255,colorG,colorB,colorA).setNormal(normX,normY,normZ);
 	}
 	@Override
 	public boolean shouldRenderOffScreen(@NotNull QuarryBlockEntity blockEntity){

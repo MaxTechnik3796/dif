@@ -3,7 +3,6 @@ package cz.maxtechnik.dif.block;
 import cz.maxtechnik.dif.block.entity.QuarryLandmarkBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -25,11 +24,18 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
 public class QuarryLandmark extends BaseEntityBlock {
+	public static final MapCodec<QuarryLandmark> CODEC = simpleCodec(properties -> new QuarryLandmark());
+
+	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec() {
+		return CODEC;
+	}
 	public static final DirectionProperty FACING = BlockStateProperties.FACING;
 	
 	protected static final VoxelShape UP_SHAPE = Block.box(6.0D, 0.0D, 6.0D, 10.0D, 10.0D, 10.0D);
@@ -94,7 +100,7 @@ public class QuarryLandmark extends BaseEntityBlock {
 	}
 
 	@Override
-	public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
 		if (!level.isClientSide && level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity lmEntity)
 			lmEntity.onRightClick(player);
 		return InteractionResult.sidedSuccess(level.isClientSide);

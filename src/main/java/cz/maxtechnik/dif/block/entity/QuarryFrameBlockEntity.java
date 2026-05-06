@@ -2,6 +2,7 @@ package cz.maxtechnik.dif.block.entity;
 
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -32,8 +33,8 @@ public class QuarryFrameBlockEntity extends BlockEntity{
 		return ownerQuarryPos;
 	}
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag){
-		super.saveAdditional(tag);
+	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider){
+		super.saveAdditional(tag, provider);
 		if(ownerQuarryPos!=null){
 			tag.putInt("OwnX",ownerQuarryPos.getX());
 			tag.putInt("OwnY",ownerQuarryPos.getY());
@@ -42,8 +43,8 @@ public class QuarryFrameBlockEntity extends BlockEntity{
 		tag.putBoolean("Dying",scheduledForRemoval);
 	}
 	@Override
-	public void load(@NotNull CompoundTag tag){
-		super.load(tag);
+	public void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider){
+		super.loadAdditional(tag, provider);
 		if(tag.contains("OwnX")) ownerQuarryPos=new BlockPos(tag.getInt("OwnX"),tag.getInt("OwnY"),tag.getInt("OwnZ"));
 		scheduledForRemoval=tag.getBoolean("Dying");
 	}

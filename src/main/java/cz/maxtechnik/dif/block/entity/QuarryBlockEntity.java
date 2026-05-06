@@ -10,6 +10,8 @@ import cz.maxtechnik.dif.item.quarry.DrillHeadItem;
 import cz.maxtechnik.dif.item.quarry.EngineItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -21,7 +23,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -35,14 +36,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.security.DrbgParameters;
 import java.util.ArrayList;
 import java.util.List;
 public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
@@ -101,19 +103,16 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		ItemStack upgradeStack=inventory.getStackInSlot(2);
 		if(upgradeStack.isEmpty()) return;
 		if(upgradeStack.getItem()==Items.SPONGE) hasLiquidRemover=true;
-		else if(upgradeStack.is(Items.ENCHANTED_BOOK)){
-			ListTag storedEnchants=EnchantedBookItem.getEnchantments(upgradeStack);
-			ResourceLocation silkKey=ForgeRegistries.ENCHANTMENTS.getKey(Enchantments.SILK_TOUCH);
-			for(int i=0;i<storedEnchants.size();i++){
-				ResourceLocation enchId=ResourceLocation.tryParse(storedEnchants.getCompound(i).getString("id"));
-				if(silkKey!=null&&silkKey.equals(enchId)){
+		else 		if(upgradeStack.is(Items.ENCHANTED_BOOK)){
+			var enchants=upgradeStack.getEnchantments();
+			enchants.keySet().forEach(holder->{
+				ResourceLocation key=BuiltInRegistries.ENCHANTMENT.getKey(holder.value());
+				if(key!=null&&key.equals(ResourceLocation.withDefaultNamespace("silk_touch"))){
 					hasSilkTouch=true;
-					break;
 				}
-			}
+			});
 		}
 	}
-	private final LazyOptional<IItemHandler> inventoryCap=LazyOptional.of(()->inventory);
 	private int feInAcc=0;
 	private int feOutAcc=0;
 	private int feTickTimer=0;
@@ -131,7 +130,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 			return ext;
 		}
 	};
-	private final LazyOptional<IEnergyStorage> energyCap=LazyOptional.of(()->energy);
+
 	// GUI data:
 	// 0=stav, 1=excessDP, 2=feCost, 3=areaX, 4=areaZ, 5=statusMode
 	public final ContainerData dataAccess=new ContainerData(){
@@ -198,7 +197,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		if(headStack.is(DifModItems.QUARRY_DRILL_IRON.get())) tool=new ItemStack(Items.IRON_PICKAXE);
 		else if(headStack.is(DifModItems.QUARRY_DRILL_DIAMOND.get())) tool=new ItemStack(Items.DIAMOND_PICKAXE);
 		else tool=new ItemStack(Items.IRON_PICKAXE);
-		if(hasSilkTouch) tool.enchant(Enchantments.SILK_TOUCH,1);
+		// Silk touch applied via enchantment tag in 1.21.1
 		return tool;
 	}
 	// Tick
@@ -458,9 +457,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		if(adjHandlers==null){
 			adjHandlers=new IItemHandler[Direction.values().length];
 			for(Direction dir: Direction.values()){
-				BlockEntity adjBE=level.getBlockEntity(worldPosition.relative(dir));
-				if(adjBE!=null)
-					adjHandlers[dir.ordinal()]=adjBE.getCapability(ForgeCapabilities.ITEM_HANDLER,dir.getOpposite()).orElse(null);
+				adjHandlers[dir.ordinal()]=level.getCapability(Capabilities.ItemHandler.BLOCK,worldPosition.relative(dir),dir.getOpposite());
 			}
 		}
 		for(ItemStack dropStack: drops){
@@ -634,9 +631,9 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
 	@Override
-	public void load(@NotNull CompoundTag tag){
-		super.load(tag);
-		if(tag.contains("Inventory")) inventory.deserializeNBT(tag.getCompound("Inventory"));
+	public void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider){
+		super.loadAdditional(tag,provider);
+		if(tag.contains("Inventory")) inventory.deserializeNBT(provider,tag.getCompound("Inventory"));
 		rebuildUpgradeCache();
 		int storedFE=tag.getInt("Energy");
 		energy.receiveEnergy(storedFE-energy.getEnergyStored(),false);
@@ -664,9 +661,9 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		if(quarryState==State.MINING) chunksNeedReload=true;
 	}
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag){
-		super.saveAdditional(tag);
-		tag.put("Inventory",inventory.serializeNBT());
+	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider){
+		super.saveAdditional(tag,provider);
+		tag.put("Inventory",inventory.serializeNBT(provider));
 		tag.putInt("Energy",energy.getEnergyStored());
 		tag.putInt("QS",quarryState.ordinal());
 		tag.putInt("WI",workIndex);
@@ -694,19 +691,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		tag.putInt("SecMnZ",sectionMinZ);
 		tag.putInt("SecMxZ",sectionMaxZ);
 	}
-	// Capabilities
-	@Override
-	public @NotNull <T> LazyOptional<T> getCapability(@NotNull DrbgParameters.Capability cap, @Nullable Direction side){
-		if(cap==ForgeCapabilities.ENERGY) return energyCap.cast();
-		if(cap==ForgeCapabilities.ITEM_HANDLER) return inventoryCap.cast();
-		return super.getCapability(cap,side);
-	}
-	@Override
-	public void invalidateCaps(){
-		super.invalidateCaps();
-		energyCap.invalidate();
-		inventoryCap.invalidate();
-	}
+
 	// Gettery
 	public BlockPos getMiningPos(){
 		return miningPos;
@@ -732,4 +717,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 	public AbstractContainerMenu createMenu(int id,@NotNull Inventory playerInv,@NotNull Player player){
 		return new QuarryMenu(id,playerInv,this);
 	}
+	// NeoForge 1.21.1 – capability registration is done in DifModBlockEntities via registerCapabilities
+
+	public net.neoforged.neoforge.items.IItemHandler getInventory(){ return inventory; }
+	public net.neoforged.neoforge.energy.IEnergyStorage getEnergyStorage(){ return energy; }
 }

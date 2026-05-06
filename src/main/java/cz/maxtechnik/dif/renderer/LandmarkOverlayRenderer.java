@@ -7,16 +7,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import org.joml.Matrix4f;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 // Klientský overlay – formed landmarky vykreslí modrý obdélník v jejich rovině.
-@Mod.EventBusSubscriber(value=Dist.CLIENT)
+@EventBusSubscriber(value=Dist.CLIENT)
 public class LandmarkOverlayRenderer{
 	// Aktivní formed landmarky sledované rendererem
 	private static final Map<BlockPos,QuarryLandmarkBlockEntity> FORMED_LANDMARKS=
@@ -75,7 +75,7 @@ public class LandmarkOverlayRenderer{
 		float len=(float)Math.sqrt(dx*dx+dy*dy+dz*dz);
 		if(len<0.0001f) return;
 		float normX=dx/len, normY=dy/len, normZ=dz/len;
-		vertexConsumer.vertex(matrix,x0,y0,z0).color(colorR,colorG,colorB,colorA).normal(normX,normY,normZ).endVertex();
-		vertexConsumer.vertex(matrix,x1,y1,z1).color(colorR,colorG,colorB,colorA).normal(normX,normY,normZ).endVertex();
+		vertexConsumer.addVertex(matrix,x0,y0,z0).setColor(colorR,colorG,colorB,colorA).setNormal(normX,normY,normZ);
+		vertexConsumer.addVertex(matrix,x1,y1,z1).setColor(colorR,colorG,colorB,colorA).setNormal(normX,normY,normZ);
 	}
 }

@@ -4,6 +4,7 @@ import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.renderer.LandmarkOverlayRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
@@ -176,14 +177,14 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 		if(level!=null&&level.isClientSide) LandmarkOverlayRenderer.unregister(worldPosition);
 	}
 	@Override
-	public void handleUpdateTag(@NotNull CompoundTag tag){
-		load(tag);
+	public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider lookupProvider){
+		loadAdditional(tag, lookupProvider);
 		updateClientRenderer();
 	}
 	@Override
-	public void onDataPacket(Connection net,ClientboundBlockEntityDataPacket pkt){
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, @NotNull HolderLookup.Provider lookupProvider){
 		CompoundTag tag=pkt.getTag();
-		if(tag!=null) load(tag);
+		if(tag!=null) loadAdditional(tag, lookupProvider);
 		updateClientRenderer();
 	}
 	private void updateClientRenderer(){
@@ -207,8 +208,8 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 	}
 	// NBT serializace
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag){
-		super.saveAdditional(tag);
+	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider){
+		super.saveAdditional(tag, provider);
 		tag.putBoolean("Formed",formed);
 		tag.putInt("FHX",formedHalfX);
 		tag.putInt("FHZ",formedHalfZ);
@@ -218,8 +219,8 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 		tag.put("Partners",partnerList);
 	}
 	@Override
-	public void load(@NotNull CompoundTag tag){
-		super.load(tag);
+	public void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider){
+		super.loadAdditional(tag, provider);
 		formed=tag.getBoolean("Formed");
 		formedHalfX=tag.getInt("FHX");
 		formedHalfZ=tag.getInt("FHZ");
