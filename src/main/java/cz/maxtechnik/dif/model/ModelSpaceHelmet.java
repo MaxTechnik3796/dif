@@ -31,8 +31,8 @@ public class ModelSpaceHelmet<T extends Entity> extends EntityModel<T>{
 		return LayerDefinition.create(meshdefinition,88,88);
 	}
 	@Override
-	public void renderToBuffer(@NotNull PoseStack poseStack,@NotNull VertexConsumer vertexConsumer,int packedLight,int packedOverlay,float red,float green,float blue,float alpha){
-		Head.render(poseStack,vertexConsumer,packedLight,packedOverlay,red,green,blue,alpha);
+	public void renderToBuffer(@NotNull PoseStack poseStack,@NotNull VertexConsumer vertexConsumer,int packedLight,int packedOverlay,int color){
+		Head.render(poseStack,vertexConsumer,packedLight,packedOverlay,color);
 	}
 	public void setupAnim(@NotNull T entity,float limbSwing,float limbSwingAmount,float ageInTicks,float netHeadYaw,float headPitch){
 		this.Head.yRot=netHeadYaw/(180F/(float)Math.PI);

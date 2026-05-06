@@ -34,9 +34,9 @@ public class ModelElectroRunners<T extends Entity> extends EntityModel<T>{
 		return LayerDefinition.create(meshdefinition,12,10);
 	}
 	@Override
-	public void renderToBuffer(@NotNull PoseStack poseStack,@NotNull VertexConsumer vertexConsumer,int packedLight,int packedOverlay,float red,float green,float blue,float alpha){
-		RightLeg.render(poseStack,vertexConsumer,packedLight,packedOverlay,red,green,blue,alpha);
-		LeftLeg.render(poseStack,vertexConsumer,packedLight,packedOverlay,red,green,blue,alpha);
+	public void renderToBuffer(@NotNull PoseStack poseStack,@NotNull VertexConsumer vertexConsumer,int packedLight,int packedOverlay,int color){
+		RightLeg.render(poseStack,vertexConsumer,packedLight,packedOverlay,color);
+		LeftLeg.render(poseStack,vertexConsumer,packedLight,packedOverlay,color);
 	}
 	public void setupAnim(@NotNull T entity,float limbSwing,float limbSwingAmount,float ageInTicks,float netHeadYaw,float headPitch){
 		this.LeftLeg.xRot=Mth.cos(limbSwing)*-1.0F*limbSwingAmount;

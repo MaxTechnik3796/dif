@@ -94,19 +94,18 @@ public class Spaceship extends Block implements EntityBlock{
 		}
 	}
 	@Override
-	public @NotNull InteractionResult use(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player entity,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
-		super.use(blockState,world,pos,entity,hand,hit);
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player entity,@NotNull BlockHitResult hit){
 		if(entity instanceof ServerPlayer player){
-			NetworkHooks.openScreen(player,new MenuProvider(){
+			player.openMenu(new MenuProvider(){
 				@Override
 				public @NotNull Component getDisplayName(){
 					return Component.literal("Spaceship");
 				}
 				@Override
 				public AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory,@NotNull Player player){
-					return new SpaceshipMenu(id,inventory,new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos));
+					return new SpaceshipMenu(id,inventory,pos);
 				}
-			},pos);
+			},buf -> buf.writeBlockPos(pos));
 		}
 		return InteractionResult.SUCCESS;
 	}

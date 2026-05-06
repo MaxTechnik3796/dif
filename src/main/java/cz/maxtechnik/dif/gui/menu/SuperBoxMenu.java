@@ -14,6 +14,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
@@ -51,25 +52,30 @@ public class SuperBoxMenu extends AbstractContainerMenu implements Supplier<Map<
 				byte hand=extraData.readByte();
 				ItemStack itemstack=hand==0?this.entity.getMainHandItem():this.entity.getOffhandItem();
 				this.boundItemMatcher=()->itemstack==(hand==0?this.entity.getMainHandItem():this.entity.getOffhandItem());
-				itemstack.getCapability(ForgeCapabilities.ITEM_HANDLER,null).ifPresent(capability->{
+				IItemHandler capability = itemstack.getCapability(Capabilities.ItemHandler.ITEM);
+				if(capability != null) {
 					this.internal=capability;
 					this.bound=true;
-				});
+				}
 			}else if(extraData.readableBytes()>1){ // bound to entity
 				extraData.readByte(); // drop padding
 				boundEntity=world.getEntity(extraData.readVarInt());
-				if(boundEntity!=null)
-					boundEntity.getCapability(ForgeCapabilities.ITEM_HANDLER,null).ifPresent(capability->{
+				if(boundEntity!=null) {
+					IItemHandler capability = boundEntity.getCapability(Capabilities.ItemHandler.ENTITY, null);
+					if(capability != null) {
 						this.internal=capability;
 						this.bound=true;
-					});
+					}
+				}
 			}else{ // might be bound to block
 				boundBlockEntity=this.world.getBlockEntity(pos);
-				if(boundBlockEntity!=null)
-					boundBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER,null).ifPresent(capability->{
+				if(boundBlockEntity!=null){
+					IItemHandler capability = world.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
+					if(capability != null) {
 						this.internal=capability;
 						this.bound=true;
-					});
+					}
+				}
 			}
 		}
 		this.customSlots.put(0,this.addSlot(new SlotItemHandler(internal,0,5,16){
@@ -603,7 +609,7 @@ public class SuperBoxMenu extends AbstractContainerMenu implements Supplier<Map<
 				}
 				Slot slot=this.slots.get(i);
 				ItemStack itemstack=slot.getItem();
-				if(slot.mayPlace(itemstack)&&!itemstack.isEmpty()&&ItemStack.isSameItemSameTags(p_38904_,itemstack)){
+				if(slot.mayPlace(itemstack)&&!itemstack.isEmpty()&&ItemStack.isSameItemSameComponents(p_38904_,itemstack)){
 					int j=itemstack.getCount()+p_38904_.getCount();
 					int maxSize=Math.min(slot.getMaxStackSize(),p_38904_.getMaxStackSize());
 					if(j<=maxSize){

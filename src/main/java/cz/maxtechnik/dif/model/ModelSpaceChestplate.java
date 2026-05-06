@@ -53,10 +53,10 @@ public class ModelSpaceChestplate<T extends Entity> extends EntityModel<T>{
 		return LayerDefinition.create(meshdefinition,88,88);
 	}
 	@Override
-	public void renderToBuffer(@NotNull PoseStack poseStack,@NotNull VertexConsumer vertexConsumer,int packedLight,int packedOverlay,float red,float green,float blue,float alpha){
-		Body.render(poseStack,vertexConsumer,packedLight,packedOverlay,red,green,blue,alpha);
-		RightArm.render(poseStack,vertexConsumer,packedLight,packedOverlay,red,green,blue,alpha);
-		LeftArm.render(poseStack,vertexConsumer,packedLight,packedOverlay,red,green,blue,alpha);
+	public void renderToBuffer(@NotNull PoseStack poseStack,@NotNull VertexConsumer vertexConsumer,int packedLight,int packedOverlay,int color){
+		Body.render(poseStack,vertexConsumer,packedLight,packedOverlay,color);
+		RightArm.render(poseStack,vertexConsumer,packedLight,packedOverlay,color);
+		LeftArm.render(poseStack,vertexConsumer,packedLight,packedOverlay,color);
 	}
 	public void setupAnim(@NotNull T entity,float limbSwing,float limbSwingAmount,float ageInTicks,float netHeadYaw,float headPitch){
 		this.RightArm.xRot=Mth.cos(limbSwing*0.6662F+(float)Math.PI)*limbSwingAmount;

@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
@@ -128,10 +129,11 @@ public class OldChestMenu extends AbstractContainerMenu implements Supplier<Map<
 	}
 	private void addBlockHandler(BlockEntity be){
 		if(be!=null){
-			be.getCapability(ForgeCapabilities.ITEM_HANDLER,null).ifPresent(handler->{
-				this.connectedHandlers.add(handler);
+			IItemHandler capability = world.getCapability(Capabilities.ItemHandler.BLOCK, be.getBlockPos(), null);
+			if(capability != null) {
+				this.connectedHandlers.add(capability);
 				this.bound=true;
-			});
+			}
 		}
 	}
 	// Getter pro počet řádků (pro Screen, aby věděl jak velké okno vykreslit)

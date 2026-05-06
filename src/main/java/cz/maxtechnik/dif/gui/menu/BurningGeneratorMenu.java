@@ -16,6 +16,7 @@ import java.util.function.Supplier;
 import java.util.Map;
 import java.util.HashMap;
 
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
@@ -48,7 +49,8 @@ public class BurningGeneratorMenu extends AbstractContainerMenu implements Suppl
 			blockEntityFromWorld=this.world.getBlockEntity(pos);
 		}
 		if(blockEntityFromWorld instanceof BurningGeneratorBlockEntity generatorBlockEntity){
-			this.internal=generatorBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER,null).orElse(new ItemStackHandler(2));
+			IItemHandler cap = world.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
+			this.internal = cap != null ? cap : new ItemStackHandler(2);
 			this.data=generatorBlockEntity.dataAccess;
 			this.bound=true;
 			this.boundBlockEntity=generatorBlockEntity;
@@ -143,7 +145,7 @@ public class BurningGeneratorMenu extends AbstractContainerMenu implements Suppl
 				}
 				Slot slot=this.slots.get(i);
 				ItemStack itemstack=slot.getItem();
-				if(slot.mayPlace(itemstack)&&!itemstack.isEmpty()&&ItemStack.isSameItemSameTags(p_38904_,itemstack)){
+				if(slot.mayPlace(itemstack)&&!itemstack.isEmpty()&&ItemStack.isSameItemSameComponents(p_38904_,itemstack)){
 					int j=itemstack.getCount()+p_38904_.getCount();
 					int maxSize=Math.min(slot.getMaxStackSize(),p_38904_.getMaxStackSize());
 					if(j<=maxSize){
@@ -199,7 +201,7 @@ public class BurningGeneratorMenu extends AbstractContainerMenu implements Suppl
 			}
 		}
 		return flag;
-	}
+	};
 	@Override
 	public void removed(@NotNull Player playerIn){
 		super.removed(playerIn);

@@ -11,6 +11,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +32,7 @@ public class SpaceshipMenu extends AbstractContainerMenu{
 		BlockEntity be=world.getBlockEntity(pos);
 		IItemHandler shipInventory;
 		if(be!=null){
-			shipInventory=be.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(null);
+			shipInventory=world.getCapability(Capabilities.ItemHandler.BLOCK,pos,null);
 		}else{
 			shipInventory=null;
 		}

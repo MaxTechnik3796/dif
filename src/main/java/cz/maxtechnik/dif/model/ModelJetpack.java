@@ -37,7 +37,7 @@ public class ModelJetpack<T extends Entity> extends EntityModel<T>{
 	public void setupAnim(@NotNull Entity entity,float limbSwing,float limbSwingAmount,float ageInTicks,float netHeadYaw,float headPitch){
 	}
 	@Override
-	public void renderToBuffer(@NotNull PoseStack poseStack,@NotNull VertexConsumer vertexConsumer,int packedLight,int packedOverlay,float red,float green,float blue,float alpha){
-		Body.render(poseStack,vertexConsumer,packedLight,packedOverlay,red,green,blue,alpha);
+	public void renderToBuffer(@NotNull PoseStack poseStack,@NotNull VertexConsumer vertexConsumer,int packedLight,int packedOverlay,int color){
+		Body.render(poseStack,vertexConsumer,packedLight,packedOverlay,color);
 	}
 }

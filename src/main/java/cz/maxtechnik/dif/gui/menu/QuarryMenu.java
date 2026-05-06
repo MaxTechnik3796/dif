@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
@@ -35,7 +36,8 @@ public class QuarryMenu extends AbstractContainerMenu {
 		this.boundBlockEntity = level.getBlockEntity(pos);
 		
 		if (this.boundBlockEntity instanceof QuarryBlockEntity qbe) {
-			this.internal = qbe.getCapability(ForgeCapabilities.ITEM_HANDLER, null).orElse(new ItemStackHandler(3));
+			IItemHandler cap = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
+			this.internal = cap != null ? cap : new ItemStackHandler(3);
 			this.data = qbe.dataAccess;
 		} else {
 			this.internal = new ItemStackHandler(3);
@@ -54,7 +56,8 @@ public class QuarryMenu extends AbstractContainerMenu {
 		this.access = ContainerLevelAccess.create(level, qbe.getBlockPos());
 		this.boundBlockEntity = qbe;
 		
-		this.internal = qbe.getCapability(ForgeCapabilities.ITEM_HANDLER, null).orElse(new ItemStackHandler(3));
+		IItemHandler cap = level.getCapability(Capabilities.ItemHandler.BLOCK, qbe.getBlockPos(), null);
+		this.internal = cap != null ? cap : new ItemStackHandler(3);
 		this.data = qbe.dataAccess;
 		
 		this.addDataSlots(this.data);
