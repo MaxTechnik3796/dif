@@ -21,6 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
@@ -57,15 +58,18 @@ public abstract class BaseCarEntity extends Entity{
 	public BaseCarEntity(EntityType<?> type,Level level){
 		super(type,level);
 		this.blocksBuilding=true;
-		setMaxUpStep(getCustomStepHeight());
 	}
 	@Override
-	protected void defineSynchedData(){
-		entityData.define(DATA_RPM,getIdleRPM());
-		entityData.define(DATA_GEAR,0);
-		entityData.define(DATA_SPEED,0F);
-		entityData.define(DATA_ENGINE_ON,false);
-		entityData.define(DATA_FUEL,getInitialFuelMb());
+	public float maxUpStep(){
+		return getCustomStepHeight();
+	}
+	@Override
+	protected void defineSynchedData(SynchedEntityData.Builder builder){
+		builder.define(DATA_RPM,getIdleRPM());
+		builder.define(DATA_GEAR,0);
+		builder.define(DATA_SPEED,0F);
+		builder.define(DATA_ENGINE_ON,false);
+		builder.define(DATA_FUEL,getInitialFuelMb());
 	}
 	@Override
 	public @NotNull InteractionResult interact(Player player,@NotNull InteractionHand hand){
@@ -95,14 +99,14 @@ public abstract class BaseCarEntity extends Entity{
 					}
 				}
 			}
-			return InteractionResult.sidedSuccess(level().isClientSide);
+			return InteractionResult.SUCCESS;
 		}
 		if(!level().isClientSide&&player.startRiding(this)){
 			setEngineOn(true);
 			setCurrentGear(0);
 			return InteractionResult.SUCCESS;
 		}
-		return InteractionResult.sidedSuccess(level().isClientSide);
+		return InteractionResult.SUCCESS;
 	}
 	@Override
 	public void removePassenger(@NotNull Entity entity){
@@ -110,7 +114,7 @@ public abstract class BaseCarEntity extends Entity{
 		if(!isVehicle()){
 			if(!level().isClientSide()){
 				setEngineOn(false);
-				PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, new ModNetworking.SyncCarPositionPacket(getId(), getX(), getY(), getZ(), getYRot(), 0F));
+				PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, new SyncCarPositionPacket(getId(), getX(), getY(), getZ(), getYRot(), 0F));
 			}
 			velocity = prevVelocity = 0F;
 			setDeltaMovement(Vec3.ZERO);
@@ -144,7 +148,7 @@ public abstract class BaseCarEntity extends Entity{
 					fuelAccumulator=fuelSyncTick=0;
 				}
 			}
-			PacketDistributor.sendToPlayersTrackingEntity(this, new ModNetworking.SyncCarPositionPacket(getId(), getX(), getY(), getZ(), getYRot(), velocity));
+			PacketDistributor.sendToPlayersTrackingEntity(this, new SyncCarPositionPacket(getId(), getX(), getY(), getZ(), getYRot(), velocity));
 		}else{
 			if(isEngineOn()&&!isSoundPlaying&&getEngineSound()!=null){
 				CarEngineSoundInstance.play(this);

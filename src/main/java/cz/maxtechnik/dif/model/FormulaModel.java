@@ -128,16 +128,16 @@ public class FormulaModel<T extends BaseCarEntity> extends EntityModel<T>{
 		this.W4.yRot=0;
 	}
 	@Override
-	public void renderToBuffer(@NotNull PoseStack poseStack,@NotNull VertexConsumer vertexConsumer,int packedLight,int packedOverlay,float red,float green,float blue,float alpha){
-		body.render(poseStack,vertexConsumer,packedLight,packedOverlay,red,green,blue,alpha);
-		under.render(poseStack,vertexConsumer,packedLight,packedOverlay,red,green,blue,alpha);
-		front_wing.render(poseStack,vertexConsumer,packedLight,packedOverlay,red,green,blue,alpha);
-		wheel_handle.render(poseStack,vertexConsumer,packedLight,packedOverlay,red,green,blue,alpha);
-		spoil.render(poseStack,vertexConsumer,packedLight,packedOverlay,red,green,blue,alpha);
-		back_wing.render(poseStack,vertexConsumer,packedLight,packedOverlay,red,green,blue,alpha);
-		W1.render(poseStack,vertexConsumer,packedLight,packedOverlay,red,green,blue,alpha);
-		W2.render(poseStack,vertexConsumer,packedLight,packedOverlay,red,green,blue,alpha);
-		w3.render(poseStack,vertexConsumer,packedLight,packedOverlay,red,green,blue,alpha);
-		W4.render(poseStack,vertexConsumer,packedLight,packedOverlay,red,green,blue,alpha);
+	public void renderToBuffer(@NotNull PoseStack poseStack,@NotNull VertexConsumer vertexConsumer,int packedLight,int packedOverlay,int color){
+		body.render(poseStack,vertexConsumer,packedLight,packedOverlay,color);
+		under.render(poseStack,vertexConsumer,packedLight,packedOverlay,color);
+		front_wing.render(poseStack,vertexConsumer,packedLight,packedOverlay,color);
+		wheel_handle.render(poseStack,vertexConsumer,packedLight,packedOverlay,color);
+		spoil.render(poseStack,vertexConsumer,packedLight,packedOverlay,color);
+		back_wing.render(poseStack,vertexConsumer,packedLight,packedOverlay,color);
+		W1.render(poseStack,vertexConsumer,packedLight,packedOverlay,color);
+		W2.render(poseStack,vertexConsumer,packedLight,packedOverlay,color);
+		w3.render(poseStack,vertexConsumer,packedLight,packedOverlay,color);
+		W4.render(poseStack,vertexConsumer,packedLight,packedOverlay,color);
 	}
 }

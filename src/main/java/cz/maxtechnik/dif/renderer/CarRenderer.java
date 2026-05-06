@@ -11,12 +11,14 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraft.util.FastColor;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import org.jetbrains.annotations.NotNull;
-@Mod.EventBusSubscriber(value=Dist.CLIENT)
+
+@EventBusSubscriber(modid=DifMod.MODID,value=Dist.CLIENT,bus=EventBusSubscriber.Bus.GAME)
 public class CarRenderer<T extends BaseCarEntity> extends EntityRenderer<T>{
 	private final FormulaModel<T> model;
 	private static final ResourceLocation TEX_BASE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/entity/f1_base.png");
@@ -34,10 +36,11 @@ public class CarRenderer<T extends BaseCarEntity> extends EntityRenderer<T>{
 		poseStack.scale(-1F,-1F,1F);
 		float wheelSpin=(entity.tickCount+partialTick)*entity.getSpeedKmh()*0.02f;
 		model.setupAnim(entity,wheelSpin,0F,entity.tickCount+partialTick,0F,0F);
-		model.renderToBuffer(poseStack,buffer.getBuffer(model.renderType(TEX_BASE)),l,OverlayTexture.NO_OVERLAY,1F,1F,1F,1F);
+		model.renderToBuffer(poseStack,buffer.getBuffer(model.renderType(TEX_BASE)),l,OverlayTexture.NO_OVERLAY,0xFFFFFFFF);
 		if(entity instanceof FormulaEntity formula){
 			int color=formula.getColor();
-			model.renderToBuffer(poseStack,buffer.getBuffer(model.renderType(TEX_COLOR)),l,OverlayTexture.NO_OVERLAY,(color>>16&255)/255F,(color>>8&255)/255F,(color&255)/255F,1F);
+			int argbColor=FastColor.ARGB32.color(255,(color>>16&255),(color>>8&255),(color&255));
+			model.renderToBuffer(poseStack,buffer.getBuffer(model.renderType(TEX_COLOR)),l,OverlayTexture.NO_OVERLAY,argbColor);
 		}
 		poseStack.popPose();
 		super.render(entity,y,partialTick,poseStack,buffer,l);

@@ -3,8 +3,8 @@ package cz.maxtechnik.dif.init.events.client;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.entity.vehicle.BaseCarEntity;
 import cz.maxtechnik.dif.init.other.DifModKeys;
+import cz.maxtechnik.dif.network.ModNetworking;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.Input;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -12,7 +12,6 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-@SuppressWarnings("removal")
 @EventBusSubscriber(modid=DifMod.MODID,value=Dist.CLIENT,bus=EventBusSubscriber.Bus.GAME)
 public class CarInputHandler{
 	@SubscribeEvent
@@ -26,14 +25,11 @@ public class CarInputHandler{
 	@SubscribeEvent
 	public static void onMovementInput(MovementInputUpdateEvent event){
 		if(event.getEntity().getVehicle() instanceof BaseCarEntity){
-			Input input=event.getInput();
-			// Override vanilla inputs with custom car keys
-			input.up=DifModKeys.CAR_GAS.isDown();
-			input.jumping=DifModKeys.CAR_BRAKE.isDown();
-			// Recompute forward impulse for client-side syncing and packet sending
-			input.forwardImpulse=0F;
-			if(input.up) input.forwardImpulse+=1F;
-			if(input.down) input.forwardImpulse-=1F;
+			// In 1.21.1 Input is a record – use event setters instead of mutable fields
+			boolean gas=DifModKeys.CAR_GAS.isDown();
+			boolean brake=DifModKeys.CAR_BRAKE.isDown();
+			event.setForwardImpulse(gas?1.0F:0.0F);
+			event.setJump(brake);
 		}
 	}
 	private static void handleShift(BaseCarEntity car,int direction){

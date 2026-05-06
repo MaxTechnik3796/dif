@@ -8,12 +8,14 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.*;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 public class FormulaEntity extends BaseCarEntity{
 	private static final EntityDataAccessor<Integer> DATA_COLOR=SynchedEntityData.defineId(FormulaEntity.class,EntityDataSerializers.INT);
@@ -46,19 +48,21 @@ public class FormulaEntity extends BaseCarEntity{
 			float offsetY=-0.525F; // Výška zůstává, aby seděl v díře
 			double x=this.getX()+(double)(net.minecraft.util.Mth.sin(-this.getYRot()*((float)Math.PI/180F))*offsetZ);
 			double z=this.getZ()+(double)(net.minecraft.util.Mth.cos(this.getYRot()*((float)Math.PI/180F))*offsetZ);
-			moveFunction.accept(rider,x,this.getY()+this.getPassengersRidingOffset()+rider.getMyRidingOffset()+offsetY,z);
+			// In 1.21.1: getPassengersRidingOffset() and getMyRidingOffset() were removed
+			// Old value: getPassengersRidingOffset()=0.4D, player getMyRidingOffset()≈-0.35D
+			moveFunction.accept(rider,x,this.getY()+0.4D+offsetY,z);
 		}
 	}
 	@Override
-	public double getPassengersRidingOffset(){
-		// Základní výška sedu nad středem (originem) entity
-		return 0.4D;
+	protected @NotNull Vec3 getPassengerAttachmentPoint(@NotNull Entity passenger, EntityDimensions dimensions, float partialTick){
+		// Default attachment point (used when positionRider calls through)
+		return new Vec3(0.0D, 0.4D - 0.525D, 0.55D);
 	}
 	// === Barva ===
 	@Override
-	protected void defineSynchedData(){
-		super.defineSynchedData();
-		entityData.define(DATA_COLOR,0xFFFFFF);
+	protected void defineSynchedData(SynchedEntityData.Builder builder){
+		super.defineSynchedData(builder);
+		builder.define(DATA_COLOR,0xFFFFFF);
 	}
 	public int getColor(){
 		return entityData.get(DATA_COLOR);
@@ -81,11 +85,12 @@ public class FormulaEntity extends BaseCarEntity{
 		ItemStack s=player.getItemInHand(hand);
 		if(s.getItem() instanceof DyeItem dye){
 			if(!level().isClientSide){
-				float[] c=dye.getDyeColor().getTextureDiffuseColors();
-				setColor(((int)(c[0]*255)<<16)|((int)(c[1]*255)<<8)|(int)(c[2]*255));
+				// In 1.21.1: getTextureDiffuseColors() (float[]) replaced by getTextureDiffuseColor() (int ARGB)
+				int c=dye.getDyeColor().getTextureDiffuseColor();
+				setColor(c&0xFFFFFF);
 				if(!player.getAbilities().instabuild) s.shrink(1);
 			}
-			return InteractionResult.sidedSuccess(level().isClientSide);
+			return InteractionResult.SUCCESS;
 		}
 		return super.interact(player,hand);
 	}
