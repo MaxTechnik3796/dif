@@ -6,10 +6,9 @@ import cz.maxtechnik.dif.init.events.client.ClientCameraHandler;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.util.CameraMonitorState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -68,34 +67,40 @@ public class CameraMonitorBlockEntity extends BlockEntity{
 		}
 	}
 	@Override
-	public void load(@NotNull CompoundTag tag){
-		super.load(tag);
-		if(tag.contains("CamX")){
-			this.linkedCameraPos=new BlockPos(tag.getInt("CamX"),tag.getInt("CamY"),tag.getInt("CamZ"));
+	protected void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
+		super.loadAdditional(tag, registries);
+		if (tag.contains("CamX")) {
+			this.linkedCameraPos = new BlockPos(tag.getInt("CamX"), tag.getInt("CamY"), tag.getInt("CamZ"));
 		}
 	}
+
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag){
-		super.saveAdditional(tag);
-		if(linkedCameraPos!=null){
-			tag.putInt("CamX",linkedCameraPos.getX());
-			tag.putInt("CamY",linkedCameraPos.getY());
-			tag.putInt("CamZ",linkedCameraPos.getZ());
+	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
+		super.saveAdditional(tag, registries);
+		if (linkedCameraPos != null) {
+			tag.putInt("CamX", linkedCameraPos.getX());
+			tag.putInt("CamY", linkedCameraPos.getY());
+			tag.putInt("CamZ", linkedCameraPos.getZ());
 		}
 	}
+
 	@Override
-	public @NotNull CompoundTag getUpdateTag(){
-		CompoundTag tag=new CompoundTag();
-		saveAdditional(tag);
+	public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registries) {
+		CompoundTag tag = new CompoundTag();
+		saveAdditional(tag, registries);
 		return tag;
 	}
+
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket(){
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
+
 	@Override
-	public void onDataPacket(net.minecraft.network.Connection net,ClientboundBlockEntityDataPacket pkt){
-		assert pkt.getTag()!=null;
-		this.load(pkt.getTag());
+	public void onDataPacket(net.minecraft.network.Connection net, ClientboundBlockEntityDataPacket pkt, @NotNull HolderLookup.Provider registries) {
+		CompoundTag tag = pkt.getTag();
+		if (tag != null) {
+			this.loadAdditional(tag, registries);
+		}
 	}
 }

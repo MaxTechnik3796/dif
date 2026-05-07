@@ -46,15 +46,23 @@ public class ChunkLoaderBlockEntity extends BlockEntity{
 		}
 	}
 	@Override
-	public void load(@NotNull CompoundTag tag){
-		super.load(tag);
-		if(tag.hasUUID("ownerUUID")) this.ownerUUID=tag.getUUID("ownerUUID");
-		if(tag.contains("ownerName")) this.ownerName=tag.getString("ownerName");
+	protected void loadAdditional(@NotNull CompoundTag tag, @NotNull net.minecraft.core.HolderLookup.Provider registries) {
+		super.loadAdditional(tag, registries);
+		if (tag.hasUUID("ownerUUID")) {
+			this.ownerUUID = tag.getUUID("ownerUUID");
+		}
+		if (tag.contains("ownerName")) {
+			this.ownerName = tag.getString("ownerName");
+		}
 	}
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag){
-		super.saveAdditional(tag);
-		if(ownerUUID!=null) tag.putUUID("ownerUUID",ownerUUID);
-		tag.putString("ownerName",ownerName);
+	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull net.minecraft.core.HolderLookup.Provider registries) {
+		super.saveAdditional(tag, registries);
+		if (this.ownerUUID != null) {
+			tag.putUUID("ownerUUID", this.ownerUUID);
+		}
+		if (this.ownerName != null) {
+			tag.putString("ownerName", this.ownerName);
+		}
 	}
 }

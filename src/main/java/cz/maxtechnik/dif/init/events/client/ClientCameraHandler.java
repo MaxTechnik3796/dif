@@ -1,6 +1,5 @@
 package cz.maxtechnik.dif.init.events.client;
 
-import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.block.Camera;
 import cz.maxtechnik.dif.block.CameraMonitor;
 import cz.maxtechnik.dif.network.CameraExitPacket;
@@ -13,15 +12,14 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.client.event.ViewportEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent.Pre;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-@Mod.EventBusSubscriber(value=Dist.CLIENT)
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RenderHandEvent;
+import net.neoforged.neoforge.client.event.ViewportEvent;
+
+@EventBusSubscriber(value= Dist.CLIENT)
 public class ClientCameraHandler{
 	private static boolean isViewing=false;
 	private static BlockPos cameraPos=null;
@@ -74,43 +72,58 @@ public class ClientCameraHandler{
 		}
 	}
 	@SubscribeEvent
-	public static void onClientTick(TickEvent.ClientTickEvent event){
-		if(event.phase!=TickEvent.Phase.END||!isViewing||cameraPos==null) return;
-		Minecraft mc=Minecraft.getInstance();
-		if(mc.player==null) return;
+	public static void onClientTick(ClientTickEvent.Post event) { // Registrujeme přímo Post verzi (místo Phase.END)
+		// Už nepotřebujeme kontrolovat event.phase!
+
+		if (!isViewing || cameraPos == null) return;
+
+		Minecraft mc = Minecraft.getInstance();
+		if (mc.player == null) return;
+
 		// Kontrola zničení bloku
-		if(mc.level!=null&&!(mc.level.getBlockState(cameraPos).getBlock() instanceof Camera)) timeOut++;
-		if(timeOut>=3){
+		if (mc.level != null && !(mc.level.getBlockState(cameraPos).getBlock() instanceof Camera)) {
+			timeOut++;
+		}
+
+		if (timeOut >= 3) {
 			exitCamera();
-			mc.player.displayClientMessage(Component.literal("Camera is too far away or has been destroyed!"),true);
+			mc.player.displayClientMessage(Component.literal("Camera is too far away or has been destroyed!"), true);
 			return;
 		}
-		// Vynucení pozice dummy entity v každém ticku (zabrání plavání)
-		if(dummyEntity!=null) dummyEntity.setOldPosAndRot(); // Resetuje interpolace pohybu
-		if(mc.player.isShiftKeyDown()){
+
+		// Vynucení pozice dummy entity
+		if (dummyEntity != null) {
+			dummyEntity.setOldPosAndRot();
+		}
+
+		if (mc.player.isShiftKeyDown()) {
 			exitCamera();
 			return;
 		}
-		mc.player.xxa=0;
-		mc.player.yya=0;
-		mc.player.zza=0;
-		if(inputDelay<2){
+
+		// Zamezení pohybu hráče
+		mc.player.xxa = 0;
+		mc.player.yya = 0;
+		mc.player.zza = 0;
+
+		if (inputDelay < 2) {
 			inputDelay++;
-			// Vyčistíme kliknutí, která se stala během animace otevírání
 			mc.options.keyLeft.consumeClick();
 			mc.options.keyRight.consumeClick();
 			mc.options.keyUp.consumeClick();
 			mc.options.keyDown.consumeClick();
 			return;
 		}
-		if(mc.options.keyLeft.consumeClick()){
-			switchMonitor(mc,Direction.WEST); // Relativní vlevo
-		}else if(mc.options.keyRight.consumeClick()){
-			switchMonitor(mc,Direction.EAST); // Relativní vpravo
-		}else if(mc.options.keyUp.consumeClick()){
-			switchMonitor(mc,Direction.UP);    // Nahoru
-		}else if(mc.options.keyDown.consumeClick()){
-			switchMonitor(mc,Direction.DOWN);  // Dolů
+
+		// Ovládání
+		if (mc.options.keyLeft.consumeClick()) {
+			switchMonitor(mc, Direction.WEST);
+		} else if (mc.options.keyRight.consumeClick()) {
+			switchMonitor(mc, Direction.EAST);
+		} else if (mc.options.keyUp.consumeClick()) {
+			switchMonitor(mc, Direction.UP);
+		} else if (mc.options.keyDown.consumeClick()) {
+			switchMonitor(mc, Direction.DOWN);
 		}
 	}
 	private static void switchMonitor(Minecraft mc,Direction relativeDir){
@@ -138,47 +151,45 @@ public class ClientCameraHandler{
 			mc.gameMode.useItemOn(mc.player,InteractionHand.MAIN_HAND,new BlockHitResult(new Vec3(neighborPos.getX()+0.5,neighborPos.getY()+0.5,neighborPos.getZ()+0.5),Direction.UP,neighborPos,false));
 		}
 	}
-	public static void exitCamera(){
-		Minecraft mc=Minecraft.getInstance();
-		if(mc.player!=null){
+	public static void exitCamera() {
+		Minecraft mc = Minecraft.getInstance();
+		if (mc.player != null) {
 			mc.setCameraEntity(mc.player);
-			// --- KLÍČOVÁ OPRAVA ---
-			// Vynutíme, aby si klient znovu načetl okolí hráče
 			mc.levelRenderer.allChanged();
-			// ----------------------
 		}
-		if(currentMonitorPos!=null){
-			DifMod.PACKET_HANDLER.sendToServer(new CameraExitPacket(currentMonitorPos));
-			currentMonitorPos=null;
+		if (currentMonitorPos != null) {
+			// NOVÝ ZPŮSOB ODESÍLÁNÍ V NEOFORGE 1.21.1
+			net.neoforged.neoforge.network.PacketDistributor.sendToServer(new CameraExitPacket(currentMonitorPos));
+			currentMonitorPos = null;
 		}
-		isViewing=false;
-		cameraPos=null;
-		if(dummyEntity!=null){
+		isViewing = false;
+		cameraPos = null;
+		if (dummyEntity != null) {
 			dummyEntity.discard();
-			dummyEntity=null;
+			dummyEntity = null;
 		}
 	}
 	@SubscribeEvent
-	public static void onInput(net.minecraftforge.client.event.InputEvent.InteractionKeyMappingTriggered event){
-		if(isViewing){
+	public static void onInput(net.neoforged.neoforge.client.event.InputEvent.InteractionKeyMappingTriggered event) {
+		if (isViewing) {
 			// Zrušíme jakýkoliv pokus o útok nebo bourání (levé tlačítko)
-			if(event.isAttack()){
+			if (event.isAttack()) {
 				event.setCanceled(true);
 				event.setSwingHand(false);
 			}
-			// Zrušíme pokus o interakci (pravé tlačítko - stavění, otevírání beden)
-			if(event.isUseItem()){
+			// Zrušíme pokus o interakci (pravé tlačítko)
+			if (event.isUseItem()) {
 				event.setCanceled(true);
 				event.setSwingHand(false);
 			}
 		}
 	}
 	@SubscribeEvent
-	public static void onPlayerInteract(PlayerInteractEvent event){
-		// Toto běží na obou stranách, ale my to řešíme hlavně pro klienta v kameře
-		if(event.getSide().isClient()&&isViewing){
-			if(event.isCancelable()){
-				event.setCanceled(true);
+	public static void onPlayerInteract(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent event) {
+		if (event.getLevel().isClientSide() && isViewing) {
+			// Kontrola, zda event implementuje rozhraní pro zrušení
+			if (event instanceof net.neoforged.bus.api.ICancellableEvent cancellable) {
+				cancellable.setCanceled(true);
 			}
 		}
 	}
@@ -189,10 +200,12 @@ public class ClientCameraHandler{
 		}
 	}
 	@SubscribeEvent
-	public static void onRenderGui(Pre event){
-		if(isViewing){
-			// Pokud to NENÍ zaměřovač, tak to zruš
-			if(event.getOverlay().id().getPath().equals("crosshair")) return;
+	public static void onRenderGui(net.neoforged.neoforge.client.event.RenderGuiLayerEvent.Pre event) {
+		if (isViewing) {
+			// Crosshair necháme vykreslit, vše ostatní zrušíme
+			if (event.getName().equals(net.neoforged.neoforge.client.gui.VanillaGuiLayers.CROSSHAIR)) {
+				return;
+			}
 			event.setCanceled(true);
 		}
 	}
