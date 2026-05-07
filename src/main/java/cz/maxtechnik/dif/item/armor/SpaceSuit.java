@@ -1,4 +1,5 @@
 package cz.maxtechnik.dif.item.armor;
+import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.model.ModelSpaceBoots;
 import cz.maxtechnik.dif.model.ModelSpaceChestplate;
 import cz.maxtechnik.dif.model.ModelSpaceHelmet;
@@ -6,6 +7,7 @@ import cz.maxtechnik.dif.model.ModelSpaceLeggings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
@@ -18,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Consumer;
+
+import static cz.maxtechnik.dif.gui.screen.SuperBoxScreen.texture;
 
 public abstract class SpaceSuit extends ArmorItem {
 	public SpaceSuit(Type type, Properties properties) {
@@ -48,7 +52,7 @@ public abstract class SpaceSuit extends ArmorItem {
 			});
 		}
 		@Override
-		public String getArmorTexture(ItemStack stack,Entity entity,EquipmentSlot slot,String type){
+		public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type){
 			return texture;
 		}
 	}

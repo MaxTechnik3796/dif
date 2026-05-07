@@ -10,6 +10,7 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import java.util.Objects;
 
 import static cz.maxtechnik.dif.item.modular.ModularBase.D;
+@SuppressWarnings("removal")
 @EventBusSubscriber(modid=DifMod.MODID, bus=EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
 public class ModularToolsColorRenderer{
 	@SubscribeEvent
