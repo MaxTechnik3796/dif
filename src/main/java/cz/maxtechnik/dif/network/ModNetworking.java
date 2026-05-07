@@ -12,7 +12,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-
+import org.jetbrains.annotations.NotNull;
+@SuppressWarnings("removal")
 @EventBusSubscriber(modid = DifMod.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class ModNetworking {
 
@@ -42,7 +43,7 @@ public class ModNetworking {
         );
 
         @Override
-        public Type<? extends CustomPacketPayload> type() {
+        public @NotNull Type<? extends CustomPacketPayload> type() {
             return TYPE;
         }
 

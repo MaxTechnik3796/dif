@@ -6,15 +6,13 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
 public record SpaceshipScreenButtonMessage(int buttonID, int x, int y, int z) implements CustomPacketPayload {
 	public static final Type<SpaceshipScreenButtonMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "spaceship_button"));
@@ -27,7 +25,7 @@ public record SpaceshipScreenButtonMessage(int buttonID, int x, int y, int z) im
 	);
 
 	@Override
-	public Type<? extends CustomPacketPayload> type() {
+	public @NotNull Type<? extends CustomPacketPayload> type() {
 		return TYPE;
 	}
 

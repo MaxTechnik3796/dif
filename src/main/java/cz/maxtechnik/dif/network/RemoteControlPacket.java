@@ -15,6 +15,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -27,7 +28,7 @@ public record RemoteControlPacket(double push, boolean shouldFlip) implements Cu
 	);
 
 	@Override
-	public Type<? extends CustomPacketPayload> type() {
+	public @NotNull Type<? extends CustomPacketPayload> type() {
 		return TYPE;
 	}
 

@@ -29,7 +29,7 @@ public record EnderOpenMessage(int actionType, int pressedms) implements CustomP
 	);
 
 	@Override
-	public Type<? extends CustomPacketPayload> type() {
+	public @NotNull Type<? extends CustomPacketPayload> type() {
 		return TYPE;
 	}
 
@@ -41,21 +41,21 @@ public record EnderOpenMessage(int actionType, int pressedms) implements CustomP
 		Level world = player.level();
 		if (!world.hasChunkAt(player.blockPosition())) return;
 		if (actionType == 0 && player instanceof ServerPlayer serverPlayer) {
-			CuriosApi.getCuriosInventory(serverPlayer).ifPresent(handler -> handler.findFirstCurio(stack -> stack.getItem() == Items.ENDER_CHEST).ifPresent(slotResult -> {
-				PlayerEnderChestContainer enderChestInventory = serverPlayer.getEnderChestInventory();
-				SimpleMenuProvider menuProvider = new SimpleMenuProvider(
-						(containerId, playerInventory, playerEntity) -> new ChestMenu(MenuType.GENERIC_9x3, containerId, playerInventory, enderChestInventory, 3) {
-							@Override
-							public void removed(@NotNull Player pPlayer) {
-								super.removed(pPlayer);
-								pPlayer.level().playSound(null, pPlayer.blockPosition(), SoundEvents.ENDER_CHEST_CLOSE, SoundSource.PLAYERS, 0.5F, pPlayer.level().random.nextFloat() * 0.1F + 0.9F);
-							}
-						},
-						Component.translatable("container.enderchest")
-				);
-				serverPlayer.openMenu(menuProvider);
-				serverPlayer.level().playSound(null, serverPlayer.blockPosition(), SoundEvents.ENDER_CHEST_OPEN, SoundSource.PLAYERS, 0.5F, serverPlayer.level().random.nextFloat() * 0.1F + 0.9F);
-			}));
+			CuriosApi.getCuriosInventory(serverPlayer).flatMap(handler -> handler.findFirstCurio(stack -> stack.getItem() == Items.ENDER_CHEST)).ifPresent(slotResult -> {
+                PlayerEnderChestContainer enderChestInventory = serverPlayer.getEnderChestInventory();
+                SimpleMenuProvider menuProvider = new SimpleMenuProvider(
+                        (containerId, playerInventory, playerEntity) -> new ChestMenu(MenuType.GENERIC_9x3, containerId, playerInventory, enderChestInventory, 3) {
+                            @Override
+                            public void removed(@NotNull Player pPlayer) {
+                                super.removed(pPlayer);
+                                pPlayer.level().playSound(null, pPlayer.blockPosition(), SoundEvents.ENDER_CHEST_CLOSE, SoundSource.PLAYERS, 0.5F, pPlayer.level().random.nextFloat() * 0.1F + 0.9F);
+                            }
+                        },
+                        Component.translatable("container.enderchest")
+                );
+                serverPlayer.openMenu(menuProvider);
+                serverPlayer.level().playSound(null, serverPlayer.blockPosition(), SoundEvents.ENDER_CHEST_OPEN, SoundSource.PLAYERS, 0.5F, serverPlayer.level().random.nextFloat() * 0.1F + 0.9F);
+            });
 		}
 	}
 }

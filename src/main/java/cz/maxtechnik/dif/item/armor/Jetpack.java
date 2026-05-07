@@ -15,7 +15,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
@@ -27,107 +26,110 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public abstract class Jetpack extends ArmorItem {
-	public Jetpack(ArmorItem.Type type, Item.Properties properties) {
-		super(DifModTiers.ARMOR_MATERIAL_JETPACK, type, properties);
+@SuppressWarnings("removal")
+public abstract class Jetpack extends ArmorItem{
+	public Jetpack(ArmorItem.Type type,Item.Properties properties){
+		super(DifModTiers.ARMOR_MATERIAL_JETPACK,type,properties);
 	}
-
-	public static class Chestplate extends Jetpack {
-		public Chestplate() {
-			super(Type.CHESTPLATE, new Item.Properties().stacksTo(1));
+	public static class Chestplate extends Jetpack{
+		public Chestplate(){
+			super(Type.CHESTPLATE,new Item.Properties().stacksTo(1));
 		}
 
 		@Override
-		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-			consumer.accept(new IClientItemExtensions() {
+		public void initializeClient(Consumer<IClientItemExtensions> consumer){
+			consumer.accept(new IClientItemExtensions(){
 				@Override
 				@OnlyIn(Dist.CLIENT)
-				public @NotNull HumanoidModel getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel defaultModel) {
-					HumanoidModel armorModel = new HumanoidModel(new ModelPart(Collections.emptyList(),
-							Map.of("body", new ModelJetpack(Minecraft.getInstance().getEntityModels().bakeLayer(ModelJetpack.LAYER_LOCATION)).Body,
-									"left_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
-									"right_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
-									"head", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
-									"hat", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
-									"right_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
-									"left_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()))));
-					armorModel.crouching = living.isShiftKeyDown();
-					armorModel.riding = defaultModel.riding;
-					armorModel.young = living.isBaby();
+				public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity living, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel){
+					HumanoidModel<?> armorModel=new HumanoidModel<>(new ModelPart(Collections.emptyList(),
+							Map.of("body",new ModelJetpack(Minecraft.getInstance().getEntityModels().bakeLayer(ModelJetpack.LAYER_LOCATION)).Body,
+									"left_arm",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
+									"right_arm",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
+									"head",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
+									"hat",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
+									"right_leg",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
+									"left_leg",new ModelPart(Collections.emptyList(),Collections.emptyMap()))));
+					armorModel.crouching=living.isShiftKeyDown();
+					armorModel.riding=defaultModel.riding;
+					armorModel.young=living.isBaby();
 					return armorModel;
 				}
 			});
 		}
 
-		public static int getMainFuel(ItemStack itemStack) {
-			CustomData data = itemStack.get(DataComponents.CUSTOM_DATA);
-			if (data == null || !data.copyTag().contains("MainFuel")) return 0;
-			return data.copyTag().getInt("MainFuel");
+		// === Fuel storage ===
+		public static int getFuel(ItemStack stack){
+			CustomData data=stack.get(DataComponents.CUSTOM_DATA);
+			if(data==null||!data.copyTag().contains("Fuel")) return 0;
+			return data.copyTag().getInt("Fuel");
 		}
 
-		public static void setMainFuel(ItemStack itemStack, int value) {
-			itemStack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, data -> data.update(tag -> tag.putInt("MainFuel", value)));
+		public static void setFuel(ItemStack stack,int value){
+			int max=isTurbo(stack)?DifModCommonConfig.jetpackMaxTurbo:DifModCommonConfig.jetpackMaxBasic;
+			stack.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,
+					data->data.update(tag->tag.putInt("Fuel",Mth.clamp(value,0,max))));
 		}
 
-		public static int getThrustFuel(ItemStack itemStack) {
-			CustomData data = itemStack.get(DataComponents.CUSTOM_DATA);
-			if (data == null || !data.copyTag().contains("ThrustFuel")) return 0;
-			return data.copyTag().getInt("ThrustFuel");
-		}
-
-		public static void setThrustFuel(ItemStack itemStack, int value) {
-			itemStack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, data -> data.update(tag -> tag.putInt("ThrustFuel", value)));
-		}
-
-		public static boolean getTurbo(ItemStack itemStack) {
-			CustomData data = itemStack.get(DataComponents.CUSTOM_DATA);
-			if (data == null || !data.copyTag().contains("Turbo")) return false;
+		public static boolean isTurbo(ItemStack stack){
+			CustomData data=stack.get(DataComponents.CUSTOM_DATA);
+			if(data==null||!data.copyTag().contains("Turbo")) return false;
 			return data.copyTag().getBoolean("Turbo");
 		}
 
-		public static void setTurbo(ItemStack itemStack, boolean value) {
-			itemStack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, data -> data.update(tag -> tag.putInt("Turbo", value ? 1 : 0)));
+		public static void setTurbo(ItemStack stack,boolean value){
+			stack.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,
+					data->data.update(tag->tag.putBoolean("Turbo",value)));
+		}
+
+		public static int getMaxFuel(ItemStack stack){
+			return isTurbo(stack)?DifModCommonConfig.jetpackMaxTurbo:DifModCommonConfig.jetpackMaxBasic;
+		}
+
+		public static boolean isFuel(ItemStack stack){
+			return stack.getItem().equals(DifModItems.JETPACK_FUEL.get());
+		}
+
+		public static boolean isTurboFuel(ItemStack stack){
+			return stack.getItem().equals(DifModItems.JETPACK_TURBO_FUEL.get());
+		}
+
+		// Počet paliva v inventáři (normalní nebo turbo podle aktuálního módu)
+		public static int countFuelInInventory(net.minecraft.world.entity.player.Player player,boolean turbo){
+			int count=0;
+			for(int i=0;i<player.getInventory().getContainerSize();i++){
+				ItemStack s=player.getInventory().getItem(i);
+				if(turbo?isTurboFuel(s):isFuel(s)) count+=s.getCount();
+			}
+			return count;
 		}
 
 		@Override
-		public int getBarWidth(@NotNull ItemStack itemStack) {
-			return Math.round(13F * (float) getMainFuel(itemStack) / (float) DifModCommonConfig.jetpackMaxBasic);
+		public int getBarWidth(@NotNull ItemStack stack){
+			return Math.round(13F*(float)getFuel(stack)/(float)getMaxFuel(stack));
 		}
 
 		@Override
-		public int getBarColor(@NotNull ItemStack itemStack) {
-			float f = Math.max(0, (float) getMainFuel(itemStack) / (float) DifModCommonConfig.jetpackMaxBasic);
-			return Mth.hsvToRgb(f * 0.33F, 1F, 1F);
+		public int getBarColor(@NotNull ItemStack stack){
+			float f=Math.max(0,(float)getFuel(stack)/(float)getMaxFuel(stack));
+			return Mth.hsvToRgb(f*0.33F,1F,1F);
 		}
 
 		@Override
-		public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level world, @NotNull List<Component> list, @NotNull TooltipFlag flag) {
-			list.add(Component.literal("Main Storage: " + getMainFuel(itemStack) + " / " + DifModCommonConfig.jetpackMaxBasic).withStyle(ChatFormatting.GRAY));
-			list.add(Component.literal("Thrust Tank: " + getThrustFuel(itemStack) + " / " + (getTurbo(itemStack) ? DifModCommonConfig.jetpackMaxTurbo : DifModCommonConfig.jetpackMaxThrust)).withStyle(ChatFormatting.AQUA));
-			if (getTurbo(itemStack)) list.add(Component.literal("TURBO").withStyle(ChatFormatting.RED));
-		}
-
-		public static boolean isFuel(ItemStack itemStack) {
-			return itemStack.getItem().equals(DifModItems.JETPACK_FUEL.get());
-		}
-
-		public static boolean isTurboFuel(ItemStack itemStack) {
-			return itemStack.getItem().equals(DifModItems.JETPACK_TURBO_FUEL.get());
+		public void appendHoverText(@NotNull ItemStack stack,@Nullable TooltipContext ctx,@NotNull List<Component> list,@NotNull TooltipFlag flag){
+			boolean turbo=isTurbo(stack);
+			int fuel=getFuel(stack);
+			int max=getMaxFuel(stack);
+			list.add(Component.literal("Fuel: "+fuel+" / "+max)
+					.withStyle(turbo?ChatFormatting.RED:ChatFormatting.YELLOW));
+			list.add(Component.literal(turbo?"TURBO":"NORMAL")
+					.withStyle(turbo?ChatFormatting.RED:ChatFormatting.GREEN));
 		}
 
 		@Override
-		public boolean isEnchantable(@NotNull ItemStack itemStack) {
-			return false;
-		}
+		public boolean isEnchantable(@NotNull ItemStack stack){ return false; }
 
 		@Override
-		public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-			return slotChanged || oldStack.getItem() != newStack.getItem();
-		}
-
-		@Override
-		public boolean isBarVisible(@NotNull ItemStack itemStack) {
-			return true;
-		}
+		public boolean isBarVisible(@NotNull ItemStack stack){ return true; }
 	}
 }

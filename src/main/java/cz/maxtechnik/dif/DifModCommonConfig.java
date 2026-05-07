@@ -54,7 +54,6 @@ public class DifModCommonConfig{
 
 	private static final ModConfigSpec.IntValue JETPACK_MAX_BASIC;public static int jetpackMaxBasic;
 	private static final ModConfigSpec.IntValue JETPACK_MAX_TURBO;public static int jetpackMaxTurbo;
-	private static final ModConfigSpec.IntValue JETPACK_MAX_THRUST;public static int jetpackMaxThrust;
 
 	private static final ModConfigSpec.IntValue MODULAR_TOOLS_DEFAULT_MAX_MODIFIERS;public static int modularToolsDefaultMaxModifiers;
 	private static final ModConfigSpec.IntValue MODULAR_TOOLS_REPAIR_AMOUNT;public static int modularToolsRepairAmount;
@@ -117,8 +116,7 @@ public class DifModCommonConfig{
 		BUILDER.pop();
 		BUILDER.push("Jetpack");
 			JETPACK_MAX_BASIC=BUILDER.comment("Max Basic of Jetpack, (Number.)"+reload(200)).defineInRange("jetpack_max_basic",200,1,MAX);
-			JETPACK_MAX_TURBO=BUILDER.comment("Max Turbo of Jetpack, (Number.)"+reload(100)).defineInRange("jetpack_max_turbo",100,1,MAX);
-			JETPACK_MAX_THRUST=BUILDER.comment("Max Thrust of Jetpack, (Number.)"+reload(50)).defineInRange("jetpack_max_thrust",50,1,MAX);
+			JETPACK_MAX_TURBO=BUILDER.comment("Max Turbo of Jetpack, (Number.)"+reload(300)).defineInRange("jetpack_max_turbo",300,1,MAX);
 		BUILDER.pop();
 		BUILDER.push("FastRails");
 			FAST_RAIL_TOP_SPEED=BUILDER.comment("Top speed of Fast Rail/Fast Powered Rail, (Number)"+restart(1.2D)).defineInRange("fast_rail_top_speed",1.2D,0.1D,MAX);
@@ -190,7 +188,6 @@ public class DifModCommonConfig{
 
 		jetpackMaxBasic=JETPACK_MAX_BASIC.get();
 		jetpackMaxTurbo=JETPACK_MAX_TURBO.get();
-		jetpackMaxThrust=JETPACK_MAX_THRUST.get();
 
 		modularToolsDefaultMaxModifiers=MODULAR_TOOLS_DEFAULT_MAX_MODIFIERS.get();
 		modularToolsRepairAmount=MODULAR_TOOLS_REPAIR_AMOUNT.get();
