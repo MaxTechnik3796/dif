@@ -1,12 +1,15 @@
 package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -26,10 +29,6 @@ import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import cz.maxtechnik.dif.init.other.*;
 import cz.maxtechnik.dif.init.events.JetpackHandler;
-import cz.maxtechnik.dif.network.CameraExitPacket;
-import cz.maxtechnik.dif.network.RemoteControlPacket;
-import cz.maxtechnik.dif.network.ModNetworking.SyncCarPositionPacket;
-import cz.maxtechnik.dif.network.ModNetworking.ShiftGearPacket;
 import cz.maxtechnik.dif.renderer.*;
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -100,7 +99,7 @@ public class DifMod {
 		IsChunkLoadedCommand.register(event.getDispatcher());
 		ConfigReloadCommand.register(event.getDispatcher());
 	}
-	@EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.NEOFORGE, value = Dist.CLIENT)
+	@EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 	public static class ClientForgeEvents {
 		@SubscribeEvent
 		public static void onRenderGui(RenderGuiOverlayEvent.Post event) {
@@ -112,9 +111,9 @@ public class DifMod {
 
 	@EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 	public static class ClientModEvents {
-		public static final PartialModel BRASS_PRESS_HEAD = PartialModel.of(new ResourceLocation(MODID,"block/brass_mechanical_press_head"));
-		public static final PartialModel BRASS_MIXER_POLE = PartialModel.of(new ResourceLocation(MODID, "block/brass_mechanical_mixer_pole"));
-		public static final PartialModel BRASS_MIXER_HEAD = PartialModel.of(new ResourceLocation(MODID, "block/brass_mechanical_mixer_head"));
+		public static final PartialModel BRASS_PRESS_HEAD = PartialModel.of(ResourceLocation.fromNamespaceAndPath(MODID,"block/brass_mechanical_press_head"));
+		public static final PartialModel BRASS_MIXER_POLE = PartialModel.of(ResourceLocation.fromNamespaceAndPath(MODID, "block/brass_mechanical_mixer_pole"));
+		public static final PartialModel BRASS_MIXER_HEAD = PartialModel.of(ResourceLocation.fromNamespaceAndPath(MODID, "block/brass_mechanical_mixer_head"));
 
 
 		@SubscribeEvent
@@ -149,13 +148,13 @@ public class DifMod {
 
 		@SubscribeEvent
 		public static void onRegisterAdditionalModels(ModelEvent.RegisterAdditional event) {
-			event.register(new ResourceLocation("dif", "block/brass_large_water_wheel"));
-			event.register(new ResourceLocation("dif", "block/brass_large_water_wheel_extension"));
-			event.register(new ResourceLocation("dif", "block/brass_water_wheel"));
-			event.register(new ResourceLocation("dif", "block/brass_water_wheel_wheel"));
-			event.register(new ResourceLocation("dif", "block/brass_mechanical_press_head"));
-			event.register(new ResourceLocation("dif", "block/brass_mechanical_mixer_pole"));
-			event.register(new ResourceLocation("dif", "block/brass_mechanical_mixer_head"));
+			event.register(ModelResourceLocation.inventory(ResourceLocation.fromNamespaceAndPath(MODID, "block/brass_large_water_wheel")));
+			event.register(ModelResourceLocation.inventory(ResourceLocation.fromNamespaceAndPath(MODID, "block/brass_large_water_wheel_extension")));
+			event.register(ModelResourceLocation.inventory(ResourceLocation.fromNamespaceAndPath(MODID, "block/brass_water_wheel")));
+			event.register(ModelResourceLocation.inventory(ResourceLocation.fromNamespaceAndPath(MODID, "block/brass_water_wheel_wheel")));
+			event.register(ModelResourceLocation.inventory(ResourceLocation.fromNamespaceAndPath(MODID, "block/brass_mechanical_press_head")));
+			event.register(ModelResourceLocation.inventory(ResourceLocation.fromNamespaceAndPath(MODID, "block/brass_mechanical_mixer_pole")));
+			event.register(ModelResourceLocation.inventory(ResourceLocation.fromNamespaceAndPath(MODID, "block/brass_mechanical_mixer_head")));
 		}
 
 		@SubscribeEvent
