@@ -10,23 +10,30 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent; // SPRÁVNÝ IMPORT
 
 import java.util.Set;
+
 @SuppressWarnings("removal")
 @EventBusSubscriber(modid = DifMod.MODID, bus = EventBusSubscriber.Bus.GAME)
-public class SpaceEffectsHandler{
-	private static final Set<ResourceKey<Level>> LOW_GRAVITY_DIMENSIONS=Set.of(
-			ResourceKey.create(Registries.DIMENSION,ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"orbit")),
-			ResourceKey.create(Registries.DIMENSION,ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"moon"))
+public class SpaceEffectsHandler {
+	private static final Set<ResourceKey<Level>> LOW_GRAVITY_DIMENSIONS = Set.of(
+			ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "orbit")),
+			ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "moon"))
 	);
+
 	@SubscribeEvent
-	public static void onEntityTick(LivingEvent.LivingTickEvent event){
-		LivingEntity entity=event.getEntity();
-		if(event.getEntity().tickCount%20!=0) return;
-		if(LOW_GRAVITY_DIMENSIONS.contains(entity.level().dimension())){
-			entity.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,40,1,true,false));
-			entity.addEffect(new MobEffectInstance(MobEffects.JUMP,40,1,true,false));
+	public static void onEntityTick(EntityTickEvent event) { // Odebráno .Post
+		// V 1.21.1 se používá .getEntity() nebo .entity()
+		if (event.getEntity() instanceof LivingEntity livingEntity) {
+
+			// Kontrola každou sekundu
+			if (livingEntity.tickCount % 20 != 0) return;
+
+			if (LOW_GRAVITY_DIMENSIONS.contains(livingEntity.level().dimension())) {
+				livingEntity.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 40, 1, true, false));
+				livingEntity.addEffect(new MobEffectInstance(MobEffects.JUMP, 40, 1, true, false));
+			}
 		}
 	}
 }
