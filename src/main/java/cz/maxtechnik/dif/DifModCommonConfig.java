@@ -88,6 +88,8 @@ public class DifModCommonConfig{
 	private static final ModConfigSpec.BooleanValue PORTAL_ALLOW_MOBS; public static boolean portalAllowMobs;
 	private static final ModConfigSpec.BooleanValue PORTAL_ALLOW_ITEMS_AND_PROJECTILES; public static boolean portalAllowItemsAndProjectiles;
 
+	private static final ModConfigSpec.BooleanValue FLUID_HATCH_ALLOW_XP_MODE; public static boolean fluidHatchAllowXpMode;
+
 	static{
 		BUILDER.comment("Dif common config.");
 		BUILDER.comment("This configuration is generated, do not overwrite anything except the values!");
@@ -163,6 +165,9 @@ public class DifModCommonConfig{
 		PORTAL_ALLOW_MOBS=BUILDER.comment("Allow mobs to pass through portals."+reload("true")).define("portal_allow_mobs",true);
 		PORTAL_ALLOW_ITEMS_AND_PROJECTILES=BUILDER.comment("Allow items, projectiles and falling blocks to pass through portals."+reload("true")).define("portal_allow_items_and_projectiles",true);
 		BUILDER.pop();
+		BUILDER.push("FluidHatch");
+		FLUID_HATCH_ALLOW_XP_MODE=BUILDER.comment("Allow FluidHatch to be switched to XP mode with wrench."+reload("true")).define("fluid_hatch_allow_xp_mode",true);
+		BUILDER.pop();
 
 		SPEC=BUILDER.build();
 	}
@@ -220,5 +225,7 @@ public class DifModCommonConfig{
 		portalMaxEntitiesPerTick=PORTAL_MAX_ENTITIES_PER_TICK.get();
 		portalAllowMobs=PORTAL_ALLOW_MOBS.get();
 		portalAllowItemsAndProjectiles=PORTAL_ALLOW_ITEMS_AND_PROJECTILES.get();
+
+		fluidHatchAllowXpMode=FLUID_HATCH_ALLOW_XP_MODE.get();
 	}
 }
