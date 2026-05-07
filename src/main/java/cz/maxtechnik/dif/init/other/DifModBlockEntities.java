@@ -7,7 +7,6 @@ import cz.maxtechnik.dif.block.entity.barrel.BrassBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.barrel.CopperBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.BrassMechanicalMixerBlockEntity;
 import cz.maxtechnik.dif.block.entity.BrassMechanicalPressBlockEntity;
-import cz.maxtechnik.dif.block.entity.dev.SpecialCraftingBlockEntity;
 import cz.maxtechnik.dif.block.entity.dev.XpStorageBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.registries.Registries;
