@@ -11,6 +11,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.SuspiciousStewEffects;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -20,21 +21,20 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
 public class CanolaPlant extends FlowerBlock implements BonemealableBlock{
 	private static final TagKey<Block> FLOWER_PLANT_SOIL=BlockTags.create(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"flower_plant_soil"));
-	public CanolaPlant(){
-		super(()->MobEffects.CONFUSION,100,BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).sound(SoundType.GRASS).instabreak().noCollission().offsetType(BlockBehaviour.OffsetType.NONE).pushReaction(PushReaction.DESTROY));
+	public CanolaPlant() {
+		super(new SuspiciousStewEffects(List.of(new SuspiciousStewEffects.Entry(MobEffects.CONFUSION, 100))), BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).sound(SoundType.GRASS).instabreak().noCollission().offsetType(BlockBehaviour.OffsetType.NONE).pushReaction(PushReaction.DESTROY));
 	}
 	@Override
-	public int getEffectDuration(){
+	public int getFlammability(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull Direction face){
 		return 100;
 	}
 	@Override
-	public int getFlammability(BlockState state,BlockGetter world,BlockPos pos,Direction face){
-		return 100;
-	}
-	@Override
-	public int getFireSpreadSpeed(BlockState state,BlockGetter world,BlockPos pos,Direction face){
+	public int getFireSpreadSpeed(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull Direction face){
 		return 60;
 	}
 	@Override
@@ -48,7 +48,7 @@ public class CanolaPlant extends FlowerBlock implements BonemealableBlock{
 		return this.mayPlaceOn(groundState,worldIn,blockpos);
 	}
 	@Override
-	public boolean isValidBonemealTarget(@NotNull LevelReader worldIn,@NotNull BlockPos pos,@NotNull BlockState blockstate,boolean clientSide){
+	public boolean isValidBonemealTarget(@NotNull LevelReader worldIn,@NotNull BlockPos pos,@NotNull BlockState blockstate){
 		return true;
 	}
 	@Override

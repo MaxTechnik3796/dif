@@ -35,6 +35,10 @@ public class PortalBlock extends BaseEntityBlock{
 		}
 	}
 	@Override
+	public @NotNull com.mojang.serialization.MapCodec<? extends BaseEntityBlock> codec() {
+		return net.minecraft.world.level.block.state.BlockBehaviour.simpleCodec(PortalBlock::new);
+	}
+	@Override
 	public @NotNull VoxelShape getShape(BlockState state,@NotNull BlockGetter level,@NotNull BlockPos pos,@NotNull CollisionContext ctx){
 		return switch(state.getValue(FACING)){
 			case NORTH -> Block.box(0,0,15.9,16,16,16.1);

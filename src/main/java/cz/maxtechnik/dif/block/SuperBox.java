@@ -2,14 +2,11 @@ package cz.maxtechnik.dif.block;
 
 import cz.maxtechnik.dif.block.entity.SuperBoxBlockEntity;
 import cz.maxtechnik.dif.gui.menu.SuperBoxMenu;
-import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -85,7 +82,7 @@ public class SuperBox extends Block implements SimpleWaterloggedBlock, EntityBlo
 		return super.updateShape(state,facing,facingState,world,currentPos,facingPos);
 	}
 	@Override
-	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
 		if (player instanceof ServerPlayer serverPlayer) {
 			// V NeoForge 1.21.1 se používá serverPlayer.openMenu
 			// Místo FriendlyByteBuf se nyní používá BlockPos přímo v argumentu, pokud je potřeba

@@ -13,7 +13,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("deprecation")
 public class MatyBlock extends Block {
 
 	public MatyBlock() {
@@ -37,7 +36,7 @@ public class MatyBlock extends Block {
 	                   @NotNull BlockState blockstate, @NotNull Entity entity) {
 		super.stepOn(world, pos, blockstate, entity);
 		if (entity instanceof LivingEntity livingEntity) {
-			livingEntity.addEffect(new MobEffectInstance(DifModMobEffects.REDSTONE_IQ.get(), 60, 0));
+			livingEntity.addEffect(new MobEffectInstance(net.minecraft.core.Holder.direct(DifModMobEffects.REDSTONE_IQ.get()), 60, 0));
 		}
 	}
 }
