@@ -18,7 +18,6 @@ public class DifModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<BrassBarrelMenu>> BRASS_BARREL = REGISTRY.register("brass_barrel", () -> IMenuTypeExtension.create(BrassBarrelMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<OldChestMenu>> OLD_CHEST = REGISTRY.register("old_chest", () -> IMenuTypeExtension.create(OldChestMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<BurningGeneratorMenu>> GENERATOR = REGISTRY.register("generator", () -> IMenuTypeExtension.create(BurningGeneratorMenu::new));
-	public static final DeferredHolder<MenuType<?>, MenuType<SpecialCraftingMenu>> SPECIAL_CRAFTING = REGISTRY.register("special_crafting", () -> IMenuTypeExtension.create(SpecialCraftingMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<SpaceshipMenu>> SPACESHIP = REGISTRY.register("spaceship", () -> IMenuTypeExtension.create(SpaceshipMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<MegaBackpackMenu>> MEGA_BACKPACK = REGISTRY.register("mega_backpack", () -> IMenuTypeExtension.create(MegaBackpackMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<QuarryMenu>> QUARRY = REGISTRY.register("quarry", () -> IMenuTypeExtension.create(QuarryMenu::new));

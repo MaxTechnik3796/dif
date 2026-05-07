@@ -51,17 +51,8 @@ public class DifModBlockEntities{
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BrassMechanicalMixerBlockEntity>> BRASS_MECHANICAL_MIXER = REGISTRY.register("brass_mechanical_mixer", () -> BlockEntityType.Builder.of(BrassMechanicalMixerBlockEntity::new, DifModBlocks.BRASS_MECHANICAL_MIXER.get()).build(null));
 
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BurningGeneratorBlockEntity>> BURNING_GENERATOR = REGISTRY.register("burning_generator", () -> BlockEntityType.Builder.of(BurningGeneratorBlockEntity::new, DifModBlocks.BURNING_GENERATOR.get()).build(null));
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SpecialCraftingBlockEntity>> SPECIAL_CRAFTING = register("special_crafting", DifModBlocks.XP_STORAGE, SpecialCraftingBlockEntity::new);
 
 	private static <T extends net.minecraft.world.level.block.entity.BlockEntity> DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> register(String registryname, Supplier<? extends Block> block, BlockEntityType.BlockEntitySupplier<T> supplier) {
 		return REGISTRY.register(registryname, () -> BlockEntityType.Builder.of(supplier, block.get()).build(null));
-	}
-	@SubscribeEvent
-	public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-		event.registerBlockEntity(
-				Capabilities.ItemHandler.BLOCK,
-				DifModBlockEntities.SPECIAL_CRAFTING.get(),
-				(be, side) -> side == null ? null : new SidedInvWrapper(be, side)
-		);
 	}
 }

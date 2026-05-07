@@ -18,7 +18,6 @@ public class DifModScreens {
 		event.register(DifModMenus.ANDESITE_BARREL.get(), AndesiteBarrelScreen::new);
 		event.register(DifModMenus.BRASS_BARREL.get(), BrassBarrelScreen::new);
 		event.register(DifModMenus.GENERATOR.get(), BurningGeneratorScreen::new);
-		event.register(DifModMenus.SPECIAL_CRAFTING.get(), SpecialCraftingScreen::new);
 		event.register(DifModMenus.OLD_CHEST.get(), OldChestScreen::new);
 		event.register(DifModMenus.SPACESHIP.get(), SpaceshipScreen::new);
 		event.register(DifModMenus.MEGA_BACKPACK.get(), MegaBackpackScreen::new);
