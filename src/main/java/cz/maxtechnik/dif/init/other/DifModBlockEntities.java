@@ -13,6 +13,10 @@ import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -52,5 +56,13 @@ public class DifModBlockEntities{
 
 	private static <T extends net.minecraft.world.level.block.entity.BlockEntity> DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> register(String registryname, Supplier<? extends Block> block, BlockEntityType.BlockEntitySupplier<T> supplier) {
 		return REGISTRY.register(registryname, () -> BlockEntityType.Builder.of(supplier, block.get()).build(null));
+	}
+	@SubscribeEvent
+	public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+		event.registerBlockEntity(
+				Capabilities.ItemHandler.BLOCK,
+				DifModBlockEntities.SPECIAL_CRAFTING.get(),
+				(be, side) -> side == null ? null : new SidedInvWrapper(be, side)
+		);
 	}
 }
