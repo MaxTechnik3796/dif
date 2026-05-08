@@ -185,13 +185,18 @@ public class ClientCameraHandler{
 		}
 	}
 	@SubscribeEvent
-	public static void onPlayerInteract(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent event) {
-		if (event.getLevel().isClientSide() && isViewing) {
-			// Kontrola, zda event implementuje rozhraní pro zrušení
-			if (event instanceof net.neoforged.bus.api.ICancellableEvent cancellable) {
-				cancellable.setCanceled(true);
-			}
-		}
+	public static void onPlayerInteractRightClickBlock(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickBlock event) {
+		if (event.getLevel().isClientSide() && isViewing) event.setCanceled(true);
+	}
+
+	@SubscribeEvent
+	public static void onPlayerInteractRightClickItem(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickItem event) {
+		if (event.getLevel().isClientSide() && isViewing) event.setCanceled(true);
+	}
+
+	@SubscribeEvent
+	public static void onPlayerInteractLeftClickBlock(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.LeftClickBlock event) {
+		if (event.getLevel().isClientSide() && isViewing) event.setCanceled(true);
 	}
 	@SubscribeEvent
 	public static void onRenderHand(RenderHandEvent event){
