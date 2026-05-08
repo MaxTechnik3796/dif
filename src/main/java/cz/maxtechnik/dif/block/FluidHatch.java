@@ -1,7 +1,5 @@
 package cz.maxtechnik.dif.block;
 
-import com.simibubi.create.AllSoundEvents;
-import com.simibubi.create.Create;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.DifModCommonConfig;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
@@ -83,7 +81,7 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		if(heldItem.is(ItemTags.create(ResourceLocation.fromNamespaceAndPath("neoforge","tools/wrench")))){
 			if(DifModCommonConfig.fluidHatchAllowXpMode){
 				world.setBlock(pos,blockState.setValue(XP,!blockState.getValue(XP)),3);
-				AllSoundEvents.WRENCH_ROTATE.playOnServer(world,pos,1.0F,Create.RANDOM.nextFloat()*0.5F+0.5F);
+				world.playSound(null,pos,net.minecraft.sounds.SoundEvents.ANVIL_USE,net.minecraft.sounds.SoundSource.BLOCKS,1.0F,0.5F+world.random.nextFloat()*0.5F);
 			}
 			return ItemInteractionResult.SUCCESS;
 		}
