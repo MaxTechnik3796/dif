@@ -23,7 +23,7 @@ public class SpaceEffectsHandler {
 	);
 
 	@SubscribeEvent
-	public static void onEntityTick(EntityTickEvent event) { // Odebráno .Post
+	public static void onEntityTick(net.neoforged.neoforge.event.tick.EntityTickEvent.Post event) {
 		// V 1.21.1 se používá .getEntity() nebo .entity()
 		if (event.getEntity() instanceof LivingEntity livingEntity) {
 

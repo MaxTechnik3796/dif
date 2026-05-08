@@ -19,7 +19,7 @@ import java.util.HashSet;
 public class OrbitVoidTeleport {
 
 	@SubscribeEvent
-	public static void onEntityTick(EntityTickEvent event) { // Změna na EntityTickEvent
+	public static void onEntityTick(net.neoforged.neoforge.event.tick.EntityTickEvent.Post event) {
 		if (!(event.getEntity() instanceof LivingEntity entity)) return;
 		ResourceLocation currentDim = entity.level().dimension().location();
 		ResourceLocation orbitDim = ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "orbit");
