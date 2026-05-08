@@ -237,8 +237,8 @@ public class DifModTabs{
 
 	public static void addCreative(BuildCreativeModeTabContentsEvent tabData){
 		if(tabData.getTabKey().equals(CreativeModeTabs.BUILDING_BLOCKS)){
-			tabData.getEntries().putAfter(new ItemStack(Items.SMOOTH_STONE),new ItemStack(SMOOTH_STONE_DOUBLE_SLAB.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			tabData.getEntries().putAfter(new ItemStack(Items.IRON_BARS),new ItemStack(IRON_BARS_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertAfter(new ItemStack(Items.SMOOTH_STONE),new ItemStack(SMOOTH_STONE_DOUBLE_SLAB.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertAfter(new ItemStack(Items.IRON_BARS),new ItemStack(IRON_BARS_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.accept(DEEPSLATED_ARROW.get());
 			tabData.accept(STONED_ARROW.get());
 			tabData.accept(WOODED_ARROW.get());
@@ -246,10 +246,10 @@ public class DifModTabs{
 
 
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.NATURAL_BLOCKS)){
-			tabData.getEntries().putAfter(new ItemStack(Items.BEDROCK),new ItemStack(PEDROCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			tabData.getEntries().putAfter(new ItemStack(Items.SNOW),new ItemStack(MATY_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			tabData.getEntries().putAfter(new ItemStack(Items.CRYING_OBSIDIAN),new ItemStack(CINDER_FLOUR_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			tabData.getEntries().putAfter(new ItemStack(Items.WARPED_FUNGUS),new ItemStack(SUGAR_MUSHROOM.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertAfter(new ItemStack(Items.BEDROCK),new ItemStack(PEDROCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertAfter(new ItemStack(Items.SNOW),new ItemStack(MATY_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertAfter(new ItemStack(Items.CRYING_OBSIDIAN),new ItemStack(CINDER_FLOUR_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertAfter(new ItemStack(Items.WARPED_FUNGUS),new ItemStack(SUGAR_MUSHROOM.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			addItemStacksBehind(tabData,new ItemStack(Items.AMETHYST_CLUSTER),
 					new ItemStack[]{
 							new ItemStack(ENERGY_BLOCK.get()),
@@ -266,7 +266,7 @@ public class DifModTabs{
 							new ItemStack(CANOLA_SEEDS.get())
 					});
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS)){
-			tabData.getEntries().putAfter(new ItemStack(Items.CHEST),new ItemStack(OLD_CHEST.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertAfter(new ItemStack(Items.CHEST),new ItemStack(OLD_CHEST.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			addItemStacksBehind(tabData,new ItemStack(Items.BARREL),
 					new ItemStack[]{
 							new ItemStack(ANDESITE_BARREL.get()),
@@ -274,8 +274,8 @@ public class DifModTabs{
 							new ItemStack(BRASS_BARREL.get())
 					});
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES)){
-			tabData.getEntries().putBefore(new ItemStack(Items.BUCKET),new ItemStack(ELECTRUM_DESTROYER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			tabData.getEntries().putAfter(new ItemStack(Items.ELYTRA),new ItemStack(PHANTOM_RING.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertBefore(new ItemStack(Items.BUCKET),new ItemStack(ELECTRUM_DESTROYER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertAfter(new ItemStack(Items.ELYTRA),new ItemStack(PHANTOM_RING.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			addItemStacksBehind(tabData,new ItemStack(Items.STONE),
 					new ItemStack[]{
 							new ItemStack(COPPER_SHOVEL.get()),
@@ -296,8 +296,8 @@ public class DifModTabs{
 					});
 			tabData.accept(DOG.get());
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.COMBAT)){
-			tabData.getEntries().putAfter(new ItemStack(Items.STONE_SWORD),new ItemStack(COPPER_SWORD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			tabData.getEntries().putAfter(new ItemStack(Items.STONE_AXE),new ItemStack(COPPER_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertAfter(new ItemStack(Items.STONE_SWORD),new ItemStack(COPPER_SWORD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertAfter(new ItemStack(Items.STONE_AXE),new ItemStack(COPPER_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			addItemStacksBehind(tabData,new ItemStack(Items.NETHERITE_SWORD),
 					new ItemStack[]{
 							new ItemStack(WOODEN_KATANA.get()),
@@ -323,7 +323,7 @@ public class DifModTabs{
 							new ItemStack(COPPER_BOOTS.get())
 					});
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.FOOD_AND_DRINKS)){
-			tabData.getEntries().putAfter(new ItemStack(Items.POISONOUS_POTATO),new ItemStack(FRIES.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertAfter(new ItemStack(Items.POISONOUS_POTATO),new ItemStack(FRIES.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			addItemStacksBehind(tabData,new ItemStack(Items.BREAD),
 					new ItemStack[]{
 							new ItemStack(BAGUETTE.get()),
@@ -364,7 +364,7 @@ public class DifModTabs{
 			tabData.accept(BOTTLE_OF_URANOVEJ_KOKTEJL.get());
 			tabData.accept(FLAT_DOUGH.get());
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.INGREDIENTS)){
-			tabData.getEntries().putAfter(new ItemStack(Items.AMETHYST_SHARD),new ItemStack(ENERGY_SHARD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertAfter(new ItemStack(Items.AMETHYST_SHARD),new ItemStack(ENERGY_SHARD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.OP_BLOCKS)){
 			tabData.accept(EXAMPLE_ITEM.get());
 			tabData.accept(EXAMPLE_BLOCK.get());
@@ -388,15 +388,15 @@ public class DifModTabs{
 
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
-			tabData.getEntries().putAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 		}else if(tabData.getTab().equals(AllCreativeModeTabs.BASE_CREATIVE_TAB.get())){
-			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("create","item_hatch")))),new ItemStack[]{new ItemStack(FLUID_HATCH.get())});
-			addItemStacksBehind(tabData, new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("create","water_wheel")))), new ItemStack[]{new ItemStack(BRASS_WATER_WHEEL.get())});
-			addItemStacksBehind(tabData, new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("create","large_water_wheel")))), new ItemStack[]{new ItemStack(BRASS_LARGE_WATER_WHEEL.get())});
-			addItemStacksBehind(tabData, new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("create","mechanical_press")))), new ItemStack[]{new ItemStack(BRASS_MECHANICAL_PRESS.get())});
-			addItemStacksBehind(tabData, new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("create","mechanical_mixer")))), new ItemStack[]{new ItemStack(BRASS_MECHANICAL_MIXER.get())});
+			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create","item_hatch")))),new ItemStack[]{new ItemStack(FLUID_HATCH.get())});
+			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create","water_wheel")))),new ItemStack[]{new ItemStack(BRASS_WATER_WHEEL.get())});
+			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create","large_water_wheel")))),new ItemStack[]{new ItemStack(BRASS_LARGE_WATER_WHEEL.get())});
+			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create","mechanical_press")))),new ItemStack[]{new ItemStack(BRASS_MECHANICAL_PRESS.get())});
+			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create","mechanical_mixer")))),new ItemStack[]{new ItemStack(BRASS_MECHANICAL_MIXER.get())});
 		}else if(tabData.getTab().equals(AllCreativeModeTabs.PALETTES_CREATIVE_TAB.get())){
-			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("create","framed_glass_trapdoor")))),
+			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create","framed_glass_trapdoor")))),
 					new ItemStack[]{
 							new ItemStack(BROKEN_TRACK00.get()),
 							new ItemStack(BROKEN_TRACK01.get()),

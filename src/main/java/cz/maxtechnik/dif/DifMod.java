@@ -49,6 +49,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 @SuppressWarnings("removal")
 @Mod(DifMod.MODID)
 public class DifMod {
@@ -99,13 +100,9 @@ public class DifMod {
 		IsChunkLoadedCommand.register(event.getDispatcher());
 		ConfigReloadCommand.register(event.getDispatcher());
 	}
-	@EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
-	public static class ClientForgeEvents {
-		@SubscribeEvent
-		public static void onRenderGui(RenderGuiOverlayEvent.Post event) {
-			if (event.getOverlay().id().getPath().equals("hotbar")) {
-				CarHudOverlay.render(event.getGuiGraphics());
-			}
+	public static void onRenderGui(RenderGuiLayerEvent.Post event) {
+		if (event.getName().equals(net.neoforged.neoforge.client.gui.VanillaGuiLayers.HOTBAR)) {
+			CarHudOverlay.render(event.getGuiGraphics());
 		}
 	}
 
@@ -119,20 +116,8 @@ public class DifMod {
 		@SubscribeEvent
 		public static void onClientSetup(FMLClientSetupEvent event) {
 			LOGGER.info("DIF MOD: Client Setup");
-
-			// KLÍČOVÉ: Říkáme Flywheel, aby pro náš BE nepoužíval instancing visual,
-			// ale přenechal rendering našemu BlockEntityRenderer (BrassWaterWheelRenderer).
-			// Bez tohoto Flywheel buď nic nevykreslí (nenajde visual pro náš typ),
-			// nebo se pokusí použít Create's LargeWaterWheel visual, který generuje
-			// dynamický model ze dřeva – ne náš OBJ.
 			event.enqueueWork(() -> {
 				try {
-					// Flywheel 1.0.5 API: VisualizationManager nemá přímé "skip" API,
-					// ale pokud pro daný BlockEntityType není registrován žádný VisualType,
-					// Flywheel automaticky fallbackuje na standardní BER rendering.
-					// Náš BRASS_LARGE_WATER_WHEEL BlockEntityType NENÍ registrován
-					// v Create's AllBlockEntityTypes, takže by měl projít BER automaticky.
-					// Tento log nám pomůže potvrdit že se client setup zavolal.
 					LOGGER.info("DIF MOD: Flywheel BER fallback setup pro BrassLargeWaterWheel");
 
 					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.BRASS_LARGE_WATER_WHEEL.get(), RenderType.cutout());
@@ -195,9 +180,8 @@ public class DifMod {
 	}
 
 	public static void addItemStacksBehind(BuildCreativeModeTabContentsEvent tabData, ItemStack startStack, ItemStack[] addStacks) {
-		for (int i = 0; i < addStacks.length; i++) {
-			if (i == 0) tabData.getEntries().putAfter(startStack, addStacks[i], CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			else tabData.getEntries().putAfter(addStacks[i - 1], addStacks[i], CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		for (ItemStack addStack : addStacks) {
+			tabData.accept(addStack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 		}
 	}
 }

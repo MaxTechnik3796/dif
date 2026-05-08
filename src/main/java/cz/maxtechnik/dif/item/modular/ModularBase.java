@@ -1,16 +1,13 @@
 package cz.maxtechnik.dif.item.modular;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import cz.maxtechnik.dif.DifMod;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -27,22 +24,20 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
@@ -52,6 +47,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
@@ -59,48 +55,34 @@ import java.util.*;
 import java.util.List;
 
 import static cz.maxtechnik.dif.DifModCommonConfig.*;
+
+@SuppressWarnings("deprecation")
 public abstract class ModularBase extends DiggerItem{
 	static DataComponentType<CustomData> D=DataComponents.CUSTOM_DATA;
+	private static final ResourceLocation BASE_ATTACK_DAMAGE_ID=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"base_attack_damage");
+	private static final ResourceLocation BASE_ATTACK_SPEED_ID=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"base_attack_speed");
 	protected abstract TagKey<Block> getMineableTag();
 	public String[] materials={
-			"Wood",
-			"Stone",
-			"Copper",
-			"Iron",
-			"Gold",
-			"Diamond",
-			"Obsidian",
-			"Netherite"
+			"Wood","Stone","Copper","Iron","Gold","Diamond","Obsidian","Netherite"
 	};
 	protected String material;
-	protected int defaultMiningLevel, defaultDurability, defaultEfficiency;
-	protected float defaultAttackDamage, defaultAttackSpeed;
+	protected int defaultMiningLevel,defaultDurability,defaultEfficiency;
+	protected float defaultAttackDamage,defaultAttackSpeed;
+
 	public ModularBase(int durability,int efficiency,int miningLevel,float attackDamage,float attackSpeed,String material){
-		super(attackDamage,attackSpeed,new Tier(){
+		super(new Tier(){
 			@Override
-			public int getUses(){
-				return 1;
-			}
+			public int getUses(){ return 1; }
 			@Override
-			public float getSpeed(){
-				return 0.1F;
-			}
+			public float getSpeed(){ return 0.1F; }
 			@Override
-			public float getAttackDamageBonus(){
-				return 0.1F;
-			}
+			public float getAttackDamageBonus(){ return 0.1F; }
 			@Override
-			public int getLevel(){
-				return 0;
-			}
+			public @NotNull TagKey<Block> getIncorrectBlocksForDrops(){ return BlockTags.INCORRECT_FOR_WOODEN_TOOL; }
 			@Override
-			public int getEnchantmentValue(){
-				return 0;
-			}
+			public int getEnchantmentValue(){ return 0; }
 			@Override
-			public @NotNull Ingredient getRepairIngredient(){
-				return Ingredient.EMPTY;
-			}
+			public @NotNull Ingredient getRepairIngredient(){ return Ingredient.EMPTY; }
 		},BlockTags.MINEABLE_WITH_PICKAXE,new Properties().stacksTo(1).fireResistant().rarity(Rarity.EPIC));
 		this.material=material;
 		this.defaultDurability=durability;
@@ -109,46 +91,30 @@ public abstract class ModularBase extends DiggerItem{
 		this.defaultAttackDamage=attackDamage;
 		this.defaultAttackSpeed=attackSpeed;
 	}
+
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack itemStack,Enchantment enchantment){
-		return false;
-	}
+	public boolean isEnchantable(@NotNull ItemStack itemStack){ return false; }
+
 	@Override
-	public boolean isEnchantable(@NotNull ItemStack itemStack){
-		return false;
-	}
+	public int getEnchantmentValue(){ return 0; }
+
 	@Override
-	public int getEnchantmentValue(){
-		return 0;
-	}
+	public boolean isFoil(@NotNull ItemStack itemStack){ return false; }
+
 	@Override
-	public boolean isBookEnchantable(@NotNull ItemStack itemStack,@NotNull ItemStack book){
-		return false;
-	}
+	public boolean isRepairable(@NotNull ItemStack itemStack){ return false; }
+
 	@Override
-	public boolean isFoil(@NotNull ItemStack itemStack){
-		return false;
-	}
-	@Override
-	public boolean isRepairable(@NotNull ItemStack itemStack){
-		return false;
-	}
-	@Override
-	public boolean isValidRepairItem(@NotNull ItemStack pToRepair,@NotNull ItemStack pRepair){
-		return false;
-	}
+	public boolean isValidRepairItem(@NotNull ItemStack pToRepair,@NotNull ItemStack pRepair){ return false; }
+
 	public static boolean isTagged(ItemStack itemStack,String namespace,String path){
 		return itemStack.is(ItemTags.create(ResourceLocation.fromNamespaceAndPath(namespace,path)));
 	}
-	public static boolean isHead(ItemStack itemStack){
-		return isTagged(itemStack,DifMod.MODID,"modular_tools_parts/head");
-	}
-	public static boolean isBinding(ItemStack itemStack){
-		return isTagged(itemStack,DifMod.MODID,"modular_tools_parts/binding");
-	}
-	public static boolean isHandle(ItemStack itemStack){
-		return isTagged(itemStack,DifMod.MODID,"modular_tools_parts/handle");
-	}
+
+	public static boolean isHead(ItemStack itemStack){ return isTagged(itemStack,DifMod.MODID,"modular_tools_parts/head"); }
+	public static boolean isBinding(ItemStack itemStack){ return isTagged(itemStack,DifMod.MODID,"modular_tools_parts/binding"); }
+	public static boolean isHandle(ItemStack itemStack){ return isTagged(itemStack,DifMod.MODID,"modular_tools_parts/handle"); }
+
 	public static boolean isReplacedPartValid(ItemStack template,ItemStack base){
 		if(isTagged(template,DifMod.MODID,"modular_tools_parts/head"))
 			return !Objects.requireNonNull(template.get(D)).copyTag().getString("HeadMaterial").equals(Objects.requireNonNull(base.get(D)).copyTag().getString("HeadMaterial"));
@@ -158,12 +124,14 @@ public abstract class ModularBase extends DiggerItem{
 			return !Objects.requireNonNull(template.get(D)).copyTag().getString("HandleMaterial").equals(Objects.requireNonNull(base.get(D)).copyTag().getString("HandleMaterial"));
 		return false;
 	}
+
 	public static String getPartType(ItemStack itemStack){
 		if(isHead(itemStack)) return "Head";
 		if(isBinding(itemStack)) return "Binding";
 		if(isHandle(itemStack)) return "Handle";
 		return "";
 	}
+
 	public static void toolRepair(ItemStack template,ItemStack base,ItemStack addition,CompoundTag templateTag,CompoundTag baseTag,CompoundTag additionTag){
 		int currentDamage=base.getDamageValue();
 		int repair=containsMaterial(base,"Stone")?modularToolsCheepRepairAmount:modularToolsRepairAmount;
@@ -177,6 +145,7 @@ public abstract class ModularBase extends DiggerItem{
 			}
 		}
 	}
+
 	public static void toolPartReplace(ItemStack template,ItemStack base,ItemStack addition,CompoundTag templateTag,CompoundTag baseTag,CompoundTag additionTag){
 		if(isTagged(template,DifMod.MODID,"modular_tools_parts/head")){
 			baseTag.putString("Material",templateTag.getString("HeadMaterial"));
@@ -211,16 +180,13 @@ public abstract class ModularBase extends DiggerItem{
 			baseTag.putInt("CustomModelData",1);
 		}
 	}
+
 	public static ItemStack newToolCraft(ItemStack template,ItemStack base,ItemStack addition,CompoundTag templateTag,CompoundTag baseTag,CompoundTag additionTag){
 		ItemStack tool=new ItemStack(Items.AIR);
-		if(base.getItem().equals(DifModItems.MODULAR_PART_PICKAXE_HEAD.get()))
-			tool=new ItemStack(DifModItems.MODULAR_PICKAXE.get());
-		if(base.getItem().equals(DifModItems.MODULAR_PART_AXE_HEAD.get()))
-			tool=new ItemStack(DifModItems.MODULAR_AXE.get());
-		if(base.getItem().equals(DifModItems.MODULAR_PART_SHOVEL_HEAD.get()))
-			tool=new ItemStack(DifModItems.MODULAR_SHOVEL.get());
-		if(base.getItem().equals(DifModItems.MODULAR_PART_SWORD_HEAD.get()))
-			tool=new ItemStack(DifModItems.MODULAR_SWORD.get());
+		if(base.getItem().equals(DifModItems.MODULAR_PART_PICKAXE_HEAD.get())) tool=new ItemStack(DifModItems.MODULAR_PICKAXE.get());
+		if(base.getItem().equals(DifModItems.MODULAR_PART_AXE_HEAD.get())) tool=new ItemStack(DifModItems.MODULAR_AXE.get());
+		if(base.getItem().equals(DifModItems.MODULAR_PART_SHOVEL_HEAD.get())) tool=new ItemStack(DifModItems.MODULAR_SHOVEL.get());
+		if(base.getItem().equals(DifModItems.MODULAR_PART_SWORD_HEAD.get())) tool=new ItemStack(DifModItems.MODULAR_SWORD.get());
 		CompoundTag toolTag=new CompoundTag();
 		toolTag.putString("Material",baseTag.getString("HeadMaterial"));
 		toolTag.putInt("SpecialDurability",1);
@@ -246,14 +212,14 @@ public abstract class ModularBase extends DiggerItem{
 		tool.set(D,CustomData.of(toolTag));
 		return tool;
 	}
+
 	public static void applyModifiers(ItemStack template,ItemStack base,ItemStack addition,CompoundTag templateTag,CompoundTag baseTag,CompoundTag additionTag){
 		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/efficiency")){
 			if(baseTag.getInt("EfficiencyModifierProgress")+1>=new int[]{modularToolsEfficiencyModifierStage0,modularToolsEfficiencyModifierStage1,modularToolsEfficiencyModifierStage2}[baseTag.getInt("EfficiencyModifier")]){
 				baseTag.putInt("EfficiencyModifierProgress",0);
 				baseTag.putInt("EfficiencyModifier",baseTag.getInt("EfficiencyModifier")+1);
 			}else{
-				if(baseTag.getInt("EfficiencyModifierProgress")==0)
-					baseTag.putInt("MaxModifiers",baseTag.getInt("MaxModifiers")-1);
+				if(baseTag.getInt("EfficiencyModifierProgress")==0) baseTag.putInt("MaxModifiers",baseTag.getInt("MaxModifiers")-1);
 				baseTag.putInt("EfficiencyModifierProgress",baseTag.getInt("EfficiencyModifierProgress")+1);
 			}
 		}
@@ -262,8 +228,7 @@ public abstract class ModularBase extends DiggerItem{
 				baseTag.putInt("FortuneModifierProgress",0);
 				baseTag.putInt("FortuneModifier",baseTag.getInt("FortuneModifier")+1);
 			}else{
-				if(baseTag.getInt("FortuneModifierProgress")==0)
-					baseTag.putInt("MaxModifiers",baseTag.getInt("MaxModifiers")-1);
+				if(baseTag.getInt("FortuneModifierProgress")==0) baseTag.putInt("MaxModifiers",baseTag.getInt("MaxModifiers")-1);
 				baseTag.putInt("FortuneModifierProgress",baseTag.getInt("FortuneModifierProgress")+1);
 			}
 		}
@@ -282,25 +247,24 @@ public abstract class ModularBase extends DiggerItem{
 			baseTag.putInt("MaxModifiers",baseTag.getInt("MaxModifiers")-1);
 		}
 	}
+
 	public static boolean toolRepairCheck(ItemStack template,ItemStack base,ItemStack addition,CompoundTag templateTag,CompoundTag baseTag,CompoundTag additionTag){
 		return template.getItem().equals(Items.AIR)&&base.getDamageValue()>0&&isTagged(addition,DifMod.MODID,"modular_tools_materials/"+baseTag.getString("Material").toLowerCase());
 	}
+
 	public static boolean toolPartReplaceCheck(ItemStack template,ItemStack base,ItemStack addition,CompoundTag templateTag,CompoundTag baseTag,CompoundTag additionTag){
-		if(base.getItem().equals(DifModItems.MODULAR_PICKAXE.get())&&isTagged(template,DifMod.MODID,"modular_tools_parts/pickaxe_parts"))
-			return isReplacedPartValid(template,base);
-		if(base.getItem().equals(DifModItems.MODULAR_AXE.get())&&isTagged(template,DifMod.MODID,"modular_tools_parts/axe_parts"))
-			return isReplacedPartValid(template,base);
-		if(base.getItem().equals(DifModItems.MODULAR_SHOVEL.get())&&isTagged(template,DifMod.MODID,"modular_tools_parts/shovel_parts"))
-			return isReplacedPartValid(template,base);
-		if(base.getItem().equals(DifModItems.MODULAR_SWORD.get())&&isTagged(template,DifMod.MODID,"modular_tools_parts/sword_parts"))
-			return isReplacedPartValid(template,base);
+		if(base.getItem().equals(DifModItems.MODULAR_PICKAXE.get())&&isTagged(template,DifMod.MODID,"modular_tools_parts/pickaxe_parts")) return isReplacedPartValid(template,base);
+		if(base.getItem().equals(DifModItems.MODULAR_AXE.get())&&isTagged(template,DifMod.MODID,"modular_tools_parts/axe_parts")) return isReplacedPartValid(template,base);
+		if(base.getItem().equals(DifModItems.MODULAR_SHOVEL.get())&&isTagged(template,DifMod.MODID,"modular_tools_parts/shovel_parts")) return isReplacedPartValid(template,base);
+		if(base.getItem().equals(DifModItems.MODULAR_SWORD.get())&&isTagged(template,DifMod.MODID,"modular_tools_parts/sword_parts")) return isReplacedPartValid(template,base);
 		return false;
 	}
+
 	public static boolean newToolCraftCheck(ItemStack template,ItemStack base,ItemStack addition,CompoundTag templateTag,CompoundTag baseTag,CompoundTag additionTag){
-		if(base.getItem().equals(DifModItems.MODULAR_PART_SWORD_HEAD.get()))
-			return addition.getItem().equals(DifModItems.MODULAR_PART_SWORD_BINDING.get());
+		if(base.getItem().equals(DifModItems.MODULAR_PART_SWORD_HEAD.get())) return addition.getItem().equals(DifModItems.MODULAR_PART_SWORD_BINDING.get());
 		else return addition.getItem().equals(DifModItems.MODULAR_PART_BINDING.get());
 	}
+
 	public static boolean applyModifiersCheck(ItemStack template,ItemStack base,ItemStack addition,CompoundTag templateTag,CompoundTag baseTag,CompoundTag additionTag){
 		if(!addition.isEmpty()) return false;
 		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/efficiency")){
@@ -311,20 +275,18 @@ public abstract class ModularBase extends DiggerItem{
 			if(baseTag.getInt("FortuneModifierProgress")==0&&baseTag.getInt("MaxModifiers")==0) return false;
 			return !(baseTag.getInt("FortuneModifier")>=3);
 		}
-		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/silk_touch")&&baseTag.getInt("FortuneModifier")==0&&baseTag.getInt("FortuneModifierProgress")==0&&baseTag.getInt("MaxModifiers")>0&&!baseTag.getBoolean("SilkTouchModifier"))
-			return true;
-		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/diamond")&&baseTag.getInt("MaxModifiers")>0&&!baseTag.getBoolean("DiamondModifier"))
-			return true;
-		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/blazing")&&baseTag.getInt("MaxModifiers")>0&&!baseTag.getBoolean("BlazingModifier"))
-			return true;
-		return false;
-	}
+		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/silk_touch")&&baseTag.getInt("FortuneModifier")==0&&baseTag.getInt("FortuneModifierProgress")==0&&baseTag.getInt("MaxModifiers")>0&&!baseTag.getBoolean("SilkTouchModifier")) return true;
+		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/diamond")&&baseTag.getInt("MaxModifiers")>0&&!baseTag.getBoolean("DiamondModifier")) return true;
+        return isTagged(template, DifMod.MODID, "modular_tools_modifiers/blazing") && baseTag.getInt("MaxModifiers") > 0 && !baseTag.getBoolean("BlazingModifier");
+    }
+
 	public static int miningLevelColor(CompoundTag tag){
 		int mLevel=tag.getInt("MiningLevel")+tag.getInt("BonusMiningLevel");
 		if(tag.getInt("SpecialMiningLevel")>mLevel) mLevel=tag.getInt("SpecialMiningLevel");
 		int[] levelColors={0x745631,0x838383,0xDCDCDC,0x6DEDE4,0x433F41};
 		return mLevel<levelColors.length?levelColors[mLevel]:0xFFFFFF;
 	}
+
 	public static int miningLevelColor(String material){
 		CompoundTag tag=new CompoundTag();
 		int level=0;
@@ -337,6 +299,7 @@ public abstract class ModularBase extends DiggerItem{
 		tag.putInt("MiningLevel",level);
 		return miningLevelColor(tag);
 	}
+
 	public static String colorHexFromMaterial(String material){
 		String color="#FFFFFF";
 		switch(material){
@@ -351,6 +314,7 @@ public abstract class ModularBase extends DiggerItem{
 		}
 		return color;
 	}
+
 	public static int colorIntFromMaterial(String material){
 		int color=0xFFFFFF;
 		switch(material){
@@ -365,15 +329,14 @@ public abstract class ModularBase extends DiggerItem{
 		}
 		return color;
 	}
+
 	public static ChatFormatting durabilityColor(String partType,CompoundTag tag){
 		ChatFormatting dColor=ChatFormatting.DARK_AQUA;
-		if(tag.getInt(partType+"Durability")>0){
-			dColor=ChatFormatting.GREEN;
-		}else if(tag.getInt(partType+"Durability")<0){
-			dColor=ChatFormatting.RED;
-		}
+		if(tag.getInt(partType+"Durability")>0) dColor=ChatFormatting.GREEN;
+		else if(tag.getInt(partType+"Durability")<0) dColor=ChatFormatting.RED;
 		return dColor;
 	}
+
 	public static int durabilityFromMaterial(String partType,String material){
 		int durability=0;
 		switch(material){
@@ -392,6 +355,7 @@ public abstract class ModularBase extends DiggerItem{
 		}
 		return durability;
 	}
+
 	public static int miningLevelFromMaterial(String material){
 		int miningLevel=0;
 		switch(material){
@@ -402,6 +366,7 @@ public abstract class ModularBase extends DiggerItem{
 		}
 		return miningLevel;
 	}
+
 	public static int efficiencyFromMaterial(String material){
 		int efficiency=1;
 		switch(material){
@@ -415,6 +380,7 @@ public abstract class ModularBase extends DiggerItem{
 		}
 		return efficiency;
 	}
+
 	public static float attackDamageFromMaterial(String material,ItemStack itemStack){
 		float attacksDamage=1F;
 		if(itemStack.getItem().equals(DifModItems.MODULAR_PICKAXE.get())){
@@ -452,6 +418,7 @@ public abstract class ModularBase extends DiggerItem{
 		}
 		return attacksDamage;
 	}
+
 	public static float attackSpeedFromMaterial(String material,ItemStack itemStack){
 		float attacksSpeed=-2.8F;
 		if(itemStack.getItem().equals(DifModItems.MODULAR_SHOVEL.get())) attacksSpeed=-3F;
@@ -465,22 +432,25 @@ public abstract class ModularBase extends DiggerItem{
 		if(itemStack.getItem().equals(DifModItems.MODULAR_SWORD.get())) attacksSpeed=-2.4F;
 		return attacksSpeed;
 	}
+
 	public static void calculateDurability(CompoundTag tag){
 		tag.putInt("Durability",tag.getInt("HeadDurability")+tag.getInt("HandleDurability")+tag.getInt("BindingDurability")+tag.getInt("SpecialDurability"));
 	}
-	public static void showDurability(ItemStack itemStack, CompoundTag tag, List<Component> list) {
-		int maxDurability = tag.getInt("Durability");
-		if (maxDurability <= 0) return; // Ochrana proti dělení nulou
-		int currentDamage = itemStack.getDamageValue();
-		int remainingDurability = Math.max(0, maxDurability - currentDamage);
-		float ratio = Math.min(1.0f, (float) remainingDurability / maxDurability);
-		int red = (int) (255 * (1 - ratio));
-		int green = (int) (255 * ratio);
-		int rgbColor =(red<<16)|(green<<8);
-		Component durabilityValue = Component.literal(String.valueOf(remainingDurability)).withStyle(style -> style.withColor(rgbColor)); // Tady funguje int přímo
-		Component maxDurabilityValue = Component.literal(" / " + maxDurability).withStyle(ChatFormatting.GRAY); // Čistší způsob jak dát šedou barvu
+
+	public static void showDurability(ItemStack itemStack,CompoundTag tag,List<Component> list){
+		int maxDurability=tag.getInt("Durability");
+		if(maxDurability<=0) return;
+		int currentDamage=itemStack.getDamageValue();
+		int remainingDurability=Math.max(0,maxDurability-currentDamage);
+		float ratio=Math.min(1.0f,(float)remainingDurability/maxDurability);
+		int red=(int)(255*(1-ratio));
+		int green=(int)(255*ratio);
+		int rgbColor=(red<<16)|(green<<8);
+		Component durabilityValue=Component.literal(String.valueOf(remainingDurability)).withStyle(style->style.withColor(rgbColor));
+		Component maxDurabilityValue=Component.literal(" / "+maxDurability).withStyle(ChatFormatting.GRAY);
 		list.add(Component.literal("Durability: ").withStyle(ChatFormatting.WHITE).append(durabilityValue).append(maxDurabilityValue));
 	}
+
 	@Override
 	public boolean isCorrectToolForDrops(ItemStack itemStack,@NotNull BlockState blockState){
 		if(Objects.requireNonNull(itemStack.get(D)).copyTag().isEmpty()) return super.isCorrectToolForDrops(itemStack,blockState);
@@ -493,6 +463,7 @@ public abstract class ModularBase extends DiggerItem{
 		if(blockState.is(BlockTags.NEEDS_STONE_TOOL)&&level<1) return false;
 		return blockState.is(getMineableTag());
 	}
+
 	@Override
 	public float getDestroySpeed(ItemStack itemStack,@NotNull BlockState blockState){
 		if(Objects.requireNonNull(itemStack.get(D)).copyTag().isEmpty()) return super.getDestroySpeed(itemStack,blockState);
@@ -501,6 +472,7 @@ public abstract class ModularBase extends DiggerItem{
 		int speeeed=containsMaterial(itemStack,"Gold")?8:0;
 		return blockState.is(getMineableTag())?tag.getInt("Efficiency")+tag.getInt("SpecialEfficiency")+speeeed:1F;
 	}
+
 	@Override
 	public int getMaxDamage(ItemStack itemStack){
 		if(!Objects.requireNonNull(itemStack.get(D)).copyTag().isEmpty()){
@@ -510,21 +482,15 @@ public abstract class ModularBase extends DiggerItem{
 		}
 		return this.defaultDurability;
 	}
+
 	@Override
-	public Multimap<Attribute,AttributeModifier> getAttributeModifiers(EquipmentSlot slot,ItemStack itemStack){
-		if(slot!=EquipmentSlot.MAINHAND&&Objects.requireNonNull(itemStack.get(D)).copyTag().isEmpty()){
-			CompoundTag tag=Objects.requireNonNull(itemStack.get(D)).copyTag();
-			ImmutableMultimap.Builder<Attribute,AttributeModifier> builders=ImmutableMultimap.builder();
-			float damage=tag.contains("AttackDamage")?tag.getFloat("AttackDamage"):defaultAttackDamage;
-			float speed=tag.contains("AttackSpeed")?tag.getFloat("AttackSpeed"):defaultAttackSpeed;
-			if(!tag.getBoolean("Broken")){
-				builders.put(Attributes.ATTACK_DAMAGE,new AttributeModifier(BASE_ATTACK_DAMAGE_UUID,"Tool modifier",damage,AttributeModifier.Operation.ADDITION));
-				builders.put(Attributes.ATTACK_SPEED,new AttributeModifier(BASE_ATTACK_SPEED_UUID,"Tool modifier",speed,AttributeModifier.Operation.ADDITION));
-			}
-			return builders.build();
-		}
-		return super.getAttributeModifiers(slot,itemStack);
+	public @NotNull ItemAttributeModifiers getDefaultAttributeModifiers(){
+		return ItemAttributeModifiers.builder()
+				.add(Attributes.ATTACK_DAMAGE,new AttributeModifier(BASE_ATTACK_DAMAGE_ID,defaultAttackDamage,AttributeModifier.Operation.ADD_VALUE),EquipmentSlotGroup.bySlot(EquipmentSlot.MAINHAND))
+				.add(Attributes.ATTACK_SPEED,new AttributeModifier(BASE_ATTACK_SPEED_ID,defaultAttackSpeed,AttributeModifier.Operation.ADD_VALUE),EquipmentSlotGroup.bySlot(EquipmentSlot.MAINHAND))
+				.build();
 	}
+
 	@Override
 	public @NotNull InteractionResult useOn(UseOnContext context){
 		if(!context.getItemInHand().getItem().equals(DifModItems.MODULAR_AXE.get())) return InteractionResult.PASS;
@@ -532,9 +498,9 @@ public abstract class ModularBase extends DiggerItem{
 		BlockPos blockpos=context.getClickedPos();
 		Player player=context.getPlayer();
 		BlockState blockstate=level.getBlockState(blockpos);
-		Optional<BlockState> optional=Optional.ofNullable(blockstate.getToolModifiedState(context,ToolActions.AXE_STRIP,false));
-		Optional<BlockState> optional1=optional.isPresent()?Optional.empty():Optional.ofNullable(blockstate.getToolModifiedState(context,ToolActions.AXE_SCRAPE,false));
-		Optional<BlockState> optional2=optional.isPresent()||optional1.isPresent()?Optional.empty():Optional.ofNullable(blockstate.getToolModifiedState(context,ToolActions.AXE_WAX_OFF,false));
+		Optional<BlockState> optional=Optional.ofNullable(blockstate.getToolModifiedState(context,ItemAbilities.AXE_STRIP,false));
+		Optional<BlockState> optional1=optional.isPresent()?Optional.empty():Optional.ofNullable(blockstate.getToolModifiedState(context,ItemAbilities.AXE_SCRAPE,false));
+		Optional<BlockState> optional2=optional.isPresent()||optional1.isPresent()?Optional.empty():Optional.ofNullable(blockstate.getToolModifiedState(context,ItemAbilities.AXE_WAX_OFF,false));
 		ItemStack itemstack=context.getItemInHand();
 		Optional<BlockState> optional3=Optional.empty();
 		if(optional.isPresent()){
@@ -550,46 +516,43 @@ public abstract class ModularBase extends DiggerItem{
 			optional3=optional2;
 		}
 		if(optional3.isPresent()){
-			if(player instanceof ServerPlayer){
-				CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer)player,blockpos,itemstack);
-			}
+			if(player instanceof ServerPlayer) CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer)player,blockpos,itemstack);
 			level.setBlock(blockpos,optional3.get(),11);
 			level.gameEvent(GameEvent.BLOCK_CHANGE,blockpos,GameEvent.Context.of(player,optional3.get()));
-			if(player!=null){
-				itemstack.hurtAndBreak(1,player,LivingEntity.getSlotForHand(context.getHand()));
-			}
+			if(player!=null) itemstack.hurtAndBreak(1,player,LivingEntity.getSlotForHand(context.getHand()));
 			return InteractionResult.sidedSuccess(level.isClientSide);
 		}else{
 			return InteractionResult.PASS;
 		}
-	}// Pro NeoForge: net.neoforged.neoforge.server.ServerLifecycleHooks
+	}
 
-	public static void setEnchantmentLevel(ItemStack itemStack, ResourceKey<Enchantment> enchantmentKey, int level) {
-		// Získání registrů z aktuálně běžícího serveru
+	public static void setEnchantmentLevel(ItemStack itemStack,ResourceKey<Enchantment> enchantmentKey,int level){
 		assert ServerLifecycleHooks.getCurrentServer()!=null;
-		var registryAccess = ServerLifecycleHooks.getCurrentServer().registryAccess();
-		var lookup = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
-
-		Holder<Enchantment> enchantment = lookup.getOrThrow(enchantmentKey);
-
-		itemStack.update(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY, currentEnchants -> {
-			ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(currentEnchants);
-			mutable.set(enchantment, Math.max(0, level));
+		var registryAccess=ServerLifecycleHooks.getCurrentServer().registryAccess();
+		var lookup=registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
+		Holder<Enchantment> enchantment=lookup.getOrThrow(enchantmentKey);
+		itemStack.update(DataComponents.ENCHANTMENTS,ItemEnchantments.EMPTY,currentEnchants->{
+			ItemEnchantments.Mutable mutable=new ItemEnchantments.Mutable(currentEnchants);
+			mutable.set(enchantment,Math.max(0,level));
 			return mutable.toImmutable();
 		});
 	}
+
 	public static boolean containsMaterial(ItemStack itemStack,String material){
 		CompoundTag tag=Objects.requireNonNull(itemStack.get(D)).copyTag();
 		if(tag.contains("HeadMaterial")&&tag.getString("HeadMaterial").equals(material)) return true;
 		if(tag.contains("BindingMaterial")&&tag.getString("BindingMaterial").equals(material)) return true;
 		return tag.contains("HandleMaterial")&&tag.getString("HandleMaterial").equals(material);
 	}
+
 	public static boolean isInMainHand(ItemStack itemStack,Player player){
 		return player.getItemBySlot(EquipmentSlot.MAINHAND).equals(itemStack);
 	}
+
 	public static boolean isInOffHand(ItemStack itemStack,Player player){
 		return player.getItemBySlot(EquipmentSlot.OFFHAND).equals(itemStack);
 	}
+
 	public static ItemStack newToolFromMaterials(Item toolItem,String headMaterial,String bindingMaterial,String handleMaterial){
 		ItemStack modular_tools_icon=new ItemStack(toolItem);
 		CompoundTag tag=new CompoundTag();
@@ -617,24 +580,18 @@ public abstract class ModularBase extends DiggerItem{
 		modular_tools_icon.set(D,CustomData.of(tag));
 		return modular_tools_icon;
 	}
+
 	public static Component modifierTipFormMaterial(String material){
 		Component component=Component.literal("");
 		switch(material){
-			case "Wood" ->
-					component=Component.literal("Natural").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial("Wood"))));
-			case "Stone" ->
-					component=Component.literal("Cheep").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial("Stone"))));
-			//case "Copper"->;
-			case "Iron" ->
-					component=Component.literal("Magnetic").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial("Iron"))));
-			case "Gold" ->
-					component=Component.literal("Speeeed").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial("Gold"))));
-			//case "Diamond"->;
-			//case "Obsidian"->;
-			//case "Netherite"->;
+			case "Wood" -> component=Component.literal("Natural").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial("Wood"))));
+			case "Stone" -> component=Component.literal("Cheep").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial("Stone"))));
+			case "Iron" -> component=Component.literal("Magnetic").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial("Iron"))));
+			case "Gold" -> component=Component.literal("Speeeed").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial("Gold"))));
 		}
 		return component;
 	}
+
 	@Override
 	public void inventoryTick(@NotNull ItemStack itemStack,@NotNull Level world,@NotNull Entity entity,int slot,boolean selected){
 		if(!world.isClientSide()){
@@ -657,12 +614,10 @@ public abstract class ModularBase extends DiggerItem{
 			if(!tag.contains("HeadColor")) tag.putInt("HeadColor",colorIntFromMaterial(tag.getString("HeadMaterial")));
 			if(!tag.contains("BindingMaterial")) tag.putString("BindingMaterial",material);
 			if(!tag.contains("BindingDurability")) tag.putInt("BindingDurability",defaultDurability);
-			if(!tag.contains("BindingColor"))
-				tag.putInt("BindingColor",colorIntFromMaterial(tag.getString("BindingMaterial")));
+			if(!tag.contains("BindingColor")) tag.putInt("BindingColor",colorIntFromMaterial(tag.getString("BindingMaterial")));
 			if(!tag.contains("HandleMaterial")) tag.putString("HandleMaterial",material);
 			if(!tag.contains("HandleDurability")) tag.putInt("HandleDurability",defaultDurability);
-			if(!tag.contains("HandleColor"))
-				tag.putInt("HandleColor",colorIntFromMaterial(tag.getString("HandleMaterial")));
+			if(!tag.contains("HandleColor")) tag.putInt("HandleColor",colorIntFromMaterial(tag.getString("HandleMaterial")));
 			if(!tag.contains("SpecialDurability")) tag.putInt("SpecialDurability",1);
 			calculateDurability(tag);
 			if(!tag.contains("Material")) tag.putString("Material",tag.getString("HeadMaterial"));
@@ -688,20 +643,16 @@ public abstract class ModularBase extends DiggerItem{
 				if(containsMaterial(itemStack,"Wood")&&DifMod.rouletteBoolean(500))
 					itemStack.setDamageValue(itemStack.getDamageValue()-1);
 			}
+			itemStack.set(D,CustomData.of(tag));
 		}
 		if(entity instanceof Player player){
 			if(containsMaterial(itemStack,"Iron")&&isInMainHand(itemStack,player)||isInOffHand(itemStack,player)){
-				// Definice dosahu magnetu (např. 8 bloků)
 				double range=4D;
-				// Najdeme všechny ItemEntity v okolí hráče
 				List<ItemEntity> items=world.getEntitiesOfClass(ItemEntity.class,player.getBoundingBox().inflate(range));
 				for(ItemEntity itemEntity: items){
 					if(itemEntity.isRemoved()||!itemEntity.isAlive()) continue;
-					// Vektor směru od itemu k hráči
 					Vec3 moveVec=player.position().subtract(itemEntity.position());
-					// Normalizace a nastavení rychlosti přitahování (0.2 je tak akorát	)
 					if(moveVec.lengthSqr()<0.4D){
-						// Volitelně: Můžeme itemu nastavit nulový horizontální pohyb, aby hned zastavil
 						itemEntity.setDeltaMovement(itemEntity.getDeltaMovement().multiply(0.8D,1D,0.8D));
 						continue;
 					}
@@ -710,15 +661,15 @@ public abstract class ModularBase extends DiggerItem{
 			}
 		}
 	}
+
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(@NotNull ItemStack itemStack,Item.@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
 		super.appendHoverText(itemStack,context,list,flag);
 		if(Objects.requireNonNull(itemStack.get(D)).copyTag().isEmpty()) return;
 		CompoundTag tag=Objects.requireNonNull(itemStack.get(D)).copyTag();
-		if(!tag.contains("MiningLevel")||!tag.contains("Durability")||!tag.contains("Efficiency")||!tag.contains("AttackDamage")||!tag.contains("AttackSpeed"))
-			return;
-		if(Screen.hasShiftDown()){//Shift
+		if(!tag.contains("MiningLevel")||!tag.contains("Durability")||!tag.contains("Efficiency")||!tag.contains("AttackDamage")||!tag.contains("AttackSpeed")) return;
+		if(Screen.hasShiftDown()){
 			list.add(Component.literal("Remaining Modifiers:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("MaxModifiers"))).withStyle(ChatFormatting.YELLOW))));
 			if(tag.getInt("EfficiencyModifierProgress")>0||tag.getInt("EfficiencyModifier")>0){
 				if(tag.getInt("EfficiencyModifierProgress")>0)
@@ -732,18 +683,15 @@ public abstract class ModularBase extends DiggerItem{
 				else
 					list.add(Component.literal("Fortune:").withStyle(ChatFormatting.BLUE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("FortuneModifier"))))));
 			}
-			if(tag.getBoolean("SilkTouchModifier"))
-				list.add(Component.literal("SilkTouch").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xFDFD96))));
-			if(tag.getBoolean("DiamondModifier"))
-				list.add(Component.literal("Diamond").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(miningLevelColor("Diamond")))));
-			if(tag.getBoolean("BlazingModifier"))
-				list.add(Component.literal("Blazing").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xFF5A00))));
+			if(tag.getBoolean("SilkTouchModifier")) list.add(Component.literal("SilkTouch").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xFDFD96))));
+			if(tag.getBoolean("DiamondModifier")) list.add(Component.literal("Diamond").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(miningLevelColor("Diamond")))));
+			if(tag.getBoolean("BlazingModifier")) list.add(Component.literal("Blazing").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xFF5A00))));
 			if(tag.contains("HeadMaterial")||tag.contains("HandleMaterial")||tag.contains("BindingMaterial")){
 				list.add(CommonComponents.EMPTY);
 				for(String material: materials)
 					if(containsMaterial(itemStack,material)) list.add(modifierTipFormMaterial(material));
 			}
-		}else if(Screen.hasControlDown()){//Control
+		}else if(Screen.hasControlDown()){
 			list.add(Component.literal("Tool Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("Material")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial(tag.getString("Material")))))));
 			list.add(Component.literal("Head:").withStyle(ChatFormatting.WHITE));
 			list.add(CommonComponents.space().append(Component.literal("Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("HeadMaterial")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial(tag.getString("HeadMaterial"))))))));
@@ -754,7 +702,7 @@ public abstract class ModularBase extends DiggerItem{
 			list.add(Component.literal("Handle:").withStyle(ChatFormatting.WHITE));
 			list.add(CommonComponents.space().append(Component.literal("Material:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(tag.getString("HandleMaterial")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial(tag.getString("HandleMaterial"))))))));
 			list.add(CommonComponents.space().append(Component.literal("Durability:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.translatable(String.valueOf(tag.getInt("HandleDurability"))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(durabilityColor("Handle",tag)))))));
-		}else{//None
+		}else{
 			int miningLevel=tag.getInt("MiningLevel")+tag.getInt("BonusMiningLevel");
 			if(tag.getInt("SpecialMiningLevel")>miningLevel) miningLevel=tag.getInt("SpecialMiningLevel");
 			if(miningLevel>4) miningLevel=4;
@@ -764,16 +712,17 @@ public abstract class ModularBase extends DiggerItem{
 			list.add(Component.literal("Efficiency:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.literal(String.valueOf(tag.getInt("Efficiency")+tag.getInt("SpecialEfficiency")+speeeed)).withStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))));
 			list.add(Component.literal("Attack Damage:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.literal(String.format(Locale.ROOT,"%.1f",1.0F+tag.getFloat("AttackDamage"))).withStyle(Style.EMPTY.withColor(ChatFormatting.RED))));
 			list.add(Component.literal("Attack Speed:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space()).append(Component.literal(String.format(Locale.ROOT,"%.1f",4.0F+tag.getFloat("AttackSpeed"))).withStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))));
-			if(tag.getBoolean("Broken"))
-				list.add(Component.literal("Broken").withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_RED).withBold(true)));
+			if(tag.getBoolean("Broken")) list.add(Component.literal("Broken").withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_RED).withBold(true)));
 			list.add(CommonComponents.EMPTY);
 			list.add(Component.literal("Press").withStyle(Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false)).append(CommonComponents.space().append(Component.literal("Shift").withStyle(Style.EMPTY.withColor(ChatFormatting.AQUA).withItalic(true)).append(CommonComponents.space().append(Component.literal("for modifiers info.").withStyle(Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false)))))));
 			list.add(Component.literal("Press").withStyle(Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false)).append(CommonComponents.space().append(Component.literal("Ctrl").withStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW).withItalic(true)).append(CommonComponents.space().append(Component.literal("for parts info.").withStyle(Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false)))))));
 		}
 	}
+
 	public static ItemStack newSingleMaterialPreFab(Item toolItem,String material){
 		return newToolFromMaterials(toolItem,material,material,material);
 	}
+
 	public static ItemStack newPartFromMaterial(Item partItem,String material){
 		ItemStack itemStack=new ItemStack(partItem);
 		CompoundTag tag=new CompoundTag();
@@ -784,17 +733,13 @@ public abstract class ModularBase extends DiggerItem{
 		}
 		if(isBinding(partItem.getDefaultInstance())){
 			if(!tag.contains("BindingMaterial")) tag.putString("BindingMaterial",material);
-			if(!tag.contains("BindingDurability"))
-				tag.putInt("BindingDurability",durabilityFromMaterial("Binding",material));
-			if(!tag.contains("BindingColor"))
-				tag.putInt("BindingColor",colorIntFromMaterial(tag.getString("BindingMaterial")));
+			if(!tag.contains("BindingDurability")) tag.putInt("BindingDurability",durabilityFromMaterial("Binding",material));
+			if(!tag.contains("BindingColor")) tag.putInt("BindingColor",colorIntFromMaterial(tag.getString("BindingMaterial")));
 		}
 		if(isHandle(partItem.getDefaultInstance())){
 			if(!tag.contains("HandleMaterial")) tag.putString("HandleMaterial",material);
-			if(!tag.contains("HandleDurability"))
-				tag.putInt("HandleDurability",durabilityFromMaterial("Handle",material));
-			if(!tag.contains("HandleColor"))
-				tag.putInt("HandleColor",colorIntFromMaterial(tag.getString("HandleMaterial")));
+			if(!tag.contains("HandleDurability")) tag.putInt("HandleDurability",durabilityFromMaterial("Handle",material));
+			if(!tag.contains("HandleColor")) tag.putInt("HandleColor",colorIntFromMaterial(tag.getString("HandleMaterial")));
 		}
 		itemStack.set(D,CustomData.of(tag));
 		return itemStack;

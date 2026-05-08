@@ -1,51 +1,49 @@
 package cz.maxtechnik.dif.item.modular;
 
-import com.google.gson.JsonObject;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.SmithingRecipe;
+import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import net.minecraft.world.level.Level;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.component.DataComponents;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 import static cz.maxtechnik.dif.item.modular.ModularBase.*;
+
 public class ModularRecipes implements SmithingRecipe{
 	final Ingredient template;
 	final Ingredient base;
 	final Ingredient addition;
 	final ItemStack result;
-	public final ResourceLocation id;
-	public ModularRecipes(ResourceLocation id,Ingredient template,Ingredient base,Ingredient addition,ItemStack result){
-		this.id=id;
+
+	public ModularRecipes(Ingredient template,Ingredient base,Ingredient addition,ItemStack result){
 		this.template=template;
 		this.base=base;
 		this.addition=addition;
 		this.result=result;
 	}
+
 	@Override
-	public boolean matches(Container container,@NotNull Level world){
+	public boolean matches(SmithingRecipeInput container,@NotNull Level world){
 		ItemStack template=container.getItem(0);
 		ItemStack base=container.getItem(1);
 		ItemStack addition=container.getItem(2);
 		if(base.getItem().equals(Items.AIR)) return false;
-		assert template.getTag()!=null;
-		assert base.getTag()!=null;
-		assert addition.getTag()!=null;
-		CompoundTag templateTag=template.getTag();
-		CompoundTag baseTag=base.getTag();
-		CompoundTag additionTag=addition.getTag();
+		CompoundTag templateTag=template.get(DataComponents.CUSTOM_DATA)!=null? Objects.requireNonNull(template.get(DataComponents.CUSTOM_DATA)).copyTag():new CompoundTag();
+		CompoundTag baseTag=base.get(DataComponents.CUSTOM_DATA)!=null? Objects.requireNonNull(base.get(DataComponents.CUSTOM_DATA)).copyTag():new CompoundTag();
+		CompoundTag additionTag=addition.get(DataComponents.CUSTOM_DATA)!=null? Objects.requireNonNull(addition.get(DataComponents.CUSTOM_DATA)).copyTag():new CompoundTag();
 		if(base.getItem() instanceof ModularBase){
 			if(isTagged(addition,DifMod.MODID,"modular_tools_materials")){
 				return toolRepairCheck(template,base,addition,templateTag,baseTag,additionTag);
@@ -59,14 +57,15 @@ public class ModularRecipes implements SmithingRecipe{
 		}
 		return false;
 	}
+
 	@Override
-	public @NotNull ItemStack assemble(Container container,@NotNull RegistryAccess registryAccess){
+	public @NotNull ItemStack assemble(SmithingRecipeInput container,@NotNull HolderLookup.Provider provider){
 		ItemStack template=container.getItem(0).copy();
 		ItemStack base=container.getItem(1).copy();
 		ItemStack addition=container.getItem(2).copy();
-		CompoundTag templateTag=Objects.requireNonNull(template.get(D)).copyTag();
-		CompoundTag baseTag=Objects.requireNonNull(base.get(D)).copyTag();
-		CompoundTag additionTag=Objects.requireNonNull(addition.get(D)).copyTag();l;
+		CompoundTag templateTag=template.get(DataComponents.CUSTOM_DATA)!=null? Objects.requireNonNull(template.get(DataComponents.CUSTOM_DATA)).copyTag():new CompoundTag();
+		CompoundTag baseTag=base.get(DataComponents.CUSTOM_DATA)!=null? Objects.requireNonNull(base.get(DataComponents.CUSTOM_DATA)).copyTag():new CompoundTag();
+		CompoundTag additionTag=addition.get(DataComponents.CUSTOM_DATA)!=null? Objects.requireNonNull(addition.get(DataComponents.CUSTOM_DATA)).copyTag():new CompoundTag();
 		if(base.getItem() instanceof ModularBase){
 			if(isTagged(addition,DifMod.MODID,"modular_tools_materials")){
 				toolRepair(template,base,addition,templateTag,baseTag,additionTag);
@@ -80,54 +79,65 @@ public class ModularRecipes implements SmithingRecipe{
 		}
 		return base;
 	}
-	public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess){
+
+	@Override
+	public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider provider){
 		return this.result;
 	}
+
 	public boolean isTemplateIngredient(@NotNull ItemStack itemStack){
 		return this.template.test(itemStack)||isTagged(itemStack,DifMod.MODID,"modular_tools_parts")||isTagged(itemStack,DifMod.MODID,"modular_tools_modifiers");
 	}
+
 	public boolean isBaseIngredient(@NotNull ItemStack itemStack){
 		return this.base.test(itemStack)||isTagged(itemStack,DifMod.MODID,"modular_tools_parts");
 	}
+
 	public boolean isAdditionIngredient(@NotNull ItemStack itemStack){
 		return this.addition.test(itemStack)||isTagged(itemStack,DifMod.MODID,"modular_tools_parts")||isTagged(itemStack,DifMod.MODID,"modular_tools_materials");
 	}
+
+	public boolean isIncomplete(){
+		return this.base.isEmpty();
+	}
+
 	@Override
 	public @NotNull RecipeSerializer<?> getSerializer(){
 		return DifModRecipes.MODULAR_REPAIR_SERIALIZER.get();
 	}
-	public @NotNull ResourceLocation getId(){
-		return this.id;
-	}
-	public boolean isIncomplete(){
-		return this.base.isEmpty();
-	}
+
 	public static class Serializer implements RecipeSerializer<ModularRecipes>{
-		public @NotNull ModularRecipes fromJson(@NotNull ResourceLocation resourceLocation,@NotNull JsonObject jsonObject){
-			Ingredient template=Ingredient.fromJson(GsonHelper.getNonNull(jsonObject,"template"));
-			if(template.getItems()[0].getItem().equals(Items.BARRIER)){
-				template=Ingredient.of(new ItemStack(Items.AIR));
-			}
-			Ingredient base=Ingredient.fromJson(GsonHelper.getNonNull(jsonObject,"base"));
-			Ingredient addition=Ingredient.fromJson(GsonHelper.getNonNull(jsonObject,"addition"));
-			if(addition.getItems()[0].getItem().equals(Items.BARRIER)){
-				addition=Ingredient.of(new ItemStack(Items.AIR));
-			}
-			ItemStack result=ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(jsonObject,"result"));
-			return new ModularRecipes(resourceLocation,template,base,addition,result);
+		public static final MapCodec<ModularRecipes> CODEC=RecordCodecBuilder.mapCodec(inst->inst.group(
+				Ingredient.CODEC.fieldOf("template").forGetter(r->r.template),
+				Ingredient.CODEC.fieldOf("base").forGetter(r->r.base),
+				Ingredient.CODEC.fieldOf("addition").forGetter(r->r.addition),
+				ItemStack.STRICT_CODEC.fieldOf("result").forGetter(r->r.result)
+		).apply(inst,ModularRecipes::new));
+
+		public static final StreamCodec<RegistryFriendlyByteBuf,ModularRecipes> STREAM_CODEC=StreamCodec.of(
+				(buf,r)->{
+					Ingredient.CONTENTS_STREAM_CODEC.encode(buf,r.template);
+					Ingredient.CONTENTS_STREAM_CODEC.encode(buf,r.base);
+					Ingredient.CONTENTS_STREAM_CODEC.encode(buf,r.addition);
+					ItemStack.STREAM_CODEC.encode(buf,r.result);
+				},
+				buf->{
+					Ingredient template=Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
+					Ingredient base=Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
+					Ingredient addition=Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
+					ItemStack result=ItemStack.STREAM_CODEC.decode(buf);
+					return new ModularRecipes(template,base,addition,result);
+				}
+		);
+
+		@Override
+		public @NotNull MapCodec<ModularRecipes> codec(){
+			return CODEC;
 		}
-		public ModularRecipes fromNetwork(@NotNull ResourceLocation resourceLocation,@NotNull FriendlyByteBuf friendlyByteBuf){
-			Ingredient template=Ingredient.fromNetwork(friendlyByteBuf);
-			Ingredient base=Ingredient.fromNetwork(friendlyByteBuf);
-			Ingredient addition=Ingredient.fromNetwork(friendlyByteBuf);
-			ItemStack result=friendlyByteBuf.readItem();
-			return new ModularRecipes(resourceLocation,template,base,addition,result);
-		}
-		public void toNetwork(@NotNull FriendlyByteBuf friendlyByteBuf,ModularRecipes modularRepairRecipe){
-			modularRepairRecipe.template.toNetwork(friendlyByteBuf);
-			modularRepairRecipe.base.toNetwork(friendlyByteBuf);
-			modularRepairRecipe.addition.toNetwork(friendlyByteBuf);
-			friendlyByteBuf.writeItem(modularRepairRecipe.result);
+
+		@Override
+		public @NotNull StreamCodec<RegistryFriendlyByteBuf,ModularRecipes> streamCodec(){
+			return STREAM_CODEC;
 		}
 	}
 }

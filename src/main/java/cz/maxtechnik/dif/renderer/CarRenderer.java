@@ -17,7 +17,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import org.jetbrains.annotations.NotNull;
-
+@SuppressWarnings("removal")
 @EventBusSubscriber(modid=DifMod.MODID,value=Dist.CLIENT,bus=EventBusSubscriber.Bus.GAME)
 public class CarRenderer<T extends BaseCarEntity> extends EntityRenderer<T>{
 	private final FormulaModel<T> model;

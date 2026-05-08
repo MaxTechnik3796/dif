@@ -7,14 +7,15 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -76,11 +77,15 @@ public abstract class ElectroRunners extends ArmorItem{
 		public boolean isBarVisible(@NotNull ItemStack itemStack){ return true; }
 
 		@Override
-		public void getAttributeModifiers(ItemStack stack,Consumer<java.util.function.BiConsumer<Holder<Attribute>,AttributeModifier>> consumer){
-			if(getEnergy(stack)>0){
-				consumer.accept((attr,mod)->{}); // placeholder
-				// Přidej modifikátory
+		public @NotNull ItemAttributeModifiers getDefaultAttributeModifiers(){
+			if(true){ // vždy registruj, energie se kontroluje dynamicky
+				return ItemAttributeModifiers.builder()
+						.add(Attributes.ARMOR,new AttributeModifier(A_MOD, 2.0,AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.bySlot(EquipmentSlot.FEET))
+						.add(Attributes.MOVEMENT_SPEED,new AttributeModifier(S_MOD, 0.20,AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL), EquipmentSlotGroup.bySlot(EquipmentSlot.FEET))
+						.add(Attributes.STEP_HEIGHT,new AttributeModifier(H_MOD, 1.0,AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.bySlot(EquipmentSlot.FEET))
+						.build();
 			}
+			return ItemAttributeModifiers.EMPTY;
 		}
 
 		@Override
