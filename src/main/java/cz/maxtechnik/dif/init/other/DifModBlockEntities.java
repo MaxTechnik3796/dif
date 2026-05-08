@@ -5,17 +5,11 @@ import cz.maxtechnik.dif.block.entity.*;
 import cz.maxtechnik.dif.block.entity.barrel.AndesiteBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.barrel.BrassBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.barrel.CopperBarrelBlockEntity;
-import cz.maxtechnik.dif.block.entity.BrassMechanicalMixerBlockEntity;
-import cz.maxtechnik.dif.block.entity.BrassMechanicalPressBlockEntity;
 import cz.maxtechnik.dif.block.entity.dev.XpStorageBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -45,10 +39,6 @@ public class DifModBlockEntities{
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<QuarryFrameBlockEntity>> QUARRY_FRAME = REGISTRY.register("quarry_frame", () -> BlockEntityType.Builder.of(QuarryFrameBlockEntity::new, DifModBlocks.QUARRY_FRAME.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<QuarryLandmarkBlockEntity>> QUARRY_LANDMARK = REGISTRY.register("quarry_landmark", () -> BlockEntityType.Builder.of(QuarryLandmarkBlockEntity::new, DifModBlocks.QUARRY_LANDMARK.get()).build(null));
 
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BrassLargeWaterWheelBlockEntity>> BRASS_LARGE_WATER_WHEEL = REGISTRY.register("brass_large_water_wheel", () -> BlockEntityType.Builder.of(BrassLargeWaterWheelBlockEntity::new, DifModBlocks.BRASS_LARGE_WATER_WHEEL.get()).build(null));
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<cz.maxtechnik.dif.block.entity.BrassWaterWheelBlockEntity>> BRASS_WATER_WHEEL = REGISTRY.register("brass_water_wheel", () -> BlockEntityType.Builder.of(cz.maxtechnik.dif.block.entity.BrassWaterWheelBlockEntity::new, DifModBlocks.BRASS_WATER_WHEEL.get()).build(null));
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BrassMechanicalPressBlockEntity>> BRASS_MECHANICAL_PRESS = REGISTRY.register("brass_mechanical_press", () -> BlockEntityType.Builder.of(BrassMechanicalPressBlockEntity::new, DifModBlocks.BRASS_MECHANICAL_PRESS.get()).build(null));
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BrassMechanicalMixerBlockEntity>> BRASS_MECHANICAL_MIXER = REGISTRY.register("brass_mechanical_mixer", () -> BlockEntityType.Builder.of(BrassMechanicalMixerBlockEntity::new, DifModBlocks.BRASS_MECHANICAL_MIXER.get()).build(null));
 
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BurningGeneratorBlockEntity>> BURNING_GENERATOR = REGISTRY.register("burning_generator", () -> BlockEntityType.Builder.of(BurningGeneratorBlockEntity::new, DifModBlocks.BURNING_GENERATOR.get()).build(null));
 

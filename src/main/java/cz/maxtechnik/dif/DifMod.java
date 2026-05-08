@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -9,14 +8,12 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
-import cz.maxtechnik.dif.renderer.BrassWaterWheelRenderer;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
 import cz.maxtechnik.dif.command.ConfigReloadCommand;
 import cz.maxtechnik.dif.command.IsChunkLoadedCommand;
@@ -30,13 +27,11 @@ import cz.maxtechnik.dif.init.gui.DifModMenus;
 import cz.maxtechnik.dif.init.other.*;
 import cz.maxtechnik.dif.init.events.JetpackHandler;
 import cz.maxtechnik.dif.renderer.*;
-import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -108,9 +103,6 @@ public class DifMod {
 
 	@EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 	public static class ClientModEvents {
-		public static final PartialModel BRASS_PRESS_HEAD = PartialModel.of(ResourceLocation.fromNamespaceAndPath(MODID,"block/brass_mechanical_press_head"));
-		public static final PartialModel BRASS_MIXER_POLE = PartialModel.of(ResourceLocation.fromNamespaceAndPath(MODID, "block/brass_mechanical_mixer_pole"));
-		public static final PartialModel BRASS_MIXER_HEAD = PartialModel.of(ResourceLocation.fromNamespaceAndPath(MODID, "block/brass_mechanical_mixer_head"));
 
 
 		@SubscribeEvent
@@ -120,10 +112,6 @@ public class DifMod {
 				try {
 					LOGGER.info("DIF MOD: Flywheel BER fallback setup pro BrassLargeWaterWheel");
 
-					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.BRASS_LARGE_WATER_WHEEL.get(), RenderType.cutout());
-					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.BRASS_WATER_WHEEL.get(), RenderType.cutout());
-					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.BRASS_MECHANICAL_PRESS.get(), RenderType.cutout());
-					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.BRASS_MECHANICAL_MIXER.get(), RenderType.cutout());
 					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.QUARRY_LANDMARK.get(), RenderType.cutout());
 				} catch (Exception e) {
 					LOGGER.error("DIF MOD: Chyba při Flywheel setup", e);
@@ -132,25 +120,10 @@ public class DifMod {
 		}
 
 		@SubscribeEvent
-		public static void onRegisterAdditionalModels(ModelEvent.RegisterAdditional event) {
-			event.register(ModelResourceLocation.inventory(ResourceLocation.fromNamespaceAndPath(MODID, "block/brass_large_water_wheel")));
-			event.register(ModelResourceLocation.inventory(ResourceLocation.fromNamespaceAndPath(MODID, "block/brass_large_water_wheel_extension")));
-			event.register(ModelResourceLocation.inventory(ResourceLocation.fromNamespaceAndPath(MODID, "block/brass_water_wheel")));
-			event.register(ModelResourceLocation.inventory(ResourceLocation.fromNamespaceAndPath(MODID, "block/brass_water_wheel_wheel")));
-			event.register(ModelResourceLocation.inventory(ResourceLocation.fromNamespaceAndPath(MODID, "block/brass_mechanical_press_head")));
-			event.register(ModelResourceLocation.inventory(ResourceLocation.fromNamespaceAndPath(MODID, "block/brass_mechanical_mixer_pole")));
-			event.register(ModelResourceLocation.inventory(ResourceLocation.fromNamespaceAndPath(MODID, "block/brass_mechanical_mixer_head")));
-		}
-
-		@SubscribeEvent
 		public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
 			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(), context -> new FryingTableRenderer());
 			event.registerBlockEntityRenderer(DifModBlockEntities.QUARRY.get(), context -> new QuarryRenderer());
 			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(), context -> new ChunkLoaderRenderer());
-			event.registerBlockEntityRenderer(DifModBlockEntities.BRASS_LARGE_WATER_WHEEL.get(), BrassWaterWheelRenderer::new);
-			event.registerBlockEntityRenderer(DifModBlockEntities.BRASS_WATER_WHEEL.get(), BrassWaterWheelRenderer::new);
-			event.registerBlockEntityRenderer(DifModBlockEntities.BRASS_MECHANICAL_PRESS.get(), cz.maxtechnik.dif.renderer.BrassMechanicalPressRenderer::new);
-			event.registerBlockEntityRenderer(DifModBlockEntities.BRASS_MECHANICAL_MIXER.get(), cz.maxtechnik.dif.renderer.BrassMechanicalMixerRenderer::new);
 			event.registerEntityRenderer(DifModEntities.FORMULA.get(), CarRenderer::new);
 			event.registerEntityRenderer(DifModEntities.REMOTE_MINECART.get(),context -> new MinecartRenderer<>(context,ModelLayers.MINECART)
 			);

@@ -42,11 +42,6 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>CAMERA_MONITOR=REGISTRY.register("camera_monitor",()->new CameraMonitor(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>CAMERA=REGISTRY.register("camera",()->new Camera(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3F,3F).requiresCorrectToolForDrops()));
 
-	//Create Stuff:
-	public static final DeferredBlock<Block> BRASS_LARGE_WATER_WHEEL = REGISTRY.register("brass_large_water_wheel", BrassLargeWaterWheelBlock::new);
-	public static final DeferredBlock<Block> BRASS_WATER_WHEEL = REGISTRY.register("brass_water_wheel", BrassWaterWheelBlock::new);
-	public static final DeferredBlock<Block> BRASS_MECHANICAL_PRESS = REGISTRY.register("brass_mechanical_press", () -> new BrassMechanicalPressBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PODZOL).requiresCorrectToolForDrops().strength(4.0F).sound(SoundType.NETHERITE_BLOCK).noOcclusion()));
-	public static final DeferredBlock<Block> BRASS_MECHANICAL_MIXER = REGISTRY.register("brass_mechanical_mixer", () -> new BrassMechanicalMixerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PODZOL).requiresCorrectToolForDrops().strength(4.0F).sound(SoundType.NETHERITE_BLOCK).noOcclusion()));
 
 	//Fluids:
 	public static final DeferredBlock<Block>FUEL_FLUID=REGISTRY.register("fuel_fluid",()->new LiquidBlock(DifModFluids.FUEL.get(),BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable()));
