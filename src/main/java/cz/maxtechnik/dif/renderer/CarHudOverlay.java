@@ -5,7 +5,6 @@ import cz.maxtechnik.dif.entity.vehicle.BaseCarEntity;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.world.level.block.Block;
 public class CarHudOverlay{
 	private static float smoothedSpeed=0F;
 	private static long lastLapFinishTime=-1;
