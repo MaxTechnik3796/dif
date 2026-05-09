@@ -47,7 +47,7 @@ public class BattleAxeItem extends SwordItem{
 		return super.getDestroySpeed(stack,state);
 	}
 	@Override
-	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state){
+	public boolean isCorrectToolForDrops(@NotNull ItemStack stack,BlockState state){
 		return state.is(BlockTags.MINEABLE_WITH_AXE)||super.isCorrectToolForDrops(stack, state);
 	}
 	@Override
