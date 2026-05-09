@@ -16,7 +16,6 @@ import java.util.function.Supplier;
 import java.util.Map;
 import java.util.HashMap;
 
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
