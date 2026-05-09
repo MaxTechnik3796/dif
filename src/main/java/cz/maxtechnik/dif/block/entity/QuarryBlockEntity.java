@@ -201,8 +201,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 	private int halfZ(){ return customHalfZ>0?customHalfZ:DEFAULT_RANGE; }
 
 	public void setLandmarkArea(int halfX,int halfZ,BlockPos center){
-		this.customHalfX=Math.max(2,Math.min(halfX,MAX_AREA_SIDE/2));
-		this.customHalfZ=Math.max(2,Math.min(halfZ,MAX_AREA_SIDE/2));
+		this.customHalfX=Math.clamp(halfX,2,MAX_AREA_SIDE/2);
+		this.customHalfZ=Math.clamp(halfZ,2,MAX_AREA_SIDE/2);
 		this.customCenter=center;
 		invalidateCache();
 		setChanged();
