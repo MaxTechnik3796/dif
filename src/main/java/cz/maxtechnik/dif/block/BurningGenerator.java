@@ -3,10 +3,8 @@ package cz.maxtechnik.dif.block;
 import cz.maxtechnik.dif.block.entity.BurningGeneratorBlockEntity;
 import cz.maxtechnik.dif.gui.menu.BurningGeneratorMenu;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
-import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -101,7 +99,7 @@ public class BurningGenerator extends Block implements SimpleWaterloggedBlock, E
 		return type==expectedType?(lvl,pos,state,blockEntity)->BurningGeneratorBlockEntity.clientTick(lvl,pos,state):null;
 	}
 	@Override
-	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state,Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
 		if(player instanceof ServerPlayer serverPlayer){
 			// V NeoForge 1.21.1 otevíráme menu přímo přes hráče.
 			// Třetí parametr (pos) automaticky pošle BlockPos na klienta.
