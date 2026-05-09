@@ -80,6 +80,13 @@ repositories {
     maven {
         url = "https://maven.createmod.net/"
     }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
 }
 
 dependencies {
@@ -105,6 +112,8 @@ dependencies {
     runtimeOnly "curse.maven:balm-531761:7420963"
     runtimeOnly "curse.maven:kotlin-for-forge-351264:7471280"
     runtimeOnly "curse.maven:worldedit-225608:5830452"
+
+    runtimeOnly "maven.modrinth:component-viewer:0.1.2"
 }
 
 tasks.named('processResources', ProcessResources).configure {
