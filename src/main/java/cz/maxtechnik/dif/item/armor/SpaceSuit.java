@@ -17,24 +17,21 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Consumer;
-
 @SuppressWarnings("removal")
 public abstract class SpaceSuit extends ArmorItem{
 	public SpaceSuit(Type type,Properties properties){
-		super(DifModTiers.ARMOR_MATERIAL_SPACE,type,properties);
+		super(DifModTiers.ARMOR_MATERIAL_SPACE,type,properties.stacksTo(1));
 	}
-
 	public static class Helmet extends SpaceSuit{
 		public Helmet(){
-			super(Type.HELMET,new Properties());
+			super(Type.HELMET,new Properties().stacksTo(1));
 		}
-
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer){
 			consumer.accept(new IClientItemExtensions(){
 				@Override
 				@OnlyIn(Dist.CLIENT)
-				public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity living, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel){
+				public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity living,@NotNull ItemStack stack,@NotNull EquipmentSlot slot,@NotNull HumanoidModel<?> defaultModel){
 					HumanoidModel<?> armorModel=new HumanoidModel<>(new ModelPart(Collections.emptyList(),
 							Map.of("head",new ModelSpaceHelmet(Minecraft.getInstance().getEntityModels().bakeLayer(ModelSpaceHelmet.LAYER_LOCATION)).Head,
 									"hat",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
@@ -51,18 +48,16 @@ public abstract class SpaceSuit extends ArmorItem{
 			});
 		}
 	}
-
 	public static class Chestplate extends SpaceSuit{
 		public Chestplate(){
-			super(Type.CHESTPLATE,new Properties());
+			super(Type.CHESTPLATE,new Properties().stacksTo(1));
 		}
-
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer){
 			consumer.accept(new IClientItemExtensions(){
 				@Override
 				@OnlyIn(Dist.CLIENT)
-				public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity living, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel){
+				public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity living,@NotNull ItemStack stack,@NotNull EquipmentSlot slot,@NotNull HumanoidModel<?> defaultModel){
 					HumanoidModel<?> armorModel=new HumanoidModel<>(new ModelPart(Collections.emptyList(),
 							Map.of("body",new ModelSpaceChestplate(Minecraft.getInstance().getEntityModels().bakeLayer(ModelSpaceChestplate.LAYER_LOCATION)).Body,
 									"left_arm",new ModelSpaceChestplate(Minecraft.getInstance().getEntityModels().bakeLayer(ModelSpaceChestplate.LAYER_LOCATION)).LeftArm,
@@ -79,18 +74,16 @@ public abstract class SpaceSuit extends ArmorItem{
 			});
 		}
 	}
-
 	public static class Leggings extends SpaceSuit{
 		public Leggings(){
-			super(Type.LEGGINGS,new Properties());
+			super(Type.LEGGINGS,new Properties().stacksTo(1));
 		}
-
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer){
 			consumer.accept(new IClientItemExtensions(){
 				@Override
 				@OnlyIn(Dist.CLIENT)
-				public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity living, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel){
+				public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity living,@NotNull ItemStack stack,@NotNull EquipmentSlot slot,@NotNull HumanoidModel<?> defaultModel){
 					HumanoidModel<?> armorModel=new HumanoidModel<>(new ModelPart(Collections.emptyList(),
 							Map.of("left_leg",new ModelSpaceLeggings(Minecraft.getInstance().getEntityModels().bakeLayer(ModelSpaceLeggings.LAYER_LOCATION)).LeftLeg,
 									"right_leg",new ModelSpaceLeggings(Minecraft.getInstance().getEntityModels().bakeLayer(ModelSpaceLeggings.LAYER_LOCATION)).RightLeg,
@@ -107,18 +100,16 @@ public abstract class SpaceSuit extends ArmorItem{
 			});
 		}
 	}
-
 	public static class Boots extends SpaceSuit{
 		public Boots(){
-			super(Type.BOOTS,new Properties());
+			super(Type.BOOTS,new Properties().stacksTo(1));
 		}
-
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer){
 			consumer.accept(new IClientItemExtensions(){
 				@Override
 				@OnlyIn(Dist.CLIENT)
-				public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity living, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel){
+				public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity living,@NotNull ItemStack stack,@NotNull EquipmentSlot slot,@NotNull HumanoidModel<?> defaultModel){
 					HumanoidModel<?> armorModel=new HumanoidModel<>(new ModelPart(Collections.emptyList(),
 							Map.of("left_leg",new ModelSpaceBoots(Minecraft.getInstance().getEntityModels().bakeLayer(ModelSpaceBoots.LAYER_LOCATION)).LeftLeg,
 									"right_leg",new ModelSpaceBoots(Minecraft.getInstance().getEntityModels().bakeLayer(ModelSpaceBoots.LAYER_LOCATION)).RightLeg,

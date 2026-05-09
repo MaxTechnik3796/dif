@@ -78,7 +78,7 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		if(world.isClientSide()) return ItemInteractionResult.SUCCESS;
 
 		// Wrench logika
-		if(heldItem.is(ItemTags.create(ResourceLocation.fromNamespaceAndPath("neoforge","tools/wrench")))){
+		if(heldItem.is(ItemTags.create(ResourceLocation.parse("neoforge:tools/wrench")))){
 			if(DifModCommonConfig.fluidHatchAllowXpMode){
 				world.setBlock(pos,blockState.setValue(XP,!blockState.getValue(XP)),3);
 				world.playSound(null,pos,net.minecraft.sounds.SoundEvents.ANVIL_USE,net.minecraft.sounds.SoundSource.BLOCKS,1.0F,0.5F+world.random.nextFloat()*0.5F);

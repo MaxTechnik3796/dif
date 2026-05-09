@@ -25,23 +25,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-
 @SuppressWarnings("removal")
 public abstract class Jetpack extends ArmorItem{
 	public Jetpack(ArmorItem.Type type,Item.Properties properties){
-		super(DifModTiers.ARMOR_MATERIAL_JETPACK,type,properties);
+		super(DifModTiers.ARMOR_MATERIAL_JETPACK,type,properties.stacksTo(1));
 	}
 	public static class Chestplate extends Jetpack{
 		public Chestplate(){
 			super(Type.CHESTPLATE,new Item.Properties().stacksTo(1));
 		}
-
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer){
 			consumer.accept(new IClientItemExtensions(){
 				@Override
 				@OnlyIn(Dist.CLIENT)
-				public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity living, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel){
+				public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity living,@NotNull ItemStack stack,@NotNull EquipmentSlot slot,@NotNull HumanoidModel<?> defaultModel){
 					HumanoidModel<?> armorModel=new HumanoidModel<>(new ModelPart(Collections.emptyList(),
 							Map.of("body",new ModelJetpack(Minecraft.getInstance().getEntityModels().bakeLayer(ModelJetpack.LAYER_LOCATION)).Body,
 									"left_arm",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
@@ -57,43 +55,35 @@ public abstract class Jetpack extends ArmorItem{
 				}
 			});
 		}
-
 		// === Fuel storage ===
 		public static int getFuel(ItemStack stack){
 			CustomData data=stack.get(DataComponents.CUSTOM_DATA);
 			if(data==null||!data.copyTag().contains("Fuel")) return 0;
 			return data.copyTag().getInt("Fuel");
 		}
-
 		public static void setFuel(ItemStack stack,int value){
 			int max=isTurbo(stack)?DifModCommonConfig.jetpackMaxTurbo:DifModCommonConfig.jetpackMaxBasic;
 			stack.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,
 					data->data.update(tag->tag.putInt("Fuel",Mth.clamp(value,0,max))));
 		}
-
 		public static boolean isTurbo(ItemStack stack){
 			CustomData data=stack.get(DataComponents.CUSTOM_DATA);
 			if(data==null||!data.copyTag().contains("Turbo")) return false;
 			return data.copyTag().getBoolean("Turbo");
 		}
-
 		public static void setTurbo(ItemStack stack,boolean value){
 			stack.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,
 					data->data.update(tag->tag.putBoolean("Turbo",value)));
 		}
-
 		public static int getMaxFuel(ItemStack stack){
 			return isTurbo(stack)?DifModCommonConfig.jetpackMaxTurbo:DifModCommonConfig.jetpackMaxBasic;
 		}
-
 		public static boolean isFuel(ItemStack stack){
 			return stack.getItem().equals(DifModItems.JETPACK_FUEL.get());
 		}
-
 		public static boolean isTurboFuel(ItemStack stack){
 			return stack.getItem().equals(DifModItems.JETPACK_TURBO_FUEL.get());
 		}
-
 		// Počet paliva v inventáři (normalní nebo turbo podle aktuálního módu)
 		public static int countFuelInInventory(net.minecraft.world.entity.player.Player player,boolean turbo){
 			int count=0;
@@ -103,18 +93,15 @@ public abstract class Jetpack extends ArmorItem{
 			}
 			return count;
 		}
-
 		@Override
 		public int getBarWidth(@NotNull ItemStack stack){
 			return Math.round(13F*(float)getFuel(stack)/(float)getMaxFuel(stack));
 		}
-
 		@Override
 		public int getBarColor(@NotNull ItemStack stack){
 			float f=Math.max(0,(float)getFuel(stack)/(float)getMaxFuel(stack));
 			return Mth.hsvToRgb(f*0.33F,1F,1F);
 		}
-
 		@Override
 		public void appendHoverText(@NotNull ItemStack stack,@Nullable TooltipContext ctx,@NotNull List<Component> list,@NotNull TooltipFlag flag){
 			boolean turbo=isTurbo(stack);
@@ -125,11 +112,13 @@ public abstract class Jetpack extends ArmorItem{
 			list.add(Component.literal(turbo?"TURBO":"NORMAL")
 					.withStyle(turbo?ChatFormatting.RED:ChatFormatting.GREEN));
 		}
-
 		@Override
-		public boolean isEnchantable(@NotNull ItemStack stack){ return false; }
-
+		public boolean isEnchantable(@NotNull ItemStack stack){
+			return false;
+		}
 		@Override
-		public boolean isBarVisible(@NotNull ItemStack stack){ return true; }
+		public boolean isBarVisible(@NotNull ItemStack stack){
+			return true;
+		}
 	}
 }
