@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.food.FoodProperties;
 
-@SuppressWarnings("deprecation")
 public class Beer extends BlockItem{
 	public Beer(Block block,Properties properties){
 		super(block,properties);
