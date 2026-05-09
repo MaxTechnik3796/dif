@@ -96,7 +96,7 @@ public class MegaBackpackMenu extends AbstractContainerMenu {
 	public void changePage(int delta) {
 		if (player.level().isClientSide) return;
 		saveCurrentPage();
-		this.currentPage = Math.max(0, Math.min(15, currentPage + delta));
+		this.currentPage =Math.clamp(currentPage+delta,0,15);
 		MegaBackpackSavedData data = MegaBackpackSavedData.get(player.level());
 		loadPage(data.getOrCreateInventory(player.getUUID()));
 		this.broadcastChanges();
