@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
+import cz.maxtechnik.dif.item.armor.ElectroRunners;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -81,6 +82,7 @@ public class DifMod {
 			(be, side) -> be.getInventory());
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DifModBlockEntities.QUARRY.get(),
 			(be, side) -> be.getEnergyStorage());
+		ElectroRunners.Boots.registerCapability(event, DifModItems.ELECTRO_RUNNERS.get());
 	}
 
 
