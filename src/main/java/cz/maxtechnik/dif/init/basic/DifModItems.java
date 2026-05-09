@@ -255,19 +255,8 @@ public class DifModItems{
 
 
 
-
-
-
-	//MusicDiscs:
-	public static final DeferredItem<Item> DOG=REGISTRY.register("dog",()->new MusicDiscDesc2(DifMod.MODID,"dog"));
-
 	public static final DeferredItem<Item>FORMULA_ITEM=REGISTRY.register("formula",()->new FormulaItem(new Item.Properties().stacksTo(1)));
 
-
-	public static final DeferredItem<Item> FURT_TA_STEJNA_HRA=REGISTRY.register("furt_ta_stejna_hra",Update::new);
-	public static final DeferredItem<Item> MATY_CREATE=REGISTRY.register("maty_create",Update::new);
-	public static final DeferredItem<Item> REDSTONE=REGISTRY.register("redstone",Update::new);
-	public static final DeferredItem<Item>CREMEKA=REGISTRY.register("cremeka",Update::new);
 
 	//Weapons:
 	public static final DeferredItem<Item> WOODEN_BATTLE_AXE=REGISTRY.register("wooden_battle_axe",()->new BattleAxeItem(Tiers.WOOD,6,-3.4F,new Item.Properties()));

@@ -1,12 +1,4 @@
 {
-	"dog":{
-		"sounds":[
-			{
-				"name":"dif:records/dog",
-				"stream":true
-			}
-		]
-	},
 	"formula_engine": {
 		"category": "neutral",
 		"sounds": [

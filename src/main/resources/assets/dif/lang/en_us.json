@@ -15,6 +15,7 @@
 	"effect.dif.redstone_not_iq": "Redstonenot Anti-Boost",
 	"effect.dif.drank": "Drank",
 	"effect.dif.wtf": "WTF",
+	"subtitles.formula_engine":"Formula Engine",
 	"gui.dif.inventory": "Inventory",
 	"gui.dif.burning_generator": "Burning Generator",
 	"gui.dif.invalid_fuel0": "This is not",
@@ -25,8 +26,7 @@
 	"container.dif.brass_barrel": "Brass Barrel",
 	"container.dif.sturdy_barrel": "Sturdy Barrel",
 	"container.dif.old_chest": "Alpha Chest",
-	"subtitles.dog": "",
-	"item.dif.dog": "Music Disc",
+
 
 	"item.dif.beer_bucket": "GoldBerg Bucket",
 	"block.dif.beer_fluid": "GoldBerg",
@@ -69,8 +69,7 @@
 	"fluid.dif.crude_oil_fluid":"Crude Oil",
 	"fluid_type.dif.crude_oil_fluid":"Crude Oil",
 
-	"item.dif.dog.desc": "§7Dog - C418",
-	"item.dif.dog.desc2": "§7License: §b©2011 C418§r",
+
 	"creative_tab.dif.main": "TheDifferential: Main",
 	"creative_tab.dif.space": "TheDifferential: Space & Tech",
 	"creative_tab.dif.modular_tools": "TheDifferential: Modular Tools",
