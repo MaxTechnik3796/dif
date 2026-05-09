@@ -60,15 +60,12 @@ public class FryingRecipe implements Recipe<SingleRecipeInput> {
 
     public int getProcessingTime() { return processingTime; }
     public int getOilAmount() { return oilAmount; }
-    public Ingredient getInput() { return input; }
-
-    // -------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
     // Recipe Type
     // -------------------------------------------------------------------------
     public static class Type implements RecipeType<FryingRecipe> {
         public static final Type INSTANCE = new Type();
-        public static final String ID = "frying";
-    }
+	}
 
     // -------------------------------------------------------------------------
     // Serializer – v 1.21.1 NeoForge: MapCodec + StreamCodec, žádný fromJson/fromNetwork
