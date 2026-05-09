@@ -13,7 +13,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
-
+@SuppressWarnings("deprecation")
 public record SpaceshipScreenButtonMessage(int buttonID, int x, int y, int z) implements CustomPacketPayload {
 	public static final Type<SpaceshipScreenButtonMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "spaceship_button"));
 	public static final StreamCodec<FriendlyByteBuf, SpaceshipScreenButtonMessage> STREAM_CODEC = StreamCodec.composite(
