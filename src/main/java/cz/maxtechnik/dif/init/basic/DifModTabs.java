@@ -204,7 +204,6 @@ public class DifModTabs{
 							new ItemStack(SUNFLOWER_OIL_BUCKET.get()),
 							new ItemStack(CRUDE_OIL_BUCKET.get())
 					});
-			tabData.accept(DOG.get());
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.COMBAT)){
 			tabData.insertAfter(new ItemStack(Items.STONE_SWORD),new ItemStack(COPPER_SWORD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertAfter(new ItemStack(Items.STONE_AXE),new ItemStack(COPPER_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
