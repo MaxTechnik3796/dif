@@ -165,8 +165,6 @@ public class DifMod {
 	}
 
 	public static void addItemStacksBehind(BuildCreativeModeTabContentsEvent tabData, ItemStack startStack, ItemStack[] addStacks) {
-		for (ItemStack addStack : addStacks) {
-			tabData.accept(addStack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-		}
+		for(ItemStack addStack:addStacks) tabData.insertAfter(startStack,addStack,CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 	}
 }
