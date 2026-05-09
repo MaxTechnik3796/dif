@@ -129,109 +129,19 @@ public class DifModTabs{
 
 		tabData.accept(MODULAR_PART_HANDLE.get());
 
-
-
-
-
-		tabData.accept(newPartFromMaterial(MODULAR_PART_PICKAXE_HEAD.get(),"Wood"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_PICKAXE_HEAD.get(),"Stone"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_PICKAXE_HEAD.get(),"Copper"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_PICKAXE_HEAD.get(),"Iron"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_PICKAXE_HEAD.get(),"Gold"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_PICKAXE_HEAD.get(),"Diamond"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_PICKAXE_HEAD.get(),"Obsidian"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_PICKAXE_HEAD.get(),"Netherite"));
-
-		tabData.accept(newPartFromMaterial(MODULAR_PART_AXE_HEAD.get(),"Wood"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_AXE_HEAD.get(),"Stone"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_AXE_HEAD.get(),"Copper"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_AXE_HEAD.get(),"Iron"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_AXE_HEAD.get(),"Gold"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_AXE_HEAD.get(),"Diamond"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_AXE_HEAD.get(),"Obsidian"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_AXE_HEAD.get(),"Netherite"));
-
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SHOVEL_HEAD.get(),"Wood"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SHOVEL_HEAD.get(),"Stone"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SHOVEL_HEAD.get(),"Copper"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SHOVEL_HEAD.get(),"Iron"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SHOVEL_HEAD.get(),"Gold"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SHOVEL_HEAD.get(),"Diamond"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SHOVEL_HEAD.get(),"Obsidian"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SHOVEL_HEAD.get(),"Netherite"));
-
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_HEAD.get(),"Wood"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_HEAD.get(),"Stone"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_HEAD.get(),"Copper"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_HEAD.get(),"Iron"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_HEAD.get(),"Gold"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_HEAD.get(),"Diamond"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_HEAD.get(),"Obsidian"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_HEAD.get(),"Netherite"));
-
-		tabData.accept(newPartFromMaterial(MODULAR_PART_BINDING.get(),"Wood"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_BINDING.get(),"Stone"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_BINDING.get(),"Copper"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_BINDING.get(),"Iron"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_BINDING.get(),"Gold"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_BINDING.get(),"Diamond"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_BINDING.get(),"Obsidian"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_BINDING.get(),"Netherite"));
-
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_BINDING.get(),"Wood"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_BINDING.get(),"Stone"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_BINDING.get(),"Copper"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_BINDING.get(),"Iron"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_BINDING.get(),"Gold"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_BINDING.get(),"Diamond"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_BINDING.get(),"Obsidian"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_BINDING.get(),"Netherite"));
-
-		tabData.accept(newPartFromMaterial(MODULAR_PART_HANDLE.get(),"Wood"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_HANDLE.get(),"Stone"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_HANDLE.get(),"Copper"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_HANDLE.get(),"Iron"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_HANDLE.get(),"Gold"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_HANDLE.get(),"Diamond"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_HANDLE.get(),"Obsidian"));
-		tabData.accept(newPartFromMaterial(MODULAR_PART_HANDLE.get(),"Netherite"));
-
-
-		tabData.accept(newSingleMaterialPreFab(MODULAR_PICKAXE.get(),"Wood"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_PICKAXE.get(),"Stone"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_PICKAXE.get(),"Copper"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_PICKAXE.get(),"Iron"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_PICKAXE.get(),"Gold"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_PICKAXE.get(),"Diamond"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_PICKAXE.get(),"Obsidian"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_PICKAXE.get(),"Netherite"));
-
-		tabData.accept(newSingleMaterialPreFab(MODULAR_AXE.get(),"Wood"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_AXE.get(),"Stone"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_AXE.get(),"Copper"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_AXE.get(),"Iron"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_AXE.get(),"Gold"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_AXE.get(),"Diamond"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_AXE.get(),"Obsidian"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_AXE.get(),"Netherite"));
-
-		tabData.accept(newSingleMaterialPreFab(MODULAR_SHOVEL.get(),"Wood"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_SHOVEL.get(),"Stone"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_SHOVEL.get(),"Copper"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_SHOVEL.get(),"Iron"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_SHOVEL.get(),"Gold"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_SHOVEL.get(),"Diamond"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_SHOVEL.get(),"Obsidian"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_SHOVEL.get(),"Netherite"));
-
-		tabData.accept(newSingleMaterialPreFab(MODULAR_SWORD.get(),"Wood"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_SWORD.get(),"Stone"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_SWORD.get(),"Copper"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_SWORD.get(),"Iron"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_SWORD.get(),"Gold"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_SWORD.get(),"Diamond"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_SWORD.get(),"Obsidian"));
-		tabData.accept(newSingleMaterialPreFab(MODULAR_SWORD.get(),"Netherite"));
+	for(String mat : new String[]{"Wood","Stone","Copper","Iron","Gold","Diamond","Obsidian","Netherite"}){
+		tabData.accept(newPartFromMaterial(MODULAR_PART_PICKAXE_HEAD.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		tabData.accept(newPartFromMaterial(MODULAR_PART_AXE_HEAD.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		tabData.accept(newPartFromMaterial(MODULAR_PART_SHOVEL_HEAD.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_HEAD.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		tabData.accept(newPartFromMaterial(MODULAR_PART_BINDING.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_BINDING.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		tabData.accept(newPartFromMaterial(MODULAR_PART_HANDLE.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		tabData.accept(newSingleMaterialPreFab(MODULAR_PICKAXE.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		tabData.accept(newSingleMaterialPreFab(MODULAR_AXE.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		tabData.accept(newSingleMaterialPreFab(MODULAR_SHOVEL.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		tabData.accept(newSingleMaterialPreFab(MODULAR_SWORD.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		}
 	})).build());
 
 

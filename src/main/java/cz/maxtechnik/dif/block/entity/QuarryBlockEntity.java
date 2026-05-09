@@ -99,13 +99,14 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		hasLiquidRemover=false;
 		ItemStack upgradeStack=inventory.getStackInSlot(2);
 		if(upgradeStack.isEmpty()) return;
-		if(upgradeStack.getItem()==Items.SPONGE) hasLiquidRemover=true;
-		else 		if(upgradeStack.is(Items.ENCHANTED_BOOK)){
-			var enchants=upgradeStack.getEnchantments();
-			enchants.keySet().forEach(holder->{
-				if(holder.is(Enchantments.SILK_TOUCH)){
-					hasSilkTouch=true;
-				}
+		if(upgradeStack.getItem()==Items.SPONGE){
+			hasLiquidRemover=true;
+			return;
+		}
+		if(upgradeStack.is(Items.ENCHANTED_BOOK)){
+			var stored=upgradeStack.get(net.minecraft.core.component.DataComponents.STORED_ENCHANTMENTS);
+			if(stored!=null) stored.keySet().forEach(holder->{
+				if(holder.is(Enchantments.SILK_TOUCH)) hasSilkTouch=true;
 			});
 		}
 	}
@@ -188,12 +189,14 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		return feCost;
 	}
 	private ItemStack buildSimulatedTool(){
-		ItemStack headStack=inventory.getStackInSlot(0);
+		ItemStack headStack = inventory.getStackInSlot(0);
 		ItemStack tool;
-		if(headStack.is(DifModItems.QUARRY_DRILL_IRON.get())) tool=new ItemStack(Items.IRON_PICKAXE);
-		else if(headStack.is(DifModItems.QUARRY_DRILL_DIAMOND.get())) tool=new ItemStack(Items.DIAMOND_PICKAXE);
-		else tool=new ItemStack(Items.IRON_PICKAXE);
-		// Silk touch applied via enchantment tag in 1.21.1
+		if(headStack.is(DifModItems.QUARRY_DRILL_DIAMOND.get())) tool = new ItemStack(Items.NETHERITE_PICKAXE);
+		else tool = new ItemStack(Items.IRON_PICKAXE);
+		if(hasSilkTouch && level != null){
+			var lookup = level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT);
+			tool.enchant(lookup.getOrThrow(net.minecraft.world.item.enchantment.Enchantments.SILK_TOUCH), 1);
+		}
 		return tool;
 	}
 	// Tick
@@ -421,18 +424,17 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 				continue;
 			}
 			float hardness=target.getDestroySpeed(level,miningPos);
-			if(hardness<0){
-				miningProgressAcc=0f;
-				if(handleMiningAdvance(level,pos,state)) return;
-				continue;
-			}
-			float requiredProgress=Math.max(1f,hardness*10f);
+			boolean unbreakable=hardness<0;
+			float requiredProgress=unbreakable?10f:Math.max(1f,hardness*10f);
 			if(miningProgressAcc>=requiredProgress){
 				miningProgressAcc-=requiredProgress;
 				if(level instanceof ServerLevel sl){
-					boolean canMine=!target.requiresCorrectToolForDrops()||tool.isCorrectToolForDrops(target);
-					if(canMine){
-						LootParams.Builder loot=new LootParams.Builder(sl).withParameter(LootContextParams.ORIGIN,Vec3.atCenterOf(miningPos)).withParameter(LootContextParams.TOOL,tool).withOptionalParameter(LootContextParams.BLOCK_ENTITY,level.getBlockEntity(miningPos));
+					if(!unbreakable){
+						LootParams.Builder loot=new LootParams.Builder(sl)
+								.withParameter(LootContextParams.ORIGIN,Vec3.atCenterOf(miningPos))
+								.withParameter(LootContextParams.TOOL,tool)
+								.withParameter(LootContextParams.BLOCK_STATE,target)
+								.withOptionalParameter(LootContextParams.BLOCK_ENTITY,level.getBlockEntity(miningPos));
 						distributeDrops(level,target.getDrops(loot));
 					}
 					level.removeBlock(miningPos,false);

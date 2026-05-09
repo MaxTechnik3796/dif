@@ -452,10 +452,10 @@ public abstract class ModularBase extends DiggerItem{
 	}
 
 	@Override
-	public boolean isCorrectToolForDrops(ItemStack itemStack,@NotNull BlockState blockState){
-		if(Objects.requireNonNull(itemStack.get(D)).copyTag().isEmpty()) return super.isCorrectToolForDrops(itemStack,blockState);
-		CompoundTag tag=Objects.requireNonNull(itemStack.get(D)).copyTag();
-		if(tag.getBoolean("Broken")) return false;
+	public boolean isCorrectToolForDrops(ItemStack itemStack, @NotNull BlockState blockState){
+		var data = itemStack.get(D);
+		if(data == null || data.copyTag().isEmpty()) return super.isCorrectToolForDrops(itemStack, blockState);
+		CompoundTag tag = data.copyTag();
 		int level=tag.getInt("MiningLevel")+tag.getInt("BonusMiningLevel");
 		if(tag.getInt("SpecialMiningLevel")>level) level=tag.getInt("SpecialMiningLevel");
 		if(blockState.is(BlockTags.NEEDS_DIAMOND_TOOL)&&level<3) return false;
@@ -465,19 +465,21 @@ public abstract class ModularBase extends DiggerItem{
 	}
 
 	@Override
-	public float getDestroySpeed(ItemStack itemStack,@NotNull BlockState blockState){
-		if(Objects.requireNonNull(itemStack.get(D)).copyTag().isEmpty()) return super.getDestroySpeed(itemStack,blockState);
-		CompoundTag tag=Objects.requireNonNull(itemStack.get(D)).copyTag();
+	public float getDestroySpeed(ItemStack itemStack, @NotNull BlockState blockState){
+		var data = itemStack.get(D);
+		if(data == null || data.copyTag().isEmpty()) return super.getDestroySpeed(itemStack, blockState);
+		CompoundTag tag = data.copyTag();
 		if(tag.getBoolean("Broken")) return 1F;
-		int speeeed=containsMaterial(itemStack,"Gold")?8:0;
-		return blockState.is(getMineableTag())?tag.getInt("Efficiency")+tag.getInt("SpecialEfficiency")+speeeed:1F;
+		int speeeed = containsMaterial(itemStack, "Gold") ? 8 : 0;
+		return blockState.is(getMineableTag()) ? tag.getInt("Efficiency") + tag.getInt("SpecialEfficiency") + speeeed : 1F;
 	}
 
 	@Override
 	public int getMaxDamage(ItemStack itemStack){
-		if(!Objects.requireNonNull(itemStack.get(D)).copyTag().isEmpty()){
-			if(Objects.requireNonNull(itemStack.get(D)).copyTag().contains("Durability")){
-				return Objects.requireNonNull(itemStack.get(D)).copyTag().getInt("Durability");
+		var data = itemStack.get(D);
+		if(data != null && !data.copyTag().isEmpty()){
+			if(data.copyTag().contains("Durability")){
+				return data.copyTag().getInt("Durability");
 			}
 		}
 		return this.defaultDurability;
@@ -538,11 +540,13 @@ public abstract class ModularBase extends DiggerItem{
 		});
 	}
 
-	public static boolean containsMaterial(ItemStack itemStack,String material){
-		CompoundTag tag=Objects.requireNonNull(itemStack.get(D)).copyTag();
-		if(tag.contains("HeadMaterial")&&tag.getString("HeadMaterial").equals(material)) return true;
-		if(tag.contains("BindingMaterial")&&tag.getString("BindingMaterial").equals(material)) return true;
-		return tag.contains("HandleMaterial")&&tag.getString("HandleMaterial").equals(material);
+	public static boolean containsMaterial(ItemStack itemStack, String material){
+		var data = itemStack.get(D);
+		if(data == null) return false;
+		CompoundTag tag = data.copyTag();
+		if(tag.contains("HeadMaterial") && tag.getString("HeadMaterial").equals(material)) return true;
+		if(tag.contains("BindingMaterial") && tag.getString("BindingMaterial").equals(material)) return true;
+		return tag.contains("HandleMaterial") && tag.getString("HandleMaterial").equals(material);
 	}
 
 	public static boolean isInMainHand(ItemStack itemStack,Player player){
@@ -593,9 +597,10 @@ public abstract class ModularBase extends DiggerItem{
 	}
 
 	@Override
-	public void inventoryTick(@NotNull ItemStack itemStack,@NotNull Level world,@NotNull Entity entity,int slot,boolean selected){
+	public void inventoryTick(@NotNull ItemStack itemStack, @NotNull Level world, @NotNull Entity entity, int slot, boolean selected){
 		if(!world.isClientSide()){
-			CompoundTag tag=Objects.requireNonNull(itemStack.get(D)).copyTag();
+			var data = itemStack.get(D);
+			CompoundTag tag = data != null ? data.copyTag() : new CompoundTag();
 			if(!tag.contains("MaxModifiers")) tag.putInt("MaxModifiers",modularToolsDefaultMaxModifiers);
 			if(!tag.contains("SilkTouchModifier")) tag.putBoolean("SilkTouchModifier",false);
 			if(!tag.contains("DiamondModifier")) tag.putBoolean("DiamondModifier",false);
@@ -664,10 +669,11 @@ public abstract class ModularBase extends DiggerItem{
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(@NotNull ItemStack itemStack,Item.@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
-		super.appendHoverText(itemStack,context,list,flag);
-		if(Objects.requireNonNull(itemStack.get(D)).copyTag().isEmpty()) return;
-		CompoundTag tag=Objects.requireNonNull(itemStack.get(D)).copyTag();
+	public void appendHoverText(@NotNull ItemStack itemStack, Item.@NotNull TooltipContext context, @NotNull List<Component> list, @NotNull TooltipFlag flag){
+		super.appendHoverText(itemStack, context, list, flag);
+		var data = itemStack.get(D);
+		if(data == null || data.copyTag().isEmpty()) return;
+		CompoundTag tag = data.copyTag();
 		if(!tag.contains("MiningLevel")||!tag.contains("Durability")||!tag.contains("Efficiency")||!tag.contains("AttackDamage")||!tag.contains("AttackSpeed")) return;
 		if(Screen.hasShiftDown()){
 			list.add(Component.literal("Remaining Modifiers:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("MaxModifiers"))).withStyle(ChatFormatting.YELLOW))));
