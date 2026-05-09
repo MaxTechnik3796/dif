@@ -91,6 +91,8 @@ public class DifMod {
 				(be, side) -> be.getInventory());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.SUPER_BOX.get(),
 				(be, side) -> be.getInventory());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.OLD_CHEST.get(),
+				(be, side) -> be.getInventory());
 	}
 
 
