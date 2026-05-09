@@ -1,13 +1,17 @@
 package cz.maxtechnik.dif.item.armor;
 
+import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.model.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -25,6 +29,10 @@ public abstract class SpaceSuit extends ArmorItem{
 	public static class Helmet extends SpaceSuit{
 		public Helmet(){
 			super(Type.HELMET,new Properties().stacksTo(1));
+		}
+		@Override
+		public ResourceLocation getArmorTexture(@NotNull ItemStack stack, @NotNull Entity entity, @NotNull EquipmentSlot slot, ArmorMaterial.@NotNull Layer layer, boolean innerModel) {
+			return ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/models/armor/spacesuit.png");
 		}
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer){
@@ -53,6 +61,10 @@ public abstract class SpaceSuit extends ArmorItem{
 			super(Type.CHESTPLATE,new Properties().stacksTo(1));
 		}
 		@Override
+		public ResourceLocation getArmorTexture(@NotNull ItemStack stack, @NotNull Entity entity, @NotNull EquipmentSlot slot, ArmorMaterial.@NotNull Layer layer, boolean innerModel) {
+			return ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/models/armor/spacesuit.png");
+		}
+		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer){
 			consumer.accept(new IClientItemExtensions(){
 				@Override
@@ -79,6 +91,10 @@ public abstract class SpaceSuit extends ArmorItem{
 			super(Type.LEGGINGS,new Properties().stacksTo(1));
 		}
 		@Override
+		public ResourceLocation getArmorTexture(@NotNull ItemStack stack, @NotNull Entity entity, @NotNull EquipmentSlot slot, ArmorMaterial.@NotNull Layer layer, boolean innerModel) {
+			return ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/models/armor/spacesuit.png");
+		}
+		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer){
 			consumer.accept(new IClientItemExtensions(){
 				@Override
@@ -103,6 +119,10 @@ public abstract class SpaceSuit extends ArmorItem{
 	public static class Boots extends SpaceSuit{
 		public Boots(){
 			super(Type.BOOTS,new Properties().stacksTo(1));
+		}
+		@Override
+		public ResourceLocation getArmorTexture(@NotNull ItemStack stack, @NotNull Entity entity, @NotNull EquipmentSlot slot, ArmorMaterial.@NotNull Layer layer, boolean innerModel) {
+			return ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/models/armor/spacesuit.png");
 		}
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer){

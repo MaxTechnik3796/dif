@@ -1,8 +1,8 @@
 {
 	"replace":false,
 	"values":[
-		"dif:copper_chestplate",
-		"dif:space_suit_chestplate",
-		"dif:carbon_suit_chestplate"
+		"dif:copper_leggings",
+		"dif:space_suit_leggings",
+		"dif:carbon_suit_leggings"
 	]
 }
