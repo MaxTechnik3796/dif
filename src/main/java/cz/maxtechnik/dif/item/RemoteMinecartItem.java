@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraft.core.component.DataComponents;
 import org.jetbrains.annotations.NotNull;
+@SuppressWarnings("deprecation")
 public class RemoteMinecartItem extends Item{
 	public RemoteMinecartItem(Properties props){
 		super(props);
