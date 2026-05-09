@@ -5,7 +5,6 @@ import cz.maxtechnik.dif.block.entity.*;
 import cz.maxtechnik.dif.block.entity.barrel.AndesiteBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.barrel.BrassBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.barrel.CopperBarrelBlockEntity;
-import cz.maxtechnik.dif.block.entity.dev.XpStorageBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
@@ -29,7 +28,6 @@ public class DifModBlockEntities{
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ChunkLoaderBlockEntity>> CHUNK_LOADER_BE = REGISTRY.register("chunk_loader_be", () -> BlockEntityType.Builder.of(ChunkLoaderBlockEntity::new, DifModBlocks.CHUNK_LOADER_1X1.get(), DifModBlocks.CHUNK_LOADER_3X3.get()).build(null));
 
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SpaceScaffoldingBlockEntity>> SPACE_SCAFFOLDING = REGISTRY.register("space_scaffolding", () -> BlockEntityType.Builder.of(SpaceScaffoldingBlockEntity::new, DifModBlocks.SPACE_CASING.get()).build(null));
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<XpStorageBlockEntity>> XP_STORAGE = REGISTRY.register("xp_storage", () -> BlockEntityType.Builder.of(XpStorageBlockEntity::new, DifModBlocks.XP_STORAGE.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FryingTableBlockEntity>> FRYING_TABLE = REGISTRY.register("frying_table", () -> BlockEntityType.Builder.of(FryingTableBlockEntity::new, DifModBlocks.FRYING_TABLE.get()).build(null));
 
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CameraMonitorBlockEntity>> CAMERA_MONITOR = REGISTRY.register("monitor", () -> BlockEntityType.Builder.of(CameraMonitorBlockEntity::new, DifModBlocks.CAMERA_MONITOR.get()).build(null));

@@ -4,9 +4,7 @@ import cz.maxtechnik.dif.block.entity.barrel.CopperBarrelBlockEntity;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -23,140 +21,94 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
-public class CopperBarrelMenu extends AbstractContainerMenu implements Supplier<Map<Integer,Slot>>{
-	// Konstanty pro 4-řádkovou bednu
-	private static final int ROWS=5;
-	private static final int SLOTS_PER_ROW=9;
-	private static final int CONTAINER_SLOTS=ROWS*SLOTS_PER_ROW; // 45
+
+public class CopperBarrelMenu extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
+	private static final int ROWS = 5;
+	private static final int SLOTS_PER_ROW = 9;
+	private static final int CONTAINER_SLOTS = ROWS * SLOTS_PER_ROW; // 45
+
 	public final Level world;
 	public final Player entity;
 	public int x, y, z;
-	private ContainerLevelAccess access=ContainerLevelAccess.NULL;
-	private IItemHandler internal;
-	private final Map<Integer,Slot> customSlots=new HashMap<>();
-	private boolean bound=false;
-	private BlockEntity boundBlockEntity=null;
-	public CopperBarrelMenu(int id,Inventory inv,FriendlyByteBuf extraData){
-		super(DifModMenus.COPPER_BARREL.get(),id);
-		this.entity=inv.player;
-		this.world=inv.player.level();
-		this.internal=new ItemStackHandler(CONTAINER_SLOTS); // 45 slotů
-		BlockPos pos=null;
-		if(extraData!=null){
-			pos=extraData.readBlockPos();
-			this.x=pos.getX();
-			this.y=pos.getY();
-			this.z=pos.getZ();
-			access=ContainerLevelAccess.create(world,pos);
-		}
-		if(pos!=null){
-			boundBlockEntity=this.world.getBlockEntity(pos);
-			if(boundBlockEntity!=null){
+	private ContainerLevelAccess access = ContainerLevelAccess.NULL;
+    private final Map<Integer, Slot> customSlots = new HashMap<>();
+	private BlockEntity boundBlockEntity = null;
+
+	public CopperBarrelMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
+		super(DifModMenus.COPPER_BARREL.get(), id);
+		this.entity = inv.player;
+		this.world = inv.player.level();
+        IItemHandler internal = new ItemStackHandler(CONTAINER_SLOTS);
+
+		if (extraData != null) {
+			BlockPos pos = extraData.readBlockPos();
+			this.x = pos.getX();
+			this.y = pos.getY();
+			this.z = pos.getZ();
+			access = ContainerLevelAccess.create(world, pos);
+			boundBlockEntity = this.world.getBlockEntity(pos);
+			if (boundBlockEntity != null) {
 				IItemHandler handler = this.world.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
-				if(handler != null) {
-					this.internal = handler;
-					this.bound = true;
-				}
-				if(boundBlockEntity instanceof CopperBarrelBlockEntity be){
-					be.startOpen(inv.player);
-				}
+				if (handler != null) internal = handler;
+				if (boundBlockEntity instanceof CopperBarrelBlockEntity be) be.startOpen(inv.player);
 			}
 		}
-		// --- Generování slotů barelu (4 řádky) ---
-		int startX=8;
-		int startY=18;
-		int index=0;
-		for(int row=0;row<ROWS;row++){
-			for(int col=0;col<SLOTS_PER_ROW;col++){
-				int sx=startX+col*18;
-				int sy=startY+row*18;
-				this.customSlots.put(index,this.addSlot(new SlotItemHandler(internal,index,sx,sy)));
-				index++;
-			}
-		}
-		// --- Generování inventáře hráče ---
-		// Pozice Y pro inventář hráče se vypočítá tak, aby navazovala na 4. řádek barelu.
-		// 18 (start) + 4 * 18 (barel) + 14 (mezera) = 104
-		int invOffsetX=8;
-		int invOffsetY=startY+(ROWS*18)+13; // Automatický výpočet Y (cca 104)
-		for(int si=0;si<3;++si){
-			for(int sj=0;sj<9;++sj){
-				this.addSlot(new Slot(inv,sj+(si+1)*9,invOffsetX+sj*18,invOffsetY+si*18));
-			}
-		}
-		for(int si=0;si<9;++si){
-			this.addSlot(new Slot(inv,si,invOffsetX+si*18,invOffsetY+58));
-		}
+
+		int startX = 8, startY = 18, index = 0;
+		for (int row = 0; row < ROWS; row++)
+			for (int col = 0; col < SLOTS_PER_ROW; col++)
+				this.customSlots.put(index, this.addSlot(new SlotItemHandler(internal, index++, startX + col * 18, startY + row * 18)));
+
+		int invOffsetX = 8;
+		int invOffsetY = startY + (ROWS * 18) + 13;
+		for (int si = 0; si < 3; ++si)
+			for (int sj = 0; sj < 9; ++sj)
+				this.addSlot(new Slot(inv, sj + (si + 1) * 9, invOffsetX + sj * 18, invOffsetY + si * 18));
+		for (int si = 0; si < 9; ++si)
+			this.addSlot(new Slot(inv, si, invOffsetX + si * 18, invOffsetY + 58));
 	}
-	// Getter pro počet řádků (použije Screen pro výpočet výšky)
-	public int getRows(){
-		return ROWS;
-	}
+
+	public int getRows() { return ROWS; }
+
 	@Override
-	public boolean stillValid(@NotNull Player player){
-		if(this.bound){
-			if(this.boundBlockEntity!=null)
-				return AbstractContainerMenu.stillValid(this.access,player,this.boundBlockEntity.getBlockState().getBlock());
-		}
+	public boolean stillValid(@NotNull Player player) {
+		if (boundBlockEntity != null)
+			return AbstractContainerMenu.stillValid(this.access, player, boundBlockEntity.getBlockState().getBlock());
 		return true;
 	}
+
 	@Override
-	public @NotNull ItemStack quickMoveStack(@NotNull Player playerIn,int index){
-		ItemStack itemstack=ItemStack.EMPTY;
-		Slot slot=this.slots.get(index);
-		if(slot.hasItem()){
-			ItemStack itemstack1=slot.getItem();
-			itemstack=itemstack1.copy();
-			// Pokud je to slot v barelu (index < 45)
-			if(index<CONTAINER_SLOTS){
-				if(!this.moveItemStackTo(itemstack1,CONTAINER_SLOTS,this.slots.size(),true))
-					return ItemStack.EMPTY;
-				slot.onQuickCraft(itemstack1,itemstack);
-			}
-			// Pokud je to v inventáři hráče
-			else if(!this.moveItemStackTo(itemstack1,0,CONTAINER_SLOTS,false)){
-				if(index<CONTAINER_SLOTS+27){
-					if(!this.moveItemStackTo(itemstack1,CONTAINER_SLOTS+27,this.slots.size(),true))
-						return ItemStack.EMPTY;
-				}else{
-					if(!this.moveItemStackTo(itemstack1,CONTAINER_SLOTS,CONTAINER_SLOTS+27,false))
-						return ItemStack.EMPTY;
+	public @NotNull ItemStack quickMoveStack(@NotNull Player playerIn, int index) {
+		ItemStack itemstack = ItemStack.EMPTY;
+		Slot slot = this.slots.get(index);
+		if (slot.hasItem()) {
+			ItemStack itemstack1 = slot.getItem();
+			itemstack = itemstack1.copy();
+			if (index < CONTAINER_SLOTS) {
+				if (!this.moveItemStackTo(itemstack1, CONTAINER_SLOTS, this.slots.size(), true)) return ItemStack.EMPTY;
+				slot.onQuickCraft(itemstack1, itemstack);
+			} else if (!this.moveItemStackTo(itemstack1, 0, CONTAINER_SLOTS, false)) {
+				if (index < CONTAINER_SLOTS + 27) {
+					if (!this.moveItemStackTo(itemstack1, CONTAINER_SLOTS + 27, this.slots.size(), true)) return ItemStack.EMPTY;
+				} else {
+					if (!this.moveItemStackTo(itemstack1, CONTAINER_SLOTS, CONTAINER_SLOTS + 27, false)) return ItemStack.EMPTY;
 				}
 				return ItemStack.EMPTY;
 			}
-			if(itemstack1.getCount()==0)
-				slot.set(ItemStack.EMPTY);
-			else
-				slot.setChanged();
-			if(itemstack1.getCount()==itemstack.getCount())
-				return ItemStack.EMPTY;
-			slot.onTake(playerIn,itemstack1);
+			if (itemstack1.getCount() == 0) slot.set(ItemStack.EMPTY);
+			else slot.setChanged();
+			if (itemstack1.getCount() == itemstack.getCount()) return ItemStack.EMPTY;
+			slot.onTake(playerIn, itemstack1);
 		}
 		return itemstack;
 	}
-	// ... (moveItemStackTo, removed, get, getBlockEntity zůstávají stejné)
+
 	@Override
-	public void removed(@NotNull Player playerIn){
-		if(this.boundBlockEntity instanceof CopperBarrelBlockEntity be){
-			be.stopOpen(playerIn);
-		}
+	public void removed(@NotNull Player playerIn) {
+		if (boundBlockEntity instanceof CopperBarrelBlockEntity be) be.stopOpen(playerIn);
 		super.removed(playerIn);
-		if(!bound&&playerIn instanceof ServerPlayer serverPlayer){
-			if(!serverPlayer.isAlive()||serverPlayer.hasDisconnected()){
-				for(int j=0;j<internal.getSlots();++j){
-					playerIn.drop(internal.extractItem(j,internal.getStackInSlot(j).getCount(),false),false);
-				}
-			}else{
-				for(int i=0;i<internal.getSlots();++i){
-					playerIn.getInventory().placeItemBackInInventory(internal.extractItem(i,internal.getStackInSlot(i).getCount(),false));
-				}
-			}
-		}
 	}
-	public Map<Integer,Slot> get(){
-		return customSlots;
-	}
-	public BlockEntity getBlockEntity(){
-		return this.boundBlockEntity;
-	}
+
+	public Map<Integer, Slot> get() { return customSlots; }
+	public BlockEntity getBlockEntity() { return this.boundBlockEntity; }
 }

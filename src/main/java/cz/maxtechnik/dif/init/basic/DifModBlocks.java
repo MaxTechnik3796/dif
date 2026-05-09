@@ -5,8 +5,6 @@ import cz.maxtechnik.dif.block.*;
 import cz.maxtechnik.dif.block.barrel.AndesiteBarrel;
 import cz.maxtechnik.dif.block.barrel.BrassBarrel;
 import cz.maxtechnik.dif.block.barrel.CopperBarrel;
-import cz.maxtechnik.dif.block.dev.Test;
-import cz.maxtechnik.dif.block.dev.XpStorage;
 import cz.maxtechnik.dif.block.mata.MataPlant;
 import cz.maxtechnik.dif.block.mata.MatyBlock;
 import cz.maxtechnik.dif.block.rails.FastPoweredRailBlock;
@@ -28,7 +26,6 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>CHUNK_LOADER_3X3=REGISTRY.register("chunk_loader_3x3",ChunkLoader::new);
 	public static final DeferredBlock<Block>FAST_POWERED_RAIL=REGISTRY.register("fast_powered_rail",()->new FastPoweredRailBlock(BlockBehaviour.Properties.of().noCollission().strength(0.7F).sound(SoundType.METAL)));
 	public static final DeferredBlock<Block>FAST_RAIL=REGISTRY.register("fast_rail",()->new FastRailBlock(BlockBehaviour.Properties.of().noCollission().strength(0.7F).sound(SoundType.METAL)));
-	public static final DeferredBlock<Block>EXAMPLE_BLOCK=REGISTRY.register("example_block",Test::new);
 	public static final DeferredBlock<Block>REMOTE_MINECART_BLOCK=REGISTRY.register("remote_minecart_block",RemoteMinecartBlock::new);
 
 	public static final DeferredBlock<Block>SLEEPING_BAG=REGISTRY.register("sleeping_bag",SleepingBagBlock::new);
@@ -124,7 +121,6 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>BRASS_BARREL=REGISTRY.register("brass_barrel",BrassBarrel::new);
 
 	//Random (3):
-	public static final DeferredBlock<Block>XP_STORAGE=REGISTRY.register("xp_storage",XpStorage::new);
 	public static final DeferredBlock<Block>PORTAL_BLOCK=REGISTRY.register("portal_block",()->new PortalBlock(BlockBehaviour.Properties.of().noCollission().noOcclusion().pushReaction(PushReaction.BLOCK)));
 	public static final DeferredBlock<Block>FRYING_TABLE=REGISTRY.register("frying_table",FryingTable::new);
 
