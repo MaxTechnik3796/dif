@@ -59,7 +59,7 @@ public abstract class ElectroRunners extends ArmorItem {
 		}
 
 		public static void setEnergy(ItemStack stack, int amount) {
-			int clamped = Math.max(0, Math.min(MAX, amount));
+			int clamped =Math.clamp(amount,0,MAX);
 			CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 			tag.putInt("Energy", clamped);
 			stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
