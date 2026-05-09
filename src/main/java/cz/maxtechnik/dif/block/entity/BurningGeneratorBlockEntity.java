@@ -53,7 +53,7 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 	};
 
 	// EnergyStorage přijímá i vydává – interně nabíjíme přes receiveEnergy
-	private final EnergyStorage energyStorage=new EnergyStorage(MAX_ENERGY,0,MAX_EXTRACT,0){
+	private final EnergyStorage energyStorage=new EnergyStorage(MAX_ENERGY,MAX_RECEIVE,MAX_EXTRACT,0){
 		@Override
 		public int receiveEnergy(int maxReceive,boolean simulate){ return 0; }
 		@Override
