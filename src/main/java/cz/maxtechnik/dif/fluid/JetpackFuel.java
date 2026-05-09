@@ -16,12 +16,11 @@ import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
-
 @SuppressWarnings("removal")
 public class JetpackFuel{
-	public abstract static class Fluid extends BaseFlowingFluid {
+	public abstract static class Fluid extends BaseFlowingFluid{
 		private Fluid(){
-			super(new Properties(DifModFluidTypes.JETPACK_FUEL_TYPE, DifModFluids.JETPACK_FUEL,DifModFluids.FLOWING_JETPACK_FUEL).explosionResistance(100F).bucket(DifModItems.JETPACK_FUEL_BUCKET).tickRate(7).block(()->(LiquidBlock)DifModBlocks.JETPACK_FUEL_FLUID.get()));
+			super(new Properties(DifModFluidTypes.JETPACK_FUEL_TYPE,DifModFluids.JETPACK_FUEL,DifModFluids.FLOWING_JETPACK_FUEL).explosionResistance(100F).bucket(DifModItems.JETPACK_FUEL_BUCKET).tickRate(7).block(()->(LiquidBlock)DifModBlocks.JETPACK_FUEL_FLUID.get()));
 		}
 		public static class Source extends Fluid{
 			public int getAmount(@NotNull FluidState state){

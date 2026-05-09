@@ -1,6 +1,6 @@
 {
 	"parent":"minecraft:block/rail_flat",
-	"render_type": "cutout",
+	"render_type":"cutout",
 	"textures":{
 		"rail":"dif:block/fast_rail"
 	}

@@ -1,7 +1,7 @@
 {
-	"format_version": "1.9.0",
-	"credit": "Made by: MaxTechnik in: Blockbench",
-	"textures": {
-		"particle": "dif:block/none"
+	"format_version":"1.9.0",
+	"credit":"Made by: MaxTechnik in: Blockbench",
+	"textures":{
+		"particle":"dif:block/none"
 	}
 }

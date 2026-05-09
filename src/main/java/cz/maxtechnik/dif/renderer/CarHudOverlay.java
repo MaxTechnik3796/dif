@@ -62,7 +62,8 @@ public class CarHudOverlay{
 		for(int i=0;i<15;i++){
 			int color=0x22FFFFFF, lx=mc.getWindow().getGuiScaledWidth()/2-(15*11-2)/2+i*11;
 			if(revLimit) color=blink?0xFFFF1111:0x55FF1111;
-			else if(rpm>=entity.getIdleRPM()+(i/14f)*(rL-entity.getIdleRPM())) color=i<5?0xFF00DD00:i<10?0xFFFF5500:0xFF4455FF;
+			else if(rpm>=entity.getIdleRPM()+(i/14f)*(rL-entity.getIdleRPM()))
+				color=i<5?0xFF00DD00:i<10?0xFFFF5500:0xFF4455FF;
 			gui.fill(lx,py+7,lx+9,py+17,color);
 			if(color!=0x22FFFFFF) gui.fill(lx,py+7,lx+9,py+8,0x44FFFFFF);
 		}

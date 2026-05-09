@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Consumer;
 @SuppressWarnings("removal")
 public class Cider{
-	public abstract static class Fluid extends BaseFlowingFluid {
+	public abstract static class Fluid extends BaseFlowingFluid{
 		private Fluid(){
 			super(new Properties(DifModFluidTypes.CIDER_TYPE,DifModFluids.CIDER,DifModFluids.FLOWING_CIDER).explosionResistance(100F).bucket(DifModItems.CIDER_BUCKET).block(()->(LiquidBlock)DifModBlocks.CIDER_FLUID.get()));
 		}

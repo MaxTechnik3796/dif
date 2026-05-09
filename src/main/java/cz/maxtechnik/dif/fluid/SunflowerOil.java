@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Consumer;
 @SuppressWarnings("removal")
 public class SunflowerOil{
-	public abstract static class Fluid extends BaseFlowingFluid {
+	public abstract static class Fluid extends BaseFlowingFluid{
 		private Fluid(){
 			super(new Properties(DifModFluidTypes.SUNFLOWER_OIL_TYPE,DifModFluids.SUNFLOWER_OIL,DifModFluids.FLOWING_SUNFLOWER_OIL).explosionResistance(100F).bucket(DifModItems.SUNFLOWER_OIL_BUCKET).tickRate(3).block(()->(LiquidBlock)DifModBlocks.SUNFLOWER_OIL_FLUID.get()));
 		}

@@ -1,10 +1,30 @@
 {
-	"variants": {
-		"facing=up": { "model": "dif:block/quarry_landmark" },
-		"facing=down": { "model": "dif:block/quarry_landmark", "x": 180 },
-		"facing=north": { "model": "dif:block/quarry_landmark", "x": 90 },
-		"facing=south": { "model": "dif:block/quarry_landmark", "x": 90, "y": 180 },
-		"facing=west": { "model": "dif:block/quarry_landmark", "x": 90, "y": 270 },
-		"facing=east": { "model": "dif:block/quarry_landmark", "x": 90, "y": 90 }
+	"variants":{
+		"facing=up":{
+			"model":"dif:block/quarry_landmark"
+		},
+		"facing=down":{
+			"model":"dif:block/quarry_landmark",
+			"x":180
+		},
+		"facing=north":{
+			"model":"dif:block/quarry_landmark",
+			"x":90
+		},
+		"facing=south":{
+			"model":"dif:block/quarry_landmark",
+			"x":90,
+			"y":180
+		},
+		"facing=west":{
+			"model":"dif:block/quarry_landmark",
+			"x":90,
+			"y":270
+		},
+		"facing=east":{
+			"model":"dif:block/quarry_landmark",
+			"x":90,
+			"y":90
+		}
 	}
 }

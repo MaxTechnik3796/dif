@@ -15,7 +15,6 @@
 			"model":"dif:block/camera_monitor_no_signal",
 			"y":270
 		},
-
 		"facing=north,state=inactive":{
 			"model":"dif:block/camera_monitor_inactive"
 		},
@@ -31,7 +30,6 @@
 			"model":"dif:block/camera_monitor_inactive",
 			"y":270
 		},
-
 		"facing=north,state=active":[
 			{
 				"model":"dif:block/camera_monitor_active_0"

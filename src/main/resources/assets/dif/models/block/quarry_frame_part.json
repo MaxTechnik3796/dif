@@ -1,35 +1,127 @@
 {
-	"format_version": "1.9.0",
-	"credit": "Made by: MaxTechnik in: Blockbench",
-	"render_type": "cutout",
-	"textures": {
-		"0": "dif:block/quarry_frame",
-		"particle": "dif:block/quarry_frame"
+	"format_version":"1.9.0",
+	"credit":"Made by: MaxTechnik in: Blockbench",
+	"render_type":"cutout",
+	"textures":{
+		"0":"dif:block/quarry_frame",
+		"particle":"dif:block/quarry_frame"
 	},
-	"elements": [
+	"elements":[
 		{
-			"name": "part",
-			"from": [4, 4, 0],
-			"to": [12, 12, 4],
-			"shade": false,
-			"faces": {
-				"east": {"uv": [4, 4, 0, 12], "texture": "#0"},
-				"west": {"uv": [4, 4, 0, 12], "texture": "#0"},
-				"up": {"uv": [0, 4, 4, 12], "rotation": 90, "texture": "#0"},
-				"down": {"uv": [0, 4, 4, 12], "rotation": 90, "texture": "#0"}
+			"name":"part",
+			"from":[
+				4,
+				4,
+				0
+			],
+			"to":[
+				12,
+				12,
+				4
+			],
+			"shade":false,
+			"faces":{
+				"east":{
+					"uv":[
+						4,
+						4,
+						0,
+						12
+					],
+					"texture":"#0"
+				},
+				"west":{
+					"uv":[
+						4,
+						4,
+						0,
+						12
+					],
+					"texture":"#0"
+				},
+				"up":{
+					"uv":[
+						0,
+						4,
+						4,
+						12
+					],
+					"rotation":90,
+					"texture":"#0"
+				},
+				"down":{
+					"uv":[
+						0,
+						4,
+						4,
+						12
+					],
+					"rotation":90,
+					"texture":"#0"
+				}
 			}
 		},
 		{
-			"name": "part",
-			"from": [4, 12, 0],
-			"to": [12, 4, 4],
-			"shade": false,
-			"rotation": {"angle": 0, "axis": "y", "origin": [0, 8, 0]},
-			"faces": {
-				"east": {"uv": [4, 4, 0, 12], "texture": "#0"},
-				"west": {"uv": [4, 4, 0, 12], "texture": "#0"},
-				"up": {"uv": [0, 4, 4, 12], "rotation": 90, "texture": "#0"},
-				"down": {"uv": [0, 4, 4, 12], "rotation": 90, "texture": "#0"}
+			"name":"part",
+			"from":[
+				4,
+				12,
+				0
+			],
+			"to":[
+				12,
+				4,
+				4
+			],
+			"shade":false,
+			"rotation":{
+				"angle":0,
+				"axis":"y",
+				"origin":[
+					0,
+					8,
+					0
+				]
+			},
+			"faces":{
+				"east":{
+					"uv":[
+						4,
+						4,
+						0,
+						12
+					],
+					"texture":"#0"
+				},
+				"west":{
+					"uv":[
+						4,
+						4,
+						0,
+						12
+					],
+					"texture":"#0"
+				},
+				"up":{
+					"uv":[
+						0,
+						4,
+						4,
+						12
+					],
+					"rotation":90,
+					"texture":"#0"
+				},
+				"down":{
+					"uv":[
+						0,
+						4,
+						4,
+						12
+					],
+					"rotation":90,
+					"texture":"#0"
+				}
 			}
 		}
 	]

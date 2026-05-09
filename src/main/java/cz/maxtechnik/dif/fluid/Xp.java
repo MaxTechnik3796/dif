@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Consumer;
 @SuppressWarnings("removal")
 public class Xp{
-	public abstract static class Fluid extends BaseFlowingFluid {
+	public abstract static class Fluid extends BaseFlowingFluid{
 		private Fluid(){
 			super(new Properties(DifModFluidTypes.XP_TYPE,DifModFluids.XP,DifModFluids.FLOWING_XP).explosionResistance(100F).bucket(DifModItems.XP_BUCKET).block(()->(LiquidBlock)DifModBlocks.XP_FLUID.get()));
 		}

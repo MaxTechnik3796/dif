@@ -76,7 +76,8 @@ public abstract class BaseCarEntity extends Entity{
 			ItemStack itemStack=player.getItemInHand(hand);
 			if(!level().isClientSide){
 				if(itemStack.is(Items.LAVA_BUCKET)){
-					if(getFuelMb()>=getMaxFuelMb()) player.displayClientMessage(Component.literal("Nádrž je plná!"),true);
+					if(getFuelMb()>=getMaxFuelMb())
+						player.displayClientMessage(Component.literal("Nádrž je plná!"),true);
 					else{
 						setFuelMb(getFuelMb()+1000F);
 						if(!player.getAbilities().instabuild){
@@ -113,9 +114,9 @@ public abstract class BaseCarEntity extends Entity{
 		if(!isVehicle()){
 			if(!level().isClientSide()){
 				setEngineOn(false);
-				PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, new SyncCarPositionPacket(getId(), getX(), getY(), getZ(), getYRot(), 0F));
+				PacketDistributor.sendToPlayersTrackingEntityAndSelf(this,new SyncCarPositionPacket(getId(),getX(),getY(),getZ(),getYRot(),0F));
 			}
-			velocity = prevVelocity = 0F;
+			velocity=prevVelocity=0F;
 			setDeltaMovement(Vec3.ZERO);
 			hasImpulse=true;
 		}
@@ -124,7 +125,8 @@ public abstract class BaseCarEntity extends Entity{
 	public boolean hurt(@NotNull DamageSource damageSource,float amount){
 		if(isInvulnerableTo(damageSource)) return false;
 		if(!level().isClientSide&&!isRemoved()){
-			if(damageSource.getEntity() instanceof Player p&&!p.getAbilities().instabuild) spawnAtLocation(getDropItem());
+			if(damageSource.getEntity() instanceof Player p&&!p.getAbilities().instabuild)
+				spawnAtLocation(getDropItem());
 			discard();
 			return true;
 		}
@@ -147,7 +149,7 @@ public abstract class BaseCarEntity extends Entity{
 					fuelAccumulator=fuelSyncTick=0;
 				}
 			}
-			PacketDistributor.sendToPlayersTrackingEntity(this, new SyncCarPositionPacket(getId(), getX(), getY(), getZ(), getYRot(), velocity));
+			PacketDistributor.sendToPlayersTrackingEntity(this,new SyncCarPositionPacket(getId(),getX(),getY(),getZ(),getYRot(),velocity));
 		}else{
 			if(isEngineOn()&&!isSoundPlaying&&getEngineSound()!=null){
 				CarEngineSoundInstance.play(this);

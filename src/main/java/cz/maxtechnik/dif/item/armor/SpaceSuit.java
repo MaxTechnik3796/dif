@@ -31,7 +31,7 @@ public abstract class SpaceSuit extends ArmorItem{
 			super(Type.HELMET,new Properties().stacksTo(1));
 		}
 		@Override
-		public ResourceLocation getArmorTexture(@NotNull ItemStack stack, @NotNull Entity entity, @NotNull EquipmentSlot slot, ArmorMaterial.@NotNull Layer layer, boolean innerModel) {
+		public ResourceLocation getArmorTexture(@NotNull ItemStack stack,@NotNull Entity entity,@NotNull EquipmentSlot slot,ArmorMaterial.@NotNull Layer layer,boolean innerModel){
 			return ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/models/armor/spacesuit.png");
 		}
 		@Override
@@ -61,7 +61,7 @@ public abstract class SpaceSuit extends ArmorItem{
 			super(Type.CHESTPLATE,new Properties().stacksTo(1));
 		}
 		@Override
-		public ResourceLocation getArmorTexture(@NotNull ItemStack stack, @NotNull Entity entity, @NotNull EquipmentSlot slot, ArmorMaterial.@NotNull Layer layer, boolean innerModel) {
+		public ResourceLocation getArmorTexture(@NotNull ItemStack stack,@NotNull Entity entity,@NotNull EquipmentSlot slot,ArmorMaterial.@NotNull Layer layer,boolean innerModel){
 			return ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/models/armor/spacesuit.png");
 		}
 		@Override
@@ -91,7 +91,7 @@ public abstract class SpaceSuit extends ArmorItem{
 			super(Type.LEGGINGS,new Properties().stacksTo(1));
 		}
 		@Override
-		public ResourceLocation getArmorTexture(@NotNull ItemStack stack, @NotNull Entity entity, @NotNull EquipmentSlot slot, ArmorMaterial.@NotNull Layer layer, boolean innerModel) {
+		public ResourceLocation getArmorTexture(@NotNull ItemStack stack,@NotNull Entity entity,@NotNull EquipmentSlot slot,ArmorMaterial.@NotNull Layer layer,boolean innerModel){
 			return ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/models/armor/spacesuit.png");
 		}
 		@Override
@@ -121,7 +121,7 @@ public abstract class SpaceSuit extends ArmorItem{
 			super(Type.BOOTS,new Properties().stacksTo(1));
 		}
 		@Override
-		public ResourceLocation getArmorTexture(@NotNull ItemStack stack, @NotNull Entity entity, @NotNull EquipmentSlot slot, ArmorMaterial.@NotNull Layer layer, boolean innerModel) {
+		public ResourceLocation getArmorTexture(@NotNull ItemStack stack,@NotNull Entity entity,@NotNull EquipmentSlot slot,ArmorMaterial.@NotNull Layer layer,boolean innerModel){
 			return ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/models/armor/spacesuit.png");
 		}
 		@Override

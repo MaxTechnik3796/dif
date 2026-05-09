@@ -1,22 +1,73 @@
 {
-	"format_version": "1.9.0",
-	"credit": "Made by: MaxTechnik in: Blockbench",
-	"textures": {
-		"particle": "dif:block/sleeping_bag_head",
-		"head": "dif:block/sleeping_bag_head",
-		"bottom": "block/oak_planks"
+	"format_version":"1.9.0",
+	"credit":"Made by: MaxTechnik in: Blockbench",
+	"textures":{
+		"particle":"dif:block/sleeping_bag_head",
+		"head":"dif:block/sleeping_bag_head",
+		"bottom":"block/oak_planks"
 	},
-	"elements": [
+	"elements":[
 		{
-			"name": "head",
-			"from": [0, 0, 0],
-			"to": [16, 2, 16],
-			"faces": {
-				"east": {"uv": [0, 16, 2, 0], "rotation": 90, "texture": "#head"},
-				"south": {"uv": [16, 0, 0, 2], "texture": "#head"},
-				"west": {"uv": [14, 16, 16, 0], "rotation": 270, "texture": "#head"},
-				"up": {"uv": [0, 0, 16, 16], "rotation": 180, "texture": "#head"},
-				"down": {"uv": [0, 0, 16, 16], "texture": "#bottom"}
+			"name":"head",
+			"from":[
+				0,
+				0,
+				0
+			],
+			"to":[
+				16,
+				2,
+				16
+			],
+			"faces":{
+				"east":{
+					"uv":[
+						0,
+						16,
+						2,
+						0
+					],
+					"rotation":90,
+					"texture":"#head"
+				},
+				"south":{
+					"uv":[
+						16,
+						0,
+						0,
+						2
+					],
+					"texture":"#head"
+				},
+				"west":{
+					"uv":[
+						14,
+						16,
+						16,
+						0
+					],
+					"rotation":270,
+					"texture":"#head"
+				},
+				"up":{
+					"uv":[
+						0,
+						0,
+						16,
+						16
+					],
+					"rotation":180,
+					"texture":"#head"
+				},
+				"down":{
+					"uv":[
+						0,
+						0,
+						16,
+						16
+					],
+					"texture":"#bottom"
+				}
 			}
 		}
 	]

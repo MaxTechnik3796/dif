@@ -15,7 +15,6 @@
 			"model":"dif:block/frying_table",
 			"y":270
 		},
-
 		"facing=north,oil=true":{
 			"model":"dif:block/frying_table_oil"
 		},

@@ -56,7 +56,7 @@ public class FormulaEntity extends BaseCarEntity{
 	@Override
 	protected @NotNull Vec3 getPassengerAttachmentPoint(@NotNull Entity passenger,@NotNull EntityDimensions dimensions,float partialTick){
 		// Default attachment point (used when positionRider calls through)
-		return new Vec3(0.0D, 0.4D - 0.525D, 0.55D);
+		return new Vec3(0.0D,0.4D-0.525D,0.55D);
 	}
 	// === Barva ===
 	@Override

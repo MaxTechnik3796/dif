@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Consumer;
 @SuppressWarnings("removal")
 public class JetpackTurboFuel{
-	public abstract static class Fluid extends BaseFlowingFluid {
+	public abstract static class Fluid extends BaseFlowingFluid{
 		private Fluid(){
 			super(new Properties(DifModFluidTypes.JETPACK_TURBO_FUEL_TYPE,DifModFluids.JETPACK_TURBO_FUEL,DifModFluids.FLOWING_JETPACK_TURBO_FUEL).explosionResistance(100F).bucket(DifModItems.JETPACK_TURBO_FUEL_BUCKET).tickRate(7).block(()->(LiquidBlock)DifModBlocks.JETPACK_TURBO_FUEL_FLUID.get()));
 		}

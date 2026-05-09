@@ -13,30 +13,26 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
-
-public record MegaBackpackOpenPacket(int actionType, int pressedms) implements CustomPacketPayload {
-	public static final Type<MegaBackpackOpenPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "mega_backpack_open"));
-	public static final StreamCodec<FriendlyByteBuf, MegaBackpackOpenPacket> STREAM_CODEC = StreamCodec.composite(
-			ByteBufCodecs.INT, MegaBackpackOpenPacket::actionType,
-			ByteBufCodecs.INT, MegaBackpackOpenPacket::pressedms,
+public record MegaBackpackOpenPacket(int actionType,int pressedms) implements CustomPacketPayload{
+	public static final Type<MegaBackpackOpenPacket> TYPE=new Type<>(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"mega_backpack_open"));
+	public static final StreamCodec<FriendlyByteBuf,MegaBackpackOpenPacket> STREAM_CODEC=StreamCodec.composite(
+			ByteBufCodecs.INT,MegaBackpackOpenPacket::actionType,
+			ByteBufCodecs.INT,MegaBackpackOpenPacket::pressedms,
 			MegaBackpackOpenPacket::new
 	);
-
 	@Override
-	public @NotNull Type<? extends CustomPacketPayload> type() {
+	public @NotNull Type<? extends CustomPacketPayload> type(){
 		return TYPE;
 	}
-
-	public void handle(IPayloadContext context) {
-		context.enqueueWork(() -> pressAction(context.player(), actionType));
+	public void handle(IPayloadContext context){
+		context.enqueueWork(()->pressAction(context.player(),actionType));
 	}
-
-	public static void pressAction(Player player, int actionType) {
-		if (actionType == 0 && player instanceof ServerPlayer serverPlayer) {
+	public static void pressAction(Player player,int actionType){
+		if(actionType==0&&player instanceof ServerPlayer serverPlayer){
 			serverPlayer.openMenu(new SimpleMenuProvider(
-					(id, inventory, p) -> new MegaBackpackMenu(id, inventory),
+					(id,inventory,p)->new MegaBackpackMenu(id,inventory),
 					Component.literal("Mega Backpack")
-			), buf ->buf.writeInt(0));
+			),buf->buf.writeInt(0));
 		}
 	}
 }
