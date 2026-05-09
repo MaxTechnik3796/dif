@@ -5,6 +5,7 @@ import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
+import cz.maxtechnik.dif.item.quarry.DrillHeadItem;
 import cz.maxtechnik.dif.item.tool.GodTotemItem;
 import cz.maxtechnik.dif.item.modular.ModularPart;
 import cz.maxtechnik.dif.item.modular.tool.*;
@@ -17,7 +18,6 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import cz.maxtechnik.dif.init.events.QuarryStats;
-import cz.maxtechnik.dif.item.quarry.DrillHeadItem;
 import cz.maxtechnik.dif.item.quarry.EngineItem;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -45,11 +45,11 @@ public class DifModItems{
 	
 
 	// Quarry Upgrades & Components:
-	public static final DeferredItem<Item> QUARRY_DRILL_IRON=REGISTRY.register("quarry_drill_iron",()->new DrillHeadItem(new Item.Properties().stacksTo(1),QuarryStats.IRON_HEAD_DP_REQ));
-	public static final DeferredItem<Item> QUARRY_DRILL_DIAMOND=REGISTRY.register("quarry_drill_diamond",()->new DrillHeadItem(new Item.Properties().stacksTo(1),QuarryStats.DIAMOND_HEAD_DP_REQ));
-	public static final DeferredItem<Item> QUARRY_ENGINE_IRON=REGISTRY.register("quarry_engine_iron",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.IRON_ENGINE_DP_GEN,QuarryStats.IRON_ENGINE_FE_COST));
-	public static final DeferredItem<Item> QUARRY_ENGINE_GOLD=REGISTRY.register("quarry_engine_gold",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.GOLD_ENGINE_DP_GEN,QuarryStats.GOLD_ENGINE_FE_COST));
-	public static final DeferredItem<Item> QUARRY_ENGINE_DIAMOND=REGISTRY.register("quarry_engine_diamond",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.DIAMOND_ENGINE_DP_GEN,QuarryStats.DIAMOND_ENGINE_FE_COST));
+	public static final DeferredItem<Item> QUARRY_DRILL_IRON=REGISTRY.register("quarry_drill_iron",()->new DrillHeadItem(new Item.Properties().stacksTo(1)));
+	public static final DeferredItem<Item> QUARRY_DRILL_DIAMOND=REGISTRY.register("quarry_drill_diamond",()->new DrillHeadItem(new Item.Properties().stacksTo(1)));
+	public static final DeferredItem<Item> QUARRY_ENGINE_IRON=REGISTRY.register("quarry_engine_iron",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.IRON_ENGINE_QP_GEN,QuarryStats.IRON_ENGINE_FE_COST));
+	public static final DeferredItem<Item> QUARRY_ENGINE_GOLD=REGISTRY.register("quarry_engine_gold",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.GOLD_ENGINE_QP_GEN,QuarryStats.GOLD_ENGINE_FE_COST));
+	public static final DeferredItem<Item> QUARRY_ENGINE_DIAMOND=REGISTRY.register("quarry_engine_diamond",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.DIAMOND_ENGINE_QP_GEN,QuarryStats.DIAMOND_ENGINE_FE_COST));
 
 
 

@@ -1,24 +1,9 @@
 package cz.maxtechnik.dif.item.quarry;
 
 import net.minecraft.world.item.Item;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 public class DrillHeadItem extends Item{
-	public final int dpReq;
-	public DrillHeadItem(Properties properties,int dpReq){
+	public DrillHeadItem(Properties properties){
 		super(properties);
-		this.dpReq=dpReq;
-	}
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(@NotNull ItemStack itemStack,Item.@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
-		super.appendHoverText(itemStack,context,list,flag);
-		list.add(Component.literal("§7Drill Power Required: §c"+dpReq+" DP"));
 	}
 }
