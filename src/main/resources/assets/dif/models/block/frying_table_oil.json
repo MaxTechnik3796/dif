@@ -11,8 +11,8 @@
 		"particle": "block/campfire_log",
 		"log": "block/campfire_log",
 		"fire": "block/campfire_fire",
-		"grid_top": "farmersdelight:block/cooking_pot_tray_top",
-		"grid_side": "farmersdelight:block/cooking_pot_tray_side"
+		"grid_top": "farmersdelight:block/heating_tray_top",
+		"grid_side": "farmersdelight:block/heating_tray_side"
 	},
 	"elements": [
 		{
