@@ -23,18 +23,17 @@ import net.minecraft.world.level.material.PushReaction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-
 public class CanolaPlant extends FlowerBlock implements BonemealableBlock{
 	private static final TagKey<Block> FLOWER_PLANT_SOIL=BlockTags.create(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"flower_plant_soil"));
-	public CanolaPlant() {
-		super(new SuspiciousStewEffects(List.of(new SuspiciousStewEffects.Entry(MobEffects.CONFUSION, 100))), BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).sound(SoundType.GRASS).instabreak().noCollission().offsetType(BlockBehaviour.OffsetType.NONE).pushReaction(PushReaction.DESTROY));
+	public CanolaPlant(){
+		super(new SuspiciousStewEffects(List.of(new SuspiciousStewEffects.Entry(MobEffects.CONFUSION,100))),BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).sound(SoundType.GRASS).instabreak().noCollission().offsetType(BlockBehaviour.OffsetType.NONE).pushReaction(PushReaction.DESTROY));
 	}
 	@Override
-	public int getFlammability(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull Direction face){
+	public int getFlammability(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull Direction face){
 		return 100;
 	}
 	@Override
-	public int getFireSpreadSpeed(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull Direction face){
+	public int getFireSpreadSpeed(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull Direction face){
 		return 60;
 	}
 	@Override

@@ -82,23 +82,22 @@ public class SuperBox extends Block implements SimpleWaterloggedBlock, EntityBlo
 		return super.updateShape(state,facing,facingState,world,currentPos,facingPos);
 	}
 	@Override
-	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
-		if (player instanceof ServerPlayer serverPlayer) {
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
+		if(player instanceof ServerPlayer serverPlayer){
 			// V NeoForge 1.21.1 se používá serverPlayer.openMenu
 			// Místo FriendlyByteBuf se nyní používá BlockPos přímo v argumentu, pokud je potřeba
-			serverPlayer.openMenu(new MenuProvider() {
+			serverPlayer.openMenu(new MenuProvider(){
 				@Override
-				public @NotNull Component getDisplayName() {
+				public @NotNull Component getDisplayName(){
 					return Component.literal("§e§lSuper Box");
 				}
-
 				@Override
-				public AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory, @NotNull Player player) {
+				public AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory,@NotNull Player player){
 					// Pokud váš SuperBoxMenu stále vyžaduje FriendlyByteBuf/RegistryFriendlyByteBuf,
 					// předává se v openMenu jako doplňkový argument (Data Writer)
-					return new SuperBoxMenu(id, inventory, pos);
+					return new SuperBoxMenu(id,inventory,pos);
 				}
-			}, pos);
+			},pos);
 		}
 		return InteractionResult.SUCCESS;
 	}

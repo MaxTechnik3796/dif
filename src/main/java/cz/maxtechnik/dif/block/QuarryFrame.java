@@ -14,18 +14,17 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 public class QuarryFrame extends BaseEntityBlock{
-	public static final MapCodec<QuarryFrame> CODEC = simpleCodec(properties -> new QuarryFrame());
-
+	public static final MapCodec<QuarryFrame> CODEC=simpleCodec(properties->new QuarryFrame());
 	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
+	protected @NotNull MapCodec<? extends BaseEntityBlock> codec(){
 		return CODEC;
 	}
 	private static final VoxelShape CORE_SHAPE=Block.box(4,4,4,12,12,12);
@@ -42,7 +41,7 @@ public class QuarryFrame extends BaseEntityBlock{
 	public static final BooleanProperty UP=BooleanProperty.create("up");
 	public static final BooleanProperty DOWN=BooleanProperty.create("down");
 	public QuarryFrame(){
-		super(Properties.of().strength(0.2F,0.8F).noLootTable().noOcclusion().sound(SoundType.METAL));
+		super(Properties.of().strength(0.2F,0.8F).noLootTable().noOcclusion().sound(SoundType.METAL).pushReaction(PushReaction.BLOCK));
 		this.registerDefaultState(this.stateDefinition.any()
 				.setValue(NORTH,false).setValue(EAST,false)
 				.setValue(SOUTH,false).setValue(WEST,false)

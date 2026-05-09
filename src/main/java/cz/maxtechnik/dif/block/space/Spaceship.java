@@ -105,7 +105,7 @@ public class Spaceship extends Block implements EntityBlock{
 				public AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory,@NotNull Player player){
 					return new SpaceshipMenu(id,inventory,pos);
 				}
-			},buf -> buf.writeBlockPos(pos));
+			},buf->buf.writeBlockPos(pos));
 		}
 		return InteractionResult.SUCCESS;
 	}

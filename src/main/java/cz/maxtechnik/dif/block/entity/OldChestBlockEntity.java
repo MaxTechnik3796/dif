@@ -30,17 +30,17 @@ public class OldChestBlockEntity extends RandomizableContainerBlockEntity implem
 		super(DifModBlockEntities.OLD_CHEST.get(),position,state);
 	}
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag compound, @NotNull HolderLookup.Provider provider){
-		super.loadAdditional(compound, provider);
+	protected void loadAdditional(@NotNull CompoundTag compound,@NotNull HolderLookup.Provider provider){
+		super.loadAdditional(compound,provider);
 		if(!this.tryLoadLootTable(compound))
 			this.stacks=NonNullList.withSize(this.getContainerSize(),ItemStack.EMPTY);
-		ContainerHelper.loadAllItems(compound,this.stacks, provider);
+		ContainerHelper.loadAllItems(compound,this.stacks,provider);
 	}
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag compound, @NotNull HolderLookup.Provider provider){
-		super.saveAdditional(compound, provider);
+	protected void saveAdditional(@NotNull CompoundTag compound,@NotNull HolderLookup.Provider provider){
+		super.saveAdditional(compound,provider);
 		if(!this.trySaveLootTable(compound)){
-			ContainerHelper.saveAllItems(compound,this.stacks, provider);
+			ContainerHelper.saveAllItems(compound,this.stacks,provider);
 		}
 	}
 	@Override
@@ -68,7 +68,7 @@ public class OldChestBlockEntity extends RandomizableContainerBlockEntity implem
 	}
 	@Override
 	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory){
-		FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+		FriendlyByteBuf buffer=new FriendlyByteBuf(Unpooled.buffer());
 		buffer.writeBlockPos(this.worldPosition);
 		return new OldChestMenu(id,inventory,buffer);
 	}

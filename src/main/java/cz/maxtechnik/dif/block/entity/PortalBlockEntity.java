@@ -27,50 +27,42 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-
 public class PortalBlockEntity extends BlockEntity{
 	private UUID owner;
 	private boolean isBlue;
 	private Direction facing;
 	public long lastTeleportTime=0;
-
 	// Čekající hráči na načtení chunku: UUID -> tick kdy začal čekat
 	private static final Map<UUID,Long> waitingPlayers=new HashMap<>();
 	// Cooldown entit aby se hned znovu neteleportovaly
 	private static final Map<UUID,Long> entityCooldowns=new HashMap<>();
-
 	public PortalBlockEntity(BlockPos pos,BlockState state){
 		super(DifModBlockEntities.PORTAL.get(),pos,state);
 	}
-
 	public void setup(UUID owner,boolean isBlue,Direction facing){
 		this.owner=owner;
 		this.isBlue=isBlue;
 		this.facing=facing;
 		this.setChanged();
 	}
-
 	public static void tick(Level level,BlockPos pos,BlockState state,PortalBlockEntity be){
 		if(be.owner==null) return;
 		if(!(level instanceof ServerLevel sl)) return;
 		if(!pos.equals(getPortal(sl,be.owner,be.isBlue))) return;
-
 		AABB box=state.getShape(level,pos).bounds().move(pos);
 		BlockPos extPos=pos.relative(state.getValue(PortalBlock.EXTENSION_DIR));
 		if(level.getBlockState(extPos).is(state.getBlock()))
 			box=box.minmax(level.getBlockState(extPos).getShape(level,extPos).bounds().move(extPos));
-
 		long now=level.getGameTime();
-
 		// Hráči
 		List<Player> players=level.getEntitiesOfClass(Player.class,box);
 		for(Player p: players){
 			UUID pid=p.getUUID();
 			if(now-be.lastTeleportTime<=DifModCommonConfig.portalTeleportCooldown) continue;
-			if(entityCooldowns.containsKey(pid)&&now-entityCooldowns.get(pid)<=DifModCommonConfig.portalTeleportCooldown) continue;
-			be.tryTeleportPlayer(p,sl, now);
+			if(entityCooldowns.containsKey(pid)&&now-entityCooldowns.get(pid)<=DifModCommonConfig.portalTeleportCooldown)
+				continue;
+			be.tryTeleportPlayer(p,sl,now);
 		}
-
 		// Moby
 		if(DifModCommonConfig.portalAllowMobs){
 			List<LivingEntity> mobs=level.getEntitiesOfClass(LivingEntity.class,box);
@@ -79,12 +71,12 @@ public class PortalBlockEntity extends BlockEntity{
 				if(mob instanceof Player) continue;
 				if(count>=DifModCommonConfig.portalMaxEntitiesPerTick) break;
 				UUID mid=mob.getUUID();
-				if(entityCooldowns.containsKey(mid)&&now-entityCooldowns.get(mid)<=DifModCommonConfig.portalTeleportCooldown) continue;
-				be.tryTeleportEntity(mob,sl, now);
+				if(entityCooldowns.containsKey(mid)&&now-entityCooldowns.get(mid)<=DifModCommonConfig.portalTeleportCooldown)
+					continue;
+				be.tryTeleportEntity(mob,sl,now);
 				count++;
 			}
 		}
-
 		// Itemy, projektily, falling blocky
 		if(DifModCommonConfig.portalAllowItemsAndProjectiles){
 			List<Entity> misc=level.getEntitiesOfClass(Entity.class,box,
@@ -94,16 +86,14 @@ public class PortalBlockEntity extends BlockEntity{
 				if(count>=DifModCommonConfig.portalMaxEntitiesPerTick) break;
 				UUID eid=e.getUUID();
 				if(entityCooldowns.containsKey(eid)&&now-entityCooldowns.get(eid)<=10) continue;
-				be.tryTeleportEntity(e,sl, now);
+				be.tryTeleportEntity(e,sl,now);
 				count++;
 			}
 		}
-
 		// Vyčisti staré cooldowny
 		entityCooldowns.entrySet().removeIf(e->now-e.getValue()>200);
 	}
-
-	private void tryTeleportPlayer(Player p, ServerLevel sl, long now){
+	private void tryTeleportPlayer(Player p,ServerLevel sl,long now){
 		UUID pid=p.getUUID();
 		BlockPos target=getPortal(sl,this.owner,!this.isBlue);
 		if(target==null){
@@ -111,11 +101,10 @@ public class PortalBlockEntity extends BlockEntity{
 			waitingPlayers.remove(pid);
 			return;
 		}
-
 		// Zkontroluj jestli hráč stále stojí u portálu
 		if(waitingPlayers.containsKey(pid)){
-            assert level != null;
-            AABB box=this.getBlockState().getShape(level,worldPosition).bounds().move(worldPosition);
+			assert level!=null;
+			AABB box=this.getBlockState().getShape(level,worldPosition).bounds().move(worldPosition);
 			BlockPos extPos=worldPosition.relative(this.getBlockState().getValue(PortalBlock.EXTENSION_DIR));
 			if(level.getBlockState(extPos).is(this.getBlockState().getBlock()))
 				box=box.minmax(level.getBlockState(extPos).getShape(level,extPos).bounds().move(extPos));
@@ -125,7 +114,6 @@ public class PortalBlockEntity extends BlockEntity{
 				return;
 			}
 		}
-
 		// Zkontroluj vzdálenost
 		if(this.worldPosition.distSqr(target)>
 				(long)DifModCommonConfig.portalMaxDistance*DifModCommonConfig.portalMaxDistance){
@@ -133,7 +121,6 @@ public class PortalBlockEntity extends BlockEntity{
 			waitingPlayers.remove(pid);
 			return;
 		}
-
 		// Zkontroluj jestli je chunk načtený
 		if(!sl.isLoaded(target)){
 			long startTick=waitingPlayers.getOrDefault(pid,now);
@@ -148,37 +135,31 @@ public class PortalBlockEntity extends BlockEntity{
 			}
 			return;
 		}
-
 		// Chunk načtený — uvolni force-load a teleportuj
 		sl.setChunkForced(target.getX()>>4,target.getZ()>>4,false);
 		waitingPlayers.remove(pid);
-
 		if(!(sl.getBlockEntity(target) instanceof PortalBlockEntity other)){
 			p.displayClientMessage(Component.literal("[!] Linked portal not found"),true);
 			return;
 		}
-
 		double tx=target.getX()+0.5-(other.facing.getStepX()*0.1875);
 		double ty=target.getY()+(other.facing==Direction.UP?0.1:(other.facing==Direction.DOWN?-2.0:0.0));
 		double tz=target.getZ()+0.5-(other.facing.getStepZ()*0.1875);
 		p.teleportTo(tx,ty,tz);
 		p.setYRot(other.facing.toYRot());
-        assert level != null;
-        level.playSound(null,this.worldPosition,SoundEvents.BEACON_POWER_SELECT,SoundSource.BLOCKS,1.0F,1.2F);
+		assert level!=null;
+		level.playSound(null,this.worldPosition,SoundEvents.BEACON_POWER_SELECT,SoundSource.BLOCKS,1.0F,1.2F);
 		level.playSound(null,target,SoundEvents.BEACON_POWER_SELECT,SoundSource.BLOCKS,1.0F,1.2F);
 		other.lastTeleportTime=this.lastTeleportTime=now;
 		entityCooldowns.put(pid,now);
 	}
-
-	private void tryTeleportEntity(Entity entity, ServerLevel sl, long now){
+	private void tryTeleportEntity(Entity entity,ServerLevel sl,long now){
 		BlockPos target=getPortal(sl,this.owner,!this.isBlue);
 		if(target==null||!(sl.getBlockEntity(target) instanceof PortalBlockEntity other)) return;
 		if(this.worldPosition.distSqr(target)>
 				(long)DifModCommonConfig.portalMaxDistance*DifModCommonConfig.portalMaxDistance) return;
 		if(!sl.isLoaded(target)) return;
-
 		Vec3 newMotion=transformVelocity(entity.getDeltaMovement(),this.facing,other.facing);
-
 		double tx=target.getX()+0.5-(other.facing.getStepX()*0.5);
 		double ty=target.getY()+(other.facing==Direction.UP?0.5:(other.facing==Direction.DOWN?-1.0:0.5));
 		double tz=target.getZ()+0.5-(other.facing.getStepZ()*0.5);
@@ -186,10 +167,9 @@ public class PortalBlockEntity extends BlockEntity{
 		entity.setDeltaMovement(newMotion);
 		entity.hurtMarked=true;
 		entityCooldowns.put(entity.getUUID(),now);
-        assert level != null;
-        level.playSound(null,target,SoundEvents.BEACON_POWER_SELECT,SoundSource.BLOCKS,0.5F,1.4F);
+		assert level!=null;
+		level.playSound(null,target,SoundEvents.BEACON_POWER_SELECT,SoundSource.BLOCKS,0.5F,1.4F);
 	}
-
 	/**
 	 * Přepočítá vektor pohybu z orientace vstupního portálu na výstupní.
 	 * Zachovává rychlost (délku vektoru).
@@ -199,26 +179,20 @@ public class PortalBlockEntity extends BlockEntity{
 		// pak aplikuj rotaci na výstupní portál
 		double speed=velocity.length();
 		if(speed<0.001) return velocity;
-
 		// Normalizuj
 		Vec3 norm=velocity.normalize();
-
 		// Rotační transformace: mapuj inFacing -> outFacing
 		// inFacing je směr do kterého portál kouká (normála plochy)
 		// outFacing je směr z kterého výstupní portál kouká ven
 		Vec3 inAxis=dirToVec(inFacing);
 		Vec3 outAxis=dirToVec(outFacing.getOpposite()); // Výstup je obrácený
-
 		// Reflexe/rotace vektoru
 		Vec3 transformed=rotateVector(norm,inAxis,outAxis);
-
 		return transformed.scale(speed);
 	}
-
 	private static Vec3 dirToVec(Direction d){
 		return new Vec3(d.getStepX(),d.getStepY(),d.getStepZ());
 	}
-
 	private static Vec3 rotateVector(Vec3 v,Vec3 from,Vec3 to){
 		// Rodriguesova rotační formule pro rotaci z `from` na `to`
 		Vec3 axis=from.cross(to);
@@ -235,20 +209,16 @@ public class PortalBlockEntity extends BlockEntity{
 				.add(axis.cross(v).scale(sinAngle))
 				.add(axis.scale(axis.dot(v)*(1-cosAngle)));
 	}
-
 	public static void savePortal(ServerLevel l,UUID id,boolean b,BlockPos p){
 		PortalData.get(l).set(id,b,p);
 	}
-
 	public static BlockPos getPortal(ServerLevel l,UUID id,boolean b){
 		return PortalData.get(l).getPos(id,b);
 	}
-
 	public static void removeOldPortal(ServerLevel l,UUID id,boolean b){
 		BlockPos p=getPortal(l,id,b);
 		if(p!=null&&l.isLoaded(p)&&l.getBlockEntity(p) instanceof PortalBlockEntity) l.destroyBlock(p,false);
 	}
-
 	@Override
 	public void loadAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider provider){
 		super.loadAdditional(tag,provider);
@@ -256,7 +226,6 @@ public class PortalBlockEntity extends BlockEntity{
 		isBlue=tag.getBoolean("b");
 		if(tag.contains("f")) facing=Direction.byName(tag.getString("f"));
 	}
-
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider provider){
 		super.saveAdditional(tag,provider);
@@ -264,17 +233,14 @@ public class PortalBlockEntity extends BlockEntity{
 		tag.putBoolean("b",isBlue);
 		if(facing!=null) tag.putString("f",facing.getName());
 	}
-
 	public static class PortalData extends SavedData{
 		private final Map<UUID,Map<Boolean,BlockPos>> map=new HashMap<>();
-
 		public static PortalData get(ServerLevel l){
 			return l.getDataStorage().computeIfAbsent(
 					new SavedData.Factory<>(PortalData::new,PortalData::load),
 					"dif_portals"
 			);
 		}
-
 		public static PortalData load(CompoundTag t,HolderLookup.Provider provider){
 			PortalData d=new PortalData();
 			t.getAllKeys().forEach(k->{
@@ -286,7 +252,6 @@ public class PortalBlockEntity extends BlockEntity{
 			});
 			return d;
 		}
-
 		@Override
 		public @NotNull CompoundTag save(@NotNull CompoundTag t,@NotNull HolderLookup.Provider provider){
 			map.forEach((k,v)->{
@@ -297,12 +262,10 @@ public class PortalBlockEntity extends BlockEntity{
 			});
 			return t;
 		}
-
 		public void set(UUID id,boolean b,BlockPos p){
 			map.computeIfAbsent(id,k->new HashMap<>()).put(b,p);
 			setDirty();
 		}
-
 		public BlockPos getPos(UUID id,boolean b){
 			return map.getOrDefault(id,Map.of()).get(b);
 		}

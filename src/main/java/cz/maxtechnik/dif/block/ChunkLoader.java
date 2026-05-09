@@ -19,17 +19,13 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 public class ChunkLoader extends Block implements EntityBlock{
 	public static final BooleanProperty LIT=BlockStateProperties.LIT;
 	public ChunkLoader(){
-		super(BlockBehaviour.Properties.of()
-				.mapColor(MapColor.METAL)
-				.strength(3.5F)
-				.sound(SoundType.LODESTONE)
-				.requiresCorrectToolForDrops()
-				.lightLevel(s->s.getValue(LIT)?12:0));
+		super(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5F).sound(SoundType.LODESTONE).requiresCorrectToolForDrops().pushReaction(PushReaction.BLOCK).lightLevel(s->s.getValue(LIT)?12:0));
 		this.registerDefaultState(this.stateDefinition.any().setValue(LIT,true));
 	}
 	@Override

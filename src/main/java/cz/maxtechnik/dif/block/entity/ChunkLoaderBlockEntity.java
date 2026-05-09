@@ -46,23 +46,23 @@ public class ChunkLoaderBlockEntity extends BlockEntity{
 		}
 	}
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag tag, @NotNull net.minecraft.core.HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
-		if (tag.hasUUID("ownerUUID")) {
-			this.ownerUUID = tag.getUUID("ownerUUID");
+	protected void loadAdditional(@NotNull CompoundTag tag,@NotNull net.minecraft.core.HolderLookup.Provider registries){
+		super.loadAdditional(tag,registries);
+		if(tag.hasUUID("ownerUUID")){
+			this.ownerUUID=tag.getUUID("ownerUUID");
 		}
-		if (tag.contains("ownerName")) {
-			this.ownerName = tag.getString("ownerName");
+		if(tag.contains("ownerName")){
+			this.ownerName=tag.getString("ownerName");
 		}
 	}
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull net.minecraft.core.HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
-		if (this.ownerUUID != null) {
-			tag.putUUID("ownerUUID", this.ownerUUID);
+	protected void saveAdditional(@NotNull CompoundTag tag,@NotNull net.minecraft.core.HolderLookup.Provider registries){
+		super.saveAdditional(tag,registries);
+		if(this.ownerUUID!=null){
+			tag.putUUID("ownerUUID",this.ownerUUID);
 		}
-		if (this.ownerName != null) {
-			tag.putString("ownerName", this.ownerName);
+		if(this.ownerName!=null){
+			tag.putString("ownerName",this.ownerName);
 		}
 	}
 }

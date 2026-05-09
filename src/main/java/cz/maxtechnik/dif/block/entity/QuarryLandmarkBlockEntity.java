@@ -177,14 +177,14 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 		if(level!=null&&level.isClientSide) LandmarkOverlayRenderer.unregister(worldPosition);
 	}
 	@Override
-	public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider lookupProvider){
-		loadAdditional(tag, lookupProvider);
+	public void handleUpdateTag(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider lookupProvider){
+		loadAdditional(tag,lookupProvider);
 		updateClientRenderer();
 	}
 	@Override
-	public void onDataPacket(@NotNull Connection net, ClientboundBlockEntityDataPacket pkt, @NotNull HolderLookup.Provider lookupProvider){
+	public void onDataPacket(@NotNull Connection net,ClientboundBlockEntityDataPacket pkt,@NotNull HolderLookup.Provider lookupProvider){
 		CompoundTag tag=pkt.getTag();
-        loadAdditional(tag, lookupProvider);
+		loadAdditional(tag,lookupProvider);
 		updateClientRenderer();
 	}
 	private void updateClientRenderer(){
@@ -208,8 +208,8 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 	}
 	// NBT serializace
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider){
-		super.saveAdditional(tag, provider);
+	protected void saveAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider provider){
+		super.saveAdditional(tag,provider);
 		tag.putBoolean("Formed",formed);
 		tag.putInt("FHX",formedHalfX);
 		tag.putInt("FHZ",formedHalfZ);
@@ -219,8 +219,8 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 		tag.put("Partners",partnerList);
 	}
 	@Override
-	public void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider){
-		super.loadAdditional(tag, provider);
+	public void loadAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider provider){
+		super.loadAdditional(tag,provider);
 		formed=tag.getBoolean("Formed");
 		formedHalfX=tag.getInt("FHX");
 		formedHalfZ=tag.getInt("FHZ");

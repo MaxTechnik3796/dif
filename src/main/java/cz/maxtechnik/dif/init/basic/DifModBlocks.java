@@ -24,8 +24,8 @@ public class DifModBlocks{
 	public static final DeferredRegister.Blocks REGISTRY=DeferredRegister.createBlocks(DifMod.MODID);
 
 	//Random:
-	public static final DeferredBlock<Block> CHUNK_LOADER_1X1 = REGISTRY.register("chunk_loader_1x1",ChunkLoader::new);
-	public static final DeferredBlock<Block> CHUNK_LOADER_3X3 = REGISTRY.register("chunk_loader_3x3",ChunkLoader::new);
+	public static final DeferredBlock<Block>CHUNK_LOADER_1X1=REGISTRY.register("chunk_loader_1x1",ChunkLoader::new);
+	public static final DeferredBlock<Block>CHUNK_LOADER_3X3=REGISTRY.register("chunk_loader_3x3",ChunkLoader::new);
 	public static final DeferredBlock<Block>FAST_POWERED_RAIL=REGISTRY.register("fast_powered_rail",()->new FastPoweredRailBlock(BlockBehaviour.Properties.of().noCollission().strength(0.7F).sound(SoundType.METAL)));
 	public static final DeferredBlock<Block>FAST_RAIL=REGISTRY.register("fast_rail",()->new FastRailBlock(BlockBehaviour.Properties.of().noCollission().strength(0.7F).sound(SoundType.METAL)));
 	public static final DeferredBlock<Block>EXAMPLE_BLOCK=REGISTRY.register("example_block",Test::new);
@@ -34,13 +34,13 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>SLEEPING_BAG=REGISTRY.register("sleeping_bag",SleepingBagBlock::new);
 
 	//Quarry & Stuff:
-	public static final DeferredBlock<Block>QUARRY=REGISTRY.register("quarry",()->new Quarry(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).requiresCorrectToolForDrops()));
+	public static final DeferredBlock<Block>QUARRY=REGISTRY.register("quarry",()->new Quarry(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>QUARRY_FRAME=REGISTRY.register("quarry_frame",QuarryFrame::new);
 	public static final DeferredBlock<Block>QUARRY_LANDMARK=REGISTRY.register("quarry_landmark",QuarryLandmark::new);
 
 	//Camera Stuff:
-	public static final DeferredBlock<Block>CAMERA_MONITOR=REGISTRY.register("camera_monitor",()->new CameraMonitor(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).requiresCorrectToolForDrops()));
-	public static final DeferredBlock<Block>CAMERA=REGISTRY.register("camera",()->new Camera(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3F,3F).requiresCorrectToolForDrops()));
+	public static final DeferredBlock<Block>CAMERA_MONITOR=REGISTRY.register("camera_monitor",()->new CameraMonitor(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops()));
+	public static final DeferredBlock<Block>CAMERA=REGISTRY.register("camera",()->new Camera(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3F,3F).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops()));
 
 
 	//Fluids:
@@ -54,7 +54,7 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>SUNFLOWER_OIL_FLUID=REGISTRY.register("sunflower_oil_fluid",()->new LiquidBlock(DifModFluids.SUNFLOWER_OIL.get(),BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable()));
 
 	//Random (0):
-	public static final DeferredBlock<Block> MEGA_TORCH = REGISTRY.register("mega_torch", () -> new MegaTorch(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(2F,3F).sound(SoundType.WOOD).lightLevel(state->15)));
+	public static final DeferredBlock<Block> MEGA_TORCH = REGISTRY.register("mega_torch",()->new MegaTorch(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(2F,3F).sound(SoundType.WOOD).pushReaction(PushReaction.BLOCK).lightLevel(state->15)));
 
 	public static final DeferredBlock<Block>BEER=REGISTRY.register("beer",Beer::new);
 	public static final DeferredBlock<Block>THE_DIFFERENTIAL=REGISTRY.register("the_differential",()->new CustomWaterloggedHorizontalRotation(SoundType.STONE,5F,6F,true));

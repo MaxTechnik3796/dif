@@ -67,40 +67,36 @@ public class CameraMonitorBlockEntity extends BlockEntity{
 		}
 	}
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
-		if (tag.contains("CamX")) {
-			this.linkedCameraPos = new BlockPos(tag.getInt("CamX"), tag.getInt("CamY"), tag.getInt("CamZ"));
+	protected void loadAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider registries){
+		super.loadAdditional(tag,registries);
+		if(tag.contains("CamX")){
+			this.linkedCameraPos=new BlockPos(tag.getInt("CamX"),tag.getInt("CamY"),tag.getInt("CamZ"));
 		}
 	}
-
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
-		if (linkedCameraPos != null) {
-			tag.putInt("CamX", linkedCameraPos.getX());
-			tag.putInt("CamY", linkedCameraPos.getY());
-			tag.putInt("CamZ", linkedCameraPos.getZ());
+	protected void saveAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider registries){
+		super.saveAdditional(tag,registries);
+		if(linkedCameraPos!=null){
+			tag.putInt("CamX",linkedCameraPos.getX());
+			tag.putInt("CamY",linkedCameraPos.getY());
+			tag.putInt("CamZ",linkedCameraPos.getZ());
 		}
 	}
-
 	@Override
-	public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registries) {
-		CompoundTag tag = new CompoundTag();
-		saveAdditional(tag, registries);
+	public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registries){
+		CompoundTag tag=new CompoundTag();
+		saveAdditional(tag,registries);
 		return tag;
 	}
-
 	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+	public ClientboundBlockEntityDataPacket getUpdatePacket(){
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
-
 	@Override
-	public void onDataPacket(net.minecraft.network.Connection net, ClientboundBlockEntityDataPacket pkt, @NotNull HolderLookup.Provider registries) {
-		CompoundTag tag = pkt.getTag();
-		if (tag != null) {
-			this.loadAdditional(tag, registries);
+	public void onDataPacket(net.minecraft.network.Connection net,ClientboundBlockEntityDataPacket pkt,@NotNull HolderLookup.Provider registries){
+		CompoundTag tag=pkt.getTag();
+		if(tag!=null){
+			this.loadAdditional(tag,registries);
 		}
 	}
 }

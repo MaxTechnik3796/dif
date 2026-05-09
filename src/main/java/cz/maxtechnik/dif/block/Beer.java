@@ -23,9 +23,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-
 import net.neoforged.neoforge.items.ItemHandlerHelper;
-
 @SuppressWarnings("deprecation")
 public class Beer extends Block implements SimpleWaterloggedBlock{
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
@@ -82,12 +80,12 @@ public class Beer extends Block implements SimpleWaterloggedBlock{
 		ItemHandlerHelper.giveItemToPlayer(player,new ItemStack(DifModItems.BEER.get()));
 	}
 	@Override
-	public boolean onDestroyedByPlayer(@NotNull BlockState blockstate, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, boolean willHarvest, @NotNull FluidState fluid){
+	public boolean onDestroyedByPlayer(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,boolean willHarvest,@NotNull FluidState fluid){
 		pickUp(world,pos,player,false);
 		return super.onDestroyedByPlayer(blockstate,world,pos,player,willHarvest,fluid);
 	}
 	@Override
-	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit){
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
 		pickUp(world,pos,player,true);
 		return InteractionResult.SUCCESS;
 	}

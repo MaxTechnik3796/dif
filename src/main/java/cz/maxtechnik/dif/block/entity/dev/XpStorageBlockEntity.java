@@ -14,13 +14,13 @@ public class XpStorageBlockEntity extends BlockEntity{
 		super(DifModBlockEntities.XP_STORAGE.get(),pos,state);
 	}
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag compound, @NotNull HolderLookup.Provider provider){
-		super.loadAdditional(compound, provider);
+	protected void loadAdditional(@NotNull CompoundTag compound,@NotNull HolderLookup.Provider provider){
+		super.loadAdditional(compound,provider);
 		this.xp=compound.getInt("xp");
 	}
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag compound, @NotNull HolderLookup.Provider provider){
-		super.saveAdditional(compound, provider);
+	protected void saveAdditional(@NotNull CompoundTag compound,@NotNull HolderLookup.Provider provider){
+		super.saveAdditional(compound,provider);
 		compound.putInt("xp",this.xp);
 	}
 	@Override

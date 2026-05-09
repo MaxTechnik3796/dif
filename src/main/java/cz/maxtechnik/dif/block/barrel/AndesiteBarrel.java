@@ -47,15 +47,14 @@ public class AndesiteBarrel extends Block implements EntityBlock{
 		return state.setValue(FACING,mirrorIn.mirror(state.getValue(FACING)));
 	}
 	@Override
-	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
-		if (level.isClientSide) {
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hitResult){
+		if(level.isClientSide){
 			return InteractionResult.SUCCESS;
 		}
-
-		if (player instanceof ServerPlayer serverPlayer) {
-			BlockEntity be = level.getBlockEntity(pos);
-			if (be instanceof MenuProvider menuProvider) {
-				serverPlayer.openMenu(menuProvider, pos);
+		if(player instanceof ServerPlayer serverPlayer){
+			BlockEntity be=level.getBlockEntity(pos);
+			if(be instanceof MenuProvider menuProvider){
+				serverPlayer.openMenu(menuProvider,pos);
 			}
 		}
 		return InteractionResult.CONSUME;

@@ -21,48 +21,42 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 @SuppressWarnings("deprecation")
-public class QuarryLandmark extends BaseEntityBlock {
-	public static final MapCodec<QuarryLandmark> CODEC = simpleCodec(properties -> new QuarryLandmark());
-
+public class QuarryLandmark extends BaseEntityBlock{
+	public static final MapCodec<QuarryLandmark> CODEC=simpleCodec(properties->new QuarryLandmark());
 	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
+	protected @NotNull MapCodec<? extends BaseEntityBlock> codec(){
 		return CODEC;
 	}
-	public static final DirectionProperty FACING = BlockStateProperties.FACING;
-	
-	protected static final VoxelShape UP_SHAPE = Block.box(6.0D, 0.0D, 6.0D, 10.0D, 10.0D, 10.0D);
-	protected static final VoxelShape DOWN_SHAPE = Block.box(6.0D, 6.0D, 6.0D, 10.0D, 16.0D, 10.0D);
-	protected static final VoxelShape NORTH_SHAPE = Block.box(6.0D, 6.0D, 6.0D, 10.0D, 10.0D, 16.0D);
-	protected static final VoxelShape SOUTH_SHAPE = Block.box(6.0D, 6.0D, 0.0D, 10.0D, 10.0D, 10.0D);
-	protected static final VoxelShape WEST_SHAPE = Block.box(6.0D, 6.0D, 6.0D, 16.0D, 10.0D, 10.0D);
-	protected static final VoxelShape EAST_SHAPE = Block.box(0.0D, 6.0D, 6.0D, 10.0D, 10.0D, 10.0D);
-
-	public QuarryLandmark() {
-		super(Properties.of().strength(0.5F, 0.5F).sound(SoundType.WOOD).noCollission().noOcclusion().lightLevel(state -> 14));
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.UP));
+	public static final DirectionProperty FACING=BlockStateProperties.FACING;
+	protected static final VoxelShape UP_SHAPE=Block.box(6D,0D,6D,10D,10D,10D);
+	protected static final VoxelShape DOWN_SHAPE=Block.box(6D,6D,6D,10D,16D,10D);
+	protected static final VoxelShape NORTH_SHAPE=Block.box(6D,6D,6D,10D,10D,16D);
+	protected static final VoxelShape SOUTH_SHAPE=Block.box(6D,6D,0D,10D,10D,10D);
+	protected static final VoxelShape WEST_SHAPE=Block.box(6D,6D,6D,16D,10D,10D);
+	protected static final VoxelShape EAST_SHAPE=Block.box(0D,6D,6D,10D,10D,10D);
+	public QuarryLandmark(){
+		super(Properties.of().strength(0.5F,0.5F).sound(SoundType.WOOD).noCollission().noOcclusion().pushReaction(PushReaction.BLOCK).lightLevel(state->14));
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.UP));
 	}
-
 	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
 		builder.add(FACING);
 	}
-
 	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		return this.defaultBlockState().setValue(FACING, context.getClickedFace());
+	public BlockState getStateForPlacement(BlockPlaceContext context){
+		return this.defaultBlockState().setValue(FACING,context.getClickedFace());
 	}
-
 	@Override
-	public @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
-		return switch (state.getValue(FACING)) {
+	public @NotNull VoxelShape getShape(BlockState state,@NotNull BlockGetter level,@NotNull BlockPos pos,@NotNull CollisionContext context){
+		return switch(state.getValue(FACING)){
 			case DOWN -> DOWN_SHAPE;
 			case NORTH -> NORTH_SHAPE;
 			case SOUTH -> SOUTH_SHAPE;
@@ -71,45 +65,38 @@ public class QuarryLandmark extends BaseEntityBlock {
 			default -> UP_SHAPE;
 		};
 	}
-
 	@Override
-	public @NotNull BlockState rotate(BlockState state, Rotation rot) {
-		return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
+	public @NotNull BlockState rotate(BlockState state,Rotation rot){
+		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));
 	}
-
 	@Override
-	public @NotNull BlockState mirror(BlockState state, Mirror mirrorIn) {
+	public @NotNull BlockState mirror(BlockState state,Mirror mirrorIn){
 		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
 	}
-
 	@Override
-	public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
+	public @NotNull RenderShape getRenderShape(@NotNull BlockState state){
 		return RenderShape.MODEL;
 	}
-
 	@Nullable
 	@Override
-	public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
-		return new QuarryLandmarkBlockEntity(pos, state);
+	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
+		return new QuarryLandmarkBlockEntity(pos,state);
 	}
-
 	@Nullable
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T> type){
 		return null;
 	}
-
 	@Override
-	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
-		if (!level.isClientSide && level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity lmEntity)
+	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
+		if(!level.isClientSide&&level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity lmEntity)
 			lmEntity.onRightClick(player);
 		return InteractionResult.sidedSuccess(level.isClientSide);
 	}
-
 	@Override
-	public void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean moving) {
-		if (!state.is(newState.getBlock()) && !level.isClientSide)
-			if (level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity lmEntity) lmEntity.onRemoved();
-		super.onRemove(state, level, pos, newState, moving);
+	public void onRemove(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState newState,boolean moving){
+		if(!state.is(newState.getBlock())&&!level.isClientSide)
+			if(level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity lmEntity) lmEntity.onRemoved();
+		super.onRemove(state,level,pos,newState,moving);
 	}
 }

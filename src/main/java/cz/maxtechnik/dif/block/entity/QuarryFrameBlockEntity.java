@@ -33,8 +33,8 @@ public class QuarryFrameBlockEntity extends BlockEntity{
 		return ownerQuarryPos;
 	}
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider){
-		super.saveAdditional(tag, provider);
+	protected void saveAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider provider){
+		super.saveAdditional(tag,provider);
 		if(ownerQuarryPos!=null){
 			tag.putInt("OwnX",ownerQuarryPos.getX());
 			tag.putInt("OwnY",ownerQuarryPos.getY());
@@ -43,8 +43,8 @@ public class QuarryFrameBlockEntity extends BlockEntity{
 		tag.putBoolean("Dying",scheduledForRemoval);
 	}
 	@Override
-	public void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider){
-		super.loadAdditional(tag, provider);
+	public void loadAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider provider){
+		super.loadAdditional(tag,provider);
 		if(tag.contains("OwnX")) ownerQuarryPos=new BlockPos(tag.getInt("OwnX"),tag.getInt("OwnY"),tag.getInt("OwnZ"));
 		scheduledForRemoval=tag.getBoolean("Dying");
 	}

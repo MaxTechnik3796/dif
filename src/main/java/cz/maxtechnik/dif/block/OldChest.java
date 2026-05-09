@@ -97,13 +97,14 @@ public class OldChest extends Block implements EntityBlock{
 		return blockEntity instanceof MenuProvider menuProvider?menuProvider:null;
 	}
 	@Override
-	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockstate, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
-		if (world.isClientSide()) {
-			return InteractionResult.SUCCESS;}
-		if (player instanceof ServerPlayer serverPlayer) {
-			BlockEntity blockEntity = world.getBlockEntity(pos);
-			if (blockEntity instanceof MenuProvider menuProvider) {
-				serverPlayer.openMenu(menuProvider, pos);
+	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
+		if(world.isClientSide()){
+			return InteractionResult.SUCCESS;
+		}
+		if(player instanceof ServerPlayer serverPlayer){
+			BlockEntity blockEntity=world.getBlockEntity(pos);
+			if(blockEntity instanceof MenuProvider menuProvider){
+				serverPlayer.openMenu(menuProvider,pos);
 			}
 		}
 		return InteractionResult.CONSUME;

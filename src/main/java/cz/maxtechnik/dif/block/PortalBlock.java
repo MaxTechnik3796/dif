@@ -35,7 +35,7 @@ public class PortalBlock extends BaseEntityBlock{
 		}
 	}
 	@Override
-	public @NotNull com.mojang.serialization.MapCodec<? extends BaseEntityBlock> codec() {
+	public @NotNull com.mojang.serialization.MapCodec<? extends BaseEntityBlock> codec(){
 		return net.minecraft.world.level.block.state.BlockBehaviour.simpleCodec(PortalBlock::new);
 	}
 	@Override

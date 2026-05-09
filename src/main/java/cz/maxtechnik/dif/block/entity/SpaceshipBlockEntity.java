@@ -39,15 +39,15 @@ public class SpaceshipBlockEntity extends BlockEntity implements MenuProvider{
 		return new SpaceshipMenu(id,inventory,this.worldPosition);
 	}
 	@Override
-	protected void saveAdditional(CompoundTag tag, @NotNull HolderLookup.Provider provider){
+	protected void saveAdditional(CompoundTag tag,@NotNull HolderLookup.Provider provider){
 		tag.put("inventory",itemHandler.serializeNBT(provider));
-		super.saveAdditional(tag, provider);
+		super.saveAdditional(tag,provider);
 	}
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider){
-		super.loadAdditional(tag, provider);
-		if (tag.contains("inventory")) {
-			itemHandler.deserializeNBT(provider, tag.getCompound("inventory"));
+	protected void loadAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider provider){
+		super.loadAdditional(tag,provider);
+		if(tag.contains("inventory")){
+			itemHandler.deserializeNBT(provider,tag.getCompound("inventory"));
 		}
 	}
 	public void drops(){

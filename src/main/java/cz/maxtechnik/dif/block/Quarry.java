@@ -24,12 +24,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 public class Quarry extends BaseEntityBlock{
-	public static final MapCodec<Quarry> CODEC = simpleCodec(Quarry::new);
-
+	public static final MapCodec<Quarry> CODEC=simpleCodec(Quarry::new);
 	@Override
-	protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
+	protected @NotNull MapCodec<? extends BaseEntityBlock> codec(){
 		return CODEC;
 	}
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
@@ -118,10 +116,10 @@ public class Quarry extends BaseEntityBlock{
 		super.onRemove(state,level,pos,newState,moving);
 	}
 	@Override
-	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
-		if (!level.isClientSide) {
-			if (level.getBlockEntity(pos) instanceof QuarryBlockEntity quarryEntity) {
-				player.openMenu(quarryEntity, pos);
+	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
+		if(!level.isClientSide){
+			if(level.getBlockEntity(pos) instanceof QuarryBlockEntity quarryEntity){
+				player.openMenu(quarryEntity,pos);
 			}
 		}
 		return InteractionResult.sidedSuccess(level.isClientSide);

@@ -106,20 +106,20 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 		super(DifModBlockEntities.BURNING_GENERATOR.get(),position,state);
 	}
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag compound, @NotNull HolderLookup.Provider provider){
-		super.loadAdditional(compound, provider);
+	protected void loadAdditional(@NotNull CompoundTag compound,@NotNull HolderLookup.Provider provider){
+		super.loadAdditional(compound,provider);
 		if(!this.tryLoadLootTable(compound))
 			this.stacks=NonNullList.withSize(this.getContainerSize(),ItemStack.EMPTY);
-		ContainerHelper.loadAllItems(compound,this.stacks, provider);
+		ContainerHelper.loadAllItems(compound,this.stacks,provider);
 		if(compound.contains("energyStorage"))
-			energyStorage.deserializeNBT(provider, compound.get("energyStorage"));
+			energyStorage.deserializeNBT(provider,compound.get("energyStorage"));
 		this.burnTime=compound.getInt("burnTime");
 		this.maxBurnTime=compound.getInt("maxBurnTime");
 	}
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag compound, @NotNull HolderLookup.Provider provider){
-		super.saveAdditional(compound, provider);
-		ContainerHelper.saveAllItems(compound,this.stacks, provider);
+	protected void saveAdditional(@NotNull CompoundTag compound,@NotNull HolderLookup.Provider provider){
+		super.saveAdditional(compound,provider);
+		ContainerHelper.saveAllItems(compound,this.stacks,provider);
 		compound.put("energyStorage",energyStorage.serializeNBT(provider));
 		compound.putInt("burnTime",this.burnTime);
 		compound.putInt("maxBurnTime",this.maxBurnTime);
@@ -179,9 +179,9 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 		}
 		if(entity.energyStorage.getEnergyStored()>0){
 			for(Direction direction: Direction.values()){
-				BlockPos neighborPos = pos.relative(direction);
-				IEnergyStorage storage = level.getCapability(Capabilities.EnergyStorage.BLOCK, neighborPos, direction.getOpposite());
-				if(storage != null){
+				BlockPos neighborPos=pos.relative(direction);
+				IEnergyStorage storage=level.getCapability(Capabilities.EnergyStorage.BLOCK,neighborPos,direction.getOpposite());
+				if(storage!=null){
 					int energyToTransfer=Math.min(entity.energyStorage.getEnergyStored(),MAX_EXTRACT);
 					if(energyToTransfer>0&&storage.canReceive()){
 						int received=storage.receiveEnergy(energyToTransfer,false);
@@ -220,7 +220,7 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 	}
 	@Override
 	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory){
-		FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+		FriendlyByteBuf buffer=new FriendlyByteBuf(Unpooled.buffer());
 		buffer.writeBlockPos(this.worldPosition);
 		return new BurningGeneratorMenu(id,inventory,buffer);
 	}

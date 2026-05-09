@@ -26,17 +26,17 @@ public class SuperBoxBlockEntity extends RandomizableContainerBlockEntity implem
 		super(DifModBlockEntities.SUPER_BOX.get(),position,state);
 	}
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag compound, @NotNull HolderLookup.Provider provider){
-		super.loadAdditional(compound, provider);
+	protected void loadAdditional(@NotNull CompoundTag compound,@NotNull HolderLookup.Provider provider){
+		super.loadAdditional(compound,provider);
 		if(!this.tryLoadLootTable(compound))
 			this.stacks=NonNullList.withSize(this.getContainerSize(),ItemStack.EMPTY);
-		ContainerHelper.loadAllItems(compound,this.stacks, provider);
+		ContainerHelper.loadAllItems(compound,this.stacks,provider);
 	}
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag compound, @NotNull HolderLookup.Provider provider){
-		super.saveAdditional(compound, provider);
+	protected void saveAdditional(@NotNull CompoundTag compound,@NotNull HolderLookup.Provider provider){
+		super.saveAdditional(compound,provider);
 		if(!this.trySaveLootTable(compound)){
-			ContainerHelper.saveAllItems(compound,this.stacks, provider);
+			ContainerHelper.saveAllItems(compound,this.stacks,provider);
 		}
 	}
 	@Override
@@ -63,8 +63,8 @@ public class SuperBoxBlockEntity extends RandomizableContainerBlockEntity implem
 		return Component.translatable("gui.dif.super_box");
 	}
 	@Override
-	protected @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory) {
-		return new SuperBoxMenu(id, inventory, this.worldPosition);
+	protected @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory){
+		return new SuperBoxMenu(id,inventory,this.worldPosition);
 	}
 	@Override
 	public @NotNull Component getDisplayName(){

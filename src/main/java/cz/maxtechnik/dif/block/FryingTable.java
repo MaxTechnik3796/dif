@@ -43,161 +43,137 @@ import vectorwing.farmersdelight.common.registry.ModSounds;
 
 import static cz.maxtechnik.dif.block.entity.FryingTableBlockEntity.INPUT_SLOT;
 import static cz.maxtechnik.dif.block.entity.FryingTableBlockEntity.OUTPUT_SLOT;
-
 @SuppressWarnings("deprecation")
-public class FryingTable extends Block implements SimpleWaterloggedBlock, EntityBlock {
-
-	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-	public static final BooleanProperty OIL = BooleanProperty.create("oil");
-
-	public FryingTable() {
+public class FryingTable extends Block implements SimpleWaterloggedBlock, EntityBlock{
+	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
+	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
+	public static final BooleanProperty OIL=BooleanProperty.create("oil");
+	public FryingTable(){
 		super(Properties.of()
-				.strength(0.5F, 6F)
+				.strength(0.5F,6F)
 				.sound(SoundType.LANTERN)
 				.requiresCorrectToolForDrops()
 				.noOcclusion()
-				.isRedstoneConductor((bs, br, bp) -> false)
-				.lightLevel(state -> 15));
+				.isRedstoneConductor((bs,br,bp)->false)
+				.lightLevel(state->15));
 		this.registerDefaultState(this.stateDefinition.any()
-				.setValue(FACING, Direction.NORTH)
-				.setValue(WATERLOGGED, false)
-				.setValue(OIL, false));
+				.setValue(FACING,Direction.NORTH)
+				.setValue(WATERLOGGED,false)
+				.setValue(OIL,false));
 	}
-
 	@Override
-	public int getLightBlock(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos) {
+	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
 		return 0;
 	}
-
 	@Override
-	public @NotNull VoxelShape getVisualShape(@NotNull BlockState state, @NotNull BlockGetter world,
-	                                          @NotNull BlockPos pos, @NotNull CollisionContext context) {
+	public @NotNull VoxelShape getVisualShape(@NotNull BlockState state,@NotNull BlockGetter world,
+	                                          @NotNull BlockPos pos,@NotNull CollisionContext context){
 		return Shapes.empty();
 	}
-
 	@Override
-	public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world,
-	                                    @NotNull BlockPos pos, @NotNull CollisionContext context) {
-		return box(0, 0, 0, 16, 13, 16);
+	public @NotNull VoxelShape getShape(@NotNull BlockState state,@NotNull BlockGetter world,
+	                                    @NotNull BlockPos pos,@NotNull CollisionContext context){
+		return box(0,0,0,16,13,16);
 	}
-
 	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		builder.add(FACING, WATERLOGGED, OIL);
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
+		builder.add(FACING,WATERLOGGED,OIL);
 	}
-
 	@Override
-	public float getShadeBrightness(@NotNull BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos pos) {
+	public float getShadeBrightness(@NotNull BlockState blockState,@NotNull BlockGetter blockGetter,@NotNull BlockPos pos){
 		return 1F;
 	}
-
 	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		boolean flag = context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER;
+	public BlockState getStateForPlacement(BlockPlaceContext context){
+		boolean flag=context.getLevel().getFluidState(context.getClickedPos()).getType()==Fluids.WATER;
 		return this.defaultBlockState()
-				.setValue(FACING, context.getHorizontalDirection().getOpposite())
-				.setValue(WATERLOGGED, flag);
+				.setValue(FACING,context.getHorizontalDirection().getOpposite())
+				.setValue(WATERLOGGED,flag);
 	}
-
 	@Override
-	public @NotNull BlockState rotate(BlockState state, Rotation rot) {
-		return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
+	public @NotNull BlockState rotate(BlockState state,Rotation rot){
+		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));
 	}
-
 	@Override
-	public @NotNull BlockState mirror(BlockState state, Mirror mirrorIn) {
+	public @NotNull BlockState mirror(BlockState state,Mirror mirrorIn){
 		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
 	}
-
 	@Override
-	public @NotNull FluidState getFluidState(BlockState state) {
-		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+	public @NotNull FluidState getFluidState(BlockState state){
+		return state.getValue(WATERLOGGED)?Fluids.WATER.getSource(false):super.getFluidState(state);
 	}
-
 	@Override
-	public @NotNull BlockState updateShape(BlockState state, @NotNull Direction facing,
-	                                       @NotNull BlockState facingState, @NotNull LevelAccessor world,
-	                                       @NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
-		if (state.getValue(WATERLOGGED)) {
-			world.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+	public @NotNull BlockState updateShape(BlockState state,@NotNull Direction facing,
+	                                       @NotNull BlockState facingState,@NotNull LevelAccessor world,
+	                                       @NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
+		if(state.getValue(WATERLOGGED)){
+			world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
 		}
-		return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
+		return super.updateShape(state,facing,facingState,world,currentPos,facingPos);
 	}
-
 	@Override
-	public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState blockState) {
-		return new FryingTableBlockEntity(pos, blockState);
+	public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
+		return new FryingTableBlockEntity(pos,blockState);
 	}
-
 	@Override
-	public MenuProvider getMenuProvider(@NotNull BlockState blockState, Level worldIn, @NotNull BlockPos pos) {
-		BlockEntity te = worldIn.getBlockEntity(pos);
-		return te instanceof MenuProvider mp ? mp : null;
+	public MenuProvider getMenuProvider(@NotNull BlockState blockState,Level worldIn,@NotNull BlockPos pos){
+		BlockEntity te=worldIn.getBlockEntity(pos);
+		return te instanceof MenuProvider mp?mp:null;
 	}
-
 	@Override
-	public boolean triggerEvent(@NotNull BlockState blockState, @NotNull Level world,
-	                            @NotNull BlockPos pos, int eventID, int eventParam) {
-		super.triggerEvent(blockState, world, pos, eventID, eventParam);
-		BlockEntity be = world.getBlockEntity(pos);
-		return be != null && be.triggerEvent(eventID, eventParam);
+	public boolean triggerEvent(@NotNull BlockState blockState,@NotNull Level world,
+	                            @NotNull BlockPos pos,int eventID,int eventParam){
+		super.triggerEvent(blockState,world,pos,eventID,eventParam);
+		BlockEntity be=world.getBlockEntity(pos);
+		return be!=null&&be.triggerEvent(eventID,eventParam);
 	}
-
 	@Override
-	public void onRemove(BlockState state, @NotNull Level world, @NotNull BlockPos pos,
-	                     BlockState newState, boolean isMoving) {
-		if (state.getBlock() != newState.getBlock()) {
-			BlockEntity be = world.getBlockEntity(pos);
-			if (be instanceof FryingTableBlockEntity fbe) {
-				Containers.dropContents(world, pos, fbe);
-				world.updateNeighbourForOutputSignal(pos, this);
+	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,
+	                     BlockState newState,boolean isMoving){
+		if(state.getBlock()!=newState.getBlock()){
+			BlockEntity be=world.getBlockEntity(pos);
+			if(be instanceof FryingTableBlockEntity fbe){
+				Containers.dropContents(world,pos,fbe);
+				world.updateNeighbourForOutputSignal(pos,this);
 			}
-			super.onRemove(state, world, pos, newState, isMoving);
+			super.onRemove(state,world,pos,newState,isMoving);
 		}
 	}
-
 	@Override
-	public boolean hasAnalogOutputSignal(@NotNull BlockState blockState) {
+	public boolean hasAnalogOutputSignal(@NotNull BlockState blockState){
 		return true;
 	}
-
 	@Override
-	public int getAnalogOutputSignal(@NotNull BlockState blockState, Level world, @NotNull BlockPos pos) {
-		BlockEntity te = world.getBlockEntity(pos);
-		return te instanceof FryingTableBlockEntity be ? AbstractContainerMenu.getRedstoneSignalFromContainer(be) : 0;
+	public int getAnalogOutputSignal(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos){
+		BlockEntity te=world.getBlockEntity(pos);
+		return te instanceof FryingTableBlockEntity be?AbstractContainerMenu.getRedstoneSignalFromContainer(be):0;
 	}
-
 	@Override
-	public void tick(@NotNull BlockState blockstate, @NotNull ServerLevel world,
-	                 @NotNull BlockPos pos, @NotNull RandomSource random) {
-		super.tick(blockstate, world, pos, random);
+	public void tick(@NotNull BlockState blockstate,@NotNull ServerLevel world,
+	                 @NotNull BlockPos pos,@NotNull RandomSource random){
+		super.tick(blockstate,world,pos,random);
 	}
-
 	@Override
 	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,
 	                                                                        @NotNull BlockState state,
-	                                                                        @NotNull BlockEntityType<T> type) {
+	                                                                        @NotNull BlockEntityType<T> type){
 		return level.isClientSide
-				? createClientTicker(type, DifModBlockEntities.FRYING_TABLE.get())
-				: createServerTicker(type, DifModBlockEntities.FRYING_TABLE.get());
+				?createClientTicker(type,DifModBlockEntities.FRYING_TABLE.get())
+				:createServerTicker(type,DifModBlockEntities.FRYING_TABLE.get());
 	}
-
 	@Nullable
 	protected static <T extends BlockEntity> BlockEntityTicker<T> createServerTicker(
-			BlockEntityType<T> type, BlockEntityType<? extends FryingTableBlockEntity> expected) {
-		return type == expected
-				? (lvl, pos, state, be) -> FryingTableBlockEntity.serverTick(lvl, pos, state, (FryingTableBlockEntity) be)
-				: null;
+			BlockEntityType<T> type,BlockEntityType<? extends FryingTableBlockEntity> expected){
+		return type==expected
+				?(lvl,pos,state,be)->FryingTableBlockEntity.serverTick(lvl,pos,state,(FryingTableBlockEntity)be)
+				:null;
 	}
-
 	protected static <T extends BlockEntity> BlockEntityTicker<T> createClientTicker(
-			BlockEntityType<T> type, BlockEntityType<? extends FryingTableBlockEntity> expected) {
-		return type == expected
-				? (lvl, pos, state, be) -> FryingTableBlockEntity.clientTick(lvl, pos)
-				: null;
+			BlockEntityType<T> type,BlockEntityType<? extends FryingTableBlockEntity> expected){
+		return type==expected
+				?(lvl,pos,state,be)->FryingTableBlockEntity.clientTick(lvl,pos)
+				:null;
 	}
-
 	// -------------------------------------------------------------------------
 	// use() – interakce hráče s blokem
 	// V NeoForge 1.21.1: InteractionHand a BlockHitResult jsou stále stejné,
@@ -205,79 +181,72 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 	// Pro zpětnou kompatibilitu zachováváme use() override.
 	// -------------------------------------------------------------------------
 	@Override
-	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockstate, @NotNull Level world,
-	                                                 @NotNull BlockPos pos, @NotNull Player player,
-	                                                 @NotNull BlockHitResult hit) {
-		if (world.isClientSide) return InteractionResult.SUCCESS;
-
-		BlockEntity blockEntity = world.getBlockEntity(pos);
-		if (!(blockEntity instanceof FryingTableBlockEntity be)) return InteractionResult.PASS;
-
-		ItemStack handItem = player.getMainHandItem();
-
+	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockstate,@NotNull Level world,
+	                                                 @NotNull BlockPos pos,@NotNull Player player,
+	                                                 @NotNull BlockHitResult hit){
+		if(world.isClientSide) return InteractionResult.SUCCESS;
+		BlockEntity blockEntity=world.getBlockEntity(pos);
+		if(!(blockEntity instanceof FryingTableBlockEntity be)) return InteractionResult.PASS;
+		ItemStack handItem=player.getMainHandItem();
 		// 1. NALÉVÁNÍ OLEJE
-		if (handItem.is(DifModItems.SUNFLOWER_OIL_BUCKET.get())) {
-			int accepted = be.fluidTank.fill(new FluidStack(DifModFluids.SUNFLOWER_OIL.get(), 1000),
+		if(handItem.is(DifModItems.SUNFLOWER_OIL_BUCKET.get())){
+			int accepted=be.fluidTank.fill(new FluidStack(DifModFluids.SUNFLOWER_OIL.get(),1000),
 					IFluidHandler.FluidAction.EXECUTE);
-			if (accepted > 0) {
-				if (!player.getAbilities().instabuild)
+			if(accepted>0){
+				if(!player.getAbilities().instabuild)
 					player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,
 							new ItemStack(net.minecraft.world.item.Items.BUCKET));
-				world.playSound(null, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1F, 1F);
+				world.playSound(null,pos,SoundEvents.BUCKET_EMPTY,SoundSource.BLOCKS,1F,1F);
 				be.setChanged();
 				return InteractionResult.SUCCESS;
 			}
 		}
-
 		// 2. NABÍRÁNÍ OLEJE
-		if (handItem.is(net.minecraft.world.item.Items.BUCKET)) {
-			FluidStack drained = be.fluidTank.drain(1000, IFluidHandler.FluidAction.SIMULATE);
-			if (drained.getAmount() == 1000) {
-				be.fluidTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-				ItemStack oilBucket = new ItemStack(DifModItems.SUNFLOWER_OIL_BUCKET.get());
-				if (!player.getAbilities().instabuild) {
+		if(handItem.is(net.minecraft.world.item.Items.BUCKET)){
+			FluidStack drained=be.fluidTank.drain(1000,IFluidHandler.FluidAction.SIMULATE);
+			if(drained.getAmount()==1000){
+				be.fluidTank.drain(1000,IFluidHandler.FluidAction.EXECUTE);
+				ItemStack oilBucket=new ItemStack(DifModItems.SUNFLOWER_OIL_BUCKET.get());
+				if(!player.getAbilities().instabuild){
 					handItem.shrink(1);
-					if (handItem.isEmpty())
-						player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, oilBucket);
-					else if (!player.getInventory().add(oilBucket))
-						player.drop(oilBucket, false);
+					if(handItem.isEmpty())
+						player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,oilBucket);
+					else if(!player.getInventory().add(oilBucket))
+						player.drop(oilBucket,false);
 				}
-				world.playSound(null, pos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1F, 1F);
+				world.playSound(null,pos,SoundEvents.BUCKET_FILL,SoundSource.BLOCKS,1F,1F);
 				be.setChanged();
 				return InteractionResult.SUCCESS;
 			}
 		}
-
 		// 3. VLOŽENÍ / ODEBRÁNÍ ITEMŮ
-		ItemStack inputStack = be.getItem(INPUT_SLOT);
-		ItemStack outputStack = be.getItem(OUTPUT_SLOT);
-
-		if (!handItem.isEmpty()) {
-			if (inputStack.isEmpty()) {
-				be.setItem(INPUT_SLOT, handItem.copy());
+		ItemStack inputStack=be.getItem(INPUT_SLOT);
+		ItemStack outputStack=be.getItem(OUTPUT_SLOT);
+		if(!handItem.isEmpty()){
+			if(inputStack.isEmpty()){
+				be.setItem(INPUT_SLOT,handItem.copy());
 				handItem.setCount(0);
 				be.setChanged();
-				world.playSound(null, pos, SoundEvents.LANTERN_PLACE, SoundSource.BLOCKS, 1F, 1F);
-				if (blockstate.getValue(OIL))
-					world.playSound(null, pos, ModSounds.BLOCK_SKILLET_ADD_FOOD.get(), SoundSource.BLOCKS, 1F, 1F);
+				world.playSound(null,pos,SoundEvents.LANTERN_PLACE,SoundSource.BLOCKS,1F,1F);
+				if(blockstate.getValue(OIL))
+					world.playSound(null,pos,ModSounds.BLOCK_SKILLET_ADD_FOOD.get(),SoundSource.BLOCKS,1F,1F);
 				return InteractionResult.SUCCESS;
 			}
-		} else {
-			if (!outputStack.isEmpty()) {
-				player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, outputStack.copy());
-				be.setItem(OUTPUT_SLOT, ItemStack.EMPTY);
+		}else{
+			if(!outputStack.isEmpty()){
+				player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,outputStack.copy());
+				be.setItem(OUTPUT_SLOT,ItemStack.EMPTY);
 				be.setChanged();
-				world.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1F, 1F);
+				world.playSound(null,pos,SoundEvents.ITEM_PICKUP,SoundSource.BLOCKS,1F,1F);
 				return InteractionResult.SUCCESS;
-			} else if (!inputStack.isEmpty()) {
-				player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, inputStack.copy());
-				be.setItem(INPUT_SLOT, ItemStack.EMPTY);
+			}else if(!inputStack.isEmpty()){
+				player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,inputStack.copy());
+				be.setItem(INPUT_SLOT,ItemStack.EMPTY);
 				be.setChanged();
-				world.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1F, 1F);
+				world.playSound(null,pos,SoundEvents.ITEM_PICKUP,SoundSource.BLOCKS,1F,1F);
 				return InteractionResult.SUCCESS;
 			}
 		}
-
 		return InteractionResult.PASS;
 	}
 }
