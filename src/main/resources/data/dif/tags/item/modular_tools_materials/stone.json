@@ -1,7 +1,7 @@
 {
 	"replace":false,
 	"values":[
-		"#forge:stone",
-		"#forge:cobblestone"
+		"#c:stones",
+		"#c:cobblestones"
 	]
 }

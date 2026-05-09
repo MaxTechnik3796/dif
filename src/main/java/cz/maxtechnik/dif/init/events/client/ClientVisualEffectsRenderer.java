@@ -31,7 +31,7 @@ public class ClientVisualEffectsRenderer {
 
 		boolean isDrank = player.hasEffect(DifModMobEffects.WTF);
 		if (isDrank && !wasWTFActive) {
-			if (playingWTFSound == null) {
+			/*if (playingWTFSound == null) {
 				playingWTFSound = new SimpleSoundInstance(
 						DifModSounds.FURT_TA_STEJNA_HRA.get().getLocation(),
 						SoundSource.PLAYERS, 1F, 1F,
@@ -39,7 +39,7 @@ public class ClientVisualEffectsRenderer {
 						0F, 0F, 0F, true
 				);
 				mc.getSoundManager().play(playingWTFSound);
-			}
+			}*/
 		} else if (!isDrank && wasWTFActive) {
 			if (playingWTFSound != null) {
 				mc.getSoundManager().stop(playingWTFSound);

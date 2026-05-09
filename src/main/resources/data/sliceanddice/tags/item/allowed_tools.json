@@ -1,7 +1,8 @@
 {
 	"replace":false,
 	"values":[
-		"#forge:tools/pickaxes",
-		"#forge:shears"
+		"#minecraft:pickaxes",
+		"#c:tools/mining_tool",
+		"#c:tools/shear"
 	]
 }
