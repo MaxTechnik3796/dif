@@ -20,6 +20,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.inventory.MenuType;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
+@SuppressWarnings("deprecation")
 public record EnderOpenMessage(int actionType, int pressedms) implements CustomPacketPayload {
 	public static final Type<EnderOpenMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "ender_open"));
 	public static final StreamCodec<FriendlyByteBuf, EnderOpenMessage> STREAM_CODEC = StreamCodec.composite(
