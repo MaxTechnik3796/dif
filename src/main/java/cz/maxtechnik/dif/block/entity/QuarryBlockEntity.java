@@ -27,9 +27,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -46,7 +43,6 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 	private static final int ENERGY_CAPACITY=QuarryStats.QUARRY_ENERGY_CAPACITY;
 	private static final int ENERGY_INPUT=QuarryStats.QUARRY_ENERGY_INPUT;
 	private static final int FRAME_CHECK_INTERVAL=40;
-	private static final int ADJ_CACHE_INTERVAL=60;
 	private static final int FE_TICK_INTERVAL=5;
 	private static final int FRAME_HEIGHT=3;
 	public static final int DEFAULT_RANGE=5;
@@ -56,11 +52,9 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 	private State activeState=State.CLEARING;
 	private BlockPos miningPos;
 	private int frameCheckTimer=0;
-	private int adjCacheTimer=0;
 	private boolean hasFEThisCycle=false;
 	private float miningProgressAcc=0f;
 
-	// Section-based chunk loading
 	private int currentSection=0;
 	private int totalSections=1;
 	private int sectionsX=1,sectionsZ=1;
@@ -77,9 +71,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 	@Nullable private Direction cachedFacing=null;
 	private int cachedHalfX=Integer.MIN_VALUE;
 	private int cachedHalfZ=Integer.MIN_VALUE;
-	@Nullable private IItemHandler[] adjHandlers=null;
 
-	// slot 0=engine A, 1=engine B, 2=engine C nebo upgrade
 	private boolean hasSilkTouch=false;
 	private boolean hasLiquidRemover=false;
 
@@ -109,12 +101,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 	}
 
 	private int feTickTimer=0;
-	private final EnergyStorage energy=new EnergyStorage(ENERGY_CAPACITY,ENERGY_INPUT,ENERGY_CAPACITY){
-		@Override public int receiveEnergy(int max,boolean sim){ return super.receiveEnergy(max,sim); }
-		@Override public int extractEnergy(int max,boolean sim){ return super.extractEnergy(max,sim); }
-	};
+	private final EnergyStorage energy=new EnergyStorage(ENERGY_CAPACITY,ENERGY_INPUT,ENERGY_CAPACITY);
 
-	// GUI data: 0=state, 1=totalQP, 2=feCost, 3=areaX, 4=areaZ, 5=statusMode
 	public final ContainerData dataAccess=new ContainerData(){
 		@Override
 		public int get(int index){
@@ -136,7 +124,6 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		super(DifModBlockEntities.QUARRY.get(),pos,state);
 	}
 
-	// QP = suma všech 3 slotů (bez penalizací)
 	public int getTotalQP(){
 		int qp=0;
 		for(int i=0;i<3;i++){
@@ -171,7 +158,6 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		return tool;
 	}
 
-	// Tick
 	public static void tick(Level level,BlockPos pos,BlockState state,QuarryBlockEntity be){
 		if(level.isClientSide) return;
 		if(++be.feTickTimer>=FE_TICK_INTERVAL){
@@ -196,10 +182,6 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 				}
 			}else be.hasFEThisCycle=true;
 		}
-		if(++be.adjCacheTimer>=ADJ_CACHE_INTERVAL){
-			be.adjCacheTimer=0;
-			be.adjHandlers=null;
-		}
 		if(!be.hasFEThisCycle&&be.quarryState!=State.DONE) return;
 		switch(be.quarryState){
 			case CLEARING -> be.tickClearing(level,pos,state);
@@ -214,7 +196,6 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		}
 	}
 
-	// Geometrie
 	private int halfX(){ return customHalfX>0?customHalfX:DEFAULT_RANGE; }
 	private int halfZ(){ return customHalfZ>0?customHalfZ:DEFAULT_RANGE; }
 
@@ -238,8 +219,7 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		if(cachedFramePos!=null&&facing==cachedFacing&&hx==cachedHalfX&&hz==cachedHalfZ) return cachedFramePos;
 		cachedFacing=facing; cachedHalfX=hx; cachedHalfZ=hz;
 		cachedCenter=(customCenter!=null)?customCenter:worldPosition.relative(facing.getOpposite(),hx+1);
-		int yBase=worldPosition.getY();
-		cachedFramePos=buildFramePosList(hx,hz,yBase);
+		cachedFramePos=buildFramePosList(hx,hz,worldPosition.getY());
 		return cachedFramePos;
 	}
 
@@ -264,7 +244,6 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 
 	private BlockPos getAreaCenter(BlockState state){ computeFramePositions(state); return cachedCenter; }
 
-	// CLEARING
 	private void startClearing(Level level,BlockState state,BlockPos pos){
 		BlockPos center=getAreaCenter(state);
 		int hx=halfX(),hz=halfZ(),yBase=worldPosition.getY();
@@ -292,7 +271,6 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		if(workIndex>=workQueue.size()){ workQueue.clear(); workIndex=0; miningProgressAcc=0f; startBuildingFrame(level,state,pos); }
 	}
 
-	// BUILDING_FRAME
 	private void startBuildingFrame(Level level,BlockState state,BlockPos pos){
 		quarryState=State.BUILDING_FRAME;
 		workQueue.clear(); workQueue.addAll(computeFramePositions(state)); workIndex=0;
@@ -322,7 +300,6 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		}
 	}
 
-	// MINING
 	private void tickMine(Level level,BlockPos pos,BlockState state){
 		if(++frameCheckTimer>=FRAME_CHECK_INTERVAL){
 			frameCheckTimer=0;
@@ -335,14 +312,19 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		}
 		float progressStep=getProgressPerTick();
 		if(progressStep<=0f) return;
+		if(!(level instanceof ServerLevel sl)) return;
 		if(miningPos==null) resetMiningPos();
 		if(miningPos==null) return;
 		ItemStack tool=buildSimulatedTool();
 		miningProgressAcc+=progressStep;
-		while(true){
+
+		int safety=0;
+		while(safety++<1000){
 			while(level.isEmptyBlock(miningPos)&&level.getBlockState(miningPos).getFluidState().isEmpty())
 				if(handleMiningAdvance(level,pos,state)) return;
+
 			BlockState target=level.getBlockState(miningPos);
+
 			if(!target.getFluidState().isEmpty()){
 				if(hasLiquidRemover){
 					float fluidCost=target.getFluidState().isSource()?5f:1f;
@@ -351,61 +333,54 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 						level.setBlock(miningPos,Blocks.AIR.defaultBlockState(),2);
 						if(handleMiningAdvance(level,pos,state)) return;
 						continue;
-					}else break;
+					}else return;
 				}
 				if(handleMiningAdvance(level,pos,state)) return;
 				continue;
 			}
+
 			float hardness=target.getDestroySpeed(level,miningPos);
 			if(hardness<0){
-				// Nezničitelný blok – přeskoč
 				miningProgressAcc=0f;
 				if(handleMiningAdvance(level,pos,state)) return;
 				continue;
 			}
+
 			float requiredProgress=Math.max(1f,hardness*10f);
-			if(miningProgressAcc>=requiredProgress){
-				miningProgressAcc-=requiredProgress;
-				if(level instanceof ServerLevel sl){
-					boolean canDrop=!target.requiresCorrectToolForDrops()||tool.isCorrectToolForDrops(target);
-					if(canDrop){
-						LootParams.Builder loot=new LootParams.Builder(sl)
-								.withParameter(LootContextParams.ORIGIN,Vec3.atCenterOf(miningPos))
-								.withParameter(LootContextParams.BLOCK_STATE,target)
-								.withParameter(LootContextParams.TOOL,tool)
-								.withOptionalParameter(LootContextParams.BLOCK_ENTITY,level.getBlockEntity(miningPos));
-						distributeDrops(level,target.getDrops(loot));
-					}
-					level.removeBlock(miningPos,false);
-				}
-				if(handleMiningAdvance(level,pos,state)) return;
-			}else break;
+			if(miningProgressAcc<requiredProgress) return;
+			miningProgressAcc-=requiredProgress;
+
+			// Block.getDrops volá loot table správně, sám řeší correct tool podle requiresCorrectToolForDrops
+			List<ItemStack> drops=Block.getDrops(target,sl,miningPos,sl.getBlockEntity(miningPos),null,tool);
+			level.removeBlock(miningPos,false);
+			if(!drops.isEmpty()) distributeDrops(level,drops);
+
+			if(handleMiningAdvance(level,pos,state)) return;
 		}
-		level.sendBlockUpdated(pos,state,state,3);
+	}
+
+	private void distributeDrops(Level level,List<ItemStack> drops){
+		// Fresh check inventářů – žádný cache, vždy aktuální
+		List<IItemHandler> handlers=new ArrayList<>(6);
+		for(Direction dir: Direction.values()){
+			IItemHandler h=level.getCapability(Capabilities.ItemHandler.BLOCK,worldPosition.relative(dir),dir.getOpposite());
+			if(h!=null) handlers.add(h);
+		}
+		for(ItemStack drop: drops){
+			if(drop.isEmpty()) continue;
+			ItemStack remaining=drop;
+			for(IItemHandler h: handlers){
+				if(remaining.isEmpty()) break;
+				remaining=ItemHandlerHelper.insertItemStacked(h,remaining,false);
+			}
+			if(!remaining.isEmpty()) Block.popResource(level,worldPosition.above(),remaining);
+		}
 	}
 
 	private boolean handleMiningAdvance(Level level,BlockPos pos,BlockState state){
 		if(advanceMiningPos()) return false;
 		if(advanceToNextSection(level,state)) return false;
 		finishMining(level,pos,state); return true;
-	}
-
-	private void distributeDrops(Level level,List<ItemStack> drops){
-		if(drops.isEmpty()) return;
-		if(adjHandlers==null){
-			adjHandlers=new IItemHandler[Direction.values().length];
-			for(Direction dir: Direction.values())
-				adjHandlers[dir.ordinal()]=level.getCapability(Capabilities.ItemHandler.BLOCK,worldPosition.relative(dir),dir.getOpposite());
-		}
-		for(ItemStack drop: drops){
-			if(drop.isEmpty()) continue;
-			ItemStack remaining=drop;
-			for(IItemHandler handler: adjHandlers){
-				if(handler==null||remaining.isEmpty()) continue;
-				remaining=ItemHandlerHelper.insertItemStacked(handler,remaining,false);
-			}
-			if(!remaining.isEmpty()) Block.popResource(level,worldPosition,remaining);
-		}
 	}
 
 	private void finishMining(Level level,BlockPos pos,BlockState state){
