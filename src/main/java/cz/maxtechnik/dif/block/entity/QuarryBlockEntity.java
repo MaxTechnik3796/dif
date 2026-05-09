@@ -83,20 +83,21 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		}
 	};
 
+	// NOVÉ – prochází sloty 1 i 2, nekončí po prvním nálezu:
 	private void rebuildUpgradeCache(){
 		hasSilkTouch=false;
 		hasLiquidRemover=false;
-		ItemStack upgradeStack=inventory.getStackInSlot(2);
-		if(upgradeStack.isEmpty()) return;
-		if(upgradeStack.getItem()==Items.SPONGE){
-			hasLiquidRemover=true;
-			return;
-		}
-		if(upgradeStack.is(Items.ENCHANTED_BOOK)){
-			var stored=upgradeStack.get(net.minecraft.core.component.DataComponents.STORED_ENCHANTMENTS);
-			if(stored!=null) stored.keySet().forEach(holder->{
-				if(holder.is(Enchantments.SILK_TOUCH)) hasSilkTouch=true;
-			});
+		for(int i=1;i<=2;i++){
+			ItemStack stack=inventory.getStackInSlot(i);
+			if(stack.isEmpty()) continue;
+			if(stack.getItem()==Items.SPONGE){
+				hasLiquidRemover=true;
+			} else if(stack.is(Items.ENCHANTED_BOOK)){
+				var stored=stack.get(net.minecraft.core.component.DataComponents.STORED_ENCHANTMENTS);
+				if(stored!=null) stored.keySet().forEach(holder->{
+					if(holder.is(Enchantments.SILK_TOUCH)) hasSilkTouch=true;
+				});
+			}
 		}
 	}
 
