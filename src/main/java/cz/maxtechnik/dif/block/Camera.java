@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+@SuppressWarnings("deprecation")
 public class Camera extends BaseEntityBlock{
 	// 1. Definice Codecu pro NeoForge 1.21.1
 	public static final MapCodec<Camera> CODEC=simpleCodec(Camera::new);
