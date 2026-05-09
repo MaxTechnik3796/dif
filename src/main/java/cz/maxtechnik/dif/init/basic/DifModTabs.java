@@ -276,9 +276,6 @@ public class DifModTabs{
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.INGREDIENTS)){
 			tabData.insertAfter(new ItemStack(Items.AMETHYST_SHARD),new ItemStack(ENERGY_SHARD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.OP_BLOCKS)){
-			tabData.accept(EXAMPLE_ITEM.get());
-			tabData.accept(EXAMPLE_BLOCK.get());
-			tabData.accept(XP_STORAGE.get());
 			tabData.accept(END_PORTAL.get());
 			tabData.accept(END_GATEWAY.get());
 			tabData.accept(NETHER_PORTAL.get());

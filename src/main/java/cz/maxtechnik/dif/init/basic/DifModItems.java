@@ -99,11 +99,6 @@ public class DifModItems{
 	public static final DeferredItem<Item> JETPACK_TURBO_FUEL=REGISTRY.register("jetpack_turbo_fuel",Basic::new);
 	public static final DeferredItem<Item> JETPACK_CANISTER=REGISTRY.register("jetpack_canister",Basic::new);
 
-	//DEV:
-	public static final DeferredItem<Item> EXAMPLE_BLOCK=block(DifModBlocks.EXAMPLE_BLOCK);
-	public static final DeferredItem<Item> EXAMPLE_ITEM=REGISTRY.register("example_item",Test::new);
-	public static final DeferredItem<Item> XP_STORAGE=block(DifModBlocks.XP_STORAGE);
-
 	//Fluid:
 	public static final DeferredItem<Item> BEER_BUCKET=REGISTRY.register("beer_bucket",()->new BucketItem(DifModFluids.BEER.get(),new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 	public static final DeferredItem<Item> XP_BUCKET=REGISTRY.register("xp_bucket",()->new BucketItem(DifModFluids.XP.get(),new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));

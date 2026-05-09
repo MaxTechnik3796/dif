@@ -30,6 +30,7 @@ public class ModNetworking {
         registrar.playToServer(SpaceshipScreenButtonMessage.TYPE, SpaceshipScreenButtonMessage.STREAM_CODEC, SpaceshipScreenButtonMessage::handle);
         registrar.playToServer(ShiftGearPacket.TYPE, ShiftGearPacket.STREAM_CODEC, ShiftGearPacket::handle);
         registrar.playToServer(CameraExitPacket.TYPE, CameraExitPacket.STREAM_CODEC, CameraExitPacket::handle);
+        registrar.playToClient(JetpackSyncMessage.TYPE, JetpackSyncMessage.STREAM_CODEC, JetpackSyncMessage::handle); // ← přidej toto
 
         // Client-bound packets (Server -> Client)
         registrar.playToClient(SyncCarPositionPacket.TYPE, SyncCarPositionPacket.STREAM_CODEC, SyncCarPositionPacket::handle);

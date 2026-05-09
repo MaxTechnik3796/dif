@@ -28,104 +28,111 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+
 @SuppressWarnings("removal")
-public abstract class Jetpack extends ArmorItem{
-	public Jetpack(ArmorItem.Type type,Item.Properties properties){
-		super(DifModTiers.ARMOR_MATERIAL_JETPACK,type,properties.stacksTo(1));
+public abstract class Jetpack extends ArmorItem {
+	public Jetpack(ArmorItem.Type type, Item.Properties properties) {
+		super(DifModTiers.ARMOR_MATERIAL_JETPACK, type, properties.stacksTo(1));
 	}
-	public static class Chestplate extends Jetpack{
-		public Chestplate(){
-			super(Type.CHESTPLATE,new Item.Properties().stacksTo(1));
+
+	public static class Chestplate extends Jetpack {
+		public Chestplate() {
+			super(Type.CHESTPLATE, new Item.Properties().stacksTo(1));
 		}
+
 		@Override
 		public ResourceLocation getArmorTexture(@NotNull ItemStack stack, @NotNull Entity entity, @NotNull EquipmentSlot slot, ArmorMaterial.@NotNull Layer layer, boolean innerModel) {
-			return ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/models/armor/jetpack.png");
+			return ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "textures/models/armor/jetpack.png");
 		}
+
 		@Override
-		public void initializeClient(Consumer<IClientItemExtensions> consumer){
-			consumer.accept(new IClientItemExtensions(){
+		public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+			consumer.accept(new IClientItemExtensions() {
 				@Override
 				@OnlyIn(Dist.CLIENT)
-				public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity living,@NotNull ItemStack stack,@NotNull EquipmentSlot slot,@NotNull HumanoidModel<?> defaultModel){
-					HumanoidModel<?> armorModel=new HumanoidModel<>(new ModelPart(Collections.emptyList(),
-							Map.of("body",new ModelJetpack(Minecraft.getInstance().getEntityModels().bakeLayer(ModelJetpack.LAYER_LOCATION)).Body,
-									"left_arm",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
-									"right_arm",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
-									"head",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
-									"hat",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
-									"right_leg",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
-									"left_leg",new ModelPart(Collections.emptyList(),Collections.emptyMap()))));
-					armorModel.crouching=living.isShiftKeyDown();
-					armorModel.riding=defaultModel.riding;
-					armorModel.young=living.isBaby();
+				public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity living, @NotNull ItemStack stack, @NotNull EquipmentSlot slot, @NotNull HumanoidModel<?> defaultModel) {
+					HumanoidModel<?> armorModel = new HumanoidModel<>(new ModelPart(Collections.emptyList(),
+							Map.of("body", new ModelJetpack(Minecraft.getInstance().getEntityModels().bakeLayer(ModelJetpack.LAYER_LOCATION)).Body,
+									"left_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
+									"right_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
+									"head", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
+									"hat", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
+									"right_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
+									"left_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()))));
+					armorModel.crouching = living.isShiftKeyDown();
+					armorModel.riding = defaultModel.riding;
+					armorModel.young = living.isBaby();
 					return armorModel;
 				}
 			});
 		}
-		// === Fuel storage ===
-		public static int getFuel(ItemStack stack){
-			CustomData data=stack.get(DataComponents.CUSTOM_DATA);
-			if(data==null||!data.copyTag().contains("Fuel")) return 0;
-			return data.copyTag().getInt("Fuel");
+
+		// === Main storage (dlouhodobé) ===
+		public static int getMain(ItemStack stack) {
+			CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+			if (data == null || !data.copyTag().contains("Main")) return 0;
+			return data.copyTag().getInt("Main");
 		}
-		public static void setFuel(ItemStack stack,int value){
-			int max=isTurbo(stack)?DifModCommonConfig.jetpackMaxTurbo:DifModCommonConfig.jetpackMaxBasic;
-			stack.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,
-					data->data.update(tag->tag.putInt("Fuel",Mth.clamp(value,0,max))));
+		public static void setMain(ItemStack stack, int value) {
+			int max = DifModCommonConfig.jetpackMaxBasic;
+			stack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY,
+					data -> data.update(tag -> tag.putInt("Main", Mth.clamp(value, 0, max))));
 		}
-		public static boolean isTurbo(ItemStack stack){
-			CustomData data=stack.get(DataComponents.CUSTOM_DATA);
-			if(data==null||!data.copyTag().contains("Turbo")) return false;
-			return data.copyTag().getBoolean("Turbo");
+
+		// === Thrust storage (letové) ===
+		public static int getThrust(ItemStack stack) {
+			CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+			if (data == null || !data.copyTag().contains("Thrust")) return 0;
+			return data.copyTag().getInt("Thrust");
 		}
-		public static void setTurbo(ItemStack stack,boolean value){
-			stack.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,
-					data->data.update(tag->tag.putBoolean("Turbo",value)));
+		public static void setThrust(ItemStack stack, int value) {
+			int max = DifModCommonConfig.jetpackMaxBasic;
+			stack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY,
+					data -> data.update(tag -> tag.putInt("Thrust", Mth.clamp(value, 0, max))));
 		}
-		public static int getMaxFuel(ItemStack stack){
-			return isTurbo(stack)?DifModCommonConfig.jetpackMaxTurbo:DifModCommonConfig.jetpackMaxBasic;
+
+		public static int getMax() {
+			return DifModCommonConfig.jetpackMaxBasic;
 		}
-		public static boolean isFuel(ItemStack stack){
+
+		public static boolean isFuel(ItemStack stack) {
 			return stack.getItem().equals(DifModItems.JETPACK_FUEL.get());
 		}
-		public static boolean isTurboFuel(ItemStack stack){
-			return stack.getItem().equals(DifModItems.JETPACK_TURBO_FUEL.get());
-		}
-		// Počet paliva v inventáři (normalní nebo turbo podle aktuálního módu)
-		public static int countFuelInInventory(net.minecraft.world.entity.player.Player player,boolean turbo){
-			int count=0;
-			for(int i=0;i<player.getInventory().getContainerSize();i++){
-				ItemStack s=player.getInventory().getItem(i);
-				if(turbo?isTurboFuel(s):isFuel(s)) count+=s.getCount();
+
+		public static int countFuelInInventory(net.minecraft.world.entity.player.Player player) {
+			int count = 0;
+			for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+				ItemStack s = player.getInventory().getItem(i);
+				if (isFuel(s)) count += s.getCount();
 			}
 			return count;
 		}
+
+		// Bar ukazuje Thrust
 		@Override
-		public int getBarWidth(@NotNull ItemStack stack){
-			return Math.round(13F*(float)getFuel(stack)/(float)getMaxFuel(stack));
+		public int getBarWidth(@NotNull ItemStack stack) {
+			int max = getMax();
+			if (max <= 0) return 0;
+			return Math.round(13F * (float) getThrust(stack) / (float) max);
 		}
+
 		@Override
-		public int getBarColor(@NotNull ItemStack stack){
-			float f=Math.max(0,(float)getFuel(stack)/(float)getMaxFuel(stack));
-			return Mth.hsvToRgb(f*0.33F,1F,1F);
+		public int getBarColor(@NotNull ItemStack stack) {
+			float f = Math.max(0, (float) getThrust(stack) / (float) Math.max(1, getMax()));
+			return Mth.hsvToRgb(f * 0.33F, 1F, 1F);
 		}
+
 		@Override
-		public void appendHoverText(@NotNull ItemStack stack,@Nullable TooltipContext ctx,@NotNull List<Component> list,@NotNull TooltipFlag flag){
-			boolean turbo=isTurbo(stack);
-			int fuel=getFuel(stack);
-			int max=getMaxFuel(stack);
-			list.add(Component.literal("Fuel: "+fuel+" / "+max)
-					.withStyle(turbo?ChatFormatting.RED:ChatFormatting.YELLOW));
-			list.add(Component.literal(turbo?"TURBO":"NORMAL")
-					.withStyle(turbo?ChatFormatting.RED:ChatFormatting.GREEN));
+		public void appendHoverText(@NotNull ItemStack stack, @Nullable TooltipContext ctx, @NotNull List<Component> list, @NotNull TooltipFlag flag) {
+			int max = getMax();
+			list.add(Component.literal("Main:   " + getMain(stack) + " / " + max).withStyle(ChatFormatting.YELLOW));
+			list.add(Component.literal("Thrust: " + getThrust(stack) + " / " + max).withStyle(ChatFormatting.AQUA));
 		}
+
 		@Override
-		public boolean isEnchantable(@NotNull ItemStack stack){
-			return false;
-		}
+		public boolean isEnchantable(@NotNull ItemStack stack) { return false; }
+
 		@Override
-		public boolean isBarVisible(@NotNull ItemStack stack){
-			return true;
-		}
+		public boolean isBarVisible(@NotNull ItemStack stack) { return true; }
 	}
 }

@@ -83,6 +83,14 @@ public class DifMod {
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DifModBlockEntities.QUARRY.get(),
 			(be, side) -> be.getEnergyStorage());
 		ElectroRunners.Boots.registerCapability(event, DifModItems.ELECTRO_RUNNERS.get());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.ANDESITE_BARREL.get(),
+				(be, side) -> be.getInventory());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.COPPER_BARREL.get(),
+				(be, side) -> be.getInventory());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.BRASS_BARREL.get(),
+				(be, side) -> be.getInventory());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.SUPER_BOX.get(),
+				(be, side) -> be.getInventory());
 	}
 
 
