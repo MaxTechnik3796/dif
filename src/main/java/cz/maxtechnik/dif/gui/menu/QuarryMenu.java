@@ -67,7 +67,11 @@ public class QuarryMenu extends AbstractContainerMenu{
 		});
 		// Slot 1 – engine B
 		this.addSlot(new SlotItemHandler(internal,1,8,35){
-			@Override public boolean mayPlace(@NotNull ItemStack stack){ return stack.getItem() instanceof EngineItem; }
+			@Override public boolean mayPlace(@NotNull ItemStack stack){
+				return stack.getItem() instanceof EngineItem
+						|| stack.getItem()==Items.SPONGE
+						|| stack.getItem()==Items.ENCHANTED_BOOK;
+			}
 		});
 		// Slot 2 – engine C nebo upgrade (sponge / enchanted book)
 		this.addSlot(new SlotItemHandler(internal,2,8,53){
