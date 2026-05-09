@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.init.basic;
 
+import com.simibubi.create.AllCreativeModeTabs;
 import cz.maxtechnik.dif.DifMod;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -388,6 +389,15 @@ public class DifModTabs{
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
 			tabData.insertAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		}else if(tabData.getTab().equals(AllCreativeModeTabs.BASE_CREATIVE_TAB.get())){
+			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create","item_hatch")))),new ItemStack[]{new ItemStack(FLUID_HATCH.get())});
+		}else if(tabData.getTab().equals(AllCreativeModeTabs.PALETTES_CREATIVE_TAB.get())){
+			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create","framed_glass_trapdoor")))),
+					new ItemStack[]{
+							new ItemStack(BROKEN_TRACK00.get()),
+							new ItemStack(BROKEN_TRACK01.get()),
+							new ItemStack(BROKEN_TRACK02.get())
+					});
 		}
 	}
 }

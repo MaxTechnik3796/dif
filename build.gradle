@@ -82,10 +82,10 @@ repositories {
 
 dependencies {
     //Create
-    //implementation "curse.maven:create-328085:7963363"
-    //implementation("net.createmod.ponder:ponder-neoforge:1.0.82+mc1.21.1")
-    //compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-1.21.1:1.0.6")
-    //runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-1.21.1:1.0.6")
+    implementation "curse.maven:create-328085:7963363"
+    implementation("net.createmod.ponder:ponder-neoforge:1.0.82+mc1.21.1")
+    compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-1.21.1:1.0.6")
+    runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-1.21.1:1.0.6")
     // JEI
     compileOnly ("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly ("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
@@ -93,8 +93,8 @@ dependencies {
     // Ostatní mody z CurseMaven (zůstávají stejné)
     implementation "curse.maven:farmers-delight-398521:8007613"
     implementation "curse.maven:curios-continuation-1037991:5888964"
-    //runtimeOnly "curse.maven:createaddition-439890:7518252"
-    //runtimeOnly "curse.maven:slice-and-dice-659674:7738176"
+    runtimeOnly "curse.maven:createaddition-439890:7518252"
+    runtimeOnly "curse.maven:slice-and-dice-659674:7738176"
     runtimeOnly "curse.maven:jade-324717:7545219"
     runtimeOnly "curse.maven:mouse-tweaks-60089:5637846"
     runtimeOnly "curse.maven:appleskin-248787:7854442"
