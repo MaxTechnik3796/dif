@@ -36,9 +36,7 @@ public record MegaBackpackOpenPacket(int actionType, int pressedms) implements C
 			serverPlayer.openMenu(new SimpleMenuProvider(
 					(id, inventory, p) -> new MegaBackpackMenu(id, inventory),
 					Component.literal("Mega Backpack")
-			), buf -> {
-				buf.writeInt(0);
-			});
+			), buf ->buf.writeInt(0));
 		}
 	}
 }
