@@ -96,6 +96,10 @@ public class DifMod {
 				(be, side) -> be.getInventory());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.OLD_CHEST.get(),
 				(be, side) -> be.getInventory());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.BURNING_GENERATOR.get(),
+				(be, side) -> be.getItemHandler());
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DifModBlockEntities.BURNING_GENERATOR.get(),
+				(be, side) -> be.getEnergyStorage());
 	}
 
 

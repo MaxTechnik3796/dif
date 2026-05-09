@@ -8,6 +8,8 @@ import cz.maxtechnik.dif.block.entity.barrel.CopperBarrelBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BarrelBlockEntity;
+import net.minecraft.world.level.block.entity.BedBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -22,12 +24,14 @@ public class DifModBlockEntities{
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CopperBarrelBlockEntity>> COPPER_BARREL = register("copper_barrel", DifModBlocks.COPPER_BARREL, CopperBarrelBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BrassBarrelBlockEntity>> BRASS_BARREL = register("brass_barrel", DifModBlocks.BRASS_BARREL, BrassBarrelBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<OldChestBlockEntity>> OLD_CHEST = register("old_chest", DifModBlocks.OLD_CHEST, OldChestBlockEntity::new);
-	
+
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PortalBlockEntity>> PORTAL = REGISTRY.register("portal", () -> BlockEntityType.Builder.of(PortalBlockEntity::new, DifModBlocks.PORTAL_BLOCK.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SpaceshipBlockEntity>> SPACESHIP = register("spaceship", DifModBlocks.SPACESHIP, SpaceshipBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ChunkLoaderBlockEntity>> CHUNK_LOADER_BE = REGISTRY.register("chunk_loader_be", () -> BlockEntityType.Builder.of(ChunkLoaderBlockEntity::new, DifModBlocks.CHUNK_LOADER_1X1.get(), DifModBlocks.CHUNK_LOADER_3X3.get()).build(null));
 
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SpaceScaffoldingBlockEntity>> SPACE_SCAFFOLDING = REGISTRY.register("space_scaffolding", () -> BlockEntityType.Builder.of(SpaceScaffoldingBlockEntity::new, DifModBlocks.SPACE_CASING.get()).build(null));
+	// Opraveno: SPACE_SCAFFOLDING má správný blok (SPACE_SCAFFOLDING, ne SPACE_CASING)
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SpaceScaffoldingBlockEntity>> SPACE_SCAFFOLDING = REGISTRY.register("space_scaffolding", () -> BlockEntityType.Builder.of(SpaceScaffoldingBlockEntity::new, DifModBlocks.SPACE_SCAFFOLDING.get()).build(null));
+
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FryingTableBlockEntity>> FRYING_TABLE = REGISTRY.register("frying_table", () -> BlockEntityType.Builder.of(FryingTableBlockEntity::new, DifModBlocks.FRYING_TABLE.get()).build(null));
 
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CameraMonitorBlockEntity>> CAMERA_MONITOR = REGISTRY.register("monitor", () -> BlockEntityType.Builder.of(CameraMonitorBlockEntity::new, DifModBlocks.CAMERA_MONITOR.get()).build(null));
@@ -37,6 +41,11 @@ public class DifModBlockEntities{
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<QuarryFrameBlockEntity>> QUARRY_FRAME = REGISTRY.register("quarry_frame", () -> BlockEntityType.Builder.of(QuarryFrameBlockEntity::new, DifModBlocks.QUARRY_FRAME.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<QuarryLandmarkBlockEntity>> QUARRY_LANDMARK = REGISTRY.register("quarry_landmark", () -> BlockEntityType.Builder.of(QuarryLandmarkBlockEntity::new, DifModBlocks.QUARRY_LANDMARK.get()).build(null));
 
+	// Opraveno: SLEEPING_BAG používá vanilla BedBlockEntity
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BedBlockEntity>> SLEEPING_BAG = REGISTRY.register("sleeping_bag", () -> BlockEntityType.Builder.of(BedBlockEntity::new, DifModBlocks.SLEEPING_BAG.get()).build(null));
+
+	// Opraveno: SPACE_CRATE používá vanilla BarrelBlockEntity
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BarrelBlockEntity>> SPACE_CRATE = REGISTRY.register("space_crate", () -> BlockEntityType.Builder.of(BarrelBlockEntity::new, DifModBlocks.SPACE_CRATE.get()).build(null));
 
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BurningGeneratorBlockEntity>> BURNING_GENERATOR = REGISTRY.register("burning_generator", () -> BlockEntityType.Builder.of(BurningGeneratorBlockEntity::new, DifModBlocks.BURNING_GENERATOR.get()).build(null));
 
