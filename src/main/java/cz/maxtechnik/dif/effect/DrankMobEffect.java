@@ -6,7 +6,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
-@SuppressWarnings("deprecation")
 public class DrankMobEffect extends MobEffect{
 	public DrankMobEffect(){
 		super(MobEffectCategory.BENEFICIAL,-3407668);
