@@ -186,7 +186,7 @@ public class DifModTabs{
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES)){
 			tabData.insertBefore(new ItemStack(Items.BUCKET),new ItemStack(ELECTRUM_DESTROYER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertAfter(new ItemStack(Items.ELYTRA),new ItemStack(PHANTOM_RING.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			addItemStacksBehind(tabData,new ItemStack(Items.STONE),
+			addItemStacksBehind(tabData,new ItemStack(Items.STONE_HOE),
 					new ItemStack[]{
 							new ItemStack(COPPER_SHOVEL.get()),
 							new ItemStack(COPPER_PICKAXE.get()),
