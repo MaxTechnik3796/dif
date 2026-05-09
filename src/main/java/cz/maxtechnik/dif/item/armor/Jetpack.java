@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.item.armor;
 
+import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.DifModCommonConfig;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.other.DifModTiers;
@@ -10,7 +11,9 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
@@ -33,6 +36,10 @@ public abstract class Jetpack extends ArmorItem{
 	public static class Chestplate extends Jetpack{
 		public Chestplate(){
 			super(Type.CHESTPLATE,new Item.Properties().stacksTo(1));
+		}
+		@Override
+		public ResourceLocation getArmorTexture(@NotNull ItemStack stack, @NotNull Entity entity, @NotNull EquipmentSlot slot, ArmorMaterial.@NotNull Layer layer, boolean innerModel) {
+			return ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/models/armor/jetpack.png");
 		}
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer){
