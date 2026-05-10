@@ -3,7 +3,7 @@ package cz.maxtechnik.dif.block.entity;
 import cz.maxtechnik.dif.block.FryingTable;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
-import cz.maxtechnik.dif.recipes.FryingRecipe;
+import cz.maxtechnik.dif.recipe.FryingRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -34,14 +34,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
-
 public class FryingTableBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer{
 	public static final int SLOTS=2;
 	public static final int INPUT_SLOT=0;
 	public static final int OUTPUT_SLOT=1;
 	public int progress=0;
 	public NonNullList<ItemStack> stacks=NonNullList.withSize(SLOTS,ItemStack.EMPTY);
-
 	public final FluidTank fluidTank=new FluidTank(1000,fs->fs.getFluid()==DifModFluids.SUNFLOWER_OIL.get()){
 		@Override
 		protected void onContentsChanged(){
@@ -51,31 +49,54 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 				level.sendBlockUpdated(worldPosition,level.getBlockState(worldPosition),level.getBlockState(worldPosition),2);
 		}
 	};
-
 	private final IItemHandler[] itemHandlers=new IItemHandler[Direction.values().length];
-
 	public FryingTableBlockEntity(BlockPos pos,BlockState blockState){
 		super(DifModBlockEntities.FRYING_TABLE.get(),pos,blockState);
 		for(Direction dir: Direction.values())
 			itemHandlers[dir.ordinal()]=new SidedInvWrapper(this,dir);
 	}
-
 	@Nullable
 	public IItemHandler getItemHandler(@Nullable Direction side){
 		if(side==null) return itemHandlers[0];
 		return itemHandlers[side.ordinal()];
 	}
-
-	@Override public int @NotNull [] getSlotsForFace(@NotNull Direction side){ return new int[]{INPUT_SLOT,OUTPUT_SLOT}; }
-	@Override public boolean canPlaceItemThroughFace(int index,@NotNull ItemStack itemStack,@Nullable Direction direction){ return index==INPUT_SLOT; }
-	@Override public boolean canTakeItemThroughFace(int index,@NotNull ItemStack itemStack,@NotNull Direction direction){ return index==OUTPUT_SLOT; }
-	@Override protected @NotNull NonNullList<ItemStack> getItems(){ return this.stacks; }
-	@Override protected void setItems(@NotNull NonNullList<ItemStack> itemStacks){ this.stacks=itemStacks; }
-	@Override protected @NotNull Component getDefaultName(){ return Component.literal("Frying Table"); }
-	@Override public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory){ return ChestMenu.threeRows(id,inventory); }
-	@Override public int getContainerSize(){ return SLOTS; }
-	@Override public boolean isEmpty(){ for(ItemStack stack: this.stacks) if(!stack.isEmpty()) return false; return true; }
-
+	@Override
+	public int @NotNull [] getSlotsForFace(@NotNull Direction side){
+		return new int[]{INPUT_SLOT,OUTPUT_SLOT};
+	}
+	@Override
+	public boolean canPlaceItemThroughFace(int index,@NotNull ItemStack itemStack,@Nullable Direction direction){
+		return index==INPUT_SLOT;
+	}
+	@Override
+	public boolean canTakeItemThroughFace(int index,@NotNull ItemStack itemStack,@NotNull Direction direction){
+		return index==OUTPUT_SLOT;
+	}
+	@Override
+	protected @NotNull NonNullList<ItemStack> getItems(){
+		return this.stacks;
+	}
+	@Override
+	protected void setItems(@NotNull NonNullList<ItemStack> itemStacks){
+		this.stacks=itemStacks;
+	}
+	@Override
+	protected @NotNull Component getDefaultName(){
+		return Component.literal("Frying Table");
+	}
+	@Override
+	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory){
+		return ChestMenu.threeRows(id,inventory);
+	}
+	@Override
+	public int getContainerSize(){
+		return SLOTS;
+	}
+	@Override
+	public boolean isEmpty(){
+		for(ItemStack stack: this.stacks) if(!stack.isEmpty()) return false;
+		return true;
+	}
 	@Override
 	public void loadAdditional(@NotNull CompoundTag tag,HolderLookup.@NotNull Provider provider){
 		super.loadAdditional(tag,provider);
@@ -86,7 +107,6 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 		if(tag.get("fluidTank") instanceof CompoundTag fluidTag)
 			fluidTank.readFromNBT(provider,fluidTag);
 	}
-
 	@Override
 	public void saveAdditional(@NotNull CompoundTag tag,HolderLookup.@NotNull Provider provider){
 		super.saveAdditional(tag,provider);
@@ -95,19 +115,16 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 		tag.putInt("progress",this.progress);
 		tag.put("fluidTank",fluidTank.writeToNBT(provider,new CompoundTag()));
 	}
-
 	@Override
 	public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider provider){
 		CompoundTag tag=new CompoundTag();
 		ContainerHelper.saveAllItems(tag,this.stacks,provider);
 		return tag;
 	}
-
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket(){
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
-
 	@Override
 	public void setItem(int slot,@NotNull ItemStack stack){
 		this.unpackLootTable(null);
@@ -119,7 +136,6 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 				this.level.sendBlockUpdated(this.worldPosition,this.getBlockState(),this.getBlockState(),3);
 		}
 	}
-
 	public static void serverTick(Level world,BlockPos pos,BlockState blockState,FryingTableBlockEntity be){
 		boolean hasOil=!be.fluidTank.isEmpty();
 		boolean heated=FryingTable.isHeatSource(world,pos);
@@ -128,7 +144,6 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 		BlockState newState=blockState.setValue(FryingTable.OIL,hasOil).setValue(FryingTable.HEATED,heated).setValue(FryingTable.TRAY,tray);
 		if(!newState.equals(blockState))
 			world.setBlock(pos,newState,3);
-
 		// Vaření: potřebuje olej I heat source
 		if(!hasOil||!heated){
 			if(be.progress!=0){
@@ -137,11 +152,9 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 			}
 			return;
 		}
-
 		SingleRecipeInput recipeInput=new SingleRecipeInput(be.getItem(INPUT_SLOT));
 		Optional<RecipeHolder<FryingRecipe>> recipeOpt=
 				world.getRecipeManager().getRecipeFor(FryingRecipe.Type.INSTANCE,recipeInput,world);
-
 		if(recipeOpt.isPresent()){
 			FryingRecipe recipe=recipeOpt.get().value();
 			ItemStack result=recipe.getResultItem(world.registryAccess());
@@ -161,7 +174,6 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 			be.progress=0;
 		}
 	}
-
 	public static void clientTick(Level world,BlockPos pos){
 		RandomSource rng=world.getRandom();
 		// Částice jen pokud je zahřátý
@@ -176,12 +188,10 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 					SoundEvents.CAMPFIRE_CRACKLE,SoundSource.BLOCKS,
 					0.5F+rng.nextFloat(),rng.nextFloat()*0.7F+0.6F,false);
 	}
-
 	private static boolean canInsertResult(FryingTableBlockEntity be,ItemStack result){
 		ItemStack current=be.getItem(OUTPUT_SLOT);
 		return current.isEmpty()||(current.is(result.getItem())&&current.getCount()+result.getCount()<=result.getMaxStackSize());
 	}
-
 	private static void insertItem(FryingTableBlockEntity be,ItemStack result){
 		ItemStack current=be.getItem(OUTPUT_SLOT);
 		if(current.isEmpty()) be.setItem(OUTPUT_SLOT,result);

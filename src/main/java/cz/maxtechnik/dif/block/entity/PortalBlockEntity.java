@@ -27,7 +27,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-
 public class PortalBlockEntity extends BlockEntity{
 	private UUID owner;
 	private boolean isBlue;
@@ -35,31 +34,29 @@ public class PortalBlockEntity extends BlockEntity{
 	public long lastTeleportTime=0;
 	private int linkedCheckTimer=0;
 	private static final int LINKED_CHECK_INTERVAL=40;
-
 	private static final Map<UUID,Long> waitingPlayers=new HashMap<>();
 	private static final Map<UUID,Long> entityCooldowns=new HashMap<>();
-	public UUID getOwner(){ return owner; }
-	public boolean isBlue(){ return isBlue; }
-
+	public UUID getOwner(){
+		return owner;
+	}
+	public boolean isBlue(){
+		return isBlue;
+	}
 	public PortalBlockEntity(BlockPos pos,BlockState state){
 		super(DifModBlockEntities.PORTAL.get(),pos,state);
 	}
-
 	public void setup(UUID owner,boolean isBlue,Direction facing){
 		this.owner=owner;
 		this.isBlue=isBlue;
 		this.facing=facing;
 		this.setChanged();
 	}
-
 	public static void tick(Level level,BlockPos pos,BlockState state,PortalBlockEntity be){
 		if(be.owner==null) return;
 		if(!(level instanceof ServerLevel sl)) return;
 		if(!pos.equals(getPortal(sl,be.owner,be.isBlue))) return;
-
 		// Vždy čti aktuální stav z levelu
 		BlockState currentState=level.getBlockState(pos);
-
 		if(++be.linkedCheckTimer>=LINKED_CHECK_INTERVAL){
 			be.linkedCheckTimer=0;
 			boolean linked=getPortal(sl,be.owner,!be.isBlue)!=null;
@@ -74,24 +71,20 @@ public class PortalBlockEntity extends BlockEntity{
 				currentState=newState;
 			}
 		}
-
 		if(!currentState.getValue(PortalBlock.IS_LINKED)) return;
-
 		AABB box=currentState.getShape(level,pos).bounds().move(pos);
 		BlockPos extPos=pos.relative(currentState.getValue(PortalBlock.EXTENSION_DIR));
 		if(level.getBlockState(extPos).is(currentState.getBlock()))
 			box=box.minmax(level.getBlockState(extPos).getShape(level,extPos).bounds().move(extPos));
-
 		long now=level.getGameTime();
-
 		List<Player> players=level.getEntitiesOfClass(Player.class,box);
 		for(Player p: players){
 			UUID pid=p.getUUID();
 			if(now-be.lastTeleportTime<=DifModCommonConfig.portalTeleportCooldown) continue;
-			if(entityCooldowns.containsKey(pid)&&now-entityCooldowns.get(pid)<=DifModCommonConfig.portalTeleportCooldown) continue;
+			if(entityCooldowns.containsKey(pid)&&now-entityCooldowns.get(pid)<=DifModCommonConfig.portalTeleportCooldown)
+				continue;
 			be.tryTeleportPlayer(p,sl,now);
 		}
-
 		if(DifModCommonConfig.portalAllowEntities){
 			List<LivingEntity> mobs=level.getEntitiesOfClass(LivingEntity.class,box);
 			int count=0;
@@ -99,21 +92,22 @@ public class PortalBlockEntity extends BlockEntity{
 				if(mob instanceof Player) continue;
 				if(count>=DifModCommonConfig.portalMaxEntitiesPerTick) break;
 				UUID mid=mob.getUUID();
-				if(entityCooldowns.containsKey(mid)&&now-entityCooldowns.get(mid)<=DifModCommonConfig.portalTeleportCooldown) continue;
+				if(entityCooldowns.containsKey(mid)&&now-entityCooldowns.get(mid)<=DifModCommonConfig.portalTeleportCooldown)
+					continue;
 				be.tryTeleportEntity(mob,sl,now,false);
 				count++;
 			}
 			List<Entity> misc=level.getEntitiesOfClass(Entity.class,box,
-					e-> !(e instanceof LivingEntity) && !(e instanceof Projectile) && !(e instanceof ItemEntity));
+					e->!(e instanceof LivingEntity)&&!(e instanceof Projectile)&&!(e instanceof ItemEntity));
 			for(Entity e: misc){
 				if(count>=DifModCommonConfig.portalMaxEntitiesPerTick) break;
 				UUID eid=e.getUUID();
-				if(entityCooldowns.containsKey(eid)&&now-entityCooldowns.get(eid)<=DifModCommonConfig.portalTeleportCooldown) continue;
+				if(entityCooldowns.containsKey(eid)&&now-entityCooldowns.get(eid)<=DifModCommonConfig.portalTeleportCooldown)
+					continue;
 				be.tryTeleportEntity(e,sl,now,false);
 				count++;
 			}
 		}
-
 		if(DifModCommonConfig.portalAllowItems){
 			List<ItemEntity> items=level.getEntitiesOfClass(ItemEntity.class,box);
 			int count=0;
@@ -125,10 +119,8 @@ public class PortalBlockEntity extends BlockEntity{
 				count++;
 			}
 		}
-
 		entityCooldowns.entrySet().removeIf(e->now-e.getValue()>200);
 	}
-
 	private void tryTeleportPlayer(Player p,ServerLevel sl,long now){
 		UUID pid=p.getUUID();
 		BlockPos target=getPortal(sl,this.owner,!this.isBlue);
@@ -185,7 +177,6 @@ public class PortalBlockEntity extends BlockEntity{
 		other.lastTeleportTime=this.lastTeleportTime=now;
 		entityCooldowns.put(pid,now);
 	}
-
 	// isItem=true → menší offset (itemy jsou malé)
 	private void tryTeleportEntity(Entity entity,ServerLevel sl,long now,boolean isItem){
 		BlockPos target=getPortal(sl,this.owner,!this.isBlue);
@@ -194,22 +185,19 @@ public class PortalBlockEntity extends BlockEntity{
 			PortalData.get(sl).remove(this.owner,!this.isBlue);
 			return;
 		}
-		if(this.worldPosition.distSqr(target)>(long)DifModCommonConfig.portalMaxDistance*DifModCommonConfig.portalMaxDistance) return;
+		if(this.worldPosition.distSqr(target)>(long)DifModCommonConfig.portalMaxDistance*DifModCommonConfig.portalMaxDistance)
+			return;
 		if(!sl.isLoaded(target)) return;
-
 		Vec3 newMotion=transformVelocity(entity.getDeltaMovement(),this.facing,other.facing);
-
 		// Offset závisí na směru výstupního portálu – posuneme entitu před plochu portálu
 		double offsetScale=isItem?0.3:0.6;
 		double tx=target.getX()+0.5+(other.facing.getStepX()*offsetScale);
 		double ty=target.getY()+0.5+(other.facing.getStepY()*offsetScale);
 		double tz=target.getZ()+0.5+(other.facing.getStepZ()*offsetScale);
-
 		// Pro moby které mají výšku – posuneme dolů aby nestáli ve vzduchu
 		if(!isItem&&entity instanceof LivingEntity living){
 			ty=target.getY()+(other.facing==Direction.UP?0.5:(other.facing==Direction.DOWN?-living.getBbHeight():0.0));
 		}
-
 		entity.teleportTo(tx,ty,tz);
 		entity.setDeltaMovement(newMotion);
 		entity.hurtMarked=true;
@@ -217,7 +205,6 @@ public class PortalBlockEntity extends BlockEntity{
 		assert level!=null;
 		level.playSound(null,target,SoundEvents.BEACON_POWER_SELECT,SoundSource.BLOCKS,0.5F,1.4F);
 	}
-
 	private static Vec3 transformVelocity(Vec3 velocity,Direction inFacing,Direction outFacing){
 		double speed=velocity.length();
 		if(speed<0.001) return velocity;
@@ -227,11 +214,9 @@ public class PortalBlockEntity extends BlockEntity{
 		Vec3 transformed=rotateVector(norm,inAxis,outAxis);
 		return transformed.scale(speed);
 	}
-
 	private static Vec3 dirToVec(Direction d){
 		return new Vec3(d.getStepX(),d.getStepY(),d.getStepZ());
 	}
-
 	private static Vec3 rotateVector(Vec3 v,Vec3 from,Vec3 to){
 		Vec3 axis=from.cross(to);
 		double sinAngle=axis.length();
@@ -243,15 +228,12 @@ public class PortalBlockEntity extends BlockEntity{
 		axis=axis.normalize();
 		return v.scale(cosAngle).add(axis.cross(v).scale(sinAngle)).add(axis.scale(axis.dot(v)*(1-cosAngle)));
 	}
-
 	public static void savePortal(ServerLevel l,UUID id,boolean b,BlockPos p){
 		PortalData.get(l).set(id,b,p);
 	}
-
 	public static BlockPos getPortal(ServerLevel l,UUID id,boolean b){
 		return PortalData.get(l).getPos(id,b);
 	}
-
 	public static void removeOldPortal(ServerLevel l,UUID id,boolean b){
 		BlockPos p=getPortal(l,id,b);
 		if(p==null) return;
@@ -269,7 +251,6 @@ public class PortalBlockEntity extends BlockEntity{
 			l.setChunkForced(p.getX()>>4,p.getZ()>>4,false);
 		}
 	}
-
 	@Override
 	public void loadAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider provider){
 		super.loadAdditional(tag,provider);
@@ -277,7 +258,6 @@ public class PortalBlockEntity extends BlockEntity{
 		isBlue=tag.getBoolean("b");
 		if(tag.contains("f")) facing=Direction.byName(tag.getString("f"));
 	}
-
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider provider){
 		super.saveAdditional(tag,provider);
@@ -285,17 +265,14 @@ public class PortalBlockEntity extends BlockEntity{
 		tag.putBoolean("b",isBlue);
 		if(facing!=null) tag.putString("f",facing.getName());
 	}
-
 	public static class PortalData extends SavedData{
 		private final Map<UUID,Map<Boolean,BlockPos>> map=new HashMap<>();
-
 		public static PortalData get(ServerLevel l){
 			return l.getDataStorage().computeIfAbsent(
 					new SavedData.Factory<>(PortalData::new,PortalData::load),
 					"dif_portals"
 			);
 		}
-
 		public static PortalData load(CompoundTag t,HolderLookup.Provider provider){
 			PortalData d=new PortalData();
 			t.getAllKeys().forEach(k->{
@@ -307,7 +284,6 @@ public class PortalBlockEntity extends BlockEntity{
 			});
 			return d;
 		}
-
 		@Override
 		public @NotNull CompoundTag save(@NotNull CompoundTag t,@NotNull HolderLookup.Provider provider){
 			map.forEach((k,v)->{
@@ -318,16 +294,13 @@ public class PortalBlockEntity extends BlockEntity{
 			});
 			return t;
 		}
-
 		public void set(UUID id,boolean b,BlockPos p){
 			map.computeIfAbsent(id,k->new HashMap<>()).put(b,p);
 			setDirty();
 		}
-
 		public BlockPos getPos(UUID id,boolean b){
 			return map.getOrDefault(id,Map.of()).get(b);
 		}
-
 		public void remove(UUID id,boolean b){
 			Map<Boolean,BlockPos> m=map.get(id);
 			if(m!=null){

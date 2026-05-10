@@ -175,7 +175,8 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 		if(handItem.is(DifModItems.SUNFLOWER_OIL_BUCKET.get())){
 			int accepted=be.fluidTank.fill(new FluidStack(DifModFluids.SUNFLOWER_OIL.get(),1000),IFluidHandler.FluidAction.EXECUTE);
 			if(accepted>0){
-				if(!player.getAbilities().instabuild) player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,new ItemStack(net.minecraft.world.item.Items.BUCKET));
+				if(!player.getAbilities().instabuild)
+					player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,new ItemStack(net.minecraft.world.item.Items.BUCKET));
 				world.playSound(null,pos,SoundEvents.BUCKET_EMPTY,SoundSource.BLOCKS,1F,1F);
 				be.setChanged();
 				return InteractionResult.SUCCESS;
@@ -208,7 +209,8 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 				handItem.setCount(0);
 				be.setChanged();
 				world.playSound(null,pos,SoundEvents.LANTERN_PLACE,SoundSource.BLOCKS,1F,1F);
-				if(blockstate.getValue(OIL)&&blockstate.getValue(HEATED)) world.playSound(null,pos,ModSounds.BLOCK_SKILLET_ADD_FOOD.get(),SoundSource.BLOCKS,1F,1F);
+				if(blockstate.getValue(OIL)&&blockstate.getValue(HEATED))
+					world.playSound(null,pos,ModSounds.BLOCK_SKILLET_ADD_FOOD.get(),SoundSource.BLOCKS,1F,1F);
 				return InteractionResult.SUCCESS;
 			}
 		}else{

@@ -3,7 +3,7 @@ package cz.maxtechnik.dif.compat.jei;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
-import cz.maxtechnik.dif.recipes.FryingRecipe;
+import cz.maxtechnik.dif.recipe.FryingRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
