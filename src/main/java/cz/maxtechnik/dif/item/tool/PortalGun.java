@@ -7,7 +7,6 @@ import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -29,15 +28,15 @@ public class PortalGun extends Item{
 
 	private boolean isBlueMode(ItemStack gun){
 		var data=gun.get(DataComponents.CUSTOM_DATA);
-		return data==null||data.copyTag().getBoolean("mode");
+		if(data==null) return true;
+		return data.copyTag().getBoolean("mode");
 	}
 
-	private void setMode(ItemStack gun, boolean mode){
-		var existing = gun.get(DataComponents.CUSTOM_DATA);
-		CompoundTag tag = existing != null ? existing.copyTag() : new CompoundTag();
-		tag.putBoolean("mode", mode);
-		tag.putInt("CustomModelData", mode ? 1 : 0);
-		gun.set(DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(tag));
+	private void setMode(ItemStack gun,boolean mode){
+		net.minecraft.world.item.component.CustomData.update(DataComponents.CUSTOM_DATA,gun,tag->{
+			tag.putBoolean("mode",mode);
+		});
+		gun.set(DataComponents.CUSTOM_MODEL_DATA,new net.minecraft.world.item.component.CustomModelData(mode?0:1));
 	}
 
 	private int getEnergy(ItemStack gun){
