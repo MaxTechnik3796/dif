@@ -101,6 +101,8 @@ public class DifMod {
 				(be, side) -> be.getInventory());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.SPACESHIP.get(),
 				(be, side) -> be.getItemHandler());
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, DifModBlockEntities.DISTILLATION_TANK.get(),
+				(be, side) -> be.getFluidHandler());
 	}
 
 
