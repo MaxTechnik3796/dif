@@ -1,16 +1,11 @@
 package cz.maxtechnik.dif.block;
 
 import cz.maxtechnik.dif.block.entity.SleepingBagBlockEntity;
-import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.DyeItem;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -50,7 +45,7 @@ public class SleepingBagBlock extends BaseEntityBlock{
 
 	@Override
 	protected @NotNull com.mojang.serialization.MapCodec<? extends BaseEntityBlock> codec(){
-		return net.minecraft.world.level.block.state.BlockBehaviour.simpleCodec(p -> new SleepingBagBlock());
+		return net.minecraft.world.level.block.state.BlockBehaviour.simpleCodec(p->new SleepingBagBlock());
 	}
 
 	@Override
@@ -75,7 +70,6 @@ public class SleepingBagBlock extends BaseEntityBlock{
 	@Override
 	public void onRemove(BlockState state,@NotNull Level level,@NotNull BlockPos pos,BlockState newState,boolean moving){
 		if(!state.is(newState.getBlock())){
-			// Smaž i druhý blok
 			BlockPos otherPos;
 			if(state.getValue(PART)==BedPart.FOOT)
 				otherPos=pos.relative(state.getValue(FACING));
@@ -90,37 +84,23 @@ public class SleepingBagBlock extends BaseEntityBlock{
 
 	@Override
 	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
-		// Barvení s barvivem (shift+pravý klik)
-		if(player.isShiftKeyDown()){
-			ItemStack held=player.getMainHandItem();
-			if(held.getItem() instanceof DyeItem dye){
-				if(level.isClientSide) return InteractionResult.SUCCESS;
-				BlockPos headPos=state.getValue(PART)==BedPart.FOOT?pos.relative(state.getValue(FACING)):pos;
-				if(level.getBlockEntity(headPos) instanceof SleepingBagBlockEntity be){
-					be.setColor(dye.getDyeColor());
-					if(!player.getAbilities().instabuild) held.shrink(1);
-					player.displayClientMessage(Component.literal("§7Barva spacáku změněna."),true);
-				}
-				return InteractionResult.CONSUME;
-			}
-		}
-
 		if(level.isClientSide) return InteractionResult.CONSUME;
 
-		// Najdi head pozici
+		// Přejdi na HEAD
 		if(state.getValue(PART)!=BedPart.HEAD){
 			pos=pos.relative(state.getValue(FACING));
 			state=level.getBlockState(pos);
 			if(!state.is(this)) return InteractionResult.FAIL;
 		}
 
+		// Exploduje v Netheru / Endu
 		if(!BedBlock.canSetSpawn(level)){
 			level.explode(null,pos.getX()+0.5,pos.getY()+0.5,pos.getZ()+0.5,5.0F,Level.ExplosionInteraction.BLOCK);
 			return InteractionResult.SUCCESS;
 		}
 
 		if(state.getValue(OCCUPIED)){
-			player.displayClientMessage(Component.translatable("block.minecraft.bed.occupied"),true);
+			player.displayClientMessage(net.minecraft.network.chat.Component.translatable("block.minecraft.bed.occupied"),true);
 			return InteractionResult.SUCCESS;
 		}
 
@@ -129,6 +109,11 @@ public class SleepingBagBlock extends BaseEntityBlock{
 				player.displayClientMessage(problem.getMessage(),true);
 		});
 		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	public boolean isBed(@NotNull BlockState state,@NotNull BlockGetter level,@NotNull BlockPos pos,@Nullable LivingEntity sleeper){
+		return true;
 	}
 
 	@Override
@@ -148,7 +133,6 @@ public class SleepingBagBlock extends BaseEntityBlock{
 
 	@Override
 	public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		// Pouze HEAD blok má block entity
 		return state.getValue(PART)==BedPart.HEAD?new SleepingBagBlockEntity(pos,state):null;
 	}
 
@@ -159,12 +143,12 @@ public class SleepingBagBlock extends BaseEntityBlock{
 	}
 
 	@Override
-	public @NotNull BlockState rotate(BlockState state,Rotation rot){
+	protected @NotNull BlockState rotate(@NotNull BlockState state,@NotNull Rotation rot){
 		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));
 	}
 
 	@Override
-	public @NotNull BlockState mirror(BlockState state,Mirror mirror){
-		return state.rotate(mirror.getRotation(state.getValue(FACING)));
+	protected @NotNull BlockState mirror(@NotNull BlockState state,@NotNull Mirror mirror){
+		return state.setValue(FACING,mirror.mirror(state.getValue(FACING)));
 	}
 }
