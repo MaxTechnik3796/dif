@@ -57,7 +57,8 @@ public class DistillationControllerBlockEntity extends BlockEntity{
 			FluidStack input=new FluidStack(DifModFluids.CRUDE_OIL,10);
 			FluidStack[] output={
 					new FluidStack(DifModFluids.JETPACK_FUEL,5),
-					new FluidStack(Fluids.WATER,5)
+					new FluidStack(Fluids.WATER,5),
+					new FluidStack(Fluids.LAVA,5),
 			};
 			if(!(level.getBlockState(pos.above()).getBlock()instanceof DistillationTank)) return;
 			if(tank.getFluidInTank(0).getAmount()>=input.getAmount()&&tank.getFluidInTank(0).getFluid().equals(input.getFluid())){
