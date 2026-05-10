@@ -292,6 +292,9 @@ public class DifModTabs{
 
 			tabData.accept(SLEEPING_BAG.get());
 
+			tabData.accept(DISTILLATION_CONTROLLER.get());
+			tabData.accept(DISTILLATION_TANK.get());
+
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
 			tabData.insertAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);

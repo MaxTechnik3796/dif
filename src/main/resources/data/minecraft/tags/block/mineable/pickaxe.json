@@ -51,6 +51,8 @@
 		"dif:remote_minecart_block",
 		"dif:camera",
 		"dif:camera_monitor",
-		"dif:quarry"
+		"dif:quarry",
+		"dif:distillation_controller",
+		"dif:distillation_tank"
 	]
 }

@@ -32,6 +32,8 @@
 		"dif:quarry_frame",
 		"dif:quarry_landmark",
 		"dif:aurora_casing",
-		"#dif:space_industrial_blocks"
+		"#dif:space_industrial_blocks",
+		"dif:distillation_controller",
+		"dif:distillation_tank"
 	]
 }

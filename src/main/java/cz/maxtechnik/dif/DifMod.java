@@ -48,11 +48,10 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 @SuppressWarnings({"removal","deprecation"})
 @Mod(DifMod.MODID)
-public class DifMod {
-	public static final String MODID = "dif";
-	public static final Logger LOGGER = LogUtils.getLogger();
-
-	public DifMod(IEventBus bus, ModContainer modContainer) {
+public class DifMod{
+	public static final String MODID="dif";
+	public static final Logger LOGGER=LogUtils.getLogger();
+	public DifMod(IEventBus bus,ModContainer modContainer){
 		// Registrace modulů
 		DifModBlocks.REGISTRY.register(bus);
 		DifModItems.REGISTRY.register(bus);
@@ -73,107 +72,83 @@ public class DifMod {
 		NeoForge.EVENT_BUS.register(JetpackHandler.class);
 		NeoForge.EVENT_BUS.addListener(DifMod::onRenderGui);
 		bus.addListener(DifModTabs::addCreative);
-		modContainer.registerConfig(ModConfig.Type.COMMON, DifModCommonConfig.SPEC);
+		modContainer.registerConfig(ModConfig.Type.COMMON,DifModCommonConfig.SPEC);
 		bus.addListener(DifMod::registerCapabilities);
 	}
-
 	private static void registerCapabilities(RegisterCapabilitiesEvent event){
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.QUARRY.get(),
-			(be, side) -> be.getInventory());
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DifModBlockEntities.QUARRY.get(),
-			(be, side) -> be.getEnergyStorage());
-		ElectroRunners.Boots.registerCapability(event, DifModItems.ELECTRO_RUNNERS.get());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.ANDESITE_BARREL.get(),
-				(be, side) -> be.getInventory());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.COPPER_BARREL.get(),
-				(be, side) -> be.getInventory());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.BRASS_BARREL.get(),
-				(be, side) -> be.getInventory());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.SUPER_BOX.get(),
-				(be, side) -> be.getInventory());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.OLD_CHEST.get(),
-				(be, side) -> be.getInventory());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.BURNING_GENERATOR.get(),
-				(be, side) -> be.getItemHandler());
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DifModBlockEntities.BURNING_GENERATOR.get(),
-				(be, side) -> be.getEnergyStorage());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.SPACE_CRATE.get(),
-				(be, side) -> be.getInventory());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.SPACESHIP.get(),
-				(be, side) -> be.getItemHandler());
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, DifModBlockEntities.DISTILLATION_TANK.get(),
-				(be, side) -> be.getFluidHandler());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.QUARRY.get(),(be,side)->be.getInventory());
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK,DifModBlockEntities.QUARRY.get(),(be,side)->be.getEnergyStorage());
+		ElectroRunners.Boots.registerCapability(event,DifModItems.ELECTRO_RUNNERS.get());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.ANDESITE_BARREL.get(),(be,side)->be.getInventory());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.COPPER_BARREL.get(),(be,side)->be.getInventory());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.BRASS_BARREL.get(),(be,side)->be.getInventory());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.SUPER_BOX.get(),(be,side)->be.getInventory());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.OLD_CHEST.get(),(be,side)->be.getInventory());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.BURNING_GENERATOR.get(),(be,side)->be.getItemHandler());
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK,DifModBlockEntities.BURNING_GENERATOR.get(),(be,side)->be.getEnergyStorage());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.SPACE_CRATE.get(),(be,side)->be.getInventory());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.SPACESHIP.get(),(be,side)->be.getItemHandler());
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.DISTILLATION_CONTROLLER.get(),(be,side)->be.getFluidHandler());
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.DISTILLATION_TANK.get(),(be,side)->be.getFluidHandler());
 	}
-
-
 	@SubscribeEvent
-	public void onServerStarting(ServerStartingEvent event) {
+	public void onServerStarting(ServerStartingEvent event){
 		LOGGER.info("DIF MOD: Server Starting");
 	}
-
 	@SubscribeEvent
-	public void onCommandsRegister(RegisterCommandsEvent event) {
+	public void onCommandsRegister(RegisterCommandsEvent event){
 		ChunkLoaderCommand.register(event.getDispatcher());
 		IsChunkLoadedCommand.register(event.getDispatcher());
 		ConfigReloadCommand.register(event.getDispatcher());
 	}
-	public static void onRenderGui(RenderGuiLayerEvent.Post event) {
-		if (event.getName().equals(net.neoforged.neoforge.client.gui.VanillaGuiLayers.HOTBAR)) {
+	public static void onRenderGui(RenderGuiLayerEvent.Post event){
+		if(event.getName().equals(net.neoforged.neoforge.client.gui.VanillaGuiLayers.HOTBAR)){
 			CarHudOverlay.render(event.getGuiGraphics());
 		}
 	}
-
-	@EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-	public static class ClientModEvents {
-
-
+	@EventBusSubscriber(modid=MODID, bus=EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
+	public static class ClientModEvents{
 		@SubscribeEvent
-		public static void onClientSetup(FMLClientSetupEvent event) {
+		public static void onClientSetup(FMLClientSetupEvent event){
 			LOGGER.info("DIF MOD: Client Setup");
-			event.enqueueWork(() -> {
-				try {
+			event.enqueueWork(()->{
+				try{
 					LOGGER.info("DIF MOD: Flywheel BER fallback setup pro BrassLargeWaterWheel");
-
-					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.QUARRY_LANDMARK.get(), RenderType.cutout());
-				} catch (Exception e) {
-					LOGGER.error("DIF MOD: Chyba při Flywheel setup", e);
+					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.QUARRY_LANDMARK.get(),RenderType.cutout());
+				}catch(Exception e){
+					LOGGER.error("DIF MOD: Chyba při Flywheel setup",e);
 				}
 			});
 		}
-
 		@SubscribeEvent
-		public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(), context -> new FryingTableRenderer());
-			event.registerBlockEntityRenderer(DifModBlockEntities.QUARRY.get(), context -> new QuarryRenderer());
-			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(), context -> new ChunkLoaderRenderer());
-			event.registerEntityRenderer(DifModEntities.FORMULA.get(), CarRenderer::new);
-			event.registerEntityRenderer(DifModEntities.REMOTE_MINECART.get(),context -> new MinecartRenderer<>(context,ModelLayers.MINECART)
+		public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event){
+			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(),context->new FryingTableRenderer());
+			event.registerBlockEntityRenderer(DifModBlockEntities.QUARRY.get(),context->new QuarryRenderer());
+			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(),context->new ChunkLoaderRenderer());
+			event.registerEntityRenderer(DifModEntities.FORMULA.get(),CarRenderer::new);
+			event.registerEntityRenderer(DifModEntities.REMOTE_MINECART.get(),context->new MinecartRenderer<>(context,ModelLayers.MINECART)
 			);
 		}
 	}
-
-	public static String goggleTooltipFix = "    ";
-
-	public static boolean rouletteBoolean(int range) {
-		return 0 == Mth.nextInt(RandomSource.create(), 0, range);
+	public static String goggleTooltipFix="    ";
+	public static boolean rouletteBoolean(int range){
+		return 0==Mth.nextInt(RandomSource.create(),0,range);
 	}
-
-	public static boolean mouseIn(int mouseX, int mouseY, int x, int y, int w, int h) {
-		return mouseX >= x && mouseX < x + w && mouseY >= y && mouseY < y + h;
+	public static boolean mouseIn(int mouseX,int mouseY,int x,int y,int w,int h){
+		return mouseX>=x&&mouseX<x+w&&mouseY>=y&&mouseY<y+h;
 	}
-
-	public static void sendMessageToPlayer(Player player, MutableComponent message) {
-		MutableComponent messageTemplate = Component.empty();
+	public static void sendMessageToPlayer(Player player,MutableComponent message){
+		MutableComponent messageTemplate=Component.empty();
 		messageTemplate.append(Component.translatable("chat.dif.mod_prefix"));
 		messageTemplate.append(CommonComponents.space());
 		messageTemplate.append(message);
 		player.sendSystemMessage(messageTemplate);
 	}
-
-	public static boolean playerGameModeIsCreativeCategory(ServerPlayer player) {
+	public static boolean playerGameModeIsCreativeCategory(ServerPlayer player){
 		return player.gameMode.isCreative()||player.gameMode.getGameModeForPlayer().equals(GameType.SPECTATOR);
 	}
-	public static void addItemStacksBehind(BuildCreativeModeTabContentsEvent tabData, ItemStack startStack, ItemStack[] addStacks) {
-		for(ItemStack addStack:addStacks) tabData.insertAfter(startStack,addStack,CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+	public static void addItemStacksBehind(BuildCreativeModeTabContentsEvent tabData,ItemStack startStack,ItemStack[] addStacks){
+		for(ItemStack addStack: addStacks)
+			tabData.insertAfter(startStack,addStack,CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 	}
 }

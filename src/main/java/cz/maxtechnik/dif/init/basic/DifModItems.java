@@ -51,6 +51,7 @@ public class DifModItems{
 	public static final DeferredItem<Item> QUARRY_ENGINE_GOLD=REGISTRY.register("quarry_engine_gold",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.GOLD_ENGINE_QP_GEN,QuarryStats.GOLD_ENGINE_FE_COST));
 	public static final DeferredItem<Item> QUARRY_ENGINE_DIAMOND=REGISTRY.register("quarry_engine_diamond",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.DIAMOND_ENGINE_QP_GEN,QuarryStats.DIAMOND_ENGINE_FE_COST));
 
+	public static final DeferredItem<Item> DISTILLATION_CONTROLLER = block(DifModBlocks.DISTILLATION_CONTROLLER);
 	public static final DeferredItem<Item> DISTILLATION_TANK = block(DifModBlocks.DISTILLATION_TANK);
 
 	public static final DeferredItem<Item>REMOTE_MINECART=REGISTRY.register("remote_minecart",()->new RemoteMinecartItem(new Item.Properties().stacksTo(1)));
