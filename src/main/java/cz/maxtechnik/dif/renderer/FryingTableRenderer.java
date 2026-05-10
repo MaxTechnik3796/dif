@@ -19,7 +19,7 @@ public class FryingTableRenderer implements BlockEntityRenderer<FryingTableBlock
 		ItemStack inputStack=blockEntity.getItem(FryingTableBlockEntity.INPUT_SLOT);
 		if(!inputStack.isEmpty()){
 			poseStack.pushPose();
-			poseStack.translate(0.5D,0.75D,0.5D);
+			poseStack.translate(0.5D,0.3D,0.5D);
 			poseStack.scale(0.6F,0.6F,0.6F);
 			renderItemStack(inputStack,poseStack,buffer,combinedLight,combinedOverlay,itemRenderer,false);
 			poseStack.popPose();
@@ -27,7 +27,7 @@ public class FryingTableRenderer implements BlockEntityRenderer<FryingTableBlock
 		ItemStack outputStack=blockEntity.getItem(FryingTableBlockEntity.OUTPUT_SLOT);
 		if(!outputStack.isEmpty()){
 			poseStack.pushPose();
-			poseStack.translate(0.75D,0.72D,0.7D);
+			poseStack.translate(0.75D,0.3D,0.7D);
 			poseStack.scale(0.4F,0.4F,0.4F);
 			renderItemStack(outputStack,poseStack,buffer,combinedLight,combinedOverlay,itemRenderer,true);
 			poseStack.popPose();

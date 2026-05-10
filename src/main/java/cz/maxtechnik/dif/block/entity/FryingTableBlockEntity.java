@@ -34,110 +34,48 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+
 public class FryingTableBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer{
 	public static final int SLOTS=2;
 	public static final int INPUT_SLOT=0;
 	public static final int OUTPUT_SLOT=1;
 	public int progress=0;
 	public NonNullList<ItemStack> stacks=NonNullList.withSize(SLOTS,ItemStack.EMPTY);
-	// -------------------------------------------------------------------------
-	// Fluid tank
-	// -------------------------------------------------------------------------
+
 	public final FluidTank fluidTank=new FluidTank(1000,fs->fs.getFluid()==DifModFluids.SUNFLOWER_OIL.get()){
 		@Override
 		protected void onContentsChanged(){
 			super.onContentsChanged();
 			setChanged();
-			if(level!=null){
-				level.sendBlockUpdated(worldPosition,
-						level.getBlockState(worldPosition),
-						level.getBlockState(worldPosition),2);
-			}
+			if(level!=null)
+				level.sendBlockUpdated(worldPosition,level.getBlockState(worldPosition),level.getBlockState(worldPosition),2);
 		}
 	};
-	// -------------------------------------------------------------------------
-	// Item handler (SidedInvWrapper) – v NeoForge 1.21.1 se registruje přes
-	// BlockEntityType.registerCapability() v hlavní mod třídě nebo event handleru,
-	// NE přes getCapability override.
-	// Viz: DifModBlockEntities nebo @Mod konstruktor:
-	//   event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,
-	//       DifModBlockEntities.FRYING_TABLE.get(),
-	//       (be, side) -> be.getItemHandler(side));
-	// -------------------------------------------------------------------------
+
 	private final IItemHandler[] itemHandlers=new IItemHandler[Direction.values().length];
+
 	public FryingTableBlockEntity(BlockPos pos,BlockState blockState){
 		super(DifModBlockEntities.FRYING_TABLE.get(),pos,blockState);
-		for(Direction dir: Direction.values()){
+		for(Direction dir: Direction.values())
 			itemHandlers[dir.ordinal()]=new SidedInvWrapper(this,dir);
-		}
 	}
-	/**
-	 * Použij toto v capability registration callbacku.
-	 * Příklad registrace v hlavní mod třídě (@Mod konstruktor nebo RegisterCapabilitiesEvent):
-	 * <pre>
-	 * event.registerBlockEntity(
-	 *     Capabilities.ItemHandler.BLOCK,
-	 *     DifModBlockEntities.FRYING_TABLE.get(),
-	 *     (be, side) -> be.getItemHandler(side)
-	 * );
-	 * event.registerBlockEntity(
-	 *     Capabilities.FluidHandler.BLOCK,
-	 *     DifModBlockEntities.FRYING_TABLE.get(),
-	 *     (be, side) -> be.fluidTank
-	 * );
-	 * </pre>
-	 */
+
 	@Nullable
 	public IItemHandler getItemHandler(@Nullable Direction side){
 		if(side==null) return itemHandlers[0];
 		return itemHandlers[side.ordinal()];
 	}
-	// -------------------------------------------------------------------------
-	// WorldlyContainer
-	// -------------------------------------------------------------------------
-	@Override
-	public int @NotNull [] getSlotsForFace(@NotNull Direction side){
-		return new int[]{INPUT_SLOT,OUTPUT_SLOT};
-	}
-	@Override
-	public boolean canPlaceItemThroughFace(int index,@NotNull ItemStack itemStack,@Nullable Direction direction){
-		return index==INPUT_SLOT;
-	}
-	@Override
-	public boolean canTakeItemThroughFace(int index,@NotNull ItemStack itemStack,@NotNull Direction direction){
-		return index==OUTPUT_SLOT;
-	}
-	// -------------------------------------------------------------------------
-	// RandomizableContainerBlockEntity
-	// -------------------------------------------------------------------------
-	@Override
-	protected @NotNull NonNullList<ItemStack> getItems(){
-		return this.stacks;
-	}
-	@Override
-	protected void setItems(@NotNull NonNullList<ItemStack> itemStacks){
-		this.stacks=itemStacks;
-	}
-	@Override
-	protected @NotNull Component getDefaultName(){
-		return Component.literal("Frying Table");
-	}
-	@Override
-	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory){
-		return ChestMenu.threeRows(id,inventory);
-	}
-	@Override
-	public int getContainerSize(){
-		return SLOTS;
-	}
-	@Override
-	public boolean isEmpty(){
-		for(ItemStack stack: this.stacks) if(!stack.isEmpty()) return false;
-		return true;
-	}
-	// -------------------------------------------------------------------------
-	// NBT – v 1.21.1 loadAdditional přijímá HolderLookup.Provider
-	// -------------------------------------------------------------------------
+
+	@Override public int @NotNull [] getSlotsForFace(@NotNull Direction side){ return new int[]{INPUT_SLOT,OUTPUT_SLOT}; }
+	@Override public boolean canPlaceItemThroughFace(int index,@NotNull ItemStack itemStack,@Nullable Direction direction){ return index==INPUT_SLOT; }
+	@Override public boolean canTakeItemThroughFace(int index,@NotNull ItemStack itemStack,@NotNull Direction direction){ return index==OUTPUT_SLOT; }
+	@Override protected @NotNull NonNullList<ItemStack> getItems(){ return this.stacks; }
+	@Override protected void setItems(@NotNull NonNullList<ItemStack> itemStacks){ this.stacks=itemStacks; }
+	@Override protected @NotNull Component getDefaultName(){ return Component.literal("Frying Table"); }
+	@Override public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory){ return ChestMenu.threeRows(id,inventory); }
+	@Override public int getContainerSize(){ return SLOTS; }
+	@Override public boolean isEmpty(){ for(ItemStack stack: this.stacks) if(!stack.isEmpty()) return false; return true; }
+
 	@Override
 	public void loadAdditional(@NotNull CompoundTag tag,HolderLookup.@NotNull Provider provider){
 		super.loadAdditional(tag,provider);
@@ -148,6 +86,7 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 		if(tag.get("fluidTank") instanceof CompoundTag fluidTag)
 			fluidTank.readFromNBT(provider,fluidTag);
 	}
+
 	@Override
 	public void saveAdditional(@NotNull CompoundTag tag,HolderLookup.@NotNull Provider provider){
 		super.saveAdditional(tag,provider);
@@ -156,22 +95,19 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 		tag.putInt("progress",this.progress);
 		tag.put("fluidTank",fluidTank.writeToNBT(provider,new CompoundTag()));
 	}
-	// -------------------------------------------------------------------------
-	// Sync packet
-	// -------------------------------------------------------------------------
+
 	@Override
 	public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider provider){
 		CompoundTag tag=new CompoundTag();
 		ContainerHelper.saveAllItems(tag,this.stacks,provider);
 		return tag;
 	}
+
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket(){
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
-	// -------------------------------------------------------------------------
-	// setItem – vyvolá sync na klientovi
-	// -------------------------------------------------------------------------
+
 	@Override
 	public void setItem(int slot,@NotNull ItemStack stack){
 		this.unpackLootTable(null);
@@ -183,19 +119,31 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 				this.level.sendBlockUpdated(this.worldPosition,this.getBlockState(),this.getBlockState(),3);
 		}
 	}
-	// -------------------------------------------------------------------------
-	// Tick – server
-	// -------------------------------------------------------------------------
+
 	public static void serverTick(Level world,BlockPos pos,BlockState blockState,FryingTableBlockEntity be){
-		// Aktualizuj stav bloku (má/nemá olej)
-		if(be.fluidTank.isEmpty())
-			world.setBlock(pos,blockState.setValue(FryingTable.OIL,false),3);
-		else
-			world.setBlock(pos,blockState.setValue(FryingTable.OIL,true),3);
-		// Hledej recept – v 1.21.1 getRecipeFor vrací Optional<RecipeHolder<T>>
+		boolean hasOil=!be.fluidTank.isEmpty();
+		boolean heated=FryingTable.isHeatSource(world,pos);
+
+		// Aktualizuj blockstate OIL a HEATED
+		BlockState newState=blockState
+				.setValue(FryingTable.OIL,hasOil)
+				.setValue(FryingTable.HEATED,heated);
+		if(!newState.equals(blockState))
+			world.setBlock(pos,newState,3);
+
+		// Vaření: potřebuje olej I heat source
+		if(!hasOil||!heated){
+			if(be.progress!=0){
+				be.progress=0;
+				be.setChanged();
+			}
+			return;
+		}
+
 		SingleRecipeInput recipeInput=new SingleRecipeInput(be.getItem(INPUT_SLOT));
 		Optional<RecipeHolder<FryingRecipe>> recipeOpt=
 				world.getRecipeManager().getRecipeFor(FryingRecipe.Type.INSTANCE,recipeInput,world);
+
 		if(recipeOpt.isPresent()){
 			FryingRecipe recipe=recipeOpt.get().value();
 			ItemStack result=recipe.getResultItem(world.registryAccess());
@@ -215,11 +163,12 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 			be.progress=0;
 		}
 	}
-	// -------------------------------------------------------------------------
-	// Tick – klient (částice + zvuky)
-	// -------------------------------------------------------------------------
+
 	public static void clientTick(Level world,BlockPos pos){
 		RandomSource rng=world.getRandom();
+		// Částice jen pokud je zahřátý
+		BlockState state=world.getBlockState(pos);
+		if(!state.hasProperty(FryingTable.HEATED)||!state.getValue(FryingTable.HEATED)) return;
 		if(rng.nextInt(12)==0)
 			world.addParticle(ParticleTypes.LAVA,
 					pos.getX()+0.5,pos.getY()+0.3,pos.getZ()+0.5,
@@ -229,14 +178,12 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 					SoundEvents.CAMPFIRE_CRACKLE,SoundSource.BLOCKS,
 					0.5F+rng.nextFloat(),rng.nextFloat()*0.7F+0.6F,false);
 	}
-	// -------------------------------------------------------------------------
-	// Pomocné metody
-	// -------------------------------------------------------------------------
+
 	private static boolean canInsertResult(FryingTableBlockEntity be,ItemStack result){
 		ItemStack current=be.getItem(OUTPUT_SLOT);
-		return current.isEmpty()||
-				(current.is(result.getItem())&&current.getCount()+result.getCount()<=result.getMaxStackSize());
+		return current.isEmpty()||(current.is(result.getItem())&&current.getCount()+result.getCount()<=result.getMaxStackSize());
 	}
+
 	private static void insertItem(FryingTableBlockEntity be,ItemStack result){
 		ItemStack current=be.getItem(OUTPUT_SLOT);
 		if(current.isEmpty()) be.setItem(OUTPUT_SLOT,result);

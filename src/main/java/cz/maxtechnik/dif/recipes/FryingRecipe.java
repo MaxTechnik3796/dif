@@ -13,56 +13,49 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import static cz.maxtechnik.dif.block.entity.FryingTableBlockEntity.INPUT_SLOT;
+
 public class FryingRecipe implements Recipe<SingleRecipeInput>{
 	private final Ingredient input;
 	private final ItemStack output;
 	private final int processingTime;
 	private final int oilAmount;
+
 	public FryingRecipe(Ingredient input,ItemStack output,int processingTime,int oilAmount){
 		this.input=input;
 		this.output=output;
 		this.processingTime=processingTime;
 		this.oilAmount=oilAmount;
 	}
+
+	public Ingredient getIngredient(){ return input; }
+	public int getProcessingTime(){ return processingTime; }
+	public int getOilAmount(){ return oilAmount; }
+
 	@Override
 	public boolean matches(@NotNull SingleRecipeInput recipeInput,@NotNull Level level){
 		return input.test(recipeInput.getItem(INPUT_SLOT));
 	}
+
 	@Override
 	public @NotNull ItemStack assemble(@NotNull SingleRecipeInput recipeInput,HolderLookup.@NotNull Provider provider){
 		return output.copy();
 	}
+
+	@Override public boolean canCraftInDimensions(int width,int height){ return true; }
+
 	@Override
-	public boolean canCraftInDimensions(int width,int height){
-		return true;
-	}
+	public @NotNull ItemStack getResultItem(HolderLookup.@NotNull Provider provider){ return output; }
+
 	@Override
-	public @NotNull ItemStack getResultItem(HolderLookup.@NotNull Provider provider){
-		return output;
-	}
+	public @NotNull RecipeSerializer<?> getSerializer(){ return DifModRecipes.FRYING_SERIALIZER.get(); }
+
 	@Override
-	public @NotNull RecipeSerializer<?> getSerializer(){
-		return DifModRecipes.FRYING_SERIALIZER.get();
-	}
-	@Override
-	public @NotNull RecipeType<?> getType(){
-		return DifModRecipes.FRYING_TYPE.get();
-	}
-	public int getProcessingTime(){
-		return processingTime;
-	}
-	public int getOilAmount(){
-		return oilAmount;
-	}
-	// -------------------------------------------------------------------------
-	// Recipe Type
-	// -------------------------------------------------------------------------
+	public @NotNull RecipeType<?> getType(){ return DifModRecipes.FRYING_TYPE.get(); }
+
 	public static class Type implements RecipeType<FryingRecipe>{
 		public static final Type INSTANCE=new Type();
 	}
-	// -------------------------------------------------------------------------
-	// Serializer – v 1.21.1 NeoForge: MapCodec + StreamCodec, žádný fromJson/fromNetwork
-	// -------------------------------------------------------------------------
+
 	public static class Serializer implements RecipeSerializer<FryingRecipe>{
 		public static final MapCodec<FryingRecipe> CODEC=RecordCodecBuilder.mapCodec(instance->
 				instance.group(
@@ -80,13 +73,8 @@ public class FryingRecipe implements Recipe<SingleRecipeInput>{
 						net.minecraft.network.codec.ByteBufCodecs.INT,r->r.oilAmount,
 						FryingRecipe::new
 				);
-		@Override
-		public @NotNull MapCodec<FryingRecipe> codec(){
-			return CODEC;
-		}
-		@Override
-		public @NotNull StreamCodec<RegistryFriendlyByteBuf,FryingRecipe> streamCodec(){
-			return STREAM_CODEC;
-		}
+
+		@Override public @NotNull MapCodec<FryingRecipe> codec(){ return CODEC; }
+		@Override public @NotNull StreamCodec<RegistryFriendlyByteBuf,FryingRecipe> streamCodec(){ return STREAM_CODEC; }
 	}
 }

@@ -6,9 +6,12 @@ import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
@@ -43,46 +46,67 @@ import vectorwing.farmersdelight.common.registry.ModSounds;
 
 import static cz.maxtechnik.dif.block.entity.FryingTableBlockEntity.INPUT_SLOT;
 import static cz.maxtechnik.dif.block.entity.FryingTableBlockEntity.OUTPUT_SLOT;
+
 @SuppressWarnings("deprecation")
 public class FryingTable extends Block implements SimpleWaterloggedBlock, EntityBlock{
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
 	public static final BooleanProperty OIL=BooleanProperty.create("oil");
+	public static final BooleanProperty HEATED=BooleanProperty.create("heated");
+
+	// Farmers Delight heat source tags
+	public static final TagKey<Block> TAG_HEAT_SOURCES=BlockTags.create(
+			ResourceLocation.fromNamespaceAndPath("farmersdelight","heat_sources"));
+	public static final TagKey<Block> TAG_TRAY_HEAT_SOURCES=BlockTags.create(
+			ResourceLocation.fromNamespaceAndPath("farmersdelight","tray_heat_sources"));
+
 	public FryingTable(){
 		super(Properties.of()
 				.strength(0.5F,6F)
 				.sound(SoundType.LANTERN)
 				.requiresCorrectToolForDrops()
 				.noOcclusion()
-				.isRedstoneConductor((bs,br,bp)->false)
-				.lightLevel(state->15));
+				.isRedstoneConductor((bs,br,bp)->false));
 		this.registerDefaultState(this.stateDefinition.any()
 				.setValue(FACING,Direction.NORTH)
 				.setValue(WATERLOGGED,false)
-				.setValue(OIL,false));
+				.setValue(OIL,false)
+				.setValue(HEATED,false));
 	}
+
+	/** Returns true if the block below pos is a valid heat source */
+	public static boolean isHeatSource(Level level, BlockPos pos){
+		BlockState below=level.getBlockState(pos.below());
+		return below.is(TAG_HEAT_SOURCES)||below.is(TAG_TRAY_HEAT_SOURCES);
+	}
+
 	@Override
 	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
 		return 0;
 	}
+
 	@Override
 	public @NotNull VoxelShape getVisualShape(@NotNull BlockState state,@NotNull BlockGetter world,
 	                                          @NotNull BlockPos pos,@NotNull CollisionContext context){
 		return Shapes.empty();
 	}
+
 	@Override
 	public @NotNull VoxelShape getShape(@NotNull BlockState state,@NotNull BlockGetter world,
 	                                    @NotNull BlockPos pos,@NotNull CollisionContext context){
-		return box(0,0,0,16,13,16);
+		return box(0,0,0,16,4,16);
 	}
+
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
-		builder.add(FACING,WATERLOGGED,OIL);
+		builder.add(FACING,WATERLOGGED,OIL,HEATED);
 	}
+
 	@Override
 	public float getShadeBrightness(@NotNull BlockState blockState,@NotNull BlockGetter blockGetter,@NotNull BlockPos pos){
 		return 1F;
 	}
+
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context){
 		boolean flag=context.getLevel().getFluidState(context.getClickedPos()).getType()==Fluids.WATER;
@@ -90,18 +114,22 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 				.setValue(FACING,context.getHorizontalDirection().getOpposite())
 				.setValue(WATERLOGGED,flag);
 	}
+
 	@Override
 	public @NotNull BlockState rotate(BlockState state,Rotation rot){
 		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));
 	}
+
 	@Override
 	public @NotNull BlockState mirror(BlockState state,Mirror mirrorIn){
 		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
 	}
+
 	@Override
 	public @NotNull FluidState getFluidState(BlockState state){
 		return state.getValue(WATERLOGGED)?Fluids.WATER.getSource(false):super.getFluidState(state);
 	}
+
 	@Override
 	public @NotNull BlockState updateShape(BlockState state,@NotNull Direction facing,
 	                                       @NotNull BlockState facingState,@NotNull LevelAccessor world,
@@ -111,15 +139,18 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 		}
 		return super.updateShape(state,facing,facingState,world,currentPos,facingPos);
 	}
+
 	@Override
 	public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
 		return new FryingTableBlockEntity(pos,blockState);
 	}
+
 	@Override
 	public MenuProvider getMenuProvider(@NotNull BlockState blockState,Level worldIn,@NotNull BlockPos pos){
 		BlockEntity te=worldIn.getBlockEntity(pos);
 		return te instanceof MenuProvider mp?mp:null;
 	}
+
 	@Override
 	public boolean triggerEvent(@NotNull BlockState blockState,@NotNull Level world,
 	                            @NotNull BlockPos pos,int eventID,int eventParam){
@@ -127,6 +158,7 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 		BlockEntity be=world.getBlockEntity(pos);
 		return be!=null&&be.triggerEvent(eventID,eventParam);
 	}
+
 	@Override
 	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,
 	                     BlockState newState,boolean isMoving){
@@ -139,20 +171,24 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 			super.onRemove(state,world,pos,newState,isMoving);
 		}
 	}
+
 	@Override
 	public boolean hasAnalogOutputSignal(@NotNull BlockState blockState){
 		return true;
 	}
+
 	@Override
 	public int getAnalogOutputSignal(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos){
 		BlockEntity te=world.getBlockEntity(pos);
 		return te instanceof FryingTableBlockEntity be?AbstractContainerMenu.getRedstoneSignalFromContainer(be):0;
 	}
+
 	@Override
 	public void tick(@NotNull BlockState blockstate,@NotNull ServerLevel world,
 	                 @NotNull BlockPos pos,@NotNull RandomSource random){
 		super.tick(blockstate,world,pos,random);
 	}
+
 	@Override
 	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,
 	                                                                        @NotNull BlockState state,
@@ -161,6 +197,7 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 				?createClientTicker(type,DifModBlockEntities.FRYING_TABLE.get())
 				:createServerTicker(type,DifModBlockEntities.FRYING_TABLE.get());
 	}
+
 	@Nullable
 	protected static <T extends BlockEntity> BlockEntityTicker<T> createServerTicker(
 			BlockEntityType<T> type,BlockEntityType<? extends FryingTableBlockEntity> expected){
@@ -168,18 +205,14 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 				?(lvl,pos,state,be)->FryingTableBlockEntity.serverTick(lvl,pos,state,(FryingTableBlockEntity)be)
 				:null;
 	}
+
 	protected static <T extends BlockEntity> BlockEntityTicker<T> createClientTicker(
 			BlockEntityType<T> type,BlockEntityType<? extends FryingTableBlockEntity> expected){
 		return type==expected
 				?(lvl,pos,state,be)->FryingTableBlockEntity.clientTick(lvl,pos)
 				:null;
 	}
-	// -------------------------------------------------------------------------
-	// use() – interakce hráče s blokem
-	// V NeoForge 1.21.1: InteractionHand a BlockHitResult jsou stále stejné,
-	// ale metoda se jmenuje useWithoutItem / useItemOn podle kontextu.
-	// Pro zpětnou kompatibilitu zachováváme use() override.
-	// -------------------------------------------------------------------------
+
 	@Override
 	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockstate,@NotNull Level world,
 	                                                 @NotNull BlockPos pos,@NotNull Player player,
@@ -188,6 +221,7 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 		BlockEntity blockEntity=world.getBlockEntity(pos);
 		if(!(blockEntity instanceof FryingTableBlockEntity be)) return InteractionResult.PASS;
 		ItemStack handItem=player.getMainHandItem();
+
 		// 1. NALÉVÁNÍ OLEJE
 		if(handItem.is(DifModItems.SUNFLOWER_OIL_BUCKET.get())){
 			int accepted=be.fluidTank.fill(new FluidStack(DifModFluids.SUNFLOWER_OIL.get(),1000),
@@ -228,7 +262,7 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 				handItem.setCount(0);
 				be.setChanged();
 				world.playSound(null,pos,SoundEvents.LANTERN_PLACE,SoundSource.BLOCKS,1F,1F);
-				if(blockstate.getValue(OIL))
+				if(blockstate.getValue(OIL)&&blockstate.getValue(HEATED))
 					world.playSound(null,pos,ModSounds.BLOCK_SKILLET_ADD_FOOD.get(),SoundSource.BLOCKS,1F,1F);
 				return InteractionResult.SUCCESS;
 			}

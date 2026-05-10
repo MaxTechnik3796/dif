@@ -1,34 +1,23 @@
 {
 	"variants":{
-		"facing=north,oil=false":{
-			"model":"dif:block/frying_table"
-		},
-		"facing=east,oil=false":{
-			"model":"dif:block/frying_table",
-			"y":90
-		},
-		"facing=south,oil=false":{
-			"model":"dif:block/frying_table",
-			"y":180
-		},
-		"facing=west,oil=false":{
-			"model":"dif:block/frying_table",
-			"y":270
-		},
-		"facing=north,oil=true":{
-			"model":"dif:block/frying_table_oil"
-		},
-		"facing=east,oil=true":{
-			"model":"dif:block/frying_table_oil",
-			"y":90
-		},
-		"facing=south,oil=true":{
-			"model":"dif:block/frying_table_oil",
-			"y":180
-		},
-		"facing=west,oil=true":{
-			"model":"dif:block/frying_table_oil",
-			"y":270
-		}
+		"facing=north,heated=false,oil=false":{"model":"dif:block/frying_table"},
+		"facing=east,heated=false,oil=false":{"model":"dif:block/frying_table","y":90},
+		"facing=south,heated=false,oil=false":{"model":"dif:block/frying_table","y":180},
+		"facing=west,heated=false,oil=false":{"model":"dif:block/frying_table","y":270},
+
+		"facing=north,heated=false,oil=true":{"model":"dif:block/frying_table_oil"},
+		"facing=east,heated=false,oil=true":{"model":"dif:block/frying_table_oil","y":90},
+		"facing=south,heated=false,oil=true":{"model":"dif:block/frying_table_oil","y":180},
+		"facing=west,heated=false,oil=true":{"model":"dif:block/frying_table_oil","y":270},
+
+		"facing=north,heated=true,oil=false":{"model":"dif:block/frying_table_heated"},
+		"facing=east,heated=true,oil=false":{"model":"dif:block/frying_table_heated","y":90},
+		"facing=south,heated=true,oil=false":{"model":"dif:block/frying_table_heated","y":180},
+		"facing=west,heated=true,oil=false":{"model":"dif:block/frying_table_heated","y":270},
+
+		"facing=north,heated=true,oil=true":{"model":"dif:block/frying_table_heated_oil"},
+		"facing=east,heated=true,oil=true":{"model":"dif:block/frying_table_heated_oil","y":90},
+		"facing=south,heated=true,oil=true":{"model":"dif:block/frying_table_heated_oil","y":180},
+		"facing=west,heated=true,oil=true":{"model":"dif:block/frying_table_heated_oil","y":270}
 	}
 }
