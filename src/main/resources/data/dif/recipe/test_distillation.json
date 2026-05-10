@@ -1,0 +1,9 @@
+{
+  "type": "dif:distillation",
+  "input": { "fluid": "minecraft:lava", "amount": 1000 },
+  "outputs": [
+    { "fluid": "minecraft:water", "amount": 500 },
+    { "fluid": "minecraft:lava", "amount": 300 }
+  ],
+  "processingTime": 200
+}

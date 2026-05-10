@@ -124,7 +124,7 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>PORTAL_BLOCK=REGISTRY.register("portal_block",()->new PortalBlock(BlockBehaviour.Properties.of().noCollission().noOcclusion().pushReaction(PushReaction.BLOCK)));
 	public static final DeferredBlock<Block>FRYING_TABLE=REGISTRY.register("frying_table",FryingTable::new);
 
-
+	public static final DeferredBlock<Block> DISTILLATION_TANK = REGISTRY.register("distillation_tank", DistillationTankBlock::new);
 
 	//Space:
 	public static final DeferredBlock<Block>AURORA_CASING=REGISTRY.register("aurora_casing",()->new Custom(SoundType.NETHERITE_BLOCK,4F,4F,true));
