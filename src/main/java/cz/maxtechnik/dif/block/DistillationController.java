@@ -27,9 +27,7 @@ public class DistillationController extends Block implements EntityBlock{
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T> type){
 		if(level.isClientSide) return null;
-		return type==DifModBlockEntities.DISTILLATION_CONTROLLER.get()
-				?(lvl,pos,st,be)->DistillationControllerBlockEntity.serverTick(lvl,pos,(DistillationControllerBlockEntity)be)
-				:null;
+		return type==DifModBlockEntities.DISTILLATION_CONTROLLER.get()?(lvl,pos,st,be)->DistillationControllerBlockEntity.serverTick(lvl,pos,(DistillationControllerBlockEntity)be):null;
 	}
 	@Override
 	public boolean hasAnalogOutputSignal(@NotNull BlockState state){
