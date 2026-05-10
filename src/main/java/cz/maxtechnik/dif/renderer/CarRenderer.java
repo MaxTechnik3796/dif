@@ -40,7 +40,7 @@ public class CarRenderer<T extends BaseCarEntity> extends EntityRenderer<T>{
 		if(entity instanceof FormulaEntity formula){
 			int color=formula.getColor();
 			int argbColor=FastColor.ARGB32.color(255,(color>>16&255),(color>>8&255),(color&255));
-			model.renderToBuffer(poseStack,buffer.getBuffer(model.renderType(TEX_COLOR)),l,OverlayTexture.NO_OVERLAY,argbColor);
+			model.renderToBuffer(poseStack,buffer.getBuffer(model.renderType(TEX_COLOR)),net.minecraft.client.renderer.LightTexture.FULL_BRIGHT,OverlayTexture.NO_OVERLAY,argbColor);
 		}
 		poseStack.popPose();
 		super.render(entity,y,partialTick,poseStack,buffer,l);

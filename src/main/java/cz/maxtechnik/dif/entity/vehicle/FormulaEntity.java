@@ -45,7 +45,7 @@ public class FormulaEntity extends BaseCarEntity{
 			// offsetZ: Kladné číslo posouvá hráče DOPŘEDU.
 			// Pokud je teď moc vzadu, zvyšte toto číslo (např. z -0.2F na 0.3F nebo 0.5F).
 			float offsetZ=0.55F;
-			float offsetY=-0.525F; // Výška zůstává, aby seděl v díře
+			float offsetY=-0.8F; // Výška zůstává, aby seděl v díře
 			double x=this.getX()+(double)(net.minecraft.util.Mth.sin(-this.getYRot()*((float)Math.PI/180F))*offsetZ);
 			double z=this.getZ()+(double)(net.minecraft.util.Mth.cos(this.getYRot()*((float)Math.PI/180F))*offsetZ);
 			// In 1.21.1: getPassengersRidingOffset() and getMyRidingOffset() were removed

@@ -5,73 +5,87 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import cz.maxtechnik.dif.DifMod;
 import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 
-public class SkyRenderer {
-	private static final ResourceLocation EARTH_TEXTURE = ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "textures/environment/earth.png");
+public class SkyRenderer{
+	private static final ResourceLocation EARTH_TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/environment/earth.png");
 
-	public static void renderCustomSky(ClientLevel level, DeltaTracker partialTick, PoseStack poseStack, String mode) {
+	public static void renderCustomSky(ClientLevel level,DeltaTracker partialTick,PoseStack poseStack,String mode){
+		Minecraft mc=Minecraft.getInstance();
+
 		RenderSystem.disableDepthTest();
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.depthMask(false);
 
-		Tesselator tesselator = Tesselator.getInstance();
+		// Klíčový fix: použijeme fresh PoseStack BEZ camera rotace
+		// poseStack z eventu obsahuje camera transform, takže geometrie by se otáčela s pohledem
+		// Místo toho vytvoříme nový stack a aplikujeme jen rotaci kamery naopak
+		PoseStack skyStack=new PoseStack();
 
-		if (mode.equals("orbit")) {
-			poseStack.pushPose();
+		// Získej rotaci kamery a aplikuj ji na sky stack (stejně jako vanilla sky renderer)
+		float pitch=mc.gameRenderer.getMainCamera().getXRot();
+		float yaw=mc.gameRenderer.getMainCamera().getYRot();
+		skyStack.mulPose(Axis.XP.rotationDegrees(pitch));
+		skyStack.mulPose(Axis.YP.rotationDegrees(yaw+180F));
+
+		Tesselator tesselator=Tesselator.getInstance();
+
+		if(mode.equals("orbit")){
+			// Země pevně dole – Y záporné = pod hráčem
+			skyStack.pushPose();
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderTexture(0, EARTH_TEXTURE);
-			Matrix4f matrix = poseStack.last().pose();
-			float planetSize = 250F;
+			RenderSystem.setShaderTexture(0,EARTH_TEXTURE);
+			Matrix4f matrix=skyStack.last().pose();
+			float size=200F;
 
-			BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-			bufferbuilder.addVertex(matrix, -planetSize, -100F,  planetSize).setUv(0, 1);
-			bufferbuilder.addVertex(matrix,  planetSize, -100F,  planetSize).setUv(1, 1);
-			bufferbuilder.addVertex(matrix,  planetSize, -100F, -planetSize).setUv(1, 0);
-			bufferbuilder.addVertex(matrix, -planetSize, -100F, -planetSize).setUv(0, 0);
-			BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+			BufferBuilder buf=tesselator.begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_TEX);
+			// Plochý quad pod hráčem (Y=-80 = daleko dole)
+			buf.addVertex(matrix,-size,-80F, size).setUv(0,1);
+			buf.addVertex(matrix, size,-80F, size).setUv(1,1);
+			buf.addVertex(matrix, size,-80F,-size).setUv(1,0);
+			buf.addVertex(matrix,-size,-80F,-size).setUv(0,0);
+			BufferUploader.drawWithShader(buf.buildOrThrow());
+			skyStack.popPose();
 
-			poseStack.popPose();
-
-		} else if (mode.equals("moon")) {
-			// --- 1. ČERNÁ MASKA ---
-			poseStack.pushPose();
-			float moonAngle = level.getTimeOfDay(partialTick.getGameTimeDeltaPartialTick(true)) + 0.5F;
-			poseStack.mulPose(Axis.ZP.rotationDegrees(moonAngle * 360F));
+		}else if(mode.equals("moon")){
+			// Černá maska přes vanillový měsíc
+			skyStack.pushPose();
+			float moonAngle=level.getTimeOfDay(partialTick.getGameTimeDeltaPartialTick(true))+0.5F;
+			skyStack.mulPose(Axis.ZP.rotationDegrees(moonAngle*360F));
 			RenderSystem.setShader(GameRenderer::getPositionColorShader);
-			Matrix4f maskMatrix = poseStack.last().pose();
-			float maskSize = 16F;
+			Matrix4f maskMatrix=skyStack.last().pose();
+			float maskSize=16F;
 
-			BufferBuilder maskBuffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-			maskBuffer.addVertex(maskMatrix, -maskSize, 98F, -maskSize).setColor(0, 0, 0, 255);
-			maskBuffer.addVertex(maskMatrix,  maskSize, 98F, -maskSize).setColor(0, 0, 0, 255);
-			maskBuffer.addVertex(maskMatrix,  maskSize, 98F,  maskSize).setColor(0, 0, 0, 255);
-			maskBuffer.addVertex(maskMatrix, -maskSize, 98F,  maskSize).setColor(0, 0, 0, 255);
-			BufferUploader.drawWithShader(maskBuffer.buildOrThrow());
+			BufferBuilder maskBuf=tesselator.begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_COLOR);
+			maskBuf.addVertex(maskMatrix,-maskSize,98F,-maskSize).setColor(0,0,0,255);
+			maskBuf.addVertex(maskMatrix, maskSize,98F,-maskSize).setColor(0,0,0,255);
+			maskBuf.addVertex(maskMatrix, maskSize,98F, maskSize).setColor(0,0,0,255);
+			maskBuf.addVertex(maskMatrix,-maskSize,98F, maskSize).setColor(0,0,0,255);
+			BufferUploader.drawWithShader(maskBuf.buildOrThrow());
+			skyStack.popPose();
 
-			poseStack.popPose();
-
-			// --- 2. ZEMĚ ---
-			poseStack.pushPose();
+			// Země na obloze (fixně na severu)
+			skyStack.pushPose();
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderTexture(0, EARTH_TEXTURE);
-			poseStack.mulPose(Axis.ZP.rotationDegrees(10F));
-			poseStack.mulPose(Axis.XP.rotationDegrees(-15F));
-			Matrix4f earthMatrix = poseStack.last().pose();
-			float earthSize = 10F;
+			RenderSystem.setShaderTexture(0,EARTH_TEXTURE);
+			skyStack.mulPose(Axis.ZP.rotationDegrees(10F));
+			skyStack.mulPose(Axis.XP.rotationDegrees(-15F));
+			Matrix4f earthMatrix=skyStack.last().pose();
+			float earthSize=10F;
 
-			BufferBuilder earthBuffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-			earthBuffer.addVertex(earthMatrix, -earthSize, 100F, -earthSize).setUv(0, 1);
-			earthBuffer.addVertex(earthMatrix,  earthSize, 100F, -earthSize).setUv(1, 1);
-			earthBuffer.addVertex(earthMatrix,  earthSize, 100F,  earthSize).setUv(1, 0);
-			earthBuffer.addVertex(earthMatrix, -earthSize, 100F,  earthSize).setUv(0, 0);
-			BufferUploader.drawWithShader(earthBuffer.buildOrThrow());
-
-			poseStack.popPose();
+			BufferBuilder earthBuf=tesselator.begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_TEX);
+			earthBuf.addVertex(earthMatrix,-earthSize,100F,-earthSize).setUv(0,1);
+			earthBuf.addVertex(earthMatrix, earthSize,100F,-earthSize).setUv(1,1);
+			earthBuf.addVertex(earthMatrix, earthSize,100F, earthSize).setUv(1,0);
+			earthBuf.addVertex(earthMatrix,-earthSize,100F, earthSize).setUv(0,0);
+			BufferUploader.drawWithShader(earthBuf.buildOrThrow());
+			skyStack.popPose();
 		}
 
 		RenderSystem.depthMask(true);

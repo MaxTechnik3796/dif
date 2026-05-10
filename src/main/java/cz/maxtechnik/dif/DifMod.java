@@ -99,6 +99,8 @@ public class DifMod {
 				(be, side) -> be.getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.SPACE_CRATE.get(),
 				(be, side) -> be.getInventory());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.SPACESHIP.get(),
+				(be, side) -> be.getItemHandler());
 	}
 
 

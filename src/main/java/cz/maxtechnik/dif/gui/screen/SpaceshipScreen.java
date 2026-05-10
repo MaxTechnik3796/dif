@@ -4,9 +4,7 @@ import cz.maxtechnik.dif.init.events.SpaceshipControl;
 import cz.maxtechnik.dif.gui.menu.SpaceshipMenu;
 import cz.maxtechnik.dif.network.SpaceshipScreenButtonMessage;
 import cz.maxtechnik.dif.DifMod;
-import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
@@ -16,12 +14,14 @@ import net.minecraft.client.gui.GuiGraphics;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.world.level.LevelAccessor;
 import org.jetbrains.annotations.NotNull;
+
 public class SpaceshipScreen extends AbstractContainerScreen<SpaceshipMenu>{
-	private final int x, y, z;
+	private final int x,y,z;
 	private final Player entity;
 	private static final ResourceLocation TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/rocketg_00.png");
 	private static final ResourceLocation PLANETS_TEX=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets.png");
 	private static final ResourceLocation ARROWS_TEX=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/arrows.png");
+
 	public SpaceshipScreen(SpaceshipMenu container,Inventory inventory,Component text){
 		super(container,inventory,text);
 		this.x=container.x;
@@ -31,37 +31,49 @@ public class SpaceshipScreen extends AbstractContainerScreen<SpaceshipMenu>{
 		this.imageWidth=238;
 		this.imageHeight=222;
 	}
+
 	@Override
-	public void render(@NotNull GuiGraphics guiGraphics,int mouseX,int mouseY,float partialTicks){
-		this.renderBackground(guiGraphics,mouseX,mouseY,partialTicks);
-		super.render(guiGraphics,mouseX,mouseY,partialTicks);
-		this.renderTooltip(guiGraphics,mouseX,mouseY);
+	public void render(@NotNull GuiGraphics g,int mouseX,int mouseY,float pt){
+		this.renderBackground(g,mouseX,mouseY,pt);
+		super.render(g,mouseX,mouseY,pt);
+		this.renderTooltip(g,mouseX,mouseY);
 	}
+
 	@Override
-	protected void renderBg(GuiGraphics guiGraphics,float partialTicks,int gx,int gy){
+	protected void renderBg(GuiGraphics g,float pt,int gx,int gy){
 		RenderSystem.setShaderColor(1,1,1,1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		guiGraphics.blit(TEXTURE,this.leftPos,this.topPos,0,0,this.imageWidth,this.imageHeight,this.imageWidth,this.imageHeight);
+		g.blit(TEXTURE,this.leftPos,this.topPos,0,0,this.imageWidth,this.imageHeight,this.imageWidth,this.imageHeight);
 		RenderSystem.disableBlend();
 	}
+
 	@Override
 	public void init(){
 		super.init();
 		LevelAccessor world=entity.level();
+
+		// 4 tlačítka planet – použijeme vanilla Button s vlastním renderem přes GuiGraphics
 		for(int i=0;i<4;i++){
 			final int buttonId=i;
-			int btnX=this.leftPos+16+(i*49);
-			int u=getTextureUV(world,x,y,z,0,i);
-			int v=getTextureUV(world,x,y,z,1,i);
-			this.addRenderableWidget(new UVImageButton(btnX,this.topPos+20,44,73,u,v,PLANETS_TEX,176,584,e->sendButtonPacket(buttonId)));
+            int btnX=this.leftPos+16+(i*49);
+			int btnY=this.topPos+20;
+			int u=getTextureUV(world,x,y,z,0, i);
+			int v=getTextureUV(world,x,y,z,1, i);
+			// Vlastní button který renderuje z textury atlas
+			this.addRenderableWidget(new PlanetButton(btnX,btnY,44,73,u,v,PLANETS_TEX,176,584,btn->sendButtonPacket(buttonId)));
 		}
-		this.addRenderableWidget(new UVImageButton(this.leftPos+8,this.topPos+43,5,20,0,0,ARROWS_TEX,10,40,e->sendButtonPacket(4)));
-		this.addRenderableWidget(new UVImageButton(this.leftPos+210,this.topPos+43,5,20,5,0,ARROWS_TEX,10,40,e->sendButtonPacket(5)));
+
+		// Šipka doleva
+		this.addRenderableWidget(new PlanetButton(this.leftPos+8,this.topPos+43,5,20,0,0,ARROWS_TEX,10,40,btn->sendButtonPacket(4)));
+		// Šipka doprava
+		this.addRenderableWidget(new PlanetButton(this.leftPos+210,this.topPos+43,5,20,5,0,ARROWS_TEX,10,40,btn->sendButtonPacket(5)));
 	}
+
 	private void sendButtonPacket(int id){
 		net.neoforged.neoforge.network.PacketDistributor.sendToServer(new SpaceshipScreenButtonMessage(id,x,y,z));
 	}
+
 	public static int getTextureUV(LevelAccessor world,double x,double y,double z,int mode,int slot){
 		int scroll=SpaceshipControl.getNBT(world,x,y,z,"scroll");
 		int index=scroll+slot;
@@ -69,32 +81,23 @@ public class SpaceshipScreen extends AbstractContainerScreen<SpaceshipMenu>{
 		if(mode==1) return Math.min(index/4,3)*73;
 		return 0;
 	}
+
 	@Override
-	protected void renderLabels(@NotNull GuiGraphics guiGraphics,int mouseX,int mouseY){
-	}
-	private static class UVImageButton extends AbstractButton{
-		private final ResourceLocation texture;
-		private final int u, v, texW, texH;
-		private final Button.OnPress onPress;
-		public UVImageButton(int x,int y,int w,int h,int u,int v,ResourceLocation texture,int texW,int texH,Button.OnPress onPress){
-			super(x,y,w,h,Component.empty());
-			this.u=u;
-			this.v=v;
-			this.texture=texture;
-			this.texW=texW;
-			this.texH=texH;
-			this.onPress=onPress;
+	protected void renderLabels(@NotNull GuiGraphics g,int mouseX,int mouseY){}
+
+	// Jednoduchý button který renderuje část textury
+	private static class PlanetButton extends Button{
+		private final ResourceLocation tex;
+		private final int u,v,texW,texH;
+
+		public PlanetButton(int x,int y,int w,int h,int u,int v,ResourceLocation tex,int texW,int texH,OnPress onPress){
+			super(x,y,w,h,Component.empty(),onPress,DEFAULT_NARRATION);
+			this.u=u; this.v=v; this.tex=tex; this.texW=texW; this.texH=texH;
 		}
+
 		@Override
-		public void onPress(){
-			onPress.onPress((Button)(Object)this);
-		}
-		@Override
-		public void renderWidget(@NotNull GuiGraphics guiGraphics,int mouseX,int mouseY,float partialTick){
-			guiGraphics.blit(texture,this.getX(),this.getY(),u,v,this.width,this.height,texW,texH);
-		}
-		@Override
-		protected void updateWidgetNarration(@NotNull NarrationElementOutput output){
+		public void renderWidget(@NotNull GuiGraphics g,int mouseX,int mouseY,float pt){
+			g.blit(tex,this.getX(),this.getY(),u,v,this.width,this.height,texW,texH);
 		}
 	}
 }
