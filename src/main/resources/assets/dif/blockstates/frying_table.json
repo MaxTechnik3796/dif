@@ -1,23 +1,23 @@
 {
 	"variants":{
-		"facing=north,heated=false,oil=false":{"model":"dif:block/frying_table"},
-		"facing=east,heated=false,oil=false":{"model":"dif:block/frying_table","y":90},
-		"facing=south,heated=false,oil=false":{"model":"dif:block/frying_table","y":180},
-		"facing=west,heated=false,oil=false":{"model":"dif:block/frying_table","y":270},
+		"facing=north,tray=false,oil=false":{"model":"dif:block/frying_table"},
+		"facing=east,tray=false,oil=false":{"model":"dif:block/frying_table","y":90},
+		"facing=south,tray=false,oil=false":{"model":"dif:block/frying_table","y":180},
+		"facing=west,tray=false,oil=false":{"model":"dif:block/frying_table","y":270},
 
-		"facing=north,heated=false,oil=true":{"model":"dif:block/frying_table_oil"},
-		"facing=east,heated=false,oil=true":{"model":"dif:block/frying_table_oil","y":90},
-		"facing=south,heated=false,oil=true":{"model":"dif:block/frying_table_oil","y":180},
-		"facing=west,heated=false,oil=true":{"model":"dif:block/frying_table_oil","y":270},
+		"facing=north,tray=false,oil=true":{"model":"dif:block/frying_table_oil"},
+		"facing=east,tray=false,oil=true":{"model":"dif:block/frying_table_oil","y":90},
+		"facing=south,tray=false,oil=true":{"model":"dif:block/frying_table_oil","y":180},
+		"facing=west,tray=false,oil=true":{"model":"dif:block/frying_table_oil","y":270},
 
-		"facing=north,heated=true,oil=false":{"model":"dif:block/frying_table_heated"},
-		"facing=east,heated=true,oil=false":{"model":"dif:block/frying_table_heated","y":90},
-		"facing=south,heated=true,oil=false":{"model":"dif:block/frying_table_heated","y":180},
-		"facing=west,heated=true,oil=false":{"model":"dif:block/frying_table_heated","y":270},
+		"facing=north,tray=true,oil=false":{"model":"dif:block/frying_table_tray"},
+		"facing=east,tray=true,oil=false":{"model":"dif:block/frying_table_tray","y":90},
+		"facing=south,tray=true,oil=false":{"model":"dif:block/frying_table_tray","y":180},
+		"facing=west,tray=true,oil=false":{"model":"dif:block/frying_table_tray","y":270},
 
-		"facing=north,heated=true,oil=true":{"model":"dif:block/frying_table_heated_oil"},
-		"facing=east,heated=true,oil=true":{"model":"dif:block/frying_table_heated_oil","y":90},
-		"facing=south,heated=true,oil=true":{"model":"dif:block/frying_table_heated_oil","y":180},
-		"facing=west,heated=true,oil=true":{"model":"dif:block/frying_table_heated_oil","y":270}
+		"facing=north,tray=true,oil=true":{"model":"dif:block/frying_table_oil_tray"},
+		"facing=east,tray=true,oil=true":{"model":"dif:block/frying_table_oil_tray","y":90},
+		"facing=south,tray=true,oil=true":{"model":"dif:block/frying_table_oil_tray","y":180},
+		"facing=west,tray=true,oil=true":{"model":"dif:block/frying_table_oil_tray","y":270}
 	}
 }

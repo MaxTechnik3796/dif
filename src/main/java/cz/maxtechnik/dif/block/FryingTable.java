@@ -46,122 +46,92 @@ import vectorwing.farmersdelight.common.registry.ModSounds;
 
 import static cz.maxtechnik.dif.block.entity.FryingTableBlockEntity.INPUT_SLOT;
 import static cz.maxtechnik.dif.block.entity.FryingTableBlockEntity.OUTPUT_SLOT;
-
 @SuppressWarnings("deprecation")
 public class FryingTable extends Block implements SimpleWaterloggedBlock, EntityBlock{
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
 	public static final BooleanProperty OIL=BooleanProperty.create("oil");
 	public static final BooleanProperty HEATED=BooleanProperty.create("heated");
-
+	public static final BooleanProperty TRAY=BooleanProperty.create("tray");
 	// Farmers Delight heat source tags
-	public static final TagKey<Block> TAG_HEAT_SOURCES=BlockTags.create(
-			ResourceLocation.fromNamespaceAndPath("farmersdelight","heat_sources"));
-	public static final TagKey<Block> TAG_TRAY_HEAT_SOURCES=BlockTags.create(
-			ResourceLocation.fromNamespaceAndPath("farmersdelight","tray_heat_sources"));
-
+	public static final TagKey<Block> TAG_HEAT_SOURCES=BlockTags.create(ResourceLocation.fromNamespaceAndPath("farmersdelight","heat_sources"));
+	public static final TagKey<Block> TAG_TRAY=BlockTags.create(ResourceLocation.fromNamespaceAndPath("farmersdelight","tray_heat_sources"));
 	public FryingTable(){
-		super(Properties.of()
-				.strength(0.5F,6F)
-				.sound(SoundType.LANTERN)
-				.requiresCorrectToolForDrops()
-				.noOcclusion()
-				.isRedstoneConductor((bs,br,bp)->false));
-		this.registerDefaultState(this.stateDefinition.any()
-				.setValue(FACING,Direction.NORTH)
-				.setValue(WATERLOGGED,false)
-				.setValue(OIL,false)
-				.setValue(HEATED,false));
+		super(Properties.of().strength(0.5F,6F).sound(SoundType.LANTERN).noOcclusion().isRedstoneConductor((bs,br,bp)->false));
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(WATERLOGGED,false).setValue(OIL,false).setValue(HEATED,false).setValue(TRAY,false));
 	}
-
-	/** Returns true if the block below pos is a valid heat source */
-	public static boolean isHeatSource(Level level, BlockPos pos){
+	/**
+	 * Returns true if the block below pos is a valid heat source
+	 */
+	public static boolean isHeatSource(Level level,BlockPos pos){
 		BlockState below=level.getBlockState(pos.below());
-		return below.is(TAG_HEAT_SOURCES)||below.is(TAG_TRAY_HEAT_SOURCES);
+		return below.is(TAG_HEAT_SOURCES);
 	}
-
+	public static boolean isTray(Level level,BlockPos pos){
+		BlockState below=level.getBlockState(pos.below());
+		return below.is(TAG_TRAY);
+	}
 	@Override
 	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
 		return 0;
 	}
-
 	@Override
-	public @NotNull VoxelShape getVisualShape(@NotNull BlockState state,@NotNull BlockGetter world,
-	                                          @NotNull BlockPos pos,@NotNull CollisionContext context){
+	public @NotNull VoxelShape getVisualShape(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
 		return Shapes.empty();
 	}
-
 	@Override
-	public @NotNull VoxelShape getShape(@NotNull BlockState state,@NotNull BlockGetter world,
-	                                    @NotNull BlockPos pos,@NotNull CollisionContext context){
+	public @NotNull VoxelShape getShape(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
 		return box(0,0,0,16,4,16);
 	}
-
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
-		builder.add(FACING,WATERLOGGED,OIL,HEATED);
+		builder.add(FACING,WATERLOGGED,OIL,HEATED,TRAY);
 	}
-
 	@Override
 	public float getShadeBrightness(@NotNull BlockState blockState,@NotNull BlockGetter blockGetter,@NotNull BlockPos pos){
 		return 1F;
 	}
-
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context){
 		boolean flag=context.getLevel().getFluidState(context.getClickedPos()).getType()==Fluids.WATER;
-		return this.defaultBlockState()
-				.setValue(FACING,context.getHorizontalDirection().getOpposite())
-				.setValue(WATERLOGGED,flag);
+		return this.defaultBlockState().setValue(FACING,context.getHorizontalDirection().getOpposite()).setValue(WATERLOGGED,flag);
 	}
-
 	@Override
 	public @NotNull BlockState rotate(BlockState state,Rotation rot){
 		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));
 	}
-
 	@Override
 	public @NotNull BlockState mirror(BlockState state,Mirror mirrorIn){
 		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
 	}
-
 	@Override
 	public @NotNull FluidState getFluidState(BlockState state){
 		return state.getValue(WATERLOGGED)?Fluids.WATER.getSource(false):super.getFluidState(state);
 	}
-
 	@Override
-	public @NotNull BlockState updateShape(BlockState state,@NotNull Direction facing,
-	                                       @NotNull BlockState facingState,@NotNull LevelAccessor world,
-	                                       @NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
+	public @NotNull BlockState updateShape(BlockState state,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
 		if(state.getValue(WATERLOGGED)){
 			world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
 		}
 		return super.updateShape(state,facing,facingState,world,currentPos,facingPos);
 	}
-
 	@Override
 	public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
 		return new FryingTableBlockEntity(pos,blockState);
 	}
-
 	@Override
 	public MenuProvider getMenuProvider(@NotNull BlockState blockState,Level worldIn,@NotNull BlockPos pos){
 		BlockEntity te=worldIn.getBlockEntity(pos);
 		return te instanceof MenuProvider mp?mp:null;
 	}
-
 	@Override
-	public boolean triggerEvent(@NotNull BlockState blockState,@NotNull Level world,
-	                            @NotNull BlockPos pos,int eventID,int eventParam){
+	public boolean triggerEvent(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
 		super.triggerEvent(blockState,world,pos,eventID,eventParam);
 		BlockEntity be=world.getBlockEntity(pos);
 		return be!=null&&be.triggerEvent(eventID,eventParam);
 	}
-
 	@Override
-	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,
-	                     BlockState newState,boolean isMoving){
+	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
 		if(state.getBlock()!=newState.getBlock()){
 			BlockEntity be=world.getBlockEntity(pos);
 			if(be instanceof FryingTableBlockEntity fbe){
@@ -171,65 +141,41 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 			super.onRemove(state,world,pos,newState,isMoving);
 		}
 	}
-
 	@Override
 	public boolean hasAnalogOutputSignal(@NotNull BlockState blockState){
 		return true;
 	}
-
 	@Override
 	public int getAnalogOutputSignal(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos){
 		BlockEntity te=world.getBlockEntity(pos);
 		return te instanceof FryingTableBlockEntity be?AbstractContainerMenu.getRedstoneSignalFromContainer(be):0;
 	}
-
 	@Override
-	public void tick(@NotNull BlockState blockstate,@NotNull ServerLevel world,
-	                 @NotNull BlockPos pos,@NotNull RandomSource random){
+	public void tick(@NotNull BlockState blockstate,@NotNull ServerLevel world,@NotNull BlockPos pos,@NotNull RandomSource random){
 		super.tick(blockstate,world,pos,random);
 	}
-
 	@Override
-	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,
-	                                                                        @NotNull BlockState state,
-	                                                                        @NotNull BlockEntityType<T> type){
-		return level.isClientSide
-				?createClientTicker(type,DifModBlockEntities.FRYING_TABLE.get())
-				:createServerTicker(type,DifModBlockEntities.FRYING_TABLE.get());
+	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T> type){
+		return level.isClientSide?createClientTicker(type,DifModBlockEntities.FRYING_TABLE.get()):createServerTicker(type,DifModBlockEntities.FRYING_TABLE.get());
 	}
-
 	@Nullable
-	protected static <T extends BlockEntity> BlockEntityTicker<T> createServerTicker(
-			BlockEntityType<T> type,BlockEntityType<? extends FryingTableBlockEntity> expected){
-		return type==expected
-				?(lvl,pos,state,be)->FryingTableBlockEntity.serverTick(lvl,pos,state,(FryingTableBlockEntity)be)
-				:null;
+	protected static <T extends BlockEntity> BlockEntityTicker<T> createServerTicker(BlockEntityType<T> type,BlockEntityType<? extends FryingTableBlockEntity> expected){
+		return type==expected?(lvl,pos,state,be)->FryingTableBlockEntity.serverTick(lvl,pos,state,(FryingTableBlockEntity)be):null;
 	}
-
-	protected static <T extends BlockEntity> BlockEntityTicker<T> createClientTicker(
-			BlockEntityType<T> type,BlockEntityType<? extends FryingTableBlockEntity> expected){
-		return type==expected
-				?(lvl,pos,state,be)->FryingTableBlockEntity.clientTick(lvl,pos)
-				:null;
+	protected static <T extends BlockEntity> BlockEntityTicker<T> createClientTicker(BlockEntityType<T> type,BlockEntityType<? extends FryingTableBlockEntity> expected){
+		return type==expected?(lvl,pos,state,be)->FryingTableBlockEntity.clientTick(lvl,pos):null;
 	}
-
 	@Override
-	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockstate,@NotNull Level world,
-	                                                 @NotNull BlockPos pos,@NotNull Player player,
-	                                                 @NotNull BlockHitResult hit){
+	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
 		if(world.isClientSide) return InteractionResult.SUCCESS;
 		BlockEntity blockEntity=world.getBlockEntity(pos);
 		if(!(blockEntity instanceof FryingTableBlockEntity be)) return InteractionResult.PASS;
 		ItemStack handItem=player.getMainHandItem();
-
 		// 1. NALÉVÁNÍ OLEJE
 		if(handItem.is(DifModItems.SUNFLOWER_OIL_BUCKET.get())){
-			int accepted=be.fluidTank.fill(new FluidStack(DifModFluids.SUNFLOWER_OIL.get(),1000),
-					IFluidHandler.FluidAction.EXECUTE);
+			int accepted=be.fluidTank.fill(new FluidStack(DifModFluids.SUNFLOWER_OIL.get(),1000),IFluidHandler.FluidAction.EXECUTE);
 			if(accepted>0){
-				if(!player.getAbilities().instabuild)
-					player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,
-							new ItemStack(net.minecraft.world.item.Items.BUCKET));
+				if(!player.getAbilities().instabuild) player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,new ItemStack(net.minecraft.world.item.Items.BUCKET));
 				world.playSound(null,pos,SoundEvents.BUCKET_EMPTY,SoundSource.BLOCKS,1F,1F);
 				be.setChanged();
 				return InteractionResult.SUCCESS;
@@ -262,8 +208,7 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 				handItem.setCount(0);
 				be.setChanged();
 				world.playSound(null,pos,SoundEvents.LANTERN_PLACE,SoundSource.BLOCKS,1F,1F);
-				if(blockstate.getValue(OIL)&&blockstate.getValue(HEATED))
-					world.playSound(null,pos,ModSounds.BLOCK_SKILLET_ADD_FOOD.get(),SoundSource.BLOCKS,1F,1F);
+				if(blockstate.getValue(OIL)&&blockstate.getValue(HEATED)) world.playSound(null,pos,ModSounds.BLOCK_SKILLET_ADD_FOOD.get(),SoundSource.BLOCKS,1F,1F);
 				return InteractionResult.SUCCESS;
 			}
 		}else{

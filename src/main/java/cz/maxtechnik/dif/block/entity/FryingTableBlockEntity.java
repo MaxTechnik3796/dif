@@ -123,11 +123,9 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 	public static void serverTick(Level world,BlockPos pos,BlockState blockState,FryingTableBlockEntity be){
 		boolean hasOil=!be.fluidTank.isEmpty();
 		boolean heated=FryingTable.isHeatSource(world,pos);
-
+		boolean tray=FryingTable.isTray(world,pos);
 		// Aktualizuj blockstate OIL a HEATED
-		BlockState newState=blockState
-				.setValue(FryingTable.OIL,hasOil)
-				.setValue(FryingTable.HEATED,heated);
+		BlockState newState=blockState.setValue(FryingTable.OIL,hasOil).setValue(FryingTable.HEATED,heated).setValue(FryingTable.TRAY,tray);
 		if(!newState.equals(blockState))
 			world.setBlock(pos,newState,3);
 

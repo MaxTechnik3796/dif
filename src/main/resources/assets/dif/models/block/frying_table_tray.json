@@ -7,7 +7,8 @@
 		"pan_bottom": "block/hopper_inside",
 		"pan_side": "block/hopper_outside",
 		"grid_top": "farmersdelight:block/heating_tray_top",
-		"grid_side": "farmersdelight:block/heating_tray_side"
+		"grid_side": "farmersdelight:block/heating_tray_side",
+		"particle":"block/hopper_inside",
 	},
 	"elements": [
 		{
