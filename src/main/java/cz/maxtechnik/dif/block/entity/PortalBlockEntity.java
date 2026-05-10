@@ -14,7 +14,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -39,6 +38,8 @@ public class PortalBlockEntity extends BlockEntity{
 
 	private static final Map<UUID,Long> waitingPlayers=new HashMap<>();
 	private static final Map<UUID,Long> entityCooldowns=new HashMap<>();
+	public UUID getOwner(){ return owner; }
+	public boolean isBlue(){ return isBlue; }
 
 	public PortalBlockEntity(BlockPos pos,BlockState state){
 		super(DifModBlockEntities.PORTAL.get(),pos,state);
@@ -56,32 +57,33 @@ public class PortalBlockEntity extends BlockEntity{
 		if(!(level instanceof ServerLevel sl)) return;
 		if(!pos.equals(getPortal(sl,be.owner,be.isBlue))) return;
 
-		// Každých 40 ticků zkontroluj jestli existuje druhý portál a uprav IS_LINKED
+		// Vždy čti aktuální stav z levelu
+		BlockState currentState=level.getBlockState(pos);
+
 		if(++be.linkedCheckTimer>=LINKED_CHECK_INTERVAL){
 			be.linkedCheckTimer=0;
 			boolean linked=getPortal(sl,be.owner,!be.isBlue)!=null;
-			boolean currentLinked=state.getValue(PortalBlock.IS_LINKED);
+			boolean currentLinked=currentState.getValue(PortalBlock.IS_LINKED);
 			if(linked!=currentLinked){
-				level.setBlock(pos,state.setValue(PortalBlock.IS_LINKED,linked),3);
-				// Uprav i upper blok
-				BlockPos extPos=pos.relative(state.getValue(PortalBlock.EXTENSION_DIR));
+				BlockState newState=currentState.setValue(PortalBlock.IS_LINKED,linked);
+				level.setBlock(pos,newState,3);
+				BlockPos extPos=pos.relative(currentState.getValue(PortalBlock.EXTENSION_DIR));
 				BlockState extState=level.getBlockState(extPos);
-				if(extState.is(state.getBlock())&&extState.getValue(PortalBlock.HALF)==DoubleBlockHalf.UPPER)
+				if(extState.is(currentState.getBlock())&&extState.getValue(PortalBlock.HALF)==DoubleBlockHalf.UPPER)
 					level.setBlock(extPos,extState.setValue(PortalBlock.IS_LINKED,linked),3);
+				currentState=newState;
 			}
 		}
 
-		// Teleportace pouze pokud je linked
-		if(!state.getValue(PortalBlock.IS_LINKED)) return;
+		if(!currentState.getValue(PortalBlock.IS_LINKED)) return;
 
-		AABB box=state.getShape(level,pos).bounds().move(pos);
-		BlockPos extPos=pos.relative(state.getValue(PortalBlock.EXTENSION_DIR));
-		if(level.getBlockState(extPos).is(state.getBlock()))
+		AABB box=currentState.getShape(level,pos).bounds().move(pos);
+		BlockPos extPos=pos.relative(currentState.getValue(PortalBlock.EXTENSION_DIR));
+		if(level.getBlockState(extPos).is(currentState.getBlock()))
 			box=box.minmax(level.getBlockState(extPos).getShape(level,extPos).bounds().move(extPos));
 
 		long now=level.getGameTime();
 
-		// Hráči – vždy
 		List<Player> players=level.getEntitiesOfClass(Player.class,box);
 		for(Player p: players){
 			UUID pid=p.getUUID();
@@ -90,7 +92,6 @@ public class PortalBlockEntity extends BlockEntity{
 			be.tryTeleportPlayer(p,sl,now);
 		}
 
-		// Moby a entity (TNT atd.) – podle configu PORTAL_ALLOW_ENTITIES, bez projektilů
 		if(DifModCommonConfig.portalAllowEntities){
 			List<LivingEntity> mobs=level.getEntitiesOfClass(LivingEntity.class,box);
 			int count=0;
@@ -102,9 +103,8 @@ public class PortalBlockEntity extends BlockEntity{
 				be.tryTeleportEntity(mob,sl,now,false);
 				count++;
 			}
-			// TNT a falling blocks
 			List<Entity> misc=level.getEntitiesOfClass(Entity.class,box,
-					e->!(e instanceof Player)&&!(e instanceof LivingEntity)&&!(e instanceof Projectile)&&!(e instanceof ItemEntity));
+					e-> !(e instanceof LivingEntity) && !(e instanceof Projectile) && !(e instanceof ItemEntity));
 			for(Entity e: misc){
 				if(count>=DifModCommonConfig.portalMaxEntitiesPerTick) break;
 				UUID eid=e.getUUID();
@@ -114,7 +114,6 @@ public class PortalBlockEntity extends BlockEntity{
 			}
 		}
 
-		// Itemy – podle configu PORTAL_ALLOW_ITEMS, projektily nikdy
 		if(DifModCommonConfig.portalAllowItems){
 			List<ItemEntity> items=level.getEntitiesOfClass(ItemEntity.class,box);
 			int count=0;
@@ -127,7 +126,6 @@ public class PortalBlockEntity extends BlockEntity{
 			}
 		}
 
-		// Vyčisti staré cooldowny
 		entityCooldowns.entrySet().removeIf(e->now-e.getValue()>200);
 	}
 

@@ -4,6 +4,7 @@ import cz.maxtechnik.dif.block.entity.PortalBlockEntity;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -46,6 +47,16 @@ public class PortalBlock extends BaseEntityBlock{
 	}
 
 	@Override
+	public boolean propagatesSkylightDown(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos){
+		return true;
+	}
+
+	@Override
+	public int getLightBlock(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos){
+		return 0;
+	}
+
+	@Override
 	public @NotNull com.mojang.serialization.MapCodec<? extends BaseEntityBlock> codec(){
 		return net.minecraft.world.level.block.state.BlockBehaviour.simpleCodec(PortalBlock::new);
 	}
@@ -60,6 +71,17 @@ public class PortalBlock extends BaseEntityBlock{
 			case UP -> Block.box(0,-0.1,0,16,0.1,16);
 			case DOWN -> Block.box(0,15.9,0,16,16.1,16);
 		};
+	}
+	@Override
+	public void onRemove(BlockState state, @NotNull Level level, @NotNull BlockPos pos, BlockState newState, boolean moving){
+		if(!state.is(newState.getBlock())&&!level.isClientSide){
+			if(state.getValue(HALF)==DoubleBlockHalf.LOWER){
+				if(level.getBlockEntity(pos) instanceof PortalBlockEntity be&&level instanceof ServerLevel sl){
+					PortalBlockEntity.removeOldPortal(sl, be.getOwner(), be.isBlue());
+				}
+			}
+		}
+		super.onRemove(state, level, pos, newState, moving);
 	}
 
 	@Override

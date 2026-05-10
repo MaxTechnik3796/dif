@@ -21,14 +21,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
+
 public class PortalGun extends Item{
 	public PortalGun(){
 		super(new Properties().stacksTo(1));
 	}
+
 	private boolean isBlueMode(ItemStack gun){
 		var data=gun.get(DataComponents.CUSTOM_DATA);
 		return data==null||data.getUnsafe().getBoolean("mode");
 	}
+
 	private void setMode(ItemStack gun,boolean mode){
 		gun.update(DataComponents.CUSTOM_DATA,
 				net.minecraft.world.item.component.CustomData.EMPTY,
@@ -39,11 +42,13 @@ public class PortalGun extends Item{
 					return net.minecraft.world.item.component.CustomData.of(tag);
 				});
 	}
+
 	private int getEnergy(ItemStack gun){
 		var data=gun.get(DataComponents.CUSTOM_DATA);
 		if(data==null) return DifModCommonConfig.portalGunMaxDurability;
 		return data.getUnsafe().getInt("energy");
 	}
+
 	private void setEnergy(ItemStack gun,int energy){
 		gun.update(DataComponents.CUSTOM_DATA,
 				net.minecraft.world.item.component.CustomData.EMPTY,
@@ -53,17 +58,21 @@ public class PortalGun extends Item{
 					return net.minecraft.world.item.component.CustomData.of(tag);
 				});
 	}
+
 	@Override
 	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world,Player player,@NotNull InteractionHand hand){
 		ItemStack gun=player.getItemInHand(hand);
+
 		// Inicializace pokud chybí data
 		var data=gun.get(DataComponents.CUSTOM_DATA);
 		if(data==null||!data.getUnsafe().contains("energy")){
 			setMode(gun,true);
 			setEnergy(gun,DifModCommonConfig.portalGunMaxDurability);
 		}
+
 		boolean isBlue=isBlueMode(gun);
 		int energy=getEnergy(gun);
+
 		// Dobíjení ender pearlem
 		ItemStack off=player.getOffhandItem();
 		if(off.is(Items.ENDER_PEARL)&&energy<DifModCommonConfig.portalGunMaxDurability){
@@ -74,6 +83,7 @@ public class PortalGun extends Item{
 			}
 			return InteractionResultHolder.sidedSuccess(gun,world.isClientSide());
 		}
+
 		// Přepínání módu
 		if(player.isShiftKeyDown()){
 			if(!world.isClientSide){
@@ -83,6 +93,7 @@ public class PortalGun extends Item{
 			}
 			return InteractionResultHolder.sidedSuccess(gun,world.isClientSide());
 		}
+
 		// Výstřel
 		if(!world.isClientSide){
 			if(energy>=DifModCommonConfig.portalGunEnergyPerShot){
@@ -96,6 +107,7 @@ public class PortalGun extends Item{
 		}
 		return InteractionResultHolder.success(gun);
 	}
+
 	private boolean firePortal(ServerLevel world,Player player,boolean isBlue){
 		var start=player.getEyePosition();
 		var hit=world.clip(new ClipContext(start,start.add(player.getLookAngle().scale(128.0)),
@@ -125,20 +137,16 @@ public class PortalGun extends Item{
 		if(world.getBlockEntity(pos) instanceof PortalBlockEntity be) be.setup(player.getUUID(),isBlue,face);
 		return true;
 	}
+
 	@Override
-	public boolean isEnchantable(@NotNull ItemStack itemStack){
-		return false;
-	}
+	public boolean isEnchantable(@NotNull ItemStack itemStack){ return false; }
+
 	@Override
-	public int getEnchantmentValue(){
-		return 0;
-	}
+	public int getEnchantmentValue(){ return 0; }
+
 	@Override
-	public boolean isRepairable(@NotNull ItemStack itemStack){
-		return false;
-	}
+	public boolean isRepairable(@NotNull ItemStack itemStack){ return false; }
+
 	@Override
-	public boolean isValidRepairItem(@NotNull ItemStack pToRepair,@NotNull ItemStack pRepair){
-		return false;
-	}
+	public boolean isValidRepairItem(@NotNull ItemStack pToRepair,@NotNull ItemStack pRepair){ return false; }
 }
