@@ -282,5 +282,8 @@
 	"biome.dif.moon_plains":"Moon Plains",
 	"biome.dif.orbit_void":"Space",
 	"item.dif.flat_dough":"Flat Dough",
-	"item.dif.baguette":"Baguette"
+	"item.dif.baguette":"Baguette",
+	"block.dif.distillation_controller":"Distillation Controller",
+	"block.dif.distillation_tank":"Distillation Tank"
+
 }
