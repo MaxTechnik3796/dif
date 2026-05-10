@@ -11,26 +11,23 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
-
-public record JetpackSyncMessage(int main, int thrust) implements CustomPacketPayload {
-	public static final Type<JetpackSyncMessage> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "jetpack_sync"));
-	public static final StreamCodec<FriendlyByteBuf, JetpackSyncMessage> STREAM_CODEC = StreamCodec.composite(
-			ByteBufCodecs.INT, JetpackSyncMessage::main,
-			ByteBufCodecs.INT, JetpackSyncMessage::thrust,
+public record JetpackSyncMessage(int main,int thrust) implements CustomPacketPayload{
+	public static final Type<JetpackSyncMessage> TYPE=new Type<>(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"jetpack_sync"));
+	public static final StreamCodec<FriendlyByteBuf,JetpackSyncMessage> STREAM_CODEC=StreamCodec.composite(
+			ByteBufCodecs.INT,JetpackSyncMessage::main,
+			ByteBufCodecs.INT,JetpackSyncMessage::thrust,
 			JetpackSyncMessage::new
 	);
-
 	@Override
-	public @NotNull Type<? extends CustomPacketPayload> type() {
+	public @NotNull Type<? extends CustomPacketPayload> type(){
 		return TYPE;
 	}
-
-	public void handle(IPayloadContext context) {
-		context.enqueueWork(() -> {
-			ItemStack chest = context.player().getItemBySlot(EquipmentSlot.CHEST);
-			if (!(chest.getItem() instanceof Jetpack)) return;
-			Jetpack.Chestplate.setMain(chest, main);
-			Jetpack.Chestplate.setThrust(chest, thrust);
+	public void handle(IPayloadContext context){
+		context.enqueueWork(()->{
+			ItemStack chest=context.player().getItemBySlot(EquipmentSlot.CHEST);
+			if(!(chest.getItem() instanceof Jetpack)) return;
+			Jetpack.Chestplate.setMain(chest,main);
+			Jetpack.Chestplate.setThrust(chest,thrust);
 		});
 	}
 }

@@ -20,18 +20,15 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-
 public class SleepingBagBlock extends BedBlock{
 	protected static final VoxelShape SHAPE=Block.box(0D,0D,0D,16D,2D,16D);
 	public SleepingBagBlock(){
 		super(DyeColor.WHITE,BlockBehaviour.Properties.of().sound(SoundType.WOOL).strength(0.2F).pushReaction(PushReaction.BLOCK).noOcclusion());
 	}
-
 	@Override
-	public @NotNull BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state){
+	public @NotNull BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
 		return new BedBlockEntity(pos,state,DyeColor.WHITE);
 	}
-
 	@Override
 	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state,Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
 		if(level.isClientSide){
@@ -55,17 +52,14 @@ public class SleepingBagBlock extends BedBlock{
 		});
 		return InteractionResult.SUCCESS;
 	}
-
 	@Override
 	public @NotNull RenderShape getRenderShape(@NotNull BlockState state){
 		return RenderShape.MODEL;
 	}
-
 	@Override
 	public @NotNull VoxelShape getShape(@NotNull BlockState state,@NotNull BlockGetter level,@NotNull BlockPos pos,@NotNull CollisionContext context){
 		return SHAPE;
 	}
-
 	@Override
 	public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state,@NotNull BlockGetter level,@NotNull BlockPos pos,@NotNull CollisionContext context){
 		return SHAPE;

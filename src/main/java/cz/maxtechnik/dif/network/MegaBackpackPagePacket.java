@@ -10,22 +10,19 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
-
-public record MegaBackpackPagePacket(int delta) implements CustomPacketPayload {
-	public static final Type<MegaBackpackPagePacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "mega_backpack_page"));
-	public static final StreamCodec<FriendlyByteBuf, MegaBackpackPagePacket> STREAM_CODEC = StreamCodec.composite(
-			ByteBufCodecs.INT, MegaBackpackPagePacket::delta,
+public record MegaBackpackPagePacket(int delta) implements CustomPacketPayload{
+	public static final Type<MegaBackpackPagePacket> TYPE=new Type<>(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"mega_backpack_page"));
+	public static final StreamCodec<FriendlyByteBuf,MegaBackpackPagePacket> STREAM_CODEC=StreamCodec.composite(
+			ByteBufCodecs.INT,MegaBackpackPagePacket::delta,
 			MegaBackpackPagePacket::new
 	);
-
 	@Override
-	public @NotNull Type<? extends CustomPacketPayload> type() {
+	public @NotNull Type<? extends CustomPacketPayload> type(){
 		return TYPE;
 	}
-
-	public void handle(IPayloadContext context) {
-		context.enqueueWork(() -> {
-			if (context.player() instanceof ServerPlayer player && player.containerMenu instanceof MegaBackpackMenu menu) {
+	public void handle(IPayloadContext context){
+		context.enqueueWork(()->{
+			if(context.player() instanceof ServerPlayer player&&player.containerMenu instanceof MegaBackpackMenu menu){
 				menu.changePage(delta);
 			}
 		});

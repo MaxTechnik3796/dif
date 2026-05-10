@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraft.core.component.DataComponents;
 import org.jetbrains.annotations.NotNull;
+@SuppressWarnings("deprecation")
 public class RemoteMinecartItem extends Item{
 	public RemoteMinecartItem(Properties props){
 		super(props);
@@ -24,7 +25,7 @@ public class RemoteMinecartItem extends Item{
 			return InteractionResult.FAIL;
 		}else{
 			if(!level.isClientSide){
-				RailShape shape = state.is(net.minecraft.tags.BlockTags.RAILS) ? state.getValue(((BaseRailBlock)state.getBlock()).getShapeProperty()) : RailShape.NORTH_SOUTH;
+				RailShape shape=state.is(net.minecraft.tags.BlockTags.RAILS)?state.getValue(((BaseRailBlock)state.getBlock()).getShapeProperty()):RailShape.NORTH_SOUTH;
 				double d0=0.0D;
 				if(shape.isAscending()) d0=0.5D;
 				RemoteControlMinecart minecart=new RemoteControlMinecart(level,pos.getX()+0.5D,pos.getY()+0.0625D+d0,pos.getZ()+0.5D);

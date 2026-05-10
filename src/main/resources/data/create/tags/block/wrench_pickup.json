@@ -29,6 +29,8 @@
 		"dif:camera",
 		"dif:camera_monitor",
 		"dif:quarry",
+		"dif:quarry_frame",
+		"dif:quarry_landmark",
 		"dif:aurora_casing",
 		"#dif:space_industrial_blocks"
 	]

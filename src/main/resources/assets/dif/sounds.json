@@ -1,10 +1,10 @@
 {
-	"formula_engine": {
-		"category": "neutral",
-		"sounds": [
+	"formula_engine":{
+		"category":"neutral",
+		"sounds":[
 			{
-				"name": "dif:f1",
-				"stream": true
+				"name":"dif:f1",
+				"stream":true
 			}
 		]
 	}

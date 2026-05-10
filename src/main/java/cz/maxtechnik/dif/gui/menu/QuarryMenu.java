@@ -17,7 +17,6 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
-
 public class QuarryMenu extends AbstractContainerMenu{
 	public final Level level;
 	public final Player player;
@@ -25,7 +24,6 @@ public class QuarryMenu extends AbstractContainerMenu{
 	private final ContainerData data;
 	private final ContainerLevelAccess access;
 	private final BlockEntity boundBlockEntity;
-
 	public QuarryMenu(int id,Inventory inv,FriendlyByteBuf extraData){
 		super(DifModMenus.QUARRY.get(),id);
 		this.player=inv.player;
@@ -45,7 +43,6 @@ public class QuarryMenu extends AbstractContainerMenu{
 		addQuarrySlots();
 		addPlayerSlots(inv);
 	}
-
 	public QuarryMenu(int id,Inventory inv,QuarryBlockEntity qbe){
 		super(DifModMenus.QUARRY.get(),id);
 		this.player=inv.player;
@@ -59,30 +56,33 @@ public class QuarryMenu extends AbstractContainerMenu{
 		addQuarrySlots();
 		addPlayerSlots(inv);
 	}
-
 	private void addQuarrySlots(){
 		// Slot 0 – engine A
 		this.addSlot(new SlotItemHandler(internal,0,8,17){
-			@Override public boolean mayPlace(@NotNull ItemStack stack){ return stack.getItem() instanceof EngineItem; }
+			@Override
+			public boolean mayPlace(@NotNull ItemStack stack){
+				return stack.getItem() instanceof EngineItem;
+			}
 		});
 		// Slot 1 – engine B
 		this.addSlot(new SlotItemHandler(internal,1,8,35){
-			@Override public boolean mayPlace(@NotNull ItemStack stack){
+			@Override
+			public boolean mayPlace(@NotNull ItemStack stack){
 				return stack.getItem() instanceof EngineItem
-						|| stack.getItem()==Items.SPONGE
-						|| stack.getItem()==Items.ENCHANTED_BOOK;
+						||stack.getItem()==Items.SPONGE
+						||stack.getItem()==Items.ENCHANTED_BOOK;
 			}
 		});
 		// Slot 2 – engine C nebo upgrade (sponge / enchanted book)
 		this.addSlot(new SlotItemHandler(internal,2,8,53){
-			@Override public boolean mayPlace(@NotNull ItemStack stack){
+			@Override
+			public boolean mayPlace(@NotNull ItemStack stack){
 				return stack.getItem() instanceof EngineItem
-						|| stack.getItem()==Items.SPONGE
-						|| stack.getItem()==Items.ENCHANTED_BOOK;
+						||stack.getItem()==Items.SPONGE
+						||stack.getItem()==Items.ENCHANTED_BOOK;
 			}
 		});
 	}
-
 	private void addPlayerSlots(Inventory inv){
 		for(int row=0;row<3;++row)
 			for(int col=0;col<9;++col)
@@ -90,21 +90,30 @@ public class QuarryMenu extends AbstractContainerMenu{
 		for(int col=0;col<9;++col)
 			this.addSlot(new Slot(inv,col,8+col*18,142));
 	}
-
 	@Override
 	public boolean stillValid(@NotNull Player player){
 		if(this.boundBlockEntity!=null)
 			return AbstractContainerMenu.stillValid(this.access,player,this.boundBlockEntity.getBlockState().getBlock());
 		return true;
 	}
-
-	public int getStateOrdinal(){ return this.data.get(0); }
-	public int getTotalQP()     { return this.data.get(1); }
-	public int getFECost()      { return this.data.get(2); }
-	public int getAreaX()       { return this.data.get(3); }
-	public int getAreaZ()       { return this.data.get(4); }
-	public int getStatusMode()  { return this.data.get(5); }
-
+	public int getStateOrdinal(){
+		return this.data.get(0);
+	}
+	public int getTotalQP(){
+		return this.data.get(1);
+	}
+	public int getFECost(){
+		return this.data.get(2);
+	}
+	public int getAreaX(){
+		return this.data.get(3);
+	}
+	public int getAreaZ(){
+		return this.data.get(4);
+	}
+	public int getStatusMode(){
+		return this.data.get(5);
+	}
 	@Override
 	public @NotNull ItemStack quickMoveStack(@NotNull Player player,int index){
 		ItemStack itemstack=ItemStack.EMPTY;

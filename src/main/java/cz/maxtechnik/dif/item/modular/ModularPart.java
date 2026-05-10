@@ -54,21 +54,21 @@ public class ModularPart extends Item{
 	}
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(@NotNull ItemStack itemStack, Item.@NotNull TooltipContext context, @NotNull List<Component> list, @NotNull TooltipFlag flag) {
-		super.appendHoverText(itemStack, context, list, flag);
-		var data = itemStack.get(D);
-		if(data == null || data.copyTag().isEmpty()) return;
-		CompoundTag tag = data.copyTag();
-		if(!isHead(itemStack) && !isBinding(itemStack) && !isHandle(itemStack)) return;
-		if(isHead(itemStack) && (!tag.contains("HeadDurability") || !tag.contains("HeadMaterial"))) return;
-		if(isBinding(itemStack) && (!tag.contains("BindingDurability") || !tag.contains("BindingMaterial"))) return;
-		if(isHandle(itemStack) && (!tag.contains("HandleDurability") || !tag.contains("HandleMaterial"))) return;
-		String partType = getPartType(itemStack);
-		list.add(Component.literal("Material:").append(CommonComponents.space()).append(Component.literal(tag.getString(partType + "Material")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial(tag.getString(partType + "Material")))))));
-		list.add(Component.literal("Durability:").append(CommonComponents.space()).append(Component.literal(String.valueOf(tag.getInt(partType + "Durability"))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(durabilityColor(partType, tag))))));
+	public void appendHoverText(@NotNull ItemStack itemStack,Item.@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
+		super.appendHoverText(itemStack,context,list,flag);
+		var data=itemStack.get(D);
+		if(data==null||data.copyTag().isEmpty()) return;
+		CompoundTag tag=data.copyTag();
+		if(!isHead(itemStack)&&!isBinding(itemStack)&&!isHandle(itemStack)) return;
+		if(isHead(itemStack)&&(!tag.contains("HeadDurability")||!tag.contains("HeadMaterial"))) return;
+		if(isBinding(itemStack)&&(!tag.contains("BindingDurability")||!tag.contains("BindingMaterial"))) return;
+		if(isHandle(itemStack)&&(!tag.contains("HandleDurability")||!tag.contains("HandleMaterial"))) return;
+		String partType=getPartType(itemStack);
+		list.add(Component.literal("Material:").append(CommonComponents.space()).append(Component.literal(tag.getString(partType+"Material")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial(tag.getString(partType+"Material")))))));
+		list.add(Component.literal("Durability:").append(CommonComponents.space()).append(Component.literal(String.valueOf(tag.getInt(partType+"Durability"))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(durabilityColor(partType,tag))))));
 		if(isHead(itemStack))
 			list.add(Component.literal("Efficiency:").append(CommonComponents.space()).append(Component.literal(String.valueOf(ModularBase.efficiencyFromMaterial(tag.getString("HeadMaterial")))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(ChatFormatting.GREEN)))));
 		list.add(CommonComponents.EMPTY);
-		list.add(modifierTipFormMaterial(tag.getString(partType + "Material")));
+		list.add(modifierTipFormMaterial(tag.getString(partType+"Material")));
 	}
 }

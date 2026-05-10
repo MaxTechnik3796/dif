@@ -33,7 +33,7 @@ public class BattleAxeItem extends SwordItem{
 			.put(Blocks.WARPED_STEM,Blocks.STRIPPED_WARPED_STEM)
 			.build();
 	public BattleAxeItem(Tier tier,float attackDamage,float attackSpeed,Properties properties){
-		super(tier, properties.attributes(SwordItem.createAttributes(tier, attackDamage, attackSpeed)));
+		super(tier,properties.attributes(SwordItem.createAttributes(tier,attackDamage,attackSpeed)));
 	}
 	@Override
 	public boolean canDisableShield(@NotNull ItemStack stack,@NotNull ItemStack shield,@NotNull LivingEntity entity,@NotNull LivingEntity attacker){
@@ -47,8 +47,8 @@ public class BattleAxeItem extends SwordItem{
 		return super.getDestroySpeed(stack,state);
 	}
 	@Override
-	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state){
-		return state.is(BlockTags.MINEABLE_WITH_AXE)||super.isCorrectToolForDrops(stack, state);
+	public boolean isCorrectToolForDrops(@NotNull ItemStack stack,BlockState state){
+		return state.is(BlockTags.MINEABLE_WITH_AXE)||super.isCorrectToolForDrops(stack,state);
 	}
 	@Override
 	public @NotNull InteractionResult useOn(UseOnContext context){

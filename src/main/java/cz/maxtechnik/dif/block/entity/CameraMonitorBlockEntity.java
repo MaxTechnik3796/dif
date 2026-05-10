@@ -8,6 +8,7 @@ import cz.maxtechnik.dif.util.CameraMonitorState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -93,10 +94,8 @@ public class CameraMonitorBlockEntity extends BlockEntity{
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
 	@Override
-	public void onDataPacket(net.minecraft.network.Connection net,ClientboundBlockEntityDataPacket pkt,@NotNull HolderLookup.Provider registries){
+	public void onDataPacket(@NotNull Connection net,ClientboundBlockEntityDataPacket pkt,@NotNull HolderLookup.Provider registries){
 		CompoundTag tag=pkt.getTag();
-		if(tag!=null){
-			this.loadAdditional(tag,registries);
-		}
+		this.loadAdditional(tag,registries);
 	}
 }

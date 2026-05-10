@@ -74,7 +74,8 @@ public class OilWellFeature extends Feature<NoneFeatureConfiguration>{
 						// Prevence pádů - kontrolujeme pouze limitní chunky 3x3
 						int chunkX=currentPos.getX()>>4;
 						int chunkZ=currentPos.getZ()>>4;
-						if(Math.abs(chunkX-centerChunkX)<=1&&Math.abs(chunkZ-centerChunkZ)<=1) level.setBlock(currentPos,fluid,3); // Flag 3 - nutné pro Block Update (aby se tekutina později rozlila)
+						if(Math.abs(chunkX-centerChunkX)<=1&&Math.abs(chunkZ-centerChunkZ)<=1)
+							level.setBlock(currentPos,fluid,3); // Flag 3 - nutné pro Block Update (aby se tekutina později rozlila)
 					}
 				}
 			}
@@ -94,7 +95,8 @@ public class OilWellFeature extends Feature<NoneFeatureConfiguration>{
 				level.setBlock(currentPillarPos,fluid,3);
 				// === KLÍČOVÉ PRO ROZLITÍ ===
 				// Pomocí scheduleTicking ihned po vygenerování donutíme ropu spustit svoje fyzikální chování (tok dolů po stranách).
-				if(!fluid.getFluidState().isEmpty()) level.scheduleTick(currentPillarPos,fluid.getFluidState().getType(),0);
+				if(!fluid.getFluidState().isEmpty())
+					level.scheduleTick(currentPillarPos,fluid.getFluidState().getType(),0);
 			}
 		}
 		return true;

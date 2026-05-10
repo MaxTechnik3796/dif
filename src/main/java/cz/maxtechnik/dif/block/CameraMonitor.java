@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+@SuppressWarnings("deprecation")
 public class CameraMonitor extends BaseEntityBlock{
 	// Definice Codecu pro 1.21.1
 	public static final MapCodec<CameraMonitor> CODEC=simpleCodec(CameraMonitor::new);

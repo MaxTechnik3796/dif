@@ -1,6 +1,6 @@
 {
-  "pack": {
-    "description": "TheDifferential: Mod",
-    "pack_format": 48
-  }
+	"pack":{
+		"description":"TheDifferential: Mod",
+		"pack_format":48
+	}
 }

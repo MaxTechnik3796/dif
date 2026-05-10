@@ -1,6 +1,6 @@
 {
-  "parent": "item/handheld",
-  "textures": {
-    "layer0": "dif:item/diamond_katana"
-  }
+	"parent":"item/handheld",
+	"textures":{
+		"layer0":"dif:item/diamond_katana"
+	}
 }

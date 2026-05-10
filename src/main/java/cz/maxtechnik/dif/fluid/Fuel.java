@@ -18,9 +18,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Consumer;
 @SuppressWarnings("removal")
 public class Fuel{
-	public abstract static class Fluid extends BaseFlowingFluid {
+	public abstract static class Fluid extends BaseFlowingFluid{
 		private Fluid(){
-			super(new Properties(DifModFluidTypes.FUEL_TYPE, DifModFluids.FUEL,DifModFluids.FLOWING_FUEL).explosionResistance(100F).bucket(DifModItems.FUEL_BUCKET).tickRate(7).block(()->(LiquidBlock)DifModBlocks.FUEL_FLUID.get()));
+			super(new Properties(DifModFluidTypes.FUEL_TYPE,DifModFluids.FUEL,DifModFluids.FLOWING_FUEL).explosionResistance(100F).bucket(DifModItems.FUEL_BUCKET).tickRate(7).block(()->(LiquidBlock)DifModBlocks.FUEL_FLUID.get()));
 		}
 		public static class Source extends Fluid{
 			public int getAmount(@NotNull FluidState state){

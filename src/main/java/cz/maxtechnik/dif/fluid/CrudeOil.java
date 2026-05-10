@@ -16,12 +16,11 @@ import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
-
 @SuppressWarnings("removal")
 public class CrudeOil{
-	public abstract static class Fluid extends BaseFlowingFluid {
+	public abstract static class Fluid extends BaseFlowingFluid{
 		private Fluid(){
-			super(new Properties(DifModFluidTypes.CRUDE_OIL_TYPE, DifModFluids.CRUDE_OIL,DifModFluids.FLOWING_CRUDE_OIL).explosionResistance(100F).bucket(DifModItems.CRUDE_OIL_BUCKET).tickRate(28).block(()->(LiquidBlock)DifModBlocks.CRUDE_OIL_FLUID.get()));
+			super(new Properties(DifModFluidTypes.CRUDE_OIL_TYPE,DifModFluids.CRUDE_OIL,DifModFluids.FLOWING_CRUDE_OIL).explosionResistance(100F).bucket(DifModItems.CRUDE_OIL_BUCKET).tickRate(28).block(()->(LiquidBlock)DifModBlocks.CRUDE_OIL_FLUID.get()));
 		}
 		public static class Source extends Fluid{
 			public int getAmount(@NotNull FluidState state){

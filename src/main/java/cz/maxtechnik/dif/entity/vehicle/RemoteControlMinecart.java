@@ -89,14 +89,14 @@ public class RemoteControlMinecart extends AbstractMinecart{
 		ItemStack stack=player.getItemInHand(hand);
 		if(stack.is(DifModItems.REMOTE_CONTROLLER.get())){
 			if(!player.level().isClientSide){
-				CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
-				CompoundTag nbt = customData.copyTag();
+				CustomData customData=stack.getOrDefault(DataComponents.CUSTOM_DATA,CustomData.EMPTY);
+				CompoundTag nbt=customData.copyTag();
 				if(nbt.hasUUID("LinkedCart")&&nbt.getUUID("LinkedCart").equals(this.getUUID())){
 					this.flipDirection(); // PŘEPNUTÍ SMĚRU
 					player.displayClientMessage(Component.literal("Direction flipped!"),true);
 				}else{
 					nbt.putUUID("LinkedCart",this.getUUID());
-					stack.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
+					stack.set(DataComponents.CUSTOM_DATA,CustomData.of(nbt));
 					player.displayClientMessage(Component.literal("Minecart linked!"),true);
 				}
 			}

@@ -14,7 +14,6 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import org.checkerframework.common.value.qual.StringVal;
 import org.slf4j.Logger;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
 import cz.maxtechnik.dif.command.ConfigReloadCommand;
@@ -47,9 +46,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
-
-import java.util.Arrays;
-@SuppressWarnings("removal")
+@SuppressWarnings({"removal","deprecation"})
 @Mod(DifMod.MODID)
 public class DifMod {
 	public static final String MODID = "dif";

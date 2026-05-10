@@ -1,6 +1,5 @@
 package cz.maxtechnik.dif.entity.vehicle;
 
-import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.events.client.CarEngineSoundInstance;
 import cz.maxtechnik.dif.network.ModNetworking.SyncCarPositionPacket;
 import net.minecraft.core.BlockPos;
@@ -77,7 +76,8 @@ public abstract class BaseCarEntity extends Entity{
 			ItemStack itemStack=player.getItemInHand(hand);
 			if(!level().isClientSide){
 				if(itemStack.is(Items.LAVA_BUCKET)){
-					if(getFuelMb()>=getMaxFuelMb()) player.displayClientMessage(Component.literal("Nádrž je plná!"),true);
+					if(getFuelMb()>=getMaxFuelMb())
+						player.displayClientMessage(Component.literal("Nádrž je plná!"),true);
 					else{
 						setFuelMb(getFuelMb()+1000F);
 						if(!player.getAbilities().instabuild){
@@ -114,9 +114,9 @@ public abstract class BaseCarEntity extends Entity{
 		if(!isVehicle()){
 			if(!level().isClientSide()){
 				setEngineOn(false);
-				PacketDistributor.sendToPlayersTrackingEntityAndSelf(this, new SyncCarPositionPacket(getId(), getX(), getY(), getZ(), getYRot(), 0F));
+				PacketDistributor.sendToPlayersTrackingEntityAndSelf(this,new SyncCarPositionPacket(getId(),getX(),getY(),getZ(),getYRot(),0F));
 			}
-			velocity = prevVelocity = 0F;
+			velocity=prevVelocity=0F;
 			setDeltaMovement(Vec3.ZERO);
 			hasImpulse=true;
 		}
@@ -125,7 +125,8 @@ public abstract class BaseCarEntity extends Entity{
 	public boolean hurt(@NotNull DamageSource damageSource,float amount){
 		if(isInvulnerableTo(damageSource)) return false;
 		if(!level().isClientSide&&!isRemoved()){
-			if(damageSource.getEntity() instanceof Player p&&!p.getAbilities().instabuild) spawnAtLocation(getDropItem());
+			if(damageSource.getEntity() instanceof Player p&&!p.getAbilities().instabuild)
+				spawnAtLocation(getDropItem());
 			discard();
 			return true;
 		}
@@ -148,7 +149,7 @@ public abstract class BaseCarEntity extends Entity{
 					fuelAccumulator=fuelSyncTick=0;
 				}
 			}
-			PacketDistributor.sendToPlayersTrackingEntity(this, new SyncCarPositionPacket(getId(), getX(), getY(), getZ(), getYRot(), velocity));
+			PacketDistributor.sendToPlayersTrackingEntity(this,new SyncCarPositionPacket(getId(),getX(),getY(),getZ(),getYRot(),velocity));
 		}else{
 			if(isEngineOn()&&!isSoundPlaying&&getEngineSound()!=null){
 				CarEngineSoundInstance.play(this);
@@ -195,11 +196,11 @@ public abstract class BaseCarEntity extends Entity{
 		if(g==0) setRPM(getRPM()+(getIdleRPM()+(getMaxRPM()-getIdleRPM())*throttle*0.25F-getRPM())*0.15F);
 		else{
 			float tRPM=Math.abs(velocity)*getGearRatios()[g==-1?0:g-1]*rpmC;
-			setRPM(Math.max(getIdleRPM(),Math.min(getMaxRPM(),Math.abs(velocity)<0.05F&&throttle>0F?Math.max(tRPM,getIdleRPM()+(getMaxRPM()-getIdleRPM())*throttle*0.25F):tRPM)));
+			setRPM(Math.clamp(getMaxRPM(),getIdleRPM(),Math.abs(velocity)<0.05F&&throttle>0F?Math.max(tRPM,getIdleRPM()+(getMaxRPM()-getIdleRPM())*throttle*0.25F):tRPM));
 		}
 		float thrust=0F;
 		if(g!=0&&throttle>0f&&getFuelMb()>0F){
-			float base=throttle*getBaseAcceleration()*(getGearRatios()[g==-1?0:g-1]/getGearRatios()[0])*Math.max(0.25F,Math.min(1F,(float)(-4.0*Math.pow(getRPM()/getMaxRPM()-0.75,2)+1.0)))*(getRPM()>=getMaxRPM()*0.999F?0F:shiftCooldown>0?(float)shiftCooldown/getShiftCooldownTicks():1F);
+			float base=throttle*getBaseAcceleration()*(getGearRatios()[g==-1?0:g-1]/getGearRatios()[0])*Math.clamp((float)(-4.0*Math.pow(getRPM()/getMaxRPM()-0.75,2)+1.0),0.25F,1F)*(getRPM()>=getMaxRPM()*0.999F?0F:shiftCooldown>0?(float)shiftCooldown/getShiftCooldownTicks():1F);
 			thrust=g==-1?-base*0.4F:base;
 		}else if(getFuelMb()<=0F) setRPM(Math.max(0F,getRPM()-getMaxRPM()*0.04F));
 		if(getJumping(d)){
@@ -207,7 +208,7 @@ public abstract class BaseCarEntity extends Entity{
 			velocity=Math.signum(velocity)*Math.max(0F,Math.abs(velocity)-getBrakingDeceleration()*0.15F);
 			lGrip*=0.6F;
 		}
-		velocity=Math.max(-0.25F,Math.min(msBT,velocity+thrust-velocity*Math.abs(velocity)*getAeroDrag()-velocity*rRes));
+		velocity=Math.clamp(msBT,-0.25F,velocity+thrust-velocity*Math.abs(velocity)*getAeroDrag()-velocity*rRes);
 		if(s==SurfaceType.SOUL_SAND&&Math.abs(velocity)>22F/72F)
 			velocity=velocity*0.82F+Math.signum(velocity)*(22F/72F)*0.18F;
 		if(Math.abs(velocity)>0.015F){
@@ -343,7 +344,7 @@ public abstract class BaseCarEntity extends Entity{
 		return entityData.get(DATA_FUEL);
 	}
 	public void setFuelMb(float v){
-		entityData.set(DATA_FUEL,Math.max(0F,Math.min(getMaxFuelMb(),v)));
+		entityData.set(DATA_FUEL,Math.clamp(getMaxFuelMb(),0F,v));
 	}
 	public float getFuelPercent(){
 		return getMaxFuelMb()>0?getFuelMb()/getMaxFuelMb():0F;

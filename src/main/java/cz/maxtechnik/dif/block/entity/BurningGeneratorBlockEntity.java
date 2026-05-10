@@ -35,29 +35,29 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.stream.IntStream;
-
 public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer{
-
 	public static final int SLOTS=1;
 	public static final int INPUT_SLOT=0;
 	public static final int ENERGY_PER_TICK=DifModCommonConfig.burningGeneratorEnergyPerTick;
 	public static final int MAX_ENERGY=DifModCommonConfig.burningGeneratorMaxEnergy;
 	public static final int MAX_RECEIVE=Integer.MAX_VALUE;
 	public static final int MAX_EXTRACT=DifModCommonConfig.burningGeneratorMaxExtract;
-
 	private final ItemStackHandler itemHandler=new ItemStackHandler(SLOTS){
 		@Override
 		protected void onContentsChanged(int slot){
 			setChanged();
 		}
 	};
-
 	// EnergyStorage přijímá i vydává – interně nabíjíme přes receiveEnergy
-	private final EnergyStorage energyStorage=new EnergyStorage(MAX_ENERGY,0,MAX_EXTRACT,0){
+	private final EnergyStorage energyStorage=new EnergyStorage(MAX_ENERGY,MAX_RECEIVE,MAX_EXTRACT,0){
 		@Override
-		public int receiveEnergy(int maxReceive,boolean simulate){ return 0; }
+		public int receiveEnergy(int maxReceive,boolean simulate){
+			return 0;
+		}
 		@Override
-		public boolean canReceive(){ return false; }
+		public boolean canReceive(){
+			return false;
+		}
 		@Override
 		public int extractEnergy(int maxExtract,boolean simulate){
 			int retval=super.extractEnergy(maxExtract,simulate);
@@ -69,13 +69,14 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 			return retval;
 		}
 	};
-
-	public ItemStackHandler getItemHandler(){ return itemHandler; }
-	public EnergyStorage getEnergyStorage(){ return energyStorage; }
-
+	public ItemStackHandler getItemHandler(){
+		return itemHandler;
+	}
+	public EnergyStorage getEnergyStorage(){
+		return energyStorage;
+	}
 	private int burnTime;
 	private int maxBurnTime;
-
 	public final ContainerData dataAccess=new SimpleContainerData(7){
 		@Override
 		public int get(int index){
@@ -101,24 +102,23 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 			}
 		}
 		@Override
-		public int getCount(){ return 7; }
+		public int getCount(){
+			return 7;
+		}
 	};
-
 	public BurningGeneratorBlockEntity(BlockPos position,BlockState state){
 		super(DifModBlockEntities.BURNING_GENERATOR.get(),position,state);
 	}
-
 	@Override
 	protected void loadAdditional(@NotNull CompoundTag compound,@NotNull HolderLookup.Provider provider){
 		super.loadAdditional(compound,provider);
 		if(compound.contains("inventory"))
 			itemHandler.deserializeNBT(provider,compound.getCompound("inventory"));
 		if(compound.contains("energyStorage"))
-			energyStorage.deserializeNBT(provider, Objects.requireNonNull(compound.get("energyStorage")));
+			energyStorage.deserializeNBT(provider,Objects.requireNonNull(compound.get("energyStorage")));
 		this.burnTime=compound.getInt("burnTime");
 		this.maxBurnTime=compound.getInt("maxBurnTime");
 	}
-
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag compound,@NotNull HolderLookup.Provider provider){
 		super.saveAdditional(compound,provider);
@@ -127,7 +127,6 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 		compound.putInt("burnTime",this.burnTime);
 		compound.putInt("maxBurnTime",this.maxBurnTime);
 	}
-
 	public static void clientTick(Level level,BlockPos pos,BlockState state){
 		if(state.getValue(cz.maxtechnik.dif.block.BurningGenerator.LIT)){
 			final double Y_OFFSET=0.28;
@@ -148,10 +147,8 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 			}
 		}
 	}
-
 	public static void serverTick(Level level,BlockPos pos,BlockState state,BurningGeneratorBlockEntity entity){
 		boolean shouldBeLit=false;
-
 		if(entity.energyStorage.getEnergyStored()+ENERGY_PER_TICK<=entity.energyStorage.getMaxEnergyStored()){
 			if(entity.burnTime>0){
 				shouldBeLit=true;
@@ -163,7 +160,8 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 					int current=(int)f.get(entity.energyStorage);
 					int max=entity.energyStorage.getMaxEnergyStored();
 					f.set(entity.energyStorage,Math.min(current+ENERGY_PER_TICK,max));
-				}catch(Exception ignored){}
+				}catch(Exception ignored){
+				}
 				entity.setChanged();
 				level.sendBlockUpdated(pos,state,state,3);
 				entity.setChanged();
@@ -186,7 +184,6 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 				}
 			}
 		}
-
 		// Distribuce energie do sousedů
 		if(entity.energyStorage.getEnergyStored()>0){
 			for(Direction direction: Direction.values()){
@@ -203,72 +200,62 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 				}
 			}
 		}
-
 		if(state.getValue(cz.maxtechnik.dif.block.BurningGenerator.LIT)!=shouldBeLit)
 			level.setBlock(pos,state.setValue(cz.maxtechnik.dif.block.BurningGenerator.LIT,shouldBeLit),3);
 	}
-
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket(){
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
-
 	@Override
 	public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider provider){
 		return this.saveWithFullMetadata(provider);
 	}
-
 	@Override
-	public int getContainerSize(){ return SLOTS; }
-
+	public int getContainerSize(){
+		return SLOTS;
+	}
 	@Override
 	public boolean isEmpty(){
 		return itemHandler.getStackInSlot(INPUT_SLOT).isEmpty();
 	}
-
 	@Override
 	public @NotNull Component getDefaultName(){
 		return Component.literal("generator");
 	}
-
 	@Override
 	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory){
 		FriendlyByteBuf buffer=new FriendlyByteBuf(Unpooled.buffer());
 		buffer.writeBlockPos(this.worldPosition);
 		return new BurningGeneratorMenu(id,inventory,buffer);
 	}
-
 	@Override
 	public @NotNull Component getDisplayName(){
 		return Component.literal("Generator");
 	}
-
 	@Override
 	protected @NotNull NonNullList<ItemStack> getItems(){
 		NonNullList<ItemStack> list=NonNullList.withSize(SLOTS,ItemStack.EMPTY);
 		list.set(0,itemHandler.getStackInSlot(0));
 		return list;
 	}
-
 	@Override
 	protected void setItems(@NotNull NonNullList<ItemStack> stacks){
 		for(int i=0;i<stacks.size()&&i<itemHandler.getSlots();i++)
 			itemHandler.setStackInSlot(i,stacks.get(i));
 	}
-
 	@Override
-	public boolean canPlaceItem(int index,@NotNull ItemStack stack){ return true; }
-
+	public boolean canPlaceItem(int index,@NotNull ItemStack stack){
+		return true;
+	}
 	@Override
 	public int @NotNull [] getSlotsForFace(@NotNull Direction side){
 		return IntStream.range(0,SLOTS).toArray();
 	}
-
 	@Override
 	public boolean canPlaceItemThroughFace(int index,@NotNull ItemStack stack,@Nullable Direction direction){
 		return true;
 	}
-
 	@Override
 	public boolean canTakeItemThroughFace(int index,@NotNull ItemStack stack,@NotNull Direction direction){
 		return true;
