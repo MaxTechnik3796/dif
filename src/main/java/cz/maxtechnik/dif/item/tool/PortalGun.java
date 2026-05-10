@@ -7,6 +7,7 @@ import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -15,7 +16,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -29,32 +29,29 @@ public class PortalGun extends Item{
 
 	private boolean isBlueMode(ItemStack gun){
 		var data=gun.get(DataComponents.CUSTOM_DATA);
-		return data==null||data.getUnsafe().getBoolean("mode");
+		return data==null||data.copyTag().getBoolean("mode");
 	}
 
-	private void setMode(ItemStack gun,boolean mode){
-		gun.update(DataComponents.CUSTOM_DATA,
-				net.minecraft.world.item.component.CustomData.EMPTY,
-				cd->{
-					var tag=cd.getUnsafe().copy();
-					tag.putBoolean("mode",mode);
-					tag.putInt("CustomModelData",mode?1:0);
-					return net.minecraft.world.item.component.CustomData.of(tag);
-				});
+	private void setMode(ItemStack gun, boolean mode){
+		var existing = gun.get(DataComponents.CUSTOM_DATA);
+		CompoundTag tag = existing != null ? existing.copyTag() : new CompoundTag();
+		tag.putBoolean("mode", mode);
+		tag.putInt("CustomModelData", mode ? 1 : 0);
+		gun.set(DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(tag));
 	}
 
 	private int getEnergy(ItemStack gun){
 		var data=gun.get(DataComponents.CUSTOM_DATA);
 		if(data==null) return DifModCommonConfig.portalGunMaxDurability;
-		return data.getUnsafe().getInt("energy");
+		return data.copyTag().getInt("energy");
 	}
 
 	private void setEnergy(ItemStack gun,int energy){
 		gun.update(DataComponents.CUSTOM_DATA,
 				net.minecraft.world.item.component.CustomData.EMPTY,
 				cd->{
-					var tag=cd.getUnsafe().copy();
-					tag.putInt("energy",Math.max(0,Math.min(DifModCommonConfig.portalGunMaxDurability,energy)));
+					var tag=cd.copyTag().copy();
+					tag.putInt("energy", Math.clamp(energy, 0, DifModCommonConfig.portalGunMaxDurability));
 					return net.minecraft.world.item.component.CustomData.of(tag);
 				});
 	}
@@ -65,7 +62,7 @@ public class PortalGun extends Item{
 
 		// Inicializace pokud chybí data
 		var data=gun.get(DataComponents.CUSTOM_DATA);
-		if(data==null||!data.getUnsafe().contains("energy")){
+		if(data==null||!data.copyTag().contains("energy")){
 			setMode(gun,true);
 			setEnergy(gun,DifModCommonConfig.portalGunMaxDurability);
 		}
@@ -139,10 +136,24 @@ public class PortalGun extends Item{
 	}
 
 	@Override
-	public boolean isEnchantable(@NotNull ItemStack itemStack){ return false; }
+	public boolean isBarVisible(@NotNull ItemStack stack){
+		return getEnergy(stack) < DifModCommonConfig.portalGunMaxDurability;
+	}
 
 	@Override
-	public int getEnchantmentValue(){ return 0; }
+	public int getBarWidth(@NotNull ItemStack stack){
+		return Math.round((float)getEnergy(stack) / DifModCommonConfig.portalGunMaxDurability * 13);
+	}
+
+	@Override
+	public int getBarColor(@NotNull ItemStack stack){
+		float f=(float)getEnergy(stack) / DifModCommonConfig.portalGunMaxDurability;
+		return net.minecraft.util.FastColor.ARGB32.color(0, (int)(f*255), 255-((int)(f*255)), 0);
+	}
+
+	@Override
+	public boolean isEnchantable(@NotNull ItemStack itemStack){ return false; }
+
 
 	@Override
 	public boolean isRepairable(@NotNull ItemStack itemStack){ return false; }
