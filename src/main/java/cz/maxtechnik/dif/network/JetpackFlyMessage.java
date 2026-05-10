@@ -27,7 +27,7 @@ public record JetpackFlyMessage(int actionType,int pressedms) implements CustomP
 	}
 	public static void pressAction(Player player,int actionType){
 		Level world=player.level();
-		if(!world.hasChunkAt(player.blockPosition())) return;
+		if(!world.isLoaded(player.blockPosition())) return;
 		if(actionType==0){
 			JetpackHandler.fly(player);
 		}else if(actionType==1){

@@ -139,7 +139,7 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>SPACE_CASING_METAL=REGISTRY.register("space_casing_metal",()->new Custom(SoundType.NETHERITE_BLOCK,5F,6F,true));
 	public static final DeferredBlock<Block>SPACE_DOOR=REGISTRY.register("space_door",SpaceDoor::new);
 	public static final DeferredBlock<Block>SPACE_CORRIDOR=REGISTRY.register("space_corridor",()->new Custom(SoundType.GLASS,5F,6F,true));
-	public static final DeferredBlock<Block>SPACE_CRATE=REGISTRY.register("space_crate",()->new BarrelBlock(BlockBehaviour.Properties.of().strength(5F,6F).sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops()));
+	public static final DeferredBlock<Block>SPACE_CRATE=REGISTRY.register("space_crate",()->new SpaceCrateBlock(BlockBehaviour.Properties.of().strength(5F,6F).sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>SOLAR_PANEL_BLOCK=REGISTRY.register("solar_panel_block",()->new Custom(SoundType.STONE,5F,6F,true));
 
 	public static final DeferredBlock<Block>MOON_STONE=REGISTRY.register("moon_stone",()->new Custom(SoundType.STONE,3F,4F,true));

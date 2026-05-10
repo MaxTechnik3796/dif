@@ -1,67 +1,170 @@
 package cz.maxtechnik.dif.block;
 
+import cz.maxtechnik.dif.block.entity.SleepingBagBlockEntity;
+import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BedBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BedBlockEntity;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BedPart;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-public class SleepingBagBlock extends BedBlock{
+import org.jetbrains.annotations.Nullable;
+
+public class SleepingBagBlock extends BaseEntityBlock{
+	public static final DirectionProperty FACING=BlockStateProperties.HORIZONTAL_FACING;
+	public static final EnumProperty<BedPart> PART=BlockStateProperties.BED_PART;
+	public static final BooleanProperty OCCUPIED=BlockStateProperties.OCCUPIED;
 	protected static final VoxelShape SHAPE=Block.box(0D,0D,0D,16D,2D,16D);
+
 	public SleepingBagBlock(){
-		super(DyeColor.WHITE,BlockBehaviour.Properties.of().sound(SoundType.WOOL).strength(0.2F).pushReaction(PushReaction.BLOCK).noOcclusion());
+		super(BlockBehaviour.Properties.of().sound(SoundType.WOOL).strength(0.2F).pushReaction(PushReaction.BLOCK).noOcclusion());
+		this.registerDefaultState(this.stateDefinition.any()
+				.setValue(FACING,Direction.NORTH)
+				.setValue(PART,BedPart.FOOT)
+				.setValue(OCCUPIED,false));
 	}
+
 	@Override
-	public @NotNull BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		return new BedBlockEntity(pos,state,DyeColor.WHITE);
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
+		builder.add(FACING,PART,OCCUPIED);
 	}
+
 	@Override
-	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state,Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
-		if(level.isClientSide){
-			return InteractionResult.CONSUME;
+	protected @NotNull com.mojang.serialization.MapCodec<? extends BaseEntityBlock> codec(){
+		return net.minecraft.world.level.block.state.BlockBehaviour.simpleCodec(p -> new SleepingBagBlock());
+	}
+
+	@Override
+	public @Nullable BlockState getStateForPlacement(BlockPlaceContext ctx){
+		Direction dir=ctx.getHorizontalDirection();
+		BlockPos pos=ctx.getClickedPos();
+		BlockPos headPos=pos.relative(dir);
+		Level level=ctx.getLevel();
+		if(level.getBlockState(headPos).canBeReplaced(ctx)&&level.getWorldBorder().isWithinBounds(headPos))
+			return this.defaultBlockState().setValue(FACING,dir);
+		return null;
+	}
+
+	@Override
+	public void onPlace(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState oldState,boolean moving){
+		if(state.getValue(PART)==BedPart.FOOT){
+			BlockPos headPos=pos.relative(state.getValue(FACING));
+			level.setBlock(headPos,state.setValue(PART,BedPart.HEAD),3);
 		}
+	}
+
+	@Override
+	public void onRemove(BlockState state,@NotNull Level level,@NotNull BlockPos pos,BlockState newState,boolean moving){
+		if(!state.is(newState.getBlock())){
+			// Smaž i druhý blok
+			BlockPos otherPos;
+			if(state.getValue(PART)==BedPart.FOOT)
+				otherPos=pos.relative(state.getValue(FACING));
+			else
+				otherPos=pos.relative(state.getValue(FACING).getOpposite());
+			BlockState otherState=level.getBlockState(otherPos);
+			if(otherState.is(this))
+				level.removeBlock(otherPos,false);
+		}
+		super.onRemove(state,level,pos,newState,moving);
+	}
+
+	@Override
+	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
+		// Barvení s barvivem (shift+pravý klik)
+		if(player.isShiftKeyDown()){
+			ItemStack held=player.getMainHandItem();
+			if(held.getItem() instanceof DyeItem dye){
+				if(level.isClientSide) return InteractionResult.SUCCESS;
+				BlockPos headPos=state.getValue(PART)==BedPart.FOOT?pos.relative(state.getValue(FACING)):pos;
+				if(level.getBlockEntity(headPos) instanceof SleepingBagBlockEntity be){
+					be.setColor(dye.getDyeColor());
+					if(!player.getAbilities().instabuild) held.shrink(1);
+					player.displayClientMessage(Component.literal("§7Barva spacáku změněna."),true);
+				}
+				return InteractionResult.CONSUME;
+			}
+		}
+
+		if(level.isClientSide) return InteractionResult.CONSUME;
+
+		// Najdi head pozici
 		if(state.getValue(PART)!=BedPart.HEAD){
 			pos=pos.relative(state.getValue(FACING));
 			state=level.getBlockState(pos);
-			if(!state.is(this)){
-				return InteractionResult.FAIL;
-			}
+			if(!state.is(this)) return InteractionResult.FAIL;
 		}
+
 		if(!BedBlock.canSetSpawn(level)){
-			level.explode(null,(double)pos.getX()+0.5D,(double)pos.getY()+0.5D,(double)pos.getZ()+0.5D,5.0F,true,Level.ExplosionInteraction.BLOCK);
+			level.explode(null,pos.getX()+0.5,pos.getY()+0.5,pos.getZ()+0.5,5.0F,Level.ExplosionInteraction.BLOCK);
 			return InteractionResult.SUCCESS;
 		}
-		player.startSleepInBed(pos).ifLeft((problem)->{
-			if(problem!=null&&problem.getMessage()!=null){
+
+		if(state.getValue(OCCUPIED)){
+			player.displayClientMessage(Component.translatable("block.minecraft.bed.occupied"),true);
+			return InteractionResult.SUCCESS;
+		}
+
+		player.startSleepInBed(pos).ifLeft(problem->{
+			if(problem!=null&&problem.getMessage()!=null)
 				player.displayClientMessage(problem.getMessage(),true);
-			}
 		});
 		return InteractionResult.SUCCESS;
 	}
+
 	@Override
 	public @NotNull RenderShape getRenderShape(@NotNull BlockState state){
 		return RenderShape.MODEL;
 	}
+
 	@Override
 	public @NotNull VoxelShape getShape(@NotNull BlockState state,@NotNull BlockGetter level,@NotNull BlockPos pos,@NotNull CollisionContext context){
 		return SHAPE;
 	}
+
 	@Override
 	public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state,@NotNull BlockGetter level,@NotNull BlockPos pos,@NotNull CollisionContext context){
 		return SHAPE;
+	}
+
+	@Override
+	public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
+		// Pouze HEAD blok má block entity
+		return state.getValue(PART)==BedPart.HEAD?new SleepingBagBlockEntity(pos,state):null;
+	}
+
+	@Nullable
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T> type){
+		return null;
+	}
+
+	@Override
+	public @NotNull BlockState rotate(BlockState state,Rotation rot){
+		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));
+	}
+
+	@Override
+	public @NotNull BlockState mirror(BlockState state,Mirror mirror){
+		return state.rotate(mirror.getRotation(state.getValue(FACING)));
 	}
 }

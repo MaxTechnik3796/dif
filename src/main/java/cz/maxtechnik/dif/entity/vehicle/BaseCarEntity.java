@@ -196,7 +196,7 @@ public abstract class BaseCarEntity extends Entity{
 		if(g==0) setRPM(getRPM()+(getIdleRPM()+(getMaxRPM()-getIdleRPM())*throttle*0.25F-getRPM())*0.15F);
 		else{
 			float tRPM=Math.abs(velocity)*getGearRatios()[g==-1?0:g-1]*rpmC;
-			setRPM(Math.clamp(getMaxRPM(),getIdleRPM(),Math.abs(velocity)<0.05F&&throttle>0F?Math.max(tRPM,getIdleRPM()+(getMaxRPM()-getIdleRPM())*throttle*0.25F):tRPM));
+			setRPM(Math.clamp(Math.abs(velocity)<0.05F&&throttle>0F?Math.max(tRPM,getIdleRPM()+(getMaxRPM()-getIdleRPM())*throttle*0.25F):tRPM, getIdleRPM(), getMaxRPM()));
 		}
 		float thrust=0F;
 		if(g!=0&&throttle>0f&&getFuelMb()>0F){
@@ -344,7 +344,7 @@ public abstract class BaseCarEntity extends Entity{
 		return entityData.get(DATA_FUEL);
 	}
 	public void setFuelMb(float v){
-		entityData.set(DATA_FUEL,Math.clamp(getMaxFuelMb(),0F,v));
+		entityData.set(DATA_FUEL, Math.clamp(v, 0F, getMaxFuelMb()));
 	}
 	public float getFuelPercent(){
 		return getMaxFuelMb()>0?getFuelMb()/getMaxFuelMb():0F;

@@ -71,9 +71,9 @@ public class DifMod {
 		// REGISTRACE EVENTŮ
 		NeoForge.EVENT_BUS.register(this);
 		NeoForge.EVENT_BUS.register(JetpackHandler.class);
+		NeoForge.EVENT_BUS.addListener(DifMod::onRenderGui);
 		bus.addListener(DifModTabs::addCreative);
 		modContainer.registerConfig(ModConfig.Type.COMMON, DifModCommonConfig.SPEC);
-		// Registrace capabilities (NeoForge 1.21.1)
 		bus.addListener(DifMod::registerCapabilities);
 	}
 
@@ -97,6 +97,8 @@ public class DifMod {
 				(be, side) -> be.getItemHandler());
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DifModBlockEntities.BURNING_GENERATOR.get(),
 				(be, side) -> be.getEnergyStorage());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.SPACE_CRATE.get(),
+				(be, side) -> be.getInventory());
 	}
 
 
