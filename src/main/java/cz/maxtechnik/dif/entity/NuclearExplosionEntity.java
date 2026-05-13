@@ -21,9 +21,9 @@ public class NuclearExplosionEntity extends Entity {
     private static final int BLOCKS_PER_TICK = 16_000;
     private static final float MAX_DESTROYABLE_RESISTANCE = 1500f;
 
-    private static final double HOR_R_FULL = 40.0, HOR_R_TOTAL = 60.0;
-    private static final double UP_R_FULL = 45.0, UP_R_TOTAL = 48.0;
-    private static final double DOWN_R_FULL = 10.0, DOWN_R_TOTAL = 16.0;
+    private static final double HOR_R_FULL = 40.0, HOR_R_TOTAL = 128.0;
+    private static final double UP_R_FULL = 52.0, UP_R_TOTAL = 64.0;
+    private static final double DOWN_R_FULL = 16.0, DOWN_R_TOTAL = 24.0;
 
     // Pre-computed
     private static final double HOR_FULL_SQ = HOR_R_FULL * HOR_R_FULL;
@@ -97,20 +97,29 @@ public class NuclearExplosionEntity extends Entity {
             shellV++;
             if (shellV >= vSize) { shellV = 0; shellU++; if (shellU >= uSize) { shellU = 0; shellFace++; if (shellFace > 5) { shellFace = 0; currentShell++; } } }
 
-            double verFullSq = dy >= 0 ? UP_FULL_SQ : DN_FULL_SQ;
-            double verTotalSq = dy >= 0 ? UP_TOTAL_SQ : DN_TOTAL_SQ;
             double dxSq = (double) dx*dx, dySq = (double) dy*dy, dzSq = (double) dz*dz;
 
-            double nTotal = dxSq/HOR_TOTAL_SQ + dySq/verTotalSq + dzSq/HOR_TOTAL_SQ;
+            // Pro dolní směr posuneme osu o horFrac*2 – na okraji (r=92) sahá dolů o 2 bloky
+            double verFullSq, verTotalSq, dyEff;
+            if (dy >= 0) {
+                verFullSq = UP_FULL_SQ; verTotalSq = UP_TOTAL_SQ; dyEff = dy;
+            } else {
+                double horFrac = Math.sqrt(dxSq + dzSq) / HOR_R_TOTAL; // 0.0 u středu, 1.0 na okraji
+                dyEff = dy + horFrac * 2.0;                             // posun: na okraji -0 místo -2
+                verFullSq = DN_FULL_SQ; verTotalSq = DN_TOTAL_SQ;
+            }
+            double dyEffSq = dyEff * dyEff;
+
+            double nTotal = dxSq/HOR_TOTAL_SQ + dyEffSq/verTotalSq + dzSq/HOR_TOTAL_SQ;
             if (nTotal > 1.0) continue;
 
-            double nFull = dxSq/HOR_FULL_SQ + dySq/verFullSq + dzSq/HOR_FULL_SQ;
+            double nFull = dxSq/HOR_FULL_SQ + dyEffSq/verFullSq + dzSq/HOR_FULL_SQ;
             boolean destroy;
             if (nFull <= 1.0) {
                 destroy = true;
             } else {
                 double scaleSq = 1.0 / nTotal;
-                double maxNFull = (dxSq*scaleSq)/HOR_FULL_SQ + (dySq*scaleSq)/verFullSq + (dzSq*scaleSq)/HOR_FULL_SQ;
+                double maxNFull = (dxSq*scaleSq)/HOR_FULL_SQ + (dyEffSq*scaleSq)/verFullSq + (dzSq*scaleSq)/HOR_FULL_SQ;
                 double t = Math.clamp((nFull - 1.0) / (maxNFull - 1.0), 0.0, 1.0);
                 double chance = 1.0 - t * 0.99;
                 destroy = chance >= 1.0 || random.nextDouble() < chance;
