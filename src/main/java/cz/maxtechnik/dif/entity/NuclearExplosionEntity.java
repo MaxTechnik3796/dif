@@ -279,7 +279,6 @@ public class NuclearExplosionEntity extends Entity {
         int cz = center.getZ();
 
         final int colHeight = SHOCKWAVE_HEIGHT_UP + SHOCKWAVE_HEIGHT_DN + 1;
-        final int maxSurfaceY = cy + SHOCKWAVE_HEIGHT_UP;
 
         int processed = 0;
 
@@ -336,12 +335,13 @@ public class NuclearExplosionEntity extends Entity {
             int yMin = cy - SHOCKWAVE_HEIGHT_DN;
             int yMax = cy + SHOCKWAVE_HEIGHT_UP;
 
-            // Jednoduchý surface scan shora dolů – najdeme povrch a rozhodneme
-            // Pokud povrch > maxSurfaceY → stěna/kopec → přeskoč
+            // Kontrola výšky terénu: skenujeme od cy+40 dolů k yMax+1
+            // Pokud najdeme solid blok nad yMax → terén je příliš vysoký → přeskoč jen tento sloupec
             boolean tooTall = false;
-            for (int y = yMax + 4; y > yMax; y--) {
+            for (int y = cy + 40; y > yMax; y--) {
                 mutablePos.set(bx, y, bz);
-                if (level().isLoaded(mutablePos) && !level().getBlockState(mutablePos).isAir()) {
+                if (!level().isLoaded(mutablePos)) break;
+                if (!level().getBlockState(mutablePos).isAir()) {
                     tooTall = true;
                     break;
                 }
