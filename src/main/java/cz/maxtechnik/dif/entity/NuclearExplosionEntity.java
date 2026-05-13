@@ -22,30 +22,22 @@ public class NuclearExplosionEntity extends Entity {
     private static final float MAX_DESTROYABLE_RESISTANCE = 1500f;
 
     private static final double HOR_R_FULL = 40.0, HOR_R_TOTAL = 60.0;
-    private static final double UP_R_FULL = 45.0, UP_R_TOTAL = 56.0;
+    private static final double UP_R_FULL = 45.0, UP_R_TOTAL = 48.0;
     private static final double DOWN_R_FULL = 10.0, DOWN_R_TOTAL = 16.0;
-
-    private static final double SHOCKWAVE_EXTRA = 48;
-    private static final double SHOCKWAVE_R = HOR_R_TOTAL + SHOCKWAVE_EXTRA;
-    private static final int SHOCKWAVE_HEIGHT_UP = 8, SHOCKWAVE_HEIGHT_DN = 2;
-    private static final int SHOCKWAVE_BLOCKS_PER_TICK = 20_000;
 
     // Pre-computed
     private static final double HOR_FULL_SQ = HOR_R_FULL * HOR_R_FULL;
     private static final double HOR_TOTAL_SQ = HOR_R_TOTAL * HOR_R_TOTAL;
     private static final double UP_FULL_SQ = UP_R_FULL * UP_R_FULL, UP_TOTAL_SQ = UP_R_TOTAL * UP_R_TOTAL;
     private static final double DN_FULL_SQ = DOWN_R_FULL * DOWN_R_FULL, DN_TOTAL_SQ = DOWN_R_TOTAL * DOWN_R_TOTAL;
-    private static final double SHOCKWAVE_R_SQ = SHOCKWAVE_R * SHOCKWAVE_R;
     private static final BlockState AIR = Blocks.AIR.defaultBlockState();
 
-    private static final int PHASE_INIT = 0, PHASE_CRATER = 1, PHASE_SHOCKWAVE = 2, PHASE_DONE = 3;
+    private static final int PHASE_INIT = 0, PHASE_CRATER = 1, PHASE_DONE = 2;
     private static final EntityDataAccessor<Integer> DATA_PHASE =
             SynchedEntityData.defineId(NuclearExplosionEntity.class, EntityDataSerializers.INT);
 
-    // Shell iterátor (kráter)
+    // Shell iterátor (kráter – od středu ven)
     private int currentShell, maxShell, shellFace, shellU, shellV;
-    // Shockwave iterátor (2D shell v XZ)
-    private int swCurrentShell, swInnerShell, swOuterShell, swFace, swFacePos;
 
     private boolean entitiesHit = false;
     private int radius = (int) HOR_R_TOTAL;
@@ -67,10 +59,9 @@ public class NuclearExplosionEntity extends Entity {
         super.tick();
         if (level().isClientSide) return;
         switch (getPhase()) {
-            case PHASE_INIT      -> { maxShell = (int) Math.ceil(HOR_R_TOTAL); currentShell = shellFace = shellU = shellV = 0; hitEntities(); setPhase(PHASE_CRATER); }
-            case PHASE_CRATER    -> tickCrater();
-            case PHASE_SHOCKWAVE -> tickShockwave();
-            case PHASE_DONE      -> discard();
+            case PHASE_INIT  -> { maxShell = (int) Math.ceil(HOR_R_TOTAL); currentShell = shellFace = shellU = shellV = 0; hitEntities(); setPhase(PHASE_CRATER); }
+            case PHASE_CRATER -> tickCrater();
+            case PHASE_DONE  -> discard();
         }
     }
 
@@ -82,14 +73,7 @@ public class NuclearExplosionEntity extends Entity {
         int processed = 0;
 
         while (processed < BLOCKS_PER_TICK) {
-            if (currentShell > maxShell) {
-                swInnerShell = (int) Math.floor(HOR_R_TOTAL / 1.41421356);
-                swOuterShell = (int) Math.ceil(SHOCKWAVE_R);
-                swCurrentShell = swInnerShell;
-                swFace = swFacePos = 0;
-                setPhase(PHASE_SHOCKWAVE);
-                return;
-            }
+            if (currentShell > maxShell) { setPhase(PHASE_DONE); return; }
 
             int r = currentShell;
             if (r == 0) {
@@ -101,8 +85,8 @@ public class NuclearExplosionEntity extends Entity {
 
             int dx, dy, dz, uSize, vSize;
             switch (shellFace) {
-                case 0 -> { dy = -r+shellU; dz = -r+shellV; dx = r;    uSize = 2*r+1;     vSize = 2*r+1; }
-                case 1 -> { dy = -r+shellU; dz = -r+shellV; dx = -r;   uSize = 2*r+1;     vSize = 2*r+1; }
+                case 0 -> { dy = -r+shellU; dz = -r+shellV; dx = r;     uSize = 2*r+1;     vSize = 2*r+1; }
+                case 1 -> { dy = -r+shellU; dz = -r+shellV; dx = -r;    uSize = 2*r+1;     vSize = 2*r+1; }
                 case 2 -> { dx = -(r-1)+shellU; dz = -r+shellV; dy = r;  uSize = 2*(r-1)+1; vSize = 2*r+1; }
                 case 3 -> { dx = -(r-1)+shellU; dz = -r+shellV; dy = -r; uSize = 2*(r-1)+1; vSize = 2*r+1; }
                 case 4 -> { dx = -(r-1)+shellU; dy = -(r-1)+shellV; dz = r;  uSize = 2*(r-1)+1; vSize = 2*(r-1)+1; }
@@ -127,55 +111,13 @@ public class NuclearExplosionEntity extends Entity {
             } else {
                 double scaleSq = 1.0 / nTotal;
                 double maxNFull = (dxSq*scaleSq)/HOR_FULL_SQ + (dySq*scaleSq)/verFullSq + (dzSq*scaleSq)/HOR_FULL_SQ;
-                double t = Math.min(1.0, Math.max(0.0, (nFull - 1.0) / (maxNFull - 1.0)));
-                destroy = (1.0 - t * 0.99) >= 1.0 || random.nextDouble() < (1.0 - t * 0.99);
+                double t = Math.clamp((nFull - 1.0) / (maxNFull - 1.0), 0.0, 1.0);
+                double chance = 1.0 - t * 0.99;
+                destroy = chance >= 1.0 || random.nextDouble() < chance;
             }
 
             if (destroy) destroyAt(cx + dx, cy + dy, cz + dz);
             processed++;
-        }
-    }
-
-    // ── Rázová vlna – 2D shell od středu ven, skrz vše ──────────────────
-
-    private void tickShockwave() {
-        BlockPos center = blockPosition();
-        int cx = center.getX(), cy = center.getY(), cz = center.getZ();
-        int yMin = cy - SHOCKWAVE_HEIGHT_DN, yMax = cy + SHOCKWAVE_HEIGHT_UP;
-        int colHeight = SHOCKWAVE_HEIGHT_UP + SHOCKWAVE_HEIGHT_DN + 1;
-        int processed = 0;
-
-        while (processed < SHOCKWAVE_BLOCKS_PER_TICK) {
-            if (swCurrentShell > swOuterShell) { setPhase(PHASE_DONE); return; }
-
-            int r = swCurrentShell, dx, dz, faceSize;
-            switch (swFace) {
-                case 0 -> { dx = r;  dz = -r + swFacePos; faceSize = 2*r+1; }
-                case 1 -> { dx = -r; dz = -r + swFacePos; faceSize = 2*r+1; }
-                case 2 -> { dz = r;  dx = -(r-1) + swFacePos; faceSize = Math.max(2*r-1, 0); }
-                case 3 -> { dz = -r; dx = -(r-1) + swFacePos; faceSize = Math.max(2*r-1, 0); }
-                default -> { dx = dz = 0; faceSize = 0; }
-            }
-
-            swFacePos++;
-            if (swFacePos >= faceSize || faceSize == 0) { swFacePos = 0; swFace++; if (swFace > 3) { swFace = 0; swCurrentShell++; } }
-
-            double distSq = (double) dx*dx + (double) dz*dz;
-            if (distSq < HOR_TOTAL_SQ || distSq > SHOCKWAVE_R_SQ) continue;
-
-            double chance = 1.0 - ((Math.sqrt(distSq) - HOR_R_TOTAL) / SHOCKWAVE_EXTRA) * 0.92;
-            int bx = cx + dx, bz = cz + dz;
-
-            for (int y = yMin; y <= yMax; y++) {
-                mutablePos.set(bx, y, bz);
-                if (!level().isLoaded(mutablePos)) continue;
-                BlockState st = level().getBlockState(mutablePos);
-                if (st.isAir()) continue;
-                if (st.getBlock().getExplosionResistance() > MAX_DESTROYABLE_RESISTANCE) continue;
-                if (chance >= 1.0 || random.nextDouble() < chance)
-                    level().setBlock(mutablePos, AIR, 2 | 16 | 64);
-            }
-            processed += colHeight;
         }
     }
 
@@ -186,31 +128,24 @@ public class NuclearExplosionEntity extends Entity {
         if (!level().isLoaded(mutablePos)) return;
         BlockState state = level().getBlockState(mutablePos);
         if (state.isAir()) return;
-        float res = state.getBlock().getExplosionResistance();
-        if (res >= 0 && res <= MAX_DESTROYABLE_RESISTANCE)
+        if (state.getBlock().getExplosionResistance() <= MAX_DESTROYABLE_RESISTANCE)
             level().setBlock(mutablePos, AIR, 2 | 16 | 64);
     }
 
     private void hitEntities() {
         if (entitiesHit) return;
         entitiesHit = true;
-        AABB area = new AABB(getX()-SHOCKWAVE_R, getY()-SHOCKWAVE_R, getZ()-SHOCKWAVE_R,
-                getX()+SHOCKWAVE_R, getY()+SHOCKWAVE_R, getZ()+SHOCKWAVE_R);
+        AABB area = new AABB(getX()-HOR_R_TOTAL, getY()-HOR_R_TOTAL, getZ()-HOR_R_TOTAL,
+                getX()+HOR_R_TOTAL, getY()+HOR_R_TOTAL, getZ()+HOR_R_TOTAL);
         for (LivingEntity e : level().getEntitiesOfClass(LivingEntity.class, area)) {
             double dist = e.distanceTo(this);
             if (dist < HOR_R_FULL) {
                 e.hurt(level().damageSources().explosion(this, this), Float.MAX_VALUE);
-            } else if (dist < HOR_R_TOTAL * 1.5) {
-                e.hurt(level().damageSources().explosion(this, this), (float)(100.0 * (1.0 - (dist - HOR_R_FULL) / HOR_R_TOTAL)));
+            } else if (dist <= HOR_R_TOTAL) {
+                e.hurt(level().damageSources().explosion(this, this),
+                        (float)(100.0 * (1.0 - (dist - HOR_R_FULL) / HOR_R_TOTAL)));
                 e.setDeltaMovement(e.position().subtract(position()).normalize().scale(3.0));
                 e.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 200, 1));
-            } else if (dist < SHOCKWAVE_R) {
-                e.hurt(level().damageSources().explosion(this, this), (float)(30.0 * (1.0 - (dist - HOR_R_TOTAL) / SHOCKWAVE_EXTRA)));
-                e.setDeltaMovement(e.position().subtract(position()).normalize().scale(2.0));
-                e.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 150, 1));
-            } else {
-                e.setDeltaMovement(e.position().subtract(position()).normalize().scale(1.5));
-                e.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 0));
             }
         }
     }
@@ -222,8 +157,6 @@ public class NuclearExplosionEntity extends Entity {
         radius = t.getInt("Radius"); entitiesHit = t.getBoolean("EntitiesHit");
         currentShell = t.getInt("CurrentShell"); maxShell = t.getInt("MaxShell");
         shellFace = t.getInt("ShellFace"); shellU = t.getInt("ShellU"); shellV = t.getInt("ShellV");
-        swCurrentShell = t.getInt("SwCurrentShell"); swInnerShell = t.getInt("SwInnerShell");
-        swOuterShell = t.getInt("SwOuterShell"); swFace = t.getInt("SwFace"); swFacePos = t.getInt("SwFacePos");
         setPhase(t.getInt("Phase"));
     }
 
@@ -232,8 +165,6 @@ public class NuclearExplosionEntity extends Entity {
         t.putInt("Radius", radius); t.putInt("Phase", getPhase()); t.putBoolean("EntitiesHit", entitiesHit);
         t.putInt("CurrentShell", currentShell); t.putInt("MaxShell", maxShell);
         t.putInt("ShellFace", shellFace); t.putInt("ShellU", shellU); t.putInt("ShellV", shellV);
-        t.putInt("SwCurrentShell", swCurrentShell); t.putInt("SwInnerShell", swInnerShell);
-        t.putInt("SwOuterShell", swOuterShell); t.putInt("SwFace", swFace); t.putInt("SwFacePos", swFacePos);
     }
 
     @Override public boolean isAttackable() { return false; }
