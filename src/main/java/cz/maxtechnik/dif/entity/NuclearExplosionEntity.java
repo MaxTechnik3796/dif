@@ -171,6 +171,7 @@ public class NuclearExplosionEntity extends Entity {
                 if (!level().isLoaded(mutablePos)) continue;
                 BlockState st = level().getBlockState(mutablePos);
                 if (st.isAir()) continue;
+                if (st.getBlock().getExplosionResistance() > MAX_DESTROYABLE_RESISTANCE) continue;
                 if (chance >= 1.0 || random.nextDouble() < chance)
                     level().setBlock(mutablePos, AIR, 2 | 16 | 64);
             }
