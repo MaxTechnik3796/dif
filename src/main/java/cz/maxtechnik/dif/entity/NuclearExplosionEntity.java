@@ -13,6 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+
 import net.minecraft.world.phys.AABB;
 
 public class NuclearExplosionEntity extends Entity {
@@ -43,13 +44,23 @@ public class NuclearExplosionEntity extends Entity {
     //Celkový max horizontální dosah
     private static final double SHOCKWAVE_R = HOR_R_TOTAL + SHOCKWAVE_EXTRA;
     //Výška sloupce
-    private static final int SHOCKWAVE_HEIGHT_UP = 12;
+    private static final int SHOCKWAVE_HEIGHT_UP = 8;
     //Hloubka
     private static final int SHOCKWAVE_HEIGHT_DN = 2;
     //Bloky za tick
     private static final int SHOCKWAVE_BLOCKS_PER_TICK = 20_000;
-    //Podíl solidních bloků ve sloupci, nad kterým se rázová vlna zastaví
-    private static final double SHOCKWAVE_WALL_THRESHOLD = 0.55;
+
+    // Pre-computed squared values (eliminuje opakované násobení)
+    private static final double HOR_FULL_SQ  = HOR_R_FULL * HOR_R_FULL;
+    private static final double HOR_TOTAL_SQ = HOR_R_TOTAL * HOR_R_TOTAL;
+    private static final double UP_FULL_SQ   = UP_R_FULL * UP_R_FULL;
+    private static final double UP_TOTAL_SQ  = UP_R_TOTAL * UP_R_TOTAL;
+    private static final double DN_FULL_SQ   = DOWN_R_FULL * DOWN_R_FULL;
+    private static final double DN_TOTAL_SQ  = DOWN_R_TOTAL * DOWN_R_TOTAL;
+    private static final double SHOCKWAVE_R_SQ = SHOCKWAVE_R * SHOCKWAVE_R;
+
+    // Cached AIR state – eliminuje opakované volání defaultBlockState()
+    private static final BlockState AIR = Blocks.AIR.defaultBlockState();
 
 
     private static final int PHASE_INIT      = 0;
@@ -128,21 +139,13 @@ public class NuclearExplosionEntity extends Entity {
         int cy = center.getY();
         int cz = center.getZ();
 
-        final double horFullSq  = HOR_R_FULL * HOR_R_FULL;
-        final double horTotalSq = HOR_R_TOTAL * HOR_R_TOTAL;
-        final double upFullSq   = UP_R_FULL * UP_R_FULL;
-        final double upTotalSq  = UP_R_TOTAL * UP_R_TOTAL;
-        final double dnFullSq   = DOWN_R_FULL * DOWN_R_FULL;
-        final double dnTotalSq  = DOWN_R_TOTAL * DOWN_R_TOTAL;
-
         int processed = 0;
 
         while (processed < BLOCKS_PER_TICK) {
             if (currentShell > maxShell) {
                 // Kráter hotov → shockwave
                 // Začínáme od HOR_R_TOTAL/√2 aby kruhový filtr zachytil i diagonály
-                // (Chebyshev shell r má rohy na eukl. vzdálenosti r*√2)
-                swInnerShell = (int) Math.floor(HOR_R_TOTAL / Math.sqrt(2.0));
+                swInnerShell = (int) Math.floor(HOR_R_TOTAL / 1.41421356);
                 swOuterShell = (int) Math.ceil(SHOCKWAVE_R);
                 swCurrentShell = swInnerShell;
                 swFace = 0;
@@ -156,7 +159,15 @@ public class NuclearExplosionEntity extends Entity {
             // Shell 0 = střed
             if (r == 0) {
                 mutablePos.set(cx, cy, cz);
-                if (level().isLoaded(mutablePos)) destroyBlock(mutablePos);
+                if (level().isLoaded(mutablePos)) {
+                    BlockState state = level().getBlockState(mutablePos);
+                    if (!state.isAir()) {
+                        float res = state.getBlock().getExplosionResistance();
+                        if (res >= 0 && res <= MAX_DESTROYABLE_RESISTANCE) {
+                            level().setBlock(mutablePos, AIR, 2 | 16 | 64);
+                        }
+                    }
+                }
                 currentShell = 1;
                 shellFace = 0;
                 shellU = 0;
@@ -213,37 +224,46 @@ public class NuclearExplosionEntity extends Entity {
                 }
             }
 
-            // ── Elipsoidní test ──
-            double verFullSq  = dy >= 0 ? upFullSq  : dnFullSq;
-            double verTotalSq = dy >= 0 ? upTotalSq : dnTotalSq;
+            // ── Elipsoidní test (inlined, pre-computed sq values) ──
+            double verFullSq  = dy >= 0 ? UP_FULL_SQ  : DN_FULL_SQ;
+            double verTotalSq = dy >= 0 ? UP_TOTAL_SQ : DN_TOTAL_SQ;
 
             double dxSq = (double) dx * dx;
             double dySq = (double) dy * dy;
             double dzSq = (double) dz * dz;
 
-            double nTotal = dxSq / horTotalSq + dySq / verTotalSq + dzSq / horTotalSq;
+            double nTotal = dxSq / HOR_TOTAL_SQ + dySq / verTotalSq + dzSq / HOR_TOTAL_SQ;
             if (nTotal > 1.0) continue;
 
-            double nFull = dxSq / horFullSq + dySq / verFullSq + dzSq / horFullSq;
+            double nFull = dxSq / HOR_FULL_SQ + dySq / verFullSq + dzSq / HOR_FULL_SQ;
 
-            double chance;
+            boolean destroy;
             if (nFull <= 1.0) {
-                chance = 1.0;
+                destroy = true; // 100% v jádru
             } else {
-                double scale = 1.0 / Math.sqrt(nTotal);
-                double bxSq = dxSq * scale * scale;
-                double bySq = dySq * scale * scale;
-                double bzSq = dzSq * scale * scale;
-                double maxNFull = bxSq / horFullSq + bySq / verFullSq + bzSq / horFullSq;
+                double scaleSq = 1.0 / nTotal; // = (1/sqrt(nTotal))^2
+                double maxNFull = (dxSq * scaleSq) / HOR_FULL_SQ
+                                + (dySq * scaleSq) / verFullSq
+                                + (dzSq * scaleSq) / HOR_FULL_SQ;
                 double t = (nFull - 1.0) / (maxNFull - 1.0);
                 if (t < 0.0) t = 0.0;
                 else if (t > 1.0) t = 1.0;
-                chance = 1.0 - t * 0.99;
+                double chance = 1.0 - t * 0.99;
+                destroy = chance >= 1.0 || random.nextDouble() < chance;
             }
 
-            if (chance >= 1.0 || random.nextDouble() < chance) {
+            if (destroy) {
                 mutablePos.set(cx + dx, cy + dy, cz + dz);
-                if (level().isLoaded(mutablePos)) destroyBlock(mutablePos);
+                if (level().isLoaded(mutablePos)) {
+                    // Inlined destroyBlock – šetří method call overhead
+                    BlockState state = level().getBlockState(mutablePos);
+                    if (!state.isAir()) {
+                        float res = state.getBlock().getExplosionResistance();
+                        if (res >= 0 && res <= MAX_DESTROYABLE_RESISTANCE) {
+                            level().setBlock(mutablePos, AIR, 2 | 16 | 64);
+                        }
+                    }
+                }
             }
 
             processed++;
@@ -258,9 +278,8 @@ public class NuclearExplosionEntity extends Entity {
         int cy = center.getY();
         int cz = center.getZ();
 
-        final double innerRSq = HOR_R_TOTAL * HOR_R_TOTAL;
-        final double outerRSq = SHOCKWAVE_R * SHOCKWAVE_R;
         final int colHeight = SHOCKWAVE_HEIGHT_UP + SHOCKWAVE_HEIGHT_DN + 1;
+        final int maxSurfaceY = cy + SHOCKWAVE_HEIGHT_UP;
 
         int processed = 0;
 
@@ -277,19 +296,19 @@ public class NuclearExplosionEntity extends Entity {
             int faceSize;
 
             switch (swFace) {
-                case 0: // +X: dx=r, dz ∈ [-r, r]
+                case 0:
                     dx = r; dz = -r + swFacePos;
                     faceSize = 2 * r + 1;
                     break;
-                case 1: // -X: dx=-r, dz ∈ [-r, r]
+                case 1:
                     dx = -r; dz = -r + swFacePos;
                     faceSize = 2 * r + 1;
                     break;
-                case 2: // +Z: dz=r, dx ∈ [-(r-1), r-1]
+                case 2:
                     dz = r; dx = -(r - 1) + swFacePos;
                     faceSize = Math.max(2 * r - 1, 0);
                     break;
-                case 3: // -Z: dz=-r, dx ∈ [-(r-1), r-1]
+                case 3:
                     dz = -r; dx = -(r - 1) + swFacePos;
                     faceSize = Math.max(2 * r - 1, 0);
                     break;
@@ -310,17 +329,32 @@ public class NuclearExplosionEntity extends Entity {
 
             // Kruhový test – musí být v kruhovém prstenci
             double distSq = (double) dx * dx + (double) dz * dz;
-            if (distSq < innerRSq || distSq > outerRSq) continue;
+            if (distSq < HOR_TOTAL_SQ || distSq > SHOCKWAVE_R_SQ) continue;
 
             int bx = cx + dx;
             int bz = cz + dz;
             int yMin = cy - SHOCKWAVE_HEIGHT_DN;
             int yMax = cy + SHOCKWAVE_HEIGHT_UP;
 
-            // Ničíme s klesající intenzitou od okraje kráteru ven
+            // Jednoduchý surface scan shora dolů – najdeme povrch a rozhodneme
+            // Pokud povrch > maxSurfaceY → stěna/kopec → přeskoč
+            boolean tooTall = false;
+            for (int y = yMax + 4; y > yMax; y--) {
+                mutablePos.set(bx, y, bz);
+                if (level().isLoaded(mutablePos) && !level().getBlockState(mutablePos).isAir()) {
+                    tooTall = true;
+                    break;
+                }
+            }
+            if (tooTall) {
+                processed++;
+                continue;
+            }
+
+            // Ničíme s klesající intenzitou
             double dist = Math.sqrt(distSq);
-            double progress = (dist - HOR_R_TOTAL) / SHOCKWAVE_EXTRA; // 0.0 → 1.0
-            double chance = 1.0 - progress * 0.92; // 1.0 → 0.08
+            double progress = (dist - HOR_R_TOTAL) / SHOCKWAVE_EXTRA;
+            double chance = 1.0 - progress * 0.92;
 
             for (int y = yMin; y <= yMax; y++) {
                 mutablePos.set(bx, y, bz);
@@ -333,7 +367,7 @@ public class NuclearExplosionEntity extends Entity {
                 if (resistance < 0 || resistance > MAX_DESTROYABLE_RESISTANCE) continue;
 
                 if (chance >= 1.0 || random.nextDouble() < chance) {
-                    level().setBlock(mutablePos, Blocks.AIR.defaultBlockState(), 2 | 16 | 64);
+                    level().setBlock(mutablePos, AIR, 2 | 16 | 64);
                 }
             }
 
@@ -342,16 +376,6 @@ public class NuclearExplosionEntity extends Entity {
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────
-
-    private void destroyBlock(BlockPos pos) {
-        BlockState state = level().getBlockState(pos);
-        if (state.isAir()) return;
-
-        float resistance = state.getBlock().getExplosionResistance();
-        if (resistance < 0 || resistance > MAX_DESTROYABLE_RESISTANCE) return;
-
-        level().setBlock(pos, Blocks.AIR.defaultBlockState(), 2 | 16 | 64);
-    }
 
     private void hitEntities() {
         if (entitiesHit) return;
