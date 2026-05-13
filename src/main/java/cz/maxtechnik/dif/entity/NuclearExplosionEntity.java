@@ -15,15 +15,16 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
+@SuppressWarnings("deprecation")
 public class NuclearExplosionEntity extends Entity {
 
     // KONSTANTY ────────────────────────────────────────────────────────────
     private static final int BLOCKS_PER_TICK = 16_000;
     private static final float MAX_DESTROYABLE_RESISTANCE = 1500f;
 
-    private static final double HOR_R_FULL = 40.0, HOR_R_TOTAL = 128.0;
-    private static final double UP_R_FULL = 52.0, UP_R_TOTAL = 64.0;
-    private static final double DOWN_R_FULL = 16.0, DOWN_R_TOTAL = 24.0;
+    private static final double HOR_R_FULL = 42.0, HOR_R_TOTAL = 96.0;
+    private static final double UP_R_FULL = 48.0, UP_R_TOTAL = 56.0;
+    private static final double DOWN_R_FULL = 12.0, DOWN_R_TOTAL = 18.0;
 
     // Pre-computed
     private static final double HOR_FULL_SQ = HOR_R_FULL * HOR_R_FULL;
@@ -97,7 +98,7 @@ public class NuclearExplosionEntity extends Entity {
             shellV++;
             if (shellV >= vSize) { shellV = 0; shellU++; if (shellU >= uSize) { shellU = 0; shellFace++; if (shellFace > 5) { shellFace = 0; currentShell++; } } }
 
-            double dxSq = (double) dx*dx, dySq = (double) dy*dy, dzSq = (double) dz*dz;
+            double dxSq = (double) dx*dx, dzSq = (double) dz*dz;
 
             // Pro dolní směr posuneme osu o horFrac*2 – na okraji (r=92) sahá dolů o 2 bloky
             double verFullSq, verTotalSq, dyEff;
