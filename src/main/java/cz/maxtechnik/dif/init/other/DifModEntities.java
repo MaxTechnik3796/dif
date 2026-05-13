@@ -1,6 +1,8 @@
 package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.entity.NuclearCountdownEntity;
+import cz.maxtechnik.dif.entity.NuclearExplosionEntity;
 import cz.maxtechnik.dif.entity.vehicle.FormulaEntity;
 import cz.maxtechnik.dif.entity.vehicle.RemoteControlMinecart;
 import net.minecraft.core.registries.Registries;
@@ -22,4 +24,16 @@ public class DifModEntities {
                     .sized(2.0F, 1.8F)
                     .clientTrackingRange(10)
                     .build("formula"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<NuclearCountdownEntity>> NUCLEAR_COUNTDOWN =
+            REGISTRY.register("nuclear_countdown", () ->
+                    EntityType.Builder.<NuclearCountdownEntity>of(NuclearCountdownEntity::new, MobCategory.MISC)
+                            .sized(0.75f, 0.75f).clientTrackingRange(256).updateInterval(1)
+                            .build("nuclear_countdown"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<NuclearExplosionEntity>> NUCLEAR_EXPLOSION =
+            REGISTRY.register("nuclear_explosion", () ->
+                    EntityType.Builder.<NuclearExplosionEntity>of(NuclearExplosionEntity::new, MobCategory.MISC)
+                            .sized(0.0f, 0.0f).clientTrackingRange(512).updateInterval(20)
+                            .build("nuclear_explosion"));
 }

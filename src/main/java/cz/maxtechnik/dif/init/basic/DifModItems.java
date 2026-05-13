@@ -315,6 +315,6 @@ public class DifModItems{
 	public static final DeferredItem<Item> MOON_STONE=block(DifModBlocks.MOON_STONE);
 	public static final DeferredItem<Item> MARS_STONE=block(DifModBlocks.MARS_STONE);
 
-
-
+	//nuke
+	public static final DeferredItem<NuclearBombItem> NUCLEAR_BOMB = REGISTRY.register("nuclear_bomb", NuclearBombItem::new);
 }

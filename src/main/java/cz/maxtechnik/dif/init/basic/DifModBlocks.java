@@ -153,4 +153,7 @@ public class DifModBlocks{
 
 	//Race:
 	public static final DeferredBlock<Block>LAP_TIMER=REGISTRY.register("lap_timer",()->new Block(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.NETHERITE_BLOCK)));
+
+	//nuke
+	public static final DeferredBlock<Block> NUCLEAR_BOMB = REGISTRY.register("nuclear_bomb", NuclearBombBlock::new);
 }

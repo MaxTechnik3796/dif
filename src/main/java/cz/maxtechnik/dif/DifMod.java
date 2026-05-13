@@ -2,6 +2,7 @@ package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
 import cz.maxtechnik.dif.item.armor.ElectroRunners;
+import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -91,10 +92,13 @@ public class DifMod{
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.DISTILLATION_CONTROLLER.get(),(be,side)->be.getFluidHandler());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.DISTILLATION_TANK.get(),(be,side)->be.getFluidHandler());
 	}
+
+
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event){
 		LOGGER.info("DIF MOD: Server Starting");
 	}
+
 	@SubscribeEvent
 	public void onCommandsRegister(RegisterCommandsEvent event){
 		ChunkLoaderCommand.register(event.getDispatcher());
@@ -106,8 +110,11 @@ public class DifMod{
 			CarHudOverlay.render(event.getGuiGraphics());
 		}
 	}
-	@EventBusSubscriber(modid=MODID, bus=EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
-	public static class ClientModEvents{
+
+	@EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+	public static class ClientModEvents {
+
+
 		@SubscribeEvent
 		public static void onClientSetup(FMLClientSetupEvent event){
 			LOGGER.info("DIF MOD: Client Setup");
@@ -120,14 +127,16 @@ public class DifMod{
 				}
 			});
 		}
+
 		@SubscribeEvent
-		public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event){
-			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(),context->new FryingTableRenderer());
-			event.registerBlockEntityRenderer(DifModBlockEntities.QUARRY.get(),context->new QuarryRenderer());
-			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(),context->new ChunkLoaderRenderer());
-			event.registerEntityRenderer(DifModEntities.FORMULA.get(),CarRenderer::new);
-			event.registerEntityRenderer(DifModEntities.REMOTE_MINECART.get(),context->new MinecartRenderer<>(context,ModelLayers.MINECART)
-			);
+		public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(), context -> new FryingTableRenderer());
+			event.registerBlockEntityRenderer(DifModBlockEntities.QUARRY.get(), context -> new QuarryRenderer());
+			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(), context -> new ChunkLoaderRenderer());
+			event.registerEntityRenderer(DifModEntities.FORMULA.get(), CarRenderer::new);
+			event.registerEntityRenderer(DifModEntities.REMOTE_MINECART.get(),context -> new MinecartRenderer<>(context,ModelLayers.MINECART));
+			event.registerEntityRenderer(DifModEntities.NUCLEAR_COUNTDOWN.get(), NoopRenderer::new);
+			event.registerEntityRenderer(DifModEntities.NUCLEAR_EXPLOSION.get(), NoopRenderer::new);
 		}
 	}
 	public static String goggleTooltipFix="    ";
