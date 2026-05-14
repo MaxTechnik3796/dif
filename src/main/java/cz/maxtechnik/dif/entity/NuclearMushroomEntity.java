@@ -13,29 +13,29 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 public class NuclearMushroomEntity extends Entity{
 	// ── Konfigurace HugeSmoke mraku ───────────────────────────────────────────
-	private static final double SMOKE_RADIUS=18.0;
+	private static final double SMOKE_RADIUS=24.0;
 	private static final int SMOKE_PARTICLES=300;
 	private static final float SMOKE_RISE_SPEED=5.0f;
 	private static final int SMOKE_SPAWN_TICKS=10;
-	private static final double SMOKE_STEM_LENGTH=20.0;
-	private static final double SMOKE_STEM_RADIUS=2.5;
+	private static final double SMOKE_STEM_LENGTH=80.0;
+	private static final double SMOKE_STEM_RADIUS=1;
 	private static final int SMOKE_STEM_PARTICLES=150;
 	/**
 	 * Kdy entita přestane existovat kvůli smoke (ticky).
 	 */
-	private static final int SMOKE_LIFETIME=600;
+	private static final int SMOKE_LIFETIME=1600;
 	// ── Konfigurace Fireball mraku ────────────────────────────────────────────
-	private static final double FIREBALL_RADIUS=20.0;
+	private static final double FIREBALL_RADIUS=28.0;
 	private static final int FIREBALL_PARTICLES=200;
 	private static final float FIREBALL_RISE_SPEED=5F;
 	private static final int FIREBALL_SPAWN_TICKS=10;
-	private static final double FIREBALL_STEM_LENGTH=20.0;
-	private static final double FIREBALL_STEM_RADIUS=3.0;
+	private static final double FIREBALL_STEM_LENGTH=80.0;
+	private static final double FIREBALL_STEM_RADIUS=1.5;
 	private static final int FIREBALL_STEM_PARTICLES=100;
 	/**
 	 * Kdy entita přestane existovat kvůli fireballu (ticky).
 	 */
-	private static final int FIREBALL_LIFETIME=200;
+	private static final int FIREBALL_LIFETIME=400;
 	// ── Společná konfigurace ──────────────────────────────────────────────────
 	/**
 	 * Entita zanikne až když oba mraky dosáhnou svého lifetime.
@@ -100,7 +100,7 @@ public class NuclearMushroomEntity extends Entity{
 			dy=(dy/len)*r;
 			dz=(dz/len)*r;
 			double spawnX=this.getX()+dx;
-			double spawnY=this.getY()+dy;
+			double spawnY=this.getY()+dy+radius;
 			double spawnZ=this.getZ()+dz;
 			sendParticle(serverLevel,particleType,spawnX,spawnY,spawnZ,riseSpeed);
 		}

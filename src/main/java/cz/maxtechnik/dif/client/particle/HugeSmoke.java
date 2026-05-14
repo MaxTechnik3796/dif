@@ -21,6 +21,7 @@ public class HugeSmoke extends TextureSheetParticle {
         this.xd = vx;
         this.yd = vy;
         this.zd = vz;
+        this.hasPhysics = false;
     }
 
     @Override
