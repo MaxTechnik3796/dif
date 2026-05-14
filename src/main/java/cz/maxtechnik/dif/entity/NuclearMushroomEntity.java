@@ -1,156 +1,146 @@
-// ── NuclearMushroomEntity.java ────────────────────────────────────────────
 package cz.maxtechnik.dif.entity;
 
 import cz.maxtechnik.dif.init.other.DifModParticles;
-import cz.maxtechnik.dif.init.other.DifModEntities;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
-import net.minecraft.core.particles.ParticleTypes;
+import org.jetbrains.annotations.NotNull;
 
 public class NuclearMushroomEntity extends Entity {
 
-    // ── Fireball mrak ─────────────────────────────────────────────────────
-    private static final int    FIREBALL_LIFETIME   = 300;
-    private static final double FIREBALL_RADIUS     = 12.0;
-    private static final int    FIREBALL_COUNT      = 80;
-    private static final double FIREBALL_RISE_SPEED = 0.4;
+    // ── Konfigurace HugeSmoke mraku ───────────────────────────────────────────
 
-    // ── Huge smoke mrak ───────────────────────────────────────────────────
-    private static final int    SMOKE_LIFETIME      = 500;
-    private static final double SMOKE_RADIUS        = 8.0;
-    private static final int    SMOKE_COUNT         = 60;
-    private static final double SMOKE_RISE_SPEED    = 0.4;
+    private static final double SMOKE_RADIUS = 18.0;
+    private static final int    SMOKE_PARTICLES = 2500;
+    private static final float  SMOKE_RISE_SPEED = 5.0f;
+    private static final int    SMOKE_SPAWN_TICKS = 10;
+    /** Kdy entita přestane existovat kvůli smoke (ticky). */
+    private static final int    SMOKE_LIFETIME = 600;
 
-    // ── Sloup ─────────────────────────────────────────────────────────────
-    private static final int    STEM_INTERVAL       = 10;
-    private static final int    STEM_STOP_BEFORE    = 40;
+    // ── Konfigurace Fireball mraku ────────────────────────────────────────────
 
-    // ── Paprsky ───────────────────────────────────────────────────────────
-    private static final int    RAY_COUNT           = 12;
-    private static final double RAY_SPEED           = 4.0;
-    private static final int    RAY_STOP_BEFORE     = 40;
+    private static final double FIREBALL_RADIUS = 20.0;
+    private static final int    FIREBALL_PARTICLES = 3000;
+    private static final float  FIREBALL_RISE_SPEED = 5.0f;
+    private static final int    FIREBALL_SPAWN_TICKS = 10;
+    /** Kdy entita přestane existovat kvůli fireballu (ticky). */
+    private static final int    FIREBALL_LIFETIME = 200;
 
-    // ─────────────────────────────────────────────────────────────────────
+    // ── Společná konfigurace ──────────────────────────────────────────────────
 
-    private static final EntityDataAccessor<Integer> DATA_TICK =
-            SynchedEntityData.defineId(NuclearMushroomEntity.class, EntityDataSerializers.INT);
+    /** Entita zanikne až když oba mraky dosáhnou svého lifetime. */
+    private static final int LIFETIME_TICKS = Math.max(SMOKE_LIFETIME, FIREBALL_LIFETIME);
+
+    private static final double SEND_RADIUS = 512.0;
+
+    // ── Interní stav ─────────────────────────────────────────────────────────
+
+    private int age = 0;
 
     public NuclearMushroomEntity(EntityType<?> type, Level level) {
         super(type, level);
         this.noPhysics = true;
     }
 
-    @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(DATA_TICK, 0);
-    }
-
-    private void setT(int t) { entityData.set(DATA_TICK, t); }
-    private int  getT()      { return entityData.get(DATA_TICK); }
+    // ── Tick logika ───────────────────────────────────────────────────────────
 
     @Override
     public void tick() {
         super.tick();
-        if (level().isClientSide) return;
-        if (!(level() instanceof ServerLevel sl)) return;
 
-        int t = getT();
-        double ox = getX(), oy = getY(), oz = getZ();
+        if (this.level() instanceof ServerLevel serverLevel) {
 
-        // ── Tick 0: spawn mraku + vlny ────────────────────────────────────
-        if (t == 0) {
-            spawnFireballCloud(sl, ox, oy, oz);
-            spawnSmokeCloud(sl, ox, oy, oz);
+            if (age < SMOKE_SPAWN_TICKS) {
+                spawnSphereParticles(serverLevel,
+                        SMOKE_PARTICLES / SMOKE_SPAWN_TICKS,
+                        SMOKE_RADIUS,
+                        DifModParticles.HUGE_SMOKE.get(),
+                        SMOKE_RISE_SPEED);
+            }
 
-            // Spawn vlnové entity
-            NuclearWaveEntity wave = new NuclearWaveEntity(
-                    DifModEntities.NUCLEAR_WAVE.get(), level());
-            wave.setPos(ox, oy + 2, oz);
-            level().addFreshEntity(wave);
+            if (age < FIREBALL_SPAWN_TICKS) {
+                spawnSphereParticles(serverLevel,
+                        FIREBALL_PARTICLES / FIREBALL_SPAWN_TICKS,
+                        FIREBALL_RADIUS,
+                        DifModParticles.FIREBALL.get(),
+                        FIREBALL_RISE_SPEED);
+            }
         }
 
-        // ── Paprsky ───────────────────────────────────────────────────────
-        if (t < FIREBALL_LIFETIME - RAY_STOP_BEFORE) {
-            spawnRays(sl, ox, oy + 2, oz);
-        }
-
-        // ── Sloup ─────────────────────────────────────────────────────────
-        if (t % STEM_INTERVAL == 0 && t < SMOKE_LIFETIME - STEM_STOP_BEFORE) {
-            sl.sendParticles(DifModParticles.HUGE_SMOKE.get(),
-                    ox + (random.nextDouble() - 0.5) * 2,
-                    oy,
-                    oz + (random.nextDouble() - 0.5) * 2,
-                    1, 0, 0.05, 0, 1.0);
-        }
-
-        setT(t + 1);
-        if (t >= SMOKE_LIFETIME) this.discard();
-    }
-
-    // ── Spawn metody ──────────────────────────────────────────────────────
-
-    private void spawnFireballCloud(ServerLevel sl, double ox, double oy, double oz) {
-        for (int i = 0; i < FIREBALL_COUNT; i++) {
-            double[] pos = randomInSphere(FIREBALL_RADIUS);
-            sl.sendParticles(DifModParticles.FIREBALL.get(),
-                    ox + pos[0], oy + pos[1], oz + pos[2],
-                    1, 0, FIREBALL_RISE_SPEED, 0, 1.0);
+        age++;
+        if (age >= LIFETIME_TICKS) {
+            this.discard();
         }
     }
 
-    private void spawnSmokeCloud(ServerLevel sl, double ox, double oy, double oz) {
-        for (int i = 0; i < SMOKE_COUNT; i++) {
-            double[] pos = randomInSphere(SMOKE_RADIUS);
-            sl.sendParticles(DifModParticles.HUGE_SMOKE.get(),
-                    ox + pos[0], oy + pos[1], oz + pos[2],
-                    1, 0, SMOKE_RISE_SPEED, 0, 1.0);
+    // ── Spawn metody ──────────────────────────────────────────────────────────
+
+    private void spawnSphereParticles(ServerLevel serverLevel, int count,
+                                      double radius, SimpleParticleType particleType,
+                                      float riseSpeed) {
+        for (int i = 0; i < count; i++) {
+            // Rejection sampling — rovnoměrné náhodné rozložení v kouli
+            double dx, dy, dz, len;
+            do {
+                dx = Math.random() * 2.0 - 1.0;
+                dy = Math.random() * 2.0 - 1.0;
+                dz = Math.random() * 2.0 - 1.0;
+                len = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            } while (len > 1.0 || len == 0.0);
+
+            // Normalizuj směr a škáluj na rádius (cbrt = rovnoměrné vyplnění objemu)
+            double r = radius * Math.cbrt(Math.random());
+            dx = (dx / len) * r;
+            dy = (dy / len) * r;
+            dz = (dz / len) * r;
+
+            double spawnX = this.getX() + dx;
+            double spawnY = this.getY() + dy;
+            double spawnZ = this.getZ() + dz;
+
+            sendParticle(serverLevel, particleType, spawnX, spawnY, spawnZ, riseSpeed);
         }
     }
 
-    private void spawnRays(ServerLevel sl, double ox, double oy, double oz) {
-        for (int i = 0; i < RAY_COUNT; i++) {
-            double angle = (Math.PI * 2 / RAY_COUNT) * i;
-            sl.sendParticles(ParticleTypes.FLASH,
-                    ox, oy, oz,
-                    1,
-                    Math.cos(angle) * RAY_SPEED,
-                    0,
-                    Math.sin(angle) * RAY_SPEED,
-                    1.0);
+    private void sendParticle(ServerLevel serverLevel, SimpleParticleType particleType,
+                              double x, double y, double z, float riseSpeed) {
+        for (ServerPlayer player : serverLevel.getPlayers(p ->
+                p.distanceToSqr(x, y, z) < SEND_RADIUS * SEND_RADIUS)) {
+
+            player.connection.send(
+                    new ClientboundLevelParticlesPacket(
+                            particleType,
+                            true,
+                            x, y, z,
+                            0.0f,
+                            0.2f,      // deltaY — směr nahoru
+                            0.0f,
+                            riseSpeed,
+                            0
+                    )
+            );
         }
     }
 
-    private double[] randomInSphere(double radius) {
-        double u     = random.nextDouble();
-        double v     = random.nextDouble();
-        double theta = 2 * Math.PI * u;
-        double phi   = Math.acos(2 * v - 1);
-        double r     = radius * Math.cbrt(random.nextDouble());
-        return new double[]{
-                r * Math.sin(phi) * Math.cos(theta),
-                r * Math.sin(phi) * Math.sin(theta),
-                r * Math.cos(phi)
-        };
-    }
+    // ── Povinné přepisy ───────────────────────────────────────────────────────
 
-    // ── NBT ───────────────────────────────────────────────────────────────
+    @Override
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
+    }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        setT(tag.getInt("T"));
+        age = tag.getInt("MushroomAge");
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
-        tag.putInt("T", getT());
+        tag.putInt("MushroomAge", age);
     }
-
-    @Override public boolean isAttackable() { return false; }
-    @Override public boolean isPickable()   { return false; }
 }

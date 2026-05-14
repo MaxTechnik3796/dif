@@ -14,12 +14,12 @@ public class HugeSmoke extends TextureSheetParticle {
                         double vx, double vy, double vz, SpriteSet sprites) {
         super(level, x, y, z, vx, vy, vz);
         this.setSpriteFromAge(sprites);
-        this.quadSize *= 32.0F;
+        this.quadSize *= 24.0F;
         this.lifetime = 800;
-        this.gravity = -0.004F;
+        this.gravity = -0.01F;
         this.alpha = 0.85F;
         this.xd = vx;
-        this.yd = vy + 0.1;
+        this.yd = vy;
         this.zd = vz;
     }
 

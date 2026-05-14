@@ -17,13 +17,13 @@ public class FireballParticle extends TextureSheetParticle {
         super(level, x, y, z);
         this.spriteSet = sprites;
         this.pickSprite(sprites);         // nastav sprite ihned
-        this.quadSize *= 32.0F;
+        this.quadSize *= 24.0F;
         this.lifetime = 200;             // ~10 sekund
         this.gravity = -0.01F;           // lehce stoupá
         this.hasPhysics = false;
-        this.xd = vx * 0.1;
-        this.yd = vy * 0.1;
-        this.zd = vz * 0.1;
+        this.xd = vx;
+        this.yd = vy;
+        this.zd = vz;
         this.alpha = 1.0F;
     }
 
