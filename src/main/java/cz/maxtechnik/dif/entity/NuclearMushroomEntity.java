@@ -1,6 +1,5 @@
 package cz.maxtechnik.dif.entity;
 
-import cz.maxtechnik.dif.init.other.DifModParticles;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
@@ -11,117 +10,72 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import static cz.maxtechnik.dif.init.other.DifModParticles.FIREBALL;
+import static cz.maxtechnik.dif.init.other.DifModParticles.HUGE_SMOKE;
 public class NuclearMushroomEntity extends Entity{
-	// ── Konfigurace HugeSmoke mraku ───────────────────────────────────────────
-	private static final double SMOKE_RADIUS=24.0;
-	private static final int SMOKE_PARTICLES=300;
-	private static final float SMOKE_RISE_SPEED=5.0f;
-	private static final int SMOKE_SPAWN_TICKS=10;
-	private static final double SMOKE_STEM_LENGTH=80.0;
-	private static final double SMOKE_STEM_RADIUS=1;
-	private static final int SMOKE_STEM_PARTICLES=150;
-	// ── Konfigurace Fireball mraku ────────────────────────────────────────────
-	private static final double FIREBALL_RADIUS=28.0;
-	private static final int FIREBALL_PARTICLES=200;
-	private static final float FIREBALL_RISE_SPEED=5F;
-	private static final int FIREBALL_SPAWN_TICKS=10;
-	private static final double FIREBALL_STEM_LENGTH=80.0;
-	private static final double FIREBALL_STEM_RADIUS=1.5;
-	private static final int FIREBALL_STEM_PARTICLES=100;
-	// ── Společná konfigurace ──────────────────────────────────────────────────
-	private static final int LIFETIME_TICKS=800; // Odpovídá délce života HugeSmoke
-	private static final double SEND_RADIUS=512.0;
-	// ── Interní stav ─────────────────────────────────────────────────────────
+	private static final int SMOKE_PARTICLES=300, SMOKE_SPAWN_TICKS=10, SMOKE_STEM_PARTICLES=150, FIREBALL_PARTICLES=200, FIREBALL_SPAWN_TICKS=10, FIREBALL_STEM_PARTICLES=100, LIFETIME_TICKS=800;
+	private static final double SEND_RADIUS=512, FIREBALL_STEM_LENGTH=80, FIREBALL_STEM_RADIUS=1.5, FIREBALL_RADIUS=28, SMOKE_STEM_LENGTH=80, SMOKE_STEM_RADIUS=1, SMOKE_RADIUS=24;
+	private static final float SMOKE_RISE_SPEED=5F, FIREBALL_RISE_SPEED=5F;
 	private int age=0;
 	public NuclearMushroomEntity(EntityType<?> type,Level level){
 		super(type,level);
 		this.noPhysics=true;
 	}
-	// ── Tick logika ───────────────────────────────────────────────────────────
 	@Override
 	public void tick(){
 		super.tick();
 		if(this.level() instanceof ServerLevel serverLevel){
 			if(age<SMOKE_SPAWN_TICKS){
-				spawnSphereParticles(serverLevel,
-						SMOKE_PARTICLES/SMOKE_SPAWN_TICKS,
-						SMOKE_RADIUS,
-						DifModParticles.HUGE_SMOKE.get(),
-						SMOKE_RISE_SPEED);
-				spawnStemParticles(serverLevel,
-						SMOKE_STEM_PARTICLES/SMOKE_SPAWN_TICKS,
-						SMOKE_STEM_LENGTH,
-						SMOKE_STEM_RADIUS,
-						DifModParticles.HUGE_SMOKE.get(),
-						SMOKE_RISE_SPEED);
+				spawnSphereParticles(serverLevel,SMOKE_PARTICLES/SMOKE_SPAWN_TICKS,SMOKE_RADIUS,HUGE_SMOKE.get(),SMOKE_RISE_SPEED);
+				spawnStemParticles(serverLevel,SMOKE_STEM_PARTICLES/SMOKE_SPAWN_TICKS,SMOKE_STEM_LENGTH,SMOKE_STEM_RADIUS,HUGE_SMOKE.get(),SMOKE_RISE_SPEED);
 			}
 			if(age<FIREBALL_SPAWN_TICKS){
-				spawnSphereParticles(serverLevel,
-						FIREBALL_PARTICLES/FIREBALL_SPAWN_TICKS,
-						FIREBALL_RADIUS,
-						DifModParticles.FIREBALL.get(),
-						FIREBALL_RISE_SPEED);
-				spawnStemParticles(serverLevel,
-						FIREBALL_STEM_PARTICLES/FIREBALL_SPAWN_TICKS,
-						FIREBALL_STEM_LENGTH,
-						FIREBALL_STEM_RADIUS,
-						DifModParticles.FIREBALL.get(),
-						FIREBALL_RISE_SPEED);
+				spawnSphereParticles(serverLevel,FIREBALL_PARTICLES/FIREBALL_SPAWN_TICKS,FIREBALL_RADIUS,FIREBALL.get(),FIREBALL_RISE_SPEED);
+				spawnStemParticles(serverLevel,FIREBALL_STEM_PARTICLES/FIREBALL_SPAWN_TICKS,FIREBALL_STEM_LENGTH,FIREBALL_STEM_RADIUS,FIREBALL.get(),FIREBALL_RISE_SPEED);
 			}
 		}
 		age++;
 		if(age>=LIFETIME_TICKS) this.discard();
 	}
-	// ── Spawn metody ──────────────────────────────────────────────────────────
 	private void spawnSphereParticles(ServerLevel serverLevel,int count,double radius,SimpleParticleType particleType,float riseSpeed){
 		for(int i=0;i<count;i++){
-			// Rejection sampling — rovnoměrné náhodné rozložení v kouli
 			double dx, dy, dz, len;
 			do{
-				dx=Math.random()*2.0-1.0;
-				dy=Math.random()*2.0-1.0;
-				dz=Math.random()*2.0-1.0;
+				dx=Math.random()*2-1;
+				dy=Math.random()*2-1;
+				dz=Math.random()*2-1;
 				len=Math.sqrt(dx*dx+dy*dy+dz*dz);
-			}while(len>1.0||len==0.0);
-			// Normalizuj směr a škáluj na rádius (cbrt = rovnoměrné vyplnění objemu)
+			}
+			while(len>1||len==0);
 			double r=radius*Math.cbrt(Math.random());
 			dx=(dx/len)*r;
 			dy=(dy/len)*r;
 			dz=(dz/len)*r;
-			double spawnX=this.getX()+dx;
-			double spawnY=this.getY()+dy+radius;
-			double spawnZ=this.getZ()+dz;
+			double spawnX=this.getX()+dx, spawnY=this.getY()+dy+radius, spawnZ=this.getZ()+dz;
 			sendParticle(serverLevel,particleType,spawnX,spawnY,spawnZ,riseSpeed);
 		}
 	}
 	private void spawnStemParticles(ServerLevel serverLevel,int count,double length,double radius,SimpleParticleType particleType,float riseSpeed){
 		for(int i=0;i<count;i++){
-			// Rovnoměrné rozložení uvnitř válce stopky směrem dolů
-			double dy = -(Math.random() * length);
-			// Rejection sampling pro kruh
-			double dx, dz, len;
-			do {
-				dx = Math.random() * 2.0 - 1.0;
-				dz = Math.random() * 2.0 - 1.0;
-				len = Math.sqrt(dx * dx + dz * dz);
-			} while (len > 1.0 || len == 0.0);
-			double r = radius * Math.sqrt(Math.random());
-			dx = (dx / len) * r;
-			dz = (dz / len) * r;
-
-			double spawnX = this.getX() + dx;
-			double spawnY = this.getY() + dy;
-			double spawnZ = this.getZ() + dz;
-			sendParticle(serverLevel, particleType, spawnX, spawnY, spawnZ, riseSpeed);
+			double dy=-(Math.random()*length), dx, dz, len;
+			do{
+				dx=Math.random()*2-1;
+				dz=Math.random()*2-1;
+				len=Math.sqrt(dx*dx+dz*dz);
+			}
+			while(len>1||len==0);
+			double r=radius*Math.sqrt(Math.random());
+			dx=(dx/len)*r;
+			dz=(dz/len)*r;
+			double spawnX=this.getX()+dx, spawnY=this.getY()+dy, spawnZ=this.getZ()+dz;
+			sendParticle(serverLevel,particleType,spawnX,spawnY,spawnZ,riseSpeed);
 		}
 	}
 	private void sendParticle(ServerLevel serverLevel,SimpleParticleType particleType,double x,double y,double z,float riseSpeed){
 		for(ServerPlayer player: serverLevel.getPlayers(p->p.distanceToSqr(x,y,z)<SEND_RADIUS*SEND_RADIUS))
-			player.connection.send(
-					new ClientboundLevelParticlesPacket(particleType,true,x,y,z,0F,0.2F,0F,riseSpeed,0)
-			);
+			player.connection.send(new ClientboundLevelParticlesPacket(particleType,true,x,y,z,0F,0.2F,0F,riseSpeed,0));
 	}
-	// ── Povinné přepisy ───────────────────────────────────────────────────────
 	@Override
 	protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder){
 	}

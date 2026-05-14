@@ -61,7 +61,7 @@ public class NuclearExplosionEntity extends Entity{
 	// ── Kráter – shell-based od středu ven ───────────────────────────────
 	private void tickCrater(){
 		BlockPos center=blockPosition();
-		int cx=center.getX(), cy=center.getY(), cz=center.getZ(),processed=0;
+		int cx=center.getX(), cy=center.getY(), cz=center.getZ(), processed=0;
 		while(processed<BLOCKS_PER_TICK){
 			if(currentShell>maxShell){
 				setPhase(PHASE_DONE);
