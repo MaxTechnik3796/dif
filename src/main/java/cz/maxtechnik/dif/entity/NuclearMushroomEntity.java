@@ -14,18 +14,24 @@ import org.jetbrains.annotations.NotNull;
 public class NuclearMushroomEntity extends Entity{
 	// ── Konfigurace HugeSmoke mraku ───────────────────────────────────────────
 	private static final double SMOKE_RADIUS=18.0;
-	private static final int SMOKE_PARTICLES=2500;
+	private static final int SMOKE_PARTICLES=300;
 	private static final float SMOKE_RISE_SPEED=5.0f;
 	private static final int SMOKE_SPAWN_TICKS=10;
+	private static final double SMOKE_STEM_LENGTH=20.0;
+	private static final double SMOKE_STEM_RADIUS=2.5;
+	private static final int SMOKE_STEM_PARTICLES=150;
 	/**
 	 * Kdy entita přestane existovat kvůli smoke (ticky).
 	 */
 	private static final int SMOKE_LIFETIME=600;
 	// ── Konfigurace Fireball mraku ────────────────────────────────────────────
 	private static final double FIREBALL_RADIUS=20.0;
-	private static final int FIREBALL_PARTICLES=3000;
+	private static final int FIREBALL_PARTICLES=200;
 	private static final float FIREBALL_RISE_SPEED=5F;
 	private static final int FIREBALL_SPAWN_TICKS=10;
+	private static final double FIREBALL_STEM_LENGTH=20.0;
+	private static final double FIREBALL_STEM_RADIUS=3.0;
+	private static final int FIREBALL_STEM_PARTICLES=100;
 	/**
 	 * Kdy entita přestane existovat kvůli fireballu (ticky).
 	 */
@@ -53,11 +59,23 @@ public class NuclearMushroomEntity extends Entity{
 						SMOKE_RADIUS,
 						DifModParticles.HUGE_SMOKE.get(),
 						SMOKE_RISE_SPEED);
+				spawnStemParticles(serverLevel,
+						SMOKE_STEM_PARTICLES/SMOKE_SPAWN_TICKS,
+						SMOKE_STEM_LENGTH,
+						SMOKE_STEM_RADIUS,
+						DifModParticles.HUGE_SMOKE.get(),
+						SMOKE_RISE_SPEED);
 			}
 			if(age<FIREBALL_SPAWN_TICKS){
 				spawnSphereParticles(serverLevel,
 						FIREBALL_PARTICLES/FIREBALL_SPAWN_TICKS,
 						FIREBALL_RADIUS,
+						DifModParticles.FIREBALL.get(),
+						FIREBALL_RISE_SPEED);
+				spawnStemParticles(serverLevel,
+						FIREBALL_STEM_PARTICLES/FIREBALL_SPAWN_TICKS,
+						FIREBALL_STEM_LENGTH,
+						FIREBALL_STEM_RADIUS,
 						DifModParticles.FIREBALL.get(),
 						FIREBALL_RISE_SPEED);
 			}
@@ -85,6 +103,27 @@ public class NuclearMushroomEntity extends Entity{
 			double spawnY=this.getY()+dy;
 			double spawnZ=this.getZ()+dz;
 			sendParticle(serverLevel,particleType,spawnX,spawnY,spawnZ,riseSpeed);
+		}
+	}
+	private void spawnStemParticles(ServerLevel serverLevel,int count,double length,double radius,SimpleParticleType particleType,float riseSpeed){
+		for(int i=0;i<count;i++){
+			// Rovnoměrné rozložení uvnitř válce stopky směrem dolů
+			double dy = -(Math.random() * length);
+			// Rejection sampling pro kruh
+			double dx, dz, len;
+			do {
+				dx = Math.random() * 2.0 - 1.0;
+				dz = Math.random() * 2.0 - 1.0;
+				len = Math.sqrt(dx * dx + dz * dz);
+			} while (len > 1.0 || len == 0.0);
+			double r = radius * Math.sqrt(Math.random());
+			dx = (dx / len) * r;
+			dz = (dz / len) * r;
+
+			double spawnX = this.getX() + dx;
+			double spawnY = this.getY() + dy;
+			double spawnZ = this.getZ() + dz;
+			sendParticle(serverLevel, particleType, spawnX, spawnY, spawnZ, riseSpeed);
 		}
 	}
 	private void sendParticle(ServerLevel serverLevel,SimpleParticleType particleType,double x,double y,double z,float riseSpeed){
