@@ -20,10 +20,6 @@ public class NuclearMushroomEntity extends Entity{
 	private static final double SMOKE_STEM_LENGTH=80.0;
 	private static final double SMOKE_STEM_RADIUS=1;
 	private static final int SMOKE_STEM_PARTICLES=150;
-	/**
-	 * Kdy entita přestane existovat kvůli smoke (ticky).
-	 */
-	private static final int SMOKE_LIFETIME=1600;
 	// ── Konfigurace Fireball mraku ────────────────────────────────────────────
 	private static final double FIREBALL_RADIUS=28.0;
 	private static final int FIREBALL_PARTICLES=200;
@@ -32,15 +28,8 @@ public class NuclearMushroomEntity extends Entity{
 	private static final double FIREBALL_STEM_LENGTH=80.0;
 	private static final double FIREBALL_STEM_RADIUS=1.5;
 	private static final int FIREBALL_STEM_PARTICLES=100;
-	/**
-	 * Kdy entita přestane existovat kvůli fireballu (ticky).
-	 */
-	private static final int FIREBALL_LIFETIME=400;
 	// ── Společná konfigurace ──────────────────────────────────────────────────
-	/**
-	 * Entita zanikne až když oba mraky dosáhnou svého lifetime.
-	 */
-	private static final int LIFETIME_TICKS=Math.max(SMOKE_LIFETIME,FIREBALL_LIFETIME);
+	private static final int LIFETIME_TICKS=800; // Odpovídá délce života HugeSmoke
 	private static final double SEND_RADIUS=512.0;
 	// ── Interní stav ─────────────────────────────────────────────────────────
 	private int age=0;

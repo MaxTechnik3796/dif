@@ -14,8 +14,9 @@ public class NuclearWaveEntity extends Entity {
 
     // ── Konstanty ─────────────────────────────────────────────────────────
     private static final double WAVE_SPEED        = 3.0;
-    private static final int    WAVE_DENSITY      = 64;
-    private static final int    WAVE_MAX_RADIUS   = 256;
+    private static final int    WAVE_MAX_RADIUS   = 128;
+    private static final int    PARTICLES_PER_TICK = 6; // cca 8 * 42 ticků = ~336 částic celkem
+    private static final double SEND_RADIUS       = 512.0;
 
     private static final EntityDataAccessor<Integer> DATA_TICK =
             SynchedEntityData.defineId(NuclearWaveEntity.class, EntityDataSerializers.INT);
@@ -39,7 +40,6 @@ public class NuclearWaveEntity extends Entity {
         if (!(level() instanceof ServerLevel sl)) return;
 
         waveRadius += WAVE_SPEED;
-
         if (waveRadius > WAVE_MAX_RADIUS) {
             this.discard();
             return;
@@ -47,14 +47,24 @@ public class NuclearWaveEntity extends Entity {
 
         double ox = getX(), oy = getY(), oz = getZ();
 
-        for (int i = 0; i < WAVE_DENSITY; i++) {
-            double angle = (Math.PI * 2 / WAVE_DENSITY) * i;
+        // Rázová vlna: spawnujeme náhodné částice na aktuálním kruhu (waveRadius)
+        // Spawnuje se jich cca 8 za tick, takže za celou dobu (42 ticků) jich vznikne okolo 336
+        for (int i = 0; i < PARTICLES_PER_TICK; i++) {
+            double angle = Math.random() * Math.PI * 2;
             double px = ox + Math.cos(angle) * waveRadius;
             double pz = oz + Math.sin(angle) * waveRadius;
-            sl.sendParticles(DifModParticles.HUGE_SMOKE.get(),
-                    px, oy, pz,
-                    1, 0, 0, 0, 0);
+
+            // Všechny částice jsou přesně na 'oy' (jedné vrstvě) a rychlost je 0.0f
+            sendParticle(sl, cz.maxtechnik.dif.init.other.DifModParticles.HUGE_SMOKE.get(), px, oy, pz, 0.0f);
         }
+    }
+
+    private void sendParticle(ServerLevel serverLevel, net.minecraft.core.particles.SimpleParticleType particleType, double x, double y, double z, float speed){
+        // Posíláme paket na 512 bloků bez rychlosti
+        for(net.minecraft.server.level.ServerPlayer player: serverLevel.getPlayers(p->p.distanceToSqr(x,y,z)<SEND_RADIUS*SEND_RADIUS))
+            player.connection.send(
+                    new net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket(particleType,true,x,y,z,0F,0F,0F,speed,0)
+            );
     }
 
     @Override
