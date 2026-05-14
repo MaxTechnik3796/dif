@@ -173,7 +173,8 @@ public class NuclearExplosionEntity extends Entity{
 		if(!level().isLoaded(mutablePos)) return;
 		BlockState state=level().getBlockState(mutablePos);
 		if(state.isAir()) return;
-		if(state.getBlock().getExplosionResistance()<=MAX_DESTROYABLE_RESISTANCE) level().setBlock(mutablePos,AIR,2|16|64);
+		if(state.getBlock().getExplosionResistance()>MAX_DESTROYABLE_RESISTANCE) return;
+		level().setBlock(mutablePos,AIR,2|16|64);
 	}
 	private void hitEntities(){
 		if(entitiesHit) return;

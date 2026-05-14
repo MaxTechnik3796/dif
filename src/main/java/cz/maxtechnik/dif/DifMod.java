@@ -1,6 +1,8 @@
 package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
+import cz.maxtechnik.dif.client.particle.FireballParticle;
+import cz.maxtechnik.dif.client.particle.HugeSmoke;
 import cz.maxtechnik.dif.item.armor.ElectroRunners;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.neoforged.api.distmarker.Dist;
@@ -10,6 +12,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -68,6 +71,7 @@ public class DifMod{
 		DifModRecipes.TYPE_REGISTRY.register(bus);
 		DifModEntities.REGISTRY.register(bus);
 		DifModFeatures.REGISTRY.register(bus);
+		DifModParticles.REGISTRY.register(bus);
 		// REGISTRACE EVENTŮ
 		NeoForge.EVENT_BUS.register(this);
 		NeoForge.EVENT_BUS.register(JetpackHandler.class);
@@ -137,6 +141,12 @@ public class DifMod{
 			event.registerEntityRenderer(DifModEntities.REMOTE_MINECART.get(),context -> new MinecartRenderer<>(context,ModelLayers.MINECART));
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_COUNTDOWN.get(), NoopRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_EXPLOSION.get(), NoopRenderer::new);
+			event.registerEntityRenderer(DifModEntities.NUCLEAR_MUSHROOM.get(), NoopRenderer::new);
+		}
+		@SubscribeEvent
+		public static void registerParticles(RegisterParticleProvidersEvent event) {
+			event.registerSpriteSet(DifModParticles.HUGE_SMOKE.get(), HugeSmoke.Factory::new);
+			event.registerSpriteSet(DifModParticles.FIREBALL.get(), FireballParticle.Factory::new);
 		}
 	}
 	public static String goggleTooltipFix="    ";

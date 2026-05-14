@@ -3,6 +3,8 @@ package cz.maxtechnik.dif.init.other;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.entity.NuclearCountdownEntity;
 import cz.maxtechnik.dif.entity.NuclearExplosionEntity;
+import cz.maxtechnik.dif.entity.NuclearMushroomEntity;
+import cz.maxtechnik.dif.entity.NuclearWaveEntity;
 import cz.maxtechnik.dif.entity.vehicle.FormulaEntity;
 import cz.maxtechnik.dif.entity.vehicle.RemoteControlMinecart;
 import net.minecraft.core.registries.Registries;
@@ -36,4 +38,18 @@ public class DifModEntities {
                     EntityType.Builder.<NuclearExplosionEntity>of(NuclearExplosionEntity::new, MobCategory.MISC)
                             .sized(0.0f, 0.0f).clientTrackingRange(512).updateInterval(20)
                             .build("nuclear_explosion"));
+    public static final DeferredHolder<EntityType<?>, EntityType<NuclearMushroomEntity>> NUCLEAR_MUSHROOM =
+            REGISTRY.register("nuclear_mushroom", () ->
+                    EntityType.Builder.<NuclearMushroomEntity>of(NuclearMushroomEntity::new, MobCategory.MISC)
+                            .sized(0.0f, 0.0f)
+                            .clientTrackingRange(512)
+                            .updateInterval(20)
+                            .build("nuclear_mushroom"));
+    public static final DeferredHolder<EntityType<?>, EntityType<NuclearWaveEntity>> NUCLEAR_WAVE =
+            REGISTRY.register("nuclear_wave", () ->
+                    EntityType.Builder.<NuclearWaveEntity>of(NuclearWaveEntity::new, MobCategory.MISC)
+                            .sized(0.0f, 0.0f)
+                            .clientTrackingRange(512)
+                            .updateInterval(1)
+                            .build("nuclear_wave"));
 }
