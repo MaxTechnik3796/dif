@@ -142,6 +142,7 @@ public class DifMod{
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_COUNTDOWN.get(), NoopRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_EXPLOSION.get(), NoopRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_MUSHROOM.get(), NoopRenderer::new);
+			event.registerEntityRenderer(DifModEntities.NUCLEAR_WAVE.get(), NoopRenderer::new);
 		}
 		@SubscribeEvent
 		public static void registerParticles(RegisterParticleProvidersEvent event) {
