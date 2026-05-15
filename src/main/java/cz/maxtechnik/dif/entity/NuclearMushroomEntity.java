@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import static cz.maxtechnik.dif.init.other.DifModParticles.FIREBALL;
 import static cz.maxtechnik.dif.init.other.DifModParticles.HUGE_SMOKE;
 public class NuclearMushroomEntity extends Entity{
-	private static final int SMOKE_PARTICLES=300, SMOKE_SPAWN_TICKS=10, SMOKE_STEM_PARTICLES=150, FIREBALL_PARTICLES=200, FIREBALL_SPAWN_TICKS=10, FIREBALL_STEM_PARTICLES=100, LIFETIME_TICKS=800;
+	private static final int SMOKE_PARTICLES=200, SMOKE_SPAWN_TICKS=10, SMOKE_STEM_PARTICLES=100, FIREBALL_PARTICLES=200, FIREBALL_SPAWN_TICKS=10, FIREBALL_STEM_PARTICLES=100, LIFETIME_TICKS=800;
 	private static final double SEND_RADIUS=512, FIREBALL_STEM_LENGTH=80, FIREBALL_STEM_RADIUS=1.5, FIREBALL_RADIUS=28, SMOKE_STEM_LENGTH=80, SMOKE_STEM_RADIUS=1, SMOKE_RADIUS=24;
 	private static final float SMOKE_RISE_SPEED=5F, FIREBALL_RISE_SPEED=5F;
 	private int age=0;

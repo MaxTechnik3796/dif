@@ -5,7 +5,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 @SuppressWarnings("removal")
-@EventBusSubscriber(modid=DifMod.MODID,bus=EventBusSubscriber.Bus.MOD)
 public class DifModCommonConfig{
 	private static final ModConfigSpec.Builder BUILDER=new ModConfigSpec.Builder();
 	static final ModConfigSpec SPEC;

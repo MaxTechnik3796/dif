@@ -137,7 +137,6 @@ public class DifMod{
 			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(), context -> new ChunkLoaderRenderer());
 			event.registerEntityRenderer(DifModEntities.FORMULA.get(), CarRenderer::new);
 			event.registerEntityRenderer(DifModEntities.REMOTE_MINECART.get(),context -> new MinecartRenderer<>(context,ModelLayers.MINECART));
-			event.registerEntityRenderer(DifModEntities.NUCLEAR_COUNTDOWN.get(), NoopRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_EXPLOSION.get(), NoopRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_MUSHROOM.get(), NoopRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_WAVE.get(), NoopRenderer::new);

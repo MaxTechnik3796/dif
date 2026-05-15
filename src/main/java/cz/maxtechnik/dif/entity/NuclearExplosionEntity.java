@@ -10,10 +10,12 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 @SuppressWarnings("deprecation")
 public class NuclearExplosionEntity extends Entity{
 	// KONSTANTY ────────────────────────────────────────────────────────────
@@ -176,17 +178,27 @@ public class NuclearExplosionEntity extends Entity{
 		if(state.getBlock().getExplosionResistance()>MAX_DESTROYABLE_RESISTANCE) return;
 		level().setBlock(mutablePos,AIR,2|16|64);
 	}
-	private void hitEntities(){
-		if(entitiesHit) return;
-		entitiesHit=true;
-		AABB area=new AABB(getX()-HOR_R_TOTAL,getY()-HOR_R_TOTAL,getZ()-HOR_R_TOTAL,getX()+HOR_R_TOTAL,getY()+HOR_R_TOTAL,getZ()+HOR_R_TOTAL);
-		for(LivingEntity entity: level().getEntitiesOfClass(LivingEntity.class,area)){
-			double dist=entity.distanceTo(this);
-			if(dist<HOR_R_FULL) entity.hurt(level().damageSources().explosion(this,this),Float.MAX_VALUE);
-			else if(dist<=HOR_R_TOTAL){
-				entity.hurt(level().damageSources().explosion(this,this),(float)(100.0*(1.0-(dist-HOR_R_FULL)/HOR_R_TOTAL)));
-				entity.setDeltaMovement(entity.position().subtract(position()).normalize().scale(3.0));
-				entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION,200,1));
+	private void hitEntities() {
+		if (entitiesHit) return;
+		entitiesHit = true;
+
+		level().explode(null, getX(), getY() + 2.0, getZ(), 30, Level.ExplosionInteraction.NONE);
+
+		AABB area = new AABB(getX() - 320, getY() - 320, getZ() - 320, getX() + 320, getY() + 320, getZ() + 320);
+		for (LivingEntity entity : level().getEntitiesOfClass(LivingEntity.class, area)) {
+			double dist = entity.distanceTo(this);
+
+			// Wither efekt do 320 bloků
+			if (dist <= 320.0) {
+				entity.addEffect(new MobEffectInstance(MobEffects.WITHER, 2400, 1));
+			}
+
+			// Damage do 128 bloků
+			if (dist <= 128.0) {
+				float damage = (float)(200.0 * (1.0 - dist / 128.0));
+				entity.invulnerableTime = 0;
+				entity.setHealth(entity.getHealth() - damage);
+				if (entity.getHealth() <= 0) entity.kill();
 			}
 		}
 	}

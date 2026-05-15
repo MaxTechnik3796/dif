@@ -1,9 +1,12 @@
 package cz.maxtechnik.dif.block;
 
-import cz.maxtechnik.dif.entity.NuclearCountdownEntity;
+import cz.maxtechnik.dif.entity.NuclearExplosionEntity;
+import cz.maxtechnik.dif.entity.NuclearMushroomEntity;
+import cz.maxtechnik.dif.entity.NuclearWaveEntity;
 import cz.maxtechnik.dif.init.other.DifModEntities;
+import cz.maxtechnik.dif.init.events.client.NukeSoundEffect;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -23,10 +26,7 @@ public class NuclearBombBlock extends Block{
 	@Override
 	public InteractionResult useWithoutItem(BlockState state,Level level,BlockPos pos,
 	                                        Player player,BlockHitResult hit){
-		if(level.isClientSide) return InteractionResult.SUCCESS;
-		level.removeBlock(pos,false);
-		spawnCountdown(level,pos,200);
-		return InteractionResult.SUCCESS;
+		return InteractionResult.PASS;
 	}
 	@Override
 	public void neighborChanged(BlockState state,Level level,BlockPos pos,
@@ -34,13 +34,29 @@ public class NuclearBombBlock extends Block{
 		if(level.isClientSide) return;
 		if(level.hasNeighborSignal(pos)){
 			level.removeBlock(pos,false);
-			spawnCountdown(level,pos,40);
+			spawnNuclearExplosion(level,pos);
 		}
 	}
-	private void spawnCountdown(Level level,BlockPos pos,int countdown){
-		NuclearCountdownEntity bomb=new NuclearCountdownEntity(DifModEntities.NUCLEAR_COUNTDOWN.get(),level);
-		bomb.setPos(pos.getX()+0.5,pos.getY(),pos.getZ()+0.5);
-		bomb.setCountdown(countdown);
-		level.addFreshEntity(bomb);
+	private void spawnNuclearExplosion(Level level,BlockPos pos){
+		double x=pos.getX()+0.5;
+		double y=pos.getY();
+		double z=pos.getZ()+0.5;
+
+		NuclearExplosionEntity explosion=new NuclearExplosionEntity(DifModEntities.NUCLEAR_EXPLOSION.get(),level);
+		explosion.setPos(x,y,z);
+		explosion.setRadius(40);
+		level.addFreshEntity(explosion);
+
+		NuclearMushroomEntity mushroom=new NuclearMushroomEntity(DifModEntities.NUCLEAR_MUSHROOM.get(),level);
+		mushroom.setPos(x,y,z);
+		level.addFreshEntity(mushroom);
+
+		NuclearWaveEntity wave=new NuclearWaveEntity(DifModEntities.NUCLEAR_WAVE.get(),level);
+		wave.setPos(x,y,z);
+		level.addFreshEntity(wave);
+
+		if(level instanceof ServerLevel serverLevel){
+			NukeSoundEffect.play(serverLevel,x,y,z);
+		}
 	}
 }

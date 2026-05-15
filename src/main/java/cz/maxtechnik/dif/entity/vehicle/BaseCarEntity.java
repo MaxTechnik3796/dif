@@ -208,7 +208,7 @@ public abstract class BaseCarEntity extends Entity{
 			velocity=Math.signum(velocity)*Math.max(0F,Math.abs(velocity)-getBrakingDeceleration()*0.15F);
 			lGrip*=0.6F;
 		}
-		velocity=Math.clamp(msBT,-0.25F,velocity+thrust-velocity*Math.abs(velocity)*getAeroDrag()-velocity*rRes);
+		velocity=Math.clamp(velocity+thrust-velocity*Math.abs(velocity)*getAeroDrag()-velocity*rRes,-0.25F,msBT);
 		if(s==SurfaceType.SOUL_SAND&&Math.abs(velocity)>22F/72F)
 			velocity=velocity*0.82F+Math.signum(velocity)*(22F/72F)*0.18F;
 		if(Math.abs(velocity)>0.015F){
