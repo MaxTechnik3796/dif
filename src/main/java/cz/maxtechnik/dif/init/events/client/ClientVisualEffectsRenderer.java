@@ -7,10 +7,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;   // ✅ správný import
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
@@ -31,15 +34,17 @@ public class ClientVisualEffectsRenderer {
 
 		boolean isDrank = player.hasEffect(DifModMobEffects.WTF);
 		if (isDrank && !wasWTFActive) {
-			/*if (playingWTFSound == null) {
-				playingWTFSound = new SimpleSoundInstance(
-						DifModSounds.FURT_TA_STEJNA_HRA.get().getLocation(),
-						SoundSource.PLAYERS, 1F, 1F,
-						player.getRandom(), true, 0, SoundInstance.Attenuation.NONE,
-						0F, 0F, 0F, true
-				);
-				mc.getSoundManager().play(playingWTFSound);
-			}*/
+			if(ModList.get().isLoaded("random")){
+				if (playingWTFSound == null) {
+					playingWTFSound = new SimpleSoundInstance(
+							ResourceLocation.parse("random:furt_ta_stejna_hra"),
+							SoundSource.PLAYERS, 1F, 1F,
+							player.getRandom(), true, 0, SoundInstance.Attenuation.NONE,
+							0F, 0F, 0F, true
+					);
+					mc.getSoundManager().play(playingWTFSound);
+				}
+			}
 		} else if (!isDrank && wasWTFActive) {
 			if (playingWTFSound != null) {
 				mc.getSoundManager().stop(playingWTFSound);
