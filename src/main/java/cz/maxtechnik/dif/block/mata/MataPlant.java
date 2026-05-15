@@ -47,7 +47,7 @@ public class MataPlant extends SugarCaneBlock implements BonemealableBlock{
 		BlockPos checkPos=pos.below();
 		while(world.getBlockState(checkPos).is(this)){
 			height++;
-			if(height>=DifModCommonConfig.mataPlantMaxHeight) return; // už dost vysoké
+			if(height>=DifModCommonConfig.MATA_PLANT_MAX_HEIGHT.get()) return; // už dost vysoké
 			checkPos=checkPos.below();
 		}
 		int age=blockstate.getValue(AGE);

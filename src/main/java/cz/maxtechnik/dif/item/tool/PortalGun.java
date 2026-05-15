@@ -20,66 +20,56 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
-
 public class PortalGun extends Item{
 	public PortalGun(){
 		super(new Properties().stacksTo(1));
 	}
-
 	private boolean isBlueMode(ItemStack gun){
 		var data=gun.get(DataComponents.CUSTOM_DATA);
 		if(data==null) return true;
 		return data.copyTag().getBoolean("mode");
 	}
-
 	private void setMode(ItemStack gun,boolean mode){
 		net.minecraft.world.item.component.CustomData.update(DataComponents.CUSTOM_DATA,gun,tag->{
 			tag.putBoolean("mode",mode);
 		});
 		gun.set(DataComponents.CUSTOM_MODEL_DATA,new net.minecraft.world.item.component.CustomModelData(mode?0:1));
 	}
-
 	private int getEnergy(ItemStack gun){
 		var data=gun.get(DataComponents.CUSTOM_DATA);
-		if(data==null) return DifModCommonConfig.portalGunMaxDurability;
+		if(data==null) return DifModCommonConfig.PORTAL_GUN_MAX_DURABILITY.get();
 		return data.copyTag().getInt("energy");
 	}
-
 	private void setEnergy(ItemStack gun,int energy){
 		gun.update(DataComponents.CUSTOM_DATA,
 				net.minecraft.world.item.component.CustomData.EMPTY,
 				cd->{
 					var tag=cd.copyTag().copy();
-					tag.putInt("energy", Math.clamp(energy, 0, DifModCommonConfig.portalGunMaxDurability));
+					tag.putInt("energy",Math.clamp(energy,0,DifModCommonConfig.PORTAL_GUN_MAX_DURABILITY.get()));
 					return net.minecraft.world.item.component.CustomData.of(tag);
 				});
 	}
-
 	@Override
 	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world,Player player,@NotNull InteractionHand hand){
 		ItemStack gun=player.getItemInHand(hand);
-
 		// Inicializace pokud chybí data
 		var data=gun.get(DataComponents.CUSTOM_DATA);
 		if(data==null||!data.copyTag().contains("energy")){
 			setMode(gun,true);
-			setEnergy(gun,DifModCommonConfig.portalGunMaxDurability);
+			setEnergy(gun,DifModCommonConfig.PORTAL_GUN_MAX_DURABILITY.get());
 		}
-
 		boolean isBlue=isBlueMode(gun);
 		int energy=getEnergy(gun);
-
 		// Dobíjení ender pearlem
 		ItemStack off=player.getOffhandItem();
-		if(off.is(Items.ENDER_PEARL)&&energy<DifModCommonConfig.portalGunMaxDurability){
+		if(off.is(Items.ENDER_PEARL)&&energy<DifModCommonConfig.PORTAL_GUN_MAX_DURABILITY.get()){
 			if(!world.isClientSide){
-				setEnergy(gun,energy+DifModCommonConfig.portalGunEnergyPerPearl);
+				setEnergy(gun,energy+DifModCommonConfig.PORTAL_GUN_ENERGY_PER_PEARL.get());
 				off.shrink(1);
 				player.displayClientMessage(Component.literal("[+] Energy restored"),true);
 			}
 			return InteractionResultHolder.sidedSuccess(gun,world.isClientSide());
 		}
-
 		// Přepínání módu
 		if(player.isShiftKeyDown()){
 			if(!world.isClientSide){
@@ -89,13 +79,12 @@ public class PortalGun extends Item{
 			}
 			return InteractionResultHolder.sidedSuccess(gun,world.isClientSide());
 		}
-
 		// Výstřel
 		if(!world.isClientSide){
-			if(energy>=DifModCommonConfig.portalGunEnergyPerShot){
+			if(energy>=DifModCommonConfig.PORTAL_GUN_ENERGY_PER_SHOT.get()){
 				if(firePortal((ServerLevel)world,player,isBlue)){
-					setEnergy(gun,energy-DifModCommonConfig.portalGunEnergyPerShot);
-					player.getCooldowns().addCooldown(this,DifModCommonConfig.portalGunShotCooldown);
+					setEnergy(gun,energy-DifModCommonConfig.PORTAL_GUN_ENERGY_PER_SHOT.get());
+					player.getCooldowns().addCooldown(this,DifModCommonConfig.PORTAL_GUN_SHOT_COOLDOWN.get());
 				}
 			}else{
 				player.displayClientMessage(Component.literal("[!] Out of energy"),true);
@@ -103,7 +92,6 @@ public class PortalGun extends Item{
 		}
 		return InteractionResultHolder.success(gun);
 	}
-
 	private boolean firePortal(ServerLevel world,Player player,boolean isBlue){
 		var start=player.getEyePosition();
 		var hit=world.clip(new ClipContext(start,start.add(player.getLookAngle().scale(128.0)),
@@ -133,30 +121,29 @@ public class PortalGun extends Item{
 		if(world.getBlockEntity(pos) instanceof PortalBlockEntity be) be.setup(player.getUUID(),isBlue,face);
 		return true;
 	}
-
 	@Override
 	public boolean isBarVisible(@NotNull ItemStack stack){
-		return getEnergy(stack) < DifModCommonConfig.portalGunMaxDurability;
+		return getEnergy(stack)<DifModCommonConfig.PORTAL_GUN_MAX_DURABILITY.get();
 	}
-
 	@Override
 	public int getBarWidth(@NotNull ItemStack stack){
-		return Math.round((float)getEnergy(stack) / DifModCommonConfig.portalGunMaxDurability * 13);
+		return Math.round((float)getEnergy(stack)/DifModCommonConfig.PORTAL_GUN_MAX_DURABILITY.get()*13);
 	}
-
 	@Override
 	public int getBarColor(@NotNull ItemStack stack){
-		float f=(float)getEnergy(stack) / DifModCommonConfig.portalGunMaxDurability;
-		return net.minecraft.util.FastColor.ARGB32.color(0, (int)(f*255), 255-((int)(f*255)), 0);
+		float f=(float)getEnergy(stack)/DifModCommonConfig.PORTAL_GUN_MAX_DURABILITY.get();
+		return net.minecraft.util.FastColor.ARGB32.color(0,(int)(f*255),255-((int)(f*255)),0);
 	}
-
 	@Override
-	public boolean isEnchantable(@NotNull ItemStack itemStack){ return false; }
-
-
+	public boolean isEnchantable(@NotNull ItemStack itemStack){
+		return false;
+	}
 	@Override
-	public boolean isRepairable(@NotNull ItemStack itemStack){ return false; }
-
+	public boolean isRepairable(@NotNull ItemStack itemStack){
+		return false;
+	}
 	@Override
-	public boolean isValidRepairItem(@NotNull ItemStack pToRepair,@NotNull ItemStack pRepair){ return false; }
+	public boolean isValidRepairItem(@NotNull ItemStack pToRepair,@NotNull ItemStack pRepair){
+		return false;
+	}
 }

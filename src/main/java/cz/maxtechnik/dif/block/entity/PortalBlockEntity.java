@@ -51,7 +51,7 @@ public class PortalBlockEntity extends BlockEntity{
 		this.facing=facing;
 		this.setChanged();
 	}
-	public static void tick(Level level,BlockPos pos,BlockState state,PortalBlockEntity be){
+	public static void tick(Level level,BlockPos pos,PortalBlockEntity be){
 		if(be.owner==null) return;
 		if(!(level instanceof ServerLevel sl)) return;
 		if(!pos.equals(getPortal(sl,be.owner,be.isBlue))) return;
@@ -80,19 +80,19 @@ public class PortalBlockEntity extends BlockEntity{
 		List<Player> players=level.getEntitiesOfClass(Player.class,box);
 		for(Player p: players){
 			UUID pid=p.getUUID();
-			if(now-be.lastTeleportTime<=DifModCommonConfig.portalTeleportCooldown) continue;
-			if(entityCooldowns.containsKey(pid)&&now-entityCooldowns.get(pid)<=DifModCommonConfig.portalTeleportCooldown)
+			if(now-be.lastTeleportTime<=DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get()) continue;
+			if(entityCooldowns.containsKey(pid)&&now-entityCooldowns.get(pid)<=DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get())
 				continue;
 			be.tryTeleportPlayer(p,sl,now);
 		}
-		if(DifModCommonConfig.portalAllowEntities){
+		if(DifModCommonConfig.PORTAL_ALLOW_ENTITIES.get()){
 			List<LivingEntity> mobs=level.getEntitiesOfClass(LivingEntity.class,box);
 			int count=0;
 			for(LivingEntity mob: mobs){
 				if(mob instanceof Player) continue;
-				if(count>=DifModCommonConfig.portalMaxEntitiesPerTick) break;
+				if(count>=DifModCommonConfig.PORTAL_MAX_ENTITIES_PER_TICK.get()) break;
 				UUID mid=mob.getUUID();
-				if(entityCooldowns.containsKey(mid)&&now-entityCooldowns.get(mid)<=DifModCommonConfig.portalTeleportCooldown)
+				if(entityCooldowns.containsKey(mid)&&now-entityCooldowns.get(mid)<=DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get())
 					continue;
 				be.tryTeleportEntity(mob,sl,now,false);
 				count++;
@@ -100,19 +100,19 @@ public class PortalBlockEntity extends BlockEntity{
 			List<Entity> misc=level.getEntitiesOfClass(Entity.class,box,
 					e->!(e instanceof LivingEntity)&&!(e instanceof Projectile)&&!(e instanceof ItemEntity));
 			for(Entity e: misc){
-				if(count>=DifModCommonConfig.portalMaxEntitiesPerTick) break;
+				if(count>=DifModCommonConfig.PORTAL_MAX_ENTITIES_PER_TICK.get()) break;
 				UUID eid=e.getUUID();
-				if(entityCooldowns.containsKey(eid)&&now-entityCooldowns.get(eid)<=DifModCommonConfig.portalTeleportCooldown)
+				if(entityCooldowns.containsKey(eid)&&now-entityCooldowns.get(eid)<=DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get())
 					continue;
 				be.tryTeleportEntity(e,sl,now,false);
 				count++;
 			}
 		}
-		if(DifModCommonConfig.portalAllowItems){
+		if(DifModCommonConfig.PORTAL_ALLOW_ITEMS.get()){
 			List<ItemEntity> items=level.getEntitiesOfClass(ItemEntity.class,box);
 			int count=0;
 			for(ItemEntity e: items){
-				if(count>=DifModCommonConfig.portalMaxEntitiesPerTick) break;
+				if(count>=DifModCommonConfig.PORTAL_MAX_ENTITIES_PER_TICK.get()) break;
 				UUID eid=e.getUUID();
 				if(entityCooldowns.containsKey(eid)&&now-entityCooldowns.get(eid)<=10) continue;
 				be.tryTeleportEntity(e,sl,now,true);
@@ -141,7 +141,7 @@ public class PortalBlockEntity extends BlockEntity{
 				return;
 			}
 		}
-		if(this.worldPosition.distSqr(target)>(long)DifModCommonConfig.portalMaxDistance*DifModCommonConfig.portalMaxDistance){
+		if(this.worldPosition.distSqr(target)>(long)DifModCommonConfig.PORTAL_MAX_DISTANCE.get()*DifModCommonConfig.PORTAL_MAX_DISTANCE.get()){
 			p.displayClientMessage(Component.literal("[!] Portal too far away"),true);
 			waitingPlayers.remove(pid);
 			return;
@@ -151,7 +151,7 @@ public class PortalBlockEntity extends BlockEntity{
 			if(!waitingPlayers.containsKey(pid)) waitingPlayers.put(pid,now);
 			p.displayClientMessage(Component.literal("Please wait..."),true);
 			sl.setChunkForced(target.getX()>>4,target.getZ()>>4,true);
-			if(now-startTick>DifModCommonConfig.portalChunkLoadTimeout){
+			if(now-startTick>DifModCommonConfig.PORTAL_CHUNK_LOAD_TIMEOUT.get()){
 				p.displayClientMessage(Component.literal("[!] Portal unreachable"),true);
 				sl.setChunkForced(target.getX()>>4,target.getZ()>>4,false);
 				waitingPlayers.remove(pid);
@@ -185,7 +185,7 @@ public class PortalBlockEntity extends BlockEntity{
 			PortalData.get(sl).remove(this.owner,!this.isBlue);
 			return;
 		}
-		if(this.worldPosition.distSqr(target)>(long)DifModCommonConfig.portalMaxDistance*DifModCommonConfig.portalMaxDistance)
+		if(this.worldPosition.distSqr(target)>(long)DifModCommonConfig.PORTAL_MAX_DISTANCE.get()*DifModCommonConfig.PORTAL_MAX_DISTANCE.get())
 			return;
 		if(!sl.isLoaded(target)) return;
 		Vec3 newMotion=transformVelocity(entity.getDeltaMovement(),this.facing,other.facing);

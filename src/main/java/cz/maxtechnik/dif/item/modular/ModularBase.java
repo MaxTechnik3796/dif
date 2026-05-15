@@ -150,7 +150,7 @@ public abstract class ModularBase extends DiggerItem{
 	}
 	public static void toolRepair(ItemStack template,ItemStack base,ItemStack addition,CompoundTag templateTag,CompoundTag baseTag,CompoundTag additionTag){
 		int currentDamage=base.getDamageValue();
-		int repair=containsMaterial(base,"Stone")?modularToolsCheepRepairAmount:modularToolsRepairAmount;
+		int repair=containsMaterial(base,"Stone")?MODULAR_TOOLS_CHEEP_REPAIR_AMOUNT.get():MODULAR_TOOLS_REPAIR_AMOUNT.get();
 		int newDamage=Math.max(0,currentDamage-repair);
 		base.setDamageValue(newDamage);
 		if(!Objects.requireNonNull(base.get(D)).copyTag().isEmpty()&&base.get(D)!=null){
@@ -212,7 +212,7 @@ public abstract class ModularBase extends DiggerItem{
 		toolTag.putInt("BonusMiningLevel",0);
 		toolTag.putInt("SpecialEfficiency",0);
 		toolTag.putInt("HideFlags",5);
-		toolTag.putInt("MaxModifiers",modularToolsDefaultMaxModifiers);
+		toolTag.putInt("MaxModifiers",MODULAR_TOOLS_DEFAULT_MAX_MODIFIERS.get());
 		toolTag.putInt("Durability",baseTag.getInt("HeadDurability")+additionTag.getInt("BindingDurability")+templateTag.getInt("HandleDurability")+1);
 		toolTag.putInt("MiningLevel",miningLevelFromMaterial(toolTag.getString("Material")));
 		toolTag.putInt("Efficiency",efficiencyFromMaterial(toolTag.getString("Material")));
@@ -232,7 +232,7 @@ public abstract class ModularBase extends DiggerItem{
 	}
 	public static void applyModifiers(ItemStack template,ItemStack base,ItemStack addition,CompoundTag templateTag,CompoundTag baseTag,CompoundTag additionTag){
 		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/efficiency")){
-			if(baseTag.getInt("EfficiencyModifierProgress")+1>=new int[]{modularToolsEfficiencyModifierStage0,modularToolsEfficiencyModifierStage1,modularToolsEfficiencyModifierStage2}[baseTag.getInt("EfficiencyModifier")]){
+			if(baseTag.getInt("EfficiencyModifierProgress")+1>=new int[]{MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_0.get(),MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_1.get(),MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_2.get()}[baseTag.getInt("EfficiencyModifier")]){
 				baseTag.putInt("EfficiencyModifierProgress",0);
 				baseTag.putInt("EfficiencyModifier",baseTag.getInt("EfficiencyModifier")+1);
 			}else{
@@ -242,7 +242,7 @@ public abstract class ModularBase extends DiggerItem{
 			}
 		}
 		if(isTagged(template,DifMod.MODID,"modular_tools_modifiers/fortune")){
-			if(baseTag.getInt("FortuneModifierProgress")+1>=new int[]{modularToolsFortuneModifierStage0,modularToolsFortuneModifierStage1,modularToolsFortuneModifierStage2}[baseTag.getInt("FortuneModifier")]){
+			if(baseTag.getInt("FortuneModifierProgress")+1>=new int[]{MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_0.get(),MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_1.get(),MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_2.get()}[baseTag.getInt("FortuneModifier")]){
 				baseTag.putInt("FortuneModifierProgress",0);
 				baseTag.putInt("FortuneModifier",baseTag.getInt("FortuneModifier")+1);
 			}else{
@@ -562,7 +562,7 @@ public abstract class ModularBase extends DiggerItem{
 		ItemStack modular_tools_icon=new ItemStack(toolItem);
 		CompoundTag tag=new CompoundTag();
 		tag.putString("Material",headMaterial);
-		tag.putInt("MaxModifiers",modularToolsDefaultMaxModifiers);
+		tag.putInt("MaxModifiers",MODULAR_TOOLS_DEFAULT_MAX_MODIFIERS.get());
 		tag.putInt("SpecialDurability",1);
 		tag.putInt("SpecialMiningLevel",0);
 		tag.putInt("BonusMiningLevel",0);
@@ -604,7 +604,7 @@ public abstract class ModularBase extends DiggerItem{
 		if(!world.isClientSide()){
 			var data=itemStack.get(D);
 			CompoundTag tag=data!=null?data.copyTag():new CompoundTag();
-			if(!tag.contains("MaxModifiers")) tag.putInt("MaxModifiers",modularToolsDefaultMaxModifiers);
+			if(!tag.contains("MaxModifiers")) tag.putInt("MaxModifiers",MODULAR_TOOLS_DEFAULT_MAX_MODIFIERS.get());
 			if(!tag.contains("SilkTouchModifier")) tag.putBoolean("SilkTouchModifier",false);
 			if(!tag.contains("DiamondModifier")) tag.putBoolean("DiamondModifier",false);
 			if(!tag.contains("EfficiencyModifierProgress")) tag.putInt("EfficiencyModifierProgress",0);
@@ -643,9 +643,9 @@ public abstract class ModularBase extends DiggerItem{
 				tag.putBoolean("Unbreakable",false);
 				tag.putInt("CustomModelData",0);
 			}
-			tag.putInt("SpecialEfficiency",new int[]{0,modularToolsEfficiencyModifierLevel0,modularToolsEfficiencyModifierLevel1,modularToolsEfficiencyModifierLevel2}[tag.getInt("EfficiencyModifier")]);
+			tag.putInt("SpecialEfficiency",new int[]{0,MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_0.get(),MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_1.get(),MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_2.get()}[tag.getInt("EfficiencyModifier")]);
 			if(tag.getInt("FortuneModifier")>0)
-				setEnchantmentLevel(itemStack,Enchantments.FORTUNE,new int[]{0,modularToolsFortuneModifierLevel0,modularToolsFortuneModifierLevel1,modularToolsFortuneModifierLevel2}[tag.getInt("FortuneModifier")]);
+				setEnchantmentLevel(itemStack,Enchantments.FORTUNE,new int[]{0,MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_0.get(),MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_1.get(),MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_2.get()}[tag.getInt("FortuneModifier")]);
 			if(entity instanceof Player player){
 				if(containsMaterial(itemStack,"Wood")&&DifMod.rouletteBoolean(500)&&!(isInMainHand(itemStack,player)))
 					itemStack.setDamageValue(itemStack.getDamageValue()-1);
@@ -684,13 +684,13 @@ public abstract class ModularBase extends DiggerItem{
 			list.add(Component.literal("Remaining Modifiers:").withStyle(ChatFormatting.WHITE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("MaxModifiers"))).withStyle(ChatFormatting.YELLOW))));
 			if(tag.getInt("EfficiencyModifierProgress")>0||tag.getInt("EfficiencyModifier")>0){
 				if(tag.getInt("EfficiencyModifierProgress")>0)
-					list.add(Component.literal("Efficiency:").withStyle(ChatFormatting.RED).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("EfficiencyModifier"))).append(CommonComponents.space().append(CommonComponents.space().append(Component.literal("( "+tag.getInt("EfficiencyModifierProgress")+" / "+new int[]{modularToolsEfficiencyModifierStage0,modularToolsEfficiencyModifierStage1,modularToolsEfficiencyModifierStage2}[tag.getInt("EfficiencyModifier")]+" )")))))));
+					list.add(Component.literal("Efficiency:").withStyle(ChatFormatting.RED).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("EfficiencyModifier"))).append(CommonComponents.space().append(CommonComponents.space().append(Component.literal("( "+tag.getInt("EfficiencyModifierProgress")+" / "+new int[]{MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_0.get(),MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_1.get(),MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_2.get()}[tag.getInt("EfficiencyModifier")]+" )")))))));
 				else
 					list.add(Component.literal("Efficiency:").withStyle(ChatFormatting.RED).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("EfficiencyModifier"))))));
 			}
 			if(tag.getInt("FortuneModifierProgress")>0||tag.getInt("FortuneModifier")>0){
 				if(tag.getInt("FortuneModifierProgress")>0)
-					list.add(Component.literal("Fortune:").withStyle(ChatFormatting.BLUE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("FortuneModifier"))).append(CommonComponents.space().append(CommonComponents.space().append(Component.literal("( "+tag.getInt("FortuneModifierProgress")+" / "+new int[]{modularToolsFortuneModifierStage0,modularToolsFortuneModifierStage1,modularToolsFortuneModifierStage2}[tag.getInt("FortuneModifier")]+" )")))))));
+					list.add(Component.literal("Fortune:").withStyle(ChatFormatting.BLUE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("FortuneModifier"))).append(CommonComponents.space().append(CommonComponents.space().append(Component.literal("( "+tag.getInt("FortuneModifierProgress")+" / "+new int[]{MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_0.get(),MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_1.get(),MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_2.get()}[tag.getInt("FortuneModifier")]+" )")))))));
 				else
 					list.add(Component.literal("Fortune:").withStyle(ChatFormatting.BLUE).append(CommonComponents.space().append(Component.literal(String.valueOf(tag.getInt("FortuneModifier"))))));
 			}

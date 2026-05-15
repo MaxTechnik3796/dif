@@ -21,18 +21,16 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
-
 public class SpaceCrateMenu extends AbstractContainerMenu implements Supplier<Map<Integer,Slot>>{
 	private static final int ROWS=3;
 	private static final int SLOTS_PER_ROW=9;
 	private static final int CONTAINER_SLOTS=ROWS*SLOTS_PER_ROW;
 	public final Level world;
 	public final Player entity;
-	public int x,y,z;
+	public int x, y, z;
 	private ContainerLevelAccess access=ContainerLevelAccess.NULL;
 	private final Map<Integer,Slot> customSlots=new HashMap<>();
 	private BlockEntity boundBlockEntity=null;
-
 	public SpaceCrateMenu(int id,Inventory inv,FriendlyByteBuf extraData){
 		super(DifModMenus.SPACE_CRATE.get(),id);
 		this.entity=inv.player;
@@ -40,7 +38,9 @@ public class SpaceCrateMenu extends AbstractContainerMenu implements Supplier<Ma
 		IItemHandler internal=new ItemStackHandler(CONTAINER_SLOTS);
 		if(extraData!=null){
 			BlockPos pos=extraData.readBlockPos();
-			this.x=pos.getX(); this.y=pos.getY(); this.z=pos.getZ();
+			this.x=pos.getX();
+			this.y=pos.getY();
+			this.z=pos.getZ();
 			access=ContainerLevelAccess.create(world,pos);
 			boundBlockEntity=world.getBlockEntity(pos);
 			if(boundBlockEntity!=null){
@@ -59,16 +59,15 @@ public class SpaceCrateMenu extends AbstractContainerMenu implements Supplier<Ma
 		for(int si=0;si<9;si++)
 			this.addSlot(new Slot(inv,si,8+si*18,142));
 	}
-
-	public int getRows(){ return ROWS; }
-
+	public int getRows(){
+		return ROWS;
+	}
 	@Override
 	public boolean stillValid(@NotNull Player player){
 		if(boundBlockEntity!=null)
 			return AbstractContainerMenu.stillValid(access,player,boundBlockEntity.getBlockState().getBlock());
 		return true;
 	}
-
 	@Override
 	public @NotNull ItemStack quickMoveStack(@NotNull Player player,int index){
 		ItemStack itemstack=ItemStack.EMPTY;
@@ -81,9 +80,11 @@ public class SpaceCrateMenu extends AbstractContainerMenu implements Supplier<Ma
 				slot.onQuickCraft(itemstack1,itemstack);
 			}else if(!this.moveItemStackTo(itemstack1,0,CONTAINER_SLOTS,false)){
 				if(index<CONTAINER_SLOTS+27){
-					if(!this.moveItemStackTo(itemstack1,CONTAINER_SLOTS+27,this.slots.size(),true)) return ItemStack.EMPTY;
+					if(!this.moveItemStackTo(itemstack1,CONTAINER_SLOTS+27,this.slots.size(),true))
+						return ItemStack.EMPTY;
 				}else{
-					if(!this.moveItemStackTo(itemstack1,CONTAINER_SLOTS,CONTAINER_SLOTS+27,false)) return ItemStack.EMPTY;
+					if(!this.moveItemStackTo(itemstack1,CONTAINER_SLOTS,CONTAINER_SLOTS+27,false))
+						return ItemStack.EMPTY;
 				}
 				return ItemStack.EMPTY;
 			}
@@ -94,13 +95,16 @@ public class SpaceCrateMenu extends AbstractContainerMenu implements Supplier<Ma
 		}
 		return itemstack;
 	}
-
 	@Override
 	public void removed(@NotNull Player player){
 		if(boundBlockEntity instanceof SpaceCrateBlockEntity be) be.stopOpen(player);
 		super.removed(player);
 	}
-
-	@Override public Map<Integer,Slot> get(){ return customSlots; }
-	public BlockEntity getBlockEntity(){ return boundBlockEntity; }
+	@Override
+	public Map<Integer,Slot> get(){
+		return customSlots;
+	}
+	public BlockEntity getBlockEntity(){
+		return boundBlockEntity;
+	}
 }

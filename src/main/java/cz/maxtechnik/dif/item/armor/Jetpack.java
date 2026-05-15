@@ -69,7 +69,7 @@ public abstract class Jetpack extends ArmorItem{
 			return data.copyTag().getInt("Main");
 		}
 		public static void setMain(ItemStack stack,int value){
-			int max=DifModCommonConfig.jetpackMaxBasic;
+			int max=DifModCommonConfig.JETPACK_MAX_BASIC.get();
 			stack.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,
 					data->data.update(tag->tag.putInt("Main",Mth.clamp(value,0,max))));
 		}
@@ -80,12 +80,12 @@ public abstract class Jetpack extends ArmorItem{
 			return data.copyTag().getInt("Thrust");
 		}
 		public static void setThrust(ItemStack stack,int value){
-			int max=DifModCommonConfig.jetpackMaxBasic;
+			int max=DifModCommonConfig.JETPACK_MAX_BASIC.get();
 			stack.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,
 					data->data.update(tag->tag.putInt("Thrust",Mth.clamp(value,0,max))));
 		}
 		public static int getMax(){
-			return DifModCommonConfig.jetpackMaxBasic;
+			return DifModCommonConfig.JETPACK_MAX_BASIC.get();
 		}
 		public static boolean isFuel(ItemStack stack){
 			return stack.getItem().equals(DifModItems.JETPACK_FUEL.get());

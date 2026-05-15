@@ -15,6 +15,6 @@ public class FastRailBlock extends RailBlock{
 	public float getRailMaxSpeed(@NotNull BlockState state,@NotNull Level world,@NotNull BlockPos pos,@NotNull AbstractMinecart cart){
 		// Nastavíme stejný limit jako u tvého FastPoweredRailu (1.2f)
 		// Díky tomu vozík v zatáčce "necukne" a nezpomalí.
-		return (float)DifModCommonConfig.fastRailTopSpeed;
+		return DifModCommonConfig.FAST_RAIL_TOP_SPEED.get().floatValue();
 	}
 }

@@ -8,10 +8,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
-
 public class SpaceCrateScreen extends AbstractContainerScreen<SpaceCrateMenu>{
 	private static final ResourceLocation TEXTURE=ResourceLocation.fromNamespaceAndPath("minecraft","textures/gui/container/generic_54.png");
-
 	public SpaceCrateScreen(SpaceCrateMenu container,Inventory inventory,Component text){
 		super(container,inventory,text);
 		int rows=container.getRows();
@@ -19,14 +17,12 @@ public class SpaceCrateScreen extends AbstractContainerScreen<SpaceCrateMenu>{
 		this.imageHeight=114+rows*18;
 		this.inventoryLabelY=this.imageHeight-94;
 	}
-
 	@Override
 	public void render(@NotNull GuiGraphics g,int mouseX,int mouseY,float pt){
 		this.renderBackground(g,mouseX,mouseY,pt);
 		super.render(g,mouseX,mouseY,pt);
 		this.renderTooltip(g,mouseX,mouseY);
 	}
-
 	@Override
 	protected void renderBg(GuiGraphics g,float pt,int gx,int gy){
 		RenderSystem.setShaderColor(1,1,1,1);

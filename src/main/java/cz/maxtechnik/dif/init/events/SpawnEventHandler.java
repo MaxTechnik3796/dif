@@ -28,8 +28,8 @@ public class SpawnEventHandler {
 
 		Set<BlockPos> torches = TorchSavedData.get(serverLevel).getTorches();
 		for (BlockPos torchPos : torches) {
-			if (Math.abs(torchPos.getX() - spawnPos.getX()) <= DifModCommonConfig.megaTorchRadius &&
-					Math.abs(torchPos.getZ() - spawnPos.getZ()) <= DifModCommonConfig.megaTorchRadius) {
+			if (Math.abs(torchPos.getX() - spawnPos.getX()) <= DifModCommonConfig.MEGA_TORCH_RADIUS.get() &&
+					Math.abs(torchPos.getZ() - spawnPos.getZ()) <= DifModCommonConfig.MEGA_TORCH_RADIUS.get()) {
 
 				// OPRAVA PRO NEOFORGE 1.21.1
 				event.setResult(MobSpawnEvent.PositionCheck.Result.FAIL);

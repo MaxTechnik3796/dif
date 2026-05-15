@@ -73,7 +73,7 @@ public class SpaceScaffolding extends Block implements EntityBlock{
 		if(!world.getBlockState(pos).is(this)) return;
 		BlockEntity blockEntity=world.getBlockEntity(pos);
 		if(blockEntity instanceof SpaceScaffoldingBlockEntity scaffolding){
-			if(scaffolding.lifeTime>=DifModCommonConfig.spaceScaffoldingLifeTime){
+			if(scaffolding.lifeTime>=DifModCommonConfig.SPACE_SCAFFOLDING_LIFE_TIME.get()){
 				// Odstraníme blok — scheduleTick se UŽ NEPLÁNUJE
 				world.setBlock(pos,Blocks.AIR.defaultBlockState(),3);
 			}else{

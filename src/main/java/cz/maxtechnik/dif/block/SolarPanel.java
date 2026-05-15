@@ -85,39 +85,39 @@ public class SolarPanel extends Block implements SimpleWaterloggedBlock{
 		Block block=blockstate.getBlock();
 		if(world.canSeeSky(pos)&&world.isDay()&&world.dimension().equals(Level.OVERWORLD)&&ent!=null){
 			if(block.equals(DifModBlocks.SOLAR_PANEL_00.get())||block.equals(DifModBlocks.SOLAR_PANEL_00_W.get())){
-				generate(ent,DifModCommonConfig.solarPanel_00);
+				generate(ent,DifModCommonConfig.SOLAR_PANEL_00.get());
 			}else if(block.equals(DifModBlocks.SOLAR_PANEL_01.get())||block.equals(DifModBlocks.SOLAR_PANEL_01_W.get())){
-				generate(ent,DifModCommonConfig.solarPanel_01);
+				generate(ent,DifModCommonConfig.SOLAR_PANEL_01.get());
 			}else if(block.equals(DifModBlocks.SOLAR_PANEL_02.get())||block.equals(DifModBlocks.SOLAR_PANEL_02_W.get())){
-				generate(ent,DifModCommonConfig.solarPanel_02);
+				generate(ent,DifModCommonConfig.SOLAR_PANEL_02.get());
 			}else if(block.equals(DifModBlocks.SOLAR_PANEL_03.get())||block.equals(DifModBlocks.SOLAR_PANEL_03_W.get())){
-				generate(ent,DifModCommonConfig.solarPanel_03);
+				generate(ent,DifModCommonConfig.SOLAR_PANEL_03.get());
 			}else if(block.equals(DifModBlocks.SOLAR_PANEL_04.get())||block.equals(DifModBlocks.SOLAR_PANEL_04_W.get())){
-				generate(ent,DifModCommonConfig.solarPanel_04);
+				generate(ent,DifModCommonConfig.SOLAR_PANEL_04.get());
 			}
 		}else if(world.canSeeSky(pos)&&world.dimension().equals(DifModDimensions.ORBIT)&&ent!=null){
 			if(block.equals(DifModBlocks.SOLAR_PANEL_00.get())||block.equals(DifModBlocks.SOLAR_PANEL_00_W.get())){
-				generate(ent,DifModCommonConfig.solarPanel_00*DifModCommonConfig.solarPanel_orbit_multiplier);
+				generate(ent,DifModCommonConfig.SOLAR_PANEL_00.get()*DifModCommonConfig.SOLAR_PANEL_ORBIT_MULTIPLIER.get());
 			}else if(block.equals(DifModBlocks.SOLAR_PANEL_01.get())||block.equals(DifModBlocks.SOLAR_PANEL_01_W.get())){
-				generate(ent,DifModCommonConfig.solarPanel_01*DifModCommonConfig.solarPanel_orbit_multiplier);
+				generate(ent,DifModCommonConfig.SOLAR_PANEL_01.get()*DifModCommonConfig.SOLAR_PANEL_ORBIT_MULTIPLIER.get());
 			}else if(block.equals(DifModBlocks.SOLAR_PANEL_02.get())||block.equals(DifModBlocks.SOLAR_PANEL_02_W.get())){
-				generate(ent,DifModCommonConfig.solarPanel_02*DifModCommonConfig.solarPanel_orbit_multiplier);
+				generate(ent,DifModCommonConfig.SOLAR_PANEL_02.get()*DifModCommonConfig.SOLAR_PANEL_ORBIT_MULTIPLIER.get());
 			}else if(block.equals(DifModBlocks.SOLAR_PANEL_03.get())||block.equals(DifModBlocks.SOLAR_PANEL_03_W.get())){
-				generate(ent,DifModCommonConfig.solarPanel_03*DifModCommonConfig.solarPanel_orbit_multiplier);
+				generate(ent,DifModCommonConfig.SOLAR_PANEL_03.get()*DifModCommonConfig.SOLAR_PANEL_ORBIT_MULTIPLIER.get());
 			}else if(block.equals(DifModBlocks.SOLAR_PANEL_04.get())||block.equals(DifModBlocks.SOLAR_PANEL_04_W.get())){
-				generate(ent,DifModCommonConfig.solarPanel_04*DifModCommonConfig.solarPanel_orbit_multiplier);
+				generate(ent,DifModCommonConfig.SOLAR_PANEL_04.get()*DifModCommonConfig.SOLAR_PANEL_ORBIT_MULTIPLIER.get());
 			}
 		}else if(world.canSeeSky(pos)&&world.dimension().equals(DifModDimensions.MOON)&&ent!=null){
 			if(block.equals(DifModBlocks.SOLAR_PANEL_00.get())||block.equals(DifModBlocks.SOLAR_PANEL_00_W.get())){
-				generate(ent,DifModCommonConfig.solarPanel_00);
+				generate(ent,DifModCommonConfig.SOLAR_PANEL_00.get());
 			}else if(block.equals(DifModBlocks.SOLAR_PANEL_01.get())||block.equals(DifModBlocks.SOLAR_PANEL_01_W.get())){
-				generate(ent,DifModCommonConfig.solarPanel_01);
+				generate(ent,DifModCommonConfig.SOLAR_PANEL_01.get());
 			}else if(block.equals(DifModBlocks.SOLAR_PANEL_02.get())||block.equals(DifModBlocks.SOLAR_PANEL_02_W.get())){
-				generate(ent,DifModCommonConfig.solarPanel_02);
+				generate(ent,DifModCommonConfig.SOLAR_PANEL_02.get());
 			}else if(block.equals(DifModBlocks.SOLAR_PANEL_03.get())||block.equals(DifModBlocks.SOLAR_PANEL_03_W.get())){
-				generate(ent,DifModCommonConfig.solarPanel_03);
+				generate(ent,DifModCommonConfig.SOLAR_PANEL_03.get());
 			}else if(block.equals(DifModBlocks.SOLAR_PANEL_04.get())||block.equals(DifModBlocks.SOLAR_PANEL_04_W.get())){
-				generate(ent,DifModCommonConfig.solarPanel_04);
+				generate(ent,DifModCommonConfig.SOLAR_PANEL_04.get());
 			}
 		}
 		world.scheduleTick(pos,this,1);

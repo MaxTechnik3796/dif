@@ -19,11 +19,11 @@ public class FastPoweredRailBlock extends PoweredRailBlock{
 		// Výchozí hodnota u běžných kolejí je 0.4f
 		// 1.2f je trojnásobná rychlost.
 		// POZOR: Pokud dáš víc než 1.5f, vozíky budou v zatáčkách často vypadávat!
-		return (float)DifModCommonConfig.fastRailTopSpeed;
+		return DifModCommonConfig.FAST_RAIL_TOP_SPEED.get().floatValue();
 	}
 	@Override
 	public void onMinecartPass(BlockState state,@NotNull Level world,@NotNull BlockPos pos,@NotNull AbstractMinecart cart){
-		double multiplier=DifModCommonConfig.fastPoweredRailAcceleration;
+		double multiplier=DifModCommonConfig.FAST_POWERED_RAIL_ACCELERATION.get();
 		if(state.getValue(POWERED)){
 			Vec3 motion=cart.getDeltaMovement();
 			double speed=motion.horizontalDistance();

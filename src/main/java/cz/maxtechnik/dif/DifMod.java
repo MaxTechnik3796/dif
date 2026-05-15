@@ -20,7 +20,6 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
-import cz.maxtechnik.dif.command.ConfigReloadCommand;
 import cz.maxtechnik.dif.command.IsChunkLoadedCommand;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.basic.DifModItems;
@@ -107,7 +106,6 @@ public class DifMod{
 	public void onCommandsRegister(RegisterCommandsEvent event){
 		ChunkLoaderCommand.register(event.getDispatcher());
 		IsChunkLoadedCommand.register(event.getDispatcher());
-		ConfigReloadCommand.register(event.getDispatcher());
 	}
 	public static void onRenderGui(RenderGuiLayerEvent.Post event){
 		if(event.getName().equals(net.neoforged.neoforge.client.gui.VanillaGuiLayers.HOTBAR)){

@@ -1,22 +1,12 @@
 package cz.maxtechnik.dif;
 
 
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 @SuppressWarnings("removal")
 @EventBusSubscriber(modid=DifMod.MODID,bus=EventBusSubscriber.Bus.MOD)
 public class DifModCommonConfig{
-	@SubscribeEvent
-	static void onLoad(final ModConfigEvent event){
-		load();
-	}
-	@SubscribeEvent
-	public static void onReload(ModConfigEvent.Reloading event){
-		load();
-	}
 	private static final ModConfigSpec.Builder BUILDER=new ModConfigSpec.Builder();
 	static final ModConfigSpec SPEC;
 	public static int MAX=Integer.MAX_VALUE;
@@ -37,55 +27,55 @@ public class DifModCommonConfig{
 		return restart(String.valueOf(defaultValue));
 	}
 
-	private static final ModConfigSpec.IntValue SOLAR_PANEL_00;public static int solarPanel_00;
-	private static final ModConfigSpec.IntValue SOLAR_PANEL_01;public static int solarPanel_01;
-	private static final ModConfigSpec.IntValue SOLAR_PANEL_02;public static int solarPanel_02;
-	private static final ModConfigSpec.IntValue SOLAR_PANEL_03;public static int solarPanel_03;
-	private static final ModConfigSpec.IntValue SOLAR_PANEL_04;public static int solarPanel_04;
-	private static final ModConfigSpec.IntValue SOLAR_PANEL_ORBIT_MULTIPLIER;public static int solarPanel_orbit_multiplier;
+	public static final ModConfigSpec.IntValue SOLAR_PANEL_00;
+	public static final ModConfigSpec.IntValue SOLAR_PANEL_01;
+	public static final ModConfigSpec.IntValue SOLAR_PANEL_02;
+	public static final ModConfigSpec.IntValue SOLAR_PANEL_03;
+	public static final ModConfigSpec.IntValue SOLAR_PANEL_04;
+	public static final ModConfigSpec.IntValue SOLAR_PANEL_ORBIT_MULTIPLIER;
 
-	private static final ModConfigSpec.IntValue BURNING_GENERATOR_ENERGY_PER_TICK;public static int burningGeneratorEnergyPerTick;
-	private static final ModConfigSpec.IntValue BURNING_GENERATOR_MAX_ENERGY;public static int burningGeneratorMaxEnergy;
-	private static final ModConfigSpec.IntValue BURNING_GENERATOR_MAX_EXTRACT;public static int burningGeneratorMaxExtract;
+	public static final ModConfigSpec.IntValue BURNING_GENERATOR_ENERGY_PER_TICK;
+	public static final ModConfigSpec.IntValue BURNING_GENERATOR_MAX_ENERGY;
+	public static final ModConfigSpec.IntValue BURNING_GENERATOR_MAX_EXTRACT;
 
-	private static final ModConfigSpec.IntValue MATA_PLANT_MAX_HEIGHT;public static int mataPlantMaxHeight;
-	private static final ModConfigSpec.IntValue SPACE_SCAFFOLDING_LIFE_TIME;public static int spaceScaffoldingLifeTime;
-	private static final ModConfigSpec.IntValue MEGA_TORCH_RADIUS;public static int megaTorchRadius;
+	public static final ModConfigSpec.IntValue MATA_PLANT_MAX_HEIGHT;
+	public static final ModConfigSpec.IntValue SPACE_SCAFFOLDING_LIFE_TIME;
+	public static final ModConfigSpec.IntValue MEGA_TORCH_RADIUS;
 
-	private static final ModConfigSpec.IntValue JETPACK_MAX_BASIC;public static int jetpackMaxBasic;
-	private static final ModConfigSpec.IntValue JETPACK_MAX_TURBO;public static int jetpackMaxTurbo;
+	public static final ModConfigSpec.IntValue JETPACK_MAX_BASIC;
+	public static final ModConfigSpec.IntValue JETPACK_MAX_TURBO;
 
-	private static final ModConfigSpec.IntValue MODULAR_TOOLS_DEFAULT_MAX_MODIFIERS;public static int modularToolsDefaultMaxModifiers;
-	private static final ModConfigSpec.IntValue MODULAR_TOOLS_REPAIR_AMOUNT;public static int modularToolsRepairAmount;
-	private static final ModConfigSpec.IntValue MODULAR_TOOLS_CHEEP_REPAIR_AMOUNT;public static int modularToolsCheepRepairAmount;
+	public static final ModConfigSpec.IntValue MODULAR_TOOLS_DEFAULT_MAX_MODIFIERS;
+	public static final ModConfigSpec.IntValue MODULAR_TOOLS_REPAIR_AMOUNT;
+	public static final ModConfigSpec.IntValue MODULAR_TOOLS_CHEEP_REPAIR_AMOUNT;
 
-	private static final ModConfigSpec.DoubleValue FAST_RAIL_TOP_SPEED;public static double fastRailTopSpeed;
-	private static final ModConfigSpec.DoubleValue FAST_POWERED_RAIL_ACCELERATION;public static double fastPoweredRailAcceleration;
+	public static final ModConfigSpec.DoubleValue FAST_RAIL_TOP_SPEED;
+	public static final ModConfigSpec.DoubleValue FAST_POWERED_RAIL_ACCELERATION;
 
-	private static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_0;public static int modularToolsEfficiencyModifierStage0;
-	private static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_1;public static int modularToolsEfficiencyModifierStage1;
-	private static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_2;public static int modularToolsEfficiencyModifierStage2;
-	private static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_0;public static int modularToolsEfficiencyModifierLevel0;
-	private static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_1;public static int modularToolsEfficiencyModifierLevel1;
-	private static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_2;public static int modularToolsEfficiencyModifierLevel2;
+	public static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_0;
+	public static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_1;
+	public static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_2;
+	public static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_0;
+	public static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_1;
+	public static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_2;
 
-	private static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_0;public static int modularToolsFortuneModifierStage0;
-	private static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_1;public static int modularToolsFortuneModifierStage1;
-	private static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_2;public static int modularToolsFortuneModifierStage2;
-	private static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_0;public static int modularToolsFortuneModifierLevel0;
-	private static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_1;public static int modularToolsFortuneModifierLevel1;
-	private static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_2;public static int modularToolsFortuneModifierLevel2;
+	public static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_0;
+	public static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_1;
+	public static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_2;
+	public static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_0;
+	public static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_1;
+	public static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_2;
 
-	private static final ModConfigSpec.IntValue PORTAL_GUN_MAX_DURABILITY; public static int portalGunMaxDurability;
-	private static final ModConfigSpec.IntValue PORTAL_GUN_ENERGY_PER_SHOT; public static int portalGunEnergyPerShot;
-	private static final ModConfigSpec.IntValue PORTAL_GUN_ENERGY_PER_PEARL; public static int portalGunEnergyPerPearl;
-	private static final ModConfigSpec.IntValue PORTAL_GUN_SHOT_COOLDOWN; public static int portalGunShotCooldown;
-	private static final ModConfigSpec.IntValue PORTAL_TELEPORT_COOLDOWN; public static int portalTeleportCooldown;
-	private static final ModConfigSpec.IntValue PORTAL_MAX_DISTANCE; public static int portalMaxDistance;
-	private static final ModConfigSpec.IntValue PORTAL_CHUNK_LOAD_TIMEOUT; public static int portalChunkLoadTimeout;
-	private static final ModConfigSpec.IntValue PORTAL_MAX_ENTITIES_PER_TICK; public static int portalMaxEntitiesPerTick;
-	private static final ModConfigSpec.BooleanValue PORTAL_ALLOW_ENTITIES; public static boolean portalAllowEntities;
-	private static final ModConfigSpec.BooleanValue PORTAL_ALLOW_ITEMS; public static boolean portalAllowItems;
+	public static final ModConfigSpec.IntValue PORTAL_GUN_MAX_DURABILITY;
+	public static final ModConfigSpec.IntValue PORTAL_GUN_ENERGY_PER_SHOT;
+	public static final ModConfigSpec.IntValue PORTAL_GUN_ENERGY_PER_PEARL;
+	public static final ModConfigSpec.IntValue PORTAL_GUN_SHOT_COOLDOWN;
+	public static final ModConfigSpec.IntValue PORTAL_TELEPORT_COOLDOWN;
+	public static final ModConfigSpec.IntValue PORTAL_MAX_DISTANCE;
+	public static final ModConfigSpec.IntValue PORTAL_CHUNK_LOAD_TIMEOUT;
+	public static final ModConfigSpec.IntValue PORTAL_MAX_ENTITIES_PER_TICK;
+	public static final ModConfigSpec.BooleanValue PORTAL_ALLOW_ENTITIES;
+	public static final ModConfigSpec.BooleanValue PORTAL_ALLOW_ITEMS;
 
 	static{
 		BUILDER.comment("Dif common config.");
@@ -163,59 +153,5 @@ public class DifModCommonConfig{
 		BUILDER.pop();
 
 		SPEC=BUILDER.build();
-	}
-	public static void load(){
-		DifMod.LOGGER.info("Configuration loaded!");
-		solarPanel_00=SOLAR_PANEL_00.get();
-		solarPanel_01=SOLAR_PANEL_01.get();
-		solarPanel_02=SOLAR_PANEL_02.get();
-		solarPanel_03=SOLAR_PANEL_03.get();
-		solarPanel_04=SOLAR_PANEL_04.get();
-		solarPanel_orbit_multiplier=SOLAR_PANEL_ORBIT_MULTIPLIER.get();
-
-		burningGeneratorEnergyPerTick=BURNING_GENERATOR_ENERGY_PER_TICK.get();
-		burningGeneratorMaxEnergy=BURNING_GENERATOR_MAX_ENERGY.get();
-		burningGeneratorMaxExtract=BURNING_GENERATOR_MAX_EXTRACT.get();
-
-		mataPlantMaxHeight=MATA_PLANT_MAX_HEIGHT.get();
-		spaceScaffoldingLifeTime=SPACE_SCAFFOLDING_LIFE_TIME.get();
-		megaTorchRadius=MEGA_TORCH_RADIUS.get();
-
-		jetpackMaxBasic=JETPACK_MAX_BASIC.get();
-		jetpackMaxTurbo=JETPACK_MAX_TURBO.get();
-
-		modularToolsDefaultMaxModifiers=MODULAR_TOOLS_DEFAULT_MAX_MODIFIERS.get();
-		modularToolsRepairAmount=MODULAR_TOOLS_REPAIR_AMOUNT.get();
-		modularToolsCheepRepairAmount=MODULAR_TOOLS_CHEEP_REPAIR_AMOUNT.get();
-
-		fastRailTopSpeed=FAST_RAIL_TOP_SPEED.get();
-		fastPoweredRailAcceleration=FAST_POWERED_RAIL_ACCELERATION.get();
-
-		modularToolsEfficiencyModifierStage0=MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_0.get();
-		modularToolsEfficiencyModifierStage1=MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_1.get();
-		modularToolsEfficiencyModifierStage2=MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_2.get();
-
-		modularToolsEfficiencyModifierLevel0=MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_0.get();
-		modularToolsEfficiencyModifierLevel1=MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_1.get();
-		modularToolsEfficiencyModifierLevel2=MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_2.get();
-
-		modularToolsFortuneModifierStage0=MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_0.get();
-		modularToolsFortuneModifierStage1=MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_1.get();
-		modularToolsFortuneModifierStage2=MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_2.get();
-
-		modularToolsFortuneModifierLevel0=MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_0.get();
-		modularToolsFortuneModifierLevel1=MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_1.get();
-		modularToolsFortuneModifierLevel2=MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_2.get();
-
-		portalGunMaxDurability=PORTAL_GUN_MAX_DURABILITY.get();
-		portalGunEnergyPerShot=PORTAL_GUN_ENERGY_PER_SHOT.get();
-		portalGunEnergyPerPearl=PORTAL_GUN_ENERGY_PER_PEARL.get();
-		portalGunShotCooldown=PORTAL_GUN_SHOT_COOLDOWN.get();
-		portalTeleportCooldown=PORTAL_TELEPORT_COOLDOWN.get();
-		portalMaxDistance=PORTAL_MAX_DISTANCE.get();
-		portalChunkLoadTimeout=PORTAL_CHUNK_LOAD_TIMEOUT.get();
-		portalMaxEntitiesPerTick=PORTAL_MAX_ENTITIES_PER_TICK.get();
-		portalAllowEntities=PORTAL_ALLOW_ENTITIES.get();
-		portalAllowItems=PORTAL_ALLOW_ITEMS.get();
 	}
 }
