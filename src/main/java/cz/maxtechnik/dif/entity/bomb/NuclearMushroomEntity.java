@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.entity;
+package cz.maxtechnik.dif.entity.bomb;
 
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.nbt.CompoundTag;

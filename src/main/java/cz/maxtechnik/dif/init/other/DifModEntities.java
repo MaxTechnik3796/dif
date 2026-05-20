@@ -1,9 +1,9 @@
 package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.entity.NuclearExplosionEntity;
-import cz.maxtechnik.dif.entity.NuclearMushroomEntity;
-import cz.maxtechnik.dif.entity.NuclearWaveEntity;
+import cz.maxtechnik.dif.entity.bomb.NuclearExplosionEntity;
+import cz.maxtechnik.dif.entity.bomb.NuclearMushroomEntity;
+import cz.maxtechnik.dif.entity.bomb.NuclearWaveEntity;
 import cz.maxtechnik.dif.entity.vehicle.FormulaEntity;
 import cz.maxtechnik.dif.entity.vehicle.RemoteControlMinecart;
 import net.minecraft.core.registries.Registries;

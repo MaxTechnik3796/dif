@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.entity;
+package cz.maxtechnik.dif.entity.bomb;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -10,12 +10,12 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
+
 @SuppressWarnings("deprecation")
 public class NuclearExplosionEntity extends Entity{
 	// KONSTANTY ────────────────────────────────────────────────────────────
@@ -186,6 +186,9 @@ public class NuclearExplosionEntity extends Entity{
 
 		AABB area = new AABB(getX() - 320, getY() - 320, getZ() - 320, getX() + 320, getY() + 320, getZ() + 320);
 		for (LivingEntity entity : level().getEntitiesOfClass(LivingEntity.class, area)) {
+			if (entity.isSpectator()) continue;
+			if (entity instanceof Player player && player.isCreative()) continue;
+
 			double dist = entity.distanceTo(this);
 
 			// Wither efekt do 320 bloků

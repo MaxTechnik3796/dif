@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.entity;
+package cz.maxtechnik.dif.entity.bomb;
 
 import cz.maxtechnik.dif.init.other.DifModParticles;
 import net.minecraft.core.particles.SimpleParticleType;
