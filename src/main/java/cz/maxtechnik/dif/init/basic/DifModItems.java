@@ -5,9 +5,9 @@ import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
+import cz.maxtechnik.dif.item.modular.ModularPart;
 import cz.maxtechnik.dif.item.quarry.DrillHeadItem;
 import cz.maxtechnik.dif.item.tool.GodTotemItem;
-import cz.maxtechnik.dif.item.modular.ModularPart;
 import cz.maxtechnik.dif.item.modular.tool.*;
 import cz.maxtechnik.dif.item.tool.*;
 import cz.maxtechnik.dif.item.armor.*;
@@ -82,13 +82,13 @@ public class DifModItems{
 	public static final DeferredItem<Item> MODULAR_SWORD=REGISTRY.register("modular_sword",ModularSword::new);
 
 	//Modular Parts:
-	public static final DeferredItem<Item> MODULAR_PART_PICKAXE_HEAD=REGISTRY.register("pickaxe_head",ModularPart::new);
-	public static final DeferredItem<Item> MODULAR_PART_AXE_HEAD=REGISTRY.register("axe_head",ModularPart::new);
-	public static final DeferredItem<Item> MODULAR_PART_SHOVEL_HEAD=REGISTRY.register("shovel_head",ModularPart::new);
-	public static final DeferredItem<Item> MODULAR_PART_SWORD_HEAD=REGISTRY.register("sword_head",ModularPart::new);
-	public static final DeferredItem<Item> MODULAR_PART_BINDING=REGISTRY.register("binding",ModularPart::new);
-	public static final DeferredItem<Item> MODULAR_PART_SWORD_BINDING=REGISTRY.register("sword_binding",ModularPart::new);
-	public static final DeferredItem<Item> MODULAR_PART_HANDLE=REGISTRY.register("handle",ModularPart::new);
+	public static final DeferredItem<Item> MODULAR_PART_PICKAXE_HEAD = REGISTRY.registerItem("pickaxe_head", ModularPart::new);
+	public static final DeferredItem<Item> MODULAR_PART_AXE_HEAD = REGISTRY.registerItem("axe_head", ModularPart::new);
+	public static final DeferredItem<Item> MODULAR_PART_SHOVEL_HEAD = REGISTRY.registerItem("shovel_head", ModularPart::new);
+	public static final DeferredItem<Item> MODULAR_PART_SWORD_HEAD = REGISTRY.registerItem("sword_head", ModularPart::new);
+	public static final DeferredItem<Item> MODULAR_PART_BINDING = REGISTRY.registerItem("binding", ModularPart::new);
+	public static final DeferredItem<Item> MODULAR_PART_SWORD_BINDING = REGISTRY.registerItem("sword_binding", ModularPart::new);
+	public static final DeferredItem<Item> MODULAR_PART_HANDLE = REGISTRY.registerItem("handle", ModularPart::new);
 
 	public static final DeferredItem<Item> PORTAL_GUN=REGISTRY.register("portal_gun",PortalGun::new);
 

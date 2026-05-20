@@ -2,6 +2,8 @@ package cz.maxtechnik.dif.init.basic;
 
 import com.simibubi.create.AllCreativeModeTabs;
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.item.modular.ModularBase;
+import cz.maxtechnik.dif.item.modular.ToolMaterial;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -111,7 +113,7 @@ public class DifModTabs{
 
 		tabData.accept(ELECTRO_RUNNERS.get());
 	})).build());
-	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>MODULAR_TOOLS=REGISTER.register("modular_tools",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.SPACE.getKey()).title(Component.translatable("creative_tab.dif.modular_tools")).icon(()->newToolFromMaterials(MODULAR_PICKAXE.get(),"Diamond","Gold","Obsidian")).displayItems(((parameters,tabData)->{
+	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>MODULAR_TOOLS=REGISTER.register("modular_tools",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.SPACE.getKey()).title(Component.translatable("creative_tab.dif.modular_tools")).icon(()-> ModularBase.createTool(MODULAR_PICKAXE.get(), ToolMaterial.DIAMOND, ToolMaterial.GOLD, ToolMaterial.OBSIDIAN)).displayItems(((parameters, tabData)->{
 		tabData.accept(Items.SMITHING_TABLE);
 
 		tabData.accept(MODULAR_PICKAXE.get());

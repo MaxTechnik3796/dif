@@ -1,74 +1,74 @@
 package cz.maxtechnik.dif.item.modular;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
 
-import static cz.maxtechnik.dif.item.modular.ModularBase.*;
-public class ModularPart extends Item{
-	public String defaultMaterial="Wood";
-	public ModularPart(){
-		super(new Properties().rarity(Rarity.EPIC).fireResistant());
+public class ModularPart extends Item {
+
+	public ModularPart(Item.Properties properties) {
+		super(properties.rarity(Rarity.EPIC).fireResistant());
 	}
-	@Override
-	public void inventoryTick(@NotNull ItemStack itemStack,@NotNull Level world,@NotNull Entity entity,int slot,boolean selected){
-		if(!world.isClientSide()){
-			CompoundTag tag=Objects.requireNonNull(itemStack.get(D)).copyTag();
-			if(isHead(itemStack)){
-				if(!tag.contains("HeadMaterial")) tag.putString("HeadMaterial",defaultMaterial);
-				if(!tag.contains("HeadDurability"))
-					tag.putInt("HeadDurability",durabilityFromMaterial("Head",defaultMaterial));
-				if(!tag.contains("HeadColor"))
-					tag.putInt("HeadColor",colorIntFromMaterial(tag.getString("HeadMaterial")));
-			}
-			if(isBinding(itemStack)){
-				if(!tag.contains("BindingMaterial")) tag.putString("BindingMaterial",defaultMaterial);
-				if(!tag.contains("BindingDurability"))
-					tag.putInt("BindingDurability",durabilityFromMaterial("Binding",defaultMaterial));
-				if(!tag.contains("BindingColor"))
-					tag.putInt("BindingColor",colorIntFromMaterial(tag.getString("BindingMaterial")));
-			}
-			if(isHandle(itemStack)){
-				if(!tag.contains("HandleMaterial")) tag.putString("HandleMaterial",defaultMaterial);
-				if(!tag.contains("HandleDurability"))
-					tag.putInt("HandleDurability",durabilityFromMaterial("Handle",defaultMaterial));
-				if(!tag.contains("HandleColor"))
-					tag.putInt("HandleColor",colorIntFromMaterial(tag.getString("HandleMaterial")));
-			}
-		}
+
+	// Vytvoří část s daným materiálem
+	public static ItemStack ofMaterial(Item partItem, ToolMaterial material) {
+		ItemStack stack = new ItemStack(partItem);
+		stack.set(ToolComponents.TOOL_DATA.get(),
+				ModularToolData.of(material, material, material));
+		return stack;
 	}
+
+	// Vrátí materiál části podle toho jaký typ části to je
+	public static ToolMaterial getPartMaterial(ItemStack stack) {
+		ModularToolData data = stack.get(ToolComponents.TOOL_DATA.get());
+		if (data == null) return ToolMaterial.WOOD;
+		if (ModularBase.isHead(stack)) return data.head();
+		if (ModularBase.isBinding(stack)) return data.binding();
+		if (ModularBase.isHandle(stack)) return data.handle();
+		return data.head();
+	}
+
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(@NotNull ItemStack itemStack,Item.@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
-		super.appendHoverText(itemStack,context,list,flag);
-		var data=itemStack.get(D);
-		if(data==null||data.copyTag().isEmpty()) return;
-		CompoundTag tag=data.copyTag();
-		if(!isHead(itemStack)&&!isBinding(itemStack)&&!isHandle(itemStack)) return;
-		if(isHead(itemStack)&&(!tag.contains("HeadDurability")||!tag.contains("HeadMaterial"))) return;
-		if(isBinding(itemStack)&&(!tag.contains("BindingDurability")||!tag.contains("BindingMaterial"))) return;
-		if(isHandle(itemStack)&&(!tag.contains("HandleDurability")||!tag.contains("HandleMaterial"))) return;
-		String partType=getPartType(itemStack);
-		list.add(Component.literal("Material:").append(CommonComponents.space()).append(Component.literal(tag.getString(partType+"Material")).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(colorIntFromMaterial(tag.getString(partType+"Material")))))));
-		list.add(Component.literal("Durability:").append(CommonComponents.space()).append(Component.literal(String.valueOf(tag.getInt(partType+"Durability"))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(durabilityColor(partType,tag))))));
-		if(isHead(itemStack))
-			list.add(Component.literal("Efficiency:").append(CommonComponents.space()).append(Component.literal(String.valueOf(ModularBase.efficiencyFromMaterial(tag.getString("HeadMaterial")))).withStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(ChatFormatting.GREEN)))));
+	public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context,
+	                            @NotNull List<Component> list, @NotNull TooltipFlag flag) {
+		ModularToolData data = stack.get(ToolComponents.TOOL_DATA.get());
+		if (data == null) return;
+
+		ToolMaterial material = getPartMaterial(stack);
+
+		list.add(Component.literal("Material: ").withStyle(ChatFormatting.WHITE)
+				.append(Component.literal(material.name)
+						.withStyle(Style.EMPTY.withColor(material.color))));
+
+		int durability;
+		if (ModularBase.isHead(stack)) durability = data.headDurability();
+		else if (ModularBase.isBinding(stack)) durability = data.bindingDurability();
+		else durability = data.handleDurability();
+
+		list.add(Component.literal("Durability: ").withStyle(ChatFormatting.WHITE)
+				.append(Component.literal(String.valueOf(durability)).withStyle(ChatFormatting.GREEN)));
+
+		if (ModularBase.isHead(stack))
+			list.add(Component.literal("Efficiency: ").withStyle(ChatFormatting.WHITE)
+					.append(Component.literal(String.valueOf(material.efficiency)).withStyle(ChatFormatting.GREEN)));
+
 		list.add(CommonComponents.EMPTY);
-		list.add(modifierTipFormMaterial(tag.getString(partType+"Material")));
+
+		if (!material.passiveKey().isEmpty())
+			list.add(Component.literal(capitalize(material.passiveKey()))
+					.withStyle(Style.EMPTY.withColor(material.color)));
+	}
+
+	private static String capitalize(String s) {
+		if (s == null || s.isEmpty()) return s;
+		return Character.toUpperCase(s.charAt(0)) + s.substring(1);
 	}
 }

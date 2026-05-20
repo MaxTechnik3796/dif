@@ -11,7 +11,7 @@ import net.neoforged.neoforge.event.GrindstoneEvent;
 public class GrindstoneAnvilFixer{
 	@SubscribeEvent
 	public static void onAnvilUpdate(AnvilUpdateEvent event){
-		if(event.getLeft().getItem() instanceof ModularBase||event.getRight().getItem() instanceof ModularBase)
+		if(event.getLeft().getItem() instanceof ModularBase ||event.getRight().getItem() instanceof ModularBase)
 			event.setCanceled(true);
 	}
 	@SubscribeEvent

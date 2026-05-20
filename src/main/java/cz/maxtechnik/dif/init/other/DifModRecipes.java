@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.item.modular.ModularRecipes;
 import cz.maxtechnik.dif.recipe.DistillationRecipe;
 import cz.maxtechnik.dif.recipe.FryingRecipe;
 import net.minecraft.core.registries.Registries;
@@ -12,7 +11,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class DifModRecipes{
 	public static final DeferredRegister<RecipeSerializer<?>> REGISTRY=DeferredRegister.create(Registries.RECIPE_SERIALIZER,DifMod.MODID);
 	public static final DeferredRegister<RecipeType<?>> TYPE_REGISTRY=DeferredRegister.create(Registries.RECIPE_TYPE,DifMod.MODID);
-	public static final net.neoforged.neoforge.registries.DeferredHolder<RecipeSerializer<?>,RecipeSerializer<?>> MODULAR_REPAIR_SERIALIZER=REGISTRY.register("modular_recipe",ModularRecipes.Serializer::new);
 	public static final net.neoforged.neoforge.registries.DeferredHolder<RecipeSerializer<?>,FryingRecipe.Serializer> FRYING_SERIALIZER=REGISTRY.register("frying",FryingRecipe.Serializer::new);
 	public static final net.neoforged.neoforge.registries.DeferredHolder<RecipeType<?>,RecipeType<FryingRecipe>> FRYING_TYPE=TYPE_REGISTRY.register("frying",()->FryingRecipe.Type.INSTANCE);
 	public static final DeferredHolder<RecipeSerializer<?>,DistillationRecipe.Serializer> DISTILLATION_SERIALIZER=

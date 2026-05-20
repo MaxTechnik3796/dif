@@ -68,6 +68,7 @@ public class DifMod{
 		DifModFluidTypes.REGISTRY.register(bus);
 		DifModRecipes.REGISTRY.register(bus);
 		DifModRecipes.TYPE_REGISTRY.register(bus);
+		cz.maxtechnik.dif.item.modular.ToolComponents.REGISTER.register(bus);
 		DifModEntities.REGISTRY.register(bus);
 		DifModFeatures.REGISTRY.register(bus);
 		DifModParticles.REGISTRY.register(bus);
