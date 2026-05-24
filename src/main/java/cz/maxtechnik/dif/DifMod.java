@@ -95,6 +95,7 @@ public class DifMod{
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.SPACESHIP.get(),(be,side)->be.getItemHandler());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.DISTILLATION_CONTROLLER.get(),(be,side)->be.getFluidHandler());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.DISTILLATION_TANK.get(),(be,side)->be.getFluidHandler());
+		cz.maxtechnik.dif.block.generator.steam_generator.SteamGeneratorBlockEntity.registerCapabilities(event);
 	}
 
 
@@ -136,6 +137,7 @@ public class DifMod{
 			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(), context -> new FryingTableRenderer());
 			event.registerBlockEntityRenderer(DifModBlockEntities.QUARRY.get(), context -> new QuarryRenderer());
 			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(), context -> new ChunkLoaderRenderer());
+			event.registerBlockEntityRenderer(DifModBlockEntities.STEAM_GENERATOR.get(), cz.maxtechnik.dif.block.generator.steam_generator.SteamGeneratorRenderer::new);
 			event.registerEntityRenderer(DifModEntities.FORMULA.get(), CarRenderer::new);
 			event.registerEntityRenderer(DifModEntities.REMOTE_MINECART.get(),context -> new MinecartRenderer<>(context,ModelLayers.MINECART));
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_EXPLOSION.get(), NoopRenderer::new);

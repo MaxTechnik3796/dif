@@ -156,4 +156,18 @@ public class DifModBlocks{
 
 	//nuke
 	public static final DeferredBlock<Block> NUCLEAR_BOMB = REGISTRY.register("nuclear_bomb", NuclearBombBlock::new);
+
+	// ── Generátory ────────────────────────────────────────────────────────────
+
+	/** Parní generátor – hřídel vystupuje nahoru a dolů (osa Y). */
+	public static final DeferredBlock<Block> STEAM_GENERATOR = REGISTRY.register(
+			"steam_generator",
+			() -> new cz.maxtechnik.dif.block.generator.steam_generator.SteamGeneratorBlock(
+					BlockBehaviour.Properties.of()
+							.sound(SoundType.METAL)
+							.strength(4F, 6F)
+							.requiresCorrectToolForDrops()
+							.noOcclusion()
+			)
+	);
 }
