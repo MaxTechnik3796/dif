@@ -5,7 +5,7 @@ import cz.maxtechnik.dif.block.*;
 import cz.maxtechnik.dif.block.barrel.AndesiteBarrel;
 import cz.maxtechnik.dif.block.barrel.BrassBarrel;
 import cz.maxtechnik.dif.block.barrel.CopperBarrel;
-import cz.maxtechnik.dif.block.generator.steam_generator.SteamGeneratorBlock;
+import cz.maxtechnik.dif.block.SteamGeneratorBlock;
 import cz.maxtechnik.dif.block.mata.MataPlant;
 import cz.maxtechnik.dif.block.mata.MatyBlock;
 import cz.maxtechnik.dif.block.rails.FastPoweredRailBlock;
@@ -129,7 +129,7 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block> DISTILLATION_TANK=REGISTRY.register("distillation_tank", DistillationTank::new);
 
 	//Space:
-	public static final DeferredBlock<Block>AURORA_CASING=REGISTRY.register("aurora_casing",()->new Custom(SoundType.NETHERITE_BLOCK,4F,4F,true));
+	public static final DeferredBlock<Block>AURORA_CASING=REGISTRY.register("aurora_casing",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(4F,4F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>SPACESHIP=REGISTRY.register("spaceship",Spaceship::new);
 	public static final DeferredBlock<Block>SPACESHIP_GHOST_BLOCK=REGISTRY.register("spaceship_ghost_block",SpaceshipGhostBlock::new);
 	public static final DeferredBlock<Block>SPACE_ENGINE=REGISTRY.register("space_engine",SpaceEngine::new);
@@ -162,6 +162,8 @@ public class DifModBlocks{
 
 
 	public static final DeferredBlock<Block>ZINC_CASING=REGISTRY.register("zinc_casing",()->new Block(BlockBehaviour.Properties.of().strength(1.5F,6F).sound(SoundType.WOOD).requiresCorrectToolForDrops()));
+	public static final DeferredBlock<Block>STEEL_CASING=REGISTRY.register("steel_casing",()->new Block(BlockBehaviour.Properties.of().strength(5F,6F).sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops()));
+
 
 	public static final DeferredBlock<Block>ZINC_SUPPORT=REGISTRY.register("zinc_support",()->new SupportBase(BlockBehaviour.Properties.of().strength(4F,5F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion()));
 	public static final DeferredBlock<Block>BRASS_SUPPORT=REGISTRY.register("brass_support",()->new SupportBase(BlockBehaviour.Properties.of().strength(4F,5F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion()));

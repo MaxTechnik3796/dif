@@ -317,6 +317,7 @@ public class DifModItems{
 
 
 	public static final DeferredItem<Item>ZINC_CASING=block(DifModBlocks.ZINC_CASING);
+	public static final DeferredItem<Item>STEEL_CASING=block(DifModBlocks.STEEL_CASING);
 
 	public static final DeferredItem<Item>ZINC_SUPPORT=block(DifModBlocks.ZINC_SUPPORT);
 	public static final DeferredItem<Item>BRASS_SUPPORT=block(DifModBlocks.BRASS_SUPPORT);

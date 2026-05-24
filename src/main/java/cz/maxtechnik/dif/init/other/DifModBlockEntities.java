@@ -5,7 +5,7 @@ import cz.maxtechnik.dif.block.entity.*;
 import cz.maxtechnik.dif.block.entity.barrel.AndesiteBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.barrel.BrassBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.barrel.CopperBarrelBlockEntity;
-import cz.maxtechnik.dif.block.generator.steam_generator.SteamGeneratorBlockEntity;
+import cz.maxtechnik.dif.block.entity.SteamGeneratorBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;

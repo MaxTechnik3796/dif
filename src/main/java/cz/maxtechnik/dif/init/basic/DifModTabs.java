@@ -306,6 +306,7 @@ public class DifModTabs{
 			tabData.accept(COPPER_SUPPORT);
 
 			tabData.accept(ZINC_CASING);
+			tabData.accept(STEEL_CASING);
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
 			tabData.insertAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);

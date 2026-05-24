@@ -3,7 +3,6 @@ package cz.maxtechnik.dif;
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
-import cz.maxtechnik.dif.block.generator.steam_generator.SteamGeneratorRenderer;
 import cz.maxtechnik.dif.client.particle.FireballParticle;
 import cz.maxtechnik.dif.client.particle.HugeSmoke;
 import cz.maxtechnik.dif.item.armor.ElectroRunners;
