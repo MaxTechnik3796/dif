@@ -20,116 +20,116 @@ import static cz.maxtechnik.dif.item.modular.ModularBase.*;
 public class DifModTabs{
 	public static final DeferredRegister<CreativeModeTab>REGISTER=DeferredRegister.create(Registries.CREATIVE_MODE_TAB,DifMod.MODID);
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab> MAIN=REGISTER.register("main",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.main")).icon(()->new ItemStack(THE_DIFFERENTIAL.get())).displayItems(((parameters,tabData)->{
-		tabData.accept(THE_DIFFERENTIAL.get());
-		tabData.accept(MEGA_TORCH.get());
-		tabData.accept(BAN_HAMMER.get());
-		tabData.accept(PORTAL_GUN.get());
-		tabData.accept(CHUNK_LOADER_1X1.get());
-		tabData.accept(CHUNK_LOADER_3X3.get());
-		tabData.accept(EVENT_BUS.get());
-		tabData.accept(VENT.get());
-		tabData.accept(BURNING_GENERATOR.get());
-		tabData.accept(ANDESITE_LATTICE.get());
-		tabData.accept(ANDESITE_WINDOW.get());
-		tabData.accept(SUPER_BOX.get());
-		tabData.accept(SINGULARITATOR.get());
+		tabData.accept(THE_DIFFERENTIAL);
+		tabData.accept(MEGA_TORCH);
+		tabData.accept(BAN_HAMMER);
+		tabData.accept(PORTAL_GUN);
+		tabData.accept(CHUNK_LOADER_1X1);
+		tabData.accept(CHUNK_LOADER_3X3);
+		tabData.accept(EVENT_BUS);
+		tabData.accept(VENT);
+		tabData.accept(BURNING_GENERATOR);
+		tabData.accept(ANDESITE_LATTICE);
+		tabData.accept(ANDESITE_WINDOW);
+		tabData.accept(SUPER_BOX);
+		tabData.accept(SINGULARITATOR);
 		tabData.accept(CAMERA_MONITOR.get());
-		tabData.accept(CAMERA.get());
-		tabData.accept(CAMERA_LINK.get());
-		tabData.accept(SOLAR_PANEL_00.get());
-		tabData.accept(SOLAR_PANEL_01.get());
-		tabData.accept(SOLAR_PANEL_02.get());
-		tabData.accept(SOLAR_PANEL_03.get());
-		tabData.accept(SOLAR_PANEL_04.get());
-		tabData.accept(SOLAR_PANEL_00_W.get());
-		tabData.accept(SOLAR_PANEL_01_W.get());
-		tabData.accept(SOLAR_PANEL_02_W.get());
-		tabData.accept(SOLAR_PANEL_03_W.get());
-		tabData.accept(SOLAR_PANEL_04_W.get());
-		tabData.accept(CPU_SINGULARITY.get());
-		tabData.accept(HEAVY_PLATE.get());
-		tabData.accept(MITHRIL.get());
-		tabData.accept(MITHRIL_PLATE.get());
-		tabData.accept(BLUESTONE.get());
-		tabData.accept(BLUE_PLATE.get());
+		tabData.accept(CAMERA);
+		tabData.accept(CAMERA_LINK);
+		tabData.accept(SOLAR_PANEL_00);
+		tabData.accept(SOLAR_PANEL_01);
+		tabData.accept(SOLAR_PANEL_02);
+		tabData.accept(SOLAR_PANEL_03);
+		tabData.accept(SOLAR_PANEL_04);
+		tabData.accept(SOLAR_PANEL_00_W);
+		tabData.accept(SOLAR_PANEL_01_W);
+		tabData.accept(SOLAR_PANEL_02_W);
+		tabData.accept(SOLAR_PANEL_03_W);
+		tabData.accept(SOLAR_PANEL_04_W);
+		tabData.accept(CPU_SINGULARITY);
+		tabData.accept(HEAVY_PLATE);
+		tabData.accept(MITHRIL);
+		tabData.accept(MITHRIL_PLATE);
+		tabData.accept(BLUESTONE);
+		tabData.accept(BLUE_PLATE);
 
-		tabData.accept(QUESTION_MARK.get());
+		tabData.accept(QUESTION_MARK);
 
 
-		tabData.accept(INCOMPLETE_CPU_SINGULARITY.get());
-		tabData.accept(INCOMPLETE_MITHRIL_PLATE.get());
-		tabData.accept(SOLAR_PANEL_INC.get());
+		tabData.accept(INCOMPLETE_CPU_SINGULARITY);
+		tabData.accept(INCOMPLETE_MITHRIL_PLATE);
+		tabData.accept(SOLAR_PANEL_INC);
 
-		tabData.accept(INCOMPLETE_UNIVERSAL.get());
+		tabData.accept(INCOMPLETE_UNIVERSAL);
 
-		tabData.accept(QUARRY.get());
-		tabData.accept(QUARRY_FRAME.get());
-		tabData.accept(QUARRY_LANDMARK.get());
+		tabData.accept(QUARRY);
+		tabData.accept(QUARRY_FRAME);
+		tabData.accept(QUARRY_LANDMARK);
 
-		tabData.accept(QUARRY_DRILL_IRON.get());
-		tabData.accept(QUARRY_DRILL_DIAMOND.get());
-		tabData.accept(QUARRY_ENGINE_IRON.get());
-		tabData.accept(QUARRY_ENGINE_GOLD.get());
-		tabData.accept(QUARRY_ENGINE_DIAMOND.get());
+		tabData.accept(QUARRY_DRILL_IRON);
+		tabData.accept(QUARRY_DRILL_DIAMOND);
+		tabData.accept(QUARRY_ENGINE_IRON);
+		tabData.accept(QUARRY_ENGINE_GOLD);
+		tabData.accept(QUARRY_ENGINE_DIAMOND);
 
 
 
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>SPACE=REGISTER.register("space",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.space")).icon(()->new ItemStack(SPACESHIP.get())).displayItems(((parameters,tabData)->{
-		tabData.accept(SPACESHIP.get());
-		tabData.accept(SPACE_ENGINE.get());
-		tabData.accept(SPACE_SCAFFOLDING.get());
+		tabData.accept(SPACESHIP);
+		tabData.accept(SPACE_ENGINE);
+		tabData.accept(SPACE_SCAFFOLDING);
 
-		tabData.accept(ROCKET_FUEL.get());
-		tabData.accept(EMPTY_ROCKET_FUEL.get());
+		tabData.accept(ROCKET_FUEL);
+		tabData.accept(EMPTY_ROCKET_FUEL);
 
-		tabData.accept(AURORA_CASING.get());
-		tabData.accept(AURORA_INGOT.get());
+		tabData.accept(AURORA_CASING);
+		tabData.accept(AURORA_INGOT);
 
-		tabData.accept(SPACE_CASING.get());
-		tabData.accept(SPACE_CASING_METAL.get());
-		tabData.accept(SPACE_CASING_REINFORCED.get());
-		tabData.accept(SPACE_DOOR.get());
-		tabData.accept(SPACE_CORRIDOR.get());
-		tabData.accept(SPACE_CRATE.get());
-		tabData.accept(SOLAR_PANEL_BLOCK.get());
+		tabData.accept(SPACE_CASING);
+		tabData.accept(SPACE_CASING_METAL);
+		tabData.accept(SPACE_CASING_REINFORCED);
+		tabData.accept(SPACE_DOOR);
+		tabData.accept(SPACE_CORRIDOR);
+		tabData.accept(SPACE_CRATE);
+		tabData.accept(SOLAR_PANEL_BLOCK);
 
-		tabData.accept(SPACE_SUIT_HELMET.get());
-		tabData.accept(SPACE_SUIT_CHESTPLATE.get());
-		tabData.accept(SPACE_SUIT_LEGGINGS.get());
-		tabData.accept(SPACE_SUIT_BOOTS.get());
-		tabData.accept(CARBON_SUIT_HELMET.get());
-		tabData.accept(CARBON_SUIT_CHESTPLATE.get());
-		tabData.accept(CARBON_SUIT_LEGGINGS.get());
-		tabData.accept(CARBON_SUIT_BOOTS.get());
+		tabData.accept(SPACE_SUIT_HELMET);
+		tabData.accept(SPACE_SUIT_CHESTPLATE);
+		tabData.accept(SPACE_SUIT_LEGGINGS);
+		tabData.accept(SPACE_SUIT_BOOTS);
+		tabData.accept(CARBON_SUIT_HELMET);
+		tabData.accept(CARBON_SUIT_CHESTPLATE);
+		tabData.accept(CARBON_SUIT_LEGGINGS);
+		tabData.accept(CARBON_SUIT_BOOTS);
 
-		tabData.accept(MOON_STONE.get());
-		tabData.accept(MARS_STONE.get());
+		tabData.accept(MOON_STONE);
+		tabData.accept(MARS_STONE);
 
-		tabData.accept(JETPACK.get());
-		tabData.accept(JETPACK_FUEL.get());
-		tabData.accept(JETPACK_TURBO_FUEL.get());
-		tabData.accept(JETPACK_CANISTER.get());
+		tabData.accept(JETPACK);
+		tabData.accept(JETPACK_FUEL);
+		tabData.accept(JETPACK_TURBO_FUEL);
+		tabData.accept(JETPACK_CANISTER);
 
-		tabData.accept(ELECTRO_RUNNERS.get());
+		tabData.accept(ELECTRO_RUNNERS);
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>MODULAR_TOOLS=REGISTER.register("modular_tools",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.SPACE.getKey()).title(Component.translatable("creative_tab.dif.modular_tools")).icon(()-> ModularBase.createTool(MODULAR_PICKAXE.get(), ToolMaterial.DIAMOND, ToolMaterial.GOLD, ToolMaterial.OBSIDIAN)).displayItems(((parameters, tabData)->{
 		tabData.accept(Items.SMITHING_TABLE);
 
-		tabData.accept(MODULAR_PICKAXE.get());
-		tabData.accept(MODULAR_AXE.get());
-		tabData.accept(MODULAR_SHOVEL.get());
-		tabData.accept(MODULAR_SWORD.get());
+		tabData.accept(MODULAR_PICKAXE);
+		tabData.accept(MODULAR_AXE);
+		tabData.accept(MODULAR_SHOVEL);
+		tabData.accept(MODULAR_SWORD);
 
-		tabData.accept(MODULAR_PART_PICKAXE_HEAD.get());
-		tabData.accept(MODULAR_PART_AXE_HEAD.get());
-		tabData.accept(MODULAR_PART_SHOVEL_HEAD.get());
-		tabData.accept(MODULAR_PART_SWORD_HEAD.get());
+		tabData.accept(MODULAR_PART_PICKAXE_HEAD);
+		tabData.accept(MODULAR_PART_AXE_HEAD);
+		tabData.accept(MODULAR_PART_SHOVEL_HEAD);
+		tabData.accept(MODULAR_PART_SWORD_HEAD);
 
-		tabData.accept(MODULAR_PART_BINDING.get());
-		tabData.accept(MODULAR_PART_SWORD_BINDING.get());
+		tabData.accept(MODULAR_PART_BINDING);
+		tabData.accept(MODULAR_PART_SWORD_BINDING);
 
-		tabData.accept(MODULAR_PART_HANDLE.get());
+		tabData.accept(MODULAR_PART_HANDLE);
 
 	for(String mat : new String[]{"Wood","Stone","Copper","Iron","Gold","Diamond","Obsidian","Netherite"}){
 		tabData.accept(newPartFromMaterial(MODULAR_PART_PICKAXE_HEAD.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
@@ -151,10 +151,10 @@ public class DifModTabs{
 		if(tabData.getTabKey().equals(CreativeModeTabs.BUILDING_BLOCKS)){
 			tabData.insertAfter(new ItemStack(Items.SMOOTH_STONE),new ItemStack(SMOOTH_STONE_DOUBLE_SLAB.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertAfter(new ItemStack(Items.IRON_BARS),new ItemStack(IRON_BARS_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			tabData.accept(DEEPSLATED_ARROW.get());
-			tabData.accept(STONED_ARROW.get());
-			tabData.accept(WOODED_ARROW.get());
-			tabData.accept(GLITCH_BLOCK.get());
+			tabData.accept(DEEPSLATED_ARROW);
+			tabData.accept(STONED_ARROW);
+			tabData.accept(WOODED_ARROW);
+			tabData.accept(GLITCH_BLOCK);
 
 
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.NATURAL_BLOCKS)){
@@ -271,31 +271,31 @@ public class DifModTabs{
 							new ItemStack(CHERRY_BOTTLE.get()),
 							new ItemStack(CIDER_BOTTLE.get())
 					});
-			tabData.accept(BOTTLE_OF_MOLOTOVUV_KOKTEJL.get());
-			tabData.accept(BOTTLE_OF_URANOVEJ_KOKTEJL.get());
-			tabData.accept(FLAT_DOUGH.get());
+			tabData.accept(BOTTLE_OF_MOLOTOVUV_KOKTEJL);
+			tabData.accept(BOTTLE_OF_URANOVEJ_KOKTEJL);
+			tabData.accept(FLAT_DOUGH);
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.INGREDIENTS)){
 			tabData.insertAfter(new ItemStack(Items.AMETHYST_SHARD),new ItemStack(ENERGY_SHARD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.OP_BLOCKS)){
-			tabData.accept(END_PORTAL.get());
-			tabData.accept(END_GATEWAY.get());
-			tabData.accept(NETHER_PORTAL.get());
-			tabData.accept(WATER.get());
-			tabData.accept(LAVA.get());
-			tabData.accept(FIRE.get());
+			tabData.accept(END_PORTAL);
+			tabData.accept(END_GATEWAY);
+			tabData.accept(NETHER_PORTAL);
+			tabData.accept(WATER);
+			tabData.accept(LAVA);
+			tabData.accept(FIRE);
 
-			tabData.accept(FRYING_TABLE.get());
-			tabData.accept(FAST_POWERED_RAIL.get());
-			tabData.accept(FAST_RAIL.get());
+			tabData.accept(FRYING_TABLE);
+			tabData.accept(FAST_POWERED_RAIL);
+			tabData.accept(FAST_RAIL);
 
-			tabData.accept(REMOTE_CONTROLLER.get());
-			tabData.accept(REMOTE_MINECART.get());
-			tabData.accept(REMOTE_MINECART_BLOCK.get());
+			tabData.accept(REMOTE_CONTROLLER);
+			tabData.accept(REMOTE_MINECART);
+			tabData.accept(REMOTE_MINECART_BLOCK);
 
-			tabData.accept(SLEEPING_BAG.get());
+			tabData.accept(SLEEPING_BAG);
 
-			tabData.accept(DISTILLATION_CONTROLLER.get());
-			tabData.accept(DISTILLATION_TANK.get());
+			tabData.accept(DISTILLATION_CONTROLLER);
+			tabData.accept(DISTILLATION_TANK);
 
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
