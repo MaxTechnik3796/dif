@@ -114,7 +114,7 @@ dependencies {
     runtimeOnly "curse.maven:kotlin-for-forge-351264:7471280"
     runtimeOnly "curse.maven:worldedit-225608:5830452"
 
-    //runtimeOnly "maven.modrinth:component-viewer:0.1.2"
+    runtimeOnly fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 tasks.named('processResources', ProcessResources).configure {
