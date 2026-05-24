@@ -5,6 +5,7 @@ import cz.maxtechnik.dif.block.entity.*;
 import cz.maxtechnik.dif.block.entity.barrel.AndesiteBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.barrel.BrassBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.barrel.CopperBarrelBlockEntity;
+import cz.maxtechnik.dif.block.generator.steam_generator.SteamGeneratorBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
@@ -45,7 +46,7 @@ public class DifModBlockEntities{
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<DistillationControllerBlockEntity>>DISTILLATION_CONTROLLER=REGISTRY.register("distillation_controller",()->BlockEntityType.Builder.of(DistillationControllerBlockEntity::new, DifModBlocks.DISTILLATION_CONTROLLER.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<DistillationTankBlockEntity>>DISTILLATION_TANK=REGISTRY.register("distillation_tank",()->BlockEntityType.Builder.of(DistillationTankBlockEntity::new, DifModBlocks.DISTILLATION_TANK.get()).build(null));
 
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<cz.maxtechnik.dif.block.generator.steam_generator.SteamGeneratorBlockEntity>> STEAM_GENERATOR=register("steam_generator",DifModBlocks.STEAM_GENERATOR,cz.maxtechnik.dif.block.generator.steam_generator.SteamGeneratorBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<SteamGeneratorBlockEntity>> STEAM_GENERATOR=register("steam_generator",DifModBlocks.STEAM_GENERATOR,SteamGeneratorBlockEntity::new);
 
 	private static <T extends net.minecraft.world.level.block.entity.BlockEntity> DeferredHolder<BlockEntityType<?>,BlockEntityType<T>> register(String name,Supplier<? extends Block> block,BlockEntityType.BlockEntitySupplier<T> supplier){
 		return REGISTRY.register(name,()->BlockEntityType.Builder.of(supplier,block.get()).build(null));

@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
+import cz.maxtechnik.dif.block.generator.steam_generator.SteamGeneratorBlockEntity;
 import cz.maxtechnik.dif.client.particle.FireballParticle;
 import cz.maxtechnik.dif.client.particle.HugeSmoke;
 import cz.maxtechnik.dif.item.armor.ElectroRunners;
@@ -95,7 +96,7 @@ public class DifMod{
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.SPACESHIP.get(),(be,side)->be.getItemHandler());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.DISTILLATION_CONTROLLER.get(),(be,side)->be.getFluidHandler());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.DISTILLATION_TANK.get(),(be,side)->be.getFluidHandler());
-		cz.maxtechnik.dif.block.generator.steam_generator.SteamGeneratorBlockEntity.registerCapabilities(event);
+		//SteamGeneratorBlockEntity.registerCapabilities(event);
 	}
 
 

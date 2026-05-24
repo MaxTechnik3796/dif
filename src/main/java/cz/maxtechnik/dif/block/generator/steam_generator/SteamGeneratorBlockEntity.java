@@ -1,44 +1,47 @@
 package cz.maxtechnik.dif.block.generator.steam_generator;
 
-import cz.maxtechnik.dif.block.generator.AbstractFluidGeneratorBlockEntity;
+import com.simibubi.create.AllBlocks;
+import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
-/**
- * Steam Generator BlockEntity.
- *
- * Veškerá logika (tick, spotřeba kapaliny, kinetika, tooltip) je v
- * {@link AbstractFluidGeneratorBlockEntity}.
- *
- * Pokud chceš přidat extra chování (ohřívání, zvuk atd.), přepiš
- * {@link #tick()} nebo {@link #canRun()} zde.
- */
-public class SteamGeneratorBlockEntity extends AbstractFluidGeneratorBlockEntity {
+public class SteamGeneratorBlockEntity extends GeneratingKineticBlockEntity {
 
-    public SteamGeneratorBlockEntity(BlockPos pos, BlockState state) {
-        super(DifModBlockEntities.STEAM_GENERATOR.get(), pos, state);
-    }
+	public SteamGeneratorBlockEntity(BlockPos pos, BlockState blockState) {
+		super(DifModBlockEntities.STEAM_GENERATOR.get(), pos, blockState);
+	}
 
-    // ── Registrace capability ─────────────────────────────────────────────────
+	// Rychlost generování (96 RPM)
+	@Override
+	public float getGeneratedSpeed() {
+		return 96.0F;
+	}
 
-    /**
-     * Zaregistruje fluid-handler capability.
-     * Přidej volání do {@code DifModEvents} nebo event subscriberu.
-     */
-    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        AbstractFluidGeneratorBlockEntity.registerCap(
-                event,
-                DifModBlockEntities.STEAM_GENERATOR.get(),
-                SteamGeneratorDefinition.INSTANCE
-        );
-    }
+	// Síla (Torque) generování (512 SU)
+	@Override
+	public float calculateAddedStressCapacity() {
+		this.lastCapacityProvided = 512.0F;
+		return this.lastCapacityProvided;
+	}
 
-    // Příklad přidání extra podmínky:
-    // @Override
-    // protected boolean canRun() {
-    //     return super.canRun() && nejakaExtraPodminka();
-    // }
+	// KLÍČOVÉ PRO RENDER: Vynutí zobrazení a rotaci standardní Create hřídele (shaftu)
+	@Override
+	public BlockState getRenderedBlockState() {
+		if (getBlockState().hasProperty(SteamGeneratorBlock.AXIS)) {
+			return AllBlocks.SHAFT.getDefaultState().setValue(RotatedPillarBlock.AXIS, getBlockState().getValue(SteamGeneratorBlock.AXIS));
+		}
+		return AllBlocks.SHAFT.getDefaultState();
+	}
+
+	// Probudí Create síť hned po položení bloku do světa
+	@Override
+	public void initialize() {
+		super.initialize();
+		assert level!=null;
+		if (!level.isClientSide) {
+			updateGeneratedRotation();
+		}
+	}
 }

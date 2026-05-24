@@ -5,6 +5,7 @@ import cz.maxtechnik.dif.block.*;
 import cz.maxtechnik.dif.block.barrel.AndesiteBarrel;
 import cz.maxtechnik.dif.block.barrel.BrassBarrel;
 import cz.maxtechnik.dif.block.barrel.CopperBarrel;
+import cz.maxtechnik.dif.block.generator.steam_generator.SteamGeneratorBlock;
 import cz.maxtechnik.dif.block.mata.MataPlant;
 import cz.maxtechnik.dif.block.mata.MatyBlock;
 import cz.maxtechnik.dif.block.rails.FastPoweredRailBlock;
@@ -160,14 +161,6 @@ public class DifModBlocks{
 	// ── Generátory ────────────────────────────────────────────────────────────
 
 	/** Parní generátor – hřídel vystupuje nahoru a dolů (osa Y). */
-	public static final DeferredBlock<Block> STEAM_GENERATOR = REGISTRY.register(
-			"steam_generator",
-			() -> new cz.maxtechnik.dif.block.generator.steam_generator.SteamGeneratorBlock(
-					BlockBehaviour.Properties.of()
-							.sound(SoundType.METAL)
-							.strength(4F, 6F)
-							.requiresCorrectToolForDrops()
-							.noOcclusion()
-			)
+	public static final DeferredBlock<Block> STEAM_GENERATOR = REGISTRY.register("steam_generator",() -> new SteamGeneratorBlock(BlockBehaviour.Properties.of().noOcclusion())
 	);
 }

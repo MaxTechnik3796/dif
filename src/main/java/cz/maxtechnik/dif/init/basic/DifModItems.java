@@ -317,4 +317,6 @@ public class DifModItems{
 
 	//nuke
 	public static final DeferredItem<NuclearBombItem> NUCLEAR_BOMB = REGISTRY.register("nuclear_bomb", NuclearBombItem::new);
+
+	public static final DeferredItem<Item>STEAM_GENERATOR=block(DifModBlocks.STEAM_GENERATOR);
 }

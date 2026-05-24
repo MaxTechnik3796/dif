@@ -297,6 +297,8 @@ public class DifModTabs{
 			tabData.accept(DISTILLATION_CONTROLLER);
 			tabData.accept(DISTILLATION_TANK);
 
+			tabData.accept(STEAM_GENERATOR);
+
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
 			tabData.insertAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
