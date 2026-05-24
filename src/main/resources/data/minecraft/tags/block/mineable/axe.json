@@ -9,6 +9,7 @@
 		"dif:tree_bark_block",
 		"dif:aurora_casing",
 		"dif:mega_torch",
-		"dif:frying_table"
+		"dif:frying_table",
+		"#dif:casings"
 	]
 }

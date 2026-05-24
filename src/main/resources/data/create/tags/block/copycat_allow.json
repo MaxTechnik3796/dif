@@ -6,6 +6,7 @@
 		"dif:brass_barrel",
 		"dif:old_chest",
 		"dif:space_crate",
-		"dif:space_scaffolding"
+		"dif:space_scaffolding",
+		"#dif:supports"
 	]
 }

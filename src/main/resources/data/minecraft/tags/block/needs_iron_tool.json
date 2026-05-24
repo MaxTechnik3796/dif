@@ -8,6 +8,7 @@
 		"dif:deepslate_bauxite_ore",
 		"dif:bauxite_ore",
 		"dif:aluminum_profile",
-		"dif:aluminum_block"
+		"dif:aluminum_block",
+		"#dif:supports"
 	]
 }

@@ -53,6 +53,8 @@
 		"dif:camera_monitor",
 		"dif:quarry",
 		"dif:distillation_controller",
-		"dif:distillation_tank"
+		"dif:distillation_tank",
+		"#dif:supports",
+		"#dif:casings"
 	]
 }

@@ -284,6 +284,10 @@
 	"item.dif.flat_dough":"Flat Dough",
 	"item.dif.baguette":"Baguette",
 	"block.dif.distillation_controller":"Distillation Controller",
-	"block.dif.distillation_tank":"Distillation Tank"
+	"block.dif.distillation_tank":"Distillation Tank",
+	"block.dif.zinc_casing":"Zinc Casing",
 
+	"block.dif.zinc_support":"Zinc Support",
+	"block.dif.brass_support":"Brass Support",
+	"block.dif.copper_support":"Copper Support"
 }

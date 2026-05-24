@@ -158,6 +158,14 @@ public class DifModBlocks{
 	//nuke
 	public static final DeferredBlock<Block> NUCLEAR_BOMB = REGISTRY.register("nuclear_bomb", NuclearBombBlock::new);
 
+
+
+
+	public static final DeferredBlock<Block>ZINC_CASING=REGISTRY.register("zinc_casing",()->new Block(BlockBehaviour.Properties.of().strength(1.5F,6F).sound(SoundType.WOOD).requiresCorrectToolForDrops()));
+
+	public static final DeferredBlock<Block>ZINC_SUPPORT=REGISTRY.register("zinc_support",()->new SupportBase(BlockBehaviour.Properties.of().strength(4F,5F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion()));
+	public static final DeferredBlock<Block>BRASS_SUPPORT=REGISTRY.register("brass_support",()->new SupportBase(BlockBehaviour.Properties.of().strength(4F,5F).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion()));
+	public static final DeferredBlock<Block>COPPER_SUPPORT=REGISTRY.register("copper_support",()->new SupportBase(BlockBehaviour.Properties.of().strength(4F,5F).sound(SoundType.COPPER).requiresCorrectToolForDrops().noOcclusion()));
 	// ── Generátory ────────────────────────────────────────────────────────────
 
 	/** Parní generátor – hřídel vystupuje nahoru a dolů (osa Y). */

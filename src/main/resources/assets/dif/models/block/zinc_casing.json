@@ -1,0 +1,8 @@
+{
+	"parent":"block/cube_all",
+	"textures":{
+		"all":"dif:block/zinc_casing",
+		"particle":"dif:block/zinc_casing"
+	},
+	"render_type":"solid"
+}

@@ -297,8 +297,15 @@ public class DifModTabs{
 			tabData.accept(DISTILLATION_CONTROLLER);
 			tabData.accept(DISTILLATION_TANK);
 
+			tabData.accept(NUCLEAR_BOMB);
 			tabData.accept(STEAM_GENERATOR);
 
+
+			tabData.accept(ZINC_SUPPORT);
+			tabData.accept(BRASS_SUPPORT);
+			tabData.accept(COPPER_SUPPORT);
+
+			tabData.accept(ZINC_CASING);
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
 			tabData.insertAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
