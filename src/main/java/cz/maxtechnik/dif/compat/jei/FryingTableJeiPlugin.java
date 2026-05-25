@@ -29,18 +29,15 @@ import java.util.Objects;
 @SuppressWarnings("removal")
 @JeiPlugin
 public class FryingTableJeiPlugin implements IModPlugin{
-	public static final ResourceLocation PLUGIN_ID=
-			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"jei_plugin");
-	public static final RecipeType<FryingRecipe> FRYING_TYPE=
-			RecipeType.create(DifMod.MODID,"frying",FryingRecipe.class);
+	public static final ResourceLocation PLUGIN_ID=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"jei_plugin");
+	public static final RecipeType<FryingRecipe> FRYING_TYPE=RecipeType.create(DifMod.MODID,"frying",FryingRecipe.class);
 	@Override
 	public @NotNull ResourceLocation getPluginUid(){
 		return PLUGIN_ID;
 	}
 	@Override
 	public void registerCategories(IRecipeCategoryRegistration registration){
-		registration.addRecipeCategories(
-				new FryingCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new FryingCategory(registration.getJeiHelpers().getGuiHelper()));
 	}
 	@Override
 	public void registerRecipes(@NotNull IRecipeRegistration registration){
@@ -58,8 +55,7 @@ public class FryingTableJeiPlugin implements IModPlugin{
 		private final IDrawable icon;
 		public FryingCategory(IGuiHelper guiHelper){
 			this.background=guiHelper.createBlankDrawable(82,44);
-			this.icon=guiHelper.createDrawableItemStack(
-					new ItemStack(DifModBlocks.FRYING_TABLE.get()));
+			this.icon=guiHelper.createDrawableItemStack(new ItemStack(DifModBlocks.FRYING_TABLE.get()));
 		}
 		@Override
 		public @NotNull RecipeType<FryingRecipe> getRecipeType(){
@@ -78,29 +74,16 @@ public class FryingTableJeiPlugin implements IModPlugin{
 			return icon;
 		}
 		@Override
-		public void setRecipe(@NotNull IRecipeLayoutBuilder builder,
-		                      @NotNull FryingRecipe recipe,
-		                      @NotNull IFocusGroup focuses){
-			builder.addInputSlot(1,1)
-					.setStandardSlotBackground()
-					.addIngredients(recipe.getIngredient());
-			builder.addOutputSlot(61,9)
-					.setOutputSlotBackground()
-					.addItemStack(recipe.getResultItem(
-							Objects.requireNonNull(Minecraft.getInstance().level).registryAccess()));
+		public void setRecipe(@NotNull IRecipeLayoutBuilder builder,@NotNull FryingRecipe recipe,@NotNull IFocusGroup focuses){
+			builder.addInputSlot(1,1).setStandardSlotBackground().addIngredients(recipe.getIngredient());
+			builder.addOutputSlot(61,9).setOutputSlotBackground().addItemStack(recipe.getResultItem(Objects.requireNonNull(Minecraft.getInstance().level).registryAccess()));
 		}
 		@Override
-		public void createRecipeExtras(@NotNull IRecipeExtrasBuilder builder,
-		                               @NotNull FryingRecipe recipe,
-		                               @NotNull IFocusGroup focuses){
+		public void createRecipeExtras(@NotNull IRecipeExtrasBuilder builder,@NotNull FryingRecipe recipe,@NotNull IFocusGroup focuses){
 			int cookTime=recipe.getProcessingTime();
-			if(cookTime<=0){
-				cookTime=400;
-			}
-			builder.addAnimatedRecipeArrow(cookTime)
-					.setPosition(26,7);
-			builder.addAnimatedRecipeFlame(300)
-					.setPosition(1,20);
+			if(cookTime<=0) cookTime=400;
+			builder.addAnimatedRecipeArrow(cookTime).setPosition(26,7);
+			builder.addAnimatedRecipeFlame(300).setPosition(1,20);
 			int cookTimeSeconds=cookTime/20;
 			Component timeString=Component.translatable("gui.jei.category.smelting.time.seconds",cookTimeSeconds);
 			builder.addText(timeString,82-20,10)
