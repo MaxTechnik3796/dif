@@ -142,11 +142,14 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 
         cachedHeatPoints = points;
 
-		// Rychlost: 1 bod = 1.0x, 10+ bodů = 4.0x (lineárně)
+		// Rychlost: 1 bod = 0.5x, 2 body = 1.0x, 10+ bodů = 4.0x
 		if (points == 0) {
 			cachedSpeed = 0.0f;
+		} else if (points == 1) {
+			cachedSpeed = 0.5f;
 		} else {
-			float raw = 1.0f + 3.0f * ((Math.min(10, points) - 1.0f) / 9.0f);
+			// Lineární od 2 bodů (1.0x) do 10 bodů (4.0x)
+			float raw = 1.0f + 3.0f * ((Math.min(10, points) - 2.0f) / 8.0f);
 			cachedSpeed = Math.round(raw * 10.0f) / 10.0f;
 		}
 		sendData();
