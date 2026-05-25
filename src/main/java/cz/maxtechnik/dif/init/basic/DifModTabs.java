@@ -294,7 +294,6 @@ public class DifModTabs{
 
 			tabData.accept(SLEEPING_BAG);
 
-			tabData.accept(DISTILLATION_CONTROLLER);
 			tabData.accept(DISTILLATION_TANK);
 
 			tabData.accept(NUCLEAR_BOMB);

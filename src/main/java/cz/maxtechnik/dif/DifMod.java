@@ -95,8 +95,7 @@ public class DifMod{
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK,DifModBlockEntities.BURNING_GENERATOR.get(),(be,side)->be.getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.SPACE_CRATE.get(),(be,side)->be.getInventory());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.SPACESHIP.get(),(be,side)->be.getItemHandler());
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.DISTILLATION_CONTROLLER.get(),(be,side)->be.getFluidHandler());
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.DISTILLATION_TANK.get(),(be,side)->be.getFluidHandler());
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.DISTILLATION_TANK.get(),(be,ctx)->be.getFluidCapability());
 		//SteamGeneratorBlockEntity.registerCapabilities(event);
 	}
 
