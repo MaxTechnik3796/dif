@@ -271,19 +271,30 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 		DistillationTankBlockEntity master = getTowerMaster();
 		if (master == null) return added;
 
-		// Heat body
+		// ── Separator ──────────────────────────────────────────────────────────
 		tooltip.add(Component.literal(" "));
+
+		// ── Tower badge ────────────────────────────────────────────────────────
+		if (isTowerMaster()) {
+			tooltip.add(Component.literal(" ◆ TOWER MASTER")
+					.withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
+		} else {
+			tooltip.add(Component.literal(" ◆ TOWER")
+					.withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
+		}
+
+		// ── Teplo ─────────────────────────────────────────────────────────────
 		tooltip.add(Component.literal(" Heat: ")
 				.withStyle(ChatFormatting.GRAY)
 				.append(Component.literal(master.cachedHeatPoints + " / 10")
-						.withStyle(ChatFormatting.WHITE)));
+						.withStyle(master.cachedHeatPoints >= 10 ? ChatFormatting.GREEN : ChatFormatting.WHITE)));
 
-		// Speed nebo "No heat"
+		// ── Rychlost ──────────────────────────────────────────────────────────
 		if (master.cachedSpeed > 0) {
 			tooltip.add(Component.literal(" Speed: ")
 					.withStyle(ChatFormatting.GRAY)
-					.append(Component.literal(master.cachedSpeed + "x")
-							.withStyle(ChatFormatting.AQUA)));
+					.append(Component.literal(master.cachedSpeed + "×")
+							.withStyle(master.cachedSpeed >= 4.0f ? ChatFormatting.GREEN : ChatFormatting.AQUA)));
 		} else {
 			tooltip.add(Component.literal(" No heat source!")
 					.withStyle(ChatFormatting.RED));
