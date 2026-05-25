@@ -304,6 +304,7 @@ public class DifModTabs{
 			tabData.accept(ZINC_SUPPORT);
 			tabData.accept(BRASS_SUPPORT);
 			tabData.accept(COPPER_SUPPORT);
+			tabData.accept(STEEL_SUPPORT);
 
 			tabData.accept(ZINC_CASING);
 			tabData.accept(STEEL_CASING);

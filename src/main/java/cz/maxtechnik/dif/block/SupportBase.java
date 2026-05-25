@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 public class SupportBase extends Block implements SimpleWaterloggedBlock{
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
 	public SupportBase(Properties properties) {
-		super(properties);
+		super(properties.noOcclusion());
 		this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED,false));
 	}
 	@Override

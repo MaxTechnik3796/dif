@@ -1,0 +1,8 @@
+{
+	"parent":"dif:block/support_base",
+	"textures":{
+		"particle":"dif:block/steel_casing",
+		"frame":"dif:block/steel_casing",
+		"cross":"dif:block/metal_support_cross"
+	}
+}
