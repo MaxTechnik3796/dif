@@ -25,18 +25,15 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Destilační tank — multiblok věž stavěná z N pater (1×1, 2×2 nebo 3×3).
- *
+ * Destilační tank — multiblok věž (1×1, 2×2 nebo 3×3).
  * STRUKTURA:
- *   - Spodní patro = Tower Master (dělá veškerou recipe logiku)
+ *   - Spodní patro = Tower Master
  *   - Patra nad masterem = výstupní vrstvy (max 15)
- *   - Pod masterem = Blaze Burnery (zdroj tepla)
- *
+ *   - Pod masterem = Blaze Burnery
  * RYCHLOST:
  *   - KINDLED burner = 1 bod
  *   - SEETHING burner = 2 body
  *   - 1 bod → 1.0x, 10+ bodů → 4.0x (lineární škálování)
- *
  * RECIPE FLOW:
  *   1. Master má vstupní fluid v tanku
  *   2. Najde recept podle fluidu
@@ -45,21 +42,20 @@ import java.util.Optional;
  */
 public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 
-	// ── Limity ─────────────────────────────────────────────────────────────────
+	//Limity ─────────────────────────────────────────────────────────────────
 	public static final int MAX_FOOTPRINT = 3;   // max 3×3 půdorys
 	public static final int MAX_OUTPUTS   = 15;  // max výstupních vrstev nad masterem
 	public static final int BASE_TICKS    = 100; // 5 sekund pro 1.0x rychlost
 
 	private static final int CACHE_REFRESH_RATE = 20; // přepočet teplo + struktura každou sekundu
 
-	// ── Cache (jen master ji používá) ─────────────────────────────────────────
+	//Cache (jen master ji používá)
 	private int       towerOutputCount = 0;
-	private HeatLevel cachedHeat       = HeatLevel.NONE;
-	private int       cachedHeatPoints = 0;
+    private int       cachedHeatPoints = 0;
 	private float     cachedSpeed      = 0.0f;
 	private int       cacheTick        = 0;
 
-	// ── Recipe processing (jen master) ────────────────────────────────────────
+	//Recipe processing (jen master)
 	private int progress = 0;
 	@Nullable private DistillationRecipe cachedRecipe = null;
 	private FluidStack lastInput = FluidStack.EMPTY;
@@ -68,16 +64,14 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 		super(type, pos, state);
 	}
 
-	// ── Multiblock konfigurace ───────────────────────────────────────────────
+	//Multiblock konfigurace
 	@Override public int getMaxWidth()                                { return MAX_FOOTPRINT; }
 	@Override public int getMaxLength(Direction.Axis axis, int width) { return 1; }
 	@Override public void addBehaviours(List<BlockEntityBehaviour> b) { /* žádné Create advancementy */ }
 
 	public IFluidHandler getFluidCapability() { return fluidCapability; }
 
-	// ══════════════════════════════════════════════════════════════════════════
-	// Tower Master detekce
-	// ══════════════════════════════════════════════════════════════════════════
+	//Tower Master detekce ────────────────────────────────────────────────────────
 
 	/**
 	 * Master = controller spodního patra věže.
@@ -91,12 +85,11 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 		return b.getWidth() != this.getWidth();
 	}
 
-	/** Najde mastera ze kteréhokoli tanku ve věži — i z non-controller shard bloku. */
 	@Nullable
 	public DistillationTankBlockEntity getTowerMaster() {
 		if (level == null) return null;
 
-		// 1. Najdi controller naší vrstvy (pro non-controller shard jdi přes getController())
+		// 1. Najdi controller naší vrstvy
 		DistillationTankBlockEntity layerCtrl;
 		if (isController()) {
 			layerCtrl = this;
@@ -120,18 +113,16 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 		return null;
 	}
 
-	// ══════════════════════════════════════════════════════════════════════════
-	// Cache — počítání tepla, vrstev a rychlosti
-	// ══════════════════════════════════════════════════════════════════════════
+	//Cache — počítání tepla, vrstev a rychlosti ────────────────────────────────────────────────────────
 
-	/** Přepočítá vše — vrstvy nahoru, teplo dolů, rychlost. */
 	private void refreshCache() {
 		int w = getWidth();
 
 		// Spočítej kolik výstupních pater máme nad sebou
 		towerOutputCount = 0;
 		for (int i = 1; i <= MAX_OUTPUTS; i++) {
-			if (!(level.getBlockEntity(worldPosition.above(i)) instanceof DistillationTankBlockEntity a)) break;
+            assert level != null;
+            if (!(level.getBlockEntity(worldPosition.above(i)) instanceof DistillationTankBlockEntity a)) break;
 			if (!a.isController() || a.getWidth() != w) break;
 			towerOutputCount++;
 		}
@@ -149,8 +140,7 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 			}
 		}
 
-		cachedHeat       = best;
-		cachedHeatPoints = points;
+        cachedHeatPoints = points;
 
 		// Rychlost: 1 bod = 1.0x, 10+ bodů = 4.0x (lineárně)
 		if (points == 0) {
@@ -159,15 +149,12 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 			float raw = 1.0f + 3.0f * ((Math.min(10, points) - 1.0f) / 9.0f);
 			cachedSpeed = Math.round(raw * 10.0f) / 10.0f;
 		}
-		// Notify client of new values
 		sendData();
 	}
 
-	// ══════════════════════════════════════════════════════════════════════════
-	// Server tick — jen master
-	// ══════════════════════════════════════════════════════════════════════════
+	//Server tick — jen master ────────────────────────────────────────────────────────
 
-	public static void serverTick(Level level, BlockPos pos, DistillationTankBlockEntity be) {
+	public static void serverTick(Level level, DistillationTankBlockEntity be) {
 		if (!be.isTowerMaster()) return;
 
 		// Pravidelný refresh cache
@@ -248,9 +235,7 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 		return Optional.empty();
 	}
 
-	// ══════════════════════════════════════════════════════════════════════════
-	// Strukturální změny (Create ConnectivityHandler)
-	// ══════════════════════════════════════════════════════════════════════════
+	// Strukturální změny (Create ConnectivityHandler) ────────────────────────────────────────────────────────
 
 	@Override
 	public void notifyMultiUpdated() {
@@ -260,9 +245,7 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 		progress  = 0;
 	}
 
-	// ══════════════════════════════════════════════════════════════════════════
-	// Goggles tooltip — funguje z kteréhokoli tanku ve věži
-	// ══════════════════════════════════════════════════════════════════════════
+	// Goggles tooltip — funguje z kteréhokoli tanku ve věži ────────────────────────────────────────────────────────
 
 	@Override
 	public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
@@ -271,10 +254,10 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 		DistillationTankBlockEntity master = getTowerMaster();
 		if (master == null) return added;
 
-		// ── Separator ──────────────────────────────────────────────────────────
+		//Separator
 		tooltip.add(Component.literal(" "));
 
-		// ── Tower badge ────────────────────────────────────────────────────────
+		//Tower badge
 		if (isTowerMaster()) {
 			tooltip.add(Component.literal(" ◆ TOWER MASTER")
 					.withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
@@ -283,13 +266,13 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 					.withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
 		}
 
-		// ── Teplo ─────────────────────────────────────────────────────────────
+		//Teplo
 		tooltip.add(Component.literal(" Heat: ")
 				.withStyle(ChatFormatting.GRAY)
 				.append(Component.literal(master.cachedHeatPoints + " / 10")
 						.withStyle(master.cachedHeatPoints >= 10 ? ChatFormatting.GREEN : ChatFormatting.WHITE)));
 
-		// ── Rychlost ──────────────────────────────────────────────────────────
+		//Rychlost
 		if (master.cachedSpeed > 0) {
 			tooltip.add(Component.literal(" Speed: ")
 					.withStyle(ChatFormatting.GRAY)
@@ -303,9 +286,7 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 		return true;
 	}
 
-	// ══════════════════════════════════════════════════════════════════════════
-	// NBT
-	// ══════════════════════════════════════════════════════════════════════════
+	//NBT ────────────────────────────────────────────────────────
 
 	@Override
 	public void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
