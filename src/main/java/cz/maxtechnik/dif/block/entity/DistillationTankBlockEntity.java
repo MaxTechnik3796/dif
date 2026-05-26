@@ -40,6 +40,7 @@ import java.util.Optional;
  *   3. Počítá progress podle rychlosti (cachedSpeed)
  *   4. Při dokončení: odebere vstup, naplní výstupní patra nad sebou
  */
+@SuppressWarnings("unsafe")
 public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 
 	//Limity ─────────────────────────────────────────────────────────────────
@@ -145,12 +146,10 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 		// Rychlost: 1 bod = 0.5x, 2 body = 1.0x, 10+ bodů = 4.0x
 		if (points == 0) {
 			cachedSpeed = 0.0f;
-		} else if (points == 1) {
-			cachedSpeed = 0.5f;
+		} else if (points >= 10) {
+			cachedSpeed = 5.0f;
 		} else {
-			// Lineární od 2 bodů (1.0x) do 10 bodů (4.0x)
-			float raw = 1.0f + 3.0f * ((Math.min(10, points) - 2.0f) / 8.0f);
-			cachedSpeed = Math.round(raw * 10.0f) / 10.0f;
+			cachedSpeed = points * 0.5f;
 		}
 		sendData();
 	}
