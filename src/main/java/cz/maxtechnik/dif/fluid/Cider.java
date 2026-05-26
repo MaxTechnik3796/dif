@@ -1,10 +1,9 @@
 package cz.maxtechnik.dif.fluid;
 
 import net.neoforged.neoforge.fluids.FluidType;
-
-public class Cider {
-    public static final FluidType.Properties PROPERTIES = FluidType.Properties.create()
-            .fallDistanceModifier(0F).canExtinguish(true).supportsBoating(true)
-            .canHydrate(true).canDrown(true).motionScale(0.007D);
-    public static final int TICK_RATE = 20;
+public class Cider{
+	public static final FluidType.Properties PROPERTIES=FluidType.Properties.create()
+			.fallDistanceModifier(0F).canExtinguish(true).supportsBoating(true)
+			.canHydrate(true).canDrown(true).motionScale(0.007D);
+	public static final int TICK_RATE=20;
 }
