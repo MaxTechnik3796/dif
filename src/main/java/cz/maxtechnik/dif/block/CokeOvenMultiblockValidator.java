@@ -1,18 +1,15 @@
 package cz.maxtechnik.dif.block;
 
-import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Validátor 3×3×3 struktury Coke Ovenu.
- *
  * PRAVIDLA:
  *   - Vnějších 26 bloků = CokeBrick nebo CokeOvenController
  *   - Vnitřní 1 blok (střed) = prázdný (air nebo replaceable)
  *   - Controller musí být na čelní středové pozici (Y=střed, Z=čelní)
- *
  * SOUŘADNICE (controller = střed čelní stěny):
  *   Controller je na (cx, cy, cz).
  *   Struktura sahá od (cx-1, cy-1, cz) do (cx+1, cy+1, cz+2).

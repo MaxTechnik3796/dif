@@ -10,16 +10,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * BlockEntity pro Port blok.
- *
  * Drží pozici controlleru a poskytuje capability které delegují
  * na CokeOvenBlockEntity controlleru.
- *
  * TYP PORTU (PortType) určuje co port dělá:
  *   ITEM_INPUT  → vkládá do slot 0 controlleru
  *   ITEM_OUTPUT → vybírá ze slot 1 controlleru
@@ -116,10 +113,10 @@ public class CokeOvenPortBlockEntity extends BlockEntity {
         public boolean isFluidValid(int tank, @NotNull FluidStack stack) { return false; } // output only
 
         @Override
-        public int fill(FluidStack resource, FluidAction action) { return 0; } // output only
+        public int fill(@NotNull FluidStack resource,@NotNull FluidAction action) { return 0; } // output only
 
         @Override
-        public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+        public @NotNull FluidStack drain(@NotNull FluidStack resource,@NotNull FluidAction action) {
             if (portType != PortType.FLUID_OUTPUT) return FluidStack.EMPTY;
             CokeOvenBlockEntity ctrl = getController();
             if (ctrl == null) return FluidStack.EMPTY;
@@ -127,7 +124,7 @@ public class CokeOvenPortBlockEntity extends BlockEntity {
         }
 
         @Override
-        public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+        public @NotNull FluidStack drain(int maxDrain,@NotNull FluidAction action) {
             if (portType != PortType.FLUID_OUTPUT) return FluidStack.EMPTY;
             CokeOvenBlockEntity ctrl = getController();
             if (ctrl == null) return FluidStack.EMPTY;

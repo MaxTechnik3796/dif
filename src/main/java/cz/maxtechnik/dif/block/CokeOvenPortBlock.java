@@ -23,15 +23,12 @@ import com.mojang.serialization.MapCodec;
 
 /**
  * Port blok — umístěn na stěně pece, deleguje capability na controller.
- *
  * Každý port ví:
  *   - Svoji pozici ve světě
  *   - Pozici controlleru (uložena v NBT)
  *   - Směr (FACING) — ze které strany capability přijímá
- *
  * Capability jsou registrovány v DifMod pro tento BlockEntityType
  * a delegují na CokeOvenBlockEntity controlleru.
- *
  * Port se NEdá ručně umístit — vzniká automaticky při form() v controlleru.
  * (TODO: přidat form() logiku pro auto-placement portů)
  */
@@ -66,20 +63,20 @@ public class CokeOvenPortBlock extends BaseEntityBlock {
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState state) {
+    public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.MODEL;
     }
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state) {
         return new CokeOvenPortBlockEntity(pos, state);
     }
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
-                                                                   BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState state,
+                                                                  @NotNull BlockEntityType<T> type) {
         return null; // Port sám o sobě nic nedělá
     }
 }

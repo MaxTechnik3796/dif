@@ -4,7 +4,6 @@ import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
 import cz.maxtechnik.dif.recipe.CokeOvenRecipe;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -28,18 +27,14 @@ import java.util.Optional;
 
 /**
  * BlockEntity pro Coke Oven Controller.
- *
  * INVENTORY:
  *   slot 0 = vstup (uhlí atd.)
  *   slot 1 = výstup (coke coal atd.)
- *
  * FLUID:
  *   tank = výstup (creosote oil, 8000 mB)
- *
  * CREATE KONTRAPTION:
  *   Pec se pozastaví když je součástí kontraption (moving = true).
  *   Stav se uloží do NBT a obnoví se po zastavení kontraption.
- *
  * CAPABILITY STRANY (registrováno v DifMod):
  *   Zadní strana  → item input (slot 0)
  *   Boční strany  → item output (slot 1)
@@ -69,7 +64,7 @@ public class CokeOvenBlockEntity extends BlockEntity implements MenuProvider {
 
         @Override
         public int getSlotLimit(int slot) {
-            return slot == SLOT_INPUT ? 64 : 64;
+            return 64;
         }
     };
 

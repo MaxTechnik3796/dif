@@ -21,21 +21,19 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.mojang.serialization.MapCodec;
 
 /**
  * Controller blok Coke Ovenu — přední stěna (středová pozice).
- *
  * BLOCKSTATE:
  *   FACING  = ve kterou stranu kouká přední stěna
  *   FORMED  = je pec správně sestavena?
- *
  * INTERAKCE:
  *   Pravý klik = pokus o sestavení / rozložení pece.
  *   Při sestavení: validátor projde 3×3×3, nastaví formed=true.
  *   Při rozložení: formed=false, progress resetován.
- *
  * TICKER:
  *   Pouze server-side, volá CokeOvenBlockEntity.serverTick().
  */
@@ -47,7 +45,7 @@ public class CokeOvenControllerBlock extends BaseEntityBlock {
     public static final MapCodec<CokeOvenControllerBlock> CODEC = simpleCodec(properties -> new CokeOvenControllerBlock());
 
     @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
+    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
 
@@ -76,8 +74,8 @@ public class CokeOvenControllerBlock extends BaseEntityBlock {
 
     // ── Interakce: pravý klik → sestavit / rozložit ──────────────────────────
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
-                                                Player player, BlockHitResult hit) {
+    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state,Level level,@NotNull BlockPos pos,
+                                                        @NotNull Player player,@NotNull BlockHitResult hit) {
         if (level.isClientSide) return InteractionResult.SUCCESS;
 
         if (!(level.getBlockEntity(pos) instanceof CokeOvenBlockEntity be)) return InteractionResult.PASS;
@@ -112,8 +110,8 @@ public class CokeOvenControllerBlock extends BaseEntityBlock {
 
     // ── Pokud soused bloku se změní → zkontroluj strukturu ───────────────────
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos,
-                                Block block, BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,
+                                @NotNull Block block,@NotNull BlockPos fromPos,boolean isMoving) {
         super.neighborChanged(state, level, pos, block, fromPos, isMoving);
         if (level.isClientSide || !state.getValue(FORMED)) return;
 
@@ -127,27 +125,27 @@ public class CokeOvenControllerBlock extends BaseEntityBlock {
     // ── GUI (otevři inventář pokud je pec sestavena) ─────────────────────────
     @Override
     @Nullable
-    public MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {
+    public MenuProvider getMenuProvider(BlockState state,@NotNull Level level,@NotNull BlockPos pos) {
         if (!state.getValue(FORMED)) return null;
         return (MenuProvider) level.getBlockEntity(pos);
     }
 
     // ── BlockEntity ───────────────────────────────────────────────────────────
     @Override
-    public RenderShape getRenderShape(BlockState state) {
+    public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.MODEL;
     }
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state) {
         return new CokeOvenBlockEntity(pos, state);
     }
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
-                                                                   BlockEntityType<T> type) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level,@NotNull BlockState state,
+                                                                  @NotNull BlockEntityType<T> type) {
         if (level.isClientSide) return null;
         return createTickerHelper(type, DifModBlockEntities.COKE_OVEN.get(),
                 CokeOvenBlockEntity::serverTick);
@@ -155,8 +153,8 @@ public class CokeOvenControllerBlock extends BaseEntityBlock {
 
     // ── Při odebrání bloku: deaktivuj pec ────────────────────────────────────
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos,
-                         BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state,@NotNull Level level,@NotNull BlockPos pos,
+                         @NotNull BlockState newState,boolean isMoving) {
         if (state.hasBlockEntity() && !state.is(newState.getBlock())) {
             if (level.getBlockEntity(pos) instanceof CokeOvenBlockEntity be) {
                 be.setFormed(false);
