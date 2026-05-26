@@ -30,11 +30,9 @@ public class DifModItems{
 	public static final DeferredRegister.Items REGISTRY=DeferredRegister.createItems(DifMod.MODID);
 	public static final DeferredRegister.Items V_REGISTRY= DeferredRegister.createItems("minecraft");
 	private static DeferredItem<Item> block(DeferredBlock<Block> block){
-		assert block.getId()!=null;
 		return REGISTRY.register(block.getId().getPath(),()->new BlockItem(block.get(),new Item.Properties()));
 	}
 	private static DeferredItem<Item> doubleBlock(DeferredBlock<Block> block){
-		assert block.getId()!=null;
 		return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));
 	}
 	public static final DeferredItem<Item> SLEEPING_BAG = block(DifModBlocks.SLEEPING_BAG);
@@ -327,6 +325,9 @@ public class DifModItems{
 	public static final DeferredItem<Item>BIG_GIRDER=block(DifModBlocks.BIG_GIRDER);
 
 	public static final DeferredItem<Item>NUCLEAR_BOMB=REGISTRY.register("nuclear_bomb",NuclearBombItem::new);
+	public static final DeferredItem<Item>COKE_BRICK=block(DifModBlocks.COKE_BRICK);
+	public static final DeferredItem<Item>COKE_OVEN_CONTROLLER=block(DifModBlocks.COKE_OVEN_CONTROLLER);
+	public static final DeferredItem<Item>COKE_OVEN_PORT=block(DifModBlocks.COKE_OVEN_PORT);
 
 	public static final DeferredItem<Item>STEAM_GENERATOR=block(DifModBlocks.STEAM_GENERATOR);
 }

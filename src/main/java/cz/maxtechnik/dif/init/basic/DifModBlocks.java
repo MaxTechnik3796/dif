@@ -170,9 +170,9 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>COPPER_SUPPORT=REGISTRY.register("copper_support",()->new SupportBase(BlockBehaviour.Properties.of().strength(4F,5F).sound(SoundType.COPPER).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>STEEL_SUPPORT=REGISTRY.register("steel_support",()->new SupportBase(BlockBehaviour.Properties.of().strength(4F,5F).sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops()));
 
-	public static final DeferredBlock<CokeBrickBlock> COKE_BRICK = REGISTRY.register("coke_brick", CokeBrickBlock::new);
-	public static final DeferredBlock<CokeOvenControllerBlock> COKE_OVEN_CONTROLLER = REGISTRY.register("coke_oven_controller", CokeOvenControllerBlock::new);
-	public static final DeferredBlock<CokeOvenPortBlock> COKE_OVEN_PORT = REGISTRY.register("coke_oven_port", CokeOvenPortBlock::new);
+	public static final DeferredBlock<Block>COKE_BRICK=REGISTRY.register("coke_brick",CokeBrickBlock::new);
+	public static final DeferredBlock<Block>COKE_OVEN_CONTROLLER=REGISTRY.register("coke_oven_controller",CokeOvenControllerBlock::new);
+	public static final DeferredBlock<Block>COKE_OVEN_PORT=REGISTRY.register("coke_oven_port",CokeOvenPortBlock::new);
 
 
 	// ── Generátory ────────────────────────────────────────────────────────────

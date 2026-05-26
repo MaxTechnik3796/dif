@@ -17,6 +17,7 @@ import java.util.Objects;
 import static cz.maxtechnik.dif.DifMod.addItemStacksBehind;
 import static cz.maxtechnik.dif.init.basic.DifModItems.*;
 import static cz.maxtechnik.dif.item.modular.ModularBase.*;
+@SuppressWarnings("unused")
 public class DifModTabs{
 	public static final DeferredRegister<CreativeModeTab>REGISTER=DeferredRegister.create(Registries.CREATIVE_MODE_TAB,DifMod.MODID);
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab> MAIN=REGISTER.register("main",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.main")).icon(()->new ItemStack(THE_DIFFERENTIAL.get())).displayItems(((parameters,tabData)->{
@@ -112,6 +113,17 @@ public class DifModTabs{
 		tabData.accept(JETPACK_CANISTER);
 
 		tabData.accept(ELECTRO_RUNNERS);
+
+		tabData.accept(FRYING_TABLE);
+		tabData.accept(BIG_GIRDER);
+
+		tabData.accept(ZINC_SUPPORT);
+		tabData.accept(BRASS_SUPPORT);
+		tabData.accept(COPPER_SUPPORT);
+		tabData.accept(STEEL_SUPPORT);
+
+		tabData.accept(ZINC_CASING);
+		tabData.accept(STEEL_CASING);
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>MODULAR_TOOLS=REGISTER.register("modular_tools",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.SPACE.getKey()).title(Component.translatable("creative_tab.dif.modular_tools")).icon(()-> ModularBase.createTool(MODULAR_PICKAXE.get(), ToolMaterial.DIAMOND, ToolMaterial.GOLD, ToolMaterial.OBSIDIAN)).displayItems(((parameters, tabData)->{
 		tabData.accept(Items.SMITHING_TABLE);
@@ -284,7 +296,6 @@ public class DifModTabs{
 			tabData.accept(LAVA);
 			tabData.accept(FIRE);
 
-			tabData.accept(FRYING_TABLE);
 			tabData.accept(FAST_POWERED_RAIL);
 			tabData.accept(FAST_RAIL);
 
@@ -298,15 +309,12 @@ public class DifModTabs{
 
 			tabData.accept(NUCLEAR_BOMB);
 			tabData.accept(STEAM_GENERATOR);
-			tabData.accept(BIG_GIRDER);
 
-			tabData.accept(ZINC_SUPPORT);
-			tabData.accept(BRASS_SUPPORT);
-			tabData.accept(COPPER_SUPPORT);
-			tabData.accept(STEEL_SUPPORT);
 
-			tabData.accept(ZINC_CASING);
-			tabData.accept(STEEL_CASING);
+
+			tabData.accept(COKE_BRICK);
+			tabData.accept(COKE_OVEN_CONTROLLER);
+			tabData.accept(COKE_OVEN_PORT);
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
 			tabData.insertAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
