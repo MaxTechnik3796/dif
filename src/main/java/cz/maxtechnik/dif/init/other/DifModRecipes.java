@@ -1,9 +1,11 @@
 package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.recipe.CokeOvenRecipe;
 import cz.maxtechnik.dif.recipe.DistillationRecipe;
 import cz.maxtechnik.dif.recipe.FryingRecipe;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -21,4 +23,11 @@ public class DifModRecipes{
 			return DifMod.MODID+":distillation";
 		}
 	});
+
+	public static final DeferredHolder<RecipeType<?>, RecipeType<CokeOvenRecipe>> COKE_OVEN_TYPE =
+			TYPE_REGISTRY.register("coke_oven", () -> RecipeType.simple(
+					ResourceLocation.fromNamespaceAndPath("dif", "coke_oven")));
+
+	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<CokeOvenRecipe>> COKE_OVEN_SERIALIZER =
+			REGISTRY.register("coke_oven", CokeOvenRecipe.Serializer::new);
 }

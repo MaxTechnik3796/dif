@@ -47,6 +47,10 @@ public class DifModBlockEntities{
 
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<SteamGeneratorBlockEntity>> STEAM_GENERATOR=register("steam_generator",DifModBlocks.STEAM_GENERATOR,SteamGeneratorBlockEntity::new);
 
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CokeOvenBlockEntity>> COKE_OVEN = REGISTRY.register("coke_oven", () -> BlockEntityType.Builder.of(CokeOvenBlockEntity::new, DifModBlocks.COKE_OVEN_CONTROLLER.get()).build(null));
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CokeOvenPortBlockEntity>> COKE_OVEN_PORT = REGISTRY.register("coke_oven_port", () -> BlockEntityType.Builder.of(CokeOvenPortBlockEntity::new, DifModBlocks.COKE_OVEN_PORT.get()).build(null));
+
+
 	private static <T extends net.minecraft.world.level.block.entity.BlockEntity> DeferredHolder<BlockEntityType<?>,BlockEntityType<T>> register(String name,Supplier<? extends Block> block,BlockEntityType.BlockEntitySupplier<T> supplier){
 		return REGISTRY.register(name,()->BlockEntityType.Builder.of(supplier,block.get()).build(null));
 	}
