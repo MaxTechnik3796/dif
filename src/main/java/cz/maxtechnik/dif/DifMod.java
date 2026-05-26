@@ -2,6 +2,7 @@ package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
+import cz.maxtechnik.dif.item.modular.ToolComponents;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import cz.maxtechnik.dif.particle.FireballParticle;
 import cz.maxtechnik.dif.particle.HugeSmoke;
@@ -70,7 +71,7 @@ public class DifMod{
 		DifModFluidTypes.REGISTRY.register(bus);
 		DifModRecipes.REGISTRY.register(bus);
 		DifModRecipes.TYPE_REGISTRY.register(bus);
-		cz.maxtechnik.dif.item.modular.ToolComponents.REGISTER.register(bus);
+		ToolComponents.REGISTER.register(bus);
 		DifModEntities.REGISTRY.register(bus);
 		DifModFeatures.REGISTRY.register(bus);
 		DifModParticles.REGISTRY.register(bus);
