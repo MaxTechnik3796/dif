@@ -25,6 +25,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+@SuppressWarnings("unused")
 public class DifModItems{
 	public static final DeferredRegister.Items REGISTRY=DeferredRegister.createItems(DifMod.MODID);
 	public static final DeferredRegister.Items V_REGISTRY= DeferredRegister.createItems("minecraft");
