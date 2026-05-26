@@ -323,6 +323,7 @@ public class DifModItems{
 	public static final DeferredItem<Item>COPPER_SUPPORT=block(DifModBlocks.COPPER_SUPPORT);
 	public static final DeferredItem<Item>STEEL_SUPPORT=block(DifModBlocks.STEEL_SUPPORT);
 
+	public static final DeferredItem<Item>BIG_GIRDER=block(DifModBlocks.BIG_GIRDER);
 
 	public static final DeferredItem<Item>NUCLEAR_BOMB=REGISTRY.register("nuclear_bomb",NuclearBombItem::new);
 

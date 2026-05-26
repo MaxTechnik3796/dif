@@ -157,7 +157,7 @@ public class DifModBlocks{
 	//nuke
 	public static final DeferredBlock<Block> NUCLEAR_BOMB = REGISTRY.register("nuclear_bomb", NuclearBombBlock::new);
 
-
+	public static final DeferredBlock<Block>BIG_GIRDER=REGISTRY.register("big_girder",()->new RotatedPillarBlock(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops().strength(4F,5F)));
 
 
 	public static final DeferredBlock<Block>ZINC_CASING=REGISTRY.register("zinc_casing",()->new Block(BlockBehaviour.Properties.of().strength(1.5F,6F).sound(SoundType.WOOD).requiresCorrectToolForDrops()));

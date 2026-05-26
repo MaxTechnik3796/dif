@@ -1,0 +1,12 @@
+{
+	"parent":"block/cube",
+	"textures":{
+		"up":"dif:block/big_girder_top",
+		"down":"dif:block/big_girder_top",
+		"north":"dif:block/big_girder_front",
+		"east":"dif:block/big_girder_side",
+		"south":"dif:block/big_girder_front",
+		"west":"dif:block/big_girder_side",
+		"particle":"dif:block/big_girder_top"
+	}
+}

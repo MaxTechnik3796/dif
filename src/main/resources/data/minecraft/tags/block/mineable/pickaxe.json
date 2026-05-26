@@ -54,6 +54,7 @@
 		"dif:distillation_controller",
 		"dif:distillation_tank",
 		"#dif:supports",
-		"#dif:casings"
+		"#dif:casings",
+		"dif:big_girder"
 	]
 }

@@ -1,0 +1,15 @@
+{
+	"variants":{
+		"axis=x":{
+			"model":"dif:block/big_girder",
+			"y":90
+		},
+		"axis=y":{
+			"model":"dif:block/big_girder",
+			"x":90
+		},
+		"axis=z":{
+			"model":"dif:block/big_girder"
+		}
+	}
+}

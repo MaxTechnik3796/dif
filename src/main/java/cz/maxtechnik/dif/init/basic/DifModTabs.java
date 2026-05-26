@@ -298,7 +298,7 @@ public class DifModTabs{
 
 			tabData.accept(NUCLEAR_BOMB);
 			tabData.accept(STEAM_GENERATOR);
-
+			tabData.accept(BIG_GIRDER);
 
 			tabData.accept(ZINC_SUPPORT);
 			tabData.accept(BRASS_SUPPORT);
