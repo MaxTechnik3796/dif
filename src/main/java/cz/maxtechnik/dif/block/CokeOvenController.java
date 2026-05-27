@@ -1,8 +1,6 @@
 package cz.maxtechnik.dif.block;
 
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
-import cz.maxtechnik.dif.MultiblockHelper;
-import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
