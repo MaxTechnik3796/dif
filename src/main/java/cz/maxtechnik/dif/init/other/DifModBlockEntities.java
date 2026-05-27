@@ -43,12 +43,12 @@ public class DifModBlockEntities{
 
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<BurningGeneratorBlockEntity>> BURNING_GENERATOR=REGISTRY.register("burning_generator",()->BlockEntityType.Builder.of(BurningGeneratorBlockEntity::new,DifModBlocks.BURNING_GENERATOR.get()).build(null));
 
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<DistillationTankBlockEntity>>DISTILLATION_TANK=REGISTRY.register("distillation_tank",()->BlockEntityType.Builder.of((pos,state)->new DistillationTankBlockEntity(DifModBlockEntities.DISTILLATION_TANK.get(),pos,state), DifModBlocks.DISTILLATION_TANK.get()).build(null));
+	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<DistillationTankBlockEntity>> DISTILLATION_TANK=REGISTRY.register("distillation_tank",()->BlockEntityType.Builder.of((pos,state)->new DistillationTankBlockEntity(DifModBlockEntities.DISTILLATION_TANK.get(),pos,state), DifModBlocks.DISTILLATION_TANK.get()).build(null));
 
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<SteamGeneratorBlockEntity>> STEAM_GENERATOR=register("steam_generator",DifModBlocks.STEAM_GENERATOR,SteamGeneratorBlockEntity::new);
 
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CokeOvenControllerBlockEntity>> COKE_OVEN_CONTROLLER =register("coke_oven_controller",DifModBlocks.COKE_OVEN_CONTROLLER,CokeOvenControllerBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CokeOvenBlockEntity>> COKE_OVEN =register("coke_oven",DifModBlocks.COKE_OVEN,CokeOvenBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<CokeOvenControllerBlockEntity>> COKE_OVEN_CONTROLLER=register("coke_oven_controller",DifModBlocks.COKE_OVEN_CONTROLLER,CokeOvenControllerBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<CokeOvenBlockEntity>> COKE_OVEN=register("coke_oven",DifModBlocks.COKE_OVEN,CokeOvenBlockEntity::new);
 
 	private static <T extends net.minecraft.world.level.block.entity.BlockEntity> DeferredHolder<BlockEntityType<?>,BlockEntityType<T>> register(String name,Supplier<? extends Block> block,BlockEntityType.BlockEntitySupplier<T> supplier){
 		return REGISTRY.register(name,()->BlockEntityType.Builder.of(supplier,block.get()).build(null));
