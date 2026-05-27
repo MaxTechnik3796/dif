@@ -1,0 +1,8 @@
+{
+	"parent":"block/cube_all",
+	"textures":{
+		"all":"dif:block/coke_oven",
+		"particle":"dif:block/coke_oven"
+	},
+	"render_type":"solid"
+}

@@ -1,0 +1,34 @@
+{
+	"variants":{
+		"facing=north,active=false":{
+			"model":"dif:block/coke_oven_controller_inacive"
+		},
+		"facing=east,active=false":{
+			"model":"dif:block/coke_oven_controller_inacive",
+			"y":90
+		},
+		"facing=south,active=false":{
+			"model":"dif:block/coke_oven_controller_inacive",
+			"y":180
+		},
+		"facing=west,active=false":{
+			"model":"dif:block/coke_oven_controller_inacive",
+			"y":270
+		},
+		"facing=north,active=true":{
+			"model":"dif:block/coke_oven_controller_acive"
+		},
+		"facing=east,active=true":{
+			"model":"dif:block/coke_oven_controller_acive",
+			"y":90
+		},
+		"facing=south,active=true":{
+			"model":"dif:block/coke_oven_controller_acive",
+			"y":180
+		},
+		"facing=west,active=true":{
+			"model":"dif:block/coke_oven_controller_acive",
+			"y":270
+		}
+	}
+}
