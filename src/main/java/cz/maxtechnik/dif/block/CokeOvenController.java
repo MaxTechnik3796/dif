@@ -9,7 +9,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 public class CokeOvenController extends Block implements EntityBlock{
-
     public CokeOvenController(Properties properties) {
         super(properties);
     }

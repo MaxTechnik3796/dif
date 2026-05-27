@@ -1,10 +1,20 @@
 package cz.maxtechnik.dif.block;
 
+import cz.maxtechnik.dif.init.other.DifModBlockEntities;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-public class CokeOven extends Block{
-
+import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+public class CokeOven extends Block implements EntityBlock{
     public CokeOven(BlockBehaviour.Properties properties) {
         super(properties);
     }
+	@Override
+	public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
+		return DifModBlockEntities.COKE_OVEN.get().create(pos,blockState);
+	}
 }
