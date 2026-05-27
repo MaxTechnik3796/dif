@@ -7,7 +7,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -79,7 +78,7 @@ public class CokeOvenBlockEntity extends BlockEntity implements IHaveGoggleInfor
 	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
 		super.saveAdditional(tag, provider);
 		if (controllerPos != null) {
-			tag.put("controllerPos", NbtUtils.writeBlockPos(controllerPos));
+			tag.putIntArray("controllerPos", new int[]{controllerPos.getX(), controllerPos.getY(), controllerPos.getZ()});
 		}
 	}
 
@@ -87,7 +86,8 @@ public class CokeOvenBlockEntity extends BlockEntity implements IHaveGoggleInfor
 	protected void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
 		super.loadAdditional(tag, provider);
 		if (tag.contains("controllerPos")) {
-			controllerPos = NbtUtils.readBlockPos(tag, "controllerPos").orElse(null);
+			int[] c = tag.getIntArray("controllerPos");
+			controllerPos = (c.length == 3) ? new BlockPos(c[0], c[1], c[2]) : null;
 		} else {
 			controllerPos = null;
 		}

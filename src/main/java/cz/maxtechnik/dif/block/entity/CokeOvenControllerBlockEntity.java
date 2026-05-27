@@ -73,6 +73,10 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 	// ── Progress tracking ────────────────────────────────────────────────
 	private int progress = 0;
 	private int totalTime = 0;
+	/** Rate-limit the conflict check so we don't spam every tick. */
+	private int conflictCooldown = 0;
+	/** True while bricks are blocked by another formed oven. Synced to client for goggle display. */
+	private boolean isConflicted = false;
 
 	public int getProgress()  { return progress; }
 	public int getTotalTime() { return totalTime; }
@@ -103,26 +107,39 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 
 		if (isCurrentlyFormed != wasFormed) {
 			if (isCurrentlyFormed) {
-				// Check no brick is already claimed by a DIFFERENT controller
+				// Check whether every brick is free or already owned by THIS controller
 				if (!canClaimAllBricks(level, pos, intoStructure)) {
 					isCurrentlyFormed = false;
+					if (!be.isConflicted) {
+						be.isConflicted = true;
+						be.setChanged(); // sync to client so goggles show it
+					}
+				} else {
+					be.isConflicted = false;
 				}
 			}
 
+			if (be.conflictCooldown > 0) be.conflictCooldown--;
+
 			if (isCurrentlyFormed) {
-				// Claim all bricks
+				// Claim all bricks for this controller
 				claimBricks(level, pos, intoStructure, pos);
-			} else {
-				// Release all bricks
+				be.isConflicted = false;
+			} else if (wasFormed) {
+				// Structure just broke – release bricks and reset
 				claimBricks(level, pos, intoStructure, null);
 				be.progress = 0;
 				be.totalTime = 0;
+				be.isConflicted = false;
 			}
 
 			state = state.setValue(CokeOvenController.FORMED, isCurrentlyFormed)
 					      .setValue(CokeOvenController.ACTIVE, false);
 			level.setBlock(pos, state, 3);
 			be.setChanged();
+		} else {
+			// Tick the conflict cooldown even when state is stable
+			if (be.conflictCooldown > 0) be.conflictCooldown--;
 		}
 
 		if (!isCurrentlyFormed) {
@@ -256,8 +273,11 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 
 	private static Optional<CokeOvenRecipe> findRecipe(Level level, ItemStack input) {
 		if (input.isEmpty()) return Optional.empty();
-		for (RecipeHolder<CokeOvenRecipe> holder :
-				level.getRecipeManager().getAllRecipesFor(DifModRecipes.COKE_OVEN_TYPE.get())) {
+		var all = level.getRecipeManager().getAllRecipesFor(DifModRecipes.COKE_OVEN_TYPE.get());
+		if (all.isEmpty()) {
+			cz.maxtechnik.dif.DifMod.LOGGER.warn("CokeOven: no coke_oven recipes loaded! Check data/dif/recipes/coaltocoke.json");
+		}
+		for (RecipeHolder<CokeOvenRecipe> holder : all) {
 			if (holder.value().matches(input)) return Optional.of(holder.value());
 		}
 		return Optional.empty();
@@ -274,7 +294,11 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 				&& state.getValue(CokeOvenController.FORMED);
 
 		if (!isFormed) {
-			tooltip.add(Component.literal(" Structure is NOT formed!").withStyle(ChatFormatting.RED));
+			if (isConflicted) {
+				tooltip.add(Component.literal(" ⚠ Structure already use some blocks").withStyle(ChatFormatting.DARK_RED));
+			} else {
+				tooltip.add(Component.literal(" Structure is NOT formed!").withStyle(ChatFormatting.RED));
+			}
 			return true;
 		}
 
@@ -396,6 +420,7 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 			fluidTank.readFromNBT(provider, fluidTag);
 		this.progress  = tag.getInt("progress");
 		this.totalTime = tag.getInt("totalTime");
+		this.isConflicted = tag.getBoolean("isConflicted");
 	}
 
 	@Override
@@ -405,6 +430,7 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 		tag.put("fluidTank", fluidTank.writeToNBT(provider, new CompoundTag()));
 		tag.putInt("progress",  this.progress);
 		tag.putInt("totalTime", this.totalTime);
+		tag.putBoolean("isConflicted", this.isConflicted);
 	}
 
 	@Override

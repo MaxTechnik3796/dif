@@ -3,6 +3,6 @@
   "ingredient": { "item": "minecraft:coal" },
   "ingredient_count": 1,
   "result": { "id": "minecraft:coal_block", "count": 1 },
-  "fluid_output": { "fluid": "minecraft:water", "amount": 250 },
-  "processing_time": 900
+  "fluid_output": { "id": "minecraft:water", "amount": 250 },
+  "processing_time": 200
 }
