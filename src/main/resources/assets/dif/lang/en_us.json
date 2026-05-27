@@ -298,5 +298,6 @@
 	"jei.dif.frying_table": "Frying Table",
 	"dif.coke_oven.deformed": "Deformed Suriku :D",
 	"dif.coke_oven.formed": "Formed Šuríčki :DD",
-	"dif.coke_oven.invalid_structure": "InvalidS tructure - furt to máš rozbitý XDDD"
+	"dif.coke_oven.invalid_structure": "InvalidS tructure - furt to máš rozbitý XDDD",
+	"container.dif.coke_oven": "Coke Oven"
 }

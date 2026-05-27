@@ -313,6 +313,7 @@ public class DifModTabs{
 
 
 			tabData.accept(DifModItems.COKE_OVEN);
+			tabData.accept(DifModItems.COKE_OVEN_CONTROLLER);
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
 			tabData.insertAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);

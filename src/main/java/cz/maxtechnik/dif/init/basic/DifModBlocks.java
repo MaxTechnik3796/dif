@@ -170,7 +170,8 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>COPPER_SUPPORT=REGISTRY.register("copper_support",()->new SupportBase(BlockBehaviour.Properties.of().strength(4F,5F).sound(SoundType.COPPER).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>STEEL_SUPPORT=REGISTRY.register("steel_support",()->new SupportBase(BlockBehaviour.Properties.of().strength(4F,5F).sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops()));
 
-	public static final DeferredBlock<Block> COKE_OVEN = REGISTRY.register("coke_oven", CokeOvenBlock::new);
+	public static final DeferredBlock<Block>COKE_OVEN=REGISTRY.register("coke_oven",()->new CokeOven(BlockBehaviour.Properties.of()));
+	public static final DeferredBlock<Block>COKE_OVEN_CONTROLLER=REGISTRY.register("coke_oven_controller",()->new CokeOvenController(BlockBehaviour.Properties.of()));
 
 
 

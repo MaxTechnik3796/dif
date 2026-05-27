@@ -23,6 +23,5 @@ public class DifModScreens {
 		event.register(DifModMenus.SPACESHIP.get(), SpaceshipScreen::new);
 		event.register(DifModMenus.MEGA_BACKPACK.get(), MegaBackpackScreen::new);
 		event.register(DifModMenus.QUARRY.get(), QuarryScreen::new);
-		event.register(DifModMenus.COKE_OVEN.get(), CokeOvenScreen::new);
 	}
 }
