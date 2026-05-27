@@ -22,7 +22,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
 import cz.maxtechnik.dif.command.IsChunkLoadedCommand;
@@ -50,13 +49,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.Direction;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
-@SuppressWarnings({"removal","deprecation"})
+@SuppressWarnings({"removal","deprecation","unused"})
 @Mod(DifMod.MODID)
 public class DifMod{
 	public static final String MODID="dif";
