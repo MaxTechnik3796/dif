@@ -5,48 +5,62 @@ import cz.maxtechnik.dif.block.CokeOvenController;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class CokeOvenBlockEntity extends BlockEntity implements IHaveGoggleInformation {
+
+	/** Which controller this brick belongs to, null if not part of any formed structure. */
+	@Nullable
+	private BlockPos controllerPos = null;
+
 	public CokeOvenBlockEntity(BlockPos pos, BlockState blockState) {
 		super(DifModBlockEntities.COKE_OVEN.get(), pos, blockState);
 	}
 
-	public CokeOvenControllerBlockEntity getFormedController() {
+	// ── Controller ownership ────────────────────────────────────────────
+
+	public @Nullable BlockPos getControllerPos() {
+		return controllerPos;
+	}
+
+	/** Called by controller when forming – claims this brick. */
+	public void setControllerPos(@Nullable BlockPos pos) {
+		this.controllerPos = pos;
+		setChanged();
+		if (level != null && !level.isClientSide)
+			level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+	}
+
+	/** True if this brick is unclaimed OR already owned by the given controller. */
+	public boolean canBeClaimedBy(BlockPos claimerPos) {
+		return controllerPos == null || controllerPos.equals(claimerPos);
+	}
+
+	// ── Controller lookup (for goggle delegation) ───────────────────────
+
+	public @Nullable CokeOvenControllerBlockEntity getFormedController() {
 		if (level == null) return null;
-		BlockPos myPos = worldPosition;
-		// Scan 5x5x5 box centered on us to find any CokeOvenControllerBlockEntity
-		for (int x = -2; x <= 2; x++) {
-			for (int y = -2; y <= 2; y++) {
-				for (int z = -2; z <= 2; z++) {
-					BlockPos checkPos = myPos.offset(x, y, z);
-					if (level.getBlockEntity(checkPos) instanceof CokeOvenControllerBlockEntity controllerBe) {
-						BlockState state = level.getBlockState(checkPos);
-						if (state.hasProperty(CokeOvenController.FORMED) && state.getValue(CokeOvenController.FORMED)) {
-							Direction facing = state.getValue(CokeOvenController.FACING).getOpposite();
-							Direction right = facing.getClockWise();
-							for (int dy = -1; dy <= 1; dy++) {
-								for (int dx = -1; dx <= 1; dx++) {
-									for (int dz = 0; dz <= 2; dz++) {
-										BlockPos partPos = checkPos.relative(facing, dz).relative(right, dx).above(dy);
-										if (partPos.equals(myPos)) {
-											return controllerBe;
-										}
-									}
-								}
-							}
-						}
-					}
-				}
+		if (controllerPos == null) return null;
+		if (level.getBlockEntity(controllerPos) instanceof CokeOvenControllerBlockEntity ctrl) {
+			BlockState state = level.getBlockState(controllerPos);
+			if (state.hasProperty(CokeOvenController.FORMED) && state.getValue(CokeOvenController.FORMED)) {
+				return ctrl;
 			}
 		}
 		return null;
 	}
+
+	// ── Goggle tooltip ──────────────────────────────────────────────────
 
 	@Override
 	public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
@@ -57,5 +71,35 @@ public class CokeOvenBlockEntity extends BlockEntity implements IHaveGoggleInfor
 		tooltip.add(Component.literal("◆ Coke Oven").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
 		tooltip.add(Component.literal(" Structure is NOT formed!").withStyle(ChatFormatting.RED));
 		return true;
+	}
+
+	// ── NBT ────────────────────────────────────────────────────────────
+
+	@Override
+	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+		super.saveAdditional(tag, provider);
+		if (controllerPos != null) {
+			tag.put("controllerPos", NbtUtils.writeBlockPos(controllerPos));
+		}
+	}
+
+	@Override
+	protected void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+		super.loadAdditional(tag, provider);
+		if (tag.contains("controllerPos")) {
+			controllerPos = NbtUtils.readBlockPos(tag, "controllerPos").orElse(null);
+		} else {
+			controllerPos = null;
+		}
+	}
+
+	@Override
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
+
+	@Override
+	public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider provider) {
+		return this.saveWithFullMetadata(provider);
 	}
 }
