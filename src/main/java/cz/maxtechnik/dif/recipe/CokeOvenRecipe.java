@@ -7,6 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -18,17 +19,7 @@ import org.jetbrains.annotations.NotNull;
  *   - 1 item vstup (ingredient s počtem)
  *   - 1 item výstup
  *   - 1 fluid výstup (volitelný — amount 0 = žádný fluid)
- *   - doba zpracování v tickách (default 900 = 45s)
- *
- * Příklad JSON:
- * {
- *   "type": "dif:coke_oven",
- *   "ingredient": { "item": "minecraft:coal" },
- *   "ingredient_count": 1,
- *   "result": { "id": "dif:coke_coal", "count": 1 },
- *   "fluid_output": { "fluid": "dif:creosote_oil", "amount": 250 },
- *   "processing_time": 900
- * }
+ *   - doba zpracování v tickách (default 900 = 45 s)
  */
 public record CokeOvenRecipe(
         Ingredient ingredient,
@@ -42,10 +33,10 @@ public record CokeOvenRecipe(
 
     public static final MapCodec<CokeOvenRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
             Ingredient.CODEC.fieldOf("ingredient").forGetter(CokeOvenRecipe::ingredient),
-            net.minecraft.util.ExtraCodecs.POSITIVE_INT.optionalFieldOf("ingredient_count", 1).forGetter(CokeOvenRecipe::ingredientCount),
+            ExtraCodecs.POSITIVE_INT.optionalFieldOf("ingredient_count", 1).forGetter(CokeOvenRecipe::ingredientCount),
             ItemStack.STRICT_CODEC.fieldOf("result").forGetter(CokeOvenRecipe::result),
             FluidStack.CODEC.optionalFieldOf("fluid_output", FluidStack.EMPTY).forGetter(CokeOvenRecipe::fluidOutput),
-            net.minecraft.util.ExtraCodecs.POSITIVE_INT.optionalFieldOf("processing_time", DEFAULT_TIME).forGetter(CokeOvenRecipe::processingTime)
+            ExtraCodecs.POSITIVE_INT.optionalFieldOf("processing_time", DEFAULT_TIME).forGetter(CokeOvenRecipe::processingTime)
     ).apply(inst, CokeOvenRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CokeOvenRecipe> STREAM_CODEC = StreamCodec.composite(
@@ -57,17 +48,18 @@ public record CokeOvenRecipe(
             CokeOvenRecipe::new
     );
 
-    /** Zkontroluje jestli daný ItemStack odpovídá vstupu receptu. */
+    /** Zda ItemStack odpovídá vstupu receptu (kontrola item + počet). */
     public boolean matches(ItemStack stack) {
-        return ingredient.test(stack) && stack.getCount() >= ingredientCount;
+        return !stack.isEmpty()
+                && stack.getCount() >= ingredientCount
+                && ingredient.test(stack);
     }
 
-    /** Má tento recept fluid výstup? */
     public boolean hasFluidOutput() {
         return !fluidOutput.isEmpty();
     }
 
-    // ── Povinné Recipe metody (hledáme recept ručně, ne přes vanilla systém) ──
+    // ── Recipe<SingleRecipeInput> (vanilla rozhraní — recept hledáme ručně) ──
 
     @Override
     public boolean matches(@NotNull SingleRecipeInput input, @NotNull Level level) {
@@ -98,9 +90,7 @@ public record CokeOvenRecipe(
     }
 
     public static class Serializer implements RecipeSerializer<CokeOvenRecipe> {
-        @Override
-        public @NotNull MapCodec<CokeOvenRecipe> codec() { return CODEC; }
-        @Override
-        public @NotNull StreamCodec<RegistryFriendlyByteBuf, CokeOvenRecipe> streamCodec() { return STREAM_CODEC; }
+        @Override public @NotNull MapCodec<CokeOvenRecipe> codec() { return CODEC; }
+        @Override public @NotNull StreamCodec<RegistryFriendlyByteBuf, CokeOvenRecipe> streamCodec() { return STREAM_CODEC; }
     }
 }
