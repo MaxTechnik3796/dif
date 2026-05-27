@@ -1,8 +1,0 @@
-{
-	"parent":"block/cube_all",
-	"textures":{
-		"all":"dif:block/xp_storage",
-		"particle":"dif:block/xp_storage"
-	},
-	"render_type":"solid"
-}

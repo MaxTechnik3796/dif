@@ -43,14 +43,22 @@ public class DifModBlocks{
 
 
 	//Fluids:
-	public static final DeferredBlock<Block>FUEL_FLUID=REGISTRY.register("fuel_fluid",()->new LiquidBlock(DifModFluids.FUEL.get(),BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable()));
-	public static final DeferredBlock<Block>BEER_FLUID=REGISTRY.register("beer_fluid",()->new LiquidBlock(DifModFluids.BEER.get(),BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable()));
-	public static final DeferredBlock<Block>XP_FLUID=REGISTRY.register("xp_fluid",()->new LiquidBlock(DifModFluids.XP.get(),BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable().lightLevel(s->15)));
-	public static final DeferredBlock<Block>CIDER_FLUID=REGISTRY.register("cider_fluid",()->new LiquidBlock(DifModFluids.CIDER.get(),BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable()));
-	public static final DeferredBlock<Block>CRUDE_OIL_FLUID=REGISTRY.register("crude_oil_fluid",()->new LiquidBlock(DifModFluids.CRUDE_OIL.get(),BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable()));
-	public static final DeferredBlock<Block>JETPACK_FUEL_FLUID=REGISTRY.register("jetpack_fuel_fluid",()->new LiquidBlock(DifModFluids.JETPACK_FUEL.get(),BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable()));
-	public static final DeferredBlock<Block>JETPACK_TURBO_FUEL_FLUID=REGISTRY.register("jetpack_turbo_fuel_fluid",()->new LiquidBlock(DifModFluids.JETPACK_TURBO_FUEL.get(),BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable()));
-	public static final DeferredBlock<Block>SUNFLOWER_OIL_FLUID=REGISTRY.register("sunflower_oil_fluid",()->new LiquidBlock(DifModFluids.SUNFLOWER_OIL.get(),BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable()));
+	public static BlockBehaviour.Properties FLUID_PROPERTIES=BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable();
+	public static final DeferredBlock<Block>FUEL_FLUID=REGISTRY.register("fuel_fluid",()->new LiquidBlock(DifModFluids.FUEL.get(),FLUID_PROPERTIES));
+	public static final DeferredBlock<Block>BEER_FLUID=REGISTRY.register("beer_fluid",()->new LiquidBlock(DifModFluids.BEER.get(),FLUID_PROPERTIES));
+	public static final DeferredBlock<Block>XP_FLUID=REGISTRY.register("xp_fluid",()->new LiquidBlock(DifModFluids.XP.get(),FLUID_PROPERTIES.lightLevel(s->15)));
+	public static final DeferredBlock<Block>CIDER_FLUID=REGISTRY.register("cider_fluid",()->new LiquidBlock(DifModFluids.CIDER.get(),FLUID_PROPERTIES));
+	public static final DeferredBlock<Block>CRUDE_OIL_FLUID=REGISTRY.register("crude_oil_fluid",()->new LiquidBlock(DifModFluids.CRUDE_OIL.get(),FLUID_PROPERTIES));
+	public static final DeferredBlock<Block>JETPACK_FUEL_FLUID=REGISTRY.register("jetpack_fuel_fluid",()->new LiquidBlock(DifModFluids.JETPACK_FUEL.get(),FLUID_PROPERTIES));
+	public static final DeferredBlock<Block>JETPACK_TURBO_FUEL_FLUID=REGISTRY.register("jetpack_turbo_fuel_fluid",()->new LiquidBlock(DifModFluids.JETPACK_TURBO_FUEL.get(),FLUID_PROPERTIES));
+	public static final DeferredBlock<Block>SUNFLOWER_OIL_FLUID=REGISTRY.register("sunflower_oil_fluid",()->new LiquidBlock(DifModFluids.SUNFLOWER_OIL.get(),FLUID_PROPERTIES));
+
+	public static final DeferredBlock<Block>LPG_FLUID=REGISTRY.register("lpg_fluid",()->new LiquidBlock(DifModFluids.LPG.get(),FLUID_PROPERTIES));
+	public static final DeferredBlock<Block>GASOLINE_FLUID=REGISTRY.register("gasoline_fluid",()->new LiquidBlock(DifModFluids.GASOLINE.get(),FLUID_PROPERTIES));
+	public static final DeferredBlock<Block>DIESEL_FLUID=REGISTRY.register("diesel_fluid",()->new LiquidBlock(DifModFluids.DIESEL.get(),FLUID_PROPERTIES));
+	public static final DeferredBlock<Block>LUBRICATING_OIL_FLUID=REGISTRY.register("lubricating_oil_fluid",()->new LiquidBlock(DifModFluids.LUBRICATING_OIL.get(),FLUID_PROPERTIES));
+	public static final DeferredBlock<Block>HEAVY_FUEL_OIL_FLUID=REGISTRY.register("heavy_fuel_oil_fluid",()->new LiquidBlock(DifModFluids.HEAVY_FUEL_OIL.get(),FLUID_PROPERTIES));
+
 
 	//Random (0):
 	public static final DeferredBlock<Block> MEGA_TORCH = REGISTRY.register("mega_torch",()->new MegaTorch(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(2F,3F).sound(SoundType.WOOD).pushReaction(PushReaction.BLOCK).lightLevel(state->15)));

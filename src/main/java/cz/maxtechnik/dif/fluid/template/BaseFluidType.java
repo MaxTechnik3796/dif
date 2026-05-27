@@ -1,9 +1,8 @@
-package cz.maxtechnik.dif.fluid;
+package cz.maxtechnik.dif.fluid.template;
 
 import cz.maxtechnik.dif.DifMod;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;

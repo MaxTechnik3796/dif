@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.fluid;
+package cz.maxtechnik.dif.fluid.template;
 
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;

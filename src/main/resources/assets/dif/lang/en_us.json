@@ -26,39 +26,78 @@
 	"container.dif.brass_barrel":"Brass Barrel",
 	"container.dif.sturdy_barrel":"Sturdy Barrel",
 	"container.dif.old_chest":"Alpha Chest",
+
 	"item.dif.beer_bucket":"GoldBerg Bucket",
 	"block.dif.beer_fluid":"GoldBerg",
 	"fluid.dif.beer_fluid":"GoldBerg",
 	"fluid_type.dif.beer_fluid":"GoldBerg",
 	"block.dif.beer":"GoldBerg",
+
 	"item.dif.xp_bucket":"Experience Bucket",
 	"block.dif.xp_fluid":"Experience",
 	"fluid.dif.xp_fluid":"Experience",
 	"fluid_type.dif.xp_fluid":"Experience",
+
 	"item.dif.fuel_bucket":"Fuel Bucket",
 	"block.dif.fuel_fluid":"Fuel",
 	"fluid.dif.fuel_fluid":"Fuel",
 	"fluid_type.dif.fuel_fluid":"Fuel",
+
 	"item.dif.sunflower_oil_bucket":"Sunflower Oil Bucket",
 	"block.dif.sunflower_oil_fluid":"Sunflower Oil",
 	"fluid.dif.sunflower_oil_fluid":"Sunflower Oil",
 	"fluid_type.dif.sunflower_oil_fluid":"Sunflower Oil",
+
 	"item.dif.jetpack_fuel_bucket":"Jetpack Fuel Bucket",
 	"block.dif.jetpack_fuel_fluid":"Jetpack Fuel",
 	"fluid.dif.jetpack_fuel_fluid":"Jetpack Fuel",
 	"fluid_type.dif.jetpack_fuel_fluid":"Jetpack Fuel",
+
 	"item.dif.jetpack_turbo_fuel_bucket":"Jetpack TURBO Fuel Bucket",
 	"block.dif.jetpack_turbo_fuel_fluid":"Jetpack TURBO Fuel",
 	"fluid.dif.jetpack_turbo_fuel_fluid":"Jetpack TURBO Fuel",
 	"fluid_type.dif.jetpack_turbo_fuel_fluid":"Jetpack TURBO Fuel",
+
 	"item.dif.cider_bucket":"Mošt Bucket",
 	"block.dif.cider_fluid":"Mošt",
 	"fluid.dif.cider_fluid":"Mošt",
 	"fluid_type.dif.cider_fluid":"Mošt",
+
 	"item.dif.crude_oil_bucket":"Crude Oil Bucket",
 	"block.dif.crude_oil_fluid":"Crude Oil",
 	"fluid.dif.crude_oil_fluid":"Crude Oil",
 	"fluid_type.dif.crude_oil_fluid":"Crude Oil",
+
+
+
+	"item.dif.lpg_bucket":"LPG Bucket",
+	"block.dif.lpg_fluid":"LPG",
+	"fluid.dif.lpg_fluid":"LPG",
+	"fluid_type.dif.lpg_fluid":"LPG",
+
+	"item.dif.gasoline_bucket":"Gasoline Bucket",
+	"block.dif.gasoline_fluid":"Gasoline",
+	"fluid.dif.gasoline_fluid":"Gasoline",
+	"fluid_type.dif.gasoline_fluid":"Gasoline",
+
+	"item.dif.diesel_bucket":"Diesel Bucket",
+	"block.dif.diesel_fluid":"Diesel",
+	"fluid.dif.diesel_fluid":"Diesel",
+	"fluid_type.dif.diesel_fluid":"Diesel",
+
+	"item.dif.lubricating_oil_bucket":"Lubricating Oil Bucket",
+	"block.dif.lubricating_oil_fluid":"Lubricating Oil",
+	"fluid.dif.lubricating_oil_fluid":"Lubricating Oil",
+	"fluid_type.dif.lubricating_oil_fluid":"Lubricating Oil",
+
+	"item.dif.heavy_fuel_oil_bucket":"Heavy Fuel Oil Bucket",
+	"block.dif.heavy_fuel_oil_fluid":"Heavy Fuel Oil",
+	"fluid.dif.heavy_fuel_oil_fluid":"Heavy Fuel Oil",
+	"fluid_type.dif.heavy_fuel_oil_fluid":"Heavy Fuel Oil",
+
+
+
+
 	"creative_tab.dif.main":"TheDifferential: Main",
 	"creative_tab.dif.space":"TheDifferential: Space & Tech",
 	"creative_tab.dif.modular_tools":"TheDifferential: Modular Tools",
@@ -106,7 +145,6 @@
 	"item.dif.incomplete_mithril_plate":"Incomplete Mithril Plate",
 	"block.dif.chunk_loader_3x3":"ChunkLoader 3x3",
 	"block.dif.chunk_loader_1x1":"ChunkLoader 1x1",
-	"block.dif.example_block":"Example Block",
 	"block.dif.the_differential":"TheDifferential",
 	"block.dif.event_bus":"Event Bus",
 	"block.dif.vent":"Vent",
@@ -183,7 +221,6 @@
 	"item.dif.copper_leggings":"Copper Leggings",
 	"item.dif.copper_chestplate":"Copper Chestplate",
 	"item.dif.copper_helmet":"Copper Helmet",
-	"block.dif.xp_storage":"XP Storage Block",
 	"item.dif.modular_pickaxe":"Pickaxe",
 	"item.dif.modular_axe":"Axe",
 	"item.dif.modular_shovel":"Shovel",
@@ -269,10 +306,6 @@
 	"item.dif.quarry_engine_diamond":"Quarry Diamond Engine",
 	"entity.dif.formula":"Formula",
 	"item.dif.formula":"Formula",
-	"block.dif.brass_large_water_wheel":"Brass Large Water Wheel",
-	"block.dif.brass_water_wheel":"Brass Water Wheel",
-	"block.dif.brass_mechanical_press":"Brass Mechanical Press",
-	"block.dif.brass_mechanical_mixer":"Brass Mechanical Mixer",
 	"item.dif.stone_drill_head":"Stone Drill Head",
 	"item.dif.iron_drill_head":"Iron Drill Head",
 	"item.dif.diamond_drill_head":"Diamond Drill Head",
