@@ -11,6 +11,8 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -29,6 +31,14 @@ public class CokeOvenController extends Block implements EntityBlock, IWrenchabl
 	@Override
 	public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
 		return DifModBlockEntities.COKE_OVEN_CONTROLLER.get().create(pos,blockState);
+	}
+	@Override
+	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T> type){
+		return level.isClientSide ? null : createServerTicker(type, DifModBlockEntities.COKE_OVEN_CONTROLLER.get());
+	}
+	@Nullable
+	protected static <T extends BlockEntity> BlockEntityTicker<T> createServerTicker(BlockEntityType<T> type,BlockEntityType<? extends cz.maxtechnik.dif.block.entity.CokeOvenControllerBlockEntity> expectedType){
+		return type==expectedType?(lvl,pos,state,blockEntity)->cz.maxtechnik.dif.block.entity.CokeOvenControllerBlockEntity.serverTick(lvl,pos,state,(cz.maxtechnik.dif.block.entity.CokeOvenControllerBlockEntity)blockEntity):null;
 	}
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){

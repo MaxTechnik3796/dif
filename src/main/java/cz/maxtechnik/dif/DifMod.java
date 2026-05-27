@@ -106,7 +106,24 @@ public class DifMod{
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.COKE_OVEN_CONTROLLER.get(),(be, side)->{if(side!=null) return new SidedInvWrapper(be,side);return be.getInventory();});
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.COKE_OVEN_CONTROLLER.get(),(be,side)->be.fluidTank);
 
-		//event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.COKE_OVEN.get(),(be,side)->be.getInventory());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.COKE_OVEN.get(), (be, side) -> {
+			var controller = be.getFormedController();
+			if (controller != null) {
+				if (side != null) {
+					return new SidedInvWrapper(controller, side);
+				}
+				return controller.getInventory();
+			}
+			return null;
+		});
+
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, DifModBlockEntities.COKE_OVEN.get(), (be, side) -> {
+			var controller = be.getFormedController();
+			if (controller != null) {
+				return controller.fluidTank;
+			}
+			return null;
+		});
 
 	}
 
