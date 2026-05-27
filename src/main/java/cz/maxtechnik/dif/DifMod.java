@@ -21,6 +21,7 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
@@ -102,7 +103,7 @@ public class DifMod{
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.DISTILLATION_TANK.get(),(be,ctx)->be.getFluidCapability());
 
 
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.COKE_OVEN_CONTROLLER.get(),(be,side)->be.getInventory());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.COKE_OVEN_CONTROLLER.get(),(be, side)->{if(side!=null) return new SidedInvWrapper(be,side);return be.getInventory();});
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.COKE_OVEN_CONTROLLER.get(),(be,side)->be.fluidTank);
 
 		//event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.COKE_OVEN.get(),(be,side)->be.getInventory());

@@ -24,7 +24,7 @@ import java.util.stream.IntStream;
 public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer{
 	public CokeOvenControllerBlockEntity(BlockPos pos,BlockState blockState){
 		super(DifModBlockEntities.COKE_OVEN_CONTROLLER.get(),pos,blockState);
-	};
+	}
 	private final ItemStackHandler inventory=new ItemStackHandler(2){
 		@Override
 		protected void onContentsChanged(int slot){
@@ -49,7 +49,7 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 	}
 	@Override
 	public boolean canPlaceItemThroughFace(int index,@NotNull ItemStack itemStack,@Nullable Direction direction){
-		return this.canPlaceItem(index,itemStack);
+		return index==0;
 	}
 	@Override
 	public boolean canTakeItemThroughFace(int index,@NotNull ItemStack itemStack,@NotNull Direction direction){
