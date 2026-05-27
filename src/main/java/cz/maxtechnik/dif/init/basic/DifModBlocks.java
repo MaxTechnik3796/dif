@@ -175,9 +175,5 @@ public class DifModBlocks{
 
 
 
-	// ── Generátory ────────────────────────────────────────────────────────────
-
-	/** Parní generátor – hřídel vystupuje nahoru a dolů (osa Y). */
-	public static final DeferredBlock<Block> STEAM_GENERATOR = REGISTRY.register("steam_generator",() -> new SteamGeneratorBlock(BlockBehaviour.Properties.of().noOcclusion())
-	);
+	public static final DeferredBlock<Block> STEAM_GENERATOR = REGISTRY.register("steam_generator",() -> new SteamGeneratorBlock(BlockBehaviour.Properties.of().noOcclusion()));
 }
