@@ -15,52 +15,58 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.IntStream;
 
 public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEntity
 		implements WorldlyContainer, IHaveGoggleInformation {
 
-	// ── Pattern: ALL 26 surrounding blocks must be COKE_OVEN bricks ─────
-	//   z=0 is the front face (where controller sits), z increases INTO structure.
-	//   Inner position [y=1][x=1][z=1] is the solid center block – also COKE_OVEN.
-	//   Controller position [y=1][x=1][z=0] is automatically skipped by MultiblockHelper.
+	// ── Multiblock pattern ──────────────────────────────────────────────
+	// 3×3×3 plný shell z COKE_OVEN cihel; pozice controlleru [y=1,x=1,z=0] se skipuje v MultiblockHelper.
 	private static final Predicate<BlockState>[][][] PATTERN =
 			MultiblockHelper.buildSolidShellPattern(
 					MultiblockHelper.of(DifModBlocks.COKE_OVEN.get()),
-					MultiblockHelper.of(DifModBlocks.COKE_OVEN.get())  // center is also a brick
+					MultiblockHelper.of(DifModBlocks.COKE_OVEN.get())
 			);
+
+	// Jak často (v tickách) re-validovat strukturu když je už složená.
+	// Chrání proti rozbití přes /setblock nebo jiné světové úpravy bez block updatů.
+	private static final int FORMED_REVALIDATE_PERIOD = 40;
+	// Jak často re-validovat když ještě složená není.
+	private static final int UNFORMED_REVALIDATE_PERIOD = 20;
+	// Slot indices.
+	private static final int SLOT_INPUT = 0;
+	private static final int SLOT_OUTPUT = 1;
+	private static final int[] SLOTS_ALL = {SLOT_INPUT, SLOT_OUTPUT};
 
 	// ── Inventory & Fluid ────────────────────────────────────────────────
 	private final ItemStackHandler inventory = new ItemStackHandler(2) {
 		@Override
 		protected void onContentsChanged(int slot) {
+			// Slot 0 cache invalidation
+			if (slot == SLOT_INPUT) cachedRecipe = null;
 			setChanged();
 		}
 	};
-
-	public ItemStackHandler getInventory() {
-		return inventory;
-	}
 
 	public final FluidTank fluidTank = new FluidTank(8000) {
 		@Override
@@ -70,19 +76,25 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 		}
 	};
 
-	// ── Progress tracking ────────────────────────────────────────────────
+	public ItemStackHandler getInventory() { return inventory; }
+
+	// ── Progress & state ────────────────────────────────────────────────
 	private int progress = 0;
 	private int totalTime = 0;
+	/** True = next tick provede plnou multiblock validaci. */
+	public boolean forceValidation = true;
+	/** Tick offset aby všechny pece nevolaly validaci současně. */
+	private final int tickOffset = (int) (Math.random() * UNFORMED_REVALIDATE_PERIOD);
+	/** Cihly jsou blokovány jinou ovens. Sync. */
+	private boolean isConflicted = false;
+	/** Cache posledního receptu, invaliduje se při změně slotu 0. */
+	@Nullable
+	private transient CokeOvenRecipe cachedRecipe;
 
-	public int getProgress()  { return progress; }
-	public int getTotalTime() { return totalTime; }
-
-	// ── Constructor ──────────────────────────────────────────────────────
 	public CokeOvenControllerBlockEntity(BlockPos pos, BlockState blockState) {
 		super(DifModBlockEntities.COKE_OVEN_CONTROLLER.get(), pos, blockState);
 	}
 
-	// ── Sync: every setChanged also pushes data to clients ──────────────
 	@Override
 	public void setChanged() {
 		super.setChanged();
@@ -91,220 +103,241 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 		}
 	}
 
-	// ── Server tick ──────────────────────────────────────────────────────
+	// ─────────────────────────────────────────────────────────────────────
+	// SERVER TICK
+	// ─────────────────────────────────────────────────────────────────────
+
 	public static void serverTick(Level level, BlockPos pos, BlockState state, CokeOvenControllerBlockEntity be) {
-		// FACING = direction controller's front-face looks (away from structure).
-		// Direction INTO structure = FACING.getOpposite().
-		Direction facing = state.getValue(CokeOvenController.FACING);
-		Direction intoStructure = facing.getOpposite();
+		final Direction intoStructure = state.getValue(CokeOvenController.FACING).getOpposite();
+		final boolean wasFormed = state.getValue(CokeOvenController.FORMED);
+		final long gameTime = level.getGameTime() + be.tickOffset;
 
-		boolean isCurrentlyFormed = MultiblockHelper.isValid(level, pos, intoStructure, PATTERN);
-		boolean wasFormed = state.getValue(CokeOvenController.FORMED);
+		// Re-validace: vždy když forceValidation, jinak periodicky podle stavu.
+		// Klíčové: validujeme i FORMED stav (kvůli /setblock bez block updatů).
+		final int period = wasFormed ? FORMED_REVALIDATE_PERIOD : UNFORMED_REVALIDATE_PERIOD;
+		final boolean shouldValidate = be.forceValidation || gameTime % period == 0;
 
-		if (isCurrentlyFormed != wasFormed) {
-			if (isCurrentlyFormed) {
-				// Check no brick is already claimed by a DIFFERENT controller
+		boolean isFormed = wasFormed;
+		if (shouldValidate) {
+			be.forceValidation = false;
+			isFormed = MultiblockHelper.isValid(level, pos, intoStructure, PATTERN);
+
+			if (isFormed && !wasFormed) {
+				// Pokouší se přejít z unformed → formed: ověř konflikt
 				if (!canClaimAllBricks(level, pos, intoStructure)) {
-					isCurrentlyFormed = false;
+					isFormed = false;
+					if (!be.isConflicted) {
+						be.isConflicted = true;
+						be.setChanged();
+					}
 				}
 			}
+		}
 
-			if (isCurrentlyFormed) {
-				// Claim all bricks
+		// ── Tranzice stavů ───────────────────────────────────────────────
+		if (isFormed != wasFormed) {
+			if (isFormed) {
 				claimBricks(level, pos, intoStructure, pos);
+				be.isConflicted = false;
 			} else {
-				// Release all bricks
+				// Rozbila se: uvolnit cihly a resetovat průběh.
 				claimBricks(level, pos, intoStructure, null);
 				be.progress = 0;
 				be.totalTime = 0;
+				be.cachedRecipe = null;
 			}
-
-			state = state.setValue(CokeOvenController.FORMED, isCurrentlyFormed)
-					      .setValue(CokeOvenController.ACTIVE, false);
+			state = state.setValue(CokeOvenController.FORMED, isFormed)
+					.setValue(CokeOvenController.ACTIVE, false);
 			level.setBlock(pos, state, 3);
 			be.setChanged();
 		}
 
-		if (!isCurrentlyFormed) {
-			return;
-		}
+		if (!isFormed) return;
 
-		// ── Recipe processing ─────────────────────────────────────────────
-		ItemStack input  = be.inventory.getStackInSlot(0);
-		ItemStack output = be.inventory.getStackInSlot(1);
-
+		// ── Zpracování receptu ───────────────────────────────────────────
+		final ItemStack input = be.inventory.getStackInSlot(SLOT_INPUT);
 		if (input.isEmpty()) {
-			if (be.progress > 0) {
-				be.progress = 0;
-				be.totalTime = 0;
-				be.setChanged();
-			}
-			if (state.getValue(CokeOvenController.ACTIVE)) {
-				level.setBlock(pos, state.setValue(CokeOvenController.ACTIVE, false), 3);
-			}
+			be.resetProgressAndDeactivate(level, pos, state);
 			return;
 		}
 
-		Optional<CokeOvenRecipe> recipeOpt = findRecipe(level, input);
-		if (recipeOpt.isEmpty()) {
-			if (be.progress > 0) {
-				be.progress = 0;
-				be.totalTime = 0;
-				be.setChanged();
-			}
-			if (state.getValue(CokeOvenController.ACTIVE)) {
-				level.setBlock(pos, state.setValue(CokeOvenController.ACTIVE, false), 3);
-			}
+		final CokeOvenRecipe recipe = be.getRecipeFor(level, input);
+		if (recipe == null) {
+			be.resetProgressAndDeactivate(level, pos, state);
 			return;
 		}
 
-		CokeOvenRecipe recipe = recipeOpt.get();
 		be.totalTime = recipe.processingTime();
+		final ItemStack output = be.inventory.getStackInSlot(SLOT_OUTPUT);
+		final ItemStack result = recipe.result();
 
-		boolean canOutputItem = output.isEmpty() ||
-				(ItemStack.isSameItemSameComponents(output, recipe.result()) &&
-				 output.getCount() + recipe.result().getCount() <= output.getMaxStackSize());
+		final boolean canOutputItem = output.isEmpty()
+				|| (ItemStack.isSameItemSameComponents(output, result)
+				&& output.getCount() + result.getCount() <= output.getMaxStackSize());
 
-		boolean canOutputFluid = !recipe.hasFluidOutput() ||
-				be.fluidTank.fill(recipe.fluidOutput(), IFluidHandler.FluidAction.SIMULATE)
-						>= recipe.fluidOutput().getAmount();
+		final boolean canOutputFluid = !recipe.hasFluidOutput()
+				|| be.fluidTank.fill(recipe.fluidOutput(), IFluidHandler.FluidAction.SIMULATE)
+				>= recipe.fluidOutput().getAmount();
 
 		if (!canOutputItem || !canOutputFluid) {
-			if (state.getValue(CokeOvenController.ACTIVE)) {
-				level.setBlock(pos, state.setValue(CokeOvenController.ACTIVE, false), 3);
-			}
+			be.setActive(level, pos, state, false);
 			return;
 		}
 
-		if (!state.getValue(CokeOvenController.ACTIVE)) {
-			state = state.setValue(CokeOvenController.ACTIVE, true);
-			level.setBlock(pos, state, 3);
-		}
-
+		be.setActive(level, pos, state, true);
 		be.progress++;
-		// Sync every 10 ticks so goggles feel responsive
-		if (be.progress % 10 == 0) {
-			be.setChanged();
-		}
 
 		if (be.progress >= be.totalTime) {
-			be.progress = 0;
-
-			// Consume input
-			input.shrink(recipe.ingredientCount());
-			be.inventory.setStackInSlot(0, input);
-
-			// Produce item output
-			if (output.isEmpty()) {
-				be.inventory.setStackInSlot(1, recipe.result().copy());
-			} else {
-				output.grow(recipe.result().getCount());
-				be.inventory.setStackInSlot(1, output);
-			}
-
-			// Produce fluid output
-			if (recipe.hasFluidOutput()) {
-				be.fluidTank.fill(recipe.fluidOutput(), IFluidHandler.FluidAction.EXECUTE);
-			}
-
+			finishRecipe(be, recipe, input, output, result);
+		} else if (be.progress % 10 == 0) {
+			// Občasný sync pro responzivní goggle tooltip.
 			be.setChanged();
 		}
 	}
 
-	// ── Shared-wall helpers ──────────────────────────────────────────────
+	private static void finishRecipe(CokeOvenControllerBlockEntity be, CokeOvenRecipe recipe,
+	                                 ItemStack input, ItemStack output, ItemStack result) {
+		be.progress = 0;
 
-	/** Returns all 26 brick positions (controller pos is skipped). */
-	private static List<BlockPos> getBrickPositions(BlockPos controllerPos, Direction intoStructure) {
-		Direction right = intoStructure.getClockWise();
-		List<BlockPos> list = new ArrayList<>(26);
+		input.shrink(recipe.ingredientCount());
+		be.inventory.setStackInSlot(SLOT_INPUT, input);
+
+		if (output.isEmpty()) {
+			be.inventory.setStackInSlot(SLOT_OUTPUT, result.copy());
+		} else {
+			output.grow(result.getCount());
+			be.inventory.setStackInSlot(SLOT_OUTPUT, output);
+		}
+
+		if (recipe.hasFluidOutput()) {
+			be.fluidTank.fill(recipe.fluidOutput(), IFluidHandler.FluidAction.EXECUTE);
+		}
+		be.setChanged();
+	}
+
+	private void resetProgressAndDeactivate(Level level, BlockPos pos, BlockState state) {
+		if (progress != 0 || totalTime != 0) {
+			progress = 0;
+			totalTime = 0;
+			setChanged();
+		}
+		setActive(level, pos, state, false);
+	}
+
+	private void setActive(Level level, BlockPos pos, BlockState state, boolean active) {
+		if (state.getValue(CokeOvenController.ACTIVE) != active) {
+			level.setBlock(pos, state.setValue(CokeOvenController.ACTIVE, active), 3);
+		}
+	}
+
+	// ─────────────────────────────────────────────────────────────────────
+	// MULTIBLOCK CIHLY (claim / release / conflict check)
+	// ─────────────────────────────────────────────────────────────────────
+
+	/** Funkční interface pro iteraci přes cihly bez alokace List/ArrayListu. */
+	@FunctionalInterface
+	private interface BrickVisitor {
+		/** Vrátí false pro předčasné ukončení iterace. */
+		boolean visit(BlockPos.MutableBlockPos pos);
+	}
+
+	/** Iteruje 26 pozic cihel kolem controlleru a volá visitor pro každou. */
+	private static void forEachBrick(BlockPos controllerPos, Direction intoStructure, BrickVisitor visitor) {
+		final Direction right = intoStructure.getClockWise();
+		final BlockPos.MutableBlockPos mp = new BlockPos.MutableBlockPos();
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 3; x++) {
 				for (int z = 0; z < 3; z++) {
-					if (y == 1 && x == 1 && z == 0) continue; // skip controller
-					BlockPos p = controllerPos
-							.relative(intoStructure, z)
-							.relative(right, x - 1)
-							.above(y - 1);
-					list.add(p);
+					if (y == 1 && x == 1 && z == 0) continue;
+					mp.set(controllerPos)
+							.move(intoStructure, z)
+							.move(right, x - 1)
+							.move(Direction.UP, y - 1);
+					if (!visitor.visit(mp)) return;
 				}
 			}
 		}
-		return list;
 	}
 
-	/** Returns true only if every brick is unclaimed or already owned by this controller. */
 	private static boolean canClaimAllBricks(Level level, BlockPos controllerPos, Direction intoStructure) {
-		for (BlockPos brickPos : getBrickPositions(controllerPos, intoStructure)) {
-			if (level.getBlockEntity(brickPos) instanceof CokeOvenBlockEntity brick) {
-				if (!brick.canBeClaimedBy(controllerPos)) return false;
+		final boolean[] ok = {true};
+		forEachBrick(controllerPos, intoStructure, mp -> {
+			if (level.getBlockEntity(mp) instanceof CokeOvenBlockEntity brick
+					&& !brick.canBeClaimedBy(controllerPos)) {
+				ok[0] = false;
+				return false;
 			}
-		}
-		return true;
+			return true;
+		});
+		return ok[0];
 	}
 
-	/** Claims (owner = controllerPos) or releases (owner = null) all bricks. */
 	private static void claimBricks(Level level, BlockPos controllerPos,
-									Direction intoStructure, @Nullable BlockPos owner) {
-		for (BlockPos brickPos : getBrickPositions(controllerPos, intoStructure)) {
-			if (level.getBlockEntity(brickPos) instanceof CokeOvenBlockEntity brick) {
+	                                Direction intoStructure, @Nullable BlockPos owner) {
+		forEachBrick(controllerPos, intoStructure, mp -> {
+			if (level.getBlockEntity(mp) instanceof CokeOvenBlockEntity brick) {
 				brick.setControllerPos(owner);
 			}
-		}
+			return true;
+		});
 	}
 
-	// ── Recipe lookup ────────────────────────────────────────────────────
+	// ─────────────────────────────────────────────────────────────────────
+	// RECEPTY (s cache)
+	// ─────────────────────────────────────────────────────────────────────
 
-	private static Optional<CokeOvenRecipe> findRecipe(Level level, ItemStack input) {
-		if (input.isEmpty()) return Optional.empty();
-		for (RecipeHolder<CokeOvenRecipe> holder :
-				level.getRecipeManager().getAllRecipesFor(DifModRecipes.COKE_OVEN_TYPE.get())) {
-			if (holder.value().matches(input)) return Optional.of(holder.value());
+	/** Najde recept pro input — používá cache invalidovanou změnou slotu 0. */
+	@Nullable
+	private CokeOvenRecipe getRecipeFor(Level level, ItemStack input) {
+		final CokeOvenRecipe cached = cachedRecipe;
+		if (cached != null && cached.matches(input)) return cached;
+
+		final List<RecipeHolder<CokeOvenRecipe>> all =
+				level.getRecipeManager().getAllRecipesFor(DifModRecipes.COKE_OVEN_TYPE.get());
+		for (RecipeHolder<CokeOvenRecipe> holder : all) {
+			if (holder.value().matches(input)) {
+				cachedRecipe = holder.value();
+				return cachedRecipe;
+			}
 		}
-		return Optional.empty();
+		cachedRecipe = null;
+		return null;
 	}
 
-	// ── Goggle tooltip ───────────────────────────────────────────────────
+	// ─────────────────────────────────────────────────────────────────────
+	// GOGGLE TOOLTIP
+	// ─────────────────────────────────────────────────────────────────────
 
 	@Override
 	public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
 		tooltip.add(Component.literal("◆ Coke Oven").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
 
-		BlockState state = getBlockState();
-		boolean isFormed = state.hasProperty(CokeOvenController.FORMED)
+		final BlockState state = getBlockState();
+		final boolean formed = state.hasProperty(CokeOvenController.FORMED)
 				&& state.getValue(CokeOvenController.FORMED);
 
-		if (!isFormed) {
-			tooltip.add(Component.literal(" Structure is NOT formed!").withStyle(ChatFormatting.RED));
+		if (!formed) {
+			tooltip.add(isConflicted
+					? Component.literal(" ⚠ Structure already use some blocks").withStyle(ChatFormatting.DARK_RED)
+					: Component.literal(" Structure is NOT formed!").withStyle(ChatFormatting.RED));
 			return true;
 		}
 
-		// Input slot
-		ItemStack input = inventory.getStackInSlot(0);
-		tooltip.add(Component.literal(" ▶ Input: ").withStyle(ChatFormatting.GRAY)
-				.append(Component.literal(
-						input.isEmpty() ? "Empty" : input.getCount() + "x " + input.getHoverName().getString()
-				).withStyle(input.isEmpty() ? ChatFormatting.DARK_GRAY : ChatFormatting.WHITE)));
+		appendSlot(tooltip, " ▶ Input: ",  inventory.getStackInSlot(SLOT_INPUT));
+		appendSlot(tooltip, " ▶ Output: ", inventory.getStackInSlot(SLOT_OUTPUT));
 
-		// Output slot
-		ItemStack output = inventory.getStackInSlot(1);
-		tooltip.add(Component.literal(" ▶ Output: ").withStyle(ChatFormatting.GRAY)
-				.append(Component.literal(
-						output.isEmpty() ? "Empty" : output.getCount() + "x " + output.getHoverName().getString()
-				).withStyle(output.isEmpty() ? ChatFormatting.DARK_GRAY : ChatFormatting.WHITE)));
-
-		// Fluid
-		if (!fluidTank.getFluid().isEmpty()) {
+		final FluidStack fluid = fluidTank.getFluid();
+		if (!fluid.isEmpty()) {
 			tooltip.add(Component.literal(" ▶ Fluid: ").withStyle(ChatFormatting.GRAY)
 					.append(Component.literal(
-							fluidTank.getFluid().getAmount() + "/" + fluidTank.getCapacity() + " mB "
-							+ fluidTank.getFluid().getHoverName().getString()
+							fluid.getAmount() + "/" + fluidTank.getCapacity() + " mB "
+									+ fluid.getHoverName().getString()
 					).withStyle(ChatFormatting.AQUA)));
 		} else {
 			tooltip.add(Component.literal(" ▶ Fluid: ").withStyle(ChatFormatting.GRAY)
 					.append(Component.literal("Empty").withStyle(ChatFormatting.DARK_GRAY)));
 		}
 
-		// Progress
 		if (state.getValue(CokeOvenController.ACTIVE) && totalTime > 0) {
 			int pct = (int) (((double) progress / totalTime) * 100.0);
 			int secsLeft = Math.max(0, (totalTime - progress) / 20);
@@ -315,43 +348,45 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 			tooltip.add(Component.literal(" ▶ Status: ").withStyle(ChatFormatting.GRAY)
 					.append(Component.literal("Idle").withStyle(ChatFormatting.YELLOW)));
 		}
-
 		return true;
 	}
 
-	// ── WorldlyContainer (sided automation) ──────────────────────────────
+	private static void appendSlot(List<Component> tooltip, String label, ItemStack stack) {
+		tooltip.add(Component.literal(label).withStyle(ChatFormatting.GRAY)
+				.append(Component.literal(
+						stack.isEmpty() ? "Empty" : stack.getCount() + "x " + stack.getHoverName().getString()
+				).withStyle(stack.isEmpty() ? ChatFormatting.DARK_GRAY : ChatFormatting.WHITE)));
+	}
+
+	// ─────────────────────────────────────────────────────────────────────
+	// WorldlyContainer (sided automation)
+	// ─────────────────────────────────────────────────────────────────────
+
+	@Override public int @NotNull [] getSlotsForFace(@NotNull Direction side) { return SLOTS_ALL; }
+	@Override public boolean canPlaceItemThroughFace(int i, @NotNull ItemStack s, @Nullable Direction d) { return i == SLOT_INPUT; }
+	@Override public boolean canTakeItemThroughFace (int i, @NotNull ItemStack s, @NotNull  Direction d) { return i == SLOT_OUTPUT; }
+	@Override public boolean canPlaceItem(int i, @NotNull ItemStack s) { return i == SLOT_INPUT; }
+	@Override public int  getContainerSize() { return inventory.getSlots(); }
+	@Override public @NotNull ItemStack getItem(int i) { return inventory.getStackInSlot(i); }
+	@Override public void setItem(int i, @NotNull ItemStack s) { inventory.setStackInSlot(i, s); }
 
 	@Override
-	public int @NotNull [] getSlotsForFace(@NotNull Direction side) {
-		return IntStream.range(0, inventory.getSlots()).toArray();
+	public @NotNull ItemStack removeItem(int slot, int amount) {
+		return inventory.extractItem(slot, amount, false);
 	}
 
 	@Override
-	public boolean canPlaceItemThroughFace(int index, @NotNull ItemStack itemStack, @Nullable Direction direction) {
-		return index == 0;
+	public @NotNull ItemStack removeItemNoUpdate(int slot) {
+		ItemStack stack = inventory.getStackInSlot(slot);
+		inventory.setStackInSlot(slot, ItemStack.EMPTY);
+		return stack;
 	}
 
 	@Override
-	public boolean canTakeItemThroughFace(int index, @NotNull ItemStack itemStack, @NotNull Direction direction) {
-		return index == 1;
-	}
-
-	@Override
-	public boolean canPlaceItem(int index, @NotNull ItemStack itemStack) {
-		return index == 0;
-	}
-
-	@Override
-	public int getContainerSize() { return inventory.getSlots(); }
-
-	@Override
-	protected @NotNull Component getDefaultName() {
-		return Component.translatable("container.dif.coke_oven");
-	}
-
-	@Override
-	public @NotNull Component getDisplayName() {
-		return Component.translatable("container.dif.coke_oven");
+	public boolean isEmpty() {
+		for (int i = 0; i < inventory.getSlots(); i++)
+			if (!inventory.getStackInSlot(i).isEmpty()) return false;
+		return true;
 	}
 
 	@Override
@@ -367,25 +402,17 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 			inventory.setStackInSlot(i, stacks.get(i));
 	}
 
-	@Override
-	public @NotNull ItemStack getItem(int i) { return inventory.getStackInSlot(i); }
-
-	@Override
-	public void setItem(int i, @NotNull ItemStack itemStack) { inventory.setStackInSlot(i, itemStack); }
+	@Override protected @NotNull Component getDefaultName() { return Component.translatable("container.dif.coke_oven"); }
+	@Override public    @NotNull Component getDisplayName() { return Component.translatable("container.dif.coke_oven"); }
 
 	@Override
 	public @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory inv) {
 		return ChestMenu.threeRows(id, inv);
 	}
 
-	@Override
-	public boolean isEmpty() {
-		for (int i = 0; i < inventory.getSlots(); i++)
-			if (!inventory.getStackInSlot(i).isEmpty()) return false;
-		return true;
-	}
-
-	// ── NBT ─────────────────────────────────────────────────────────────
+	// ─────────────────────────────────────────────────────────────────────
+	// NBT
+	// ─────────────────────────────────────────────────────────────────────
 
 	@Override
 	protected void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
@@ -394,8 +421,10 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 			inventory.deserializeNBT(provider, tag.getCompound("inventory"));
 		if (tag.get("fluidTank") instanceof CompoundTag fluidTag)
 			fluidTank.readFromNBT(provider, fluidTag);
-		this.progress  = tag.getInt("progress");
-		this.totalTime = tag.getInt("totalTime");
+		progress  = tag.getInt("progress");
+		totalTime = tag.getInt("totalTime");
+		isConflicted = tag.getBoolean("isConflicted");
+		cachedRecipe = null;
 	}
 
 	@Override
@@ -403,8 +432,9 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 		super.saveAdditional(tag, provider);
 		tag.put("inventory", inventory.serializeNBT(provider));
 		tag.put("fluidTank", fluidTank.writeToNBT(provider, new CompoundTag()));
-		tag.putInt("progress",  this.progress);
-		tag.putInt("totalTime", this.totalTime);
+		tag.putInt("progress",  progress);
+		tag.putInt("totalTime", totalTime);
+		tag.putBoolean("isConflicted", isConflicted);
 	}
 
 	@Override
@@ -414,6 +444,64 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 
 	@Override
 	public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider provider) {
-		return this.saveWithFullMetadata(provider);
+		return saveWithFullMetadata(provider);
+	}
+
+	// ─────────────────────────────────────────────────────────────────────
+	// PLAYER INTERAKCE
+	// ─────────────────────────────────────────────────────────────────────
+
+	public boolean handleInteraction(Player player, InteractionHand hand) {
+		if (level == null || level.isClientSide) return true;
+
+		final ItemStack held = player.getItemInHand(hand);
+
+		// 1) Vědro → odeber fluid
+		if (held.getItem() == Items.BUCKET) {
+			tryFillBucket(player, hand, held);
+			return true;
+		}
+
+		// 2) Item v ruce → vlož/swap do input slotu
+		if (!held.isEmpty()) {
+			final ItemStack currentInput = inventory.getStackInSlot(SLOT_INPUT);
+			if (currentInput.isEmpty() || ItemStack.isSameItemSameComponents(currentInput, held)) {
+				final ItemStack remaining = inventory.insertItem(SLOT_INPUT, held.copy(), false);
+				player.setItemInHand(hand, remaining);
+			} else {
+				player.setItemInHand(hand, currentInput);
+				inventory.setStackInSlot(SLOT_INPUT, held.copy());
+			}
+		} else {
+			// 3) Prázdná ruka → nejdřív output, pak input
+			ItemStack out = inventory.getStackInSlot(SLOT_OUTPUT);
+			if (!out.isEmpty()) {
+				player.setItemInHand(hand, out.copy());
+				inventory.setStackInSlot(SLOT_OUTPUT, ItemStack.EMPTY);
+			} else {
+				ItemStack in = inventory.getStackInSlot(SLOT_INPUT);
+				if (!in.isEmpty()) {
+					player.setItemInHand(hand, in.copy());
+					inventory.setStackInSlot(SLOT_INPUT, ItemStack.EMPTY);
+				}
+			}
+		}
+		setChanged();
+		return true;
+	}
+
+	private void tryFillBucket(Player player, InteractionHand hand, ItemStack heldBucket) {
+		if (fluidTank.getFluidAmount() < 1000) return;
+		final FluidStack drained = fluidTank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
+		if (drained.isEmpty()) return;
+
+		heldBucket.shrink(1);
+		final ItemStack filled = new ItemStack(drained.getFluid().getBucket());
+		if (heldBucket.isEmpty()) {
+			player.setItemInHand(hand, filled);
+		} else if (!player.getInventory().add(filled)) {
+			player.drop(filled, false);
+		}
+		setChanged();
 	}
 }
