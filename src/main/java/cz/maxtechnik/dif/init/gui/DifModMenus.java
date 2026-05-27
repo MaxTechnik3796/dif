@@ -22,4 +22,6 @@ public class DifModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<SpaceshipMenu>> SPACESHIP = REGISTRY.register("spaceship", () -> IMenuTypeExtension.create(SpaceshipMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<MegaBackpackMenu>> MEGA_BACKPACK = REGISTRY.register("mega_backpack", () -> IMenuTypeExtension.create(MegaBackpackMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<QuarryMenu>> QUARRY = REGISTRY.register("quarry", () -> IMenuTypeExtension.create(QuarryMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<CokeOvenMenu>> COKE_OVEN = REGISTRY.register("coke_oven", () -> IMenuTypeExtension.create((windowId, inv, buf) -> new CokeOvenMenu(windowId, inv, buf)));
+
 }

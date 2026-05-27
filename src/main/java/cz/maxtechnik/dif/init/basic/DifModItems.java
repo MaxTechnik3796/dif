@@ -325,9 +325,7 @@ public class DifModItems{
 	public static final DeferredItem<Item>BIG_GIRDER=block(DifModBlocks.BIG_GIRDER);
 
 	public static final DeferredItem<Item>NUCLEAR_BOMB=REGISTRY.register("nuclear_bomb",NuclearBombItem::new);
-	public static final DeferredItem<Item>COKE_BRICK=block(DifModBlocks.COKE_BRICK);
-	public static final DeferredItem<Item>COKE_OVEN_CONTROLLER=block(DifModBlocks.COKE_OVEN_CONTROLLER);
-	public static final DeferredItem<Item>COKE_OVEN_PORT=block(DifModBlocks.COKE_OVEN_PORT);
+	public static final DeferredItem<Item> COKE_OVEN = block(DifModBlocks.COKE_OVEN);
 
 	public static final DeferredItem<Item>STEAM_GENERATOR=block(DifModBlocks.STEAM_GENERATOR);
 }

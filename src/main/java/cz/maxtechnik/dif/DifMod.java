@@ -2,6 +2,7 @@ package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
+import cz.maxtechnik.dif.block.entity.CokeOvenBlockEntity;
 import cz.maxtechnik.dif.item.modular.ToolComponents;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import cz.maxtechnik.dif.particle.FireballParticle;
@@ -21,6 +22,7 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
 import cz.maxtechnik.dif.command.IsChunkLoadedCommand;
@@ -50,8 +52,6 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.items.IItemHandler;
-import cz.maxtechnik.dif.block.CokeOvenControllerBlock;
-import cz.maxtechnik.dif.block.entity.CokeOvenBlockEntity;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
@@ -103,40 +103,38 @@ public class DifMod{
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.DISTILLATION_TANK.get(),(be,ctx)->be.getFluidCapability());
 		//SteamGeneratorBlockEntity.registerCapabilities(event);
 
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.COKE_OVEN.get(),(be, side) -> {
-			if (side == null) return be.inventory;
-			Direction facing = be.getBlockState().getValue(CokeOvenControllerBlock.FACING);
-			if (side == facing.getOpposite()) return inputOnlyHandler(be);
-			if (side == facing.getClockWise() || side == facing.getCounterClockWise())
-				return outputOnlyHandler(be);
-			return null;
-		});
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.COKE_OVEN.get(),
+				(be, side) -> be.inventory);
 
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.COKE_OVEN.get(),(be, side) -> side == Direction.DOWN ? be.fluidTank : null);
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, DifModBlockEntities.COKE_OVEN.get(),
+				(be, side) -> side == Direction.DOWN ? be.fluidTank : null);
 
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.COKE_OVEN_PORT.get(),(be, side) -> be.itemHandler);
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.COKE_OVEN_PORT.get(),(be, side) -> be.fluidHandler);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.COKE_OVEN_PART.get(),
+				(be, side) -> { var m = be.getMaster(); return m != null ? m.inventory : null; });
+
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, DifModBlockEntities.COKE_OVEN_PART.get(),
+				(be, side) -> { var m = be.getMaster(); return m != null && side == Direction.DOWN ? m.fluidTank : null; });
 	}
 
 	private static IItemHandler inputOnlyHandler(CokeOvenBlockEntity be) {
 		return new IItemHandler() {
 			public int getSlots() { return 1; }
-			public ItemStack getStackInSlot(int s) { return be.inventory.getStackInSlot(CokeOvenBlockEntity.SLOT_INPUT); }
-			public ItemStack insertItem(int s, ItemStack stack, boolean sim) { return be.inventory.insertItem(CokeOvenBlockEntity.SLOT_INPUT, stack, sim); }
-			public ItemStack extractItem(int s, int amt, boolean sim) { return ItemStack.EMPTY; }
+			public @NotNull ItemStack getStackInSlot(int s) { return be.inventory.getStackInSlot(CokeOvenBlockEntity.SLOT_INPUT); }
+			public @NotNull ItemStack insertItem(int s, @NotNull ItemStack stack, boolean sim) { return be.inventory.insertItem(CokeOvenBlockEntity.SLOT_INPUT, stack, sim); }
+			public @NotNull ItemStack extractItem(int s, int amt, boolean sim) { return ItemStack.EMPTY; }
 			public int getSlotLimit(int s) { return 64; }
-			public boolean isItemValid(int s, ItemStack stack) { return true; }
+			public boolean isItemValid(int s, @NotNull ItemStack stack) { return true; }
 		};
 	}
 
 	private static IItemHandler outputOnlyHandler(CokeOvenBlockEntity be) {
 		return new IItemHandler() {
 			public int getSlots() { return 1; }
-			public ItemStack getStackInSlot(int s) { return be.inventory.getStackInSlot(CokeOvenBlockEntity.SLOT_OUTPUT); }
-			public ItemStack insertItem(int s, ItemStack stack, boolean sim) { return stack; }
-			public ItemStack extractItem(int s, int amt, boolean sim) { return be.inventory.extractItem(CokeOvenBlockEntity.SLOT_OUTPUT, amt, sim); }
+			public @NotNull ItemStack getStackInSlot(int s) { return be.inventory.getStackInSlot(CokeOvenBlockEntity.SLOT_OUTPUT); }
+			public @NotNull ItemStack insertItem(int s, @NotNull ItemStack stack, boolean sim) { return stack; }
+			public @NotNull ItemStack extractItem(int s, int amt, boolean sim) { return be.inventory.extractItem(CokeOvenBlockEntity.SLOT_OUTPUT, amt, sim); }
 			public int getSlotLimit(int s) { return 64; }
-			public boolean isItemValid(int s, ItemStack stack) { return false; }
+			public boolean isItemValid(int s, @NotNull ItemStack stack) { return false; }
 		};
 	}
 
