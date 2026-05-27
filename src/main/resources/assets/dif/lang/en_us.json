@@ -296,8 +296,7 @@
 	"block.dif.copper_support":"Copper Support",
 	"block.dif.steel_support":"Steel Support",
 	"jei.dif.frying_table": "Frying Table",
-	"dif.coke_oven.deformed": "Deformed Suriku :D",
-	"dif.coke_oven.formed": "Formed Šuríčki :DD",
-	"dif.coke_oven.invalid_structure": "InvalidS tructure - furt to máš rozbitý XDDD",
-	"container.dif.coke_oven": "Coke Oven"
+	"container.dif.coke_oven": "Coke Oven",
+	"block.dif.coke_oven":"Coke Oven",
+	"block.dif.coke_oven_controller":"Coke Oven Controller"
 }
