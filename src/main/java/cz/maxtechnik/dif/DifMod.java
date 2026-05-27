@@ -98,39 +98,33 @@ public class DifMod{
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.SPACE_CRATE.get(),(be,side)->be.getInventory());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.SPACESHIP.get(),(be,side)->be.getItemHandler());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.DISTILLATION_TANK.get(),(be,ctx)->be.getFluidCapability());
-
-
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.COKE_OVEN_CONTROLLER.get(),(be, side)->{if(side!=null) return new SidedInvWrapper(be,side);return be.getInventory();});
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.COKE_OVEN_CONTROLLER.get(),(be,side)->{
+			if(side!=null) return new SidedInvWrapper(be,side);
+			return be.getInventory();
+		});
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.COKE_OVEN_CONTROLLER.get(),(be,side)->be.fluidTank);
-
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.COKE_OVEN.get(), (be, side) -> {
-			var controller = be.getFormedController();
-			if (controller != null) {
-				if (side != null) {
-					return new SidedInvWrapper(controller, side);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.COKE_OVEN.get(),(be,side)->{
+			var controller=be.getFormedController();
+			if(controller!=null){
+				if(side!=null){
+					return new SidedInvWrapper(controller,side);
 				}
 				return controller.getInventory();
 			}
 			return null;
 		});
-
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, DifModBlockEntities.COKE_OVEN.get(), (be, side) -> {
-			var controller = be.getFormedController();
-			if (controller != null) {
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.COKE_OVEN.get(),(be,side)->{
+			var controller=be.getFormedController();
+			if(controller!=null){
 				return controller.fluidTank;
 			}
 			return null;
 		});
-
 	}
-
-
-
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event){
 		LOGGER.info("DIF MOD: Server Starting");
 	}
-
 	@SubscribeEvent
 	public void onCommandsRegister(RegisterCommandsEvent event){
 		ChunkLoaderCommand.register(event.getDispatcher());
@@ -141,11 +135,8 @@ public class DifMod{
 			CarHudOverlay.render(event.getGuiGraphics());
 		}
 	}
-
-	@EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-	public static class ClientModEvents {
-
-
+	@EventBusSubscriber(modid=MODID, bus=EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
+	public static class ClientModEvents{
 		@SubscribeEvent
 		public static void onClientSetup(FMLClientSetupEvent event){
 			LOGGER.info("DIF MOD: Client Setup");
@@ -158,18 +149,16 @@ public class DifMod{
 				}
 			});
 		}
-
 		@SubscribeEvent
-		public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(), context -> new FryingTableRenderer());
-			event.registerBlockEntityRenderer(DifModBlockEntities.QUARRY.get(), context -> new QuarryRenderer());
-			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(), context -> new ChunkLoaderRenderer());
-			event.registerEntityRenderer(DifModEntities.FORMULA.get(), CarRenderer::new);
-			event.registerEntityRenderer(DifModEntities.REMOTE_MINECART.get(), context -> new MinecartRenderer<>(context, ModelLayers.MINECART));
-			event.registerEntityRenderer(DifModEntities.NUCLEAR_EXPLOSION.get(), NoopRenderer::new);
-			event.registerEntityRenderer(DifModEntities.NUCLEAR_MUSHROOM.get(), NoopRenderer::new);
-			event.registerEntityRenderer(DifModEntities.NUCLEAR_WAVE.get(), NoopRenderer::new);
-
+		public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event){
+			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(),context->new FryingTableRenderer());
+			event.registerBlockEntityRenderer(DifModBlockEntities.QUARRY.get(),context->new QuarryRenderer());
+			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(),context->new ChunkLoaderRenderer());
+			event.registerEntityRenderer(DifModEntities.FORMULA.get(),CarRenderer::new);
+			event.registerEntityRenderer(DifModEntities.REMOTE_MINECART.get(),context->new MinecartRenderer<>(context,ModelLayers.MINECART));
+			event.registerEntityRenderer(DifModEntities.NUCLEAR_EXPLOSION.get(),NoopRenderer::new);
+			event.registerEntityRenderer(DifModEntities.NUCLEAR_MUSHROOM.get(),NoopRenderer::new);
+			event.registerEntityRenderer(DifModEntities.NUCLEAR_WAVE.get(),NoopRenderer::new);
 			// Flywheel GPU visual pro rotující shaft
 			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.STEAM_GENERATOR.get())
 					.factory(SingleAxisRotatingVisual::shaft)
@@ -177,9 +166,9 @@ public class DifMod{
 					.apply();
 		}
 		@SubscribeEvent
-		public static void registerParticles(RegisterParticleProvidersEvent event) {
-			event.registerSpriteSet(DifModParticles.HUGE_SMOKE.get(), HugeSmoke.Factory::new);
-			event.registerSpriteSet(DifModParticles.FIREBALL.get(), FireballParticle.Factory::new);
+		public static void registerParticles(RegisterParticleProvidersEvent event){
+			event.registerSpriteSet(DifModParticles.HUGE_SMOKE.get(),HugeSmoke.Factory::new);
+			event.registerSpriteSet(DifModParticles.FIREBALL.get(),FireballParticle.Factory::new);
 		}
 	}
 	public static String goggleTooltipFix="    ";
