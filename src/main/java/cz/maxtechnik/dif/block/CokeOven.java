@@ -10,9 +10,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 public class CokeOven extends Block implements EntityBlock{
-    public CokeOven(BlockBehaviour.Properties properties) {
-        super(properties);
-    }
+	public CokeOven(BlockBehaviour.Properties properties){
+		super(properties);
+	}
 	@Override
 	public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
 		return DifModBlockEntities.COKE_OVEN.get().create(pos,blockState);
