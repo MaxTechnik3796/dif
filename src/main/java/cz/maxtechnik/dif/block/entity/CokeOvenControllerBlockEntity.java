@@ -96,14 +96,24 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 	}
 
 	// ── Server tick ──────────────────────────────────────────────────────
+	public boolean forceValidation = true;
+
 	public static void serverTick(Level level, BlockPos pos, BlockState state, CokeOvenControllerBlockEntity be) {
 		// FACING = direction controller's front-face looks (away from structure).
 		// Direction INTO structure = FACING.getOpposite().
 		Direction facing = state.getValue(CokeOvenController.FACING);
 		Direction intoStructure = facing.getOpposite();
 
-		boolean isCurrentlyFormed = MultiblockHelper.isValid(level, pos, intoStructure, PATTERN);
 		boolean wasFormed = state.getValue(CokeOvenController.FORMED);
+		boolean isCurrentlyFormed = wasFormed;
+
+		// Optimalizace: Neověřujeme celou strukturu každý tick. 
+		// Když NENÍ složená, kontroluje se jen 1x za vteřinu (20 ticků).
+		// Když JE složená, neověřuje se vůbec, dokud nás nějaká cihla neinformuje, že se rozbila (forceValidation).
+		if (be.forceValidation || (!wasFormed && level.getGameTime() % 20 == 0)) {
+			isCurrentlyFormed = MultiblockHelper.isValid(level, pos, intoStructure, PATTERN);
+			be.forceValidation = false;
+		}
 
 		if (isCurrentlyFormed != wasFormed) {
 			if (isCurrentlyFormed) {
@@ -164,6 +174,9 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 
 		Optional<CokeOvenRecipe> recipeOpt = findRecipe(level, input);
 		if (recipeOpt.isEmpty()) {
+			if (be.progress == 0 && be.level.getGameTime() % 40 == 0) {
+				cz.maxtechnik.dif.DifMod.LOGGER.debug("CokeOven idle: no recipe found for input " + input);
+			}
 			if (be.progress > 0) {
 				be.progress = 0;
 				be.totalTime = 0;
@@ -187,6 +200,9 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 						>= recipe.fluidOutput().getAmount();
 
 		if (!canOutputItem || !canOutputFluid) {
+			if (be.progress == 0 && be.level.getGameTime() % 40 == 0) {
+				cz.maxtechnik.dif.DifMod.LOGGER.debug("CokeOven stalled: canItem={} canFluid={}", canOutputItem, canOutputFluid);
+			}
 			if (state.getValue(CokeOvenController.ACTIVE)) {
 				level.setBlock(pos, state.setValue(CokeOvenController.ACTIVE, false), 3);
 			}
@@ -398,6 +414,18 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 	public void setItem(int i, @NotNull ItemStack itemStack) { inventory.setStackInSlot(i, itemStack); }
 
 	@Override
+	public @NotNull ItemStack removeItem(int slot, int amount) {
+		return inventory.extractItem(slot, amount, false);
+	}
+
+	@Override
+	public @NotNull ItemStack removeItemNoUpdate(int slot) {
+		ItemStack stack = inventory.getStackInSlot(slot);
+		inventory.setStackInSlot(slot, ItemStack.EMPTY);
+		return stack;
+	}
+
+	@Override
 	public @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory inv) {
 		return ChestMenu.threeRows(id, inv);
 	}
@@ -431,6 +459,62 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 		tag.putInt("progress",  this.progress);
 		tag.putInt("totalTime", this.totalTime);
 		tag.putBoolean("isConflicted", this.isConflicted);
+	}
+
+	// ── Player Interaction ───────────────────────────────────────────────
+	public boolean handleInteraction(net.minecraft.world.entity.player.Player player, net.minecraft.world.InteractionHand hand) {
+		if (level == null || level.isClientSide) return true;
+		
+		ItemStack held = player.getItemInHand(hand);
+		
+		// 1) Fluid extraction with bucket
+		if (held.getItem() == net.minecraft.world.item.Items.BUCKET) {
+			if (fluidTank.getFluidAmount() >= 1000) {
+				net.neoforged.neoforge.fluids.FluidStack drained = fluidTank.drain(1000, net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+				if (!drained.isEmpty()) {
+					held.shrink(1);
+					ItemStack filledBucket = new ItemStack(drained.getFluid().getBucket());
+					if (held.isEmpty()) {
+						player.setItemInHand(hand, filledBucket);
+					} else if (!player.getInventory().add(filledBucket)) {
+						player.drop(filledBucket, false);
+					}
+					setChanged();
+					return true;
+				}
+			}
+			return true;
+		}
+
+		// 2) Item interaction
+		if (!held.isEmpty()) {
+			// Try to insert or swap into input slot
+			ItemStack currentInput = inventory.getStackInSlot(0);
+			if (currentInput.isEmpty() || ItemStack.isSameItemSameComponents(currentInput, held)) {
+				ItemStack remaining = inventory.insertItem(0, held.copy(), false);
+				player.setItemInHand(hand, remaining);
+			} else {
+				// Swap items
+				player.setItemInHand(hand, currentInput);
+				inventory.setStackInSlot(0, held.copy());
+			}
+		} else {
+			// Empty hand -> Extract output first, else input
+			ItemStack output = inventory.getStackInSlot(1);
+			if (!output.isEmpty()) {
+				player.setItemInHand(hand, output.copy());
+				inventory.setStackInSlot(1, ItemStack.EMPTY);
+			} else {
+				ItemStack input = inventory.getStackInSlot(0);
+				if (!input.isEmpty()) {
+					player.setItemInHand(hand, input.copy());
+					inventory.setStackInSlot(0, ItemStack.EMPTY);
+				}
+			}
+		}
+		
+		setChanged();
+		return true;
 	}
 
 	@Override

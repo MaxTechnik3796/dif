@@ -98,4 +98,24 @@ public class CokeOvenController extends Block implements EntityBlock, IWrenchabl
 		if (level.isClientSide || blockState.getValue(FORMED)) return InteractionResult.PASS;
 		return InteractionResult.CONSUME;
 	}
+
+	@Override
+	protected @NotNull net.minecraft.world.ItemInteractionResult useItemOn(@NotNull net.minecraft.world.item.ItemStack heldItem, @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull net.minecraft.world.InteractionHand hand, @NotNull net.minecraft.world.phys.BlockHitResult hit) {
+		if (state.getValue(FORMED) && level.getBlockEntity(pos) instanceof CokeOvenControllerBlockEntity be) {
+			if (be.handleInteraction(player, hand)) {
+				return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide);
+			}
+		}
+		return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+	}
+
+	@Override
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull net.minecraft.world.phys.BlockHitResult hit) {
+		if (state.getValue(FORMED) && level.getBlockEntity(pos) instanceof CokeOvenControllerBlockEntity be) {
+			if (be.handleInteraction(player, net.minecraft.world.InteractionHand.MAIN_HAND)) {
+				return InteractionResult.sidedSuccess(level.isClientSide);
+			}
+		}
+		return InteractionResult.PASS;
+	}
 }
