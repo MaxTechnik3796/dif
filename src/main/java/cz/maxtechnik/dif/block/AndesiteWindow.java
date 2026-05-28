@@ -13,22 +13,22 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 public class AndesiteWindow extends Block{
 	public AndesiteWindow(){
-		super(Properties.of().instrument(NoteBlockInstrument.HAT).sound(SoundType.GLASS).strength(0.35f).noOcclusion().isRedstoneConductor((bs,br,bp)->false));
+		super(Properties.of().instrument(NoteBlockInstrument.HAT).sound(SoundType.GLASS).strength(0.35F).noOcclusion().isRedstoneConductor((bs,br,bp)->false));
 	}
 	@Override
-	public boolean skipRendering(@NotNull BlockState state,BlockState adjacentBlockState,@NotNull Direction side){
-		return adjacentBlockState.getBlock()==this||super.skipRendering(state,adjacentBlockState,side);
+	public boolean skipRendering(@NotNull BlockState blockState,BlockState adjacentBlockState,@NotNull Direction side){
+		return adjacentBlockState.getBlock()==this||super.skipRendering(blockState,adjacentBlockState,side);
 	}
 	@Override
-	public boolean propagatesSkylightDown(@NotNull BlockState state,@NotNull BlockGetter reader,@NotNull BlockPos pos){
+	public boolean propagatesSkylightDown(@NotNull BlockState blockState,@NotNull BlockGetter reader,@NotNull BlockPos pos){
 		return true;
 	}
 	@Override
 	public float getShadeBrightness(@NotNull BlockState blockState,@NotNull BlockGetter blockGetter,@NotNull BlockPos pos){
-		return 1.0f;
+		return 1F;
 	}
 	@Override
-	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
+	public int getLightBlock(@NotNull BlockState blockState,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
 		return 0;
 	}
 	@Override

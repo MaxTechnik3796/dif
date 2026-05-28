@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
-
 /**
  * Destilační tank — multiblok věž (1×1, 2×2 nebo 3×3).
  * STRUKTURA:
@@ -41,264 +40,231 @@ import java.util.Optional;
  *   4. Při dokončení: odebere vstup, naplní výstupní patra nad sebou
  */
 @SuppressWarnings("unsafe")
-public class DistillationTankBlockEntity extends FluidTankBlockEntity {
-
+public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 	//Limity ─────────────────────────────────────────────────────────────────
-	public static final int MAX_FOOTPRINT = 3;   // max 3×3 půdorys
-	public static final int MAX_OUTPUTS   = 15;  // max výstupních vrstev nad masterem
-	public static final int BASE_TICKS    = 100; // 5 sekund pro 1.0x rychlost
-
-	private static final int CACHE_REFRESH_RATE = 20; // přepočet teplo + struktura každou sekundu
-
+	public static final int MAX_FOOTPRINT=3;   // max 3×3 půdorys
+	public static final int MAX_OUTPUTS=15;  // max výstupních vrstev nad masterem
+	public static final int BASE_TICKS=100; // 5 sekund pro 1.0x rychlost
+	private static final int CACHE_REFRESH_RATE=20; // přepočet teplo + struktura každou sekundu
 	//Cache (jen master ji používá)
-	private int       towerOutputCount = 0;
-    private int       cachedHeatPoints = 0;
-	private float     cachedSpeed      = 0.0f;
-	private int       cacheTick        = 0;
-
+	private int towerOutputCount=0;
+	private int cachedHeatPoints=0;
+	private float cachedSpeed=0.0f;
+	private int cacheTick=0;
 	//Recipe processing (jen master)
-	private int progress = 0;
-	@Nullable private DistillationRecipe cachedRecipe = null;
-	private FluidStack lastInput = FluidStack.EMPTY;
-
-	public DistillationTankBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-		super(type, pos, state);
+	private int progress=0;
+	@Nullable
+	private DistillationRecipe cachedRecipe=null;
+	private FluidStack lastInput=FluidStack.EMPTY;
+	public DistillationTankBlockEntity(BlockEntityType<?> type,BlockPos pos,BlockState state){
+		super(type,pos,state);
 	}
-
 	//Multiblock konfigurace
-	@Override public int getMaxWidth()                                { return MAX_FOOTPRINT; }
-	@Override public int getMaxLength(Direction.Axis axis, int width) { return 1; }
-	@Override public void addBehaviours(List<BlockEntityBehaviour> b) { /* žádné Create advancementy */ }
-
-	public IFluidHandler getFluidCapability() { return fluidCapability; }
-
+	@Override
+	public int getMaxWidth(){
+		return MAX_FOOTPRINT;
+	}
+	@Override
+	public int getMaxLength(Direction.Axis axis,int width){
+		return 1;
+	}
+	@Override
+	public void addBehaviours(List<BlockEntityBehaviour> b){ /* žádné Create advancementy */ }
+	public IFluidHandler getFluidCapability(){
+		return fluidCapability;
+	}
 	//Tower Master detekce ────────────────────────────────────────────────────────
-
 	/**
 	 * Master = controller spodního patra věže.
 	 * Pokud blok pod ním není stejně široký controller, pak jsme master.
 	 */
-	public boolean isTowerMaster() {
-		if (!isController() || level == null) return false;
-		var below = level.getBlockEntity(worldPosition.below());
-		if (!(below instanceof DistillationTankBlockEntity b)) return true;
-		if (!b.isController()) return true;
-		return b.getWidth() != this.getWidth();
+	public boolean isTowerMaster(){
+		if(!isController()||level==null) return false;
+		var below=level.getBlockEntity(worldPosition.below());
+		if(!(below instanceof DistillationTankBlockEntity b)) return true;
+		if(!b.isController()) return true;
+		return b.getWidth()!=this.getWidth();
 	}
-
 	@Nullable
-	public DistillationTankBlockEntity getTowerMaster() {
-		if (level == null) return null;
-
+	public DistillationTankBlockEntity getTowerMaster(){
+		if(level==null) return null;
 		// 1. Najdi controller naší vrstvy
 		DistillationTankBlockEntity layerCtrl;
-		if (isController()) {
-			layerCtrl = this;
-		} else {
-			BlockPos ctrlPos = getController();
-			if (ctrlPos == null) return null;
-			if (!(level.getBlockEntity(ctrlPos) instanceof DistillationTankBlockEntity c)) return null;
-			layerCtrl = c;
+		if(isController()){
+			layerCtrl=this;
+		}else{
+			BlockPos ctrlPos=getController();
+			if(ctrlPos==null) return null;
+			if(!(level.getBlockEntity(ctrlPos) instanceof DistillationTankBlockEntity c)) return null;
+			layerCtrl=c;
 		}
-
 		// 2. Pokud je controller naší vrstvy master, vrátíme ho
-		if (layerCtrl.isTowerMaster()) return layerCtrl;
-
+		if(layerCtrl.isTowerMaster()) return layerCtrl;
 		// 3. Jinak jdeme dolů od controlleru naší vrstvy
-		BlockPos check = layerCtrl.worldPosition.below();
-		for (int i = 0; i < MAX_OUTPUTS + 2; i++) {
-			if (!(level.getBlockEntity(check) instanceof DistillationTankBlockEntity be)) return null;
-			if (be.isTowerMaster()) return be;
-			check = check.below();
+		BlockPos check=layerCtrl.worldPosition.below();
+		for(int i=0;i<MAX_OUTPUTS+2;i++){
+			if(!(level.getBlockEntity(check) instanceof DistillationTankBlockEntity be)) return null;
+			if(be.isTowerMaster()) return be;
+			check=check.below();
 		}
 		return null;
 	}
-
 	//Cache — počítání tepla, vrstev a rychlosti ────────────────────────────────────────────────────────
-
-	private void refreshCache() {
-		int w = getWidth();
-
+	private void refreshCache(){
+		int w=getWidth();
 		// Spočítej kolik výstupních pater máme nad sebou
-		towerOutputCount = 0;
-		for (int i = 1; i <= MAX_OUTPUTS; i++) {
-            assert level != null;
-            if (!(level.getBlockEntity(worldPosition.above(i)) instanceof DistillationTankBlockEntity a)) break;
-			if (!a.isController() || a.getWidth() != w) break;
+		towerOutputCount=0;
+		for(int i=1;i<=MAX_OUTPUTS;i++){
+			assert level!=null;
+			if(!(level.getBlockEntity(worldPosition.above(i)) instanceof DistillationTankBlockEntity a)) break;
+			if(!a.isController()||a.getWidth()!=w) break;
 			towerOutputCount++;
 		}
-
 		// Spočítej teplo pod celou základnou věže (controller je v rohu)
-		int points = 0;
-		HeatLevel best = HeatLevel.NONE;
-		for (int x = 0; x < w; x++) {
-			for (int z = 0; z < w; z++) {
-				BlockState burner = level.getBlockState(worldPosition.offset(x, -1, z));
-				HeatLevel h = BlazeBurnerBlock.getHeatLevelOf(burner);
-				if (h == HeatLevel.KINDLED)  points += 1;
-				else if (h == HeatLevel.SEETHING) points += 2;
-				if (h.ordinal() > best.ordinal()) best = h;
+		int points=0;
+		HeatLevel best=HeatLevel.NONE;
+		for(int x=0;x<w;x++){
+			for(int z=0;z<w;z++){
+				BlockState burner=level.getBlockState(worldPosition.offset(x,-1,z));
+				HeatLevel h=BlazeBurnerBlock.getHeatLevelOf(burner);
+				if(h==HeatLevel.KINDLED) points+=1;
+				else if(h==HeatLevel.SEETHING) points+=2;
+				if(h.ordinal()>best.ordinal()) best=h;
 			}
 		}
-
-        cachedHeatPoints = points;
-
+		cachedHeatPoints=points;
 		// Rychlost: 0.5x za každý bod, max 10 bodů = 5.0x
-		cachedSpeed = Math.min(10, points) * 0.5f;
+		cachedSpeed=Math.min(10,points)*0.5f;
 		sendData();
 	}
-
 	//Server tick — jen master ────────────────────────────────────────────────────────
-
-	public static void serverTick(Level level, DistillationTankBlockEntity be) {
-		if (!be.isTowerMaster()) return;
-
+	public static void serverTick(Level level,DistillationTankBlockEntity be){
+		if(!be.isTowerMaster()) return;
 		// Pravidelný refresh cache
-		if (be.cacheTick-- <= 0) {
+		if(be.cacheTick--<=0){
 			be.refreshCache();
-			be.cacheTick = CACHE_REFRESH_RATE;
+			be.cacheTick=CACHE_REFRESH_RATE;
 		}
-
 		// Bez tepla nic nedělej
-		if (be.cachedHeatPoints == 0) {
+		if(be.cachedHeatPoints==0){
 			be.resetProgress();
 			return;
 		}
-
 		// Bez vstupního fluidu nic nedělej
-		FluidStack input = be.tankInventory.getFluid();
-		if (input.isEmpty()) {
+		FluidStack input=be.tankInventory.getFluid();
+		if(input.isEmpty()){
 			be.resetProgress();
 			return;
 		}
-
 		// Najdi recept (cached podle vstupního fluidu)
-		if (be.cachedRecipe == null || !FluidStack.isSameFluidSameComponents(be.lastInput, input)) {
-			be.cachedRecipe = findRecipe(level, input).orElse(null);
-			be.lastInput    = input.copy();
-			be.progress     = 0;
+		if(be.cachedRecipe==null||!FluidStack.isSameFluidSameComponents(be.lastInput,input)){
+			be.cachedRecipe=findRecipe(level,input).orElse(null);
+			be.lastInput=input.copy();
+			be.progress=0;
 		}
-		if (be.cachedRecipe == null) {
+		if(be.cachedRecipe==null){
 			be.resetProgress();
 			return;
 		}
-
-		List<FluidStack> outputs = be.cachedRecipe.outputs();
-
+		List<FluidStack> outputs=be.cachedRecipe.outputs();
 		// Věž musí mít dost výstupních pater
-		if (outputs.size() > be.towerOutputCount) return;
-
+		if(outputs.size()>be.towerOutputCount) return;
 		// Všechny výstupní tanky musí mít místo
-		if (!canFitOutputs(level, be.worldPosition, outputs)) return;
-
+		if(!canFitOutputs(level,be.worldPosition,outputs)) return;
 		// Posun progressu (×10 pro decimální přesnost — 3.4x = +34/tick)
-		be.progress += (int) (be.cachedSpeed * 10f);
+		be.progress+=(int)(be.cachedSpeed*10f);
 		be.setChanged();
-
 		// Hotovo → odeber vstup, naplň výstupy
-		if (be.progress >= BASE_TICKS * 10) {
-			be.progress = 0;
-			be.tankInventory.drain(be.cachedRecipe.input().amount(), IFluidHandler.FluidAction.EXECUTE);
-			for (int i = 0; i < outputs.size(); i++) {
-				IFluidHandler out = level.getCapability(
-						Capabilities.FluidHandler.BLOCK, be.worldPosition.above(i + 1), null);
-				if (out != null) out.fill(outputs.get(i).copy(), IFluidHandler.FluidAction.EXECUTE);
+		if(be.progress>=BASE_TICKS*10){
+			be.progress=0;
+			be.tankInventory.drain(be.cachedRecipe.input().amount(),IFluidHandler.FluidAction.EXECUTE);
+			for(int i=0;i<outputs.size();i++){
+				IFluidHandler out=level.getCapability(
+						Capabilities.FluidHandler.BLOCK,be.worldPosition.above(i+1),null);
+				if(out!=null) out.fill(outputs.get(i).copy(),IFluidHandler.FluidAction.EXECUTE);
 			}
 		}
 	}
-
-	private void resetProgress() {
-		if (progress != 0) { progress = 0; setChanged(); }
+	private void resetProgress(){
+		if(progress!=0){
+			progress=0;
+			setChanged();
+		}
 	}
-
 	/** Simulace plnění — false pokud aspoň jeden výstup nemá místo. */
-	private static boolean canFitOutputs(Level level, BlockPos masterPos, List<FluidStack> outputs) {
-		for (int i = 0; i < outputs.size(); i++) {
-			IFluidHandler h = level.getCapability(
-					Capabilities.FluidHandler.BLOCK, masterPos.above(i + 1), null);
-			if (h == null) return false;
-			if (h.fill(outputs.get(i).copy(), IFluidHandler.FluidAction.SIMULATE) < outputs.get(i).getAmount())
+	private static boolean canFitOutputs(Level level,BlockPos masterPos,List<FluidStack> outputs){
+		for(int i=0;i<outputs.size();i++){
+			IFluidHandler h=level.getCapability(
+					Capabilities.FluidHandler.BLOCK,masterPos.above(i+1),null);
+			if(h==null) return false;
+			if(h.fill(outputs.get(i).copy(),IFluidHandler.FluidAction.SIMULATE)<outputs.get(i).getAmount())
 				return false;
 		}
 		return true;
 	}
-
-	private static Optional<DistillationRecipe> findRecipe(Level level, FluidStack input) {
-		for (RecipeHolder<DistillationRecipe> holder :
-				level.getRecipeManager().getAllRecipesFor(DifModRecipes.DISTILLATION_TYPE.get())) {
-			if (holder.value().matches(input)) return Optional.of(holder.value());
+	private static Optional<DistillationRecipe> findRecipe(Level level,FluidStack input){
+		for(RecipeHolder<DistillationRecipe> holder:
+				level.getRecipeManager().getAllRecipesFor(DifModRecipes.DISTILLATION_TYPE.get())){
+			if(holder.value().matches(input)) return Optional.of(holder.value());
 		}
 		return Optional.empty();
 	}
-
 	// Strukturální změny (Create ConnectivityHandler) ────────────────────────────────────────────────────────
-
 	@Override
-	public void notifyMultiUpdated() {
+	public void notifyMultiUpdated(){
 		super.notifyMultiUpdated();
 		// Resetuj cache i progress — věž se mohla změnit
-		cacheTick = 0;
-		progress  = 0;
+		cacheTick=0;
+		progress=0;
 	}
-
 	// Goggles tooltip — funguje z kteréhokoli tanku ve věži ────────────────────────────────────────────────────────
-
 	@Override
-	public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-		boolean added = super.addToGoggleTooltip(tooltip, isPlayerSneaking);
-
-		DistillationTankBlockEntity master = getTowerMaster();
-		if (master == null) return added;
-
+	public boolean addToGoggleTooltip(List<Component> tooltip,boolean isPlayerSneaking){
+		boolean added=super.addToGoggleTooltip(tooltip,isPlayerSneaking);
+		DistillationTankBlockEntity master=getTowerMaster();
+		if(master==null) return added;
 		//Separator
 		tooltip.add(Component.literal(" "));
-
 		//Tower badge
-		if (isTowerMaster()) {
+		if(isTowerMaster()){
 			tooltip.add(Component.literal(" ◆ TOWER MASTER")
-					.withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
-		} else {
+					.withStyle(ChatFormatting.GOLD,ChatFormatting.BOLD));
+		}else{
 			tooltip.add(Component.literal(" ◆ TOWER")
-					.withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
+					.withStyle(ChatFormatting.GOLD,ChatFormatting.BOLD));
 		}
-
 		//Teplo
 		tooltip.add(Component.literal(" Heat: ")
 				.withStyle(ChatFormatting.GRAY)
-				.append(Component.literal(master.cachedHeatPoints + " / 10")
-						.withStyle(master.cachedHeatPoints >= 10 ? ChatFormatting.GREEN : ChatFormatting.WHITE)));
-
+				.append(Component.literal(master.cachedHeatPoints+" / 10")
+						.withStyle(master.cachedHeatPoints>=10?ChatFormatting.GREEN:ChatFormatting.WHITE)));
 		//Rychlost
-		if (master.cachedSpeed > 0) {
+		if(master.cachedSpeed>0){
 			tooltip.add(Component.literal(" Speed: ")
 					.withStyle(ChatFormatting.GRAY)
-					.append(Component.literal(master.cachedSpeed + "×")
-							.withStyle(master.cachedSpeed >= 4.0f ? ChatFormatting.GREEN : ChatFormatting.AQUA)));
-		} else {
+					.append(Component.literal(master.cachedSpeed+"×")
+							.withStyle(master.cachedSpeed>=4.0f?ChatFormatting.GREEN:ChatFormatting.AQUA)));
+		}else{
 			tooltip.add(Component.literal(" No heat source!")
 					.withStyle(ChatFormatting.RED));
 		}
-
 		return true;
 	}
-
 	//NBT ────────────────────────────────────────────────────────
-
 	@Override
-	public void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
-		super.write(tag, registries, clientPacket);
-		tag.putInt("dif_progress", progress);
+	public void write(CompoundTag tag,HolderLookup.Provider registries,boolean clientPacket){
+		super.write(tag,registries,clientPacket);
+		tag.putInt("dif_progress",progress);
 		// Sync heat info to client so Goggles tooltip works
-		tag.putInt("dif_heatPoints", cachedHeatPoints);
-		tag.putFloat("dif_speed",    cachedSpeed);
+		tag.putInt("dif_heatPoints",cachedHeatPoints);
+		tag.putFloat("dif_speed",cachedSpeed);
 	}
-
 	@Override
-	public void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
-		super.read(tag, registries, clientPacket);
-		progress         = tag.getInt("dif_progress");
-		cachedHeatPoints = tag.getInt("dif_heatPoints");
-		cachedSpeed      = tag.getFloat("dif_speed");
-		cacheTick        = 0;
+	public void read(CompoundTag tag,HolderLookup.Provider registries,boolean clientPacket){
+		super.read(tag,registries,clientPacket);
+		progress=tag.getInt("dif_progress");
+		cachedHeatPoints=tag.getInt("dif_heatPoints");
+		cachedSpeed=tag.getFloat("dif_speed");
+		cacheTick=0;
 	}
 }

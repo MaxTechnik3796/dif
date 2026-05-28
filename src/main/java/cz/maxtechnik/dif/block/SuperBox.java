@@ -40,19 +40,19 @@ public class SuperBox extends Block implements SimpleWaterloggedBlock, EntityBlo
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(WATERLOGGED,false));
 	}
 	@Override
-	public boolean skipRendering(@NotNull BlockState state,BlockState adjacentBlockState,@NotNull Direction side){
-		return adjacentBlockState.getBlock()==this||super.skipRendering(state,adjacentBlockState,side);
+	public boolean skipRendering(@NotNull BlockState blockState,BlockState adjacentBlockState,@NotNull Direction side){
+		return adjacentBlockState.getBlock().equals(this)||super.skipRendering(blockState,adjacentBlockState,side);
 	}
 	@Override
-	public boolean propagatesSkylightDown(BlockState state,@NotNull BlockGetter reader,@NotNull BlockPos pos){
-		return state.getFluidState().isEmpty();
+	public boolean propagatesSkylightDown(BlockState blockState,@NotNull BlockGetter reader,@NotNull BlockPos pos){
+		return blockState.getFluidState().isEmpty();
 	}
 	@Override
-	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
+	public int getLightBlock(@NotNull BlockState blockState,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
 		return 0;
 	}
 	@Override
-	public @NotNull VoxelShape getVisualShape(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
+	public @NotNull VoxelShape getVisualShape(@NotNull BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
 		return Shapes.empty();
 	}
 	@Override
@@ -61,31 +61,27 @@ public class SuperBox extends Block implements SimpleWaterloggedBlock, EntityBlo
 	}
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context){
-		boolean flag=context.getLevel().getFluidState(context.getClickedPos()).getType()==Fluids.WATER;
+		boolean flag=context.getLevel().getFluidState(context.getClickedPos()).getType().equals(Fluids.WATER);
 		return this.defaultBlockState().setValue(FACING,context.getHorizontalDirection().getOpposite()).setValue(WATERLOGGED,flag);
 	}
-	public @NotNull BlockState rotate(BlockState state,Rotation rot){
-		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));
+	public @NotNull BlockState rotate(BlockState blockState,Rotation rotation){
+		return blockState.setValue(FACING,rotation.rotate(blockState.getValue(FACING)));
 	}
-	public @NotNull BlockState mirror(BlockState state,Mirror mirrorIn){
-		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
-	}
-	@Override
-	public @NotNull FluidState getFluidState(BlockState state){
-		return state.getValue(WATERLOGGED)?Fluids.WATER.getSource(false):super.getFluidState(state);
+	public @NotNull BlockState mirror(BlockState blockState,Mirror mirror){
+		return blockState.rotate(mirror.getRotation(blockState.getValue(FACING)));
 	}
 	@Override
-	public @NotNull BlockState updateShape(BlockState state,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
-		if(state.getValue(WATERLOGGED)){
-			world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
-		}
-		return super.updateShape(state,facing,facingState,world,currentPos,facingPos);
+	public @NotNull FluidState getFluidState(BlockState blockState){
+		return blockState.getValue(WATERLOGGED)?Fluids.WATER.getSource(false):super.getFluidState(blockState);
 	}
 	@Override
-	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
+	public @NotNull BlockState updateShape(BlockState blockState,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
+		if(blockState.getValue(WATERLOGGED)) world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
+		return super.updateShape(blockState,facing,facingState,world,currentPos,facingPos);
+	}
+	@Override
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
 		if(player instanceof ServerPlayer serverPlayer){
-			// V NeoForge 1.21.1 se používá serverPlayer.openMenu
-			// Místo FriendlyByteBuf se nyní používá BlockPos přímo v argumentu, pokud je potřeba
 			serverPlayer.openMenu(new MenuProvider(){
 				@Override
 				public @NotNull Component getDisplayName(){
@@ -93,8 +89,6 @@ public class SuperBox extends Block implements SimpleWaterloggedBlock, EntityBlo
 				}
 				@Override
 				public AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory,@NotNull Player player){
-					// Pokud váš SuperBoxMenu stále vyžaduje FriendlyByteBuf/RegistryFriendlyByteBuf,
-					// předává se v openMenu jako doplňkový argument (Data Writer)
 					return new SuperBoxMenu(id,inventory,pos);
 				}
 			},pos);
@@ -102,33 +96,33 @@ public class SuperBox extends Block implements SimpleWaterloggedBlock, EntityBlo
 		return InteractionResult.SUCCESS;
 	}
 	@Override
-	public MenuProvider getMenuProvider(@NotNull BlockState state,Level worldIn,@NotNull BlockPos pos){
+	public MenuProvider getMenuProvider(@NotNull BlockState blockState,Level worldIn,@NotNull BlockPos pos){
 		BlockEntity tileEntity=worldIn.getBlockEntity(pos);
 		return tileEntity instanceof MenuProvider menuProvider?menuProvider:null;
 	}
 	@Override
-	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		return new SuperBoxBlockEntity(pos,state);
+	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
+		return new SuperBoxBlockEntity(pos,blockState);
 	}
 	@Override
-	public boolean triggerEvent(@NotNull BlockState state,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
-		super.triggerEvent(state,world,pos,eventID,eventParam);
+	public boolean triggerEvent(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
+		super.triggerEvent(blockState,world,pos,eventID,eventParam);
 		BlockEntity blockEntity=world.getBlockEntity(pos);
 		return blockEntity!=null&&blockEntity.triggerEvent(eventID,eventParam);
 	}
 	@Override
-	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
-		if(state.getBlock()!=newState.getBlock()){
+	public void onRemove(BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
+		if(blockState.getBlock()!=newState.getBlock()){
 			BlockEntity blockEntity=world.getBlockEntity(pos);
 			if(blockEntity instanceof SuperBoxBlockEntity be){
 				Containers.dropContents(world,pos,be);
 				world.updateNeighbourForOutputSignal(pos,this);
 			}
-			super.onRemove(state,world,pos,newState,isMoving);
+			super.onRemove(blockState,world,pos,newState,isMoving);
 		}
 	}
 	@Override
-	public boolean hasAnalogOutputSignal(@NotNull BlockState state){
+	public boolean hasAnalogOutputSignal(@NotNull BlockState blockState){
 		return true;
 	}
 	@Override

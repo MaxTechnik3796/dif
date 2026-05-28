@@ -15,10 +15,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("deprecation")
 public class Camera extends BaseEntityBlock{
-	// 1. Definice Codecu pro NeoForge 1.21.1
 	public static final MapCodec<Camera> CODEC=simpleCodec(Camera::new);
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
-	// 2. Implementace abstraktní metody codec()
 	@Override
 	protected @NotNull MapCodec<? extends BaseEntityBlock> codec(){
 		return CODEC;
@@ -41,22 +39,22 @@ public class Camera extends BaseEntityBlock{
 		return RenderShape.MODEL;
 	}
 	@Override
-	public @NotNull BlockState rotate(BlockState state,Rotation rot){
-		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));
+	public @NotNull BlockState rotate(BlockState blockState,Rotation rotation){
+		return blockState.setValue(FACING,rotation.rotate(blockState.getValue(FACING)));
 	}
 	@Override
-	public @NotNull BlockState mirror(BlockState state,Mirror mirrorIn){
-		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
+	public @NotNull BlockState mirror(BlockState blockState,Mirror mirror){
+		return blockState.rotate(mirror.getRotation(blockState.getValue(FACING)));
 	}
 	@Nullable
 	@Override
-	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		return new CameraBlockEntity(pos,state);
+	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
+		return new CameraBlockEntity(pos,blockState);
 	}
 	@Override
-	protected void onRemove(BlockState state,@NotNull Level level,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
-		if(!state.is(newState.getBlock())){
-			super.onRemove(state,level,pos,newState,isMoving);
+	protected void onRemove(BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
+		if(!blockState.is(newState.getBlock())){
+			super.onRemove(blockState,level,pos,newState,isMoving);
 		}
 	}
 }

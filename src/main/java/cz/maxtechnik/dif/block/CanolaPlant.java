@@ -29,11 +29,11 @@ public class CanolaPlant extends FlowerBlock implements BonemealableBlock{
 		super(new SuspiciousStewEffects(List.of(new SuspiciousStewEffects.Entry(MobEffects.CONFUSION,100))),BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).sound(SoundType.GRASS).instabreak().noCollission().offsetType(BlockBehaviour.OffsetType.NONE).pushReaction(PushReaction.DESTROY));
 	}
 	@Override
-	public int getFlammability(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull Direction face){
+	public int getFlammability(@NotNull BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull Direction face){
 		return 100;
 	}
 	@Override
-	public int getFireSpreadSpeed(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull Direction face){
+	public int getFireSpreadSpeed(@NotNull BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull Direction face){
 		return 60;
 	}
 	@Override

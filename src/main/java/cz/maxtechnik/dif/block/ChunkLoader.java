@@ -85,7 +85,7 @@ public class ChunkLoader extends Block implements EntityBlock{
 			}
 		}
 		// Extra glint efekt na povrchu (pokud nechceš Mixiny)
-		if(random.nextFloat()<0.3f){
+		if(random.nextFloat()<0.3F){
 			level.addParticle(ParticleTypes.WITCH,
 					pos.getX()+random.nextDouble(),
 					pos.getY()+random.nextDouble(),
@@ -117,9 +117,7 @@ public class ChunkLoader extends Block implements EntityBlock{
 			boolean shouldBeLit=!level.hasNeighborSignal(pos);
 			if(blockState.getValue(LIT)!=shouldBeLit){
 				level.setBlock(pos,blockState.setValue(LIT,shouldBeLit),3);
-				if(level.getBlockEntity(pos) instanceof ChunkLoaderBlockEntity be){
-					be.updateStatus(shouldBeLit);
-				}
+				if(level.getBlockEntity(pos) instanceof ChunkLoaderBlockEntity be) be.updateStatus(shouldBeLit);
 			}
 		}
 	}

@@ -38,60 +38,60 @@ public class SpaceCrateBlock extends Block implements EntityBlock{
 		return this.defaultBlockState().setValue(FACING,ctx.getNearestLookingDirection().getOpposite()).setValue(OPEN,false);
 	}
 	@Override
-	public @NotNull BlockState rotate(BlockState state,Rotation rot){
-		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));
+	public @NotNull BlockState rotate(BlockState blockState,Rotation rotation){
+		return blockState.setValue(FACING,rotation.rotate(blockState.getValue(FACING)));
 	}
 	@Override
-	public @NotNull BlockState mirror(BlockState state,Mirror mirror){
-		return state.setValue(FACING,mirror.mirror(state.getValue(FACING)));
+	public @NotNull BlockState mirror(BlockState blockState,Mirror mirror){
+		return blockState.setValue(FACING,mirror.mirror(blockState.getValue(FACING)));
 	}
 	@Override
-	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos){
+	public int getLightBlock(@NotNull BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos){
 		return 15;
 	}
 	@Override
-	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
 		if(level.isClientSide) return InteractionResult.SUCCESS;
-		if(player instanceof ServerPlayer sp){
+		if(player instanceof ServerPlayer serverPlayer){
 			BlockEntity be=level.getBlockEntity(pos);
-			if(be instanceof MenuProvider mp) sp.openMenu(mp,pos);
+			if(be instanceof MenuProvider menuProvider) serverPlayer.openMenu(menuProvider,pos);
 		}
 		return InteractionResult.CONSUME;
 	}
 	@Override
-	public MenuProvider getMenuProvider(@NotNull BlockState state,Level world,@NotNull BlockPos pos){
+	public MenuProvider getMenuProvider(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos){
 		BlockEntity be=world.getBlockEntity(pos);
 		return be instanceof MenuProvider mp?mp:null;
 	}
 	@Override
-	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		return new SpaceCrateBlockEntity(pos,state);
+	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
+		return new SpaceCrateBlockEntity(pos,blockState);
 	}
 	@Override
-	public boolean triggerEvent(@NotNull BlockState state,@NotNull Level world,@NotNull BlockPos pos,int id,int param){
-		super.triggerEvent(state,world,pos,id,param);
+	public boolean triggerEvent(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,int id,int param){
+		super.triggerEvent(blockState,world,pos,id,param);
 		BlockEntity be=world.getBlockEntity(pos);
 		return be!=null&&be.triggerEvent(id,param);
 	}
 	@Override
-	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean moving){
-		if(state.getBlock()!=newState.getBlock()){
+	public void onRemove(BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean moving){
+		if(blockState.getBlock()!=newState.getBlock()){
 			BlockEntity be=world.getBlockEntity(pos);
 			if(be instanceof SpaceCrateBlockEntity crate){
 				Containers.dropContents(world,pos,crate);
 				world.updateNeighbourForOutputSignal(pos,this);
 			}
-			super.onRemove(state,world,pos,newState,moving);
+			super.onRemove(blockState,world,pos,newState,moving);
 		}
 	}
 	@Override
-	public boolean hasAnalogOutputSignal(@NotNull BlockState state){
+	public boolean hasAnalogOutputSignal(@NotNull BlockState blockState){
 		return true;
 	}
 	@Override
 	public int getAnalogOutputSignal(@NotNull BlockState state,Level world,@NotNull BlockPos pos){
-		BlockEntity be=world.getBlockEntity(pos);
-		if(be instanceof SpaceCrateBlockEntity crate)
+		BlockEntity blockEntity=world.getBlockEntity(pos);
+		if(blockEntity instanceof SpaceCrateBlockEntity crate)
 			return AbstractContainerMenu.getRedstoneSignalFromContainer(crate);
 		return 0;
 	}

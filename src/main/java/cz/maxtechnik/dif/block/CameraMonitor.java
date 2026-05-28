@@ -26,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("deprecation")
 public class CameraMonitor extends BaseEntityBlock{
-	// Definice Codecu pro 1.21.1
 	public static final MapCodec<CameraMonitor> CODEC=simpleCodec(CameraMonitor::new);
 	public static final EnumProperty<CameraMonitorState> STATE=EnumProperty.create("state",CameraMonitorState.class);
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
@@ -39,9 +38,8 @@ public class CameraMonitor extends BaseEntityBlock{
 		this.registerDefaultState(this.stateDefinition.any().setValue(STATE,CameraMonitorState.NO_SIGNAL).setValue(FACING,Direction.NORTH));
 	}
 	@Override
-	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state,Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState,Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
 		if(level.getBlockEntity(pos) instanceof CameraMonitorBlockEntity monitor){
-			// Kontrola itemu v ruce
 			if(player.getMainHandItem().is(DifModItems.CAMERA_LINK.get())) return InteractionResult.PASS;
 			return monitor.useMonitor(player);
 		}
@@ -61,22 +59,22 @@ public class CameraMonitor extends BaseEntityBlock{
 		return this.defaultBlockState().setValue(FACING,context.getHorizontalDirection().getOpposite());
 	}
 	@Override
-	public @NotNull BlockState rotate(BlockState state,Rotation rot){
-		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));
+	public @NotNull BlockState rotate(BlockState blockState,Rotation rotation){
+		return blockState.setValue(FACING,rotation.rotate(blockState.getValue(FACING)));
 	}
 	@Override
-	public @NotNull BlockState mirror(BlockState state,Mirror mirrorIn){
-		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
+	public @NotNull BlockState mirror(BlockState blockState,Mirror mirror){
+		return blockState.rotate(mirror.getRotation(blockState.getValue(FACING)));
 	}
 	@Nullable
 	@Override
-	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		return new CameraMonitorBlockEntity(pos,state);
+	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
+		return new CameraMonitorBlockEntity(pos,blockState);
 	}
 	@Override
-	protected void onRemove(BlockState state,@NotNull Level level,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
-		if(!state.is(newState.getBlock())){
-			super.onRemove(state,level,pos,newState,isMoving);
+	protected void onRemove(BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
+		if(!blockState.is(newState.getBlock())){
+			super.onRemove(blockState,level,pos,newState,isMoving);
 		}
 	}
 	@Override
@@ -84,16 +82,11 @@ public class CameraMonitor extends BaseEntityBlock{
 		super.tick(blockstate,world,pos,random);
 	}
 	@Override
-	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T> type){
+	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState blockState,@NotNull BlockEntityType<T> type){
 		if(level.isClientSide) return null;
-		return createTickerHelper(type,DifModBlockEntities.CAMERA_MONITOR.get(),(lvl,pos,st,be)->{
-			if(st.getValue(STATE)==CameraMonitorState.ACTIVE){
-				if(lvl.getGameTime()%20==0){
-					if(lvl.getNearestPlayer(pos.getX(),pos.getY(),pos.getZ(),8,false)==null){
-						be.setInactive();
-					}
-				}
-			}
+		return createTickerHelper(type,DifModBlockEntities.CAMERA_MONITOR.get(),(lvl,pos,state,be)->{
+			if(state.getValue(STATE)==CameraMonitorState.ACTIVE) if(lvl.getGameTime()%20==0)
+				if(lvl.getNearestPlayer(pos.getX(),pos.getY(),pos.getZ(),8,false)==null) be.setInactive();
 		});
 	}
 }

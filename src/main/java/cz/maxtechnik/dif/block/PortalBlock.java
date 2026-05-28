@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.block;
 
+import com.mojang.serialization.MapCodec;
 import cz.maxtechnik.dif.block.entity.PortalBlockEntity;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -25,38 +26,32 @@ public class PortalBlock extends BaseEntityBlock{
 	public static final DirectionProperty EXTENSION_DIR=DirectionProperty.create("extension_dir",Direction.values());
 	public static final BooleanProperty IS_BLUE=BooleanProperty.create("is_blue");
 	public static final BooleanProperty IS_LINKED=BooleanProperty.create("is_linked");
-	public PortalBlock(Properties p){
-		super(p);
-		this.registerDefaultState(this.stateDefinition.any()
-				.setValue(HALF,DoubleBlockHalf.LOWER)
-				.setValue(FACING,Direction.NORTH)
-				.setValue(EXTENSION_DIR,Direction.UP)
-				.setValue(IS_BLUE,true)
-				.setValue(IS_LINKED,false));
+	public PortalBlock(Properties properties){
+		super(properties);
+		this.registerDefaultState(this.stateDefinition.any().setValue(HALF,DoubleBlockHalf.LOWER).setValue(FACING,Direction.NORTH).setValue(EXTENSION_DIR,Direction.UP).setValue(IS_BLUE,true).setValue(IS_LINKED,false));
 	}
 	@Override
-	public void neighborChanged(@NotNull BlockState state,Level level,@NotNull BlockPos pos,@NotNull Block block,@NotNull BlockPos fromPos,boolean isMoving){
+	public void neighborChanged(@NotNull BlockState blockState,Level level,@NotNull BlockPos pos,@NotNull Block block,@NotNull BlockPos fromPos,boolean isMoving){
 		if(!level.isClientSide){
-			Direction face=state.getValue(FACING);
-			if(pos.relative(face.getOpposite()).equals(fromPos)&&level.isEmptyBlock(fromPos))
-				level.destroyBlock(pos,false);
+			Direction face=blockState.getValue(FACING);
+			if(pos.relative(face.getOpposite()).equals(fromPos)&&level.isEmptyBlock(fromPos)) level.destroyBlock(pos,false);
 		}
 	}
 	@Override
-	public boolean propagatesSkylightDown(@NotNull BlockState state,@NotNull BlockGetter level,@NotNull BlockPos pos){
+	public boolean propagatesSkylightDown(@NotNull BlockState blockState,@NotNull BlockGetter level,@NotNull BlockPos pos){
 		return true;
 	}
 	@Override
-	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter level,@NotNull BlockPos pos){
+	public int getLightBlock(@NotNull BlockState blockState,@NotNull BlockGetter level,@NotNull BlockPos pos){
 		return 0;
 	}
 	@Override
-	public @NotNull com.mojang.serialization.MapCodec<? extends BaseEntityBlock> codec(){
-		return net.minecraft.world.level.block.state.BlockBehaviour.simpleCodec(PortalBlock::new);
+	public @NotNull MapCodec<? extends BaseEntityBlock> codec(){
+		return simpleCodec(PortalBlock::new);
 	}
 	@Override
-	public @NotNull VoxelShape getShape(BlockState state,@NotNull BlockGetter level,@NotNull BlockPos pos,@NotNull CollisionContext ctx){
-		return switch(state.getValue(FACING)){
+	public @NotNull VoxelShape getShape(BlockState blockState,@NotNull BlockGetter level,@NotNull BlockPos pos,@NotNull CollisionContext ctx){
+		return switch(blockState.getValue(FACING)){
 			case NORTH -> Block.box(0,0,15.9,16,16,16.1);
 			case SOUTH -> Block.box(0,0,-0.1,16,16,0.1);
 			case WEST -> Block.box(15.9,0,0,16.1,16,16);
@@ -66,43 +61,39 @@ public class PortalBlock extends BaseEntityBlock{
 		};
 	}
 	@Override
-	public void onRemove(BlockState state,@NotNull Level level,@NotNull BlockPos pos,BlockState newState,boolean moving){
-		if(!state.is(newState.getBlock())&&!level.isClientSide){
-			if(state.getValue(HALF)==DoubleBlockHalf.LOWER){
-				if(level.getBlockEntity(pos) instanceof PortalBlockEntity be&&level instanceof ServerLevel sl){
-					PortalBlockEntity.removeOldPortal(sl,be.getOwner(),be.isBlue());
+	public void onRemove(BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,BlockState newState,boolean moving){
+		if(!blockState.is(newState.getBlock())&&!level.isClientSide){
+			if(blockState.getValue(HALF).equals(DoubleBlockHalf.LOWER)){
+				if(level.getBlockEntity(pos) instanceof PortalBlockEntity be&&level instanceof ServerLevel serverLevel){
+					PortalBlockEntity.removeOldPortal(serverLevel,be.getOwner(),be.isBlue());
 				}
 			}
 		}
-		super.onRemove(state,level,pos,newState,moving);
+		super.onRemove(blockState,level,pos,newState,moving);
 	}
 	@Override
-	public @NotNull BlockState updateShape(BlockState state,@NotNull Direction dir,@NotNull BlockState adj,@NotNull LevelAccessor world,@NotNull BlockPos pos,@NotNull BlockPos adjPos){
-		DoubleBlockHalf half=state.getValue(HALF);
-		Direction ext=state.getValue(EXTENSION_DIR);
-		if((dir==ext&&half==DoubleBlockHalf.LOWER)||(dir==ext.getOpposite()&&half==DoubleBlockHalf.UPPER)){
-			return adj.is(this)?state:Blocks.AIR.defaultBlockState();
-		}
-		return super.updateShape(state,dir,adj,world,pos,adjPos);
+	public @NotNull BlockState updateShape(BlockState blockState,@NotNull Direction dir,@NotNull BlockState adj,@NotNull LevelAccessor world,@NotNull BlockPos pos,@NotNull BlockPos adjPos){
+		DoubleBlockHalf half=blockState.getValue(HALF);
+		Direction ext=blockState.getValue(EXTENSION_DIR);
+		if((dir.equals(ext)&&half.equals(DoubleBlockHalf.LOWER))||(dir.equals(ext.getOpposite())&&half.equals(DoubleBlockHalf.UPPER))) return adj.is(this)?blockState:Blocks.AIR.defaultBlockState();
+		return super.updateShape(blockState,dir,adj,world,pos,adjPos);
 	}
 	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> b){
-		b.add(HALF,FACING,EXTENSION_DIR,IS_BLUE,IS_LINKED);
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
+		builder.add(HALF,FACING,EXTENSION_DIR,IS_BLUE,IS_LINKED);
 	}
 	@Override
-	public @NotNull RenderShape getRenderShape(@NotNull BlockState state){
+	public @NotNull RenderShape getRenderShape(@NotNull BlockState blockState){
 		return RenderShape.MODEL;
 	}
 	@Nullable
 	@Override
-	public BlockEntity newBlockEntity(@NotNull BlockPos p,BlockState s){
-		return s.getValue(HALF)==DoubleBlockHalf.LOWER?new PortalBlockEntity(p,s):null;
+	public BlockEntity newBlockEntity(@NotNull BlockPos pos,BlockState blockState){
+		return blockState.getValue(HALF).equals(DoubleBlockHalf.LOWER)?new PortalBlockEntity(pos,blockState):null;
 	}
 	@Nullable
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level l,@NotNull BlockState s,@NotNull BlockEntityType<T> t){
-		return !l.isClientSide&&s.getValue(HALF)==DoubleBlockHalf.LOWER
-				?createTickerHelper(t,DifModBlockEntities.PORTAL.get(),(level,pos,state,be)->PortalBlockEntity.tick(level,pos,be))
-				:null;
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level,@NotNull BlockState blockState,@NotNull BlockEntityType<T> type){
+		return !level.isClientSide&&blockState.getValue(HALF).equals(DoubleBlockHalf.LOWER)?createTickerHelper(type,DifModBlockEntities.PORTAL.get(),(lvl,pos,state,be)->PortalBlockEntity.tick(lvl,pos,be)):null;
 	}
 }

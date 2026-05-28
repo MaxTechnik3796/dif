@@ -36,13 +36,13 @@ public class Quarry extends BaseEntityBlock{
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH));
 	}
 	@Override
-	public @NotNull RenderShape getRenderShape(@NotNull BlockState state){
+	public @NotNull RenderShape getRenderShape(@NotNull BlockState blockState){
 		return RenderShape.MODEL;
 	}
 	@Nullable
 	@Override
-	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		return new QuarryBlockEntity(pos,state);
+	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
+		return new QuarryBlockEntity(pos,blockState);
 	}
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
@@ -53,7 +53,6 @@ public class Quarry extends BaseEntityBlock{
 	public BlockState getStateForPlacement(BlockPlaceContext ctx){
 		return this.defaultBlockState().setValue(FACING,ctx.getHorizontalDirection().getOpposite());
 	}
-	// Zkontroluje jestli je v oblasti framu nějaký neničitelný blok
 	private static boolean hasUnbreakableInFrameArea(Level level,BlockPos quarryPos){
 		if(!(level.getBlockEntity(quarryPos) instanceof QuarryBlockEntity quarryEntity)) return false;
 		BlockPos areaCenter=quarryEntity.getAreaCenter();
@@ -72,18 +71,15 @@ public class Quarry extends BaseEntityBlock{
 		return false;
 	}
 	@Override
-	public void onPlace(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState oldState,boolean moving){
-		super.onPlace(state,level,pos,oldState,moving);
+	public void onPlace(@NotNull BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState oldState,boolean moving){
+		super.onPlace(blockState,level,pos,oldState,moving);
 		if(level.isClientSide) return;
-		// Nejdřív aplikuj landmarky (nastaví oblast quarry)
 		tryApplyNearbyLandmarks(level,pos);
-		// Pak teprve zkontroluj neničitelné bloky ve výsledné oblasti
 		if(hasUnbreakableInFrameArea(level,pos)){
 			level.removeBlock(pos,false);
 			Block.popResource(level,pos,new net.minecraft.world.item.ItemStack(this));
 		}
 	}
-	// Hledá formed landmarky v okolí a aplikuje první vyhovující na tuto quarry
 	private static void tryApplyNearbyLandmarks(Level level,BlockPos quarryPos){
 		int searchRange=QuarryBlockEntity.MAX_AREA_SIDE;
 		int baseY=quarryPos.getY();
@@ -98,7 +94,6 @@ public class Quarry extends BaseEntityBlock{
 				int halfZ=lmEntity.getFormedHalfZ();
 				if(areaCenter==null) continue;
 				if(quarryPos.getY()!=areaCenter.getY()) continue;
-				// Quarry musí být přesně 1 blok za hranou frame oblasti
 				int qPosX=quarryPos.getX(), qPosZ=quarryPos.getZ();
 				int edgeMinX=areaCenter.getX()-halfX, edgeMaxX=areaCenter.getX()+halfX;
 				int edgeMinZ=areaCenter.getZ()-halfZ, edgeMaxZ=areaCenter.getZ()+halfZ;
@@ -110,23 +105,18 @@ public class Quarry extends BaseEntityBlock{
 		}
 	}
 	@Override
-	public void onRemove(BlockState state,@NotNull Level level,@NotNull BlockPos pos,BlockState newState,boolean moving){
-		if(!state.is(newState.getBlock())&&level.getBlockEntity(pos) instanceof QuarryBlockEntity quarryEntity)
-			quarryEntity.onQuarryRemoved();
-		super.onRemove(state,level,pos,newState,moving);
+	public void onRemove(BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,BlockState newState,boolean moving){
+		if(!blockState.is(newState.getBlock())&&level.getBlockEntity(pos) instanceof QuarryBlockEntity quarryEntity) quarryEntity.onQuarryRemoved();
+		super.onRemove(blockState,level,pos,newState,moving);
 	}
 	@Override
-	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
-		if(!level.isClientSide){
-			if(level.getBlockEntity(pos) instanceof QuarryBlockEntity quarryEntity){
-				player.openMenu(quarryEntity,pos);
-			}
-		}
+	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
+		if(!level.isClientSide) if(level.getBlockEntity(pos) instanceof QuarryBlockEntity quarryEntity) player.openMenu(quarryEntity,pos);
 		return InteractionResult.sidedSuccess(level.isClientSide);
 	}
 	@Nullable
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T> type){
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState blockState,@NotNull BlockEntityType<T> type){
 		return createTickerHelper(type,DifModBlockEntities.QUARRY.get(),QuarryBlockEntity::tick);
 	}
 }

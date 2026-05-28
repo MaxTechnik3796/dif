@@ -1,9 +1,11 @@
 package cz.maxtechnik.dif.block;
 
 import cz.maxtechnik.dif.block.entity.OldChestBlockEntity;
+import cz.maxtechnik.dif.util.OldChestType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -31,7 +33,7 @@ public class OldChest extends Block implements EntityBlock{
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(CONNECTED,false).setValue(TYPE,OldChestType.SINGLE));
 	}
 	@Override
-	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
+	public int getLightBlock(@NotNull BlockState blockState,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
 		return 15;
 	}
 	@Override
@@ -42,78 +44,62 @@ public class OldChest extends Block implements EntityBlock{
 	public BlockState getStateForPlacement(@NotNull BlockPlaceContext context){
 		return this.defaultBlockState().setValue(FACING,context.getHorizontalDirection().getOpposite());
 	}
-	public @NotNull BlockState rotate(BlockState state,Rotation rot){
-		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));
+	public @NotNull BlockState rotate(BlockState blockState,Rotation rotation){
+		return blockState.setValue(FACING,rotation.rotate(blockState.getValue(FACING)));
 	}
-	public @NotNull BlockState mirror(BlockState state,Mirror mirrorIn){
-		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
-	}
-	@Override
-	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		return new OldChestBlockEntity(pos,state);
+	public @NotNull BlockState mirror(BlockState blockState,Mirror mirror){
+		return blockState.rotate(mirror.getRotation(blockState.getValue(FACING)));
 	}
 	@Override
-	public boolean triggerEvent(@NotNull BlockState state,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
-		super.triggerEvent(state,world,pos,eventID,eventParam);
+	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
+		return new OldChestBlockEntity(pos,blockState);
+	}
+	@Override
+	public boolean triggerEvent(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
+		super.triggerEvent(blockState,world,pos,eventID,eventParam);
 		BlockEntity blockEntity=world.getBlockEntity(pos);
 		return blockEntity!=null&&blockEntity.triggerEvent(eventID,eventParam);
 	}
 	@Override
-	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
-		if(state.getBlock()!=newState.getBlock()){
+	public void onRemove(BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
+		if(blockState.getBlock()!=newState.getBlock()){
 			BlockEntity blockEntity=world.getBlockEntity(pos);
 			if(blockEntity instanceof OldChestBlockEntity validBlockEntity){
 				Containers.dropContents(world,pos,validBlockEntity);
 				world.updateNeighbourForOutputSignal(pos,this);
 			}
-			super.onRemove(state,world,pos,newState,isMoving);
+			super.onRemove(blockState,world,pos,newState,isMoving);
 		}
 	}
 	@Override
-	public boolean hasAnalogOutputSignal(@NotNull BlockState state){
+	public boolean hasAnalogOutputSignal(@NotNull BlockState blockState){
 		return true;
 	}
 	@Override
 	public int getAnalogOutputSignal(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos){
-		BlockEntity tileentity=world.getBlockEntity(pos);
-		if(tileentity instanceof OldChestBlockEntity validBlockEntity)
-			return AbstractContainerMenu.getRedstoneSignalFromContainer(validBlockEntity);
-		else
-			return 0;
+		BlockEntity blockEntity=world.getBlockEntity(pos);
+		if(blockEntity instanceof OldChestBlockEntity validBlockEntity) return AbstractContainerMenu.getRedstoneSignalFromContainer(validBlockEntity);
+		else return 0;
 	}
-	public enum OldChestType implements net.minecraft.util.StringRepresentable{
-		SINGLE("single"),LEFT("left"),RIGHT("right");
-		private final String name;
-		OldChestType(String name){
-			this.name=name;
-		}
-		public @NotNull String getSerializedName(){
-			return this.name;
-		}
-	}
+
 	@Override
-	public MenuProvider getMenuProvider(@NotNull BlockState state,Level worldIn,@NotNull BlockPos pos){
+	public MenuProvider getMenuProvider(@NotNull BlockState blockState,Level worldIn,@NotNull BlockPos pos){
 		BlockEntity blockEntity=worldIn.getBlockEntity(pos);
 		return blockEntity instanceof MenuProvider menuProvider?menuProvider:null;
 	}
 	@Override
 	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockstate,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
-		if(world.isClientSide()){
-			return InteractionResult.SUCCESS;
-		}
+		if(world.isClientSide()) return InteractionResult.SUCCESS;
 		if(player instanceof ServerPlayer serverPlayer){
 			BlockEntity blockEntity=world.getBlockEntity(pos);
-			if(blockEntity instanceof MenuProvider menuProvider){
-				serverPlayer.openMenu(menuProvider,pos);
-			}
+			if(blockEntity instanceof MenuProvider menuProvider) serverPlayer.openMenu(menuProvider,pos);
 		}
 		return InteractionResult.CONSUME;
 	}
 	@Override
 	public void onPlace(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull BlockState oldState,boolean moving){
 		super.onPlace(blockState,world,pos,oldState,moving);
-		if(!oldState.getBlock().equals(blockState.getBlock()))
-			blockStateCheck(world,pos,blockState);
+		if(!oldState.getBlock().equals(blockState.getBlock())) blockStateCheck(world,pos,blockState);
 	}
 	@Override
 	public void neighborChanged(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Block neighborBlock,@NotNull BlockPos fromPos,boolean moving){

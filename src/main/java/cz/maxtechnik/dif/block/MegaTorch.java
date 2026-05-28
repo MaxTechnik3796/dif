@@ -35,17 +35,14 @@ public class MegaTorch extends Block{
 	public void neighborChanged(@NotNull BlockState blockState,Level level,@NotNull BlockPos pos,@NotNull Block block,@NotNull BlockPos fromPos,boolean isMoving){
 		if(!level.isClientSide) checkMultiblock(level,pos);
 	}
-	// NOVÉ: Extrémně důležité pro zabránění "neviditelných" torčí, když hráč blok rozbije
 	@Override
-	public void onRemove(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState newState,boolean isMoving){
-		if(!state.is(newState.getBlock())){
-			// Pokud byl zničený blok součástí zformované torče
-			if(!level.isClientSide&&level instanceof ServerLevel serverLevel&&state.getValue(FORMED)){
-				// Dopočítáme, kde byl spodek torče na základě toho, jakou část (PART) hráč zničil
-				BlockPos bottom=pos.below(state.getValue(PART));
+	public void onRemove(@NotNull BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState newState,boolean isMoving){
+		if(!blockState.is(newState.getBlock())){
+			if(!level.isClientSide&&level instanceof ServerLevel serverLevel&&blockState.getValue(FORMED)){
+				BlockPos bottom=pos.below(blockState.getValue(PART));
 				TorchSavedData.get(serverLevel).removeTorch(bottom);
 			}
-			super.onRemove(state,level,pos,newState,isMoving);
+			super.onRemove(blockState,level,pos,newState,isMoving);
 		}
 	}
 	private void checkMultiblock(Level level,BlockPos pos){
@@ -55,44 +52,28 @@ public class MegaTorch extends Block{
 		boolean isValid=height==5&&noHorizontalNeighbors(level,bottom);
 		boolean isCurrentlyFormed=level.getBlockState(bottom).getValue(FORMED);
 		if(isValid&&!isCurrentlyFormed){
-			for(int i=0;i<5;i++){
-				level.setBlock(bottom.above(i),this.defaultBlockState().setValue(FORMED,true).setValue(PART,i),3);
-			}
-			if(level instanceof ServerLevel serverLevel){
-				TorchSavedData.get(serverLevel).addTorch(bottom);
-			}
+			for(int i=0;i<5;i++) level.setBlock(bottom.above(i),this.defaultBlockState().setValue(FORMED,true).setValue(PART,i),3);
+			if(level instanceof ServerLevel serverLevel) TorchSavedData.get(serverLevel).addTorch(bottom);
 		}else if(!isValid&&isCurrentlyFormed){
 			for(int i=0;i<height;i++){
 				BlockState s=level.getBlockState(bottom.above(i));
-				if(s.is(this)&&s.getValue(FORMED)){
-					level.setBlock(bottom.above(i),s.setValue(FORMED,false).setValue(PART,0),3);
-				}
+				if(s.is(this)&&s.getValue(FORMED)) level.setBlock(bottom.above(i),s.setValue(FORMED,false).setValue(PART,0),3);
 			}
-			if(level instanceof ServerLevel serverLevel){
-				TorchSavedData.get(serverLevel).removeTorch(bottom);
-			}
+			if(level instanceof ServerLevel serverLevel) TorchSavedData.get(serverLevel).removeTorch(bottom);
 		}
 	}
 	private BlockPos findBottom(Level level,BlockPos pos){
 		BlockPos current=pos;
-		while(level.getBlockState(current.below()).is(this)){
-			current=current.below();
-		}
+		while(level.getBlockState(current.below()).is(this)) current=current.below();
 		return current;
 	}
 	private int countHeight(Level level,BlockPos bottom){
 		int height=0;
-		while(level.getBlockState(bottom.above(height)).is(this)){
-			height++;
-		}
+		while(level.getBlockState(bottom.above(height)).is(this)) height++;
 		return height;
 	}
 	private boolean noHorizontalNeighbors(Level level,BlockPos bottom){
-		for(int i=0;i<5;i++){
-			for(Direction dir: Direction.Plane.HORIZONTAL){
-				if(level.getBlockState(bottom.above(i).relative(dir)).is(this)) return false;
-			}
-		}
+		for(int i=0;i<5;i++) for(Direction dir: Direction.Plane.HORIZONTAL) if(level.getBlockState(bottom.above(i).relative(dir)).is(this)) return false;
 		return true;
 	}
 	public static final TagKey<EntityType<?>> BLOCKED_MOBS=TagKey.create(

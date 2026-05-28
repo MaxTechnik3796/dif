@@ -44,11 +44,11 @@ public class BurningGenerator extends Block implements SimpleWaterloggedBlock, E
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(WATERLOGGED,false).setValue(LIT,false));
 	}
 	@Override
-	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
+	public int getLightBlock(@NotNull BlockState blockState,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
 		return 0;
 	}
 	@Override
-	public @NotNull VoxelShape getVisualShape(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
+	public @NotNull VoxelShape getVisualShape(@NotNull BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
 		return Shapes.empty();
 	}
 	@Override
@@ -61,57 +61,52 @@ public class BurningGenerator extends Block implements SimpleWaterloggedBlock, E
 	}
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context){
-		boolean flag=context.getLevel().getFluidState(context.getClickedPos()).getType()==Fluids.WATER;
+		boolean flag=context.getLevel().getFluidState(context.getClickedPos()).getType().equals(Fluids.WATER);
 		return this.defaultBlockState().setValue(FACING,context.getHorizontalDirection().getOpposite()).setValue(WATERLOGGED,flag);
 	}
 	@Override
-	public @NotNull BlockState rotate(BlockState state,Rotation rot){
-		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));
+	public @NotNull BlockState rotate(BlockState blockState,Rotation rotation){
+		return blockState.setValue(FACING,rotation.rotate(blockState.getValue(FACING)));
 	}
 	@Override
-	public @NotNull BlockState mirror(BlockState state,Mirror mirrorIn){
-		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
+	public @NotNull BlockState mirror(BlockState blockState,Mirror mirror){
+		return blockState.rotate(mirror.getRotation(blockState.getValue(FACING)));
 	}
 	@Override
-	public @NotNull FluidState getFluidState(BlockState state){
-		return state.getValue(WATERLOGGED)?Fluids.WATER.getSource(false):super.getFluidState(state);
+	public @NotNull FluidState getFluidState(BlockState blockState){
+		return blockState.getValue(WATERLOGGED)?Fluids.WATER.getSource(false):super.getFluidState(blockState);
 	}
 	@Override
-	public @NotNull BlockState updateShape(BlockState state,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
-		if(state.getValue(WATERLOGGED)){
+	public @NotNull BlockState updateShape(BlockState blockState,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
+		if(blockState.getValue(WATERLOGGED))
 			world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
-		}
-		return super.updateShape(state,facing,facingState,world,currentPos,facingPos);
+		return super.updateShape(blockState,facing,facingState,world,currentPos,facingPos);
 	}
 	@Override
 	public void tick(@NotNull BlockState blockstate,@NotNull ServerLevel world,@NotNull BlockPos pos,@NotNull RandomSource random){
 		super.tick(blockstate,world,pos,random);
 	}
 	@Override
-	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T> type){
+	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState blockState,@NotNull BlockEntityType<T> type){
 		return level.isClientSide?createClientTicker(type,DifModBlockEntities.BURNING_GENERATOR.get()):createServerTicker(type,DifModBlockEntities.BURNING_GENERATOR.get());
 	}
 	@Nullable
 	protected static <T extends BlockEntity> BlockEntityTicker<T> createServerTicker(BlockEntityType<T> type,BlockEntityType<? extends BurningGeneratorBlockEntity> expectedType){
-		return type==expectedType?(lvl,pos,state,blockEntity)->BurningGeneratorBlockEntity.serverTick(lvl,pos,state,(BurningGeneratorBlockEntity)blockEntity):null;
+		return type.equals(expectedType)?(level,pos,blockState,blockEntity)->BurningGeneratorBlockEntity.serverTick(level,pos,blockState,(BurningGeneratorBlockEntity)blockEntity):null;
 	}
 	protected static <T extends BlockEntity> BlockEntityTicker<T> createClientTicker(BlockEntityType<T> type,BlockEntityType<? extends BurningGeneratorBlockEntity> expectedType){
-		return type==expectedType?(lvl,pos,state,blockEntity)->BurningGeneratorBlockEntity.clientTick(lvl,pos,state):null;
+		return type.equals(expectedType)?(level,pos,blockState,blockEntity)->BurningGeneratorBlockEntity.clientTick(level,pos,blockState):null;
 	}
 	@Override
-	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
 		if(player instanceof ServerPlayer serverPlayer){
-			// V NeoForge 1.21.1 otevíráme menu přímo přes hráče.
-			// Třetí parametr (pos) automaticky pošle BlockPos na klienta.
 			serverPlayer.openMenu(new MenuProvider(){
 				@Override
 				public @NotNull Component getDisplayName(){
-					return Component.literal("Generator");
+					return Component.translatable("gui.dif.burning_generator");
 				}
 				@Override
 				public AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory,@NotNull Player player){
-					// Buffer se v 1.21.1 většinou už nemusí ručně psát v createMenu,
-					// pokud tvoje Menu třída přijímá BlockPos.
 					return new BurningGeneratorMenu(id,inventory,pos);
 				}
 			},pos);
@@ -119,33 +114,33 @@ public class BurningGenerator extends Block implements SimpleWaterloggedBlock, E
 		return InteractionResult.SUCCESS;
 	}
 	@Override
-	public MenuProvider getMenuProvider(@NotNull BlockState state,Level worldIn,@NotNull BlockPos pos){
+	public MenuProvider getMenuProvider(@NotNull BlockState blockState,Level worldIn,@NotNull BlockPos pos){
 		BlockEntity tileEntity=worldIn.getBlockEntity(pos);
 		return tileEntity instanceof MenuProvider menuProvider?menuProvider:null;
 	}
 	@Override
-	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		return new BurningGeneratorBlockEntity(pos,state);
+	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
+		return new BurningGeneratorBlockEntity(pos,blockState);
 	}
 	@Override
-	public boolean triggerEvent(@NotNull BlockState state,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
-		super.triggerEvent(state,world,pos,eventID,eventParam);
+	public boolean triggerEvent(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
+		super.triggerEvent(blockState,world,pos,eventID,eventParam);
 		BlockEntity blockEntity=world.getBlockEntity(pos);
 		return blockEntity!=null&&blockEntity.triggerEvent(eventID,eventParam);
 	}
 	@Override
-	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
-		if(state.getBlock()!=newState.getBlock()){
+	public void onRemove(BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
+		if(blockState.getBlock()!=newState.getBlock()){
 			BlockEntity blockEntity=world.getBlockEntity(pos);
 			if(blockEntity instanceof BurningGeneratorBlockEntity be){
 				Containers.dropContents(world,pos,be);
 				world.updateNeighbourForOutputSignal(pos,this);
 			}
-			super.onRemove(state,world,pos,newState,isMoving);
+			super.onRemove(blockState,world,pos,newState,isMoving);
 		}
 	}
 	@Override
-	public boolean hasAnalogOutputSignal(@NotNull BlockState state){
+	public boolean hasAnalogOutputSignal(@NotNull BlockState blockState){
 		return true;
 	}
 	@Override
@@ -153,7 +148,6 @@ public class BurningGenerator extends Block implements SimpleWaterloggedBlock, E
 		BlockEntity tileentity=world.getBlockEntity(pos);
 		if(tileentity instanceof BurningGeneratorBlockEntity be)
 			return AbstractContainerMenu.getRedstoneSignalFromContainer(be);
-		else
-			return 0;
+		else return 0;
 	}
 }

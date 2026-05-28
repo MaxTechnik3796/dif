@@ -33,7 +33,9 @@ public class SteamGenerator extends KineticBlock implements EntityBlock{
 	@Override
 	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState blockState,@NotNull BlockEntityType<T> type){
 		if(type!=DifModBlockEntities.STEAM_GENERATOR.get()) return null;
-		return (lvl,pos,st,be)->{if(be instanceof SteamGeneratorBlockEntity kbe) kbe.tick();};
+		return (lvl,pos,state,be)->{
+			if(be instanceof SteamGeneratorBlockEntity blockEntity) blockEntity.tick();
+		};
 	}
 	@Override
 	public Direction.Axis getRotationAxis(BlockState blockState){

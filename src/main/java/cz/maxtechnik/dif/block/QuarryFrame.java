@@ -42,19 +42,16 @@ public class QuarryFrame extends BaseEntityBlock{
 	public static final BooleanProperty DOWN=BooleanProperty.create("down");
 	public QuarryFrame(){
 		super(Properties.of().strength(0.2F,0.8F).noLootTable().noOcclusion().sound(SoundType.METAL).pushReaction(PushReaction.BLOCK));
-		this.registerDefaultState(this.stateDefinition.any()
-				.setValue(NORTH,false).setValue(EAST,false)
-				.setValue(SOUTH,false).setValue(WEST,false)
-				.setValue(UP,false).setValue(DOWN,false));
+		this.registerDefaultState(this.stateDefinition.any().setValue(NORTH,false).setValue(EAST,false).setValue(SOUTH,false).setValue(WEST,false).setValue(UP,false).setValue(DOWN,false));
 	}
 	@Override
-	public @NotNull RenderShape getRenderShape(@NotNull BlockState state){
+	public @NotNull RenderShape getRenderShape(@NotNull BlockState blockState){
 		return RenderShape.MODEL;
 	}
 	@Nullable
 	@Override
-	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		return new QuarryFrameBlockEntity(pos,state);
+	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
+		return new QuarryFrameBlockEntity(pos,blockState);
 	}
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
@@ -65,32 +62,23 @@ public class QuarryFrame extends BaseEntityBlock{
 		return 1F;
 	}
 	@Override
-	public @NotNull VoxelShape getVisualShape(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
+	public @NotNull VoxelShape getVisualShape(@NotNull BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
 		return Shapes.empty();
 	}
 	@Override
 	public boolean skipRendering(@NotNull BlockState blockState,BlockState adjacentBlockState,@NotNull Direction side){
-		return adjacentBlockState.getBlock()==this||super.skipRendering(blockState,adjacentBlockState,side);
+		return adjacentBlockState.getBlock().equals(this)||super.skipRendering(blockState,adjacentBlockState,side);
 	}
 	@Override
 	public int getLightBlock(@NotNull BlockState blockState,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
 		return 0;
 	}
-	// Aktualizuje spojovací stav dle sousedních frame/quarry bloků
 	@Override
-	public void neighborChanged(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,
-	                            @NotNull Block neighborBlock,@NotNull BlockPos fromPos,boolean moving){
+	public void neighborChanged(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Block neighborBlock,@NotNull BlockPos fromPos,boolean moving){
 		super.neighborChanged(blockState,world,pos,neighborBlock,fromPos,moving);
-		BlockState updatedState=blockState
-				.setValue(NORTH,isFrameOrQuarry(world,pos.north()))
-				.setValue(EAST,isFrameOrQuarry(world,pos.east()))
-				.setValue(SOUTH,isFrameOrQuarry(world,pos.south()))
-				.setValue(WEST,isFrameOrQuarry(world,pos.west()))
-				.setValue(UP,isFrameOrQuarry(world,pos.above()))
-				.setValue(DOWN,isFrameOrQuarry(world,pos.below()));
+		BlockState updatedState=blockState.setValue(NORTH,isFrameOrQuarry(world,pos.north())).setValue(EAST,isFrameOrQuarry(world,pos.east())).setValue(SOUTH,isFrameOrQuarry(world,pos.south())).setValue(WEST,isFrameOrQuarry(world,pos.west())).setValue(UP,isFrameOrQuarry(world,pos.above())).setValue(DOWN,isFrameOrQuarry(world,pos.below()));
 		if(updatedState!=blockState) world.setBlock(pos,updatedState,3);
 	}
-	// Vrátí true pokud je na dané pozici frame nebo quarry blok
 	private static boolean isFrameOrQuarry(Level world,BlockPos pos){
 		Block block=world.getBlockState(pos).getBlock();
 		return block.equals(DifModBlocks.QUARRY_FRAME.get())||block.equals(DifModBlocks.QUARRY.get());
@@ -108,7 +96,7 @@ public class QuarryFrame extends BaseEntityBlock{
 	}
 	@Nullable
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T> type){
-		return level.isClientSide?null:createTickerHelper(type,DifModBlockEntities.QUARRY_FRAME.get(),(lvl,pos,st,frameEntity)->QuarryFrameBlockEntity.tick(lvl,pos,frameEntity));
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState blockState,@NotNull BlockEntityType<T> type){
+		return level.isClientSide?null:createTickerHelper(type,DifModBlockEntities.QUARRY_FRAME.get(),(lvl,pos,state,frameEntity)->QuarryFrameBlockEntity.tick(lvl,pos,frameEntity));
 	}
 }

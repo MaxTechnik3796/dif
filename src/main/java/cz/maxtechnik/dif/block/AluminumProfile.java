@@ -29,11 +29,11 @@ public class AluminumProfile extends Block implements SimpleWaterloggedBlock{
 		this.registerDefaultState(this.stateDefinition.any().setValue(AXIS,Direction.Axis.Y).setValue(WATERLOGGED,false));
 	}
 	@Override
-	public boolean skipRendering(@NotNull BlockState state,BlockState adjacentBlockState,@NotNull Direction side){
-		return adjacentBlockState.getBlock()==this||super.skipRendering(state,adjacentBlockState,side);
+	public boolean skipRendering(@NotNull BlockState blockState,BlockState adjacentBlockState,@NotNull Direction side){
+		return adjacentBlockState.getBlock().equals(this)||super.skipRendering(blockState,adjacentBlockState,side);
 	}
 	@Override
-	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
+	public int getLightBlock(@NotNull BlockState blockState,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
 		return 0;
 	}
 	@Override
@@ -54,25 +54,25 @@ public class AluminumProfile extends Block implements SimpleWaterloggedBlock{
 		return this.defaultBlockState().setValue(AXIS,context.getClickedFace().getAxis()).setValue(WATERLOGGED,flag);
 	}
 	@Override
-	public @NotNull BlockState rotate(@NotNull BlockState state,@NotNull Rotation rot){
-		if(rot==Rotation.CLOCKWISE_90||rot==Rotation.COUNTERCLOCKWISE_90){
-			if(state.getValue(AXIS)==Direction.Axis.X){
-				return state.setValue(AXIS,Direction.Axis.Z);
-			}else if(state.getValue(AXIS)==Direction.Axis.Z){
-				return state.setValue(AXIS,Direction.Axis.X);
+	public @NotNull BlockState rotate(@NotNull BlockState blockState,@NotNull Rotation rotation){
+		if(rotation.equals(Rotation.CLOCKWISE_90)||rotation.equals(Rotation.COUNTERCLOCKWISE_90)){
+			if(blockState.getValue(AXIS).equals(Direction.Axis.X)){
+				return blockState.setValue(AXIS,Direction.Axis.Z);
+			}else if(blockState.getValue(AXIS).equals(Direction.Axis.Z)){
+				return blockState.setValue(AXIS,Direction.Axis.X);
 			}
 		}
-		return state;
+		return blockState;
 	}
 	@Override
-	public @NotNull FluidState getFluidState(BlockState state){
-		return state.getValue(WATERLOGGED)?Fluids.WATER.getSource(false):super.getFluidState(state);
+	public @NotNull FluidState getFluidState(BlockState blockState){
+		return blockState.getValue(WATERLOGGED)?Fluids.WATER.getSource(false):super.getFluidState(blockState);
 	}
 	@Override
-	public @NotNull BlockState updateShape(BlockState state,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
-		if(state.getValue(WATERLOGGED)){
+	public @NotNull BlockState updateShape(BlockState blockState,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
+		if(blockState.getValue(WATERLOGGED)){
 			world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
 		}
-		return super.updateShape(state,facing,facingState,world,currentPos,facingPos);
+		return super.updateShape(blockState,facing,facingState,world,currentPos,facingPos);
 	}
 }
