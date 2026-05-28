@@ -36,8 +36,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Predicate;
-public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEntity
-		implements WorldlyContainer, IHaveGoggleInformation{
+
+import static cz.maxtechnik.dif.DifMod.goggleTooltipFix;
+public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer, IHaveGoggleInformation{
 	private static final Predicate<BlockState>[][][] PATTERN=MultiblockHelper.buildSolidShellPattern(MultiblockHelper.of(DifModBlocks.COKE_OVEN.get()),MultiblockHelper.of(DifModBlocks.COKE_OVEN.get()));
 	private static final int FORMED_REVALIDATE_PERIOD=40;
 	private static final int UNFORMED_REVALIDATE_PERIOD=20;
@@ -209,24 +210,23 @@ public class CokeOvenControllerBlockEntity extends RandomizableContainerBlockEnt
 	}
 	@Override
 	public boolean addToGoggleTooltip(List<Component> tooltip,boolean isPlayerSneaking){
-		tooltip.add(Component.literal("◆ Coke Oven").withStyle(ChatFormatting.GOLD,ChatFormatting.BOLD));
+		tooltip.add(Component.literal(goggleTooltipFix+"◆ Coke Oven").withStyle(ChatFormatting.GOLD,ChatFormatting.BOLD));
 		final BlockState state=getBlockState();
-		final boolean formed=state.hasProperty(CokeOvenController.FORMED)
-				&&state.getValue(CokeOvenController.FORMED);
+		final boolean formed=state.hasProperty(CokeOvenController.FORMED)&&state.getValue(CokeOvenController.FORMED);
 		if(!formed){
-			tooltip.add(isConflicted?Component.literal(" ⚠ Structure already use some blocks").withStyle(ChatFormatting.DARK_RED):Component.literal(" Structure is NOT formed!").withStyle(ChatFormatting.RED));
+			tooltip.add(isConflicted?Component.literal(goggleTooltipFix+" ⚠ Structure already use some blocks").withStyle(ChatFormatting.DARK_RED):Component.literal(" Structure is NOT formed!").withStyle(ChatFormatting.RED));
 			return true;
 		}
-		appendSlot(tooltip," ▶ Input: ",inventory.getStackInSlot(SLOT_INPUT));
-		appendSlot(tooltip," ▶ Output: ",inventory.getStackInSlot(SLOT_OUTPUT));
+		appendSlot(tooltip,goggleTooltipFix+" ▶ Input: ",inventory.getStackInSlot(SLOT_INPUT));
+		appendSlot(tooltip,goggleTooltipFix+" ▶ Output: ",inventory.getStackInSlot(SLOT_OUTPUT));
 		final FluidStack fluid=fluidTank.getFluid();
-		if(!fluid.isEmpty()) tooltip.add(Component.literal(" ▶ Fluid: ").withStyle(ChatFormatting.GRAY).append(Component.literal(fluid.getAmount()+"/"+fluidTank.getCapacity()+" mB "+fluid.getHoverName().getString()).withStyle(ChatFormatting.AQUA)));
-		else tooltip.add(Component.literal(" ▶ Fluid: ").withStyle(ChatFormatting.GRAY).append(Component.literal("Empty").withStyle(ChatFormatting.DARK_GRAY)));
+		if(!fluid.isEmpty()) tooltip.add(Component.literal(goggleTooltipFix+" ▶ Fluid: ").withStyle(ChatFormatting.GRAY).append(Component.literal(fluid.getAmount()+"/"+fluidTank.getCapacity()+" mB "+fluid.getHoverName().getString()).withStyle(ChatFormatting.AQUA)));
+		else tooltip.add(Component.literal(goggleTooltipFix+" ▶ Fluid: ").withStyle(ChatFormatting.GRAY).append(Component.literal("Empty").withStyle(ChatFormatting.DARK_GRAY)));
 		if(state.getValue(CokeOvenController.ACTIVE)&&totalTime>0){
 			int pct=(int)(((double)progress/totalTime)*100.0);
 			int secsLeft=Math.max(0,(totalTime-progress)/20);
-			tooltip.add(Component.literal(" ▶ Progress: ").withStyle(ChatFormatting.GRAY).append(Component.literal(pct+"% ("+secsLeft+"s left)").withStyle(ChatFormatting.GREEN)));
-		}else tooltip.add(Component.literal(" ▶ Status: ").withStyle(ChatFormatting.GRAY).append(Component.literal("Idle").withStyle(ChatFormatting.YELLOW)));
+			tooltip.add(Component.literal(goggleTooltipFix+" ▶ Progress: ").withStyle(ChatFormatting.GRAY).append(Component.literal(pct+"% ("+secsLeft+"s left)").withStyle(ChatFormatting.GREEN)));
+		}else tooltip.add(Component.literal(goggleTooltipFix+" ▶ Status: ").withStyle(ChatFormatting.GRAY).append(Component.literal("Idle").withStyle(ChatFormatting.YELLOW)));
 		return true;
 	}
 	private static void appendSlot(List<Component> tooltip,String label,ItemStack stack){

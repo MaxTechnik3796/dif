@@ -15,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import static cz.maxtechnik.dif.DifMod.goggleTooltipFix;
 public class CokeOvenBlockEntity extends BlockEntity implements IHaveGoggleInformation{
 	@Nullable
 	private BlockPos controllerPos=null;
@@ -53,8 +55,8 @@ public class CokeOvenBlockEntity extends BlockEntity implements IHaveGoggleInfor
 	public boolean addToGoggleTooltip(List<Component> tooltip,boolean isPlayerSneaking){
 		CokeOvenControllerBlockEntity controller=getFormedController();
 		if(controller!=null) return controller.addToGoggleTooltip(tooltip,isPlayerSneaking);
-		tooltip.add(Component.literal("◆ Coke Oven").withStyle(ChatFormatting.GOLD,ChatFormatting.BOLD));
-		tooltip.add(Component.literal(" Structure is NOT formed!").withStyle(ChatFormatting.RED));
+		tooltip.add(Component.literal(goggleTooltipFix+"◆ Coke Oven").withStyle(ChatFormatting.GOLD,ChatFormatting.BOLD));
+		tooltip.add(Component.literal(goggleTooltipFix+" Structure is NOT formed!").withStyle(ChatFormatting.RED));
 		return true;
 	}
 	@Override
