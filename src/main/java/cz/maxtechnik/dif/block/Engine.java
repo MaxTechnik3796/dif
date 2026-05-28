@@ -54,7 +54,11 @@ public class Engine extends KineticBlock implements EntityBlock{
 	}
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context){
-		return this.defaultBlockState().setValue(FACING,context.getNearestLookingDirection());
+		// FIX: getNearestLookingDirection() může vrátit UP/DOWN, ale FACING je horizontal-only → crash.
+		// Pokud hráč míří nahoru/dolů, použijeme jeho horizontální orientaci.
+		Direction dir=context.getNearestLookingDirection();
+		if(dir.getAxis().isVertical()) dir=context.getHorizontalDirection().getOpposite();
+		return this.defaultBlockState().setValue(FACING,dir);
 	}
 	@Override
 	public @NotNull VoxelShape getVisualShape(@NotNull BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){

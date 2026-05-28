@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.block.entity;
 
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
+import cz.maxtechnik.dif.block.Engine;
 import cz.maxtechnik.dif.block.EngineExtender;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
@@ -63,52 +64,53 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	@Override
 	public void tick(){
 		super.tick();
-		assert level!=null;
+		// Contraption-safe guard: na contraption je BE odpojené od světa nebo má jiný BlockState.
+		// Pokud nejsme normální Engine block ve světě, neděláme nic.
+		if(level==null||!(getBlockState().getBlock() instanceof Engine)) return;
 		if(reActivateSource){
 			updateGeneratedRotation();
 			reActivateSource=false;
 		}
-		if(scanExtenders().equals(FuelType.INVALID)){
+		// FIX: scanExtenders() se původně volal 5× per tick (drahá iterace). Zavolat 1× a uložit.
+		FuelType fuel=scanExtenders();
+		if(fuel.equals(FuelType.INVALID)){
 			generating=false;
 			speed=0F;
 			su=0F;
-		}else if(scanExtenders().equals(FuelType.DIESEL)){
+		}else if(fuel.equals(FuelType.DIESEL)){
 			speed=countExtenders()*12F;
 			su=countExtenders()*2F;
 			generating=fluidTank.getFluidAmount()>0;
 			fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
-		}else if(scanExtenders().equals(FuelType.HEAVY_FUEL_OIL)){
+		}else if(fuel.equals(FuelType.HEAVY_FUEL_OIL)){
 			speed=countExtenders()*10F;
 			su=countExtenders()*2.3F;
 			generating=fluidTank.getFluidAmount()>0;
 			fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
-		}else if(scanExtenders().equals(FuelType.GASOLINE)){
+		}else if(fuel.equals(FuelType.GASOLINE)){
 			speed=countExtenders()*8F;
 			su=countExtenders()*3F;
 			generating=fluidTank.getFluidAmount()>0;
 			fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
-		}else if(scanExtenders().equals(FuelType.LPG)){
+		}else if(fuel.equals(FuelType.LPG)){
 			speed=countExtenders()*9F;
 			su=countExtenders()*2.2F;
 			generating=fluidTank.getFluidAmount()>0;
 			fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
 		}
-		if(uGenerating!=generating){
+		// FIX: původně 3 samostatné if-bloky → updateGeneratedRotation() mohlo běžet 3× per tick.
+		if(uGenerating!=generating||uSpeed!=speed||uSu!=su){
 			updateGeneratedRotation();
 			uGenerating=generating;
-		}
-		if(uSpeed!=speed){
-			updateGeneratedRotation();
 			uSpeed=speed;
-		}
-		if(uSu!=su){
-			updateGeneratedRotation();
 			uSu=su;
 		}
 	}
 	private FuelType scanExtenders(){
-		assert level!=null;
-		Direction.Axis axis=level.getBlockState(worldPosition).getValue(FACING).getAxis();
+		if(level==null) return FuelType.INVALID;
+		BlockState ownState=getBlockState();
+		if(!(ownState.getBlock() instanceof Engine)) return FuelType.INVALID;
+		Direction.Axis axis=ownState.getValue(FACING).getAxis();
 		FuelType ext0=getExtenderFuel(worldPosition.above());
 		FuelType ext1=FuelType.INVALID;
 		FuelType ext2=FuelType.INVALID;
@@ -127,7 +129,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		return FuelType.INVALID;
 	}
 	private FuelType getExtenderFuel(BlockPos pos){
-		assert level!=null;
+		if(level==null) return FuelType.INVALID;
 		Block block=level.getBlockState(pos).getBlock();
 		if(!(block instanceof EngineExtender)) return FuelType.INVALID;
 		if(block.equals(DifModBlocks.ENGINE_EXTENDER_DIESEL.get())) return FuelType.DIESEL;
@@ -137,8 +139,10 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		return FuelType.INVALID;
 	}
 	private int countExtenders(){
-		assert level!=null;
-		Direction.Axis axis=level.getBlockState(worldPosition).getValue(FACING).getAxis();
+		if(level==null) return 0;
+		BlockState ownState=getBlockState();
+		if(!(ownState.getBlock() instanceof Engine)) return 0;
+		Direction.Axis axis=ownState.getValue(FACING).getAxis();
 		int count=0;
 		if(isEngineExtender(worldPosition.above())) count++;
 		if(axis==Direction.Axis.Z){
@@ -151,7 +155,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		return count;
 	}
 	private boolean isEngineExtender(BlockPos pos){
-		assert level!=null;
+		if(level==null) return false;
 		return level.getBlockState(pos).getBlock() instanceof EngineExtender;
 	}
 }
