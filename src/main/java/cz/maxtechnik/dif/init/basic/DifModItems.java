@@ -343,5 +343,11 @@ public class DifModItems{
 	public static final DeferredItem<Item>COKE_OVEN=block(DifModBlocks.COKE_OVEN);
 	public static final DeferredItem<Item>COKE_OVEN_CONTROLLER=block(DifModBlocks.COKE_OVEN_CONTROLLER);
 
-	public static final DeferredItem<Item>STEAM_GENERATOR=block(DifModBlocks.STEAM_GENERATOR);
+
+	public static final DeferredItem<Item>ENGINE2=block(DifModBlocks.ENGINE2);
+	public static final DeferredItem<Item>ENGINE4=block(DifModBlocks.ENGINE4);
+	public static final DeferredItem<Item>ENGINE_EXTENDER_DIESEL=block(DifModBlocks.ENGINE_EXTENDER_DIESEL);
+	public static final DeferredItem<Item>ENGINE_EXTENDER_GASOLINE=block(DifModBlocks.ENGINE_EXTENDER_GASOLINE);
+	public static final DeferredItem<Item>ENGINE_EXTENDER_LPG=block(DifModBlocks.ENGINE_EXTENDER_LPG);
+	public static final DeferredItem<Item>ENGINE_EXTENDER_HEAVY_FUEL_OIL=block(DifModBlocks.ENGINE_EXTENDER_HEAVY_FUEL_OIL);
 }

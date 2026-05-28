@@ -98,6 +98,10 @@ public class DifMod{
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.SPACE_CRATE.get(),(be,side)->be.getInventory());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.SPACESHIP.get(),(be,side)->be.getItemHandler());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.DISTILLATION_TANK.get(),(be,ctx)->be.getFluidCapability());
+
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.ENGINE.get(),(be,side)->be.fluidTank);
+
+
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.COKE_OVEN_CONTROLLER.get(),(be,side)->{
 			if(side!=null) return new SidedInvWrapper(be,side);
 			return be.getInventory();
@@ -159,11 +163,9 @@ public class DifMod{
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_EXPLOSION.get(),NoopRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_MUSHROOM.get(),NoopRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_WAVE.get(),NoopRenderer::new);
-			// Flywheel GPU visual pro rotující shaft
-			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.STEAM_GENERATOR.get())
-					.factory(SingleAxisRotatingVisual::shaft)
-					.neverSkipVanillaRender()
-					.apply();
+
+
+			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.ENGINE.get()).factory(SingleAxisRotatingVisual::shaft).neverSkipVanillaRender().apply();
 		}
 		@SubscribeEvent
 		public static void registerParticles(RegisterParticleProvidersEvent event){

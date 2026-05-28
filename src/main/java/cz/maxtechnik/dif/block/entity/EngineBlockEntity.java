@@ -9,8 +9,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
@@ -19,8 +19,11 @@ import java.util.stream.Stream;
 import static cz.maxtechnik.dif.block.Engine.FACING;
 public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	boolean generating=false;
-	boolean update=false;
-	boolean validExtenders=true;
+	boolean uGenerating=false;
+	float speed=0F;
+	float uSpeed=0F;
+	float su=0F;
+	float uSu=0F;
 	public EngineBlockEntity(BlockPos pos,BlockState blockState){
 		super(DifModBlockEntities.ENGINE.get(),pos,blockState);
 	}
@@ -35,11 +38,11 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	};
 	@Override
 	public float getGeneratedSpeed(){
-		return generating?4F:0F;
+		return generating?speed:0F;
 	}
 	@Override
 	public float calculateAddedStressCapacity(){
-		lastCapacityProvided=generating?4F:0F;
+		lastCapacityProvided=generating?su:0F;
 		return lastCapacityProvided;
 	}
 	@Override
@@ -64,92 +67,80 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 			updateGeneratedRotation();
 			reActivateSource=false;
 		}
-		if(validExtenders){
+		if(scanExtenders().equals(FuelType.INVALID)){
+			generating=false;
+			speed=0F;
+			su=0F;
+		}else if(scanExtenders().equals(FuelType.DIESEL)){
+			speed=countExtenders()*10F;
+			su=countExtenders()*2F;
+			generating=fluidTank.getFluidAmount()>0;
+			fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
+		}else if(scanExtenders().equals(FuelType.HEAVY_FUEL_OIL)){
+			speed=countExtenders()*500F;
+			su=countExtenders()*2.3F;
 			generating=fluidTank.getFluidAmount()>0;
 			fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
 		}
-		if(update!=generating){
+		if(uGenerating!=generating){
 			updateGeneratedRotation();
-			update=generating;
+			uGenerating=generating;
+		}
+		if(uSpeed!=speed){
+			updateGeneratedRotation();
+			uSpeed=speed;
+		}
+		if(uSu!=su){
+			updateGeneratedRotation();
+			uSu=su;
 		}
 	}
 	private FuelType scanExtenders(){
 		assert level!=null;
 		Direction.Axis axis=level.getBlockState(worldPosition).getValue(FACING).getAxis();
-		FuelType ext0=FuelType.INVALID;
+		FuelType ext0=getExtenderFuel(worldPosition.above());
 		FuelType ext1=FuelType.INVALID;
 		FuelType ext2=FuelType.INVALID;
-		if(axis.equals(Direction.Axis.Z)){
-			if(level.getBlockState(worldPosition.above()).getBlock() instanceof EngineExtender){
-				if(level.getBlockState(worldPosition.above()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_DIESEL.get()))
-					ext0=FuelType.DIESEL;
-				else if(level.getBlockState(worldPosition.above()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_GASOLINE.get()))
-					ext0=FuelType.GASOLINE;
-				else if(level.getBlockState(worldPosition.above()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_LPG.get()))
-					ext0=FuelType.LPG;
-				else if(level.getBlockState(worldPosition.above()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_HEAVY_FUEL_OIL.get()))
-					ext0=FuelType.HEAVY_FUEL_OIL;
-			}
-			if(level.getBlockState(worldPosition.east()).getBlock() instanceof EngineExtender){
-				if(level.getBlockState(worldPosition.east()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_DIESEL.get()))
-					ext1=FuelType.DIESEL;
-				else if(level.getBlockState(worldPosition.east()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_GASOLINE.get()))
-					ext1=FuelType.GASOLINE;
-				else if(level.getBlockState(worldPosition.east()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_LPG.get()))
-					ext1=FuelType.LPG;
-				else if(level.getBlockState(worldPosition.east()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_HEAVY_FUEL_OIL.get()))
-					ext1=FuelType.HEAVY_FUEL_OIL;
-			}
-			if(level.getBlockState(worldPosition.west()).getBlock() instanceof EngineExtender){
-				if(level.getBlockState(worldPosition.west()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_DIESEL.get()))
-					ext2=FuelType.DIESEL;
-				else if(level.getBlockState(worldPosition.west()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_GASOLINE.get()))
-					ext2=FuelType.GASOLINE;
-				else if(level.getBlockState(worldPosition.west()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_LPG.get()))
-					ext2=FuelType.LPG;
-				else if(level.getBlockState(worldPosition.west()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_HEAVY_FUEL_OIL.get()))
-					ext2=FuelType.HEAVY_FUEL_OIL;
-			}
-		}else if(axis.equals(Direction.Axis.X)){
-			if(level.getBlockState(worldPosition.above()).getBlock() instanceof EngineExtender){
-				if(level.getBlockState(worldPosition.above()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_DIESEL.get()))
-					ext0=FuelType.DIESEL;
-				else if(level.getBlockState(worldPosition.above()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_GASOLINE.get()))
-					ext0=FuelType.GASOLINE;
-				else if(level.getBlockState(worldPosition.above()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_LPG.get()))
-					ext0=FuelType.LPG;
-				else if(level.getBlockState(worldPosition.above()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_HEAVY_FUEL_OIL.get()))
-					ext0=FuelType.HEAVY_FUEL_OIL;
-			}
-			if(level.getBlockState(worldPosition.north()).getBlock() instanceof EngineExtender){
-				if(level.getBlockState(worldPosition.north()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_DIESEL.get()))
-					ext1=FuelType.DIESEL;
-				else if(level.getBlockState(worldPosition.north()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_GASOLINE.get()))
-					ext1=FuelType.GASOLINE;
-				else if(level.getBlockState(worldPosition.north()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_LPG.get()))
-					ext1=FuelType.LPG;
-				else if(level.getBlockState(worldPosition.north()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_HEAVY_FUEL_OIL.get()))
-					ext1=FuelType.HEAVY_FUEL_OIL;
-			}
-			if(level.getBlockState(worldPosition.south()).getBlock() instanceof EngineExtender){
-				if(level.getBlockState(worldPosition.south()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_DIESEL.get()))
-					ext2=FuelType.DIESEL;
-				else if(level.getBlockState(worldPosition.south()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_GASOLINE.get()))
-					ext2=FuelType.GASOLINE;
-				else if(level.getBlockState(worldPosition.south()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_LPG.get()))
-					ext2=FuelType.LPG;
-				else if(level.getBlockState(worldPosition.south()).getBlock().equals(DifModBlocks.ENGINE_EXTENDER_HEAVY_FUEL_OIL.get()))
-					ext2=FuelType.HEAVY_FUEL_OIL;
-			}
+		if(axis==Direction.Axis.Z){
+			ext1=getExtenderFuel(worldPosition.east());
+			ext2=getExtenderFuel(worldPosition.west());
+		}else if(axis==Direction.Axis.X){
+			ext1=getExtenderFuel(worldPosition.north());
+			ext2=getExtenderFuel(worldPosition.south());
 		}
 		long validCount=Stream.of(ext0,ext1,ext2).filter(f->f!=FuelType.INVALID).count();
 		long uniqueValidCount=Stream.of(ext0,ext1,ext2).filter(f->f!=FuelType.INVALID).distinct().count();
 		if(validCount==0) return FuelType.INVALID;
-		if(validCount==3&&uniqueValidCount==1) return ext0;
-		else if(validCount==2&&uniqueValidCount==1)
-			return Stream.of(ext0,ext1,ext2).filter(f->f!=FuelType.INVALID).findFirst().orElse(FuelType.INVALID);
-		else if(validCount==1)
+		if((validCount==3&&uniqueValidCount==1)||(validCount==2&&uniqueValidCount==1)||(validCount==1))
 			return Stream.of(ext0,ext1,ext2).filter(f->f!=FuelType.INVALID).findFirst().orElse(FuelType.INVALID);
 		return FuelType.INVALID;
+	}
+	private FuelType getExtenderFuel(BlockPos pos){
+		assert level!=null;
+		Block block=level.getBlockState(pos).getBlock();
+		if(!(block instanceof EngineExtender)) return FuelType.INVALID;
+		if(block.equals(DifModBlocks.ENGINE_EXTENDER_DIESEL.get())) return FuelType.DIESEL;
+		if(block.equals(DifModBlocks.ENGINE_EXTENDER_GASOLINE.get())) return FuelType.GASOLINE;
+		if(block.equals(DifModBlocks.ENGINE_EXTENDER_LPG.get())) return FuelType.LPG;
+		if(block.equals(DifModBlocks.ENGINE_EXTENDER_HEAVY_FUEL_OIL.get())) return FuelType.HEAVY_FUEL_OIL;
+		return FuelType.INVALID;
+	}
+	private int countExtenders(){
+		assert level!=null;
+		Direction.Axis axis=level.getBlockState(worldPosition).getValue(FACING).getAxis();
+		int count=0;
+		if(isEngineExtender(worldPosition.above())) count++;
+		if(axis==Direction.Axis.Z){
+			if(isEngineExtender(worldPosition.east())) count++;
+			if(isEngineExtender(worldPosition.west())) count++;
+		}else if(axis==Direction.Axis.X){
+			if(isEngineExtender(worldPosition.north())) count++;
+			if(isEngineExtender(worldPosition.south())) count++;
+		}
+		return count;
+	}
+	private boolean isEngineExtender(BlockPos pos){
+		assert level!=null;
+		return level.getBlockState(pos).getBlock() instanceof EngineExtender;
 	}
 }

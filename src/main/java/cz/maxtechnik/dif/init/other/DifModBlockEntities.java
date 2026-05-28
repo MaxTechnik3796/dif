@@ -5,7 +5,6 @@ import cz.maxtechnik.dif.block.entity.*;
 import cz.maxtechnik.dif.block.entity.barrel.AndesiteBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.barrel.BrassBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.barrel.CopperBarrelBlockEntity;
-import cz.maxtechnik.dif.block.entity.SteamGeneratorBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
@@ -45,7 +44,7 @@ public class DifModBlockEntities{
 
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<DistillationTankBlockEntity>> DISTILLATION_TANK=REGISTRY.register("distillation_tank",()->BlockEntityType.Builder.of((pos,state)->new DistillationTankBlockEntity(DifModBlockEntities.DISTILLATION_TANK.get(),pos,state), DifModBlocks.DISTILLATION_TANK.get()).build(null));
 
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<SteamGeneratorBlockEntity>> STEAM_GENERATOR=register("steam_generator",DifModBlocks.STEAM_GENERATOR,SteamGeneratorBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<EngineBlockEntity>>ENGINE=REGISTRY.register("engine",()->BlockEntityType.Builder.of(EngineBlockEntity::new,DifModBlocks.ENGINE2.get(),DifModBlocks.ENGINE4.get()).build(null));
 
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<CokeOvenControllerBlockEntity>> COKE_OVEN_CONTROLLER=register("coke_oven_controller",DifModBlocks.COKE_OVEN_CONTROLLER,CokeOvenControllerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<CokeOvenBlockEntity>> COKE_OVEN=register("coke_oven",DifModBlocks.COKE_OVEN,CokeOvenBlockEntity::new);

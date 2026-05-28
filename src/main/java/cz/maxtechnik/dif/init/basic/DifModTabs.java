@@ -314,12 +314,18 @@ public class DifModTabs{
 			tabData.accept(DISTILLATION_TANK);
 
 			tabData.accept(NUCLEAR_BOMB);
-			tabData.accept(STEAM_GENERATOR);
-
-
 
 			tabData.accept(DifModItems.COKE_OVEN);
 			tabData.accept(DifModItems.COKE_OVEN_CONTROLLER);
+
+			tabData.accept(ENGINE2);
+			tabData.accept(ENGINE4);
+
+			tabData.accept(ENGINE_EXTENDER_DIESEL);
+			tabData.accept(ENGINE_EXTENDER_GASOLINE);
+			tabData.accept(ENGINE_EXTENDER_LPG);
+			tabData.accept(ENGINE_EXTENDER_HEAVY_FUEL_OIL);
+
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
 			tabData.insertAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
