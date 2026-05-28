@@ -3,13 +3,10 @@ package cz.maxtechnik.dif.block.space;
 import cz.maxtechnik.dif.block.entity.SpaceshipBlockEntity;
 import cz.maxtechnik.dif.gui.menu.SpaceshipMenu;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
-import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
@@ -43,13 +40,11 @@ public class Spaceship extends Block implements EntityBlock{
 	}
 	public Set<BlockPos> getGhostPositions(BlockPos masterPos){
 		Set<BlockPos> positions=new HashSet<>();
-		// Spodní kříž (pod lodí)
 		positions.add(masterPos.below());
 		positions.add(masterPos.below().north());
 		positions.add(masterPos.below().south());
 		positions.add(masterPos.below().east());
 		positions.add(masterPos.below().west());
-		// Horní kříž (vedle lodi)
 		positions.add(masterPos.north());
 		positions.add(masterPos.south());
 		positions.add(masterPos.east());
@@ -82,15 +77,15 @@ public class Spaceship extends Block implements EntityBlock{
 		}
 	}
 	@Override
-	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
-		if(!state.is(newState.getBlock())&&!world.isClientSide()&&state.getValue(MOVED)){
+	public void onRemove(BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
+		if(!blockState.is(newState.getBlock())&&!world.isClientSide()&&blockState.getValue(MOVED)){
 			for(BlockPos ghostPos: getGhostPositions(pos)){
 				if(world.getBlockState(ghostPos).is(DifModBlocks.SPACESHIP_GHOST_BLOCK.get())){
 					world.setBlock(ghostPos,Blocks.AIR.defaultBlockState(),3);
 				}
 			}
 			if(world.getBlockEntity(pos) instanceof SpaceshipBlockEntity be) be.drops();
-			super.onRemove(state,world,pos,newState,isMoving);
+			super.onRemove(blockState,world,pos,newState,isMoving);
 		}
 	}
 	@Override
@@ -99,7 +94,7 @@ public class Spaceship extends Block implements EntityBlock{
 			player.openMenu(new MenuProvider(){
 				@Override
 				public @NotNull Component getDisplayName(){
-					return Component.literal("Spaceship");
+					return Component.translatable("gui.dif.spaceship");
 				}
 				@Override
 				public AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory,@NotNull Player player){
@@ -114,7 +109,7 @@ public class Spaceship extends Block implements EntityBlock{
 		return new SpaceshipBlockEntity(pos,blockState);
 	}
 	@Override
-	public MenuProvider getMenuProvider(@NotNull BlockState state,Level worldIn,@NotNull BlockPos pos){
+	public MenuProvider getMenuProvider(@NotNull BlockState blockState,Level worldIn,@NotNull BlockPos pos){
 		BlockEntity tileEntity=worldIn.getBlockEntity(pos);
 		return tileEntity instanceof MenuProvider menuProvider?menuProvider:null;
 	}
@@ -126,10 +121,10 @@ public class Spaceship extends Block implements EntityBlock{
 	public BlockState getStateForPlacement(BlockPlaceContext context){
 		return this.defaultBlockState().setValue(FACING,context.getHorizontalDirection().getOpposite());
 	}
-	public @NotNull BlockState rotate(BlockState state,Rotation rot){
-		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));
+	public @NotNull BlockState rotate(BlockState blockState,Rotation rotation){
+		return blockState.setValue(FACING,rotation.rotate(blockState.getValue(FACING)));
 	}
-	public @NotNull BlockState mirror(BlockState state,Mirror mirrorIn){
-		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
+	public @NotNull BlockState mirror(BlockState blockState,Mirror mirror){
+		return blockState.rotate(mirror.getRotation(blockState.getValue(FACING)));
 	}
 }

@@ -4,6 +4,7 @@ import cz.maxtechnik.dif.init.events.ChunkLoaderData;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -15,8 +16,8 @@ import java.util.UUID;
 public class ChunkLoaderBlockEntity extends BlockEntity{
 	private UUID ownerUUID;
 	private String ownerName="Unknown";
-	public ChunkLoaderBlockEntity(BlockPos pos,BlockState state){
-		super(DifModBlockEntities.CHUNK_LOADER_BE.get(),pos,state);
+	public ChunkLoaderBlockEntity(BlockPos pos,BlockState blockState){
+		super(DifModBlockEntities.CHUNK_LOADER_BE.get(),pos,blockState);
 	}
 	public void setOwner(UUID uuid,String name){
 		this.ownerUUID=uuid;
@@ -25,15 +26,10 @@ public class ChunkLoaderBlockEntity extends BlockEntity{
 	}
 	public void updateStatus(boolean active){
 		if(level instanceof ServerLevel serverLevel){
-			// Důležité: Kontrola proti tvým registrovaným blokům
 			boolean is3x3=getBlockState().is(DifModBlocks.CHUNK_LOADER_3X3.get());
 			ChunkPos center=new ChunkPos(worldPosition);
 			int radius=is3x3?1:0;
-			for(int x=-radius;x<=radius;x++){
-				for(int z=-radius;z<=radius;z++){
-					serverLevel.setChunkForced(center.x+x,center.z+z,active);
-				}
-			}
+			for(int x=-radius;x<=radius;x++) for(int z=-radius;z<=radius;z++) serverLevel.setChunkForced(center.x+x,center.z+z,active);
 			ChunkLoaderData.get(serverLevel).updateRecord(worldPosition,ownerUUID,ownerName,active,is3x3);
 		}
 	}
@@ -46,17 +42,13 @@ public class ChunkLoaderBlockEntity extends BlockEntity{
 		}
 	}
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag tag,@NotNull net.minecraft.core.HolderLookup.Provider registries){
+	protected void loadAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider registries){
 		super.loadAdditional(tag,registries);
-		if(tag.hasUUID("ownerUUID")){
-			this.ownerUUID=tag.getUUID("ownerUUID");
-		}
-		if(tag.contains("ownerName")){
-			this.ownerName=tag.getString("ownerName");
-		}
+		if(tag.hasUUID("ownerUUID")) this.ownerUUID=tag.getUUID("ownerUUID");
+		if(tag.contains("ownerName")) this.ownerName=tag.getString("ownerName");
 	}
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag,@NotNull net.minecraft.core.HolderLookup.Provider registries){
+	protected void saveAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider registries){
 		super.saveAdditional(tag,registries);
 		if(this.ownerUUID!=null){
 			tag.putUUID("ownerUUID",this.ownerUUID);

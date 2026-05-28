@@ -18,6 +18,7 @@
 	"subtitles.formula_engine":"Formula Engine",
 	"gui.dif.inventory":"Inventory",
 	"gui.dif.burning_generator":"Burning Generator",
+	"gui.dif.spaceship":"Spaceship",
 	"gui.dif.invalid_fuel0":"This is not",
 	"gui.dif.invalid_fuel1":"flammable fuel!",
 	"gui.dif.super_box":"§lSuper Box§r",

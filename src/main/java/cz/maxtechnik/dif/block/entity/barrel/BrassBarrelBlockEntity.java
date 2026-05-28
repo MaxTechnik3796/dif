@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.block.entity.barrel;
 
+import cz.maxtechnik.dif.block.barrel.BrassBarrel;
 import cz.maxtechnik.dif.gui.menu.BrassBarrelMenu;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import io.netty.buffer.Unpooled;
@@ -39,28 +40,26 @@ public class BrassBarrelBlockEntity extends RandomizableContainerBlockEntity imp
 	}
 	private final ContainerOpenersCounter openersCounter=new ContainerOpenersCounter(){
 		@Override
-		protected void onOpen(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState state){
-			level.playSound(null,pos,SoundEvents.BARREL_OPEN,SoundSource.BLOCKS,1.0F,1.0F);
-			level.setBlock(pos,state.setValue(cz.maxtechnik.dif.block.barrel.BrassBarrel.OPEN,true),3);
+		protected void onOpen(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState blockState){
+			level.playSound(null,pos,SoundEvents.BARREL_OPEN,SoundSource.BLOCKS,1F,1F);
+			level.setBlock(pos,blockState.setValue(BrassBarrel.OPEN,true),3);
 		}
 		@Override
-		protected void onClose(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState state){
-			level.playSound(null,pos,SoundEvents.BARREL_CLOSE,SoundSource.BLOCKS,1.0F,1.0F);
-			level.setBlock(pos,state.setValue(cz.maxtechnik.dif.block.barrel.BrassBarrel.OPEN,false),3);
+		protected void onClose(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState blockState){
+			level.playSound(null,pos,SoundEvents.BARREL_CLOSE,SoundSource.BLOCKS,1F,1F);
+			level.setBlock(pos,blockState.setValue(BrassBarrel.OPEN,false),3);
 		}
 		@Override
-		protected void openerCountChanged(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState state,int p_155062_,int p_155063_){
+		protected void openerCountChanged(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState blockState,int i,int j){
 		}
 		@Override
 		protected boolean isOwnContainer(Player player){
-			if(player.containerMenu instanceof BrassBarrelMenu menu){
-				return menu.getBlockEntity()==BrassBarrelBlockEntity.this;
-			}
+			if(player.containerMenu instanceof BrassBarrelMenu menu) return menu.getBlockEntity().equals(BrassBarrelBlockEntity.this);
 			return false;
 		}
 	};
-	public BrassBarrelBlockEntity(BlockPos position,BlockState state){
-		super(DifModBlockEntities.BRASS_BARREL.get(),position,state);
+	public BrassBarrelBlockEntity(BlockPos position,BlockState blockState){
+		super(DifModBlockEntities.BRASS_BARREL.get(),position,blockState);
 	}
 	@Override
 	public void startOpen(@NotNull Player player){
@@ -81,8 +80,7 @@ public class BrassBarrelBlockEntity extends RandomizableContainerBlockEntity imp
 	@Override
 	protected void loadAdditional(@NotNull CompoundTag compound,@NotNull HolderLookup.Provider provider){
 		super.loadAdditional(compound,provider);
-		if(compound.contains("inventory"))
-			inventory.deserializeNBT(provider,compound.getCompound("inventory"));
+		if(compound.contains("inventory")) inventory.deserializeNBT(provider,compound.getCompound("inventory"));
 	}
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag compound,@NotNull HolderLookup.Provider provider){
@@ -128,12 +126,11 @@ public class BrassBarrelBlockEntity extends RandomizableContainerBlockEntity imp
 		return list;
 	}
 	@Override
-	protected void setItems(@NotNull NonNullList<ItemStack> stacks){
-		for(int i=0;i<stacks.size()&&i<inventory.getSlots();i++)
-			inventory.setStackInSlot(i,stacks.get(i));
+	protected void setItems(@NotNull NonNullList<ItemStack> itemStacks){
+		for(int i=0;i<itemStacks.size()&&i<inventory.getSlots();i++) inventory.setStackInSlot(i,itemStacks.get(i));
 	}
 	@Override
-	public boolean canPlaceItem(int index,@NotNull ItemStack stack){
+	public boolean canPlaceItem(int index,@NotNull ItemStack itemStack){
 		return true;
 	}
 	@Override
@@ -141,11 +138,11 @@ public class BrassBarrelBlockEntity extends RandomizableContainerBlockEntity imp
 		return IntStream.range(0,inventory.getSlots()).toArray();
 	}
 	@Override
-	public boolean canPlaceItemThroughFace(int index,@NotNull ItemStack stack,@Nullable Direction direction){
+	public boolean canPlaceItemThroughFace(int index,@NotNull ItemStack itemStack,@Nullable Direction direction){
 		return true;
 	}
 	@Override
-	public boolean canTakeItemThroughFace(int index,@NotNull ItemStack stack,@NotNull Direction direction){
+	public boolean canTakeItemThroughFace(int index,@NotNull ItemStack itemStack,@NotNull Direction direction){
 		return true;
 	}
 }

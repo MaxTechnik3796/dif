@@ -22,47 +22,35 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 public class CameraMonitorBlockEntity extends BlockEntity{
 	private BlockPos linkedCameraPos=null;
-	public CameraMonitorBlockEntity(BlockPos pos,BlockState state){
-		super(DifModBlockEntities.CAMERA_MONITOR.get(),pos,state); // Tady doplň svůj BlockEntityType!
+	public CameraMonitorBlockEntity(BlockPos pos,BlockState blockState){
+		super(DifModBlockEntities.CAMERA_MONITOR.get(),pos,blockState);
 	}
 	public void linkCamera(BlockPos camPos){
 		this.linkedCameraPos=camPos;
-		if(level!=null){
-			level.setBlock(worldPosition,getBlockState().setValue(CameraMonitor.STATE,CameraMonitorState.INACTIVE),3);
-		}
+		if(level!=null) level.setBlock(worldPosition,getBlockState().setValue(CameraMonitor.STATE,CameraMonitorState.INACTIVE),3);
 		setChanged();
 	}
 	public InteractionResult useMonitor(Player player){
 		if(level==null) return InteractionResult.PASS;
 		if(!level.isClientSide&&player instanceof ServerPlayer){
 			if(linkedCameraPos==null) return InteractionResult.FAIL;
-			// VYNUCENÍ NAČTENÍ CHUNKU PRO HRÁČE
-			// Tento příkaz řekne serveru, aby posílal data z okolí kamery tomuto hráči,
-			// i když je jeho tělo fyzicky daleko.
 			ServerLevel serverLevel=(ServerLevel)level;
 			ChunkPos chunkPos=new ChunkPos(linkedCameraPos);
 			serverLevel.getChunkSource().addRegionTicket(TicketType.FORCED,chunkPos,3,chunkPos);
-			// Nastavíme stav monitoru
-			if(level.getBlockState(linkedCameraPos).getBlock().equals(DifModBlocks.CAMERA.get()))
-				level.setBlock(worldPosition,getBlockState().setValue(CameraMonitor.STATE,CameraMonitorState.ACTIVE),3);
+			if(level.getBlockState(linkedCameraPos).getBlock().equals(DifModBlocks.CAMERA.get())) level.setBlock(worldPosition,getBlockState().setValue(CameraMonitor.STATE,CameraMonitorState.ACTIVE),3);
 			else player.displayClientMessage(Component.literal("Camera is not available!"),true);
 		}
 		if(level.isClientSide){
-			// Na klientovi už jen vstoupíme do handleru
-			if(linkedCameraPos!=null){
-				ClientCameraHandler.enterCamera(linkedCameraPos,this.getBlockPos());
-			}else player.displayClientMessage(Component.literal("No camera connected!"),true);
+			if(linkedCameraPos!=null) ClientCameraHandler.enterCamera(linkedCameraPos,this.getBlockPos());
+			else player.displayClientMessage(Component.literal("No camera connected!"),true);
 		}
 		return InteractionResult.SUCCESS;
 	}
 	public void setInactive(){
 		if(level!=null){
-			// Změna stavu bloku
 			level.setBlock(worldPosition,getBlockState().setValue(CameraMonitor.STATE,CameraMonitorState.INACTIVE),3);
-			// ODEBRÁNÍ TICKETU (pouze na serveru)
 			if(!level.isClientSide&&level instanceof ServerLevel serverLevel&&linkedCameraPos!=null){
 				ChunkPos chunkPos=new ChunkPos(linkedCameraPos);
-				// Musí to být stejný typ a parametry jako při addRegionTicket
 				serverLevel.getChunkSource().removeRegionTicket(TicketType.FORCED,chunkPos,3,chunkPos);
 			}
 		}

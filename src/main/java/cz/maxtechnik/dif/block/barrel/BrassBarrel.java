@@ -29,7 +29,7 @@ public class BrassBarrel extends Block implements EntityBlock{
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(OPEN,false));
 	}
 	@Override
-	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
+	public int getLightBlock(@NotNull BlockState blockState,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
 		return 15;
 	}
 	@Override
@@ -40,61 +40,55 @@ public class BrassBarrel extends Block implements EntityBlock{
 	public BlockState getStateForPlacement(BlockPlaceContext context){
 		return this.defaultBlockState().setValue(FACING,context.getNearestLookingDirection().getOpposite()).setValue(OPEN,false);
 	}
-	public @NotNull BlockState rotate(BlockState state,Rotation rot){
-		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));
+	public @NotNull BlockState rotate(BlockState blockState,Rotation rotation){
+		return blockState.setValue(FACING,rotation.rotate(blockState.getValue(FACING)));
 	}
-	public @NotNull BlockState mirror(BlockState state,Mirror mirrorIn){
-		return state.setValue(FACING,mirrorIn.mirror(state.getValue(FACING)));
+	public @NotNull BlockState mirror(BlockState blockState,Mirror mirror){
+		return blockState.setValue(FACING,mirror.mirror(blockState.getValue(FACING)));
 	}
 	@Override
-	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hitResult){
-		if(level.isClientSide){
-			return InteractionResult.SUCCESS;
-		}
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hitResult){
+		if(level.isClientSide) return InteractionResult.SUCCESS;
 		if(player instanceof ServerPlayer serverPlayer){
 			BlockEntity be=level.getBlockEntity(pos);
-			if(be instanceof MenuProvider menuProvider){
-				serverPlayer.openMenu(menuProvider,pos);
-			}
+			if(be instanceof MenuProvider menuProvider) serverPlayer.openMenu(menuProvider,pos);
 		}
 		return InteractionResult.CONSUME;
 	}
 	@Override
-	public MenuProvider getMenuProvider(@NotNull BlockState state,Level worldIn,@NotNull BlockPos pos){
+	public MenuProvider getMenuProvider(@NotNull BlockState blockState,Level worldIn,@NotNull BlockPos pos){
 		BlockEntity tileEntity=worldIn.getBlockEntity(pos);
 		return tileEntity instanceof MenuProvider menuProvider?menuProvider:null;
 	}
 	@Override
-	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
-		return new BrassBarrelBlockEntity(pos,state);
+	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
+		return new BrassBarrelBlockEntity(pos,blockState);
 	}
 	@Override
-	public boolean triggerEvent(@NotNull BlockState state,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
-		super.triggerEvent(state,world,pos,eventID,eventParam);
+	public boolean triggerEvent(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){
+		super.triggerEvent(blockState,world,pos,eventID,eventParam);
 		BlockEntity blockEntity=world.getBlockEntity(pos);
 		return blockEntity!=null&&blockEntity.triggerEvent(eventID,eventParam);
 	}
 	@Override
-	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
-		if(state.getBlock()!=newState.getBlock()){
+	public void onRemove(BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
+		if(blockState.getBlock()!=newState.getBlock()){
 			BlockEntity blockEntity=world.getBlockEntity(pos);
 			if(blockEntity instanceof BrassBarrelBlockEntity be){
 				Containers.dropContents(world,pos,be);
 				world.updateNeighbourForOutputSignal(pos,this);
 			}
-			super.onRemove(state,world,pos,newState,isMoving);
+			super.onRemove(blockState,world,pos,newState,isMoving);
 		}
 	}
 	@Override
-	public boolean hasAnalogOutputSignal(@NotNull BlockState state){
+	public boolean hasAnalogOutputSignal(@NotNull BlockState blockState){
 		return true;
 	}
 	@Override
 	public int getAnalogOutputSignal(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos){
-		BlockEntity tileentity=world.getBlockEntity(pos);
-		if(tileentity instanceof BrassBarrelBlockEntity be)
-			return AbstractContainerMenu.getRedstoneSignalFromContainer(be);
-		else
-			return 0;
+		BlockEntity blockEntity=world.getBlockEntity(pos);
+		if(blockEntity instanceof BrassBarrelBlockEntity be) return AbstractContainerMenu.getRedstoneSignalFromContainer(be);
+		else return 0;
 	}
 }

@@ -16,11 +16,11 @@ public class SpaceshipGhostBlock extends Block{
 		super(Properties.of().strength(5F,6F).noOcclusion().noLootTable().requiresCorrectToolForDrops().pushReaction(PushReaction.BLOCK));
 	}
 	@Override
-	public boolean skipRendering(@NotNull BlockState state,BlockState adjacentBlockState,@NotNull Direction side){
-		return adjacentBlockState.getBlock()==this||super.skipRendering(state,adjacentBlockState,side);
+	public boolean skipRendering(@NotNull BlockState blockState,BlockState adjacentBlockState,@NotNull Direction side){
+		return adjacentBlockState.getBlock().equals(this)||super.skipRendering(blockState,adjacentBlockState,side);
 	}
 	@Override
-	public boolean propagatesSkylightDown(@NotNull BlockState state,@NotNull BlockGetter reader,@NotNull BlockPos pos){
+	public boolean propagatesSkylightDown(@NotNull BlockState blockState,@NotNull BlockGetter reader,@NotNull BlockPos pos){
 		return true;
 	}
 	@Override
@@ -32,35 +32,24 @@ public class SpaceshipGhostBlock extends Block{
 			for(int y=0;y<=1;y++){
 				for(int z=-1;z<=1;z++){
 					BlockPos checkPos=myPos.offset(x,y,z);
-					if(level.getBlockState(checkPos).getBlock() instanceof Spaceship master){
-						// Ověříme, zda tento ghost patří právě k této lodi
-						if(master.getGhostPositions(checkPos).contains(myPos)){
-							return checkPos;
-						}
-					}
+					if(level.getBlockState(checkPos).getBlock() instanceof Spaceship master) if(master.getGhostPositions(checkPos).contains(myPos)) return checkPos;
 				}
 			}
 		}
 		return null;
 	}
 	@Override
-	public void onRemove(BlockState state,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
-		if(!state.is(newState.getBlock())&&!world.isClientSide()){
+	public void onRemove(BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
+		if(!blockState.is(newState.getBlock())&&!world.isClientSide()){
 			BlockPos masterPos=findMyMaster(world,pos);
-			if(masterPos!=null){
-				// Ghost nespouští řetězové mazání, jen zničí Mastera.
-				// Veškerou práci s mazáním ostatních ghostů provede Master v onRemove.
-				world.destroyBlock(masterPos,true);
-			}
+			if(masterPos!=null) world.destroyBlock(masterPos,true);
 		}
-		super.onRemove(state,world,pos,newState,isMoving);
+		super.onRemove(blockState,world,pos,newState,isMoving);
 	}
 	@Override
 	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
 		BlockPos masterPos=findMyMaster(world,pos);
-		if(masterPos!=null){
-			return world.getBlockState(masterPos).useWithoutItem(world,player,hit.withPosition(masterPos));
-		}
+		if(masterPos!=null) return world.getBlockState(masterPos).useWithoutItem(world,player,hit.withPosition(masterPos));
 		return InteractionResult.PASS;
 	}
 }

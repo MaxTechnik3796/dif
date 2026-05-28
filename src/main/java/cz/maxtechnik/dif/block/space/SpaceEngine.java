@@ -28,24 +28,24 @@ public class SpaceEngine extends Block implements SimpleWaterloggedBlock{
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
 	public SpaceEngine(){
-		super(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(4f,1000000f).noOcclusion().isRedstoneConductor((bs,br,bp)->false));
+		super(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(4F,1000000F).noOcclusion().isRedstoneConductor((bs,br,bp)->false));
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(WATERLOGGED,false));
 	}
 	@Override
-	public boolean propagatesSkylightDown(BlockState state,@NotNull BlockGetter reader,@NotNull BlockPos pos){
-		return state.getFluidState().isEmpty();
+	public boolean propagatesSkylightDown(BlockState blockState,@NotNull BlockGetter reader,@NotNull BlockPos pos){
+		return blockState.getFluidState().isEmpty();
 	}
 	@Override
-	public int getLightBlock(@NotNull BlockState state,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
+	public int getLightBlock(@NotNull BlockState blockState,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
 		return 0;
 	}
 	@Override
-	public @NotNull VoxelShape getVisualShape(@NotNull BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
+	public @NotNull VoxelShape getVisualShape(@NotNull BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
 		return Shapes.empty();
 	}
 	@Override
-	public @NotNull VoxelShape getShape(BlockState state,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
-		return switch(state.getValue(FACING)){
+	public @NotNull VoxelShape getShape(BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
+		return switch(blockState.getValue(FACING)){
 			case NORTH -> box(4,-5,4,13,32,13);
 			case EAST -> box(3,-5,4,12,32,13);
 			case WEST -> box(4,-5,3,13,32,12);
@@ -61,21 +61,19 @@ public class SpaceEngine extends Block implements SimpleWaterloggedBlock{
 		boolean flag=context.getLevel().getFluidState(context.getClickedPos()).getType()==Fluids.WATER;
 		return this.defaultBlockState().setValue(FACING,context.getHorizontalDirection().getOpposite()).setValue(WATERLOGGED,flag);
 	}
-	public @NotNull BlockState rotate(BlockState state,Rotation rot){
-		return state.setValue(FACING,rot.rotate(state.getValue(FACING)));
+	public @NotNull BlockState rotate(BlockState blockState,Rotation rotation){
+		return blockState.setValue(FACING,rotation.rotate(blockState.getValue(FACING)));
 	}
-	public @NotNull BlockState mirror(BlockState state,Mirror mirrorIn){
-		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
-	}
-	@Override
-	public @NotNull FluidState getFluidState(BlockState state){
-		return state.getValue(WATERLOGGED)?Fluids.WATER.getSource(false):super.getFluidState(state);
+	public @NotNull BlockState mirror(BlockState blockState,Mirror mirror){
+		return blockState.rotate(mirror.getRotation(blockState.getValue(FACING)));
 	}
 	@Override
-	public @NotNull BlockState updateShape(BlockState state,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
-		if(state.getValue(WATERLOGGED)){
-			world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
-		}
-		return super.updateShape(state,facing,facingState,world,currentPos,facingPos);
+	public @NotNull FluidState getFluidState(BlockState blockState){
+		return blockState.getValue(WATERLOGGED)?Fluids.WATER.getSource(false):super.getFluidState(blockState);
+	}
+	@Override
+	public @NotNull BlockState updateShape(BlockState blockState,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
+		if(blockState.getValue(WATERLOGGED)) world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
+		return super.updateShape(blockState,facing,facingState,world,currentPos,facingPos);
 	}
 }

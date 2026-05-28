@@ -64,13 +64,13 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block> MEGA_TORCH = REGISTRY.register("mega_torch",()->new MegaTorch(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(2F,3F).sound(SoundType.WOOD).pushReaction(PushReaction.BLOCK).lightLevel(state->15)));
 
 	public static final DeferredBlock<Block>BEER=REGISTRY.register("beer",Beer::new);
-	public static final DeferredBlock<Block>THE_DIFFERENTIAL=REGISTRY.register("the_differential",()->new CustomWaterloggedHorizontalRotation(SoundType.STONE,5F,6F,true));
+	public static final DeferredBlock<Block>THE_DIFFERENTIAL=REGISTRY.register("the_differential",()->new CustomWaterloggedHorizontalRotation(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(5F,6F).requiresCorrectToolForDrops()));
 
-	public static final DeferredBlock<Block>EVENT_BUS=REGISTRY.register("event_bus",()->new CustomWaterloggedHorizontalRotation(SoundType.NETHERITE_BLOCK,5F,6F,true));
-	public static final DeferredBlock<Block>VENT=REGISTRY.register("vent",()->new CustomWaterloggedHorizontalRotation(SoundType.NETHERITE_BLOCK,5F,6F,true));
+	public static final DeferredBlock<Block>EVENT_BUS=REGISTRY.register("event_bus",()->new CustomWaterloggedHorizontalRotation(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(5F,6F).requiresCorrectToolForDrops()));
+	public static final DeferredBlock<Block>VENT=REGISTRY.register("vent",()->new CustomWaterloggedHorizontalRotation(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(5F,6F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>BURNING_GENERATOR=REGISTRY.register("burning_generator",BurningGenerator::new);
 	public static final DeferredBlock<Block>FLUID_HATCH=REGISTRY.register("fluid_hatch",FluidHatch::new);
-	public static final DeferredBlock<Block>SINGULARITATOR=REGISTRY.register("singularitator",()->new CustomWaterlogged(SoundType.METAL,5F,6F,true));
+	public static final DeferredBlock<Block>SINGULARITATOR=REGISTRY.register("singularitator",()->new CustomWaterlogged(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>SUPER_BOX=REGISTRY.register("super_box",SuperBox::new);
 	public static final DeferredBlock<Block>OLD_CHEST=REGISTRY.register("old_chest",OldChest::new);
 
@@ -93,14 +93,14 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>ANDESITE_LATTICE=REGISTRY.register("andesite_lattice",AndesiteLattice::new);
 	public static final DeferredBlock<Block>ANDESITE_WINDOW=REGISTRY.register("andesite_window",AndesiteWindow::new);
 	public static final DeferredBlock<Block>SMOOTH_STONE_DOUBLE_SLAB=REGISTRY.register("smooth_stone_double_slab",()->new Block(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).requiresCorrectToolForDrops().strength(2F,6F)));
-	public static final DeferredBlock<Block>IRON_BARS_BLOCK=REGISTRY.register("iron_bars_block",()->new CustomWaterlogged(SoundType.METAL,5F,6F,true));
+	public static final DeferredBlock<Block>IRON_BARS_BLOCK=REGISTRY.register("iron_bars_block",()->new CustomWaterlogged(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>GLITCH_BLOCK=REGISTRY.register("glitch_block",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(1.8F,3F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>TREE_BARK_BLOCK=REGISTRY.register("tree_bark_block",()->new Block(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(1.8F,3F).sound(SoundType.MANGROVE_ROOTS).ignitedByLava()));
 
 	//Arrows:
-	public static final DeferredBlock<Block>DEEPSLATED_ARROW=REGISTRY.register("deepslated_arrow",()->new CustomHorizontalRotation(SoundType.DEEPSLATE,2.5F,16F,true));
-	public static final DeferredBlock<Block>STONED_ARROW=REGISTRY.register("stoned_arrow",()->new CustomHorizontalRotation(SoundType.STONE,1.5F,6F,true));
-	public static final DeferredBlock<Block>WOODED_ARROW=REGISTRY.register("wooded_arrow",()->new CustomHorizontalRotation(SoundType.WOOD,2F,3F,false));
+	public static final DeferredBlock<Block>DEEPSLATED_ARROW=REGISTRY.register("deepslated_arrow",()->new CustomHorizontalRotation(BlockBehaviour.Properties.of().sound(SoundType.DEEPSLATE).strength(2.5F,16F).requiresCorrectToolForDrops()));
+	public static final DeferredBlock<Block>STONED_ARROW=REGISTRY.register("stoned_arrow",()->new CustomHorizontalRotation(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(1.5F,6F).requiresCorrectToolForDrops()));
+	public static final DeferredBlock<Block>WOODED_ARROW=REGISTRY.register("wooded_arrow",()->new CustomHorizontalRotation(BlockBehaviour.Properties.of().sound(SoundType.WOOD).strength(2F,3F)));
 
 	//Bauxite:
 	public static final DeferredBlock<Block>BAUXITE_ORE=REGISTRY.register("bauxite_ore",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(3F,3F).requiresCorrectToolForDrops()));
