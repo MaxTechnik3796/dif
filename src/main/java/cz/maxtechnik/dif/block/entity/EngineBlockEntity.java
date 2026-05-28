@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.block.entity;
 
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
-import cz.maxtechnik.dif.block.Engine;
 import cz.maxtechnik.dif.block.EngineExtender;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
@@ -14,246 +13,145 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
+import java.util.stream.Stream;
 
-public class EngineBlockEntity extends GeneratingKineticBlockEntity {
-
-	// ── Konstanty pro každé palivo (speed, su per extender) ──────────────
-	private record FuelStats(float speedPerExtender, float suPerExtender) {}
-
-	private static final Map<FuelType, FuelStats> FUEL_STATS = Map.of(
-			FuelType.DIESEL,          new FuelStats(12F, 2.0F),
-			FuelType.HEAVY_FUEL_OIL,  new FuelStats(10F, 2.3F),
-			FuelType.GASOLINE,        new FuelStats( 8F, 3.0F),
-			FuelType.LPG,             new FuelStats( 9F, 2.2F)
-	);
-
-	/** Lazy lookup `Block -> FuelType` (nelze static-final, blocky registrují později). */
-	private static volatile Map<Block, FuelType> BLOCK_TO_FUEL;
-
-	private static Map<Block, FuelType> blockToFuel() {
-		Map<Block, FuelType> m = BLOCK_TO_FUEL;
-		if (m == null) {
-			m = Map.of(
-					DifModBlocks.ENGINE_EXTENDER_DIESEL.get(),         FuelType.DIESEL,
-					DifModBlocks.ENGINE_EXTENDER_GASOLINE.get(),       FuelType.GASOLINE,
-					DifModBlocks.ENGINE_EXTENDER_LPG.get(),            FuelType.LPG,
-					DifModBlocks.ENGINE_EXTENDER_HEAVY_FUEL_OIL.get(), FuelType.HEAVY_FUEL_OIL
-			);
-			BLOCK_TO_FUEL = m;
-		}
-		return m;
+import static cz.maxtechnik.dif.block.Engine.FACING;
+public class EngineBlockEntity extends GeneratingKineticBlockEntity{
+	boolean generating=false;
+	boolean uGenerating=false;
+	float speed=0F;
+	float uSpeed=0F;
+	float su=0F;
+	float uSu=0F;
+	public EngineBlockEntity(BlockPos pos,BlockState blockState){
+		super(DifModBlockEntities.ENGINE.get(),pos,blockState);
 	}
-
-	// ── Konfigurace ─────────────────────────────────────────────────────
-	private static final int SCAN_PERIOD = 10;          // ticků mezi scany
-	private static final int FUEL_DRAIN_PER_TICK = 1;   // mB/tick (nezávisle na počtu extenderů)
-	private static final int FLUID_CAPACITY = 1000;
-
-	// ── Stav (perzistován v NBT) ────────────────────────────────────────
-	private boolean generating = false;
-	private float speed = 0F;
-	private float su = 0F;
-
-	// ── Runtime cache (neperzistuje, počítá se ze scanu) ────────────────
-	/** True když chceme přeskanovat hned, nezávisle na periodě. */
-	private boolean dirty = true;
-	/** Tick offset aby všechny enginy nescanovaly současně. */
-	private final int tickOffset = (int) (Math.random() * SCAN_PERIOD);
-
-	// ── Fluid tank ──────────────────────────────────────────────────────
-	public final FluidTank fluidTank = new FluidTank(FLUID_CAPACITY) {
+	public final FluidTank fluidTank=new FluidTank(1000){
 		@Override
-		protected void onContentsChanged() {
+		protected void onContentsChanged(){
 			super.onContentsChanged();
 			setChanged();
-			sendData(); // Create's smart sync
+			if(level!=null)
+				level.sendBlockUpdated(worldPosition,level.getBlockState(worldPosition),level.getBlockState(worldPosition),2);
 		}
 	};
-
-	public EngineBlockEntity(BlockPos pos, BlockState blockState) {
-		super(DifModBlockEntities.ENGINE.get(), pos, blockState);
-	}
-
-	// ── Public API pro neighbor-update hooks ────────────────────────────
-
-	/** Vyžádá přeskanování extenderů v dalším ticku (i mimo periodu). */
-	public void markDirty() {
-		this.dirty = true;
-	}
-
-	// ── Create kinetic API ──────────────────────────────────────────────
-
 	@Override
-	public float getGeneratedSpeed() {
-		return generating ? speed : 0F;
+	public float getGeneratedSpeed(){
+		return generating?speed:0F;
 	}
-
 	@Override
-	public float calculateAddedStressCapacity() {
-		lastCapacityProvided = generating ? su : 0F;
+	public float calculateAddedStressCapacity(){
+		lastCapacityProvided=generating?su:0F;
 		return lastCapacityProvided;
 	}
-
 	@Override
-	public void initialize() {
+	public void read(CompoundTag tag,HolderLookup.Provider registries,boolean clientPacket){
+		super.read(tag,registries,clientPacket);
+		if(tag.get("fluidTank") instanceof CompoundTag fluidTag) fluidTank.readFromNBT(registries,fluidTag);
+	}
+	@Override
+	public void write(CompoundTag tag,HolderLookup.Provider registries,boolean clientPacket){
+		super.write(tag,registries,clientPacket);
+		tag.put("fluidTank",fluidTank.writeToNBT(registries,new CompoundTag()));
+	}
+	@Override
+	public void initialize(){
 		super.initialize();
-		if (level != null && !level.isClientSide) {
-			dirty = true;
-		}
+		if(level!=null&&!level.isClientSide) updateGeneratedRotation();
 	}
-
-	// ── Tick ────────────────────────────────────────────────────────────
-
 	@Override
-	public void tick() {
+	public void tick(){
 		super.tick();
-		if (level == null || level.isClientSide) return;
-
-		// Periodický scan + force scan při dirty flagu nebo Create's reActivateSource
-		boolean shouldScan = dirty
-				|| reActivateSource
-				|| (level.getGameTime() + tickOffset) % SCAN_PERIOD == 0;
-
-		if (shouldScan) {
-			dirty = false;
-			reActivateSource = false;
-			recalcFromExtenders();
-		}
-
-		// Spotřeba paliva — jen když opravdu generujeme
-		if (generating) {
-			if (fluidTank.getFluidAmount() < FUEL_DRAIN_PER_TICK) {
-				// Došlo palivo → zastav okamžitě
-				if (generating) {
-					generating = false;
-					updateGeneratedRotation();
-				}
-			} else {
-				fluidTank.drain(FUEL_DRAIN_PER_TICK, IFluidHandler.FluidAction.EXECUTE);
-			}
-		}
-	}
-
-	/** Přepočítá speed/su/generating na základě sousedů. Volá updateGeneratedRotation() jen pokud něco změnilo. */
-	private void recalcFromExtenders() {
-		final BlockState ownState = getBlockState();
-		if (!(ownState.getBlock() instanceof Engine)) return;
-
-		final Direction.Axis axis = ownState.getValue(Engine.FACING).getAxis();
-		final FuelType fuel = scanExtenders(axis);
-
-		final boolean newGenerating;
-		final float newSpeed;
-		final float newSu;
-
-		if (fuel == FuelType.INVALID) {
-			newGenerating = false;
-			newSpeed = 0F;
-			newSu = 0F;
-		} else {
-			final FuelStats stats = FUEL_STATS.get(fuel);
-			final int count = countExtenders(axis);
-			newSpeed = count * stats.speedPerExtender();
-			newSu    = count * stats.suPerExtender();
-			newGenerating = fluidTank.getFluidAmount() >= FUEL_DRAIN_PER_TICK;
-		}
-
-		if (newGenerating != generating || newSpeed != speed || newSu != su) {
-			generating = newGenerating;
-			speed = newSpeed;
-			su = newSu;
+		assert level!=null;
+		if(reActivateSource){
 			updateGeneratedRotation();
-			setChanged();
+			reActivateSource=false;
+		}
+		if(scanExtenders().equals(FuelType.INVALID)){
+			generating=false;
+			speed=0F;
+			su=0F;
+		}else if(scanExtenders().equals(FuelType.DIESEL)){
+			speed=countExtenders()*12F;
+			su=countExtenders()*2F;
+			generating=fluidTank.getFluidAmount()>0;
+			fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
+		}else if(scanExtenders().equals(FuelType.HEAVY_FUEL_OIL)){
+			speed=countExtenders()*10F;
+			su=countExtenders()*2.3F;
+			generating=fluidTank.getFluidAmount()>0;
+			fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
+		}else if(scanExtenders().equals(FuelType.GASOLINE)){
+			speed=countExtenders()*8F;
+			su=countExtenders()*3F;
+			generating=fluidTank.getFluidAmount()>0;
+			fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
+		}else if(scanExtenders().equals(FuelType.LPG)){
+			speed=countExtenders()*9F;
+			su=countExtenders()*2.2F;
+			generating=fluidTank.getFluidAmount()>0;
+			fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
+		}
+		if(uGenerating!=generating){
+			updateGeneratedRotation();
+			uGenerating=generating;
+		}
+		if(uSpeed!=speed){
+			updateGeneratedRotation();
+			uSpeed=speed;
+		}
+		if(uSu!=su){
+			updateGeneratedRotation();
+			uSu=su;
 		}
 	}
-
-	// ── Scan extenderů ──────────────────────────────────────────────────
-
-	/**
-	 * Vrátí společný FuelType, pokud jsou všechny ne-INVALID extendery stejné.
-	 * Jinak INVALID (mix nebo žádné).
-	 */
-	private FuelType scanExtenders(Direction.Axis axis) {
-		FuelType common = FuelType.INVALID;
-
-		FuelType f;
-		f = getExtenderFuel(worldPosition.above());
-		if (f != FuelType.INVALID) common = f;
-
-		if (axis == Direction.Axis.Z) {
-			f = getExtenderFuel(worldPosition.east());
-			if (f != FuelType.INVALID) {
-				if (common != FuelType.INVALID && common != f) return FuelType.INVALID;
-				common = f;
-			}
-			f = getExtenderFuel(worldPosition.west());
-			if (f != FuelType.INVALID) {
-				if (common != FuelType.INVALID && common != f) return FuelType.INVALID;
-				common = f;
-			}
-		} else if (axis == Direction.Axis.X) {
-			f = getExtenderFuel(worldPosition.north());
-			if (f != FuelType.INVALID) {
-				if (common != FuelType.INVALID && common != f) return FuelType.INVALID;
-				common = f;
-			}
-			f = getExtenderFuel(worldPosition.south());
-			if (f != FuelType.INVALID) {
-				if (common != FuelType.INVALID && common != f) return FuelType.INVALID;
-				common = f;
-			}
+	private FuelType scanExtenders(){
+		assert level!=null;
+		Direction.Axis axis=level.getBlockState(worldPosition).getValue(FACING).getAxis();
+		FuelType ext0=getExtenderFuel(worldPosition.above());
+		FuelType ext1=FuelType.INVALID;
+		FuelType ext2=FuelType.INVALID;
+		if(axis==Direction.Axis.Z){
+			ext1=getExtenderFuel(worldPosition.east());
+			ext2=getExtenderFuel(worldPosition.west());
+		}else if(axis==Direction.Axis.X){
+			ext1=getExtenderFuel(worldPosition.north());
+			ext2=getExtenderFuel(worldPosition.south());
 		}
-		return common;
+		long validCount=Stream.of(ext0,ext1,ext2).filter(f->f!=FuelType.INVALID).count();
+		long uniqueValidCount=Stream.of(ext0,ext1,ext2).filter(f->f!=FuelType.INVALID).distinct().count();
+		if(validCount==0) return FuelType.INVALID;
+		if((validCount==3&&uniqueValidCount==1)||(validCount==2&&uniqueValidCount==1)||(validCount==1))
+			return Stream.of(ext0,ext1,ext2).filter(f->f!=FuelType.INVALID).findFirst().orElse(FuelType.INVALID);
+		return FuelType.INVALID;
 	}
-
-	private FuelType getExtenderFuel(BlockPos pos) {
-		if (level == null) return FuelType.INVALID;
-		Block block = level.getBlockState(pos).getBlock();
-		if (!(block instanceof EngineExtender)) return FuelType.INVALID;
-		return blockToFuel().getOrDefault(block, FuelType.INVALID);
+	private FuelType getExtenderFuel(BlockPos pos){
+		assert level!=null;
+		Block block=level.getBlockState(pos).getBlock();
+		if(!(block instanceof EngineExtender)) return FuelType.INVALID;
+		if(block.equals(DifModBlocks.ENGINE_EXTENDER_DIESEL.get())) return FuelType.DIESEL;
+		if(block.equals(DifModBlocks.ENGINE_EXTENDER_GASOLINE.get())) return FuelType.GASOLINE;
+		if(block.equals(DifModBlocks.ENGINE_EXTENDER_LPG.get())) return FuelType.LPG;
+		if(block.equals(DifModBlocks.ENGINE_EXTENDER_HEAVY_FUEL_OIL.get())) return FuelType.HEAVY_FUEL_OIL;
+		return FuelType.INVALID;
 	}
-
-	private int countExtenders(Direction.Axis axis) {
-		if (level == null) return 0;
-		int count = isExtender(worldPosition.above()) ? 1 : 0;
-		if (axis == Direction.Axis.Z) {
-			if (isExtender(worldPosition.east())) count++;
-			if (isExtender(worldPosition.west())) count++;
-		} else if (axis == Direction.Axis.X) {
-			if (isExtender(worldPosition.north())) count++;
-			if (isExtender(worldPosition.south())) count++;
+	private int countExtenders(){
+		assert level!=null;
+		Direction.Axis axis=level.getBlockState(worldPosition).getValue(FACING).getAxis();
+		int count=0;
+		if(isEngineExtender(worldPosition.above())) count++;
+		if(axis==Direction.Axis.Z){
+			if(isEngineExtender(worldPosition.east())) count++;
+			if(isEngineExtender(worldPosition.west())) count++;
+		}else if(axis==Direction.Axis.X){
+			if(isEngineExtender(worldPosition.north())) count++;
+			if(isEngineExtender(worldPosition.south())) count++;
 		}
 		return count;
 	}
-
-	private boolean isExtender(BlockPos pos) {
-		return level != null && level.getBlockState(pos).getBlock() instanceof EngineExtender;
-	}
-
-	// ── NBT ─────────────────────────────────────────────────────────────
-
-	@Override
-	public void read(CompoundTag tag, HolderLookup.@NotNull Provider registries, boolean clientPacket) {
-		super.read(tag, registries, clientPacket);
-		if (tag.get("fluidTank") instanceof CompoundTag fluidTag) {
-			fluidTank.readFromNBT(registries, fluidTag);
-		}
-		generating = tag.getBoolean("generating");
-		speed      = tag.getFloat("speed");
-		su         = tag.getFloat("su");
-		// Po loadu vždy přeskanovat — sousedi se mohli změnit (chunk reload)
-		dirty = true;
-	}
-
-	@Override
-	public void write(CompoundTag tag, HolderLookup.@NotNull Provider registries, boolean clientPacket) {
-		super.write(tag, registries, clientPacket);
-		tag.put("fluidTank", fluidTank.writeToNBT(registries, new CompoundTag()));
-		tag.putBoolean("generating", generating);
-		tag.putFloat("speed", speed);
-		tag.putFloat("su", su);
+	private boolean isEngineExtender(BlockPos pos){
+		assert level!=null;
+		return level.getBlockState(pos).getBlock() instanceof EngineExtender;
 	}
 }

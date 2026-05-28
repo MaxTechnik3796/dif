@@ -23,62 +23,41 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-public class Engine extends KineticBlock implements EntityBlock {
-	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-
-	public Engine(Properties properties) {
+public class Engine extends KineticBlock implements EntityBlock{
+	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
+	public Engine(Properties properties){
 		super(properties.noOcclusion());
-		registerDefaultState(getStateDefinition().any().setValue(FACING, Direction.NORTH));
+		this.registerDefaultState(this.getStateDefinition().any().setValue(FACING,Direction.NORTH));
 	}
-
 	@Override
-	public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState blockState) {
-		return new EngineBlockEntity(pos, blockState);
+	public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
+		return new EngineBlockEntity(pos,blockState);
 	}
-
 	@Override
-	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(
-			@NotNull Level level, @NotNull BlockState blockState, @NotNull BlockEntityType<T> type) {
-		if (type != DifModBlockEntities.ENGINE.get()) return null;
-		return (lvl, pos, state, be) -> {
-			if (be instanceof EngineBlockEntity engine) engine.tick();
+	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState blockState,@NotNull BlockEntityType<T> type){
+		if(type!=DifModBlockEntities.ENGINE.get()) return null;
+		return (lvl,pos,state,be)->{
+			if(be instanceof EngineBlockEntity blockEntity) blockEntity.tick();
 		};
 	}
-
 	@Override
-	public void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+	public void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
 		builder.add(FACING);
 	}
-
 	@Override
-	public Direction.Axis getRotationAxis(BlockState blockState) {
+	public Direction.Axis getRotationAxis(BlockState blockState){
 		return blockState.getValue(FACING).getAxis();
 	}
-
 	@Override
-	public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState blockState, Direction face) {
-		return face.getAxis() == getRotationAxis(blockState);
+	public boolean hasShaftTowards(LevelReader world,BlockPos pos,BlockState blockState,Direction face){
+		return face.getAxis().equals(getRotationAxis(blockState));
 	}
-
 	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		return defaultBlockState().setValue(FACING, context.getNearestLookingDirection());
+	public BlockState getStateForPlacement(BlockPlaceContext context){
+		return this.defaultBlockState().setValue(FACING,context.getNearestLookingDirection());
 	}
-
 	@Override
-	public @NotNull VoxelShape getVisualShape(@NotNull BlockState blockState, @NotNull BlockGetter world,
-	                                          @NotNull BlockPos pos, @NotNull CollisionContext context) {
+	public @NotNull VoxelShape getVisualShape(@NotNull BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
 		return Shapes.empty();
-	}
-
-	/** Soused se změnil → engine má okamžitě přeskanovat. */
-	@Override
-	public void neighborChanged(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
-	                            @NotNull Block neighborBlock, @NotNull BlockPos neighborPos, boolean isMoving) {
-		super.neighborChanged(state, level, pos, neighborBlock, neighborPos, isMoving);
-		if (!level.isClientSide && level.getBlockEntity(pos) instanceof EngineBlockEntity engine) {
-			engine.markDirty();
-		}
 	}
 }
