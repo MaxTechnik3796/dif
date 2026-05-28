@@ -70,7 +70,7 @@ public class ChunkLoaderCommand{
 		}
 		boolean isOp=source.hasPermission(2);
 		for(var r: list){
-			var pos=r.pos(); // Ušetří spoustu místa při psaní .getX() atd.
+			var pos=r.pos();
 			MutableComponent line=Component.literal(" §e• "+(r.is3x3()?"§b[3x3]":"§7[1x1]")+" §f"+pos.getX()+", "+pos.getY()+", "+pos.getZ()+" ");
 			if(isOp){
 				line.append(Component.literal("§6[TP] ").withStyle(s->s

@@ -42,8 +42,8 @@ public class PortalBlockEntity extends BlockEntity{
 	public boolean isBlue(){
 		return isBlue;
 	}
-	public PortalBlockEntity(BlockPos pos,BlockState state){
-		super(DifModBlockEntities.PORTAL.get(),pos,state);
+	public PortalBlockEntity(BlockPos pos,BlockState blockState){
+		super(DifModBlockEntities.PORTAL.get(),pos,blockState);
 	}
 	public void setup(UUID owner,boolean isBlue,Direction facing){
 		this.owner=owner;
@@ -51,39 +51,35 @@ public class PortalBlockEntity extends BlockEntity{
 		this.facing=facing;
 		this.setChanged();
 	}
-	public static void tick(Level level,BlockPos pos,PortalBlockEntity be){
-		if(be.owner==null) return;
-		if(!(level instanceof ServerLevel sl)) return;
-		if(!pos.equals(getPortal(sl,be.owner,be.isBlue))) return;
-		// Vždy čti aktuální stav z levelu
+	public static void tick(Level level,BlockPos pos,PortalBlockEntity blockEntity){
+		if(blockEntity.owner==null) return;
+		if(!(level instanceof ServerLevel serverLevel)) return;
+		if(!pos.equals(getPortal(serverLevel,blockEntity.owner,blockEntity.isBlue))) return;
 		BlockState currentState=level.getBlockState(pos);
-		if(++be.linkedCheckTimer>=LINKED_CHECK_INTERVAL){
-			be.linkedCheckTimer=0;
-			boolean linked=getPortal(sl,be.owner,!be.isBlue)!=null;
+		if(++blockEntity.linkedCheckTimer>=LINKED_CHECK_INTERVAL){
+			blockEntity.linkedCheckTimer=0;
+			boolean linked=getPortal(serverLevel,blockEntity.owner,!blockEntity.isBlue)!=null;
 			boolean currentLinked=currentState.getValue(PortalBlock.IS_LINKED);
 			if(linked!=currentLinked){
 				BlockState newState=currentState.setValue(PortalBlock.IS_LINKED,linked);
 				level.setBlock(pos,newState,3);
 				BlockPos extPos=pos.relative(currentState.getValue(PortalBlock.EXTENSION_DIR));
 				BlockState extState=level.getBlockState(extPos);
-				if(extState.is(currentState.getBlock())&&extState.getValue(PortalBlock.HALF)==DoubleBlockHalf.UPPER)
-					level.setBlock(extPos,extState.setValue(PortalBlock.IS_LINKED,linked),3);
+				if(extState.is(currentState.getBlock())&&extState.getValue(PortalBlock.HALF)==DoubleBlockHalf.UPPER) level.setBlock(extPos,extState.setValue(PortalBlock.IS_LINKED,linked),3);
 				currentState=newState;
 			}
 		}
 		if(!currentState.getValue(PortalBlock.IS_LINKED)) return;
 		AABB box=currentState.getShape(level,pos).bounds().move(pos);
 		BlockPos extPos=pos.relative(currentState.getValue(PortalBlock.EXTENSION_DIR));
-		if(level.getBlockState(extPos).is(currentState.getBlock()))
-			box=box.minmax(level.getBlockState(extPos).getShape(level,extPos).bounds().move(extPos));
+		if(level.getBlockState(extPos).is(currentState.getBlock())) box=box.minmax(level.getBlockState(extPos).getShape(level,extPos).bounds().move(extPos));
 		long now=level.getGameTime();
 		List<Player> players=level.getEntitiesOfClass(Player.class,box);
 		for(Player p: players){
 			UUID pid=p.getUUID();
-			if(now-be.lastTeleportTime<=DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get()) continue;
-			if(entityCooldowns.containsKey(pid)&&now-entityCooldowns.get(pid)<=DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get())
-				continue;
-			be.tryTeleportPlayer(p,sl,now);
+			if(now-blockEntity.lastTeleportTime<=DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get()) continue;
+			if(entityCooldowns.containsKey(pid)&&now-entityCooldowns.get(pid)<=DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get()) continue;
+			blockEntity.tryTeleportPlayer(p,serverLevel,now);
 		}
 		if(DifModCommonConfig.PORTAL_ALLOW_ENTITIES.get()){
 			List<LivingEntity> mobs=level.getEntitiesOfClass(LivingEntity.class,box);
@@ -92,19 +88,16 @@ public class PortalBlockEntity extends BlockEntity{
 				if(mob instanceof Player) continue;
 				if(count>=DifModCommonConfig.PORTAL_MAX_ENTITIES_PER_TICK.get()) break;
 				UUID mid=mob.getUUID();
-				if(entityCooldowns.containsKey(mid)&&now-entityCooldowns.get(mid)<=DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get())
-					continue;
-				be.tryTeleportEntity(mob,sl,now,false);
+				if(entityCooldowns.containsKey(mid)&&now-entityCooldowns.get(mid)<=DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get()) continue;
+				blockEntity.tryTeleportEntity(mob,serverLevel,now,false);
 				count++;
 			}
-			List<Entity> misc=level.getEntitiesOfClass(Entity.class,box,
-					e->!(e instanceof LivingEntity)&&!(e instanceof Projectile)&&!(e instanceof ItemEntity));
+			List<Entity> misc=level.getEntitiesOfClass(Entity.class,box,e->!(e instanceof LivingEntity)&&!(e instanceof Projectile)&&!(e instanceof ItemEntity));
 			for(Entity e: misc){
 				if(count>=DifModCommonConfig.PORTAL_MAX_ENTITIES_PER_TICK.get()) break;
 				UUID eid=e.getUUID();
-				if(entityCooldowns.containsKey(eid)&&now-entityCooldowns.get(eid)<=DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get())
-					continue;
-				be.tryTeleportEntity(e,sl,now,false);
+				if(entityCooldowns.containsKey(eid)&&now-entityCooldowns.get(eid)<=DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get()) continue;
+				blockEntity.tryTeleportEntity(e,serverLevel,now,false);
 				count++;
 			}
 		}
@@ -115,7 +108,7 @@ public class PortalBlockEntity extends BlockEntity{
 				if(count>=DifModCommonConfig.PORTAL_MAX_ENTITIES_PER_TICK.get()) break;
 				UUID eid=e.getUUID();
 				if(entityCooldowns.containsKey(eid)&&now-entityCooldowns.get(eid)<=10) continue;
-				be.tryTeleportEntity(e,sl,now,true);
+				blockEntity.tryTeleportEntity(e,serverLevel,now,true);
 				count++;
 			}
 		}
@@ -133,8 +126,7 @@ public class PortalBlockEntity extends BlockEntity{
 			assert level!=null;
 			AABB box=this.getBlockState().getShape(level,worldPosition).bounds().move(worldPosition);
 			BlockPos extPos=worldPosition.relative(this.getBlockState().getValue(PortalBlock.EXTENSION_DIR));
-			if(level.getBlockState(extPos).is(this.getBlockState().getBlock()))
-				box=box.minmax(level.getBlockState(extPos).getShape(level,extPos).bounds().move(extPos));
+			if(level.getBlockState(extPos).is(this.getBlockState().getBlock())) box=box.minmax(level.getBlockState(extPos).getShape(level,extPos).bounds().move(extPos));
 			box=box.inflate(1.5);
 			if(!box.contains(p.position())){
 				waitingPlayers.remove(pid);
@@ -161,23 +153,21 @@ public class PortalBlockEntity extends BlockEntity{
 		sl.setChunkForced(target.getX()>>4,target.getZ()>>4,false);
 		waitingPlayers.remove(pid);
 		if(!(sl.getBlockEntity(target) instanceof PortalBlockEntity other)){
-			// Portal v SavedData existuje ale blok ne – smaž záznam
 			PortalData.get(sl).remove(this.owner,!this.isBlue);
 			p.displayClientMessage(Component.literal("[!] Linked portal not found"),true);
 			return;
 		}
 		double tx=target.getX()+0.5-(other.facing.getStepX()*0.1875);
-		double ty=target.getY()+(other.facing==Direction.UP?0.1:(other.facing==Direction.DOWN?-2.0:0.0));
+		double ty=target.getY()+(other.facing==Direction.UP?0.1:(other.facing==Direction.DOWN?-2:0));
 		double tz=target.getZ()+0.5-(other.facing.getStepZ()*0.1875);
 		p.teleportTo(tx,ty,tz);
 		p.setYRot(other.facing.toYRot());
 		assert level!=null;
-		level.playSound(null,this.worldPosition,SoundEvents.BEACON_POWER_SELECT,SoundSource.BLOCKS,1.0F,1.2F);
-		level.playSound(null,target,SoundEvents.BEACON_POWER_SELECT,SoundSource.BLOCKS,1.0F,1.2F);
+		level.playSound(null,this.worldPosition,SoundEvents.BEACON_POWER_SELECT,SoundSource.BLOCKS,1F,1.2F);
+		level.playSound(null,target,SoundEvents.BEACON_POWER_SELECT,SoundSource.BLOCKS,1F,1.2F);
 		other.lastTeleportTime=this.lastTeleportTime=now;
 		entityCooldowns.put(pid,now);
 	}
-	// isItem=true → menší offset (itemy jsou malé)
 	private void tryTeleportEntity(Entity entity,ServerLevel sl,long now,boolean isItem){
 		BlockPos target=getPortal(sl,this.owner,!this.isBlue);
 		if(target==null) return;
@@ -189,15 +179,11 @@ public class PortalBlockEntity extends BlockEntity{
 			return;
 		if(!sl.isLoaded(target)) return;
 		Vec3 newMotion=transformVelocity(entity.getDeltaMovement(),this.facing,other.facing);
-		// Offset závisí na směru výstupního portálu – posuneme entitu před plochu portálu
 		double offsetScale=isItem?0.3:0.6;
 		double tx=target.getX()+0.5+(other.facing.getStepX()*offsetScale);
 		double ty=target.getY()+0.5+(other.facing.getStepY()*offsetScale);
 		double tz=target.getZ()+0.5+(other.facing.getStepZ()*offsetScale);
-		// Pro moby které mají výšku – posuneme dolů aby nestáli ve vzduchu
-		if(!isItem&&entity instanceof LivingEntity living){
-			ty=target.getY()+(other.facing==Direction.UP?0.5:(other.facing==Direction.DOWN?-living.getBbHeight():0.0));
-		}
+		if(!isItem&&entity instanceof LivingEntity living) ty=target.getY()+(other.facing==Direction.UP?0.5:(other.facing==Direction.DOWN?-living.getBbHeight():0));
 		entity.teleportTo(tx,ty,tz);
 		entity.setDeltaMovement(newMotion);
 		entity.hurtMarked=true;
@@ -228,27 +214,21 @@ public class PortalBlockEntity extends BlockEntity{
 		axis=axis.normalize();
 		return v.scale(cosAngle).add(axis.cross(v).scale(sinAngle)).add(axis.scale(axis.dot(v)*(1-cosAngle)));
 	}
-	public static void savePortal(ServerLevel l,UUID id,boolean b,BlockPos p){
-		PortalData.get(l).set(id,b,p);
+	public static void savePortal(ServerLevel serverLevel,UUID uuid,boolean b,BlockPos pos){
+		PortalData.get(serverLevel).set(uuid,b,pos);
 	}
-	public static BlockPos getPortal(ServerLevel l,UUID id,boolean b){
-		return PortalData.get(l).getPos(id,b);
+	public static BlockPos getPortal(ServerLevel serverLevel,UUID uuid,boolean b){
+		return PortalData.get(serverLevel).getPos(uuid,b);
 	}
-	public static void removeOldPortal(ServerLevel l,UUID id,boolean b){
-		BlockPos p=getPortal(l,id,b);
-		if(p==null) return;
-		// Vždy smaž ze SavedData
-		PortalData.get(l).remove(id,b);
-		if(l.isLoaded(p)){
-			// Chunk načtený – smaž blok přímo
-			if(l.getBlockEntity(p) instanceof PortalBlockEntity)
-				l.destroyBlock(p,false);
-		}else{
-			// Chunk není načtený – dočasně načti, smaž blok, odnačti
-			l.setChunkForced(p.getX()>>4,p.getZ()>>4,true);
-			if(l.getBlockEntity(p) instanceof PortalBlockEntity)
-				l.destroyBlock(p,false);
-			l.setChunkForced(p.getX()>>4,p.getZ()>>4,false);
+	public static void removeOldPortal(ServerLevel serverLevel,UUID uuid,boolean b){
+		BlockPos portal=getPortal(serverLevel,uuid,b);
+		if(portal==null) return;
+		PortalData.get(serverLevel).remove(uuid,b);
+		if(serverLevel.isLoaded(portal)) if(serverLevel.getBlockEntity(portal) instanceof PortalBlockEntity) serverLevel.destroyBlock(portal,false);
+		else{
+			serverLevel.setChunkForced(portal.getX()>>4,portal.getZ()>>4,true);
+			if(serverLevel.getBlockEntity(portal) instanceof PortalBlockEntity) serverLevel.destroyBlock(portal,false);
+			serverLevel.setChunkForced(portal.getX()>>4,portal.getZ()>>4,false);
 		}
 	}
 	@Override
@@ -267,11 +247,8 @@ public class PortalBlockEntity extends BlockEntity{
 	}
 	public static class PortalData extends SavedData{
 		private final Map<UUID,Map<Boolean,BlockPos>> map=new HashMap<>();
-		public static PortalData get(ServerLevel l){
-			return l.getDataStorage().computeIfAbsent(
-					new SavedData.Factory<>(PortalData::new,PortalData::load),
-					"dif_portals"
-			);
+		public static PortalData get(ServerLevel serverLevel){
+			return serverLevel.getDataStorage().computeIfAbsent(new SavedData.Factory<>(PortalData::new,PortalData::load),"dif_portals");
 		}
 		public static PortalData load(CompoundTag t,HolderLookup.Provider provider){
 			PortalData d=new PortalData();
@@ -285,21 +262,21 @@ public class PortalBlockEntity extends BlockEntity{
 			return d;
 		}
 		@Override
-		public @NotNull CompoundTag save(@NotNull CompoundTag t,@NotNull HolderLookup.Provider provider){
+		public @NotNull CompoundTag save(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider provider){
 			map.forEach((k,v)->{
 				CompoundTag pt=new CompoundTag();
 				if(v.containsKey(true)) pt.put("b",NbtUtils.writeBlockPos(v.get(true)));
 				if(v.containsKey(false)) pt.put("o",NbtUtils.writeBlockPos(v.get(false)));
-				t.put(k.toString(),pt);
+				tag.put(k.toString(),pt);
 			});
-			return t;
+			return tag;
 		}
-		public void set(UUID id,boolean b,BlockPos p){
-			map.computeIfAbsent(id,k->new HashMap<>()).put(b,p);
+		public void set(UUID uuid,boolean b,BlockPos pos){
+			map.computeIfAbsent(uuid,k->new HashMap<>()).put(b,pos);
 			setDirty();
 		}
-		public BlockPos getPos(UUID id,boolean b){
-			return map.getOrDefault(id,Map.of()).get(b);
+		public BlockPos getPos(UUID uuid,boolean b){
+			return map.getOrDefault(uuid,Map.of()).get(b);
 		}
 		public void remove(UUID id,boolean b){
 			Map<Boolean,BlockPos> m=map.get(id);

@@ -30,14 +30,13 @@ public class SuperBoxBlockEntity extends RandomizableContainerBlockEntity implem
 	public ItemStackHandler getInventory(){
 		return inventory;
 	}
-	public SuperBoxBlockEntity(BlockPos position,BlockState state){
-		super(DifModBlockEntities.SUPER_BOX.get(),position,state);
+	public SuperBoxBlockEntity(BlockPos position,BlockState blockState){
+		super(DifModBlockEntities.SUPER_BOX.get(),position,blockState);
 	}
 	@Override
 	protected void loadAdditional(@NotNull CompoundTag compound,@NotNull HolderLookup.Provider provider){
 		super.loadAdditional(compound,provider);
-		if(compound.contains("inventory"))
-			inventory.deserializeNBT(provider,compound.getCompound("inventory"));
+		if(compound.contains("inventory")) inventory.deserializeNBT(provider,compound.getCompound("inventory"));
 	}
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag compound,@NotNull HolderLookup.Provider provider){
@@ -58,8 +57,7 @@ public class SuperBoxBlockEntity extends RandomizableContainerBlockEntity implem
 	}
 	@Override
 	public boolean isEmpty(){
-		for(int i=0;i<inventory.getSlots();i++)
-			if(!inventory.getStackInSlot(i).isEmpty()) return false;
+		for(int i=0;i<inventory.getSlots();i++) if(!inventory.getStackInSlot(i).isEmpty()) return false;
 		return true;
 	}
 	@Override
@@ -81,12 +79,11 @@ public class SuperBoxBlockEntity extends RandomizableContainerBlockEntity implem
 		return list;
 	}
 	@Override
-	protected void setItems(@NotNull NonNullList<ItemStack> stacks){
-		for(int i=0;i<stacks.size()&&i<inventory.getSlots();i++)
-			inventory.setStackInSlot(i,stacks.get(i));
+	protected void setItems(@NotNull NonNullList<ItemStack> itemStacks){
+		for(int i=0;i<itemStacks.size()&&i<inventory.getSlots();i++) inventory.setStackInSlot(i,itemStacks.get(i));
 	}
 	@Override
-	public boolean canPlaceItem(int index,@NotNull ItemStack stack){
+	public boolean canPlaceItem(int index,@NotNull ItemStack itemStack){
 		return true;
 	}
 	@Override
@@ -94,11 +91,11 @@ public class SuperBoxBlockEntity extends RandomizableContainerBlockEntity implem
 		return IntStream.range(0,inventory.getSlots()).toArray();
 	}
 	@Override
-	public boolean canPlaceItemThroughFace(int index,@NotNull ItemStack stack,@Nullable Direction direction){
+	public boolean canPlaceItemThroughFace(int index,@NotNull ItemStack itemStack,@Nullable Direction side){
 		return true;
 	}
 	@Override
-	public boolean canTakeItemThroughFace(int index,@NotNull ItemStack stack,@NotNull Direction direction){
+	public boolean canTakeItemThroughFace(int index,@NotNull ItemStack itemStack,@NotNull Direction side){
 		return true;
 	}
 }

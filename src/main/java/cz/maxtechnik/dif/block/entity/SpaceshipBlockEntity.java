@@ -28,7 +28,6 @@ public class SpaceshipBlockEntity extends BlockEntity implements MenuProvider{
 	public SpaceshipBlockEntity(BlockPos pos,BlockState state){
 		super(DifModBlockEntities.SPACESHIP.get(),pos,state);
 	}
-	// Getter pro menu a capability
 	public IItemHandler getItemHandler(){
 		return itemHandler;
 	}
@@ -54,8 +53,7 @@ public class SpaceshipBlockEntity extends BlockEntity implements MenuProvider{
 	}
 	public void drops(){
 		SimpleContainer inventory=new SimpleContainer(itemHandler.getSlots());
-		for(int i=0;i<itemHandler.getSlots();i++)
-			inventory.setItem(i,itemHandler.getStackInSlot(i));
+		for(int i=0;i<itemHandler.getSlots();i++) inventory.setItem(i,itemHandler.getStackInSlot(i));
 		assert this.level!=null;
 		Containers.dropContents(this.level,this.worldPosition,inventory);
 	}

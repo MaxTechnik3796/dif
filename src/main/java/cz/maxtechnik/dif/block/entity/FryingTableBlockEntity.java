@@ -45,15 +45,13 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 		protected void onContentsChanged(){
 			super.onContentsChanged();
 			setChanged();
-			if(level!=null)
-				level.sendBlockUpdated(worldPosition,level.getBlockState(worldPosition),level.getBlockState(worldPosition),2);
+			if(level!=null) level.sendBlockUpdated(worldPosition,level.getBlockState(worldPosition),level.getBlockState(worldPosition),2);
 		}
 	};
 	private final IItemHandler[] itemHandlers=new IItemHandler[Direction.values().length];
 	public FryingTableBlockEntity(BlockPos pos,BlockState blockState){
 		super(DifModBlockEntities.FRYING_TABLE.get(),pos,blockState);
-		for(Direction dir: Direction.values())
-			itemHandlers[dir.ordinal()]=new SidedInvWrapper(this,dir);
+		for(Direction dir: Direction.values()) itemHandlers[dir.ordinal()]=new SidedInvWrapper(this,dir);
 	}
 	@Nullable
 	public IItemHandler getItemHandler(@Nullable Direction side){

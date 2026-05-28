@@ -16,6 +16,7 @@
 	"effect.dif.drank":"Drank",
 	"effect.dif.wtf":"WTF",
 	"subtitles.formula_engine":"Formula Engine",
+
 	"gui.dif.inventory":"Inventory",
 	"gui.dif.burning_generator":"Burning Generator",
 	"gui.dif.spaceship":"Spaceship",
@@ -27,6 +28,8 @@
 	"container.dif.brass_barrel":"Brass Barrel",
 	"container.dif.sturdy_barrel":"Sturdy Barrel",
 	"container.dif.old_chest":"Alpha Chest",
+	"container.dif.coke_oven": "Coke Oven",
+	"container.dif.space_crate": "Space Crate",
 
 	"item.dif.beer_bucket":"GoldBerg Bucket",
 	"block.dif.beer_fluid":"GoldBerg",
@@ -330,7 +333,6 @@
 	"block.dif.copper_support":"Copper Support",
 	"block.dif.steel_support":"Steel Support",
 	"jei.dif.frying_table": "Frying Table",
-	"container.dif.coke_oven": "Coke Oven",
 	"block.dif.coke_oven":"Coke Oven",
 	"block.dif.coke_oven_controller":"Coke Oven Controller"
 }

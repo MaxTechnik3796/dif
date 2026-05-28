@@ -10,8 +10,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 public class SpaceScaffoldingBlockEntity extends BlockEntity{
 	public int lifeTime;
-	public SpaceScaffoldingBlockEntity(BlockPos pos,BlockState state){
-		super(DifModBlockEntities.SPACE_SCAFFOLDING.get(),pos,state);
+	public SpaceScaffoldingBlockEntity(BlockPos pos,BlockState blockState){
+		super(DifModBlockEntities.SPACE_SCAFFOLDING.get(),pos,blockState);
 	}
 	@Override
 	public void loadAdditional(@NotNull CompoundTag compound,HolderLookup.@NotNull Provider registries){

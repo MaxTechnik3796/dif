@@ -11,8 +11,8 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import org.jetbrains.annotations.NotNull;
 public class SleepingBagBlockEntity extends BlockEntity{
 	private DyeColor color=DyeColor.WHITE;
-	public SleepingBagBlockEntity(BlockPos pos,BlockState state){
-		super(DifModBlockEntities.SLEEPING_BAG.get(),pos,state);
+	public SleepingBagBlockEntity(BlockPos pos,BlockState blockState){
+		super(DifModBlockEntities.SLEEPING_BAG.get(),pos,blockState);
 	}
 	public DyeColor getColor(){
 		return color;

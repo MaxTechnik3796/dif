@@ -11,19 +11,17 @@ import org.jetbrains.annotations.NotNull;
 public class QuarryFrameBlockEntity extends BlockEntity{
 	private BlockPos ownerQuarryPos=null;
 	private boolean scheduledForRemoval=false;
-	public QuarryFrameBlockEntity(BlockPos pos,BlockState state){
-		super(DifModBlockEntities.QUARRY_FRAME.get(),pos,state);
+	public QuarryFrameBlockEntity(BlockPos pos,BlockState blockState){
+		super(DifModBlockEntities.QUARRY_FRAME.get(),pos,blockState);
 	}
 	public static void tick(Level level,BlockPos pos,QuarryFrameBlockEntity frameEntity){
 		if(!level.isClientSide&&frameEntity.scheduledForRemoval) level.removeBlock(pos,false);
 	}
-	// Nastaví vlastníka – lze nastavit pouze jednou (ochrana před přepsáním cizí quarry)
 	public void setOwner(BlockPos quarryPos){
 		if(ownerQuarryPos!=null) return;
 		ownerQuarryPos=quarryPos;
 		setChanged();
 	}
-	// Označí frame pro odstranění v příštím ticku
 	public void scheduleRemoval(){
 		scheduledForRemoval=true;
 		ownerQuarryPos=null;

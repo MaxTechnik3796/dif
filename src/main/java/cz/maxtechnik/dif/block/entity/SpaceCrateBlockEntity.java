@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.block.entity;
 
+import cz.maxtechnik.dif.block.SpaceCrateBlock;
 import cz.maxtechnik.dif.gui.menu.SpaceCrateMenu;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import io.netty.buffer.Unpooled;
@@ -39,14 +40,14 @@ public class SpaceCrateBlockEntity extends RandomizableContainerBlockEntity impl
 	}
 	private final ContainerOpenersCounter openersCounter=new ContainerOpenersCounter(){
 		@Override
-		protected void onOpen(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState state){
-			level.playSound(null,pos,SoundEvents.BARREL_OPEN,SoundSource.BLOCKS,1.0F,1.0F);
-			level.setBlock(pos,state.setValue(cz.maxtechnik.dif.block.SpaceCrateBlock.OPEN,true),3);
+		protected void onOpen(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState blockState){
+			level.playSound(null,pos,SoundEvents.BARREL_OPEN,SoundSource.BLOCKS,1F,1F);
+			level.setBlock(pos,blockState.setValue(SpaceCrateBlock.OPEN,true),3);
 		}
 		@Override
-		protected void onClose(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState state){
-			level.playSound(null,pos,SoundEvents.BARREL_CLOSE,SoundSource.BLOCKS,1.0F,1.0F);
-			level.setBlock(pos,state.setValue(cz.maxtechnik.dif.block.SpaceCrateBlock.OPEN,false),3);
+		protected void onClose(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState blockState){
+			level.playSound(null,pos,SoundEvents.BARREL_CLOSE,SoundSource.BLOCKS,1F,1F);
+			level.setBlock(pos,blockState.setValue(SpaceCrateBlock.OPEN,false),3);
 		}
 		@Override
 		protected void openerCountChanged(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState state,int a,int b){
@@ -58,8 +59,8 @@ public class SpaceCrateBlockEntity extends RandomizableContainerBlockEntity impl
 			return false;
 		}
 	};
-	public SpaceCrateBlockEntity(BlockPos pos,BlockState state){
-		super(DifModBlockEntities.SPACE_CRATE.get(),pos,state);
+	public SpaceCrateBlockEntity(BlockPos pos,BlockState blockState){
+		super(DifModBlockEntities.SPACE_CRATE.get(),pos,blockState);
 	}
 	@Override
 	public void startOpen(@NotNull Player player){
@@ -113,10 +114,10 @@ public class SpaceCrateBlockEntity extends RandomizableContainerBlockEntity impl
 		return Component.translatable("container.dif.space_crate");
 	}
 	@Override
-	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inv){
+	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inventory){
 		FriendlyByteBuf buf=new FriendlyByteBuf(Unpooled.buffer());
 		buf.writeBlockPos(worldPosition);
-		return new SpaceCrateMenu(id,inv,buf);
+		return new SpaceCrateMenu(id,inventory,buf);
 	}
 	@Override
 	protected @NotNull NonNullList<ItemStack> getItems(){
@@ -125,11 +126,11 @@ public class SpaceCrateBlockEntity extends RandomizableContainerBlockEntity impl
 		return list;
 	}
 	@Override
-	protected void setItems(@NotNull NonNullList<ItemStack> stacks){
-		for(int i=0;i<stacks.size()&&i<inventory.getSlots();i++) inventory.setStackInSlot(i,stacks.get(i));
+	protected void setItems(@NotNull NonNullList<ItemStack> itemStacks){
+		for(int i=0;i<itemStacks.size()&&i<inventory.getSlots();i++) inventory.setStackInSlot(i,itemStacks.get(i));
 	}
 	@Override
-	public boolean canPlaceItem(int index,@NotNull ItemStack stack){
+	public boolean canPlaceItem(int index,@NotNull ItemStack itemStack){
 		return true;
 	}
 	@Override
@@ -137,11 +138,11 @@ public class SpaceCrateBlockEntity extends RandomizableContainerBlockEntity impl
 		return IntStream.range(0,inventory.getSlots()).toArray();
 	}
 	@Override
-	public boolean canPlaceItemThroughFace(int index,@NotNull ItemStack stack,@Nullable Direction direction){
+	public boolean canPlaceItemThroughFace(int index,@NotNull ItemStack itemStack,@Nullable Direction side){
 		return true;
 	}
 	@Override
-	public boolean canTakeItemThroughFace(int index,@NotNull ItemStack stack,@NotNull Direction direction){
+	public boolean canTakeItemThroughFace(int index,@NotNull ItemStack itemStack,@NotNull Direction side){
 		return true;
 	}
 }

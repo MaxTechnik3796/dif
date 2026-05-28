@@ -32,14 +32,13 @@ public class OldChestBlockEntity extends RandomizableContainerBlockEntity implem
 	public ItemStackHandler getInventory(){
 		return inventory;
 	}
-	public OldChestBlockEntity(BlockPos position,BlockState state){
-		super(DifModBlockEntities.OLD_CHEST.get(),position,state);
+	public OldChestBlockEntity(BlockPos position,BlockState blockState){
+		super(DifModBlockEntities.OLD_CHEST.get(),position,blockState);
 	}
 	@Override
 	protected void loadAdditional(@NotNull CompoundTag compound,@NotNull HolderLookup.Provider provider){
 		super.loadAdditional(compound,provider);
-		if(compound.contains("inventory"))
-			inventory.deserializeNBT(provider,compound.getCompound("inventory"));
+		if(compound.contains("inventory")) inventory.deserializeNBT(provider,compound.getCompound("inventory"));
 	}
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag compound,@NotNull HolderLookup.Provider provider){
@@ -86,8 +85,7 @@ public class OldChestBlockEntity extends RandomizableContainerBlockEntity implem
 	}
 	@Override
 	protected void setItems(@NotNull NonNullList<ItemStack> stacks){
-		for(int i=0;i<stacks.size()&&i<inventory.getSlots();i++)
-			inventory.setStackInSlot(i,stacks.get(i));
+		for(int i=0;i<stacks.size()&&i<inventory.getSlots();i++) inventory.setStackInSlot(i,stacks.get(i));
 	}
 	@Override
 	public boolean canPlaceItem(int index,@NotNull ItemStack stack){
@@ -98,11 +96,11 @@ public class OldChestBlockEntity extends RandomizableContainerBlockEntity implem
 		return IntStream.range(0,inventory.getSlots()).toArray();
 	}
 	@Override
-	public boolean canPlaceItemThroughFace(int index,@NotNull ItemStack stack,@Nullable Direction direction){
+	public boolean canPlaceItemThroughFace(int index,@NotNull ItemStack itemStack,@Nullable Direction side){
 		return true;
 	}
 	@Override
-	public boolean canTakeItemThroughFace(int index,@NotNull ItemStack stack,@NotNull Direction direction){
+	public boolean canTakeItemThroughFace(int index,@NotNull ItemStack itemStack,@NotNull Direction side){
 		return true;
 	}
 }
