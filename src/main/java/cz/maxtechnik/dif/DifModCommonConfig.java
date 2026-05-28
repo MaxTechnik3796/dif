@@ -1,10 +1,8 @@
 package cz.maxtechnik.dif;
 
 
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-@SuppressWarnings("removal")
 public class DifModCommonConfig{
 	private static final ModConfigSpec.Builder BUILDER=new ModConfigSpec.Builder();
 	static final ModConfigSpec SPEC;
