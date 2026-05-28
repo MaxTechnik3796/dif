@@ -189,7 +189,9 @@ public class DifMod{
 		return player.gameMode.isCreative()||player.gameMode.getGameModeForPlayer().equals(GameType.SPECTATOR);
 	}
 	public static void addItemStacksBehind(BuildCreativeModeTabContentsEvent tabData,ItemStack startStack,ItemStack[] addStacks){
-		for(ItemStack addStack: addStacks)
-			tabData.insertAfter(startStack,addStack,CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		for(int i=0;i<addStacks.length;i++){
+			if(i==0) tabData.insertAfter(startStack,addStacks[i],CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			else tabData.insertAfter(addStacks[i-1],addStacks[i],CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		}
 	}
 }
