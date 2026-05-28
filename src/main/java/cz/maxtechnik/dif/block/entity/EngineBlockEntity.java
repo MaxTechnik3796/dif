@@ -63,6 +63,8 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	@Override
 	public void tick(){
 		super.tick();
+		assert level!=null;
+		int engine4=level.getBlockState(worldPosition).getBlock().equals(DifModBlocks.ENGINE4.get())?2:1;
 		if(reActivateSource){
 			updateGeneratedRotation();
 			reActivateSource=false;
