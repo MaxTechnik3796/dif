@@ -20,9 +20,9 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-public class SteamGeneratorBlock extends KineticBlock implements EntityBlock{
+public class SteamGenerator extends KineticBlock implements EntityBlock{
 	public static final EnumProperty<Direction.Axis> AXIS=BlockStateProperties.AXIS;
-	public SteamGeneratorBlock(BlockBehaviour.Properties properties){
+	public SteamGenerator(BlockBehaviour.Properties properties){
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(AXIS,Direction.Axis.Y));
 	}

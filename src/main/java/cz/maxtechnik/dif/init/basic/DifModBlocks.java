@@ -5,7 +5,7 @@ import cz.maxtechnik.dif.block.*;
 import cz.maxtechnik.dif.block.barrel.AndesiteBarrel;
 import cz.maxtechnik.dif.block.barrel.BrassBarrel;
 import cz.maxtechnik.dif.block.barrel.CopperBarrel;
-import cz.maxtechnik.dif.block.SteamGeneratorBlock;
+import cz.maxtechnik.dif.block.SteamGenerator;
 import cz.maxtechnik.dif.block.mata.MataPlant;
 import cz.maxtechnik.dif.block.mata.MatyBlock;
 import cz.maxtechnik.dif.block.rails.FastPoweredRailBlock;
@@ -88,13 +88,13 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>SOLAR_PANEL_04_W=REGISTRY.register("solar_panel_04_w",SolarPanel::new);
 
 	//Random (2):
-	public static final DeferredBlock<Block>CINDER_FLOUR_BLOCK=REGISTRY.register("cinder_flour_block",()->new Custom(SoundType.WART_BLOCK,0.4F,0.6F,false));
-	public static final DeferredBlock<Block>PEDROCK=REGISTRY.register("pedrock",()->new Custom(SoundType.STONE,1000F,999999999F,true));
+	public static final DeferredBlock<Block>CINDER_FLOUR_BLOCK=REGISTRY.register("cinder_flour_block",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.WART_BLOCK).strength(0.4F,0.6F)));
+	public static final DeferredBlock<Block>PEDROCK=REGISTRY.register("pedrock",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(1000F,999999999F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>ANDESITE_LATTICE=REGISTRY.register("andesite_lattice",AndesiteLattice::new);
 	public static final DeferredBlock<Block>ANDESITE_WINDOW=REGISTRY.register("andesite_window",AndesiteWindow::new);
 	public static final DeferredBlock<Block>SMOOTH_STONE_DOUBLE_SLAB=REGISTRY.register("smooth_stone_double_slab",()->new Block(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).requiresCorrectToolForDrops().strength(2F,6F)));
 	public static final DeferredBlock<Block>IRON_BARS_BLOCK=REGISTRY.register("iron_bars_block",()->new CustomWaterlogged(SoundType.METAL,5F,6F,true));
-	public static final DeferredBlock<Block>GLITCH_BLOCK=REGISTRY.register("glitch_block",()->new Custom(SoundType.STONE,1.8F,3F,true));
+	public static final DeferredBlock<Block>GLITCH_BLOCK=REGISTRY.register("glitch_block",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(1.8F,3F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>TREE_BARK_BLOCK=REGISTRY.register("tree_bark_block",()->new Block(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(1.8F,3F).sound(SoundType.MANGROVE_ROOTS).ignitedByLava()));
 
 	//Arrows:
@@ -103,9 +103,9 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>WOODED_ARROW=REGISTRY.register("wooded_arrow",()->new CustomHorizontalRotation(SoundType.WOOD,2F,3F,false));
 
 	//Bauxite:
-	public static final DeferredBlock<Block>BAUXITE_ORE=REGISTRY.register("bauxite_ore",()->new Custom(SoundType.STONE,3F,3F,true));
-	public static final DeferredBlock<Block>DEEPSLATE_BAUXITE_ORE=REGISTRY.register("deepslate_bauxite_ore",()->new Custom(SoundType.DEEPSLATE,4.5F,3F,true));
-	public static final DeferredBlock<Block>ALUMINUM_BLOCK=REGISTRY.register("aluminum_block",()->new Custom(SoundType.METAL,5F,6F,true));
+	public static final DeferredBlock<Block>BAUXITE_ORE=REGISTRY.register("bauxite_ore",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(3F,3F).requiresCorrectToolForDrops()));
+	public static final DeferredBlock<Block>DEEPSLATE_BAUXITE_ORE=REGISTRY.register("deepslate_bauxite_ore",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.DEEPSLATE).strength(4.5F,3F).requiresCorrectToolForDrops()));
+	public static final DeferredBlock<Block>ALUMINUM_BLOCK=REGISTRY.register("aluminum_block",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>ALUMINUM_PROFILE=REGISTRY.register("aluminum_profile",AluminumProfile::new);
 
 	//Canola:
@@ -114,8 +114,8 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>MATY_BLOCK=REGISTRY.register("maty_block",MatyBlock::new);
 
 	//Ruby:
-	public static final DeferredBlock<Block>RUBY_ORE=REGISTRY.register("ruby_ore",()->new Custom(SoundType.STONE,3F,3F,true));
-	public static final DeferredBlock<Block>RUBY_BLOCK=REGISTRY.register("ruby_block",()->new Custom(SoundType.STONE,5F,6F,true));
+	public static final DeferredBlock<Block>RUBY_ORE=REGISTRY.register("ruby_ore",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(3F,3F).requiresCorrectToolForDrops()));
+	public static final DeferredBlock<Block>RUBY_BLOCK=REGISTRY.register("ruby_block",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(5F,6F).requiresCorrectToolForDrops()));
 
 	//Energy:
 	public static final DeferredBlock<Block>ENERGY_BLOCK=REGISTRY.register("energy_block",()->new AmethystBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(1.5F).sound(SoundType.AMETHYST).requiresCorrectToolForDrops()));
@@ -144,16 +144,16 @@ public class DifModBlocks{
 
 
 	public static final DeferredBlock<Block>SPACE_SCAFFOLDING=REGISTRY.register("space_scaffolding",SpaceScaffolding::new);
-	public static final DeferredBlock<Block>SPACE_CASING=REGISTRY.register("space_casing",()->new Custom(SoundType.NETHERITE_BLOCK,5F,6F,true));
-	public static final DeferredBlock<Block>SPACE_CASING_REINFORCED=REGISTRY.register("space_casing_reinforced",()->new Custom(SoundType.NETHERITE_BLOCK,5F,6F,true));
-	public static final DeferredBlock<Block>SPACE_CASING_METAL=REGISTRY.register("space_casing_metal",()->new Custom(SoundType.NETHERITE_BLOCK,5F,6F,true));
+	public static final DeferredBlock<Block>SPACE_CASING=REGISTRY.register("space_casing",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(5F,6F).requiresCorrectToolForDrops()));
+	public static final DeferredBlock<Block>SPACE_CASING_REINFORCED=REGISTRY.register("space_casing_reinforced",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(5F,6F).requiresCorrectToolForDrops()));
+	public static final DeferredBlock<Block>SPACE_CASING_METAL=REGISTRY.register("space_casing_metal",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(5F,6F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>SPACE_DOOR=REGISTRY.register("space_door",SpaceDoor::new);
-	public static final DeferredBlock<Block>SPACE_CORRIDOR=REGISTRY.register("space_corridor",()->new Custom(SoundType.GLASS,5F,6F,true));
+	public static final DeferredBlock<Block>SPACE_CORRIDOR=REGISTRY.register("space_corridor",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.GLASS).strength(5F,6F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>SPACE_CRATE=REGISTRY.register("space_crate",()->new SpaceCrateBlock(BlockBehaviour.Properties.of().strength(5F,6F).sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops()));
-	public static final DeferredBlock<Block>SOLAR_PANEL_BLOCK=REGISTRY.register("solar_panel_block",()->new Custom(SoundType.STONE,5F,6F,true));
+	public static final DeferredBlock<Block>SOLAR_PANEL_BLOCK=REGISTRY.register("solar_panel_block",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(5F,6F).requiresCorrectToolForDrops()));
 
-	public static final DeferredBlock<Block>MOON_STONE=REGISTRY.register("moon_stone",()->new Custom(SoundType.STONE,3F,4F,true));
-	public static final DeferredBlock<Block>MARS_STONE=REGISTRY.register("mars_stone",()->new Custom(SoundType.STONE,3F,4F,true));
+	public static final DeferredBlock<Block>MOON_STONE=REGISTRY.register("moon_stone",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(3F,4F).requiresCorrectToolForDrops()));
+	public static final DeferredBlock<Block>MARS_STONE=REGISTRY.register("mars_stone",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(3F,4F).requiresCorrectToolForDrops()));
 
 	//Tracks:
 	public static final DeferredBlock<Block>BROKEN_TRACK00=REGISTRY.register("broken_track00",BrokenTrack::new);
@@ -164,7 +164,7 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>LAP_TIMER=REGISTRY.register("lap_timer",()->new Block(BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.NETHERITE_BLOCK)));
 
 	//nuke
-	public static final DeferredBlock<Block> NUCLEAR_BOMB = REGISTRY.register("nuclear_bomb", NuclearBombBlock::new);
+	public static final DeferredBlock<Block> NUCLEAR_BOMB = REGISTRY.register("nuclear_bomb",NuclearBomb::new);
 
 	public static final DeferredBlock<Block>BIG_GIRDER=REGISTRY.register("big_girder",()->new RotatedPillarBlock(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops().strength(4F,5F)));
 
@@ -183,5 +183,5 @@ public class DifModBlocks{
 
 
 
-	public static final DeferredBlock<Block> STEAM_GENERATOR = REGISTRY.register("steam_generator",() -> new SteamGeneratorBlock(BlockBehaviour.Properties.of().noOcclusion()));
+	public static final DeferredBlock<Block>STEAM_GENERATOR=REGISTRY.register("steam_generator",()->new SteamGenerator(BlockBehaviour.Properties.of().noOcclusion()));
 }
