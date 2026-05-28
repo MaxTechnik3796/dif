@@ -125,10 +125,7 @@ public class SolarPanel extends Block implements SimpleWaterloggedBlock{
 	private void generate(BlockEntity ent,int amount){
 		Level level=ent.getLevel();
 		if(level==null||level.isClientSide) return;
-		// Opravené volání pro NeoForge 1.21.1
 		IEnergyStorage energyHandler=level.getCapability(Capabilities.EnergyStorage.BLOCK,ent.getBlockPos(),ent.getBlockState(),ent,Direction.UP);
-		if(energyHandler!=null){
-			energyHandler.receiveEnergy(amount,false);
-		}
+		if(energyHandler!=null) energyHandler.receiveEnergy(amount,false);
 	}
 }
