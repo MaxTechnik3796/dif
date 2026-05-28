@@ -13,8 +13,7 @@
 		},
 		"facing=west,top=false":{
 			"model":"dif:block/engine_extender_heavy_fuel_oil",
-			"y":270,
-			"x":-90
+			"y":270
 		},
 		"facing=north,top=true":{
 			"model":"dif:block/engine_extender_heavy_fuel_oil",
