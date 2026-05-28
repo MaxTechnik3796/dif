@@ -1,18 +1,18 @@
 {
 	"variants":{
 		"facing=north":{
-			"model":"dif:block/engine2"
+			"model":"dif:block/engine"
 		},
 		"facing=east":{
-			"model":"dif:block/engine2",
+			"model":"dif:block/engine",
 			"y":90
 		},
 		"facing=south":{
-			"model":"dif:block/engine2",
+			"model":"dif:block/engine",
 			"y":180
 		},
 		"facing=west":{
-			"model":"dif:block/engine2",
+			"model":"dif:block/engine",
 			"y":270
 		}
 	}

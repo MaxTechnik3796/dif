@@ -64,7 +64,6 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	public void tick(){
 		super.tick();
 		assert level!=null;
-		int engine4=level.getBlockState(worldPosition).getBlock().equals(DifModBlocks.ENGINE4.get())?2:1;
 		if(reActivateSource){
 			updateGeneratedRotation();
 			reActivateSource=false;
@@ -74,13 +73,23 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 			speed=0F;
 			su=0F;
 		}else if(scanExtenders().equals(FuelType.DIESEL)){
-			speed=countExtenders()*10F;
+			speed=countExtenders()*12F;
 			su=countExtenders()*2F;
 			generating=fluidTank.getFluidAmount()>0;
 			fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
 		}else if(scanExtenders().equals(FuelType.HEAVY_FUEL_OIL)){
-			speed=countExtenders()*500F;
+			speed=countExtenders()*10F;
 			su=countExtenders()*2.3F;
+			generating=fluidTank.getFluidAmount()>0;
+			fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
+		}else if(scanExtenders().equals(FuelType.GASOLINE)){
+			speed=countExtenders()*8F;
+			su=countExtenders()*3F;
+			generating=fluidTank.getFluidAmount()>0;
+			fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
+		}else if(scanExtenders().equals(FuelType.LPG)){
+			speed=countExtenders()*9F;
+			su=countExtenders()*2.2F;
 			generating=fluidTank.getFluidAmount()>0;
 			fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
 		}

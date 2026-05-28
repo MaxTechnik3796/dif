@@ -1,37 +1,37 @@
 {
 	"variants":{
 		"facing=north,top=false":{
-			"model":"dif:block/engine_extender_diesel"
+			"model":"dif:block/engine_extender_lpg"
 		},
 		"facing=east,top=false":{
-			"model":"dif:block/engine_extender_diesel",
+			"model":"dif:block/engine_extender_lpg",
 			"y":90
 		},
 		"facing=south,top=false":{
-			"model":"dif:block/engine_extender_diesel",
+			"model":"dif:block/engine_extender_lpg",
 			"y":180
 		},
 		"facing=west,top=false":{
-			"model":"dif:block/engine_extender_diesel",
+			"model":"dif:block/engine_extender_lpg",
 			"y":270,
 			"x":-90
 		},
 		"facing=north,top=true":{
-			"model":"dif:block/engine_extender_diesel",
+			"model":"dif:block/engine_extender_lpg",
 			"y":90,
 			"x":-90
 		},
 		"facing=east,top=true":{
-			"model":"dif:block/engine_extender_diesel",
+			"model":"dif:block/engine_extender_lpg",
 			"x":-90
 		},
 		"facing=south,top=true":{
-			"model":"dif:block/engine_extender_diesel",
+			"model":"dif:block/engine_extender_lpg",
 			"y":90,
 			"x":-90
 		},
 		"facing=west,top=true":{
-			"model":"dif:block/engine_extender_diesel",
+			"model":"dif:block/engine_extender_lpg",
 			"y":180,
 			"x":-90
 		}
