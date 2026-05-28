@@ -7,6 +7,8 @@
 		"dif:old_chest",
 		"dif:space_crate",
 		"dif:space_scaffolding",
-		"#dif:supports"
+		"#dif:supports",
+		"#dif:engines",
+		"#dif:engine_extenders"
 	]
 }

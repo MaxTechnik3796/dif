@@ -35,6 +35,8 @@
 		"dif:distillation_tank",
 		"#dif:supports",
 		"#dif:casings",
-		"dif:big_girder"
+		"dif:big_girder",
+		"#dif:engines",
+		"#dif:engine_extenders"
 	]
 }

@@ -1,6 +1,5 @@
-package cz.maxtechnik.dif.block.barrel;
+package cz.maxtechnik.dif.block;
 
-import cz.maxtechnik.dif.block.Engine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -14,6 +13,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("deprecation")
 public class EngineExtender extends Block{
@@ -49,5 +51,13 @@ public class EngineExtender extends Block{
 	}
 	public @NotNull BlockState mirror(BlockState blockState,Mirror mirror){
 		return blockState.rotate(mirror.getRotation(blockState.getValue(FACING)));
+	}
+	@Override
+	public float getShadeBrightness(@NotNull BlockState blockState,@NotNull BlockGetter blockGetter,@NotNull BlockPos pos){
+		return 1F;
+	}
+	@Override
+	public @NotNull VoxelShape getVisualShape(@NotNull BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
+		return Shapes.empty();
 	}
 }

@@ -1,0 +1,9 @@
+{
+	"replace":false,
+	"values":[
+		"dif:engine_extender_diesel",
+		"dif:engine_extender_gasoline",
+		"dif:engine_extender_lpg",
+		"dif:engine_extender_heavy_fuel_oil"
+	]
+}

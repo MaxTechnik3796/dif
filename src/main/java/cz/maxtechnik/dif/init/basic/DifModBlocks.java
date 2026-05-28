@@ -5,7 +5,7 @@ import cz.maxtechnik.dif.block.*;
 import cz.maxtechnik.dif.block.barrel.AndesiteBarrel;
 import cz.maxtechnik.dif.block.barrel.BrassBarrel;
 import cz.maxtechnik.dif.block.barrel.CopperBarrel;
-import cz.maxtechnik.dif.block.barrel.EngineExtender;
+import cz.maxtechnik.dif.block.EngineExtender;
 import cz.maxtechnik.dif.block.mata.MataPlant;
 import cz.maxtechnik.dif.block.mata.MatyBlock;
 import cz.maxtechnik.dif.block.rails.FastPoweredRailBlock;
@@ -181,13 +181,13 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>COKE_OVEN=REGISTRY.register("coke_oven",()->new CokeOven(BlockBehaviour.Properties.of().strength(3F,4F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
 	public static final DeferredBlock<Block>COKE_OVEN_CONTROLLER=REGISTRY.register("coke_oven_controller",()->new CokeOvenController(BlockBehaviour.Properties.of().strength(3F,4F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
 
+	public static BlockBehaviour.Properties ENGINE_PROPERTIES=BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops();
+	public static final DeferredBlock<Block>ENGINE2=REGISTRY.register("engine2",()->new Engine(ENGINE_PROPERTIES));
+	public static final DeferredBlock<Block>ENGINE4=REGISTRY.register("engine4",()->new Engine(ENGINE_PROPERTIES));
 
-	public static final DeferredBlock<Block>ENGINE2=REGISTRY.register("engine2",()->new Engine(BlockBehaviour.Properties.of()));
-	public static final DeferredBlock<Block>ENGINE4=REGISTRY.register("engine4",()->new Engine(BlockBehaviour.Properties.of()));
-
-	public static BlockBehaviour.Properties ENGINE_EXTENDER_PROPERTIES=BlockBehaviour.Properties.of();
+	public static BlockBehaviour.Properties ENGINE_EXTENDER_PROPERTIES=BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops();
 	public static final DeferredBlock<Block>ENGINE_EXTENDER_DIESEL=REGISTRY.register("engine_extender_diesel",()->new EngineExtender(ENGINE_EXTENDER_PROPERTIES));
 	public static final DeferredBlock<Block>ENGINE_EXTENDER_GASOLINE=REGISTRY.register("engine_extender_gasoline",()->new EngineExtender(ENGINE_EXTENDER_PROPERTIES));
-	public static final DeferredBlock<Block>ENGINE_EXTENDER_LPG=REGISTRY.register("engine_extender_oil",()->new EngineExtender(ENGINE_EXTENDER_PROPERTIES));
+	public static final DeferredBlock<Block>ENGINE_EXTENDER_LPG=REGISTRY.register("engine_extender_lpg",()->new EngineExtender(ENGINE_EXTENDER_PROPERTIES));
 	public static final DeferredBlock<Block>ENGINE_EXTENDER_HEAVY_FUEL_OIL=REGISTRY.register("engine_extender_heavy_fuel_oil",()->new EngineExtender(ENGINE_EXTENDER_PROPERTIES));
 }

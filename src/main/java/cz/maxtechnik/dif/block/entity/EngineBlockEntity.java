@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.block.entity;
 
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
-import cz.maxtechnik.dif.block.barrel.EngineExtender;
+import cz.maxtechnik.dif.block.EngineExtender;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.util.FuelType;
