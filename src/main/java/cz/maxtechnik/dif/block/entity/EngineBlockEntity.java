@@ -18,6 +18,7 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import java.util.stream.Stream;
 
 import static cz.maxtechnik.dif.block.Engine.FACING;
+import static cz.maxtechnik.dif.block.Engine.INVERT;
 public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	boolean generating=false;
 	boolean uGenerating=false;
@@ -33,13 +34,13 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		protected void onContentsChanged(){
 			super.onContentsChanged();
 			setChanged();
-			if(level!=null)
-				level.sendBlockUpdated(worldPosition,level.getBlockState(worldPosition),level.getBlockState(worldPosition),2);
+			if(level!=null) level.sendBlockUpdated(worldPosition,level.getBlockState(worldPosition),level.getBlockState(worldPosition),2);
 		}
 	};
 	@Override
 	public float getGeneratedSpeed(){
-		return generating?speed:0F;
+		if(level==null) return 0F;
+		return generating?speed*(level.getBlockState(worldPosition).getValue(INVERT)?-1F:1F):0F;
 	}
 	@Override
 	public float calculateAddedStressCapacity(){
