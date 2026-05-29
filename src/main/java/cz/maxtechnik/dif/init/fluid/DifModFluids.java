@@ -7,6 +7,7 @@ import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
@@ -77,7 +78,7 @@ public class DifModFluids{
 			Supplier<? extends FluidType> type,
 			Supplier<? extends Fluid> source,
 			Supplier<? extends Fluid> flowing,
-			Supplier<? extends net.minecraft.world.item.Item> bucket,
+			Supplier<? extends Item> bucket,
 			Supplier<? extends LiquidBlock> block,
 			int tickRate){
 		return new BaseFlowingFluid.Properties(type,source,flowing)
