@@ -40,6 +40,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	@Override
 	public float getGeneratedSpeed(){
 		if(level==null) return 0F;
+		if(!(level.getBlockState(worldPosition).getBlock() instanceof Engine)) return 0F;
 		return generating?speed*(level.getBlockState(worldPosition).getValue(INVERT)?-1F:1F):0F;
 	}
 	@Override
