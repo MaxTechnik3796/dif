@@ -64,39 +64,38 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	@Override
 	public void tick(){
 		super.tick();
-		// Contraption-safe guard: na contraption je BE odpojené od světa nebo má jiný BlockState.
-		// Pokud nejsme normální Engine block ve světě, neděláme nic.
 		if(level==null||!(getBlockState().getBlock() instanceof Engine)) return;
 		if(reActivateSource){
 			updateGeneratedRotation();
 			reActivateSource=false;
 		}
-		// FIX: scanExtenders() se původně volal 5× per tick (drahá iterace). Zavolat 1× a uložit.
-		FuelType fuel=scanExtenders();
-		if(fuel.equals(FuelType.INVALID)){
-			generating=false;
-			speed=0F;
-			su=0F;
-		}else if(fuel.equals(FuelType.DIESEL)){
-			speed=countExtenders()*12F;
-			su=countExtenders()*2F;
-			generating=fluidTank.getFluidAmount()>0;
-			fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
-		}else if(fuel.equals(FuelType.HEAVY_FUEL_OIL)){
-			speed=countExtenders()*10F;
-			su=countExtenders()*2.3F;
-			generating=fluidTank.getFluidAmount()>0;
-			fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
-		}else if(fuel.equals(FuelType.GASOLINE)){
-			speed=countExtenders()*8F;
-			su=countExtenders()*3F;
-			generating=fluidTank.getFluidAmount()>0;
-			fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
-		}else if(fuel.equals(FuelType.LPG)){
-			speed=countExtenders()*9F;
-			su=countExtenders()*2.2F;
-			generating=fluidTank.getFluidAmount()>0;
-			fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
+		if(!level.hasNeighborSignal(worldPosition)){
+			FuelType fuel=scanExtenders();
+			if(fuel.equals(FuelType.INVALID)){
+				generating=false;
+				speed=0F;
+				su=0F;
+			}else if(fuel.equals(FuelType.DIESEL)){
+				speed=countExtenders()*12F;
+				su=countExtenders()*2F;
+				generating=fluidTank.getFluidAmount()>0;
+				fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
+			}else if(fuel.equals(FuelType.HEAVY_FUEL_OIL)){
+				speed=countExtenders()*10F;
+				su=countExtenders()*2.3F;
+				generating=fluidTank.getFluidAmount()>0;
+				fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
+			}else if(fuel.equals(FuelType.GASOLINE)){
+				speed=countExtenders()*8F;
+				su=countExtenders()*3F;
+				generating=fluidTank.getFluidAmount()>0;
+				fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
+			}else if(fuel.equals(FuelType.LPG)){
+				speed=countExtenders()*9F;
+				su=countExtenders()*2.2F;
+				generating=fluidTank.getFluidAmount()>0;
+				fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
+			}
 		}
 		// FIX: původně 3 samostatné if-bloky → updateGeneratedRotation() mohlo běžet 3× per tick.
 		if(uGenerating!=generating||uSpeed!=speed||uSu!=su){
