@@ -122,7 +122,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	}
 	private void clientTick(){
 		if(level==null) return;
-		level.playLocalSound(worldPosition.getX(),worldPosition.getY(),worldPosition.getZ(),Objects.requireNonNull(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.fence_gate.close"))),SoundSource.BLOCKS,0.3F,2F,false);
+		level.playLocalSound(worldPosition.getX(),worldPosition.getY(),worldPosition.getZ(),Objects.requireNonNull(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.camel.stand"))),SoundSource.BLOCKS,0.2F,1.2F,false);
 		Direction.Axis axis=getBlockState().getValue(FACING).getAxis();
 		boolean ext0=isEngineExtender(worldPosition.above());
 		boolean ext1;
