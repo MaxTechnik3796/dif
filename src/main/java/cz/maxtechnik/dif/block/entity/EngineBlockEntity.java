@@ -12,13 +12,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import static cz.maxtechnik.dif.block.Engine.*;
@@ -118,8 +122,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	}
 	private void clientTick(){
 		if(level==null) return;
-
-
+		level.playLocalSound(worldPosition.getX(),worldPosition.getY(),worldPosition.getZ(),Objects.requireNonNull(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.fence_gate.close"))),SoundSource.BLOCKS,0.3F,2F,false);
 		Direction.Axis axis=getBlockState().getValue(FACING).getAxis();
 		boolean ext0=isEngineExtender(worldPosition.above());
 		boolean ext1;

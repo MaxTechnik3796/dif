@@ -1,8 +1,11 @@
 package cz.maxtechnik.dif.block;
 
+import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -19,7 +22,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("deprecation")
-public class EngineExtender extends Block implements SimpleWaterloggedBlock{
+public class EngineExtender extends Block implements SimpleWaterloggedBlock, IWrenchable{
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
 	public static final BooleanProperty TOP=BooleanProperty.create("top");
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
@@ -45,7 +48,8 @@ public class EngineExtender extends Block implements SimpleWaterloggedBlock{
 		Direction newFacing=context.getClickedFace();
 		boolean water=context.getLevel().getFluidState(context.getClickedPos()).getType().equals(Fluids.WATER);
 		if(newFacing.equals(Direction.UP)){
-			if(level.getBlockState(context.getClickedPos().below()).getBlock() instanceof Engine) newFacing=level.getBlockState(context.getClickedPos().below()).getValue(FACING);
+			if(level.getBlockState(context.getClickedPos().below()).getBlock() instanceof Engine)
+				newFacing=level.getBlockState(context.getClickedPos().below()).getValue(FACING);
 			else newFacing=context.getHorizontalDirection();
 			return this.defaultBlockState().setValue(FACING,newFacing).setValue(TOP,true).setValue(WATERLOGGED,water);
 		}else{
@@ -73,7 +77,22 @@ public class EngineExtender extends Block implements SimpleWaterloggedBlock{
 	}
 	@Override
 	public @NotNull BlockState updateShape(BlockState blockState,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
-		if(blockState.getValue(WATERLOGGED)) world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
+		if(blockState.getValue(WATERLOGGED))
+			world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
 		return super.updateShape(blockState,facing,facingState,world,currentPos,facingPos);
+	}
+	@Override
+	public InteractionResult onWrenched(BlockState state,UseOnContext context){
+		Level level=context.getLevel();
+		BlockPos pos=context.getClickedPos();
+		Direction side=context.getClickedFace();
+		BlockState rotated=this.getRotatedBlockState(state,context.getClickedFace());
+		if(!side.equals(Direction.UP)&&!side.equals(Direction.DOWN)) rotated=level.getBlockState(pos).setValue(TOP,!level.getBlockState(pos).getValue(TOP));
+		if(!rotated.canSurvive(level,context.getClickedPos())) return InteractionResult.PASS;
+		else{
+			level.setBlockAndUpdate(pos,rotated);
+			if(level.getBlockState(pos)!=state) IWrenchable.playRotateSound(level,pos);
+			return InteractionResult.SUCCESS;
+		}
 	}
 }
