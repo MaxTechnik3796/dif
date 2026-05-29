@@ -1,6 +1,8 @@
 package cz.maxtechnik.dif.block.entity;
 
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.block.Engine;
 import cz.maxtechnik.dif.block.EngineExtender;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
@@ -9,16 +11,17 @@ import cz.maxtechnik.dif.util.FuelType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import java.util.stream.Stream;
 
-import static cz.maxtechnik.dif.block.Engine.FACING;
-import static cz.maxtechnik.dif.block.Engine.INVERT;
+import static cz.maxtechnik.dif.block.Engine.*;
 public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	boolean generating=false;
 	boolean uGenerating=false;
@@ -98,13 +101,66 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 				generating=fluidTank.getFluidAmount()>0;
 				fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
 			}
+		}else{
+			generating=false;
+			speed=0F;
+			su=0F;
 		}
 		// FIX: původně 3 samostatné if-bloky → updateGeneratedRotation() mohlo běžet 3× per tick.
 		if(uGenerating!=generating||uSpeed!=speed||uSu!=su){
+			KineticBlockEntity.switchToBlockState(level,worldPosition,getBlockState().setValue(ACTIVE,generating));
 			updateGeneratedRotation();
 			uGenerating=generating;
 			uSpeed=speed;
 			uSu=su;
+		}
+		if(level.isClientSide&&getBlockState().getValue(ACTIVE)) clientTick();
+	}
+	private void clientTick(){
+		if(level==null) return;
+
+
+		Direction.Axis axis=getBlockState().getValue(FACING).getAxis();
+		boolean ext0=isEngineExtender(worldPosition.above());
+		boolean ext1;
+		boolean ext2;
+		double vel=0.007;
+		if(axis.equals(Direction.Axis.Z)){
+			ext1=isEngineExtender(worldPosition.east());
+			ext2=isEngineExtender(worldPosition.west());
+			if(ext0){
+				particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.3),new Vec3(0,vel,0));
+				particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
+				particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.7),new Vec3(0,vel,0));
+			}
+			if(ext1){
+				particle(new Vec3(worldPosition.getX()+2,worldPosition.getY()+0.5,worldPosition.getZ()+0.3),new Vec3(vel*2,vel,0));
+				particle(new Vec3(worldPosition.getX()+2,worldPosition.getY()+0.5,worldPosition.getZ()+0.5),new Vec3(vel*2,vel,0));
+				particle(new Vec3(worldPosition.getX()+2,worldPosition.getY()+0.5,worldPosition.getZ()+0.7),new Vec3(vel*2,vel,0));
+			}
+			if(ext2){
+				particle(new Vec3(worldPosition.getX()-1,worldPosition.getY()+0.5,worldPosition.getZ()+0.3),new Vec3(-vel*2,vel,0));
+				particle(new Vec3(worldPosition.getX()-1,worldPosition.getY()+0.5,worldPosition.getZ()+0.5),new Vec3(-vel*2,vel,0));
+				particle(new Vec3(worldPosition.getX()-1,worldPosition.getY()+0.5,worldPosition.getZ()+0.7),new Vec3(-vel*2,vel,0));
+			}
+		}else if(axis.equals(Direction.Axis.X)){
+			ext1=isEngineExtender(worldPosition.north());
+			ext2=isEngineExtender(worldPosition.south());
+			if(ext0){
+				particle(new Vec3(worldPosition.getX()+0.3,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
+				particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
+				particle(new Vec3(worldPosition.getX()+0.7,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
+			}
+			if(ext1){
+				particle(new Vec3(worldPosition.getX()+0.3,worldPosition.getY()+0.5,worldPosition.getZ()-1),new Vec3(0,vel,-vel*2));
+				particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+0.5,worldPosition.getZ()-1),new Vec3(0,vel,-vel*2));
+				particle(new Vec3(worldPosition.getX()+0.7,worldPosition.getY()+0.5,worldPosition.getZ()-1),new Vec3(0,vel,-vel*2));
+			}
+			if(ext2){
+				particle(new Vec3(worldPosition.getX()+0.3,worldPosition.getY()+0.5,worldPosition.getZ()+2),new Vec3(0,vel,vel*2));
+				particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+0.5,worldPosition.getZ()+2),new Vec3(0,vel,vel*2));
+				particle(new Vec3(worldPosition.getX()+0.7,worldPosition.getY()+0.5,worldPosition.getZ()+2),new Vec3(0,vel,vel*2));
+			}
 		}
 	}
 	private FuelType scanExtenders(){
@@ -158,5 +214,9 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	private boolean isEngineExtender(BlockPos pos){
 		if(level==null) return false;
 		return level.getBlockState(pos).getBlock() instanceof EngineExtender;
+	}
+	private void particle(Vec3 pos,Vec3 velocity){
+		if(level==null) return;
+		if(DifMod.rouletteBoolean(4)) level.addParticle(ParticleTypes.SMOKE,pos.x,pos.y,pos.z,velocity.x,velocity.y,velocity.z);
 	}
 }

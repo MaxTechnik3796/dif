@@ -61,8 +61,6 @@ public class Engine extends KineticBlock implements EntityBlock, IWrenchable{
 	}
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context){
-		// FIX: getNearestLookingDirection() může vrátit UP/DOWN, ale FACING je horizontal-only → crash.
-		// Pokud hráč míří nahoru/dolů, použijeme jeho horizontální orientaci.
 		Direction dir=context.getNearestLookingDirection();
 		if(dir.getAxis().isVertical()) dir=context.getHorizontalDirection().getOpposite();
 		return this.defaultBlockState().setValue(FACING,dir);
