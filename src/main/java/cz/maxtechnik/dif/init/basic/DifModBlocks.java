@@ -59,6 +59,7 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>LUBRICATING_OIL_FLUID=REGISTRY.register("lubricating_oil_fluid",()->new LiquidBlock(DifModFluids.LUBRICATING_OIL.get(),FLUID_PROPERTIES));
 	public static final DeferredBlock<Block>HEAVY_FUEL_OIL_FLUID=REGISTRY.register("heavy_fuel_oil_fluid",()->new LiquidBlock(DifModFluids.HEAVY_FUEL_OIL.get(),FLUID_PROPERTIES));
 
+	public static final DeferredBlock<Block>CREOSOTE_OIL_FLUID=REGISTRY.register("creosote_oil_fluid",()->new LiquidBlock(DifModFluids.CREOSOTE_OIL.get(),FLUID_PROPERTIES));
 
 	//Random (0):
 	public static final DeferredBlock<Block> MEGA_TORCH = REGISTRY.register("mega_torch",()->new MegaTorch(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(2F,3F).sound(SoundType.WOOD).pushReaction(PushReaction.BLOCK).lightLevel(state->15)));

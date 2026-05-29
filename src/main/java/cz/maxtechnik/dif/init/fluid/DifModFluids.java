@@ -65,6 +65,10 @@ public class DifModFluids{
 	//HEAVY_FUEL_OIL
 	public static final DeferredHolder<Fluid,FlowingFluid> HEAVY_FUEL_OIL=REGISTRY.register("heavy_fuel_oil_fluid",()->new BaseFluidBlocks.Source(createProperties(DifModFluidTypes.HEAVY_FUEL_OIL_TYPE,fluidSupplier("heavy_fuel_oil_fluid"),fluidSupplier("flowing_heavy_fuel_oil_fluid"),DifModItems.HEAVY_FUEL_OIL_BUCKET,()->(LiquidBlock)DifModBlocks.HEAVY_FUEL_OIL_FLUID.get(),HeavyFuelOil.TICK_RATE)));
 	public static final DeferredHolder<Fluid,FlowingFluid> FLOWING_HEAVY_FUEL_OIL=REGISTRY.register("flowing_heavy_fuel_oil_fluid",()->new BaseFluidBlocks.Flowing(createProperties(DifModFluidTypes.HEAVY_FUEL_OIL_TYPE,fluidSupplier("heavy_fuel_oil_fluid"),fluidSupplier("flowing_heavy_fuel_oil_fluid"),DifModItems.HEAVY_FUEL_OIL_BUCKET,()->(LiquidBlock)DifModBlocks.HEAVY_FUEL_OIL_FLUID.get(),HeavyFuelOil.TICK_RATE)));
+	//CREOSOTE_OIL
+	public static final DeferredHolder<Fluid,FlowingFluid> CREOSOTE_OIL=REGISTRY.register("lpg_fluid",()->new BaseFluidBlocks.Source(createProperties(DifModFluidTypes.CREOSOTE_OIL_TYPE,fluidSupplier("creosote_oil_fluid"),fluidSupplier("flowing_creosote_oil_fluid"),DifModItems.CREOSOTE_OIL_BUCKET,()->(LiquidBlock)DifModBlocks.CREOSOTE_OIL_FLUID.get(),CreosoteOil.TICK_RATE)));
+	public static final DeferredHolder<Fluid,FlowingFluid> FLOWING_CREOSOTE_OIL=REGISTRY.register("flowing_lpg_fluid",()->new BaseFluidBlocks.Flowing(createProperties(DifModFluidTypes.CREOSOTE_OIL_TYPE,fluidSupplier("creosote_oil_fluid"),fluidSupplier("flowing_creosote_oil_fluid"),DifModItems.CREOSOTE_OIL_BUCKET,()->(LiquidBlock)DifModBlocks.CREOSOTE_OIL_FLUID.get(),CreosoteOil.TICK_RATE)));
+
 
 	private static Supplier<? extends Fluid> fluidSupplier(String name){
 		return ()->BuiltInRegistries.FLUID.get(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,name));

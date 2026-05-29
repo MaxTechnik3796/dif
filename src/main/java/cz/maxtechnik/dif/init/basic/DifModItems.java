@@ -112,7 +112,7 @@ public class DifModItems{
 	public static final DeferredItem<Item>JETPACK_FUEL_BUCKET=REGISTRY.register("jetpack_fuel_bucket",()->new BucketItem(DifModFluids.JETPACK_FUEL.get(),BUCKET_PROPERTIES));
 	public static final DeferredItem<Item>JETPACK_TURBO_FUEL_BUCKET=REGISTRY.register("jetpack_turbo_fuel_bucket",()->new BucketItem(DifModFluids.JETPACK_TURBO_FUEL.get(),BUCKET_PROPERTIES));
 	public static final DeferredItem<Item>SUNFLOWER_OIL_BUCKET=REGISTRY.register("sunflower_oil_bucket",()->new BucketItem(DifModFluids.SUNFLOWER_OIL.get(),BUCKET_PROPERTIES));
-
+	public static final DeferredItem<Item>CREOSOTE_OIL_BUCKET=REGISTRY.register("creosote_oil_bucket",()->new BucketItem(DifModFluids.CREOSOTE_OIL.get(),BUCKET_PROPERTIES));
 
 
 	public static final DeferredItem<Item>LPG_BUCKET=REGISTRY.register("lpg_bucket",()->new BucketItem(DifModFluids.LPG.get(),BUCKET_PROPERTIES));
