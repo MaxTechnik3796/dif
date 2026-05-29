@@ -27,26 +27,46 @@ public class DifModTabs{
 		tabData.accept(PORTAL_GUN);
 		tabData.accept(CHUNK_LOADER_1X1);
 		tabData.accept(CHUNK_LOADER_3X3);
+
 		tabData.accept(EVENT_BUS);
 		tabData.accept(VENT);
+		tabData.accept(BIG_GIRDER);
+
 		tabData.accept(BURNING_GENERATOR);
 		tabData.accept(ANDESITE_LATTICE);
 		tabData.accept(ANDESITE_WINDOW);
 		tabData.accept(SUPER_BOX);
 		tabData.accept(SINGULARITATOR);
-		tabData.accept(CAMERA_MONITOR.get());
+		tabData.accept(FRYING_TABLE);
+		tabData.accept(COKE_OVEN);
+		tabData.accept(COKE_OVEN_CONTROLLER);
+		tabData.accept(CAMERA_MONITOR);
 		tabData.accept(CAMERA);
 		tabData.accept(CAMERA_LINK);
+		tabData.accept(SLEEPING_BAG);
+
 		tabData.accept(SOLAR_PANEL_00);
 		tabData.accept(SOLAR_PANEL_01);
 		tabData.accept(SOLAR_PANEL_02);
 		tabData.accept(SOLAR_PANEL_03);
 		tabData.accept(SOLAR_PANEL_04);
+
 		tabData.accept(SOLAR_PANEL_00_W);
 		tabData.accept(SOLAR_PANEL_01_W);
 		tabData.accept(SOLAR_PANEL_02_W);
 		tabData.accept(SOLAR_PANEL_03_W);
 		tabData.accept(SOLAR_PANEL_04_W);
+
+		tabData.accept(ZINC_CASING);
+		tabData.accept(STEEL_CASING);
+
+		tabData.accept(ZINC_SUPPORT);
+		tabData.accept(BRASS_SUPPORT);
+		tabData.accept(COPPER_SUPPORT);
+		tabData.accept(STEEL_SUPPORT);
+
+
+
 		tabData.accept(CPU_SINGULARITY);
 		tabData.accept(HEAVY_PLATE);
 		tabData.accept(MITHRIL);
@@ -72,6 +92,9 @@ public class DifModTabs{
 		tabData.accept(QUARRY_ENGINE_IRON);
 		tabData.accept(QUARRY_ENGINE_GOLD);
 		tabData.accept(QUARRY_ENGINE_DIAMOND);
+
+
+
 
 
 
@@ -113,17 +136,6 @@ public class DifModTabs{
 		tabData.accept(JETPACK_CANISTER);
 
 		tabData.accept(ELECTRO_RUNNERS);
-
-		tabData.accept(FRYING_TABLE);
-		tabData.accept(BIG_GIRDER);
-
-		tabData.accept(ZINC_SUPPORT);
-		tabData.accept(BRASS_SUPPORT);
-		tabData.accept(COPPER_SUPPORT);
-		tabData.accept(STEEL_SUPPORT);
-
-		tabData.accept(ZINC_CASING);
-		tabData.accept(STEEL_CASING);
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>MODULAR_TOOLS=REGISTER.register("modular_tools",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.SPACE.getKey()).title(Component.translatable("creative_tab.dif.modular_tools")).icon(()-> ModularBase.createTool(MODULAR_PICKAXE.get(), ToolMaterial.DIAMOND, ToolMaterial.GOLD, ToolMaterial.OBSIDIAN)).displayItems(((parameters, tabData)->{
 		tabData.accept(Items.SMITHING_TABLE);
@@ -310,14 +322,11 @@ public class DifModTabs{
 			tabData.accept(REMOTE_MINECART);
 			tabData.accept(REMOTE_MINECART_BLOCK);
 
-			tabData.accept(SLEEPING_BAG);
-
 			tabData.accept(DISTILLATION_TANK);
 
 			tabData.accept(NUCLEAR_BOMB);
 
-			tabData.accept(DifModItems.COKE_OVEN);
-			tabData.accept(DifModItems.COKE_OVEN_CONTROLLER);
+
 
 			tabData.accept(ENGINE2);
 			tabData.accept(ENGINE4);
