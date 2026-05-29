@@ -3,7 +3,7 @@
 	"credit": "Made by: MaxTechnik in: Blockbench",
 	"texture_size": [64, 32],
 	"textures": {
-		"particle": "dif:block/engine_extender",
+		"particle": "create:block/dark_metal_block",
 		"block": "dif:block/engine_extender"
 	},
 	"elements": [
