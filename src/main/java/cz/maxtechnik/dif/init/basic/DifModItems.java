@@ -6,6 +6,7 @@ import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
 import cz.maxtechnik.dif.item.modular.ModularPart;
+import cz.maxtechnik.dif.item.modular.v2.ModularTool;
 import cz.maxtechnik.dif.item.quarry.DrillHeadItem;
 import cz.maxtechnik.dif.item.tool.GodTotemItem;
 import cz.maxtechnik.dif.item.modular.tool.*;
@@ -19,7 +20,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import cz.maxtechnik.dif.init.events.QuarryStats;
 import cz.maxtechnik.dif.item.quarry.EngineItem;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -82,6 +82,8 @@ public class DifModItems{
 	public static final DeferredItem<Item> MODULAR_AXE=REGISTRY.register("modular_axe",ModularAxe::new);
 	public static final DeferredItem<Item> MODULAR_SHOVEL=REGISTRY.register("modular_shovel",ModularShovel::new);
 	public static final DeferredItem<Item> MODULAR_SWORD=REGISTRY.register("modular_sword",ModularSword::new);
+
+	public static final DeferredItem<Item>MODULAR_TOOL=REGISTRY.register("modular_tool",ModularTool::new);
 
 	//Modular Parts:
 	public static final DeferredItem<Item> MODULAR_PART_PICKAXE_HEAD = REGISTRY.registerItem("pickaxe_head", ModularPart::new);
