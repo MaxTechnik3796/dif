@@ -21,6 +21,6 @@ public class DifModFluidTypes{
 	public static final DeferredHolder<FluidType,FluidType>GASOLINE_TYPE=REGISTRY.register("gasoline_fluid",()->new BaseFluidType(Gasoline.PROPERTIES,"gasoline"));
 	public static final DeferredHolder<FluidType,FluidType>DIESEL_TYPE=REGISTRY.register("diesel_fluid",()->new BaseFluidType(Diesel.PROPERTIES,"diesel"));
 	public static final DeferredHolder<FluidType,FluidType>LUBRICATING_OIL_TYPE=REGISTRY.register("lubricating_oil_fluid",()->new BaseFluidType(LubricatingOil.PROPERTIES,"lubricating_oil"));
-	public static final DeferredHolder<FluidType,FluidType>HEAVY_FUEL_OIL_TYPE=REGISTRY.register("heavy_fuel_oil_fluid",()->new BaseFluidType(HeavyFuelOil.PROPERTIES,"heavy_fuel"));
-	public static final DeferredHolder<FluidType,FluidType>CREOSOTE_OIL_TYPE=REGISTRY.register("creosote_oil_fluid",()->new BaseFluidType(CreosoteOil.PROPERTIES,"creosote"));
+	public static final DeferredHolder<FluidType,FluidType>HEAVY_FUEL_OIL_TYPE=REGISTRY.register("heavy_fuel_oil_fluid",()->new BaseFluidType(HeavyFuelOil.PROPERTIES,"heavy_fuel_oil"));
+	public static final DeferredHolder<FluidType,FluidType>CREOSOTE_OIL_TYPE=REGISTRY.register("creosote_oil_fluid",()->new BaseFluidType(CreosoteOil.PROPERTIES,"creosote_oil"));
 }
