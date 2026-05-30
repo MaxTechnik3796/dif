@@ -5,10 +5,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.EquipmentSlotGroup;
-import net.minecraft.world.item.DiggerItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.resources.ResourceLocation;
@@ -181,14 +178,16 @@ public class ModularTool extends DiggerItem {
 		ModularToolProperties props = getProps(stack);
 		ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
 
+		// FIX: Použijeme Item.BASE_ATTACK_DAMAGE_ID namísto vlastního ResourceLocation
 		builder.add(Attributes.ATTACK_DAMAGE, new AttributeModifier(
-				ResourceLocation.fromNamespaceAndPath("dif", "modular_attack_damage"),
+				Item.BASE_ATTACK_DAMAGE_ID,
 				props.attackDamage(),
 				AttributeModifier.Operation.ADD_VALUE
 		), EquipmentSlotGroup.MAINHAND);
 
+		// FIX: Použijeme Item.BASE_ATTACK_SPEED_ID namísto vlastního ResourceLocation
 		builder.add(Attributes.ATTACK_SPEED, new AttributeModifier(
-				ResourceLocation.fromNamespaceAndPath("dif", "modular_attack_speed"),
+				Item.BASE_ATTACK_SPEED_ID,
 				props.attackSpeed(),
 				AttributeModifier.Operation.ADD_VALUE
 		), EquipmentSlotGroup.MAINHAND);
