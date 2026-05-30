@@ -7,8 +7,6 @@ import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -91,14 +89,14 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock {
 	                                                   @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
 		if (world.isClientSide()) return ItemInteractionResult.SUCCESS;
 
+		BlockPos targetPos = pos.relative(blockState.getValue(FACING));
+
 		// Wrench logika — toggle XP módu
-		if (heldItem.is(ItemTags.create(ResourceLocation.fromNamespaceAndPath("neoforge", "tools/wrench")))) {
+		if (heldItem.getItem() instanceof com.simibubi.create.content.equipment.wrench.WrenchItem) {
 			world.setBlock(pos, blockState.setValue(XP, !blockState.getValue(XP)), 3);
 			AllSoundEvents.WRENCH_ROTATE.playOnServer(world, pos, 1.0F, Create.RANDOM.nextFloat() * 0.5F + 0.5F);
 			return ItemInteractionResult.SUCCESS;
 		}
-
-		BlockPos targetPos = pos.relative(blockState.getValue(FACING));
 
 		// XP vkládání — prázdná ruka + XP mód zapnutý
 		if (blockState.getValue(XP) && heldItem.isEmpty()) {
@@ -107,27 +105,29 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock {
 			return ItemInteractionResult.SUCCESS;
 		}
 
-		// Kbelík logika — NeoForge 1.21.1 způsob
-		var fluidHandlerItem = FluidUtil.getFluidHandler(heldItem);
-		if (fluidHandlerItem.isPresent()) {
-			FluidStack containedFluid = fluidHandlerItem.get().getFluidInTank(0);
-			if (containedFluid.isEmpty()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		// Kbelík — POUZE pokud XP mód je vypnutý
+		if (!blockState.getValue(XP)) {
+			var fluidHandlerItem = FluidUtil.getFluidHandler(heldItem);
+			if (fluidHandlerItem.isPresent()) {
+				FluidStack containedFluid = fluidHandlerItem.get().getFluidInTank(0);
+				if (containedFluid.isEmpty()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
-			IFluidHandler cap = world.getCapability(Capabilities.FluidHandler.BLOCK, targetPos, blockState.getValue(FACING));
-			if (cap == null) return ItemInteractionResult.FAIL;
+				IFluidHandler cap = world.getCapability(Capabilities.FluidHandler.BLOCK, targetPos, blockState.getValue(FACING));
+				if (cap == null) return ItemInteractionResult.FAIL;
 
-			FluidStack fluidToFill = new FluidStack(containedFluid.getFluid(), 1000);
-			int simulated = cap.fill(fluidToFill, IFluidHandler.FluidAction.SIMULATE);
-			if (simulated >= 1000) {
-				cap.fill(fluidToFill, IFluidHandler.FluidAction.EXECUTE);
-				if (!player.getAbilities().instabuild) {
-					heldItem.shrink(1);
-					ItemStack emptyBucket = new ItemStack(Items.BUCKET);
-					if (heldItem.isEmpty()) player.setItemInHand(hand, emptyBucket);
-					else player.getInventory().placeItemBackInInventory(emptyBucket);
+				FluidStack fluidToFill = new FluidStack(containedFluid.getFluid(), 1000);
+				int simulated = cap.fill(fluidToFill, IFluidHandler.FluidAction.SIMULATE);
+				if (simulated >= 1000) {
+					cap.fill(fluidToFill, IFluidHandler.FluidAction.EXECUTE);
+					if (!player.getAbilities().instabuild) {
+						heldItem.shrink(1);
+						ItemStack emptyBucket = new ItemStack(Items.BUCKET);
+						if (heldItem.isEmpty()) player.setItemInHand(hand, emptyBucket);
+						else player.getInventory().placeItemBackInInventory(emptyBucket);
+					}
 				}
+				return ItemInteractionResult.SUCCESS;
 			}
-			return ItemInteractionResult.SUCCESS;
 		}
 
 		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
