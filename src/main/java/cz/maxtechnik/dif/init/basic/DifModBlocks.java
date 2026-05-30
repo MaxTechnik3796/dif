@@ -50,7 +50,6 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>CIDER_FLUID=REGISTRY.register("cider_fluid",()->new LiquidBlock(DifModFluids.CIDER.get(),FLUID_PROPERTIES));
 	public static final DeferredBlock<Block>CRUDE_OIL_FLUID=REGISTRY.register("crude_oil_fluid",()->new LiquidBlock(DifModFluids.CRUDE_OIL.get(),FLUID_PROPERTIES));
 	public static final DeferredBlock<Block>JETPACK_FUEL_FLUID=REGISTRY.register("jetpack_fuel_fluid",()->new LiquidBlock(DifModFluids.JETPACK_FUEL.get(),FLUID_PROPERTIES));
-	public static final DeferredBlock<Block>JETPACK_TURBO_FUEL_FLUID=REGISTRY.register("jetpack_turbo_fuel_fluid",()->new LiquidBlock(DifModFluids.JETPACK_TURBO_FUEL.get(),FLUID_PROPERTIES));
 	public static final DeferredBlock<Block>SUNFLOWER_OIL_FLUID=REGISTRY.register("sunflower_oil_fluid",()->new LiquidBlock(DifModFluids.SUNFLOWER_OIL.get(),FLUID_PROPERTIES));
 
 	public static final DeferredBlock<Block>LPG_FLUID=REGISTRY.register("lpg_fluid",()->new LiquidBlock(DifModFluids.LPG.get(),FLUID_PROPERTIES));

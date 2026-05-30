@@ -15,7 +15,6 @@ public class DifModFluidTypes{
 	public static final DeferredHolder<FluidType,FluidType>CIDER_TYPE=REGISTRY.register("cider_fluid",()->new BaseFluidType(Cider.PROPERTIES,"cider"));
 	public static final DeferredHolder<FluidType,FluidType>CRUDE_OIL_TYPE=REGISTRY.register("crude_oil_fluid",()->new BaseFluidType(CrudeOil.PROPERTIES,"crude_oil"));
 	public static final DeferredHolder<FluidType,FluidType>JETPACK_FUEL_TYPE=REGISTRY.register("jetpack_fuel_fluid",()->new BaseFluidType(JetpackFuel.PROPERTIES,"jetpack_fuel"));
-	public static final DeferredHolder<FluidType,FluidType>JETPACK_TURBO_FUEL_TYPE=REGISTRY.register("jetpack_turbo_fuel_fluid",()->new BaseFluidType(JetpackTurboFuel.PROPERTIES,"jetpack_turbo_fuel"));
 	public static final DeferredHolder<FluidType,FluidType>SUNFLOWER_OIL_TYPE=REGISTRY.register("sunflower_oil_fluid",()->new BaseFluidType(SunflowerOil.PROPERTIES,"sunflower_oil"));
 
 	public static final DeferredHolder<FluidType,FluidType>LPG_TYPE=REGISTRY.register("lpg_fluid",()->new BaseFluidType(Lpg.PROPERTIES,"lpg"));
