@@ -30,7 +30,6 @@ public class DifModTabs{
 
 		tabData.accept(EVENT_BUS);
 		tabData.accept(VENT);
-		tabData.accept(BIG_GIRDER);
 
 		tabData.accept(BURNING_GENERATOR);
 		tabData.accept(ANDESITE_LATTICE);
@@ -38,8 +37,7 @@ public class DifModTabs{
 		tabData.accept(SUPER_BOX);
 		tabData.accept(SINGULARITATOR);
 		tabData.accept(FRYING_TABLE);
-		tabData.accept(COKE_OVEN);
-		tabData.accept(COKE_OVEN_CONTROLLER);
+
 		tabData.accept(CAMERA_MONITOR);
 		tabData.accept(CAMERA);
 		tabData.accept(CAMERA_LINK);
@@ -56,14 +54,6 @@ public class DifModTabs{
 		tabData.accept(SOLAR_PANEL_02_W);
 		tabData.accept(SOLAR_PANEL_03_W);
 		tabData.accept(SOLAR_PANEL_04_W);
-
-		tabData.accept(ZINC_CASING);
-		tabData.accept(STEEL_CASING);
-
-		tabData.accept(ZINC_SUPPORT);
-		tabData.accept(BRASS_SUPPORT);
-		tabData.accept(COPPER_SUPPORT);
-		tabData.accept(STEEL_SUPPORT);
 
 
 
@@ -94,12 +84,34 @@ public class DifModTabs{
 		tabData.accept(QUARRY_ENGINE_DIAMOND);
 
 
+	})).build());
+	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>INDUSTRIAL=REGISTER.register("industrial",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.industrials")).icon(()->new ItemStack(ENGINE_EXTENDER_DIESEL.get())).displayItems(((parameters,tabData)->{
 
+		tabData.accept(DISTILLATION_TANK);
 
+		tabData.accept(COKE_OVEN);
+		tabData.accept(COKE_OVEN_CONTROLLER);
+		tabData.accept(COKE);
 
+		tabData.accept(ENGINE2);
+		tabData.accept(ENGINE4);
+
+		tabData.accept(ENGINE_EXTENDER_DIESEL);
+		tabData.accept(ENGINE_EXTENDER_GASOLINE);
+		tabData.accept(ENGINE_EXTENDER_LPG);
+		tabData.accept(ENGINE_EXTENDER_HEAVY_FUEL_OIL);
+
+		tabData.accept(ZINC_CASING);
+		tabData.accept(STEEL_CASING);
+		tabData.accept(BIG_GIRDER);
+
+		tabData.accept(COPPER_SUPPORT);
+		tabData.accept(ZINC_SUPPORT);
+		tabData.accept(BRASS_SUPPORT);
+		tabData.accept(STEEL_SUPPORT);
 
 	})).build());
-	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>SPACE=REGISTER.register("space",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.space")).icon(()->new ItemStack(SPACESHIP.get())).displayItems(((parameters,tabData)->{
+	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>SPACE=REGISTER.register("space",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.INDUSTRIAL.getKey()).title(Component.translatable("creative_tab.dif.space")).icon(()->new ItemStack(SPACESHIP.get())).displayItems(((parameters,tabData)->{
 		tabData.accept(SPACESHIP);
 		tabData.accept(SPACE_ENGINE);
 		tabData.accept(SPACE_SCAFFOLDING);
@@ -322,20 +334,7 @@ public class DifModTabs{
 			tabData.accept(REMOTE_MINECART);
 			tabData.accept(REMOTE_MINECART_BLOCK);
 
-			tabData.accept(DISTILLATION_TANK);
-
 			tabData.accept(NUCLEAR_BOMB);
-
-
-
-			tabData.accept(ENGINE2);
-			tabData.accept(ENGINE4);
-
-			tabData.accept(ENGINE_EXTENDER_DIESEL);
-			tabData.accept(ENGINE_EXTENDER_GASOLINE);
-			tabData.accept(ENGINE_EXTENDER_LPG);
-			tabData.accept(ENGINE_EXTENDER_HEAVY_FUEL_OIL);
-
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
 			tabData.insertAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
