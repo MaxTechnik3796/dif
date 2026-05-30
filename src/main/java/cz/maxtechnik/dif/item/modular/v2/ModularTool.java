@@ -3,6 +3,7 @@ package cz.maxtechnik.dif.item.modular.v2;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DiggerItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -37,4 +38,13 @@ public class ModularTool extends DiggerItem{
 			}
 		},BlockTags.MINEABLE_WITH_PICKAXE,new Properties().stacksTo(1).fireResistant().rarity(Rarity.EPIC));
 	}
+	@Override
+	public boolean isRepairable(@NotNull ItemStack stack) {
+		return false;
+	}
+	@Override
+	public boolean isValidRepairItem(@NotNull ItemStack stack, @NotNull ItemStack repair) {
+		return false;
+	}
+
 }
