@@ -106,6 +106,7 @@
 
 
 	"creative_tab.dif.main":"TheDifferential: Main",
+	"creative_tab.dif.industrials":"TheDifferential: Industrial",
 	"creative_tab.dif.space":"TheDifferential: Space & Tech",
 	"creative_tab.dif.modular_tools":"TheDifferential: Modular Tools",
 	"item.dif.example_item":"Example Item",
@@ -338,6 +339,7 @@
 	"jei.dif.frying_table": "Frying Table",
 	"block.dif.coke_oven":"Coke Oven",
 	"block.dif.coke_oven_controller":"Coke Oven Controller",
+	"item.dif.coke":"Coke",
 
 	"block.dif.engine2":"Engine 2",
 	"block.dif.engine4":"Engine 4",
