@@ -90,8 +90,21 @@ public class DifModFluids{
 		public static void clientSetup(FMLClientSetupEvent event){
 			ItemBlockRenderTypes.setRenderLayer(CIDER.get(),RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(FLOWING_CIDER.get(),RenderType.translucent());
+
 			ItemBlockRenderTypes.setRenderLayer(SUNFLOWER_OIL.get(),RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(FLOWING_SUNFLOWER_OIL.get(),RenderType.translucent());
+
+			ItemBlockRenderTypes.setRenderLayer(CRUDE_OIL.get(),RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(FLOWING_CRUDE_OIL.get(),RenderType.translucent());
+
+			ItemBlockRenderTypes.setRenderLayer(CREOSOTE_OIL.get(),RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(FLOWING_CREOSOTE_OIL.get(),RenderType.translucent());
+
+			ItemBlockRenderTypes.setRenderLayer(DIESEL.get(),RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(FLOWING_DIESEL.get(),RenderType.translucent());
+
+			ItemBlockRenderTypes.setRenderLayer(GASOLINE.get(),RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(FLOWING_GASOLINE.get(),RenderType.translucent());
 		}
 	}
 }
