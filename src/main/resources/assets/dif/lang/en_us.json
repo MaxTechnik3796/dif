@@ -67,8 +67,6 @@
 	"fluid.dif.crude_oil_fluid":"Crude Oil",
 	"fluid_type.dif.crude_oil_fluid":"Crude Oil",
 
-
-
 	"item.dif.lpg_bucket":"LPG Bucket",
 	"block.dif.lpg_fluid":"LPG",
 	"fluid.dif.lpg_fluid":"LPG",
@@ -95,7 +93,7 @@
 	"fluid_type.dif.heavy_fuel_oil_fluid":"Heavy Fuel Oil",
 
 	"item.dif.creosote_oil_bucket":"Creosote Oil Bucket",
-	"block.dif.creosote_oilfluid":"Creosote Oil",
+	"block.dif.creosote_oil_fluid":"Creosote Oil",
 	"fluid.dif.creosote_oil_fluid":"Creosote Oil",
 	"fluid_type.dif.creosote_oil_fluid":"Creosote Oil",
 
