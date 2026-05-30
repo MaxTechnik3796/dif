@@ -1,18 +1,34 @@
 {
 	"variants":{
-		"facing=north":{
+		"facing=north,xp=false":{
 			"model":"dif:block/fluid_hatch"
 		},
-		"facing=east":{
+		"facing=east,xp=false":{
 			"model":"dif:block/fluid_hatch",
 			"y":90
 		},
-		"facing=south":{
+		"facing=south,xp=false":{
 			"model":"dif:block/fluid_hatch",
 			"y":180
 		},
-		"facing=west":{
+		"facing=west,xp=false":{
 			"model":"dif:block/fluid_hatch",
+			"y":270
+		},
+
+		"facing=north,xp=true":{
+			"model":"dif:block/fluid_hatch_xp"
+		},
+		"facing=east,xp=true":{
+			"model":"dif:block/fluid_hatch_xp",
+			"y":90
+		},
+		"facing=south,xp=true":{
+			"model":"dif:block/fluid_hatch_xp",
+			"y":180
+		},
+		"facing=west,xp=true":{
+			"model":"dif:block/fluid_hatch_xp",
 			"y":270
 		}
 	}
