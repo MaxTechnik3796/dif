@@ -151,6 +151,7 @@ public class DifModTabs{
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>MODULAR_TOOLS=REGISTER.register("modular_tools",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.SPACE.getKey()).title(Component.translatable("creative_tab.dif.modular_tools")).icon(()-> ModularBase.createTool(MODULAR_PICKAXE.get(), ToolMaterial.DIAMOND, ToolMaterial.GOLD, ToolMaterial.OBSIDIAN)).displayItems(((parameters, tabData)->{
 		tabData.accept(Items.SMITHING_TABLE);
 
+		/*
 		tabData.accept(MODULAR_PICKAXE);
 		tabData.accept(MODULAR_AXE);
 		tabData.accept(MODULAR_SHOVEL);
@@ -178,7 +179,7 @@ public class DifModTabs{
 		tabData.accept(newSingleMaterialPreFab(MODULAR_AXE.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 		tabData.accept(newSingleMaterialPreFab(MODULAR_SHOVEL.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 		tabData.accept(newSingleMaterialPreFab(MODULAR_SWORD.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-		}
+		}*/
 	})).build());
 
 
