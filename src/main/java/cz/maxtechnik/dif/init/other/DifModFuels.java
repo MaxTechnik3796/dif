@@ -20,7 +20,7 @@ public class DifModFuels{
 
 
 	private static void add(FurnaceFuelBurnTimeEvent event,DeferredItem<Item> item,float burnItems){
-		add(event,item.get(),burnItems*200);
+		add(event,item.get(),burnItems);
 	}
 	private static void add(FurnaceFuelBurnTimeEvent event,Item item,float burnItems){
 		if(event.getItemStack().getItem().equals(item)) event.setBurnTime(round(burnItems*200));
