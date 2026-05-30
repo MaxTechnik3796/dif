@@ -144,7 +144,6 @@ public class DifModTabs{
 
 		tabData.accept(JETPACK);
 		tabData.accept(JETPACK_FUEL);
-		tabData.accept(JETPACK_TURBO_FUEL);
 		tabData.accept(JETPACK_CANISTER);
 
 		tabData.accept(ELECTRO_RUNNERS);
