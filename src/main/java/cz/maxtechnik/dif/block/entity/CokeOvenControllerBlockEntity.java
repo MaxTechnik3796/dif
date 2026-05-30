@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.block.entity;
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
-import cz.maxtechnik.dif.MultiblockHelper;
+import cz.maxtechnik.dif.util.MultiblockHelper;
 import cz.maxtechnik.dif.block.CokeOvenController;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
