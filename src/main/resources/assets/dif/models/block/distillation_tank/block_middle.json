@@ -1,0 +1,11 @@
+{
+  "parent": "create:block/fluid_tank/block_middle",
+  "textures": {
+    "0": "dif:block/tank/distillation_tank_top",
+    "1": "dif:block/tank/distillation_tank",
+    "3": "dif:block/tank/distillation_tank",
+    "4": "dif:block/tank/distillation_tank_inner",
+    "5": "dif:block/tank/distillation_tank",
+    "particle": "dif:block/tank/distillation_tank"
+  }
+}

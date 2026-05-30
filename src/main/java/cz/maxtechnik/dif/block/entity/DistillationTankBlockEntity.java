@@ -39,6 +39,7 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 	private FluidStack lastInput=FluidStack.EMPTY;
 	public DistillationTankBlockEntity(BlockEntityType<?> type,BlockPos pos,BlockState state){
 		super(type,pos,state);
+		this.window = false;
 	}
 	@Override
 	public int getMaxWidth(){
@@ -189,9 +190,18 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 	@Override
 	public void read(CompoundTag tag,HolderLookup.Provider registries,boolean clientPacket){
 		super.read(tag,registries,clientPacket);
+		this.window = false;
 		progress=tag.getInt("dif_progress");
 		cachedHeatPoints=tag.getInt("dif_heatPoints");
 		cachedSpeed=tag.getFloat("dif_speed");
 		cacheTick=0;
+		if (clientPacket && level != null) {
+			requestModelDataUpdate();
+			level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+		}
+	}
+	@Override
+	public void setWindows(boolean window) {
+		super.setWindows(false);
 	}
 }

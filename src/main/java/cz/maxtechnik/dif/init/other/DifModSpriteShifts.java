@@ -10,8 +10,15 @@ public class DifModSpriteShifts{
 	public static final CTSpriteShiftEntry STEEL_CASING=shifter("steel_casing","steel_casing_connected");
 	public static final CTSpriteShiftEntry AURORA_CASING=shifter("aurora_casing","aurora_casing_connected");
 
+	public static final CTSpriteShiftEntry DISTILLATION_TANK=shifterRect("tank/distillation_tank","tank/distillation_tank_connected");
+	public static final CTSpriteShiftEntry DISTILLATION_TANK_TOP=shifterRect("tank/distillation_tank_top","tank/distillation_tank_top_connected");
+	public static final CTSpriteShiftEntry DISTILLATION_TANK_INNER=shifterRect("tank/distillation_tank_inner","tank/distillation_tank_inner_connected");
 
 	private static CTSpriteShiftEntry shifter(String basic,String connected){
 		return CTSpriteShifter.getCT(AllCTTypes.OMNIDIRECTIONAL,ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/"+basic),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/"+connected));
+	}
+
+	private static CTSpriteShiftEntry shifterRect(String basic,String connected){
+		return CTSpriteShifter.getCT(AllCTTypes.RECTANGLE,ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/"+basic),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/"+connected));
 	}
 }

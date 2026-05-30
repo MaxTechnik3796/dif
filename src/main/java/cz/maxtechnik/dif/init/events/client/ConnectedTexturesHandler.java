@@ -5,6 +5,7 @@ import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
 import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
 import com.simibubi.create.foundation.model.ModelSwapper;
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.block.DistillationTankModel;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModSpriteShifts;
 import net.minecraft.world.level.block.Block;
@@ -22,6 +23,7 @@ public class ConnectedTexturesHandler{
 		register(event,DifModBlocks.STEEL_CASING,DifModSpriteShifts.STEEL_CASING);
 		register(event,DifModBlocks.AURORA_CASING,DifModSpriteShifts.AURORA_CASING);
 
+		ModelSwapper.swapModels(event.getModels(),ModelSwapper.getAllBlockStateModelLocations(DifModBlocks.DISTILLATION_TANK.get()),DistillationTankModel::standard);
 	}
 	private static void register(ModelEvent.ModifyBakingResult event,DeferredBlock<Block> block,CTSpriteShiftEntry shift){
 		ModelSwapper.swapModels(event.getModels(),ModelSwapper.getAllBlockStateModelLocations(block.get()),model->new CTModel(model,new SimpleCTBehaviour(shift)));

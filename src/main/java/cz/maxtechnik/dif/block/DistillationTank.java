@@ -5,6 +5,7 @@ import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import cz.maxtechnik.dif.block.entity.DistillationTankBlockEntity;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -13,6 +14,8 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.context.UseOnContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 /**
@@ -23,6 +26,13 @@ import org.jetbrains.annotations.Nullable;
 public class DistillationTank extends FluidTankBlock{
 	public DistillationTank(){
 		super(BlockBehaviour.Properties.of().strength(5F,6F).sound(SoundType.METAL).requiresCorrectToolForDrops(),false);
+		registerDefaultState(defaultBlockState().setValue(TOP, true)
+			.setValue(BOTTOM, true)
+			.setValue(SHAPE, Shape.PLAIN));
+	}
+	@Override
+	public InteractionResult onWrenched(BlockState state, UseOnContext context) {
+		return InteractionResult.PASS;
 	}
 	@Override
 	public BlockEntityType<? extends FluidTankBlockEntity> getBlockEntityType(){
@@ -51,6 +61,33 @@ public class DistillationTank extends FluidTankBlock{
 		if(level.getBlockEntity(pos) instanceof DistillationTankBlockEntity dbe){
 			DistillationTankBlockEntity master=dbe.getTowerMaster();
 			if(master!=null) master.notifyMultiUpdated();
+		}
+	}
+
+	@Override
+	public void onPlace(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
+	                    @NotNull BlockState oldState, boolean isMoving) {
+		super.onPlace(state, level, pos, oldState, isMoving);
+		if (level.isClientSide) return;
+		// Vynutí okamžitý update sousedů aby TOP/BOTTOM byl hned správně
+		for (Direction d : Direction.values()) {
+			BlockPos neighbor = pos.relative(d);
+			if (level.getBlockState(neighbor).getBlock() instanceof DistillationTank) {
+				level.sendBlockUpdated(neighbor, level.getBlockState(neighbor), level.getBlockState(neighbor), 3);
+			}
+		}
+	}
+
+	@Override
+	public void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
+	                     @NotNull BlockState newState, boolean isMoving) {
+		super.onRemove(state, level, pos, newState, isMoving);
+		if (level.isClientSide) return;
+		for (Direction d : Direction.values()) {
+			BlockPos neighbor = pos.relative(d);
+			if (level.getBlockState(neighbor).getBlock() instanceof DistillationTank) {
+				level.sendBlockUpdated(neighbor, level.getBlockState(neighbor), level.getBlockState(neighbor), 3);
+			}
 		}
 	}
 }
