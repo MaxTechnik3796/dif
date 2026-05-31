@@ -13,7 +13,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.EquipmentSlotGroup;
@@ -51,8 +51,29 @@ public class ModularTool extends DiggerItem {
 		return props != null ? props : ModularToolProperties.DEFAULT;
 	}
 
+	// Pomocná metoda pro zjištění, zda je nástroj zlomený
+	public boolean isBroken(ItemStack stack) {
+		return stack.getDamageValue() >= getMaxDamage(stack);
+	}
+
+	// Vlastní bezpečná metoda pro aplikaci poškození nástroje
+	public void damageTool(ItemStack stack, int amount, LivingEntity entity) {
+		int maxDmg = getMaxDamage(stack);
+		int currentDmg = stack.getDamageValue();
+		int newDmg = currentDmg + amount;
+
+		if (newDmg >= maxDmg) {
+			stack.setDamageValue(maxDmg); // Zasekne se na max damage (vstup do stavu BROKEN)
+			if (entity instanceof Player) {
+				entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
+						SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1.0F, 1.0F);
+			}
+		} else {
+			stack.setDamageValue(newDmg);
+		}
+	}
 	// ====================================================================
-	// MATEMATICKÉ FORMULY PRO VÝPOČET STATISTIK Z MATERIÁLŮ
+	// VÝPOČET STATISTIK Z MATERIÁLŮ
 	// ====================================================================
 
 	@Override
@@ -61,35 +82,31 @@ public class ModularTool extends DiggerItem {
 		ModularMaterial head = ModularMaterial.byName(props.headMaterial());
 		ModularMaterial binding = ModularMaterial.byName(props.bindingMaterial());
 		ModularMaterial handle = ModularMaterial.byName(props.handleMaterial());
-
-		// Vzorec: (Základ hlavy + Bonus vazby) * Násobitel rukojeti
 		return (int) ((head.getHeadDurability() + binding.getBindingDurability()) * handle.getHandleDurabilityMultiplier());
 	}
 
 	private float getLiveEfficiency(ItemStack stack) {
-		ModularToolProperties props = getProps(stack);
-		ModularMaterial head = ModularMaterial.byName(props.headMaterial());
-		// Rychlost určuje čistě hlava nástroje
-		return head.getHeadEfficiency();
+		if (isBroken(stack)) return 1F; // Zlomený nástroj těží rychlostí ruky
+		return ModularMaterial.byName(getProps(stack).headMaterial()).getHeadEfficiency();
 	}
 
 	private int getLiveMiningLevel(ItemStack stack) {
+		if (isBroken(stack)) return 0; // Zlomený nástroj ztrácí schopnost dropovat vzácné rudy
 		return ModularMaterial.byName(getProps(stack).headMaterial()).getMiningLevel();
 	}
 
 	private float getBaseDamageForType(String type) {
-		return switch (type) {
-			case "sword" -> 3.0f;
-			case "axe" -> 5.0f;
-			case "pickaxe" -> 1.0f;
-			case "shovel" -> 1.5f;
-			case "hoe" -> 0.0f;
-			default -> 1.0f;
+		return switch (type.toLowerCase(Locale.ROOT)) {
+			case "sword" -> 3F;
+			case "axe" -> 5F;
+			case "shovel" -> 1.5F;
+			case "hoe" -> 0F;
+			default -> 1F;
 		};
 	}
 
 	private float getBaseSpeedForType(String type) {
-		return switch (type) {
+		return switch (type.toLowerCase(Locale.ROOT)) {
 			case "pickaxe" -> -2.8F;
 			case "axe","shovel" -> -3F;
 			case "hoe" -> -1F;
@@ -98,11 +115,13 @@ public class ModularTool extends DiggerItem {
 	}
 
 	// ====================================================================
-	// APELACE STATISTIK DO MECHANIK MINECRAFTU
+	// INTERKACE S MECHANIKAMI MINECRAFTU
 	// ====================================================================
 
 	@Override
 	public float getDestroySpeed(@NotNull ItemStack itemStack, @NotNull BlockState blockState) {
+		if (isBroken(itemStack)) return 1.0F; // Záchranná brzda pro rychlost těžení
+
 		ModularToolProperties props = getProps(itemStack);
 		String type = props.toolType().toLowerCase();
 		int miningLevel = getLiveMiningLevel(itemStack);
@@ -126,27 +145,31 @@ public class ModularTool extends DiggerItem {
 
 	@Override
 	public boolean isCorrectToolForDrops(@NotNull ItemStack itemStack, @NotNull BlockState blockState) {
-		ModularToolProperties props = getProps(itemStack);
-		String type = props.toolType().toLowerCase();
-		int miningLevel = getLiveMiningLevel(itemStack);
-
-		boolean isCorrectType = false;
-		if (type.equals("pickaxe") && blockState.is(BlockTags.MINEABLE_WITH_PICKAXE)) isCorrectType = true;
-		else if (type.equals("axe") && blockState.is(BlockTags.MINEABLE_WITH_AXE)) isCorrectType = true;
-		else if (type.equals("shovel") && blockState.is(BlockTags.MINEABLE_WITH_SHOVEL)) isCorrectType = true;
-		else if (type.equals("hoe") && blockState.is(BlockTags.MINEABLE_WITH_HOE)) isCorrectType = true;
-
-		if (isCorrectType) {
-			if (blockState.is(BlockTags.NEEDS_DIAMOND_TOOL) && miningLevel < 3) return false;
-			if (blockState.is(BlockTags.NEEDS_IRON_TOOL) && miningLevel < 2) return false;
-			if (blockState.is(BlockTags.NEEDS_STONE_TOOL) && miningLevel < 1) return false;
-			return true;
-		}
+		if (isBroken(itemStack)) return false; // Zlomený krumpáč nic nedropne
 		return super.isCorrectToolForDrops(itemStack, blockState);
 	}
 
 	@Override
+	public boolean mineBlock(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull BlockState blockState, @NotNull BlockPos blockPos, @NotNull LivingEntity miningEntity) {
+		if (!level.isClientSide && blockState.getDestroySpeed(level, blockPos) != 0.0F && !isBroken(itemStack)) {
+			this.damageTool(itemStack, 1, miningEntity); // Voláme vlastní upravenou damage metodu
+		}
+		return true;
+	}
+
+	@Override
+	public boolean hurtEnemy(@NotNull ItemStack itemStack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
+		if (!isBroken(itemStack)) {
+			int amt = getProps(itemStack).toolType().toLowerCase(Locale.ROOT).equals("sword") ? 1 : 2;
+			this.damageTool(itemStack, amt, attacker);
+		}
+		return true;
+	}
+
+	@Override
 	public boolean canPerformAction(@NotNull ItemStack itemStack, @NotNull ItemAbility itemAbility) {
+		if (isBroken(itemStack)) return false; // Zlomeným nástrojem nelze provádět speciální akce pravým klikem
+
 		String type = getProps(itemStack).toolType().toLowerCase();
 		if (type.equals("pickaxe") && itemAbility.equals(ItemAbilities.PICKAXE_DIG)) return true;
 		if (type.equals("axe") && (itemAbility.equals(ItemAbilities.AXE_DIG) || itemAbility.equals(ItemAbilities.AXE_STRIP) || itemAbility.equals(ItemAbilities.AXE_SCRAPE) || itemAbility.equals(ItemAbilities.AXE_WAX_OFF))) return true;
@@ -158,10 +181,12 @@ public class ModularTool extends DiggerItem {
 
 	@Override
 	public @NotNull InteractionResult useOn(@NotNull UseOnContext context) {
+		ItemStack stack = context.getItemInHand();
+		if (isBroken(stack)) return InteractionResult.PASS; // Blokace pravého kliknutí, pokud je zlomený
+
 		Level level = context.getLevel();
 		BlockPos pos = context.getClickedPos();
 		BlockState state = level.getBlockState(pos);
-		ItemStack stack = context.getItemInHand();
 		String type = getProps(stack).toolType().toLowerCase();
 		BlockState modified = null;
 		SoundEvent sound = null;
@@ -198,7 +223,7 @@ public class ModularTool extends DiggerItem {
 			level.playSound(player, pos, sound, SoundSource.BLOCKS, 1F, 1F);
 			if (!level.isClientSide) {
 				level.setBlock(pos, modified, 11);
-				if (player != null) stack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
+				if (player != null) this.damageTool(stack, 1, player);
 			}
 			return InteractionResult.sidedSuccess(level.isClientSide);
 		}
@@ -208,13 +233,18 @@ public class ModularTool extends DiggerItem {
 	@Override
 	public @NotNull ItemAttributeModifiers getDefaultAttributeModifiers(@NotNull ItemStack itemStack) {
 		ModularToolProperties props = getProps(itemStack);
-		ModularMaterial head = ModularMaterial.byName(props.headMaterial());
-		ModularMaterial handle = ModularMaterial.byName(props.handleMaterial());
-
-		float finalDamage = getBaseDamageForType(props.toolType()) + head.getAttackDamage();
-		float finalSpeed = getBaseSpeedForType(props.toolType()) + handle.getAttackSpeedBonus();
-
 		ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
+
+		float finalDamage = 0.0f; // Výchozí pěstní damage, pokud je zlomeno
+		float finalSpeed = getBaseSpeedForType(props.toolType());
+
+		if (!isBroken(itemStack)) {
+			ModularMaterial head = ModularMaterial.byName(props.headMaterial());
+			ModularMaterial handle = ModularMaterial.byName(props.handleMaterial());
+			finalDamage = getBaseDamageForType(props.toolType()) + head.getAttackDamage();
+			finalSpeed = getBaseSpeedForType(props.toolType()) + handle.getAttackSpeedBonus();
+		}
+
 		builder.add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, finalDamage, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
 		builder.add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, finalSpeed, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
 		return builder.build();
@@ -232,9 +262,12 @@ public class ModularTool extends DiggerItem {
 		int maxDmg = getMaxDamage(itemStack);
 		int miningLvl = getLiveMiningLevel(itemStack);
 		float eff = getLiveEfficiency(itemStack);
-		float dmg = 1F + getBaseDamageForType(props.toolType()) + head.getAttackDamage();
-		float spd = 4F + getBaseSpeedForType(props.toolType()) + handle.getAttackSpeedBonus();
-		// Informace o součástech nástroje
+		float dmg = 1F + getBaseDamageForType(props.toolType()) + (isBroken(itemStack) ? 0 : head.getAttackDamage());
+		float spd = 4F + getBaseSpeedForType(props.toolType()) + (isBroken(itemStack) ? 0 : handle.getAttackSpeedBonus());
+
+		if (isBroken(itemStack)) {
+			list.add(Component.literal("!! BROKEN !!").withStyle(Style.EMPTY.withColor(ChatFormatting.RED).withBold(true)));
+		}
 		if(Screen.hasControlDown()){
 			list.add(Component.literal("Head: ").withStyle(ChatFormatting.WHITE)
 					.append(Component.translatable("dif.material." + head.getId())
@@ -257,7 +290,7 @@ public class ModularTool extends DiggerItem {
 
 
 
-		}else{
+		} else {
 			list.add(Component.literal("Mining Level: ").withStyle(ChatFormatting.WHITE).append(Component.translatable("dif.mining_level." + miningLvl).withStyle(Style.EMPTY.withColor(miningLevelColor[miningLvl]))));
 
 			int remaining = Math.max(0, maxDmg - itemStack.getDamageValue());
@@ -283,4 +316,12 @@ public class ModularTool extends DiggerItem {
 	@Override public int getEnchantmentValue(@NotNull ItemStack itemStack) { return 0; }
 	@Override public boolean isRepairable(@NotNull ItemStack itemStack) { return false; }
 	@Override public boolean isValidRepairItem(@NotNull ItemStack itemStack, @NotNull ItemStack repair) { return false; }
+	@Override
+	public @NotNull String getDescriptionId(@NotNull ItemStack stack) {
+		String type = getProps(stack).toolType().toLowerCase(Locale.ROOT);
+		if (!type.isEmpty() && !type.equals("none")) {
+			return super.getDescriptionId(stack) + "." + type;
+		}
+		return super.getDescriptionId(stack);
+	}
 }

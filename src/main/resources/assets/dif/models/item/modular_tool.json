@@ -1,0 +1,12 @@
+{
+	"parent": "minecraft:item/generated",
+	"textures": {
+		"layer0": "dif:item/modular_tool_chassis"
+	},
+	"overrides": [
+		{ "predicate": { "dif:tool_state": 1.0 }, "model": "dif:item/modular_pickaxe" },
+		{ "predicate": { "dif:tool_state": 1.5 }, "model": "dif:item/modular_pickaxe_broken" },
+		{ "predicate": { "dif:tool_state": 2.0 }, "model": "dif:item/modular_axe" },
+		{ "predicate": { "dif:tool_state": 2.5 }, "model": "dif:item/modular_axe_broken" }
+	]
+}

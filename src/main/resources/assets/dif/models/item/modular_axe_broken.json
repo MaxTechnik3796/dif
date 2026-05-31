@@ -1,8 +1,8 @@
 {
-	"parent":"item/handheld",
-	"textures":{
-		"layer0":"dif:item/modular_axe_handle",
-		"layer1":"dif:item/modular_axe_binding",
-		"layer2":"dif:item/modular_axe_head_broken"
+	"parent": "minecraft:item/generated",
+	"textures": {
+		"layer0": "dif:item/modular_axe_handle",
+		"layer1": "dif:item/modular_axe_binding",
+		"layer2": "dif:item/modular_axe_head_broken"
 	}
 }
