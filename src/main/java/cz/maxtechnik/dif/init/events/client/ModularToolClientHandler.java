@@ -13,7 +13,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
-import net.neoforged.neoforge.client.event.ModelEvent; // NOVÝ IMPORT
 
 @SuppressWarnings("removal")
 @EventBusSubscriber(modid = DifMod.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -39,31 +38,6 @@ public class ModularToolClientHandler {
 			}
 			return -1;
 		}, DifModItems.MODULAR_TOOL.get());
-	}
-
-	// 2. FIX PRO MODELY: Registrace dodatečných modelů, aby je hra načetla a zapekla (bake) do RAM
-	// Bez tohoto bloku kódu budou modely specifikované v overrides JSONu pro hru neviditelné!
-	@SubscribeEvent
-	public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
-		event.register(new net.minecraft.client.resources.model.ModelResourceLocation(
-				ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "item/modular_pickaxe"), "inventory"));
-
-		event.register(new net.minecraft.client.resources.model.ModelResourceLocation(
-				ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "item/modular_pickaxe_broken"), "inventory"));
-
-		event.register(new net.minecraft.client.resources.model.ModelResourceLocation(
-				ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "item/modular_axe"), "inventory"));
-
-		event.register(new net.minecraft.client.resources.model.ModelResourceLocation(
-				ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "item/modular_axe_broken"), "inventory"));
-
-		// Až vytvoříš JSONy pro meč, lopatu a motyku, stačí je sem odkomentovat (přepsané na ModelResourceLocation):
-		// event.register(new net.minecraft.client.resources.model.ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "item/modular_sword"), "inventory"));
-		// event.register(new net.minecraft.client.resources.model.ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "item/modular_sword_broken"), "inventory"));
-		// event.register(new net.minecraft.client.resources.model.ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "item/modular_shovel"), "inventory"));
-		// event.register(new net.minecraft.client.resources.model.ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "item/modular_shovel_broken"), "inventory"));
-		// event.register(new net.minecraft.client.resources.model.ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "item/modular_hoe"), "inventory"));
-		// event.register(new net.minecraft.client.resources.model.ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "item/modular_hoe_broken"), "inventory"));
 	}
 
 	// 3. REGISTRACE PREDICATU PRO PŘEPÍNÁNÍ MODELŮ (ZŮSTÁVÁ STEJNÁ)
