@@ -14,57 +14,52 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 
+import java.util.Locale;
 @SuppressWarnings("removal")
-@EventBusSubscriber(modid = DifMod.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class ModularToolClientHandler {
-
+@EventBusSubscriber(modid=DifMod.MODID, bus=EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
+public class ModularToolClientHandler{
 	// 1. REGISTRACE BARVENÍ VRSTEV (S FIXEM PRO PRŮHLEDNOST)
 	@SubscribeEvent
-	public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
-		event.register((stack, tintIndex) -> {
-			if (stack.getItem() instanceof ModularTool) {
-				ModularToolProperties props = stack.get(DifModComponents.MODULAR_PROPERTIES.get());
-				if (props != null) {
-					int color = -1;
-					if (tintIndex == 0) color = ModularMaterial.byName(props.handleMaterial()).getColor();
-					if (tintIndex == 1) color = ModularMaterial.byName(props.bindingMaterial()).getColor();
-					if (tintIndex == 2) color = ModularMaterial.byName(props.headMaterial()).getColor();
-
+	public static void registerItemColors(RegisterColorHandlersEvent.Item event){
+		event.register((stack,tintIndex)->{
+			if(stack.getItem() instanceof ModularTool){
+				ModularToolProperties props=stack.get(DifModComponents.MODULAR_PROPERTIES.get());
+				if(props!=null){
+					int color=-1;
+					if(tintIndex==0) color=ModularMaterial.byName(props.handleMaterial()).getColor();
+					if(tintIndex==1) color=ModularMaterial.byName(props.bindingMaterial()).getColor();
+					if(tintIndex==2) color=ModularMaterial.byName(props.headMaterial()).getColor();
 					// FIX: Pomocí bitového operátoru OR (|) vnutíne barvě plnou hodnotu Alpha kanálu (0xFF000000)
-					if (color != -1) {
-						return color | 0xFF000000;
+					if(color!=-1){
+						return color|0xFF000000;
 					}
 				}
 			}
 			return -1;
-		}, DifModItems.MODULAR_TOOL.get());
+		},DifModItems.MODULAR_TOOL.get());
 	}
-
 	// 3. REGISTRACE PREDICATU PRO PŘEPÍNÁNÍ MODELŮ (ZŮSTÁVÁ STEJNÁ)
 	@SubscribeEvent
-	public static void clientSetup(FMLClientSetupEvent event) {
-		event.enqueueWork(() -> ItemProperties.register(
+	public static void clientSetup(FMLClientSetupEvent event){
+		event.enqueueWork(()->ItemProperties.register(
 				DifModItems.MODULAR_TOOL.get(),
-				ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "tool_state"),
-				(stack, level, entity, seed) -> {
-					if (!(stack.getItem() instanceof ModularTool tool)) return 0.0F;
-					ModularToolProperties props = stack.get(DifModComponents.MODULAR_PROPERTIES.get());
-					if (props == null) return 0.0F;
-
-					String type = props.toolType().toLowerCase(java.util.Locale.ROOT);
-					boolean broken = tool.isBroken(stack);
-
-					float base = switch (type) {
+				ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"tool_state"),
+				(stack,level,entity,seed)->{
+					if(!(stack.getItem() instanceof ModularTool tool)) return 0.0F;
+					ModularToolProperties props=stack.get(DifModComponents.MODULAR_PROPERTIES.get());
+					if(props==null) return 0.0F;
+					String type=props.toolType().toLowerCase(Locale.ROOT);
+					boolean broken=tool.isBroken(stack);
+					float base=switch(type){
 						case "pickaxe" -> 1.0F;
-						case "axe"     -> 2.0F;
-						case "sword"   -> 3.0F;
-						case "shovel"  -> 4.0F;
-						case "hoe"     -> 5.0F;
-						default        -> 0.0F;
+						case "axe" -> 2.0F;
+						case "sword" -> 3.0F;
+						case "shovel" -> 4.0F;
+						case "hoe" -> 5.0F;
+						default -> 0.0F;
 					};
-
-					if (base == 0.0F) return 0.0F;
-					return broken ? base + 0.5F : base;
+					if(base==0.0F) return 0.0F;
+					return broken?base+0.5F:base;
 				}
 		));
 	}
