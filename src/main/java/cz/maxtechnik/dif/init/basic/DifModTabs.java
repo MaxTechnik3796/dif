@@ -18,7 +18,6 @@ import vectorwing.farmersdelight.common.registry.ModItems;
 import java.util.Objects;
 import static cz.maxtechnik.dif.DifMod.addItemStacksBehind;
 import static cz.maxtechnik.dif.init.basic.DifModItems.*;
-import static cz.maxtechnik.dif.item.modular.ModularBase.*;
 @SuppressWarnings("unused")
 public class DifModTabs{
 	public static final DeferredRegister<CreativeModeTab>REGISTER=DeferredRegister.create(Registries.CREATIVE_MODE_TAB,DifMod.MODID);
