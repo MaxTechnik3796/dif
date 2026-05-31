@@ -2,8 +2,10 @@ package cz.maxtechnik.dif.init.basic;
 
 import com.simibubi.create.AllCreativeModeTabs;
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.init.other.DifModComponents;
 import cz.maxtechnik.dif.item.modular.ModularBase;
 import cz.maxtechnik.dif.item.modular.ToolMaterial;
+import cz.maxtechnik.dif.item.modular.v2.ModularToolProperties;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -148,6 +150,9 @@ public class DifModTabs{
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>MODULAR_TOOLS=REGISTER.register("modular_tools",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.SPACE.getKey()).title(Component.translatable("creative_tab.dif.modular_tools")).icon(()-> ModularBase.createTool(MODULAR_PICKAXE.get(), ToolMaterial.DIAMOND, ToolMaterial.GOLD, ToolMaterial.OBSIDIAN)).displayItems(((parameters, tabData)->{
 		tabData.accept(Items.SMITHING_TABLE);
+		ItemStack ePickaxe=new ItemStack(MODULAR_TOOL.get());ePickaxe.set(DifModComponents.MODULAR_PROPERTIES.get(),new ModularToolProperties("pickaxe","diamond","iron","wood"));
+		tabData.accept(ePickaxe);
+
 		tabData.accept(MODULAR_TOOL);
 
 		/*
