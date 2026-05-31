@@ -2,6 +2,7 @@ package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
+import cz.maxtechnik.dif.item.armor.Jetpack;
 import cz.maxtechnik.dif.item.modular.ToolComponents;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import cz.maxtechnik.dif.particle.FireballParticle;
@@ -101,7 +102,7 @@ public class DifMod{
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.DISTILLATION_TANK.get(),(be,ctx)->be.getFluidCapability());
 
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.ENGINE.get(),(be,side)->be.fluidTank);
-
+		event.registerItem(net.neoforged.neoforge.capabilities.Capabilities.FluidHandler.ITEM, (stack, ctx) -> new Jetpack.Chestplate.FluidHandler(stack), DifModItems.JETPACK.get());
 
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.COKE_OVEN_CONTROLLER.get(),(be,side)->{
 			if(side!=null) return new SidedInvWrapper(be,side);

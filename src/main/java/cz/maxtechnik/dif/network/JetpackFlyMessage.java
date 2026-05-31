@@ -11,6 +11,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
+
 public record JetpackFlyMessage(int actionType,int pressedms) implements CustomPacketPayload{
 	public static final Type<JetpackFlyMessage> TYPE=new Type<>(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"jetpack_fly"));
 	public static final StreamCodec<FriendlyByteBuf,JetpackFlyMessage> STREAM_CODEC=StreamCodec.composite(
@@ -32,6 +33,8 @@ public record JetpackFlyMessage(int actionType,int pressedms) implements CustomP
 			JetpackHandler.fly(player);
 		}else if(actionType==1){
 			JetpackHandler.decelerate(player);
+		}else if(actionType==2){
+			JetpackHandler.toggleHover(player);
 		}
 	}
 }

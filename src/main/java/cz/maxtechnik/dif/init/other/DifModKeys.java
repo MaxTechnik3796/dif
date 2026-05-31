@@ -15,6 +15,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 @SuppressWarnings("removal")
@@ -24,6 +25,8 @@ public class DifModKeys {
 
 	// Původní klávesy
 	public static final KeyMapping JETPACK_FLY = new KeyMapping("key.dif.jetpack_fly", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_SPACE, CATEGORY);
+	public static final KeyMapping KEY_HOVER = new KeyMapping("key.dif.jetpack_hover", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_V, "key.categories.dif");
+
 	public static final KeyMapping OPEN_ENDER_CHEST = new KeyMapping("key.dif.open_ender", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, CATEGORY);
 
 	// Původní Minecart ovladač
@@ -47,6 +50,7 @@ public class DifModKeys {
 	@SubscribeEvent
 	public static void registerKeys(RegisterKeyMappingsEvent event) {
 		event.register(JETPACK_FLY);
+		event.register(KEY_HOVER);
 		event.register(OPEN_ENDER_CHEST);
 		event.register(MINE_FORWARD);
 		event.register(MINE_BACKWARD);
@@ -72,6 +76,9 @@ public class DifModKeys {
 				if (JETPACK_FLY.isDown()) {
 					PacketDistributor.sendToServer(new JetpackFlyMessage(0, 0));
 					JetpackFlyMessage.pressAction(player, 0);
+				}
+				if (KEY_HOVER.consumeClick()) {
+					PacketDistributor.sendToServer(new JetpackFlyMessage(2, 0));
 				}
 
 				// 3. Logika Ender Chesty
