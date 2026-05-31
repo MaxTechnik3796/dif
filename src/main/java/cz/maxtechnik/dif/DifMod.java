@@ -2,6 +2,8 @@ package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
+import cz.maxtechnik.dif.block.entity.BlastSmelteryControllerBlockEntity;
+import cz.maxtechnik.dif.block.entity.CokeOvenControllerBlockEntity;
 import cz.maxtechnik.dif.item.armor.Jetpack;
 import cz.maxtechnik.dif.item.modular.ToolComponents;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
@@ -108,45 +110,39 @@ public class DifMod{
 			if(side!=null) return new SidedInvWrapper(be,side);
 			return be.getInventory();
 		});
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.COKE_OVEN_CONTROLLER.get(),(be,side)->be.fluidTank);
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.COKE_OVEN.get(),(be,side)->{
-			var controller=be.getFormedController();
-			if(controller!=null){
-				if(side!=null){
-					return new SidedInvWrapper(controller,side);
-				}
-				return controller.getInventory();
-			}
-			return null;
-		});
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.COKE_OVEN.get(),(be,side)->{
-			var controller=be.getFormedController();
-			if(controller!=null){
-				return controller.fluidTank;
-			}
-			return null;
-		});
-
-		// ── BlastSmeltery ────────────────────────────────────────────────────────
-		// Controller: item = sided wrapper; fluid = combinedInOut (fill→input, drain←output)
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.BLAST_SMELTERY_CONTROLLER.get(),(be,side)->{
-			if(side!=null) return new SidedInvWrapper(be,side);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.COKE_OVEN_CONTROLLER.get(), (be, side) -> {
+			if (side != null) return new SidedInvWrapper(be, side);
 			return be.getInventory();
 		});
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.BLAST_SMELTERY_CONTROLLER.get(),(be,side)->
-			cz.maxtechnik.dif.util.MultiblockHelper.combinedInOut(be.fluidInputTank,be.fluidOutputTank)
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, DifModBlockEntities.COKE_OVEN_CONTROLLER.get(), CokeOvenControllerBlockEntity::getFluidCapability
 		);
-		// Wall bricks: proxy vše na controller
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.BLAST_SMELTERY.get(),(be,side)->{
-			var ctrl=be.getFormedController();
-			if(ctrl==null) return null;
-			return side!=null?new SidedInvWrapper(ctrl,side):ctrl.getInventory();
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.COKE_OVEN.get(), (be, side) -> {
+			var ctrl = be.getController();
+			if (ctrl == null) return null;
+			return side != null ? new SidedInvWrapper(ctrl, side) : ctrl.getInventory();
 		});
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.BLAST_SMELTERY.get(),(be,side)->{
-			var ctrl=be.getFormedController();
-			if(ctrl==null) return null;
-			return cz.maxtechnik.dif.util.MultiblockHelper.combinedInOut(ctrl.fluidInputTank,ctrl.fluidOutputTank);
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, DifModBlockEntities.COKE_OVEN.get(), (be, side) -> {
+			var ctrl = be.getController();
+			return ctrl != null ? ctrl.getFluidCapability(side) : null;
 		});
+
+		// ── BlastSmeltery ─────────────────────────────────────────────────────
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.BLAST_SMELTERY_CONTROLLER.get(), (be, side) -> {
+			if (side != null) return new SidedInvWrapper(be, side);
+			return be.getInventory();
+		});
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, DifModBlockEntities.BLAST_SMELTERY_CONTROLLER.get(), BlastSmelteryControllerBlockEntity::getFluidCapability
+		);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.BLAST_SMELTERY.get(), (be, side) -> {
+			var ctrl = be.getController();
+			if (ctrl == null) return null;
+			return side != null ? new SidedInvWrapper(ctrl, side) : ctrl.getInventory();
+		});
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, DifModBlockEntities.BLAST_SMELTERY.get(), (be, side) -> {
+			var ctrl = be.getController();
+			return ctrl != null ? ctrl.getFluidCapability(side) : null;
+		});
+
 	}
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event){

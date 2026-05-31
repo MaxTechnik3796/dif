@@ -51,10 +51,7 @@ public class BlastSmelteryController extends Block implements EntityBlock, IWren
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(
             @NotNull Level level, @NotNull BlockState blockState, @NotNull BlockEntityType<T> type) {
         if (level.isClientSide) return null;
-        BlockEntityType<BlastSmelteryControllerBlockEntity> expected = DifModBlockEntities.BLAST_SMELTERY_CONTROLLER.get();
-        return type.equals(expected)
-                ? (lvl, pos, state, be) -> BlastSmelteryControllerBlockEntity.serverTick(lvl, pos, state, (BlastSmelteryControllerBlockEntity) be)
-                : null;
+        return BlastSmelteryControllerBlockEntity.ticker(type);
     }
 
     @Override
@@ -77,43 +74,32 @@ public class BlastSmelteryController extends Block implements EntityBlock, IWren
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
-    /** Při odstranění: drop inventář + uvolni cihly. */
     @Override
     public void onRemove(BlockState blockState, @NotNull Level level, @NotNull BlockPos pos, BlockState newState, boolean isMoving) {
         if (!blockState.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof BlastSmelteryControllerBlockEntity be) {
-            // Drop items
+            // Drop inventář
             var inv = be.getInventory();
             for (int i = 0; i < inv.getSlots(); i++)
                 Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), inv.getStackInSlot(i));
-            // Uvolni cihly, pokud byla struktura formovaná
-            if (blockState.getValue(FORMED)) {
-                Direction intoStructure = blockState.getValue(FACING).getOpposite();
-                releaseBricks(level, pos, intoStructure);
-            }
+            // Uvolni cihličky
+            if (blockState.getValue(FORMED))
+                releaseBricks(level, pos, blockState.getValue(FACING).getOpposite());
             // Fluidy se záměrně ztrácejí (nemají item formu mimo kbelík)
         }
         super.onRemove(blockState, level, pos, newState, isMoving);
     }
 
     private static void releaseBricks(Level level, BlockPos ctrlPos, Direction intoStructure) {
-        Direction right = intoStructure.getClockWise();
-        BlockPos.MutableBlockPos mp = new BlockPos.MutableBlockPos();
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 3; x++) {
-                for (int z = 0; z < 3; z++) {
-                    if (y == 1 && x == 1 && z == 0) continue;
-                    mp.set(ctrlPos).move(intoStructure, z).move(right, x - 1).move(Direction.UP, y - 1);
-                    if (level.getBlockEntity(mp) instanceof BlastSmelteryBlockEntity brick)
-                        brick.setControllerPos(null);
-                }
-            }
-        }
+        cz.maxtechnik.dif.util.MultiblockHelper.forEachBrick(ctrlPos, intoStructure, mp -> {
+            if (level.getBlockEntity(mp) instanceof BlastSmelteryBlockEntity brick)
+                brick.setControllerPos(null);
+            return true;
+        });
     }
 
     @Override
     public InteractionResult onWrenched(BlockState blockState, UseOnContext ctx) {
-        Level level = ctx.getLevel();
-        if (level.isClientSide || blockState.getValue(FORMED)) return InteractionResult.PASS;
+        if (ctx.getLevel().isClientSide || blockState.getValue(FORMED)) return InteractionResult.PASS;
         return InteractionResult.CONSUME;
     }
 
