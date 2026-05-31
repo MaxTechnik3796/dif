@@ -220,10 +220,13 @@
 	"item.dif.copper_leggings":"Copper Leggings",
 	"item.dif.copper_chestplate":"Copper Chestplate",
 	"item.dif.copper_helmet":"Copper Helmet",
-	"item.dif.modular_pickaxe":"Pickaxe",
-	"item.dif.modular_axe":"Axe",
-	"item.dif.modular_shovel":"Shovel",
-	"item.dif.modular_sword":"Sword",
+
+	"item.dif.modular_tool":"Modular Tool",
+	"item.dif.modular_tool.pickaxe":"Modular Pickaxe",
+	"item.dif.modular_tool.axe":"Modular Axe",
+	"item.dif.modular_tool.shovel":"Modular Shovel",
+	"item.dif.modular_tool.sword":"Modular Sword",
+
 	"item.dif.pickaxe_head":"Pickaxe Head",
 	"item.dif.axe_head":"Axe Head",
 	"item.dif.shovel_head":"Shovel Head",

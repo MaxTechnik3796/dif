@@ -64,9 +64,6 @@ public class ModularTool extends DiggerItem{
 		ModularToolProperties props=itemStack.get(DifModComponents.MODULAR_PROPERTIES.get());
 		return props!=null?props:ModularToolProperties.DEFAULT;
 	}
-	// ====================================================================
-	// DYNAMICKÉ VLASTNOSTI NÁSTROJE PODLE KOMPONENTY
-	// ====================================================================
 	@Override
 	public int getMaxDamage(@NotNull ItemStack itemStack){
 		return getProps(itemStack).maxDamage();
@@ -120,9 +117,6 @@ public class ModularTool extends DiggerItem{
 		if(type.equals("sword")&&itemAbility.equals(ItemAbilities.SWORD_DIG)) return true;//DO NOT TOUCH
 		return false;
 	}
-	// ====================================================================
-	// INTERAKCE PRAVÝM TLAČÍTKEM (Sided Logika pro 1.21.1)
-	// ====================================================================
 	@Override
 	public @NotNull InteractionResult useOn(@NotNull UseOnContext context){
 		Level level=context.getLevel();
@@ -186,8 +180,17 @@ public class ModularTool extends DiggerItem{
 		return super.useOn(context);
 	}
 	@Override
-	public @NotNull ItemAttributeModifiers getDefaultAttributeModifiers(@NotNull ItemStack stack){
-		ModularToolProperties props=getProps(stack);
+	public @NotNull String getDescriptionId(@NotNull ItemStack itemStack) {
+		String type = getProps(itemStack).toolType().toLowerCase(Locale.ROOT);
+		// Pokud typ paliva/nástroje není prázdný nebo "none", připojíme ho na konec klíče
+		if (!type.isEmpty() && !type.equals("none")) {
+			return super.getDescriptionId(itemStack) + "." + type;
+		}
+		return super.getDescriptionId(itemStack);
+	}
+	@Override
+	public @NotNull ItemAttributeModifiers getDefaultAttributeModifiers(@NotNull ItemStack itemStack){
+		ModularToolProperties props=getProps(itemStack);
 		ItemAttributeModifiers.Builder builder=ItemAttributeModifiers.builder();
 		// FIX: Použijeme Item.BASE_ATTACK_DAMAGE_ID namísto vlastního ResourceLocation
 		builder.add(Attributes.ATTACK_DAMAGE,new AttributeModifier(
@@ -205,7 +208,7 @@ public class ModularTool extends DiggerItem{
 	}
 	@Override
 	public void appendHoverText(@NotNull ItemStack itemStack,@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
-		ModularToolProperties tag=itemStack.getComponents().get(DifModComponents.MODULAR_PROPERTIES.get());
+		ModularToolProperties tag=getProps(itemStack);
 		if(tag==null) return;
 		list.add(Component.literal("Mining Level: ").withStyle(ChatFormatting.WHITE).append(Component.translatable("dif.mining_level."+tag.miningLevel()).withStyle(Style.EMPTY.withColor(miningLevelColor[tag.miningLevel()]))));
 		int remaining=Math.max(0,tag.maxDamage()-itemStack.getDamageValue());

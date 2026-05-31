@@ -2,8 +2,7 @@ package cz.maxtechnik.dif.item.modular.v2;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-public record ModularToolProperties(int maxDamage,float efficiency,float attackDamage,float attackSpeed,String toolType,
-                                    int miningLevel){
+public record ModularToolProperties(int maxDamage,float efficiency,float attackDamage,float attackSpeed,String toolType,int miningLevel){
 	public static final Codec<ModularToolProperties> CODEC=RecordCodecBuilder.create(instance->instance.group(
 			Codec.INT.fieldOf("max_damage").forGetter(ModularToolProperties::maxDamage),
 			Codec.FLOAT.fieldOf("efficiency").forGetter(ModularToolProperties::efficiency),
