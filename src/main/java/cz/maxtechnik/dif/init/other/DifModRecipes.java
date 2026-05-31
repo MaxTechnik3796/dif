@@ -30,4 +30,11 @@ public class DifModRecipes{
 
 	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<CokeOvenRecipe>> COKE_OVEN_SERIALIZER =
 			REGISTRY.register("coke_oven", CokeOvenRecipe.Serializer::new);
+
+	public static final DeferredHolder<RecipeType<?>, RecipeType<cz.maxtechnik.dif.recipe.BlastSmelteryRecipe>> BLAST_SMELTERY_TYPE =
+			TYPE_REGISTRY.register("blast_smeltery", () -> RecipeType.simple(
+					ResourceLocation.fromNamespaceAndPath("dif", "blast_smeltery")));
+
+	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<cz.maxtechnik.dif.recipe.BlastSmelteryRecipe>> BLAST_SMELTERY_SERIALIZER =
+			REGISTRY.register("blast_smeltery", cz.maxtechnik.dif.recipe.BlastSmelteryRecipe.Serializer::new);
 }

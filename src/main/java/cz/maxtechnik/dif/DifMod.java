@@ -126,6 +126,27 @@ public class DifMod{
 			}
 			return null;
 		});
+
+		// ── BlastSmeltery ────────────────────────────────────────────────────────
+		// Controller: item = sided wrapper; fluid = combinedInOut (fill→input, drain←output)
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.BLAST_SMELTERY_CONTROLLER.get(),(be,side)->{
+			if(side!=null) return new SidedInvWrapper(be,side);
+			return be.getInventory();
+		});
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.BLAST_SMELTERY_CONTROLLER.get(),(be,side)->
+			cz.maxtechnik.dif.util.MultiblockHelper.combinedInOut(be.fluidInputTank,be.fluidOutputTank)
+		);
+		// Wall bricks: proxy vše na controller
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.BLAST_SMELTERY.get(),(be,side)->{
+			var ctrl=be.getFormedController();
+			if(ctrl==null) return null;
+			return side!=null?new SidedInvWrapper(ctrl,side):ctrl.getInventory();
+		});
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.BLAST_SMELTERY.get(),(be,side)->{
+			var ctrl=be.getFormedController();
+			if(ctrl==null) return null;
+			return cz.maxtechnik.dif.util.MultiblockHelper.combinedInOut(ctrl.fluidInputTank,ctrl.fluidOutputTank);
+		});
 	}
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event){

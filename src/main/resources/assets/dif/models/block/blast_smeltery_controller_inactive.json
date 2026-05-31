@@ -1,0 +1,9 @@
+{
+	"parent":"block/orientable",
+	"textures":{
+		"front":"dif:block/blast_smeltery_controller_inactive",
+		"side":"dif:block/blast_smeltery",
+		"top":"dif:block/blast_smeltery",
+		"particle":"dif:block/blast_smeltery"
+	}
+}

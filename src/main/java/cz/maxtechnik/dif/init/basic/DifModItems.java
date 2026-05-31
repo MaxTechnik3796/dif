@@ -342,6 +342,9 @@ public class DifModItems{
 	public static final DeferredItem<Item>COKE_OVEN_CONTROLLER=block(DifModBlocks.COKE_OVEN_CONTROLLER);
 	public static final DeferredItem<Item>COKE=REGISTRY.register("coke",()->new Item(new Item.Properties()));
 
+	public static final DeferredItem<Item>BLAST_SMELTERY=block(DifModBlocks.BLAST_SMELTERY);
+	public static final DeferredItem<Item>BLAST_SMELTERY_CONTROLLER=block(DifModBlocks.BLAST_SMELTERY_CONTROLLER);
+
 	public static final DeferredItem<Item>ENGINE2=block(DifModBlocks.ENGINE2);
 	public static final DeferredItem<Item>ENGINE4=block(DifModBlocks.ENGINE4);
 	public static final DeferredItem<Item>ENGINE_EXTENDER_DIESEL=block(DifModBlocks.ENGINE_EXTENDER_DIESEL);
