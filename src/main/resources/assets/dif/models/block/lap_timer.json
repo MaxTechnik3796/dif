@@ -1,3 +1,8 @@
 {
-	"parent":"minecraft:block/netherite_block"
+	"parent":"block/cube_all",
+	"textures":{
+		"all":"dif:block/lap_timer",
+		"particle":"dif:block/lap_timer"
+	},
+	"render_type":"solid"
 }

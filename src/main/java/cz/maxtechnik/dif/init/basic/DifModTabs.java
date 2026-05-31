@@ -38,6 +38,8 @@ public class DifModTabs{
 		tabData.accept(SINGULARITATOR);
 		tabData.accept(FRYING_TABLE);
 
+		tabData.accept(LAP_TIMER);
+
 		tabData.accept(CAMERA_MONITOR);
 		tabData.accept(CAMERA);
 		tabData.accept(CAMERA_LINK);
