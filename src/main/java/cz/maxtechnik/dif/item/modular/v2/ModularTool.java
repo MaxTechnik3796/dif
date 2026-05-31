@@ -236,24 +236,25 @@ public class ModularTool extends DiggerItem {
 		float eff = getLiveEfficiency(itemStack);
 		float dmg = 1F + getBaseDamageForType(props.toolType()) + head.getAttackDamage();
 		float spd = 4F + getBaseSpeedForType(props.toolType()) + handle.getAttackSpeedBonus();
-
 		// Informace o součástech nástroje
 		if(Screen.hasControlDown()){
 			list.add(Component.literal("Head: ").withStyle(ChatFormatting.WHITE)
-					.append(Component.literal(head.getId())
+					.append(Component.translatable("dif.material." + head.getId())
 							.withStyle(Style.EMPTY.withColor(head.getColor()))));
 			list.add(Component.literal("  Durability: ").withStyle(ChatFormatting.WHITE)
-					.append(Component.literal(String.valueOf(head.getHeadDurability()))));
+					.append(Component.literal(String.valueOf(head.getHeadDurability())).withStyle(ChatFormatting.YELLOW)));
+
 			list.add(Component.literal("Binding: ").withStyle(ChatFormatting.WHITE)
-					.append(Component.literal( binding.getId())
+					.append(Component.translatable("dif.material." + binding.getId())
 							.withStyle(Style.EMPTY.withColor(binding.getColor()))));
 			list.add(Component.literal("  Durability: ").withStyle(ChatFormatting.WHITE)
-					.append(Component.literal(String.valueOf(binding.getBindingDurability()))));
+					.append(Component.literal(String.valueOf(binding.getBindingDurability())).withStyle(ChatFormatting.YELLOW)));
+
 			list.add(Component.literal("Handle: ").withStyle(ChatFormatting.WHITE)
-					.append(Component.literal(handle.getId())
+					.append(Component.translatable("dif.material." + handle.getId())
 							.withStyle(Style.EMPTY.withColor(handle.getColor()))));
-			list.add(Component.literal("  Durability: ").withStyle(ChatFormatting.WHITE)
-					.append(Component.literal(String.valueOf(handle.getHandleDurabilityMultiplier()))));
+			list.add(Component.literal("  Durability Multiplier: ").withStyle(ChatFormatting.WHITE)
+					.append(Component.literal(String.valueOf(handle.getHandleDurabilityMultiplier())).withStyle(ChatFormatting.YELLOW)));
 
 
 
