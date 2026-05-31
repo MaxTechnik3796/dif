@@ -1,8 +1,0 @@
-{
-	"parent": "minecraft:item/generated",
-	"textures": {
-		"layer0": "dif:item/modular/dummy_handle",
-		"layer1": "dif:item/modular/dummy_binding",
-		"layer2": "dif:item/modular/dummy_head"
-	}
-}
