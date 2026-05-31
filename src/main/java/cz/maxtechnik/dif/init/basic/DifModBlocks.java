@@ -181,6 +181,9 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>COKE_OVEN=REGISTRY.register("coke_oven",()->new CokeOven(BlockBehaviour.Properties.of().strength(3F,4F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
 	public static final DeferredBlock<Block>COKE_OVEN_CONTROLLER=REGISTRY.register("coke_oven_controller",()->new CokeOvenController(BlockBehaviour.Properties.of().strength(3F,4F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
 
+	public static final DeferredBlock<Block>BLAST_SMELTERY=REGISTRY.register("blast_smeltery",()->new cz.maxtechnik.dif.block.BlastSmeltery(BlockBehaviour.Properties.of().strength(4F,5F).requiresCorrectToolForDrops().sound(SoundType.NETHERITE_BLOCK)));
+	public static final DeferredBlock<Block>BLAST_SMELTERY_CONTROLLER=REGISTRY.register("blast_smeltery_controller",()->new cz.maxtechnik.dif.block.BlastSmelteryController(BlockBehaviour.Properties.of().strength(4F,5F).requiresCorrectToolForDrops().sound(SoundType.NETHERITE_BLOCK)));
+
 	public static BlockBehaviour.Properties ENGINE_PROPERTIES=BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops();
 	public static final DeferredBlock<Block>ENGINE2=REGISTRY.register("engine2",()->new Engine(ENGINE_PROPERTIES));
 	public static final DeferredBlock<Block>ENGINE4=REGISTRY.register("engine4",()->new Engine(ENGINE_PROPERTIES));

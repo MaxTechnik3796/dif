@@ -1,0 +1,20 @@
+{
+	"type": "dif:blast_smeltery",
+	"fluid_input": {
+		"id": "minecraft:water",
+		"amount": 1000
+	},
+	"ingredient": {
+		"item": "minecraft:iron_ingot"
+	},
+	"ingredient_count": 1,
+	"fluid_output": {
+		"id": "dif:fuel_fluid",
+		"amount": 500
+	},
+	"result": {
+		"id": "minecraft:iron_block",
+		"count": 1
+	},
+	"processing_time": 600
+}

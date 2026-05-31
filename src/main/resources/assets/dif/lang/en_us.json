@@ -344,5 +344,9 @@
 	"block.dif.engine_extender_diesel":"Engine Extender: Diesel",
 	"block.dif.engine_extender_gasoline":"Engine Extender: Gasoline",
 	"block.dif.engine_extender_lpg":"Engine Extender: LPG",
-	"block.dif.engine_extender_heavy_fuel_oil":"Engine Extender: Heavy Fuel Oil"
+	"block.dif.engine_extender_heavy_fuel_oil":"Engine Extender: Heavy Fuel Oil",
+
+	"block.dif.blast_smeltery":"Blast Smeltery",
+	"block.dif.blast_smeltery_controller":"Blast Smeltery Controller",
+	"container.dif.blast_smeltery":"Blast Smeltery"
 }

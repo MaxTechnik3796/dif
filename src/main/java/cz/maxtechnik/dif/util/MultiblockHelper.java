@@ -5,6 +5,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 /**
@@ -148,5 +151,41 @@ public final class MultiblockHelper{
 			}
 		}
 		return pattern;
+	}
+	// =========================================================
+	//  FLUID UTILITY
+	// =========================================================
+	/**
+	 * Kombinovaný IFluidHandler se dvěma oddělenými tanky:
+	 *   • fill()  → jde do {@code input}  (lze jen čerpat dovnitř)
+	 *   • drain() → jde z    {@code output} (lze jen čerpat ven)
+	 *
+	 * Použití v capability registraci (BlastSmeltery):
+	 *   MultiblockHelper.combinedInOut(be.fluidInputTank, be.fluidOutputTank)
+	 */
+	public static IFluidHandler combinedInOut(IFluidHandler input,IFluidHandler output){
+		return new IFluidHandler(){
+			@Override public int getTanks(){return input.getTanks()+output.getTanks();}
+			@Override public @NotNull FluidStack getFluidInTank(int tank){
+				return tank<input.getTanks()?input.getFluidInTank(tank):output.getFluidInTank(tank-input.getTanks());
+			}
+			@Override public int getTankCapacity(int tank){
+				return tank<input.getTanks()?input.getTankCapacity(tank):output.getTankCapacity(tank-input.getTanks());
+			}
+			@Override public boolean isFluidValid(int tank,@NotNull FluidStack stack){
+				return tank<input.getTanks()?input.isFluidValid(tank,stack):output.isFluidValid(tank-input.getTanks(),stack);
+			}
+			/** Čerpání dovnitř → jde výhradně do vstupního tanku. */
+			@Override public int fill(@NotNull FluidStack resource,@NotNull FluidAction action){
+				return input.fill(resource,action);
+			}
+			/** Čerpání ven → jde výhradně z výstupního tanku. */
+			@Override public @NotNull FluidStack drain(@NotNull FluidStack resource,@NotNull FluidAction action){
+				return output.drain(resource,action);
+			}
+			@Override public @NotNull FluidStack drain(int maxDrain,@NotNull FluidAction action){
+				return output.drain(maxDrain,action);
+			}
+		};
 	}
 }
