@@ -1,7 +1,0 @@
-{
-	"parent":"dif:item/canister",
-	"textures":{
-		"0":"dif:item/jetpack_fuel",
-		"particle":"dif:item/jetpack_fuel"
-	}
-}

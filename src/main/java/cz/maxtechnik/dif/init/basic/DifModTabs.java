@@ -143,8 +143,6 @@ public class DifModTabs{
 		tabData.accept(MARS_STONE);
 
 		tabData.accept(JETPACK);
-		tabData.accept(JETPACK_FUEL);
-		tabData.accept(JETPACK_CANISTER);
 
 		tabData.accept(ELECTRO_RUNNERS);
 	})).build());

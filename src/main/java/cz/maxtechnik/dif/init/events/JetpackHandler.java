@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.init.events;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.DifModCommonConfig;
 import cz.maxtechnik.dif.item.armor.Jetpack;
 import cz.maxtechnik.dif.network.JetpackSyncMessage;
 import net.minecraft.ChatFormatting;
@@ -31,16 +30,18 @@ public class JetpackHandler {
 	private static final float ACCEL_TICKS = 20F;
 	private static final float DECEL_TICKS = 20F;
 
+	// Spotřeba paliva v mB za tick
+	private static final int FLY_COST = 1;   // normální let
+	private static final int HOVER_COST = 1;  // hover = 5x levnější
+
 	@SubscribeEvent
 	public static void onPlayerTick(PlayerTickEvent.Post event) {
 		Player player = event.getEntity();
 		ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 		if (!(chest.getItem() instanceof Jetpack)) return;
 
-		// Na serveru: doplňování Thrust z Main když stojí na zemi
-		if (!player.level().isClientSide() && player.onGround()) {
-			refillThrust(player, chest);
-		}
+		// Hover drží výšku / spotřebovává palivo (server i klient pro plynulost)
+		tickHover(player, chest);
 
 		// Overlay na klientu
 		if (player.level().isClientSide()) {
@@ -48,48 +49,13 @@ public class JetpackHandler {
 		}
 	}
 
-	// Doplní Thrust z Main (nebo z inventáře) když hráč stojí na zemi
-	private static void refillThrust(Player player, ItemStack chest) {
-		int max = Jetpack.Chestplate.getMax();
-		int thrust = Jetpack.Chestplate.getThrust(chest);
-		if (thrust >= max) return;
-
-		int main = Jetpack.Chestplate.getMain(chest);
-
-		// Pokud Main > 0, přesuň vše do Thrust
-		if (main > 0) {
-			int toMove = Math.max(1, (int)(max * 0.02f)); // 2% za tick
-			toMove = Math.min(toMove, main);
-			toMove = Math.min(toMove, max - thrust);
-			Jetpack.Chestplate.setMain(chest, main - toMove);
-			Jetpack.Chestplate.setThrust(chest, thrust + toMove);
-		} else {
-			// Main je prázdný → vezmi 1 palivo z inventáře a naplň Main
-			for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-				ItemStack s = player.getInventory().getItem(i);
-				if (Jetpack.Chestplate.isFuel(s)) {
-					s.shrink(1);
-					Jetpack.Chestplate.setMain(chest, max);
-					break;
-				}
-			}
-		}
-
-		// Synchronizuj klientovi
-		if (player instanceof ServerPlayer sp) {
-			PacketDistributor.sendToPlayer(sp, new JetpackSyncMessage(
-					Jetpack.Chestplate.getMain(chest),
-					Jetpack.Chestplate.getThrust(chest)
-			));
-		}
-	}
-
 	public static void fly(Player player) {
 		ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 		if (!(chest.getItem() instanceof Jetpack)) return;
 
-		int thrust = Jetpack.Chestplate.getThrust(chest);
-		if (thrust <= 0) return;
+		if (Jetpack.Chestplate.isOff(chest)) return;
+		int fuel = Jetpack.Chestplate.getThrust(chest);
+		if (fuel <= 0) return;
 
 		UUID uid = player.getUUID();
 		float accel = MAX_VELOCITY / ACCEL_TICKS;
@@ -101,27 +67,13 @@ public class JetpackHandler {
 		player.setDeltaMovement(motion.x, curVel, motion.z);
 		player.fallDistance = 0;
 
-		// Spotřeba Thrust pouze na serveru
+		// Spotřeba paliva pouze na serveru
 		if (!player.level().isClientSide()) {
-			Jetpack.Chestplate.setThrust(chest, thrust - 1);
-
-			// Synchronizuj klientovi
-			if (player instanceof ServerPlayer sp) {
-				PacketDistributor.sendToPlayer(sp, new JetpackSyncMessage(
-						Jetpack.Chestplate.getMain(chest),
-						Jetpack.Chestplate.getThrust(chest)
-				));
-			}
+			Jetpack.Chestplate.setThrust(chest, fuel - FLY_COST);
+			syncFuel(player, chest);
 		}
 
-		// Particles
-		if (player.level() instanceof ServerLevel sl) {
-			double angle = Math.toRadians(player.getYRot());
-			double bx = player.getX() - Math.sin(angle) * 0.3;
-			double by = player.getY() + 0.8;
-			double bz = player.getZ() + Math.cos(angle) * 0.3;
-			sl.sendParticles(ParticleTypes.FLAME, bx, by, bz, 2, -Math.sin(angle) * 0.05, -0.1, Math.cos(angle) * 0.05, 0.02);
-		}
+		spawnParticles(player);
 	}
 
 	public static void decelerate(Player player) {
@@ -141,24 +93,91 @@ public class JetpackHandler {
 		}
 	}
 
+	public static void toggleHover(Player player) {
+		ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+		if (!(chest.getItem() instanceof Jetpack)) return;
+
+		int current = Jetpack.Chestplate.getMode(chest);
+		int next = (current + 1) % 3; // 0→1→2→0
+		// Nelze přejít do let/hover bez paliva
+		if (next != 2 && Jetpack.Chestplate.getThrust(chest) <= 0) next = 2;
+		Jetpack.Chestplate.setMode(chest, next);
+		verticalVelocity.remove(player.getUUID());
+		hoverTick.remove(player.getUUID());
+	}
+
+	// Hover: drží výšku ve vzduchu, pohyb do stran zůstává, particles, levnější spotřeba.
+	// Funguje i po aktivaci na zemi (Mekanism styl) – na zemi nic nedělá ani nespotřebovává.
+	private static final java.util.Map<UUID, Integer> hoverTick = new HashMap<>();
+
+	public static void tickHover(Player player, ItemStack chest) {
+		if (!Jetpack.Chestplate.isHovering(chest)) return;
+		if (player.onGround()) return;
+
+		int fuel = Jetpack.Chestplate.getThrust(chest);
+		if (fuel <= 0) {
+			Jetpack.Chestplate.setMode(chest, 2); // vypni při prázdné nádrži
+			return;
+		}
+
+		// Drží výšku
+		Vec3 motion = player.getDeltaMovement();
+		double newY = 0;
+		// Shift = klesání v hover módu
+		if (player.isShiftKeyDown()) newY = -0.25;
+		player.setDeltaMovement(motion.x, newY, motion.z);
+		player.fallDistance = 0;
+
+		// Spotřeba jen na serveru, 1 mB každých 5 ticků (5x levnější)
+		if (!player.level().isClientSide()) {
+			UUID uid = player.getUUID();
+			int t = hoverTick.getOrDefault(uid, 0) + 1;
+			if (t >= 5) {
+				hoverTick.put(uid, 0);
+				Jetpack.Chestplate.setThrust(chest, fuel - HOVER_COST);
+				syncFuel(player, chest);
+			} else {
+				hoverTick.put(uid, t);
+			}
+		}
+		spawnParticles(player);
+	}
+
+	private static void spawnParticles(Player player) {
+		if (player.level() instanceof ServerLevel sl) {
+			double angle = Math.toRadians(player.getYRot());
+			double bx = player.getX() - Math.sin(angle) * 0.3;
+			double by = player.getY() + 0.8;
+			double bz = player.getZ() + Math.cos(angle) * 0.3;
+			sl.sendParticles(ParticleTypes.FLAME, bx, by, bz, 2, -Math.sin(angle) * 0.05, -0.1, Math.cos(angle) * 0.05, 0.02);
+		}
+	}
+
+	private static void syncFuel(Player player, ItemStack chest) {
+		if (player instanceof ServerPlayer sp) {
+			PacketDistributor.sendToPlayer(sp, new JetpackSyncMessage(Jetpack.Chestplate.getThrust(chest)));
+		}
+	}
+
 	@OnlyIn(Dist.CLIENT)
 	private static void showOverlay(Player player, ItemStack chest) {
-		int main = Jetpack.Chestplate.getMain(chest);
 		int thrust = Jetpack.Chestplate.getThrust(chest);
 		int max = Jetpack.Chestplate.getMax();
 		int pct = max > 0 ? (thrust * 100) / max : 0;
-		int invCount = Jetpack.Chestplate.countFuelInInventory(player);
-		String invStr = invCount > 99 ? "99+" : String.valueOf(invCount);
+		boolean hovering = Jetpack.Chestplate.isHovering(chest);
 
 		int filled = (thrust * 10) / Math.max(1, max);
 		StringBuilder bar = new StringBuilder("[");
 		for (int i = 0; i < 10; i++) bar.append(i < filled ? "■" : "□");
 		bar.append("]");
 
-		Component msg = Component.literal("🚀 ")
-				.append(Component.literal(invStr + " ").withStyle(thrust <= 0 ? ChatFormatting.RED : ChatFormatting.YELLOW))
-				.append(Component.literal(bar + " ").withStyle(ChatFormatting.AQUA))
-				.append(Component.literal(pct + "%").withStyle(ChatFormatting.AQUA));
+		boolean off = Jetpack.Chestplate.isOff(chest);
+		ChatFormatting barColor = thrust <= 0 ? ChatFormatting.RED : (off ? ChatFormatting.GRAY : (hovering ? ChatFormatting.GREEN : ChatFormatting.AQUA));
+		String icon = off ? "❌ " : (hovering ? "\uD83D\uDD12 " : "\uD83D\uDE80 "); // ❌ vypnuto / 🔒 hover / 🚀 let
+
+		Component msg = Component.literal(icon)
+				.append(Component.literal(bar + " ").withStyle(barColor))
+				.append(Component.literal(pct + "%").withStyle(barColor));
 
 		player.displayClientMessage(msg, true);
 	}
