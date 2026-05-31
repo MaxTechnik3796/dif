@@ -1,33 +1,41 @@
 {
 	"variants":{
 		"facing=north,active=false":{
-			"model":"dif:block/coke_oven_controller_inactive"
+			"model":"dif:block/coke_oven_controller_inactive",
+			"uvlock":true
 		},
 		"facing=east,active=false":{
 			"model":"dif:block/coke_oven_controller_inactive",
+			"uvlock":true,
 			"y":90
 		},
 		"facing=south,active=false":{
 			"model":"dif:block/coke_oven_controller_inactive",
+			"uvlock":true,
 			"y":180
 		},
 		"facing=west,active=false":{
 			"model":"dif:block/coke_oven_controller_inactive",
+			"uvlock":true,
 			"y":270
 		},
 		"facing=north,active=true":{
-			"model":"dif:block/coke_oven_controller_active"
+			"model":"dif:block/coke_oven_controller_active",
+			"uvlock":true
 		},
 		"facing=east,active=true":{
 			"model":"dif:block/coke_oven_controller_active",
+			"uvlock":true,
 			"y":90
 		},
 		"facing=south,active=true":{
 			"model":"dif:block/coke_oven_controller_active",
+			"uvlock":true,
 			"y":180
 		},
 		"facing=west,active=true":{
 			"model":"dif:block/coke_oven_controller_active",
+			"uvlock":true,
 			"y":270
 		}
 	}
