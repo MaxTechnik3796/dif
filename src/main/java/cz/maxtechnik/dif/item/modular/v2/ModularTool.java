@@ -90,12 +90,10 @@ public class ModularTool extends DiggerItem {
 
 	private float getBaseSpeedForType(String type) {
 		return switch (type) {
-			case "sword" -> -2.4f;
-			case "pickaxe" -> -2.8f;
-			case "axe" -> -3.0f;
-			case "shovel" -> -3.0f;
-			case "hoe" -> -1.0f;
-			default -> -2.4f;
+			case "pickaxe" -> -2.8F;
+			case "axe","shovel" -> -3F;
+			case "hoe" -> -1F;
+			default -> -2.4F;
 		};
 	}
 
