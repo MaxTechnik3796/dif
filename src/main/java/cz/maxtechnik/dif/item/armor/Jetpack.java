@@ -85,16 +85,18 @@ public abstract class Jetpack extends ArmorItem{
 			return CAPACITY;
 		}
 
-		// === Hover mód ===
-		public static boolean isHovering(ItemStack stack){
+		// === Stav jetpacku: 0=let, 1=hover, 2=vypnuto ===
+		public static int getMode(ItemStack stack){
 			CustomData data=stack.get(DataComponents.CUSTOM_DATA);
-			if(data==null||!data.copyTag().contains("Hovering")) return false;
-			return data.copyTag().getBoolean("Hovering");
+			if(data==null||!data.copyTag().contains("Mode")) return 0;
+			return data.copyTag().getInt("Mode");
 		}
-		public static void setHovering(ItemStack stack,boolean value){
+		public static void setMode(ItemStack stack,int mode){
 			stack.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,
-					data->data.update(tag->tag.putBoolean("Hovering",value)));
+					data->data.update(tag->tag.putInt("Mode",Mth.clamp(mode,0,2))));
 		}
+		public static boolean isHovering(ItemStack stack){ return getMode(stack)==1; }
+		public static boolean isOff(ItemStack stack){ return getMode(stack)==2; }
 
 		// === Fluid capability ===
 		// Registruje se v DifMod.registerCapabilities přes Capabilities.FluidHandler.ITEM.

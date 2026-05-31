@@ -53,6 +53,7 @@ public class JetpackHandler {
 		ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 		if (!(chest.getItem() instanceof Jetpack)) return;
 
+		if (Jetpack.Chestplate.isOff(chest)) return;
 		int fuel = Jetpack.Chestplate.getThrust(chest);
 		if (fuel <= 0) return;
 
@@ -96,11 +97,13 @@ public class JetpackHandler {
 		ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 		if (!(chest.getItem() instanceof Jetpack)) return;
 
-		// Nelze zapnout bez paliva
-		if (!Jetpack.Chestplate.isHovering(chest) && Jetpack.Chestplate.getThrust(chest) <= 0) return;
-
-		Jetpack.Chestplate.setHovering(chest, !Jetpack.Chestplate.isHovering(chest));
+		int current = Jetpack.Chestplate.getMode(chest);
+		int next = (current + 1) % 3; // 0→1→2→0
+		// Nelze přejít do let/hover bez paliva
+		if (next != 2 && Jetpack.Chestplate.getThrust(chest) <= 0) next = 2;
+		Jetpack.Chestplate.setMode(chest, next);
 		verticalVelocity.remove(player.getUUID());
+		hoverTick.remove(player.getUUID());
 	}
 
 	// Hover: drží výšku ve vzduchu, pohyb do stran zůstává, particles, levnější spotřeba.
@@ -113,7 +116,7 @@ public class JetpackHandler {
 
 		int fuel = Jetpack.Chestplate.getThrust(chest);
 		if (fuel <= 0) {
-			Jetpack.Chestplate.setHovering(chest, false);
+			Jetpack.Chestplate.setMode(chest, 2); // vypni při prázdné nádrži
 			return;
 		}
 
@@ -168,8 +171,9 @@ public class JetpackHandler {
 		for (int i = 0; i < 10; i++) bar.append(i < filled ? "■" : "□");
 		bar.append("]");
 
-		ChatFormatting barColor = thrust <= 0 ? ChatFormatting.RED : (hovering ? ChatFormatting.GREEN : ChatFormatting.AQUA);
-		String icon = hovering ? "\uD83D\uDD12 " : "\uD83D\uDE80 "; // 🔒 hover / 🚀 let
+		boolean off = Jetpack.Chestplate.isOff(chest);
+		ChatFormatting barColor = thrust <= 0 ? ChatFormatting.RED : (off ? ChatFormatting.GRAY : (hovering ? ChatFormatting.GREEN : ChatFormatting.AQUA));
+		String icon = off ? "❌ " : (hovering ? "\uD83D\uDD12 " : "\uD83D\uDE80 "); // ❌ vypnuto / 🔒 hover / 🚀 let
 
 		Component msg = Component.literal(icon)
 				.append(Component.literal(bar + " ").withStyle(barColor))

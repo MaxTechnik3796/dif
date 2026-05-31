@@ -100,8 +100,6 @@ public class DifModItems{
 
 	//Jetpack
 	public static final DeferredItem<Item> JETPACK=REGISTRY.register("jetpack",Jetpack.Chestplate::new);
-	public static final DeferredItem<Item> JETPACK_FUEL=REGISTRY.register("jetpack_fuel",Basic::new);
-	public static final DeferredItem<Item> JETPACK_CANISTER=REGISTRY.register("jetpack_canister",Basic::new);
 
 	//Fluid:
 	public static Item.Properties BUCKET_PROPERTIES=new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1);
