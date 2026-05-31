@@ -86,63 +86,7 @@ public class DifMod{
 		NeoForge.EVENT_BUS.addListener(DifMod::onRenderGui);
 		bus.addListener(DifModTabs::addCreative);
 		modContainer.registerConfig(ModConfig.Type.COMMON,DifModCommonConfig.SPEC);
-		bus.addListener(DifMod::registerCapabilities);
-	}
-	private static void registerCapabilities(RegisterCapabilitiesEvent event){
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.QUARRY.get(),(be,side)->be.getInventory());
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK,DifModBlockEntities.QUARRY.get(),(be,side)->be.getEnergyStorage());
-		ElectroRunners.Boots.registerCapability(event,DifModItems.ELECTRO_RUNNERS.get());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.ANDESITE_BARREL.get(),(be,side)->be.getInventory());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.COPPER_BARREL.get(),(be,side)->be.getInventory());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.BRASS_BARREL.get(),(be,side)->be.getInventory());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.SUPER_BOX.get(),(be,side)->be.getInventory());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.OLD_CHEST.get(),(be,side)->be.getInventory());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.BURNING_GENERATOR.get(),(be,side)->be.getItemHandler());
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK,DifModBlockEntities.BURNING_GENERATOR.get(),(be,side)->be.getEnergyStorage());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.SPACE_CRATE.get(),(be,side)->be.getInventory());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.SPACESHIP.get(),(be,side)->be.getItemHandler());
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.DISTILLATION_TANK.get(),(be,ctx)->be.getFluidCapability());
-
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,DifModBlockEntities.ENGINE.get(),(be,side)->be.fluidTank);
-		event.registerItem(net.neoforged.neoforge.capabilities.Capabilities.FluidHandler.ITEM, (stack, ctx) -> new Jetpack.Chestplate.FluidHandler(stack), DifModItems.JETPACK.get());
-
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK,DifModBlockEntities.COKE_OVEN_CONTROLLER.get(),(be,side)->{
-			if(side!=null) return new SidedInvWrapper(be,side);
-			return be.getInventory();
-		});
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.COKE_OVEN_CONTROLLER.get(), (be, side) -> {
-			if (side != null) return new SidedInvWrapper(be, side);
-			return be.getInventory();
-		});
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, DifModBlockEntities.COKE_OVEN_CONTROLLER.get(), CokeOvenControllerBlockEntity::getFluidCapability
-		);
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.COKE_OVEN.get(), (be, side) -> {
-			var ctrl = be.getController();
-			if (ctrl == null) return null;
-			return side != null ? new SidedInvWrapper(ctrl, side) : ctrl.getInventory();
-		});
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, DifModBlockEntities.COKE_OVEN.get(), (be, side) -> {
-			var ctrl = be.getController();
-			return ctrl != null ? ctrl.getFluidCapability(side) : null;
-		});
-
-		// ── BlastSmeltery ─────────────────────────────────────────────────────
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.BLAST_SMELTERY_CONTROLLER.get(), (be, side) -> {
-			if (side != null) return new SidedInvWrapper(be, side);
-			return be.getInventory();
-		});
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, DifModBlockEntities.BLAST_SMELTERY_CONTROLLER.get(), BlastSmelteryControllerBlockEntity::getFluidCapability
-		);
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DifModBlockEntities.BLAST_SMELTERY.get(), (be, side) -> {
-			var ctrl = be.getController();
-			if (ctrl == null) return null;
-			return side != null ? new SidedInvWrapper(ctrl, side) : ctrl.getInventory();
-		});
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, DifModBlockEntities.BLAST_SMELTERY.get(), (be, side) -> {
-			var ctrl = be.getController();
-			return ctrl != null ? ctrl.getFluidCapability(side) : null;
-		});
-
+		bus.addListener(DifModCapabilities::registerCapabilities);
 	}
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event){
