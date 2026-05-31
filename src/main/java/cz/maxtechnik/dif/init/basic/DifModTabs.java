@@ -57,7 +57,6 @@ public class DifModTabs{
 
 
 
-		tabData.accept(CPU_SINGULARITY);
 		tabData.accept(HEAVY_PLATE);
 		tabData.accept(MITHRIL);
 		tabData.accept(MITHRIL_PLATE);
@@ -67,7 +66,6 @@ public class DifModTabs{
 		tabData.accept(QUESTION_MARK);
 
 
-		tabData.accept(INCOMPLETE_CPU_SINGULARITY);
 		tabData.accept(INCOMPLETE_MITHRIL_PLATE);
 		tabData.accept(SOLAR_PANEL_INC);
 

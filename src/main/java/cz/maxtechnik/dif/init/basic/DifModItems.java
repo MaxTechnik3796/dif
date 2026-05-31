@@ -183,8 +183,7 @@ public class DifModItems{
 	public static final DeferredItem<Item> MITHRIL_PLATE=REGISTRY.register("mithril_plate",Basic::new);
 	public static final DeferredItem<Item> INCOMPLETE_MITHRIL_PLATE=REGISTRY.register("incomplete_mithril_plate",Basic::new);
 
-	public static final DeferredItem<Item> CPU_SINGULARITY=REGISTRY.register("cpu_singularity",Basic::new);
-	public static final DeferredItem<Item> INCOMPLETE_CPU_SINGULARITY=REGISTRY.register("incomplete_cpu_singularity",Basic::new);
+
 
 
 	//Main:
