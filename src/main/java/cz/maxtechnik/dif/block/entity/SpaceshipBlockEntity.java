@@ -31,6 +31,9 @@ public class SpaceshipBlockEntity extends BlockEntity implements MenuProvider{
 	public IItemHandler getItemHandler(){
 		return itemHandler;
 	}
+	public IItemHandler getInventory(){
+		return getItemHandler();
+	}
 	@Override
 	public @NotNull Component getDisplayName(){
 		return Component.translatable("block.dif.spaceship");

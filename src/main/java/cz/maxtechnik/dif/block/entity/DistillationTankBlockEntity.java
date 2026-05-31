@@ -54,6 +54,9 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 	public IFluidHandler getFluidCapability(){
 		return fluidCapability;
 	}
+	public IFluidHandler fluidTank(){
+		return getFluidCapability();
+	}
 	public boolean isTowerMaster(){
 		if(!isController()||level==null) return false;
 		var below=level.getBlockEntity(worldPosition.below());

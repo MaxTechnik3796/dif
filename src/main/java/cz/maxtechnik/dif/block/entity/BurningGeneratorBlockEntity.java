@@ -72,6 +72,9 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 	public ItemStackHandler getItemHandler(){
 		return itemHandler;
 	}
+	public ItemStackHandler getInventory(){
+		return getItemHandler();
+	}
 	public EnergyStorage getEnergyStorage(){
 		return energyStorage;
 	}
