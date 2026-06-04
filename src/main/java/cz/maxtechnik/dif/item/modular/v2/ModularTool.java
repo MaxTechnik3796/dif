@@ -2,7 +2,6 @@ package cz.maxtechnik.dif.item.modular.v2;
 
 import cz.maxtechnik.dif.init.other.DifModComponents;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -254,105 +253,81 @@ public class ModularTool extends DiggerItem{
 		builder.add(Attributes.ATTACK_SPEED,new AttributeModifier(Item.BASE_ATTACK_SPEED_ID,finalSpeed,AttributeModifier.Operation.ADD_VALUE),EquipmentSlotGroup.MAINHAND);
 		return builder.build();
 	}
-	// ════════════════════════════════════════════════════════════════════
-// V ModularTool.java nahraď CELOU metodu appendHoverText tímto kódem.
-// ════════════════════════════════════════════════════════════════════
-
 	@Override
-	public void appendHoverText(@NotNull ItemStack itemStack, @NotNull TooltipContext context,
-	                            @NotNull List<Component> list, @NotNull TooltipFlag flag) {
-
-		ModularToolProperties props = getProps(itemStack);
-		if (props.toolType().equals("none")) return;
-
-		ModularMaterial head    = ModularMaterial.byName(props.headMaterial());
-		ModularMaterial binding = ModularMaterial.byName(props.bindingMaterial());
-		ModularMaterial handle  = ModularMaterial.byName(props.handleMaterial());
-
-		int   maxDmg    = getMaxDamage(itemStack);
-		int   miningLvl = getLiveMiningLevel(itemStack);
-		float eff       = getLiveEfficiency(itemStack);
-		boolean broken  = isBroken(itemStack);
-		float dmg       = 1F + getBaseDamageForType(props.toolType()) + (broken ? 0 : head.getAttackDamage());
-		float spd       = 4F + getBaseSpeedForType(props.toolType()) + (broken ? 0 : handle.getAttackSpeedBonus());
-		int   remaining = Math.max(0, maxDmg - itemStack.getDamageValue());
-		float ratio     = maxDmg > 0 ? (float) remaining / maxDmg : 0;
-
-		int durColor = ((int)(255 * (1 - ratio)) << 16) | ((int)(255 * ratio) << 8);
-
-		// ── BROKEN badge ────────────────────────────────────────────────
-		if (broken) {
+	public void appendHoverText(@NotNull ItemStack itemStack,@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
+		ModularToolProperties props=getProps(itemStack);
+		if(props.toolType().equals("none")) return;
+		ModularMaterial head=ModularMaterial.byName(props.headMaterial());
+		ModularMaterial binding=ModularMaterial.byName(props.bindingMaterial());
+		ModularMaterial handle=ModularMaterial.byName(props.handleMaterial());
+		int maxDmg=getMaxDamage(itemStack);
+		int miningLvl=getLiveMiningLevel(itemStack);
+		float eff=getLiveEfficiency(itemStack);
+		float dmg=1F+getBaseDamageForType(props.toolType())+(head.getAttackDamage()*ModularTier.byName(props.tier()).getAttackDamageModifier());
+		float spd=4F+getBaseSpeedForType(props.toolType())+(handle.getAttackSpeedBonus());
+		int remaining=Math.max(0,maxDmg-itemStack.getDamageValue());
+		float ratio=maxDmg>0?(float)remaining/maxDmg:0;
+		int durColor=((int)(255*(1-ratio))<<16)|((int)(255*ratio)<<8);
+		list.add(
+				Component.literal("Tier: ").withStyle(ChatFormatting.GRAY)
+						.append(Component.translatable("dif.tier."+props.tier()).withColor(ModularTier.byName(props.tier()).getColor()))
+		);
+		if(isBroken(itemStack)){
 			list.add(Component.literal(" !! BROKEN !! ")
 					.withStyle(Style.EMPTY.withColor(0xFF3333).withBold(true)));
 			list.add(CommonComponents.EMPTY);
 		}
-
-		// ── STATS ────────────────────────────────────────────────────────
 		list.add(
-				Component.literal("⛏ Mining  ").withStyle(ChatFormatting.GRAY)
-						.append(Component.translatable("dif.mining_level." + miningLvl)
+				Component.literal("Mining: ").withStyle(ChatFormatting.GRAY)
+						.append(Component.translatable("dif.mining_level."+miningLvl)
 								.withStyle(Style.EMPTY.withColor(miningLevelColor[miningLvl])))
 		);
-
-		// Durability — jen čísla, žádný bar
 		list.add(
-				Component.literal("♥ Durability  ").withStyle(ChatFormatting.GRAY)
+				Component.literal("Durability: ").withStyle(ChatFormatting.GRAY)
 						.append(Component.literal(String.valueOf(remaining))
 								.withStyle(Style.EMPTY.withColor(durColor)))
-						.append(Component.literal(" / " + maxDmg)
+						.append(Component.literal(" / "+maxDmg)
 								.withStyle(ChatFormatting.DARK_GRAY))
 		);
-
 		list.add(
-				Component.literal("⚡ Efficiency  ").withStyle(ChatFormatting.GRAY)
-						.append(Component.literal(broken ? "—" : String.format(Locale.ROOT, "%.1f", eff))
-								.withStyle(broken ? ChatFormatting.DARK_GRAY : ChatFormatting.GREEN))
+				Component.literal("Efficiency: ").withStyle(ChatFormatting.GRAY)
+						.append(Component.literal(String.format(Locale.ROOT,"%.1f",eff))
+								.withStyle(ChatFormatting.GREEN))
 		);
-
 		list.add(
-				Component.literal("⚔ Damage  ").withStyle(ChatFormatting.GRAY)
-						.append(Component.literal(broken ? "—" : String.format(Locale.ROOT, "%.1f", dmg))
-								.withStyle(broken ? ChatFormatting.DARK_GRAY : ChatFormatting.RED))
+				Component.literal("Damage: ").withStyle(ChatFormatting.GRAY)
+						.append(Component.literal(String.format(Locale.ROOT,"%.1f",dmg))
+								.withStyle(ChatFormatting.RED))
 		);
-
 		list.add(
-				Component.literal("↻ Speed  ").withStyle(ChatFormatting.GRAY)
-						.append(Component.literal(broken ? "—" : String.format(Locale.ROOT, "%.1f", spd))
-								.withStyle(broken ? ChatFormatting.DARK_GRAY : ChatFormatting.YELLOW))
+				Component.literal("Speed: ").withStyle(ChatFormatting.GRAY)
+						.append(Component.literal(String.format(Locale.ROOT,"%.1f",spd))
+								.withStyle(ChatFormatting.YELLOW))
 		);
-
-		// ── PARTS ────────────────────────────────────────────────────────
 		list.add(CommonComponents.EMPTY);
-
 		list.add(
 				Component.literal("───── Parts ─────")
 						.withStyle(Style.EMPTY.withColor(0x6644BB))
 		);
-
-		// Head  [materiál]  [durability]
 		list.add(
-				Component.literal(" Head  ").withStyle(Style.EMPTY.withColor(0x888888))
-						.append(Component.translatable("dif.material." + head.getId())
+				Component.literal(" Head: ").withStyle(Style.EMPTY.withColor(0x888888))
+						.append(Component.translatable("dif.material."+head.getId())
 								.withStyle(Style.EMPTY.withColor(head.getColor())))
-						.append(Component.literal("  " + head.getHeadDurability())
+						.append(Component.literal("  "+head.getHeadDurability())
 								.withStyle(Style.EMPTY.withColor(0xFFAA00)))
 		);
-
-		// Binding  [materiál]  [durability]
 		list.add(
-				Component.literal(" Binding  ").withStyle(Style.EMPTY.withColor(0x888888))
-						.append(Component.translatable("dif.material." + binding.getId())
+				Component.literal(" Binding: ").withStyle(Style.EMPTY.withColor(0x888888))
+						.append(Component.translatable("dif.material."+binding.getId())
 								.withStyle(Style.EMPTY.withColor(binding.getColor())))
-						.append(Component.literal("  " + binding.getBindingDurability())
+						.append(Component.literal("  "+binding.getBindingDurability())
 								.withStyle(Style.EMPTY.withColor(0xFFAA00)))
 		);
-
-		// Handle  [materiál]  ×0.3
 		list.add(
-				Component.literal(" Handle  ").withStyle(Style.EMPTY.withColor(0x888888))
-						.append(Component.translatable("dif.material." + handle.getId())
+				Component.literal(" Handle: ").withStyle(Style.EMPTY.withColor(0x888888))
+						.append(Component.translatable("dif.material."+handle.getId())
 								.withStyle(Style.EMPTY.withColor(handle.getColor())))
-						.append(Component.literal(String.format(Locale.ROOT, "  ×%.1f",
+						.append(Component.literal(String.format(Locale.ROOT,"  ×%.1f",
 										handle.getHandleDurabilityMultiplier()))
 								.withStyle(Style.EMPTY.withColor(0xAAAAAA)))
 		);
