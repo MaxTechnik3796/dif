@@ -251,7 +251,9 @@ public class DifModTabs{
 							new ItemStack(DIESEL_BUCKET.get()),
 							new ItemStack(LUBRICATING_OIL_BUCKET.get()),
 							new ItemStack(HEAVY_FUEL_OIL_BUCKET.get()),
-							new ItemStack(CREOSOTE_OIL_BUCKET.get())
+							new ItemStack(CREOSOTE_OIL_BUCKET.get()),
+
+							new ItemStack(MOLTEN_COPPER_BUCKET.get()),
 					});
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.COMBAT)){
 			tabData.insertAfter(new ItemStack(Items.STONE_SWORD),new ItemStack(COPPER_SWORD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);

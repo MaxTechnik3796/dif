@@ -12,13 +12,19 @@ import cz.maxtechnik.dif.block.rails.FastPoweredRailBlock;
 import cz.maxtechnik.dif.block.rails.FastRailBlock;
 import cz.maxtechnik.dif.block.space.*;
 import cz.maxtechnik.dif.block.template.*;
+import cz.maxtechnik.dif.fluid.template.MoltenBlock;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("unused")
 public class DifModBlocks{
 	public static final DeferredRegister.Blocks REGISTRY=DeferredRegister.createBlocks(DifMod.MODID);
@@ -59,6 +65,8 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>HEAVY_FUEL_OIL_FLUID=REGISTRY.register("heavy_fuel_oil_fluid",()->new LiquidBlock(DifModFluids.HEAVY_FUEL_OIL.get(),FLUID_PROPERTIES));
 
 	public static final DeferredBlock<Block>CREOSOTE_OIL_FLUID=REGISTRY.register("creosote_oil_fluid",()->new LiquidBlock(DifModFluids.CREOSOTE_OIL.get(),FLUID_PROPERTIES));
+
+	public static final DeferredBlock<Block>MOLTEN_COPPER_FLUID=REGISTRY.register("molten_copper_fluid",()->new MoltenBlock(DifModFluids.MOLTEN_COPPER.get(),FLUID_PROPERTIES));
 
 	//Random (0):
 	public static final DeferredBlock<Block> MEGA_TORCH = REGISTRY.register("mega_torch",()->new MegaTorch(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(2F,3F).sound(SoundType.WOOD).pushReaction(PushReaction.BLOCK).lightLevel(state->15)));

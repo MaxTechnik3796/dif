@@ -3,6 +3,8 @@ package cz.maxtechnik.dif.init.fluid;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.fluid.*;
 import cz.maxtechnik.dif.fluid.template.BaseFluidType;
+import cz.maxtechnik.dif.fluid.template.BaseMoltenFluidType;
+import cz.maxtechnik.dif.item.modular.v2.ModularMaterial;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -23,4 +25,6 @@ public class DifModFluidTypes{
 	public static final DeferredHolder<FluidType,FluidType>LUBRICATING_OIL_TYPE=REGISTRY.register("lubricating_oil_fluid",()->new BaseFluidType(LubricatingOil.PROPERTIES,"lubricating_oil"));
 	public static final DeferredHolder<FluidType,FluidType>HEAVY_FUEL_OIL_TYPE=REGISTRY.register("heavy_fuel_oil_fluid",()->new BaseFluidType(HeavyFuelOil.PROPERTIES,"heavy_fuel_oil"));
 	public static final DeferredHolder<FluidType,FluidType>CREOSOTE_OIL_TYPE=REGISTRY.register("creosote_oil_fluid",()->new BaseFluidType(CreosoteOil.PROPERTIES,"creosote_oil"));
+
+	public static final DeferredHolder<FluidType,FluidType>MOLTEN_COPPER_TYPE=REGISTRY.register("molten_copper_fluid",()->new BaseMoltenFluidType(Molten.PROPERTIES,"molten_copper",ModularMaterial.COPPER.getColor()));
 }

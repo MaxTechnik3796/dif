@@ -67,6 +67,8 @@ public class DifModFluids{
 	public static final DeferredHolder<Fluid,FlowingFluid> CREOSOTE_OIL=REGISTRY.register("creosote_oil_fluid",()->new BaseFluidBlocks.Source(createProperties(DifModFluidTypes.CREOSOTE_OIL_TYPE,fluidSupplier("creosote_oil_fluid"),fluidSupplier("flowing_creosote_oil_fluid"),DifModItems.CREOSOTE_OIL_BUCKET,()->(LiquidBlock)DifModBlocks.CREOSOTE_OIL_FLUID.get(),CreosoteOil.TICK_RATE)));
 	public static final DeferredHolder<Fluid,FlowingFluid> FLOWING_CREOSOTE_OIL=REGISTRY.register("flowing_creosote_oil_fluid",()->new BaseFluidBlocks.Flowing(createProperties(DifModFluidTypes.CREOSOTE_OIL_TYPE,fluidSupplier("creosote_oil_fluid"),fluidSupplier("flowing_creosote_oil_fluid"),DifModItems.CREOSOTE_OIL_BUCKET,()->(LiquidBlock)DifModBlocks.CREOSOTE_OIL_FLUID.get(),CreosoteOil.TICK_RATE)));
 
+	public static final DeferredHolder<Fluid,FlowingFluid> MOLTEN_COPPER=REGISTRY.register("molten_copper_fluid",()->new BaseFluidBlocks.Source(createProperties(DifModFluidTypes.MOLTEN_COPPER_TYPE,fluidSupplier("molten_copper_fluid"),fluidSupplier("flowing_molten_copper_fluid"),DifModItems.MOLTEN_COPPER_BUCKET,()->(LiquidBlock)DifModBlocks.MOLTEN_COPPER_FLUID.get(),Molten.TICK_RATE)));
+	public static final DeferredHolder<Fluid,FlowingFluid> FLOWING_MOLTEN_COPPER=REGISTRY.register("flowing_molten_copper_fluid",()->new BaseFluidBlocks.Flowing(createProperties(DifModFluidTypes.MOLTEN_COPPER_TYPE,fluidSupplier("molten_copper_fluid"),fluidSupplier("flowing_molten_copper_fluid"),DifModItems.MOLTEN_COPPER_BUCKET,()->(LiquidBlock)DifModBlocks.MOLTEN_COPPER_FLUID.get(),Molten.TICK_RATE)));
 
 	private static Supplier<? extends Fluid> fluidSupplier(String name){
 		return ()->BuiltInRegistries.FLUID.get(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,name));

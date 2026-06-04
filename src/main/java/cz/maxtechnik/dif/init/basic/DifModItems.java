@@ -119,6 +119,7 @@ public class DifModItems{
 	public static final DeferredItem<Item>LUBRICATING_OIL_BUCKET=REGISTRY.register("lubricating_oil_bucket",()->new BucketItem(DifModFluids.LUBRICATING_OIL.get(),BUCKET_PROPERTIES));
 	public static final DeferredItem<Item>HEAVY_FUEL_OIL_BUCKET=REGISTRY.register("heavy_fuel_oil_bucket",()->new BucketItem(DifModFluids.HEAVY_FUEL_OIL.get(),BUCKET_PROPERTIES));
 
+	public static final DeferredItem<Item>MOLTEN_COPPER_BUCKET=REGISTRY.register("molten_copper_bucket",()->new BucketItem(DifModFluids.MOLTEN_COPPER.get(),BUCKET_PROPERTIES));
 
 
 	//Vanilla + :
