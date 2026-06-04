@@ -66,22 +66,22 @@ public class ModularTool extends DiggerItem{
 		return props!=null?props:ModularToolProperties.DEFAULT;
 	}
 	// Pomocná metoda pro zjištění, zda je nástroj zlomený
-	public boolean isBroken(ItemStack stack){
-		return stack.getDamageValue()>=getMaxDamage(stack);
+	public boolean isBroken(ItemStack itemStack){
+		return itemStack.getDamageValue()>=getMaxDamage(itemStack);
 	}
 	// Vlastní bezpečná metoda pro aplikaci poškození nástroje
-	public void damageTool(ItemStack stack,int amount,LivingEntity entity){
-		int maxDmg=getMaxDamage(stack);
-		int currentDmg=stack.getDamageValue();
+	public void damageTool(ItemStack itemStack,int amount,LivingEntity entity){
+		int maxDmg=getMaxDamage(itemStack);
+		int currentDmg=itemStack.getDamageValue();
 		int newDmg=currentDmg+amount;
 		if(newDmg>=maxDmg){
-			stack.setDamageValue(maxDmg); // Zasekne se na max damage (vstup do stavu BROKEN)
+			itemStack.setDamageValue(maxDmg); // Zasekne se na max damage (vstup do stavu BROKEN)
 			if(entity instanceof Player){
 				entity.level().playSound(null,entity.getX(),entity.getY(),entity.getZ(),
 						SoundEvents.ITEM_BREAK,SoundSource.PLAYERS,1.0F,1.0F);
 			}
 		}else{
-			stack.setDamageValue(newDmg);
+			itemStack.setDamageValue(newDmg);
 		}
 	}
 	// ====================================================================
@@ -93,15 +93,16 @@ public class ModularTool extends DiggerItem{
 		ModularMaterial head=ModularMaterial.byName(props.headMaterial());
 		ModularMaterial binding=ModularMaterial.byName(props.bindingMaterial());
 		ModularMaterial handle=ModularMaterial.byName(props.handleMaterial());
-		return (int)((head.getHeadDurability()+binding.getBindingDurability())*handle.getHandleDurabilityMultiplier());
+		ModularTier tier=ModularTier.byName(props.tier());
+		return (int)(((head.getHeadDurability()+binding.getBindingDurability())*handle.getHandleDurabilityMultiplier())*tier.getDurabilityModifier());
 	}
-	private float getLiveEfficiency(ItemStack stack){
-		if(isBroken(stack)) return 1F; // Zlomený nástroj těží rychlostí ruky
-		return ModularMaterial.byName(getProps(stack).headMaterial()).getHeadEfficiency();
+	private float getLiveEfficiency(ItemStack itemStack){
+		if(isBroken(itemStack)) return 1F;
+		return ModularMaterial.byName(getProps(itemStack).headMaterial()).getHeadEfficiency()*ModularTier.byName(getProps(itemStack).tier()).getEfficiencyModifier();
 	}
-	private int getLiveMiningLevel(ItemStack stack){
-		if(isBroken(stack)) return 0; // Zlomený nástroj ztrácí schopnost dropovat vzácné rudy
-		return ModularMaterial.byName(getProps(stack).headMaterial()).getMiningLevel();
+	private int getLiveMiningLevel(ItemStack itemStack){
+		if(isBroken(itemStack)) return 0;
+		return ModularMaterial.byName(getProps(itemStack).headMaterial()).getMiningLevel();
 	}
 	private float getBaseDamageForType(String type){
 		return switch(type.toLowerCase(Locale.ROOT)){
@@ -246,7 +247,7 @@ public class ModularTool extends DiggerItem{
 		if(!isBroken(itemStack)){
 			ModularMaterial head=ModularMaterial.byName(props.headMaterial());
 			ModularMaterial handle=ModularMaterial.byName(props.handleMaterial());
-			finalDamage=getBaseDamageForType(props.toolType())+head.getAttackDamage();
+			finalDamage=(getBaseDamageForType(props.toolType())+head.getAttackDamage())*ModularTier.byName(props.tier()).getAttackDamageModifier();
 			finalSpeed=getBaseSpeedForType(props.toolType())+handle.getAttackSpeedBonus();
 		}
 		builder.add(Attributes.ATTACK_DAMAGE,new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID,finalDamage,AttributeModifier.Operation.ADD_VALUE),EquipmentSlotGroup.MAINHAND);

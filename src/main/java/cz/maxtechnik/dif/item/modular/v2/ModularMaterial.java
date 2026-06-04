@@ -62,7 +62,7 @@ public enum ModularMaterial{
 	public static ModularMaterial byName(String name){
 		try{
 			return ModularMaterial.valueOf(name.toUpperCase(Locale.ROOT));
-		}catch(IllegalArgumentException e){
+		}catch(IllegalArgumentException exception){
 			return WOOD;
 		}
 	}
