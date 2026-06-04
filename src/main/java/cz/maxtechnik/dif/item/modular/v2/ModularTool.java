@@ -264,8 +264,8 @@ public class ModularTool extends DiggerItem{
 		int maxDmg=getMaxDamage(itemStack);
 		int miningLvl=getLiveMiningLevel(itemStack);
 		float eff=getLiveEfficiency(itemStack);
-		float dmg=1F+getBaseDamageForType(props.toolType())+(head.getAttackDamage()*ModularTier.byName(props.tier()).getAttackDamageModifier());
-		float spd=4F+getBaseSpeedForType(props.toolType())+(handle.getAttackSpeedBonus());
+		float dmg=1F+(getBaseDamageForType(props.toolType())+head.getAttackDamage())*ModularTier.byName(props.tier()).getAttackDamageModifier();
+		float spd=4F+getBaseSpeedForType(props.toolType())+handle.getAttackSpeedBonus();
 		int remaining=Math.max(0,maxDmg-itemStack.getDamageValue());
 		float ratio=maxDmg>0?(float)remaining/maxDmg:0;
 		int durColor=((int)(255*(1-ratio))<<16)|((int)(255*ratio)<<8);
