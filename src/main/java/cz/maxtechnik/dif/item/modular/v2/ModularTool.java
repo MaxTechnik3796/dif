@@ -3,6 +3,7 @@ package cz.maxtechnik.dif.item.modular.v2;
 import cz.maxtechnik.dif.init.other.DifModComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -30,6 +31,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+
 public class ModularTool extends DiggerItem{
 	int[] miningLevelColor={0x745631,0x838383,0xDCDCDC,0x6DEDE4,0x433F41};
 	public ModularTool(){
@@ -354,5 +357,14 @@ public class ModularTool extends DiggerItem{
 		if(!type.isEmpty()&&!type.equals("none"))
 			return super.getDescriptionId(itemStack)+"."+type;
 		return super.getDescriptionId(itemStack);
+	}
+	@Override
+	public @NotNull Component getName(@NotNull ItemStack itemStack) {
+		int rarityColor = ModularTier.byName(getProps(itemStack).tier()).getColor();
+
+		return Component.translatable(getDescriptionId(itemStack))
+				.withStyle(Style.EMPTY
+						.withColor(rarityColor)
+						.withItalic(false));
 	}
 }
