@@ -3,7 +3,6 @@ package cz.maxtechnik.dif.item.modular.v2;
 import cz.maxtechnik.dif.init.other.DifModComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -31,10 +30,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class ModularTool extends DiggerItem{
-	int[] miningLevelColor={0x745631,0x838383,0xDCDCDC,0x6DEDE4,0x433F41};
+	int[] miningLevelColor={ModularMaterial.WOOD.getColor(),ModularMaterial.STONE.getColor(),ModularMaterial.IRON.getColor(),ModularMaterial.DIAMOND.getColor(),ModularMaterial.NETHERITE.getColor()};
 	public ModularTool(){
 		super(new Tier(){
 			@Override
