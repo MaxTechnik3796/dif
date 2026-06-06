@@ -5,11 +5,9 @@ import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
-import cz.maxtechnik.dif.item.modular.ModularPart;
 import cz.maxtechnik.dif.item.modular.v2.ModularTool;
 import cz.maxtechnik.dif.item.quarry.DrillHeadItem;
 import cz.maxtechnik.dif.item.tool.GodTotemItem;
-import cz.maxtechnik.dif.item.modular.tool.*;
 import cz.maxtechnik.dif.item.tool.*;
 import cz.maxtechnik.dif.item.armor.*;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -78,21 +76,8 @@ public class DifModItems{
 	public static final DeferredItem<Item> CHUNK_LOADER_3X3 = REGISTRY.register("chunk_loader_3x3",()->new BlockItem(DifModBlocks.CHUNK_LOADER_3X3.get(),new Item.Properties()){@Override public boolean isFoil(@NotNull ItemStack stack){return true;}});
 
 	//Modular Tools:
-	public static final DeferredItem<Item> MODULAR_PICKAXE=REGISTRY.register("modular_pickaxe",ModularPickaxe::new);
-	public static final DeferredItem<Item> MODULAR_AXE=REGISTRY.register("modular_axe",ModularAxe::new);
-	public static final DeferredItem<Item> MODULAR_SHOVEL=REGISTRY.register("modular_shovel",ModularShovel::new);
-	public static final DeferredItem<Item> MODULAR_SWORD=REGISTRY.register("modular_sword",ModularSword::new);
-
 	public static final DeferredItem<Item>MODULAR_TOOL=REGISTRY.register("modular_tool",ModularTool::new);
 
-	//Modular Parts:
-	public static final DeferredItem<Item> MODULAR_PART_PICKAXE_HEAD = REGISTRY.registerItem("pickaxe_head", ModularPart::new);
-	public static final DeferredItem<Item> MODULAR_PART_AXE_HEAD = REGISTRY.registerItem("axe_head", ModularPart::new);
-	public static final DeferredItem<Item> MODULAR_PART_SHOVEL_HEAD = REGISTRY.registerItem("shovel_head", ModularPart::new);
-	public static final DeferredItem<Item> MODULAR_PART_SWORD_HEAD = REGISTRY.registerItem("sword_head", ModularPart::new);
-	public static final DeferredItem<Item> MODULAR_PART_BINDING = REGISTRY.registerItem("binding", ModularPart::new);
-	public static final DeferredItem<Item> MODULAR_PART_SWORD_BINDING = REGISTRY.registerItem("sword_binding", ModularPart::new);
-	public static final DeferredItem<Item> MODULAR_PART_HANDLE = REGISTRY.registerItem("handle", ModularPart::new);
 
 	public static final DeferredItem<Item> PORTAL_GUN=REGISTRY.register("portal_gun",PortalGun::new);
 
@@ -102,7 +87,7 @@ public class DifModItems{
 	public static final DeferredItem<Item> JETPACK=REGISTRY.register("jetpack",Jetpack.Chestplate::new);
 
 	//Fluid:
-	public static Item.Properties BUCKET_PROPERTIES=new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1);
+	public static final Item.Properties BUCKET_PROPERTIES=new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1);
 	public static final DeferredItem<Item> BEER_BUCKET=REGISTRY.register("beer_bucket",()->new BucketItem(DifModFluids.BEER.get(),BUCKET_PROPERTIES));
 	public static final DeferredItem<Item> XP_BUCKET=REGISTRY.register("xp_bucket",()->new BucketItem(DifModFluids.XP.get(),BUCKET_PROPERTIES));
 	public static final DeferredItem<Item> FUEL_BUCKET=REGISTRY.register("fuel_bucket",()->new BucketItem(DifModFluids.FUEL.get(),BUCKET_PROPERTIES));

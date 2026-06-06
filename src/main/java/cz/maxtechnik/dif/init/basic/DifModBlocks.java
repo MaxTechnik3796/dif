@@ -5,7 +5,6 @@ import cz.maxtechnik.dif.block.*;
 import cz.maxtechnik.dif.block.barrel.AndesiteBarrel;
 import cz.maxtechnik.dif.block.barrel.BrassBarrel;
 import cz.maxtechnik.dif.block.barrel.CopperBarrel;
-import cz.maxtechnik.dif.block.EngineExtender;
 import cz.maxtechnik.dif.block.mata.MataPlant;
 import cz.maxtechnik.dif.block.mata.MatyBlock;
 import cz.maxtechnik.dif.block.rails.FastPoweredRailBlock;
@@ -14,17 +13,12 @@ import cz.maxtechnik.dif.block.space.*;
 import cz.maxtechnik.dif.block.template.*;
 import cz.maxtechnik.dif.fluid.template.MoltenBlock;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("unused")
 public class DifModBlocks{
 	public static final DeferredRegister.Blocks REGISTRY=DeferredRegister.createBlocks(DifMod.MODID);
@@ -49,7 +43,7 @@ public class DifModBlocks{
 
 
 	//Fluids:
-	public static BlockBehaviour.Properties FLUID_PROPERTIES=BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable();
+	public static final BlockBehaviour.Properties FLUID_PROPERTIES=BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable();
 	public static final DeferredBlock<Block>FUEL_FLUID=REGISTRY.register("fuel_fluid",()->new LiquidBlock(DifModFluids.FUEL.get(),FLUID_PROPERTIES));
 	public static final DeferredBlock<Block>BEER_FLUID=REGISTRY.register("beer_fluid",()->new LiquidBlock(DifModFluids.BEER.get(),FLUID_PROPERTIES));
 	public static final DeferredBlock<Block>XP_FLUID=REGISTRY.register("xp_fluid",()->new LiquidBlock(DifModFluids.XP.get(),BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable().lightLevel(s->15)));
@@ -192,11 +186,11 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>BLAST_SMELTERY=REGISTRY.register("blast_smeltery",()->new cz.maxtechnik.dif.block.BlastSmeltery(BlockBehaviour.Properties.of().strength(4F,5F).requiresCorrectToolForDrops().sound(SoundType.NETHERITE_BLOCK)));
 	public static final DeferredBlock<Block>BLAST_SMELTERY_CONTROLLER=REGISTRY.register("blast_smeltery_controller",()->new cz.maxtechnik.dif.block.BlastSmelteryController(BlockBehaviour.Properties.of().strength(4F,5F).requiresCorrectToolForDrops().sound(SoundType.NETHERITE_BLOCK)));
 
-	public static BlockBehaviour.Properties ENGINE_PROPERTIES=BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops();
+	public static final BlockBehaviour.Properties ENGINE_PROPERTIES=BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops();
 	public static final DeferredBlock<Block>ENGINE2=REGISTRY.register("engine2",()->new Engine(ENGINE_PROPERTIES));
 	public static final DeferredBlock<Block>ENGINE4=REGISTRY.register("engine4",()->new Engine(ENGINE_PROPERTIES));
 
-	public static BlockBehaviour.Properties ENGINE_EXTENDER_PROPERTIES=BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops();
+	public static final BlockBehaviour.Properties ENGINE_EXTENDER_PROPERTIES=BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops();
 	public static final DeferredBlock<Block>ENGINE_EXTENDER_DIESEL=REGISTRY.register("engine_extender_diesel",()->new EngineExtender(ENGINE_EXTENDER_PROPERTIES));
 	public static final DeferredBlock<Block>ENGINE_EXTENDER_GASOLINE=REGISTRY.register("engine_extender_gasoline",()->new EngineExtender(ENGINE_EXTENDER_PROPERTIES));
 	public static final DeferredBlock<Block>ENGINE_EXTENDER_LPG=REGISTRY.register("engine_extender_lpg",()->new EngineExtender(ENGINE_EXTENDER_PROPERTIES));

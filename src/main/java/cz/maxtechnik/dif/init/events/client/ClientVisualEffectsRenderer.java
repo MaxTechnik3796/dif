@@ -1,13 +1,11 @@
 package cz.maxtechnik.dif.init.events.client;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.init.basic.DifModSounds;
 import cz.maxtechnik.dif.init.other.DifModMobEffects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;

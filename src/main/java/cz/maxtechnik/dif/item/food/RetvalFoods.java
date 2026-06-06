@@ -8,8 +8,8 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 public class RetvalFoods extends Item{
-	Item retval;
-	UseAnim useAnim;
+	final Item retval;
+	final UseAnim useAnim;
 	public RetvalFoods(Item.Properties properties,Item retval,UseAnim useAnim){
 		super(properties);
 		this.retval=retval;

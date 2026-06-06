@@ -20,10 +20,10 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import org.jetbrains.annotations.Nullable;
 public class DifModCapabilities{
-	static BlockCapability<IItemHandler,@Nullable Direction> bITEM=Capabilities.ItemHandler.BLOCK;
-	static BlockCapability<IFluidHandler,@Nullable Direction> bFLUID=Capabilities.FluidHandler.BLOCK;
-	static BlockCapability<IEnergyStorage,@Nullable Direction> bENERGY=Capabilities.EnergyStorage.BLOCK;
-	static ItemCapability<IFluidHandlerItem,@Nullable Void> iFLUID=Capabilities.FluidHandler.ITEM;
+	static final BlockCapability<IItemHandler,@Nullable Direction> bITEM=Capabilities.ItemHandler.BLOCK;
+	static final BlockCapability<IFluidHandler,@Nullable Direction> bFLUID=Capabilities.FluidHandler.BLOCK;
+	static final BlockCapability<IEnergyStorage,@Nullable Direction> bENERGY=Capabilities.EnergyStorage.BLOCK;
+	static final ItemCapability<IFluidHandlerItem,@Nullable Void> iFLUID=Capabilities.FluidHandler.ITEM;
 	public static void registerCapabilities(RegisterCapabilitiesEvent event){
 		registerItemCapabilities(event);
 		registerFluidCapabilities(event);

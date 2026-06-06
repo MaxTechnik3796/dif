@@ -6,7 +6,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 public class DifModCommonConfig{
 	private static final ModConfigSpec.Builder BUILDER=new ModConfigSpec.Builder();
 	static final ModConfigSpec SPEC;
-	public static int MAX=Integer.MAX_VALUE;
+	public static final int MAX=Integer.MAX_VALUE;
 	public static String restart(String defaultValue){
 		return "Restart required!\nDefault value: "+defaultValue;
 	}
