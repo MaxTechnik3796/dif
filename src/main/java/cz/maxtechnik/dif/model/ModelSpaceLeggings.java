@@ -11,6 +11,7 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import org.jetbrains.annotations.NotNull;
 // Made with Blockbench 4.12.4
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
@@ -36,12 +37,12 @@ public class ModelSpaceLeggings<T extends Entity> extends EntityModel<T>{
 		return LayerDefinition.create(meshdefinition,88,88);
 	}
 	@Override
-	public void renderToBuffer(PoseStack poseStack,VertexConsumer vertexConsumer,int packedLight,int packedOverlay,int color){
+	public void renderToBuffer(@NotNull PoseStack poseStack,@NotNull VertexConsumer vertexConsumer,int packedLight,int packedOverlay,int color){
 		RightLeg.render(poseStack,vertexConsumer,packedLight,packedOverlay,color);
 		LeftLeg.render(poseStack,vertexConsumer,packedLight,packedOverlay,color);
 	}
-	public void setupAnim(T entity,float limbSwing,float limbSwingAmount,float ageInTicks,float netHeadYaw,float headPitch){
-		this.LeftLeg.xRot=Mth.cos(limbSwing*1.0F)*-1.0F*limbSwingAmount;
-		this.RightLeg.xRot=Mth.cos(limbSwing*1.0F)*1.0F*limbSwingAmount;
+	public void setupAnim(@NotNull T entity,float limbSwing,float limbSwingAmount,float ageInTicks,float netHeadYaw,float headPitch){
+		this.LeftLeg.xRot=Mth.cos(limbSwing)*-1.0F*limbSwingAmount;
+		this.RightLeg.xRot=Mth.cos(limbSwing)*1.0F*limbSwingAmount;
 	}
 }
