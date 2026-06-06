@@ -30,9 +30,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Locale;
-
 public class ModularTool extends DiggerItem{
-	int[] miningLevelColor={ModularMaterial.WOOD.getColor(),ModularMaterial.STONE.getColor(),ModularMaterial.IRON.getColor(),0x6DEDE4,0x524B52};
+
 	public ModularTool(){
 		super(new Tier(){
 			@Override
@@ -59,7 +58,7 @@ public class ModularTool extends DiggerItem{
 			public @NotNull Ingredient getRepairIngredient(){
 				return Ingredient.EMPTY;
 			}
-		},BlockTags.MINEABLE_WITH_PICKAXE,new Properties().stacksTo(1).fireResistant().rarity(Rarity.EPIC));
+		},BlockTags.MINEABLE_WITH_PICKAXE,new Properties().stacksTo(1).fireResistant());
 	}
 	private ModularToolProperties getProps(ItemStack itemStack){
 		ModularToolProperties props=itemStack.get(DifModComponents.MODULAR_PROPERTIES.get());
@@ -94,7 +93,7 @@ public class ModularTool extends DiggerItem{
 		ModularMaterial binding=ModularMaterial.byName(props.bindingMaterial());
 		ModularMaterial handle=ModularMaterial.byName(props.handleMaterial());
 		ModularTier tier=ModularTier.byName(props.tier());
-		return (int)(((head.getHeadDurability()+binding.getBindingDurability())*handle.getHandleDurabilityMultiplier())*tier.getDurabilityModifier());
+		return (int)(((head.getHeadDurability()+binding.getBindingDurability())+handle.getHandleDurability())*tier.getDurabilityModifier());
 	}
 	private float getLiveEfficiency(ItemStack itemStack){
 		if(isBroken(itemStack)) return 1F;
@@ -269,19 +268,23 @@ public class ModularTool extends DiggerItem{
 		int remaining=Math.max(0,maxDmg-itemStack.getDamageValue());
 		float ratio=maxDmg>0?(float)remaining/maxDmg:0;
 		int durColor=((int)(255*(1-ratio))<<16)|((int)(255*ratio)<<8);
-		list.add(
-				Component.literal("Tier: ").withStyle(ChatFormatting.GRAY)
-						.append(Component.translatable("dif.tier."+props.tier()).withColor(ModularTier.byName(props.tier()).getColor()))
-		);
 		if(isBroken(itemStack)){
 			list.add(Component.literal(" !! BROKEN !! ")
 					.withStyle(Style.EMPTY.withColor(0xFF3333).withBold(true)));
 			list.add(CommonComponents.EMPTY);
 		}
 		list.add(
+				Component.literal("───── Stats ─────")
+						.withStyle(Style.EMPTY.withColor(0x6644BB))
+		);
+		list.add(
+				Component.literal("Tier: ").withStyle(ChatFormatting.GRAY)
+						.append(Component.translatable("dif.tier."+props.tier()).withColor(ModularTier.byName(props.tier()).getColor()))
+		);
+		list.add(
 				Component.literal("Mining: ").withStyle(ChatFormatting.GRAY)
 						.append(Component.translatable("dif.mining_level."+miningLvl)
-								.withStyle(Style.EMPTY.withColor(miningLevelColor[miningLvl])))
+								.withStyle(Style.EMPTY.withColor(ModularMaterial.miningLevelColor[miningLvl])))
 		);
 		list.add(
 				Component.literal("Durability: ").withStyle(ChatFormatting.GRAY)
@@ -328,9 +331,9 @@ public class ModularTool extends DiggerItem{
 				Component.literal(" Handle: ").withStyle(Style.EMPTY.withColor(0x888888))
 						.append(Component.translatable("dif.material."+handle.getId())
 								.withStyle(Style.EMPTY.withColor(handle.getColor())))
-						.append(Component.literal(String.format(Locale.ROOT,"  ×%.1f",
-										handle.getHandleDurabilityMultiplier()))
-								.withStyle(Style.EMPTY.withColor(0xAAAAAA)))
+						.append(Component.literal("  "+
+										handle.getHandleDurability())
+								.withStyle(Style.EMPTY.withColor(0xFFAA00)))
 		);
 	}
 	@Override
