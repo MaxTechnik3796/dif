@@ -174,7 +174,6 @@ public abstract class BaseCarEntity extends Entity{
 			spinoutTimer--;
 			if(spinoutTimer>60){
 				throttle=0F;
-				targetInput=0F;
 			}
 			setYRot(getYRot()+6F*spinoutDirection);
 			velocity*=0.985F;
