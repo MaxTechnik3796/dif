@@ -20,12 +20,10 @@ import java.util.function.Predicate;
  *   - Postavíš plnou 3x3x3 kostku
  *   - Uprostřed jedné stěny je Controller
  *   - Při položení se automaticky zformuje
- *
  *  VIZUALIZACE (pohled shora, střední vrstva Y=1):
  *        [F][F][F]   ← zadní stěna  (z=2)
  *        [F][ ][F]   ← střed        (z=1)
  *        [F][K][F]   ← přední stěna (z=0)  K = Controller
- *
  *  VZOR – indexy [y][x][z]:
  *   y: 0=spodek, 1=střed, 2=vrch
  *   x: 0=vlevo,  1=střed, 2=vpravo  (relativně k facing)
