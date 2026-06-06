@@ -30,9 +30,7 @@ public class PortalGun extends Item{
 		return data.copyTag().getBoolean("mode");
 	}
 	private void setMode(ItemStack gun,boolean mode){
-		net.minecraft.world.item.component.CustomData.update(DataComponents.CUSTOM_DATA,gun,tag->{
-			tag.putBoolean("mode",mode);
-		});
+		net.minecraft.world.item.component.CustomData.update(DataComponents.CUSTOM_DATA,gun,tag->tag.putBoolean("mode",mode));
 		gun.set(DataComponents.CUSTOM_MODEL_DATA,new net.minecraft.world.item.component.CustomModelData(mode?0:1));
 	}
 	private int getEnergy(ItemStack gun){

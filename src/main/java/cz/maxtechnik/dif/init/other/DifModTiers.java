@@ -58,7 +58,7 @@ public class DifModTiers{
             }),
             12,
             SoundEvents.ARMOR_EQUIP_IRON,
-            ()->Ingredient.of(),
+			Ingredient::of,
             List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath("dif","spacesuit"))),
             2.0F,
             0.0F
@@ -73,7 +73,7 @@ public class DifModTiers{
             }),
             15,
             SoundEvents.ARMOR_EQUIP_DIAMOND,
-            ()->Ingredient.of(),
+			Ingredient::of,
             List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath("dif","carbon_suit"))),
             3.0F,
             0.2F
@@ -88,7 +88,7 @@ public class DifModTiers{
             }),
             0,
             SoundEvents.ARMOR_EQUIP_DIAMOND,
-            ()->Ingredient.of(),
+			Ingredient::of,
             List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath("dif","electro_runners"))),
             0.0F,
             0.0F
@@ -103,7 +103,7 @@ public class DifModTiers{
             }),
             0,
             SoundEvents.ARMOR_EQUIP_IRON,
-            ()->Ingredient.of(),
+			Ingredient::of,
             List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath("dif","jetpack"))),
             2.0F,
             0.0F
