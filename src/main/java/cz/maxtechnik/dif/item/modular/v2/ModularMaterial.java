@@ -6,9 +6,7 @@ public enum ModularMaterial{
 	STONE("stone",130,4F,1,1F,20,0.8F,0.0F,0x838383),
 	IRON("iron",250,6F,2,2F,50,1.0F,-0.1F,0xDCDCDC),
 	COPPER("copper",180,5.5F,1,1.5F,30,0.9F,0.1F,0xD4845A),
-	GOLD("gold",32,12F,0,0F,5,0.3F,0.6F,0xFFD700),
-	DIAMOND("diamond",1561,8F,3,3F,150,1.2F,0.1F,0x6DEDE4),
-	NETHERITE("netherite",2031,9F,4,4F,250,1.3F,0.2F,0x524B52);
+	GOLD("gold",32,12F,0,0F,5,0.3F,0.6F,0xFFD700);
 	private final String id;
 	// Head stats
 	private final int headDurability;

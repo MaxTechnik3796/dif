@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class ModularTool extends DiggerItem{
-	int[] miningLevelColor={ModularMaterial.WOOD.getColor(),ModularMaterial.STONE.getColor(),ModularMaterial.IRON.getColor(),ModularMaterial.DIAMOND.getColor(),ModularMaterial.NETHERITE.getColor()};
+	int[] miningLevelColor={ModularMaterial.WOOD.getColor(),ModularMaterial.STONE.getColor(),ModularMaterial.IRON.getColor(),0x6DEDE4,0x524B52};
 	public ModularTool(){
 		super(new Tier(){
 			@Override
