@@ -2,14 +2,9 @@ package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
-import cz.maxtechnik.dif.block.entity.BlastSmelteryControllerBlockEntity;
-import cz.maxtechnik.dif.block.entity.CokeOvenControllerBlockEntity;
-import cz.maxtechnik.dif.item.armor.Jetpack;
-import cz.maxtechnik.dif.item.modular.ToolComponents;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import cz.maxtechnik.dif.particle.FireballParticle;
 import cz.maxtechnik.dif.particle.HugeSmoke;
-import cz.maxtechnik.dif.item.armor.ElectroRunners;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -21,10 +16,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import org.slf4j.Logger;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
 import cz.maxtechnik.dif.command.IsChunkLoadedCommand;
@@ -75,7 +67,6 @@ public class DifMod{
 		DifModFluidTypes.REGISTRY.register(bus);
 		DifModRecipes.REGISTRY.register(bus);
 		DifModRecipes.TYPE_REGISTRY.register(bus);
-		ToolComponents.REGISTER.register(bus);
 		DifModEntities.REGISTRY.register(bus);
 		DifModFeatures.REGISTRY.register(bus);
 		DifModParticles.REGISTRY.register(bus);
@@ -136,7 +127,7 @@ public class DifMod{
 			event.registerSpriteSet(DifModParticles.FIREBALL.get(),FireballParticle.Factory::new);
 		}
 	}
-	public static String goggleTooltipFix="    ";
+	public static final String goggleTooltipFix="    ";
 	public static boolean rouletteBoolean(int range){
 		return 0==Mth.nextInt(RandomSource.create(),0,range);
 	}
