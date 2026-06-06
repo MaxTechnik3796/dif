@@ -25,6 +25,7 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import static cz.maxtechnik.dif.DifModCommonConfig.*;
 import static cz.maxtechnik.dif.block.Engine.*;
 public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	boolean generating=false;
@@ -85,32 +86,31 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 				speed=0F;
 				su=0F;
 			}else if(fuel.equals(FuelType.DIESEL)){
-				speed=countExtenders()*12F;
-				su=countExtenders()*2F;
-				generating=fluidTank.getFluidAmount()>0;
-				fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
+				speed=countExtenders()*ENGINE_DIESEL_SPEED.get();
+				su=countExtenders()*ENGINE_DIESEL_SU.get();
+				generating=fluidTank.getFluidAmount()>countExtenders()*ENGINE_DIESEL_CONSUMPTION.get()-1;
+				fluidTank.drain(countExtenders()*ENGINE_DIESEL_CONSUMPTION.get(),IFluidHandler.FluidAction.EXECUTE);
 			}else if(fuel.equals(FuelType.HEAVY_FUEL_OIL)){
-				speed=countExtenders()*10F;
-				su=countExtenders()*2.3F;
-				generating=fluidTank.getFluidAmount()>0;
-				fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
+				speed=countExtenders()*ENGINE_HEAVY_FUEL_OIL_SPEED.get();
+				su=countExtenders()*ENGINE_HEAVY_FUEL_OIL_SU.get();
+				generating=fluidTank.getFluidAmount()>countExtenders()*ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get()-1;
+				fluidTank.drain(countExtenders()*ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get(),IFluidHandler.FluidAction.EXECUTE);
 			}else if(fuel.equals(FuelType.GASOLINE)){
-				speed=countExtenders()*8F;
-				su=countExtenders()*3F;
-				generating=fluidTank.getFluidAmount()>0;
-				fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
+				speed=countExtenders()*ENGINE_GASOLINE_SPEED.get();
+				su=countExtenders()*ENGINE_GASOLINE_SU.get();
+				generating=fluidTank.getFluidAmount()>countExtenders()*ENGINE_GASOLINE_CONSUMPTION.get()-1;
+				fluidTank.drain(countExtenders()*ENGINE_GASOLINE_CONSUMPTION.get(),IFluidHandler.FluidAction.EXECUTE);
 			}else if(fuel.equals(FuelType.LPG)){
-				speed=countExtenders()*9F;
-				su=countExtenders()*2.2F;
-				generating=fluidTank.getFluidAmount()>0;
-				fluidTank.drain(1,IFluidHandler.FluidAction.EXECUTE);
+				speed=countExtenders()*ENGINE_LPG_SPEED.get();
+				su=countExtenders()*ENGINE_LPG_SU.get();
+				generating=fluidTank.getFluidAmount()>countExtenders()*ENGINE_LPG_CONSUMPTION.get()-1;
+				fluidTank.drain(countExtenders()*ENGINE_LPG_CONSUMPTION.get(),IFluidHandler.FluidAction.EXECUTE);
 			}
 		}else{
 			generating=false;
 			speed=0F;
 			su=0F;
 		}
-		// FIX: původně 3 samostatné if-bloky → updateGeneratedRotation() mohlo běžet 3× per tick.
 		if(uGenerating!=generating||uSpeed!=speed||uSu!=su){
 			KineticBlockEntity.switchToBlockState(level,worldPosition,getBlockState().setValue(ACTIVE,generating));
 			updateGeneratedRotation();
@@ -120,7 +120,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		}
 		if(level.isClientSide&&getBlockState().getValue(ACTIVE)) clientTick();
 	}
-	private void clientTick(){
+	public void clientTick(){
 		if(level==null) return;
 		level.playLocalSound(worldPosition.getX(),worldPosition.getY(),worldPosition.getZ(),Objects.requireNonNull(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.camel.stand"))),SoundSource.BLOCKS,0.2F,1.2F,false);
 		Direction.Axis axis=getBlockState().getValue(FACING).getAxis();
@@ -166,7 +166,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 			}
 		}
 	}
-	private FuelType scanExtenders(){
+	public FuelType scanExtenders(){
 		if(level==null) return FuelType.INVALID;
 		BlockState ownState=getBlockState();
 		if(!(ownState.getBlock() instanceof Engine)) return FuelType.INVALID;
@@ -188,7 +188,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 			return Stream.of(ext0,ext1,ext2).filter(f->f!=FuelType.INVALID).findFirst().orElse(FuelType.INVALID);
 		return FuelType.INVALID;
 	}
-	private FuelType getExtenderFuel(BlockPos pos){
+	public FuelType getExtenderFuel(BlockPos pos){
 		if(level==null) return FuelType.INVALID;
 		Block block=level.getBlockState(pos).getBlock();
 		if(!(block instanceof EngineExtender)) return FuelType.INVALID;
@@ -198,7 +198,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		if(block.equals(DifModBlocks.ENGINE_EXTENDER_HEAVY_FUEL_OIL.get())) return FuelType.HEAVY_FUEL_OIL;
 		return FuelType.INVALID;
 	}
-	private int countExtenders(){
+	public int countExtenders(){
 		if(level==null) return 0;
 		BlockState ownState=getBlockState();
 		if(!(ownState.getBlock() instanceof Engine)) return 0;
@@ -214,11 +214,14 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		}
 		return count;
 	}
-	private boolean isEngineExtender(BlockPos pos){
+	public boolean isEngineExtender(BlockPos pos){
 		if(level==null) return false;
 		return level.getBlockState(pos).getBlock() instanceof EngineExtender;
 	}
-	private void particle(Vec3 pos,Vec3 velocity){
+	private boolean isEngine4(){
+		return getBlockState().getBlock().equals(DifModBlocks.ENGINE4.get());
+	}
+	public void particle(Vec3 pos,Vec3 velocity){
 		if(level==null) return;
 		if(DifMod.rouletteBoolean(4)) level.addParticle(ParticleTypes.SMOKE,pos.x,pos.y,pos.z,velocity.x,velocity.y,velocity.z);
 	}
