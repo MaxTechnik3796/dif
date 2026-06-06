@@ -59,7 +59,7 @@ public class DistillationTankModel extends CTModel {
 
 	@Override
 	public @NotNull List<BakedQuad> getQuads(BlockState state,Direction side,RandomSource rand,
-	                                         ModelData extraData,RenderType renderType) {
+	                                                  ModelData extraData,RenderType renderType) {
 		CullData cull = extraData.has(CULL_PROPERTY) ? extraData.get(CULL_PROPERTY) : null;
 
 		// Pouze schovaný face vynech — všechno ostatní renderuj normálně
