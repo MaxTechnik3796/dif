@@ -50,7 +50,6 @@ import static cz.maxtechnik.dif.DifMod.goggleTooltipFix;
  *
  * Typový parametr {@code R} je typ receptu, který controller zpracovává.
  */
-@SuppressWarnings("deprecation")
 public abstract class AbstractMultiblockControllerBlockEntity<R>
         extends RandomizableContainerBlockEntity
         implements WorldlyContainer, IHaveGoggleInformation {
