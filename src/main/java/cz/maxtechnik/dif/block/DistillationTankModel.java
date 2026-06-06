@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelData.Builder;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
-
+import org.jetbrains.annotations.NotNull;
 public class DistillationTankModel extends CTModel {
 
 	private static final ModelProperty<CullData> CULL_PROPERTY = new ModelProperty<>();
@@ -58,8 +58,8 @@ public class DistillationTankModel extends CTModel {
 	}
 
 	@Override
-	public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand,
-	                                ModelData extraData, RenderType renderType) {
+	public @NotNull List<BakedQuad> getQuads(BlockState state,Direction side,RandomSource rand,
+	                                         ModelData extraData,RenderType renderType) {
 		CullData cull = extraData.has(CULL_PROPERTY) ? extraData.get(CULL_PROPERTY) : null;
 
 		// Pouze schovaný face vynech — všechno ostatní renderuj normálně
