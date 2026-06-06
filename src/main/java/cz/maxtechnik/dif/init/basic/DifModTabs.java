@@ -155,36 +155,6 @@ public class DifModTabs{
 		tabData.accept(ePickaxe);
 
 		tabData.accept(MODULAR_TOOL);
-
-		/*
-		tabData.accept(MODULAR_PICKAXE);
-		tabData.accept(MODULAR_AXE);
-		tabData.accept(MODULAR_SHOVEL);
-		tabData.accept(MODULAR_SWORD);
-
-		tabData.accept(MODULAR_PART_PICKAXE_HEAD);
-		tabData.accept(MODULAR_PART_AXE_HEAD);
-		tabData.accept(MODULAR_PART_SHOVEL_HEAD);
-		tabData.accept(MODULAR_PART_SWORD_HEAD);
-
-		tabData.accept(MODULAR_PART_BINDING);
-		tabData.accept(MODULAR_PART_SWORD_BINDING);
-
-		tabData.accept(MODULAR_PART_HANDLE);
-
-	for(String mat : new String[]{"Wood","Stone","Copper","Iron","Gold","Diamond","Obsidian","Netherite"}){
-		tabData.accept(newPartFromMaterial(MODULAR_PART_PICKAXE_HEAD.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-		tabData.accept(newPartFromMaterial(MODULAR_PART_AXE_HEAD.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SHOVEL_HEAD.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_HEAD.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-		tabData.accept(newPartFromMaterial(MODULAR_PART_BINDING.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-		tabData.accept(newPartFromMaterial(MODULAR_PART_SWORD_BINDING.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-		tabData.accept(newPartFromMaterial(MODULAR_PART_HANDLE.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-		tabData.accept(newSingleMaterialPreFab(MODULAR_PICKAXE.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-		tabData.accept(newSingleMaterialPreFab(MODULAR_AXE.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-		tabData.accept(newSingleMaterialPreFab(MODULAR_SHOVEL.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-		tabData.accept(newSingleMaterialPreFab(MODULAR_SWORD.get(), mat), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-		}*/
 	})).build());
 
 
