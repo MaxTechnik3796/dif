@@ -10,8 +10,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-
 public class SkyRenderer{
 	private static final ResourceLocation EARTH_TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/environment/earth.png");
 

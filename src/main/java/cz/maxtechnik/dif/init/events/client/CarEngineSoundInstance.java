@@ -33,7 +33,7 @@ public class CarEngineSoundInstance extends AbstractTickableSoundInstance{
 		x=car.getX();
 		y=car.getY();
 		z=car.getZ();
-		float f=Math.max(0F,Math.min(1F,car.getRPM()/car.getMaxRPM()));
+		float f=Math.clamp(car.getRPM()/car.getMaxRPM(),0F,1F);
 		pitch=0.5F+f*1.5F;
 		volume=0.55F+f*0.45F;
 	}

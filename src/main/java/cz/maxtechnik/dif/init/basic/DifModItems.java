@@ -7,7 +7,6 @@ import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
 import cz.maxtechnik.dif.item.modular.v2.ModularTool;
 import cz.maxtechnik.dif.item.quarry.DrillHeadItem;
-import cz.maxtechnik.dif.item.tool.GodTotemItem;
 import cz.maxtechnik.dif.item.tool.*;
 import cz.maxtechnik.dif.item.armor.*;
 import net.minecraft.core.registries.BuiltInRegistries;

@@ -10,7 +10,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.tick.EntityTickEvent; // SPRÁVNÝ IMPORT
 
 import java.util.Set;
 
