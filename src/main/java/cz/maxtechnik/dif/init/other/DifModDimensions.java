@@ -23,6 +23,4 @@ public class DifModDimensions{
 			Registries.DIMENSION,
 			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"orbit")
 	);
-	public static void register(){
-	}
 }
