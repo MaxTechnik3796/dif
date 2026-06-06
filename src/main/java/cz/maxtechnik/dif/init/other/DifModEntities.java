@@ -28,19 +28,19 @@ public class DifModEntities {
 
     public static final DeferredHolder<EntityType<?>, EntityType<NuclearExplosionEntity>> NUCLEAR_EXPLOSION =
             REGISTRY.register("nuclear_explosion", () ->
-                    EntityType.Builder.<NuclearExplosionEntity>of(NuclearExplosionEntity::new, MobCategory.MISC)
+                    EntityType.Builder.of(NuclearExplosionEntity::new, MobCategory.MISC)
                             .sized(0.0f, 0.0f).clientTrackingRange(512).updateInterval(20)
                             .build("nuclear_explosion"));
     public static final DeferredHolder<EntityType<?>, EntityType<NuclearMushroomEntity>> NUCLEAR_MUSHROOM =
             REGISTRY.register("nuclear_mushroom", () ->
-                    EntityType.Builder.<NuclearMushroomEntity>of(NuclearMushroomEntity::new, MobCategory.MISC)
+                    EntityType.Builder.of(NuclearMushroomEntity::new, MobCategory.MISC)
                             .sized(0.0f, 0.0f)
                             .clientTrackingRange(512)
                             .updateInterval(20)
                             .build("nuclear_mushroom"));
     public static final DeferredHolder<EntityType<?>, EntityType<NuclearWaveEntity>> NUCLEAR_WAVE =
             REGISTRY.register("nuclear_wave", () ->
-                    EntityType.Builder.<NuclearWaveEntity>of(NuclearWaveEntity::new, MobCategory.MISC)
+                    EntityType.Builder.of(NuclearWaveEntity::new, MobCategory.MISC)
                             .sized(0.0f, 0.0f)
                             .clientTrackingRange(512)
                             .updateInterval(1)
