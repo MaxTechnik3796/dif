@@ -22,6 +22,7 @@ public class ConnectedTexturesHandler{
 		register(event,DifModBlocks.ZINC_CASING,DifModSpriteShifts.ZINC_CASING);
 		register(event,DifModBlocks.STEEL_CASING,DifModSpriteShifts.STEEL_CASING);
 		register(event,DifModBlocks.AURORA_CASING,DifModSpriteShifts.AURORA_CASING);
+		register(event,DifModBlocks.FORGE_GLASS,DifModSpriteShifts.FORGE_GLASS);
 
 		ModelSwapper.swapModels(event.getModels(),ModelSwapper.getAllBlockStateModelLocations(DifModBlocks.DISTILLATION_TANK.get()),DistillationTankModel::standard);
 	}

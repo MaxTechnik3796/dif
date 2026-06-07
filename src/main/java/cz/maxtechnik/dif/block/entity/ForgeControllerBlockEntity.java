@@ -121,6 +121,11 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
                     cachedRecipe = null;
                     setChanged();
                 }
+
+                @Override
+                public int getSlotLimit(int slot) {
+                    return 1;
+                }
             };
 
     // ═══════════════════════════════════════════════════════════
@@ -446,6 +451,11 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
                 cachedRecipe = null;
                 setChanged();
             }
+
+            @Override
+            public int getSlotLimit(int slot) {
+                return 1;
+            }
         };
         int copy = Math.min(forgeInventory.getSlots(), newSize);
         for (int i = 0; i < copy; i++) {
@@ -511,16 +521,43 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         // Nejdřív najdi tank se stejným fluidem
         for (FluidTank tank : fluidTanks) {
             if (!tank.isEmpty() && tank.getFluid().getFluid() == fluid.getFluid()) {
-                return tank.fill(fluid, IFluidHandler.FluidAction.EXECUTE);
+                int filled = tank.fill(fluid, IFluidHandler.FluidAction.EXECUTE);
+                compactFluids();
+                return filled;
             }
         }
         // Pak první prázdný tank
         for (FluidTank tank : fluidTanks) {
             if (tank.isEmpty()) {
-                return tank.fill(fluid, IFluidHandler.FluidAction.EXECUTE);
+                int filled = tank.fill(fluid, IFluidHandler.FluidAction.EXECUTE);
+                compactFluids();
+                return filled;
             }
         }
         return 0; // Všechny tanky plné nebo obsazené jiným fluidem
+    }
+
+    /**
+     * Posune kapaliny směrem dolů v pořadí vykreslování (fluidRenderOrder),
+     * pokud je některý z nižších tanků prázdný.
+     */
+    public void compactFluids() {
+        for (int i = 0; i < FLUID_TANK_COUNT - 1; i++) {
+            int targetIdx = fluidRenderOrder[i];
+            if (fluidTanks[targetIdx].isEmpty()) {
+                // Najdi první neprázdný tank nad ním
+                for (int j = i + 1; j < FLUID_TANK_COUNT; j++) {
+                    int sourceIdx = fluidRenderOrder[j];
+                    if (!fluidTanks[sourceIdx].isEmpty()) {
+                        FluidStack sourceFluid = fluidTanks[sourceIdx].getFluid();
+                        fluidTanks[targetIdx].setFluid(sourceFluid.copy());
+                        fluidTanks[sourceIdx].setFluid(FluidStack.EMPTY);
+                        setChanged();
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /** Render order pro klientský renderer — pořadí vrstev kapaliny. */
@@ -653,18 +690,33 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
                 return 0; // Nelze plnit zvenku přímo — jen přes tavení
             }
             @Override public @NotNull FluidStack drain(@NotNull FluidStack resource, @NotNull FluidAction action) {
+                FluidStack drained = FluidStack.EMPTY;
                 for (FluidTank tank : fluidTanks) {
                     if (tank.getFluid().getFluid() == resource.getFluid()) {
-                        return tank.drain(resource, action);
+                        drained = tank.drain(resource, action);
+                        break;
                     }
                 }
-                return FluidStack.EMPTY;
+                if (action.execute() && !drained.isEmpty()) {
+                    compactFluids();
+                }
+                return drained;
             }
             @Override public @NotNull FluidStack drain(int maxDrain, @NotNull FluidAction action) {
-                for (FluidTank tank : fluidTanks) {
-                    if (!tank.isEmpty()) return tank.drain(maxDrain, action);
+                FluidStack drained = FluidStack.EMPTY;
+                // Pipou lze vytáhnout tu tekutinu, co je nejníže v render orderu
+                for (int i = 0; i < FLUID_TANK_COUNT; i++) {
+                    int idx = fluidRenderOrder[i];
+                    FluidTank tank = fluidTanks[idx];
+                    if (!tank.isEmpty()) {
+                        drained = tank.drain(maxDrain, action);
+                        break;
+                    }
                 }
-                return FluidStack.EMPTY;
+                if (action.execute() && !drained.isEmpty()) {
+                    compactFluids();
+                }
+                return drained;
             }
         };
     }
@@ -702,8 +754,10 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
 
     @Override
     protected void tryFillBucket(Player player, InteractionHand hand, ItemStack heldBucket) {
-        // Naplní kbelík z prvního neprázdného tanku s dostatkem kapaliny
-        for (FluidTank tank : fluidTanks) {
+        // Naplní kbelík z nejnižšího neprázdného tanku v render orderu s dostatkem kapaliny
+        for (int i = 0; i < FLUID_TANK_COUNT; i++) {
+            int idx = fluidRenderOrder[i];
+            FluidTank tank = fluidTanks[idx];
             if (tank.getFluidAmount() >= 1000) {
                 FluidStack drained = tank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
                 if (drained.isEmpty()) continue;
@@ -711,6 +765,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
                 ItemStack filled = new ItemStack(drained.getFluid().getBucket());
                 if (heldBucket.isEmpty()) player.setItemInHand(hand, filled);
                 else if (!player.getInventory().add(filled)) player.drop(filled, false);
+                compactFluids();
                 setChanged();
                 return;
             }
@@ -803,22 +858,118 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
 
     // ── Helper pro tick() override ────────────────────────────────────────────
 
+    // ── WorldlyContainer Overrides delegující na forgeInventory ──────────────────
+
+    @Override
+    public net.neoforged.neoforge.items.ItemStackHandler getInventory() {
+        return forgeInventory;
+    }
+
+    @Override
+    public int @NotNull [] getSlotsForFace(@NotNull Direction side) {
+        int[] slots = new int[forgeInventory.getSlots()];
+        for (int i = 0; i < slots.length; i++) {
+            slots[i] = i;
+        }
+        return slots;
+    }
+
     @Override
     public boolean canPlaceItemThroughFace(int index, @NotNull ItemStack itemStack, @Nullable Direction side) {
         if (locked) return false;
-        return super.canPlaceItemThroughFace(index, itemStack, side);
+        return index >= 0 && index < forgeInventory.getSlots();
+    }
+
+    @Override
+    public boolean canTakeItemThroughFace(int index, @NotNull ItemStack itemStack, @NotNull Direction side) {
+        return index >= 0 && index < forgeInventory.getSlots();
     }
 
     @Override
     public boolean canPlaceItem(int index, @NotNull ItemStack itemStack) {
         if (locked) return false;
-        return super.canPlaceItem(index, itemStack);
+        return index >= 0 && index < forgeInventory.getSlots();
+    }
+
+    @Override
+    public int getContainerSize() {
+        return forgeInventory.getSlots();
+    }
+
+    @Override
+    public @NotNull ItemStack getItem(int index) {
+        return forgeInventory.getStackInSlot(index);
+    }
+
+    @Override
+    public void setItem(int index, @NotNull ItemStack itemStack) {
+        forgeInventory.setStackInSlot(index, itemStack);
+    }
+
+    @Override
+    public @NotNull ItemStack removeItem(int slot, int amount) {
+        return forgeInventory.extractItem(slot, amount, false);
+    }
+
+    @Override
+    public @NotNull ItemStack removeItemNoUpdate(int index) {
+        ItemStack stack = forgeInventory.getStackInSlot(index);
+        forgeInventory.setStackInSlot(index, ItemStack.EMPTY);
+        return stack;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        for (int i = 0; i < forgeInventory.getSlots(); i++) {
+            if (!forgeInventory.getStackInSlot(i).isEmpty()) return false;
+        }
+        return true;
+    }
+
+    @Override
+    protected @NotNull net.minecraft.core.NonNullList<ItemStack> getItems() {
+        net.minecraft.core.NonNullList<ItemStack> list = net.minecraft.core.NonNullList.withSize(forgeInventory.getSlots(), ItemStack.EMPTY);
+        for (int i = 0; i < forgeInventory.getSlots(); i++) {
+            list.set(i, forgeInventory.getStackInSlot(i));
+        }
+        return list;
+    }
+
+    @Override
+    protected void setItems(@NotNull net.minecraft.core.NonNullList<ItemStack> stacks) {
+        for (int i = 0; i < stacks.size() && i < forgeInventory.getSlots(); i++) {
+            forgeInventory.setStackInSlot(i, stacks.get(i));
+        }
     }
 
     @Override
     protected void insertOrSwapInput(Player player, InteractionHand hand, ItemStack held) {
         if (locked) return;
-        super.insertOrSwapInput(player, hand, held);
+        // Try to insert into first available slot in forgeInventory
+        ItemStack toInsert = held.copy();
+        toInsert.setCount(1); // Insert 1 by 1
+        for (int i = 0; i < forgeInventory.getSlots(); i++) {
+            if (forgeInventory.getStackInSlot(i).isEmpty()) {
+                forgeInventory.insertItem(i, toInsert, false);
+                held.shrink(1);
+                setChanged();
+                return;
+            }
+        }
+    }
+
+    @Override
+    protected void extractOutput(Player player, InteractionHand hand) {
+        // Vyjme item z posledního neprázdného slotu v forgeInventory
+        for (int i = forgeInventory.getSlots() - 1; i >= 0; i--) {
+            ItemStack stack = forgeInventory.getStackInSlot(i);
+            if (!stack.isEmpty()) {
+                player.setItemInHand(hand, stack.copy());
+                forgeInventory.setStackInSlot(i, ItemStack.EMPTY);
+                setChanged();
+                return;
+            }
+        }
     }
 
     // Potřebujeme přístup k setActive z abstraktní třídy — je protected, dostaneme se k ní

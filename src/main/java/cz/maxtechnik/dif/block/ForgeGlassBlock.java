@@ -3,7 +3,7 @@ package cz.maxtechnik.dif.block;
 import cz.maxtechnik.dif.block.entity.ForgeControllerBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -24,37 +24,42 @@ import org.jetbrains.annotations.NotNull;
  * Chování při položení:
  *   Controller při příštím validačním ticku detekuje novou vrstvu
  *   a automaticky rozšíří kapacitu (pokud uzavírá chybějící blok při LOCKED).
+ *
+ * Extends TransparentBlock (Minecraft 1.21.1 — dřívější GlassBlock/AbstractGlassBlock
+ * byly sloučeny do HalfTransparentBlock → TransparentBlock).
+ * skipRendering je zděděno z HalfTransparentBlock a skrývá vnitřní strany
+ * mezi dvěma sousedními ForgeGlassBlock bloky automaticky.
  */
-public class ForgeGlassBlock extends Block {
+public class ForgeGlassBlock extends TransparentBlock {
 
     public ForgeGlassBlock(BlockBehaviour.Properties properties) {
         super(properties);
     }
 
     @Override
-    public void onRemove(
+    protected void onRemove(
             BlockState blockState,
             @NotNull Level level,
             @NotNull BlockPos pos,
             BlockState newState,
-            boolean isMoving
+            boolean movedByPiston
     ) {
         if (!blockState.is(newState.getBlock()) && !level.isClientSide) {
             // Najdi controller pod tímto sklem (může být několik vrstev níže)
             notifyNearbyController(level, pos);
         }
-        super.onRemove(blockState, level, pos, newState, isMoving);
+        super.onRemove(blockState, level, pos, newState, movedByPiston);
     }
 
     @Override
-    public void onPlace(
+    protected void onPlace(
             @NotNull BlockState blockState,
             @NotNull Level level,
             @NotNull BlockPos pos,
             @NotNull BlockState oldState,
-            boolean isMoving
+            boolean movedByPiston
     ) {
-        super.onPlace(blockState, level, pos, oldState, isMoving);
+        super.onPlace(blockState, level, pos, oldState, movedByPiston);
         if (!level.isClientSide) {
             // Nově položené sklo může uzavřít díru → upozorni controller
             notifyNearbyController(level, pos);

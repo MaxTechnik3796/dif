@@ -9,6 +9,7 @@ public class DifModSpriteShifts{
 	public static final CTSpriteShiftEntry ZINC_CASING=shifter("zinc_casing","zinc_casing_connected");
 	public static final CTSpriteShiftEntry STEEL_CASING=shifter("steel_casing","steel_casing_connected");
 	public static final CTSpriteShiftEntry AURORA_CASING=shifter("aurora_casing","aurora_casing_connected");
+	public static final CTSpriteShiftEntry FORGE_GLASS=shifter("forge_glass","forge_glass_connected");
 
 	public static final CTSpriteShiftEntry DISTILLATION_TANK=shifterRect("tank/distillation_tank","tank/distillation_tank_connected");
 	public static final CTSpriteShiftEntry DISTILLATION_TANK_TOP=shifterRect("tank/distillation_tank_top","tank/distillation_tank_top_connected");
