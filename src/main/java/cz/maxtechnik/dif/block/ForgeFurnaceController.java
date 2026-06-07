@@ -28,22 +28,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Forge Furnace Controller — řídicí blok celé pece.
- *
- * Block states:
- *   FACING  → směr čelní strany
- *   FORMED  → true pokud je struktura platná
- *   ACTIVE  → true pokud právě probíhá tavení
- *   LOCKED  → true pokud bylo poškozeno sklo pod hladinou kapaliny
- *
- * Interakce:
- *   Pravý klik s itemem     → vloží stack do fronty tavení
- *   Pravý klik prázdnou rukou → vyndá 1 item (shift = celý stack)
- *   Pravý klik kbelíkem    → naplní kbelík z tanku
- *   Wrench (Create)        → cykluje preferovanou výstupní kapalinu
- *                            + přesune ji vizuálně na spod render orderu
- */
 @SuppressWarnings("deprecation")
 public class ForgeFurnaceController extends Block implements EntityBlock, IWrenchable {
 
@@ -61,8 +45,6 @@ public class ForgeFurnaceController extends Block implements EntityBlock, IWrenc
                 .setValue(LOCKED, false));
     }
 
-    // ── BlockEntity ───────────────────────────────────────────────────────────
-
     @Override
     public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
         return DifModBlockEntities.FORGE_FURNACE_CONTROLLER.get().create(pos, state);
@@ -74,8 +56,6 @@ public class ForgeFurnaceController extends Block implements EntityBlock, IWrenc
         if (level.isClientSide) return null;
         return ForgeControllerBlockEntity.ticker(type);
     }
-
-    // ── Block state ───────────────────────────────────────────────────────────
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -97,23 +77,17 @@ public class ForgeFurnaceController extends Block implements EntityBlock, IWrenc
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
-    // ── Odebrání ──────────────────────────────────────────────────────────────
-
     @Override
     public void onRemove(BlockState blockState, @NotNull Level level,
                          @NotNull BlockPos pos, BlockState newState, boolean isMoving) {
         if (!blockState.is(newState.getBlock())
                 && level.getBlockEntity(pos) instanceof ForgeControllerBlockEntity be) {
 
-            // Vyhoď inventář
             var inv = be.getInventory();
             for (int i = 0; i < inv.getSlots(); i++)
                 Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), inv.getStackInSlot(i));
 
-            // Uvolni briky
             if (blockState.getValue(FORMED)) releaseBricks(level, be);
-
-            // Fluidy zůstávají v NBT controlleru — obnoví se při novém umístění
         }
         super.onRemove(blockState, level, pos, newState, isMoving);
     }
@@ -128,13 +102,6 @@ public class ForgeFurnaceController extends Block implements EntityBlock, IWrenc
         });
     }
 
-    // ── Interakce hráče ───────────────────────────────────────────────────────
-
-    /**
-     * Wrench → cykluje preferovanou výstupní kapalinu a posouvá ji
-     * na spod render orderu (vizuálně nejníže = první na výstupu).
-     * Jiný item → deleguj na handleInteraction (vložení do fronty).
-     */
     @Override
     protected @NotNull ItemInteractionResult useItemOn(
             @NotNull ItemStack heldItem, @NotNull BlockState blockState, @NotNull Level level,
@@ -145,7 +112,6 @@ public class ForgeFurnaceController extends Block implements EntityBlock, IWrenc
         if (!(level.getBlockEntity(pos) instanceof ForgeControllerBlockEntity be))
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
-        // Wrench detekce — Create WrenchItem
         boolean isWrench = heldItem.getItem() instanceof com.simibubi.create.content.equipment.wrench.WrenchItem;
 
         if (isWrench) {
@@ -156,12 +122,10 @@ public class ForgeFurnaceController extends Block implements EntityBlock, IWrenc
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
 
-        // Ostatní itemy → vložení do fronty
         if (be.handleInteraction(player, hand)) return ItemInteractionResult.sidedSuccess(level.isClientSide);
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
-    /** Prázdná ruka → vyndej item z fronty. */
     @Override
     protected @NotNull InteractionResult useWithoutItem(
             @NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos pos,
@@ -175,17 +139,9 @@ public class ForgeFurnaceController extends Block implements EntityBlock, IWrenc
         return InteractionResult.PASS;
     }
 
-    /**
-     * IWrenchable override — blokujeme výchozí Create wrench chování
-     * (otočení bloku) pokud je structure zformována. Místo toho cyklujeme
-     * kapaliny přes useItemOn výše.
-     */
     @Override
     public InteractionResult onWrenched(BlockState blockState, UseOnContext ctx) {
-        // Pokud je zformováno, wrench řešíme v useItemOn — tady vrátíme PASS
-        // aby Create nespustil rotaci bloku
         if (blockState.getValue(FORMED)) return InteractionResult.PASS;
-        // Nezformováno → normálně nechej Create otočit blok
         return InteractionResult.CONSUME;
     }
 }

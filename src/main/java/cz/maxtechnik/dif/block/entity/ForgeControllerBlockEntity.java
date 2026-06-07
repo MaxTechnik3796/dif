@@ -38,38 +38,16 @@ import static cz.maxtechnik.dif.DifMod.goggleTooltipFix;
 
 public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBlockEntity<ForgeSmeltingRecipe> {
 
-    // ═══════════════════════════════════════════════════════════
-    //  KONSTANTY
-    // ═══════════════════════════════════════════════════════════
-
     private static final int HEAT_CACHE_PERIOD  = 20;
     private static final int GLASS_CHECK_PERIOD = 20;
 
     public static final int FLUID_TANK_COUNT = 32;
     public static final int SLOTS_PER_LAYER  = 9;
 
-    // ═══════════════════════════════════════════════════════════
-    //  FLUID TANKY
-    // ═══════════════════════════════════════════════════════════
-
     public final FluidTank[] fluidTanks = new FluidTank[FLUID_TANK_COUNT];
+    private final int[] fluidRenderOrder = new int[FLUID_TANK_COUNT];
 
-    /**
-     * Pořadí tanků pro rendering — index 0 = nejníže vizuálně (první na výstupu).
-     * cyclePreferredOutputTank() rotuje vybraný tank na pozici 0.
-     */
-    private final int[] fluidRenderOrder = {0, 1, 2, 3};
-
-    /**
-     * Index tanku upřednostněného při výstupu přes pipe/spout/kbelík.
-     * -1 = první neprázdný v render orderu (výchozí).
-     * Nastavuje se přes wrench → cyclePreferredOutputTank().
-     */
     private int preferredOutputTank = -1;
-
-    // ═══════════════════════════════════════════════════════════
-    //  INVENTÁŘ
-    // ═══════════════════════════════════════════════════════════
 
     public net.neoforged.neoforge.items.ItemStackHandler forgeInventory =
             new net.neoforged.neoforge.items.ItemStackHandler(0) {
@@ -77,20 +55,13 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
                 @Override public int getSlotLimit(int slot) { return 1; }
             };
 
-    // ═══════════════════════════════════════════════════════════
-    //  STAV
-    // ═══════════════════════════════════════════════════════════
-
     private int   glassLayers     = 0;
     private boolean locked        = false;
     private int   cachedHeatPoints = 0;
     private float cachedHeatSpeed  = 0f;
     private int   heatCacheTick   = 0;
     private int   glassCacheTick  = 0;
-
-    // ═══════════════════════════════════════════════════════════
-    //  KONSTRUKTOR
-    // ═══════════════════════════════════════════════════════════
+    private boolean compacting    = false;
 
     public ForgeControllerBlockEntity(BlockPos pos, BlockState blockState) {
         super(DifModBlockEntities.FORGE_FURNACE_CONTROLLER.get(), pos, blockState);
@@ -103,12 +74,9 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
                     checkLockState();
                 }
             };
+            fluidRenderOrder[i] = i;
         }
     }
-
-    // ═══════════════════════════════════════════════════════════
-    //  TICKER
-    // ═══════════════════════════════════════════════════════════
 
     public static <T extends net.minecraft.world.level.block.entity.BlockEntity>
     BlockEntityTicker<T> ticker(BlockEntityType<T> type) {
@@ -117,10 +85,6 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
                 ? (lvl, pos, state, be) -> ((ForgeControllerBlockEntity) be).tick(lvl, pos, state)
                 : null;
     }
-
-    // ═══════════════════════════════════════════════════════════
-    //  TICK
-    // ═══════════════════════════════════════════════════════════
 
     @Override
     protected void tick(Level level, BlockPos pos, BlockState blockState) {
@@ -171,10 +135,6 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         else if (progress % 10 == 0) setChanged();
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  HEAT
-    // ═══════════════════════════════════════════════════════════
-
     private void refreshHeat(Level level, BlockPos pos) {
         Direction intoStructure = getBlockState().getOptionalValue(getFacingProperty()).orElse(Direction.SOUTH).getOpposite();
         cachedHeatPoints = ForgeMultiblockHelper.calculateHeatPoints(level, pos, intoStructure);
@@ -184,10 +144,6 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
 
     public int   getHeatPoints() { return cachedHeatPoints; }
     public float getHeatSpeed()  { return cachedHeatSpeed; }
-
-    // ═══════════════════════════════════════════════════════════
-    //  GLASS LAYERS
-    // ═══════════════════════════════════════════════════════════
 
     private int countActualGlassLayers(Level level, BlockPos pos, Direction intoStructure) {
         return ForgeMultiblockHelper.countGlassLayers(level, pos, intoStructure,
@@ -280,16 +236,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
     public int     getGlassLayers() { return glassLayers; }
     public boolean isLocked()       { return locked; }
 
-    // ═══════════════════════════════════════════════════════════
-    //  PREFERRED OUTPUT + RENDER ORDER
-    // ═══════════════════════════════════════════════════════════
-
-    /**
-     * Wrench → cykluje preferovanou výstupní kapalinu.
-     * Vybraná kapalina se přesune na index 0 v render orderu
-     * (= vizuálně nejníže v peci, první na výstupu přes pipe/spout).
-     */
-    public void setPreferredOutputTank(int tankIndex, net.minecraft.world.entity.player.Player player) {
+    public void setPreferredOutputTank(int tankIndex, Player player) {
         if (tankIndex < 0 || tankIndex >= FLUID_TANK_COUNT) {
             preferredOutputTank = -1;
             player.displayClientMessage(Component.literal("§7Output: auto"), true);
@@ -304,18 +251,12 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         setChanged();
     }
 
-    /**
-     * Přesune daný tank index na pozici 0 v render orderu
-     * (ostatní se posunou doprava). Pozice 0 = vizuálně nejníže.
-     */
     private void promoteToBottom(int tankIdx) {
-        // Najdi aktuální pozici v render orderu
         int pos = -1;
         for (int i = 0; i < FLUID_TANK_COUNT; i++) {
             if (fluidRenderOrder[i] == tankIdx) { pos = i; break; }
         }
-        if (pos <= 0) return; // Už je dole nebo nenalezen
-        // Rotuj: přesuň na index 0, ostatní posuň o 1 nahoru
+        if (pos <= 0) return;
         for (int i = pos; i > 0; i--) fluidRenderOrder[i] = fluidRenderOrder[i - 1];
         fluidRenderOrder[0] = tankIdx;
     }
@@ -328,10 +269,6 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         System.arraycopy(newOrder, 0, fluidRenderOrder, 0, FLUID_TANK_COUNT);
         setChanged();
     }
-
-    // ═══════════════════════════════════════════════════════════
-    //  FLUID API
-    // ═══════════════════════════════════════════════════════════
 
     public FluidStack getFluidInTank(int idx) {
         return (idx < 0 || idx >= FLUID_TANK_COUNT) ? FluidStack.EMPTY : fluidTanks[idx].getFluid();
@@ -363,11 +300,8 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         return 0;
     }
 
-    /** Posune prázdné tanky na konec render orderu. */
-    private boolean compacting = false;
-
     public void compactFluids() {
-        if (compacting) return; // zabraň rekurzi
+        if (compacting) return;
         compacting = true;
         try {
             for (int i = 0; i < FLUID_TANK_COUNT - 1; i++) {
@@ -390,22 +324,16 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         }
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  INTERAKCE HRÁČE
-    // ═══════════════════════════════════════════════════════════
-
     @Override
     public boolean handleInteraction(Player player, InteractionHand hand) {
         if (level == null || level.isClientSide) return true;
         final ItemStack held = player.getItemInHand(hand);
 
-        // Kbelík → naplnit
         if (held.getItem() == Items.BUCKET) {
             tryFillBucket(player, hand, held);
             return true;
         }
 
-        // Item v ruce → vložit celý stack do fronty (kolik se vejde)
         if (!held.isEmpty()) {
             if (locked) return true;
             int inserted = 0;
@@ -420,23 +348,19 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
             return true;
         }
 
-        // Prázdná ruka + shift → vyndej celý stack z posledního neprázdného slotu
-        // Prázdná ruka + shift → vyndej VŠECHNY itemy naráz do inventáře
         if (player.isShiftKeyDown()) {
-            boolean any = false;
-            for (int i = 0; i < forgeInventory.getSlots(); i++) {
+            for (int i = forgeInventory.getSlots() - 1; i >= 0; i--) {
                 ItemStack stack = forgeInventory.getStackInSlot(i);
                 if (!stack.isEmpty()) {
                     if (!player.getInventory().add(stack.copy())) player.drop(stack.copy(), false);
                     forgeInventory.setStackInSlot(i, ItemStack.EMPTY);
-                    any = true;
+                    setChanged();
+                    return true;
                 }
             }
-            if (any) setChanged();
             return true;
         }
 
-        // Prázdná ruka → vyndej 1 item, zkus stackovat do inv
         for (int i = forgeInventory.getSlots() - 1; i >= 0; i--) {
             ItemStack stack = forgeInventory.getStackInSlot(i);
             if (!stack.isEmpty()) {
@@ -457,10 +381,6 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         }
         return true;
     }
-
-    // ═══════════════════════════════════════════════════════════
-    //  ABSTRAKTNÍ METODY
-    // ═══════════════════════════════════════════════════════════
 
     @Override protected Predicate<BlockState>[][][] getPattern() { return new Predicate[0][0][0]; }
 
@@ -558,14 +478,12 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
             }
 
             @Override public @NotNull FluidStack drain(int maxDrain, @NotNull FluidAction action) {
-                // Upřednostni preferredOutputTank
                 if (preferredOutputTank >= 0 && preferredOutputTank < FLUID_TANK_COUNT
                         && !fluidTanks[preferredOutputTank].isEmpty()) {
                     FluidStack d = fluidTanks[preferredOutputTank].drain(maxDrain, action);
                     if (action.execute() && !d.isEmpty()) compactFluids();
                     return d;
                 }
-                // Fallback: index 0 v render orderu (nejníže = nejdřív ven)
                 for (int i = 0; i < FLUID_TANK_COUNT; i++) {
                     int idx = fluidRenderOrder[i];
                     if (!fluidTanks[idx].isEmpty()) {
@@ -578,8 +496,6 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
             }
         };
     }
-
-    // ── Brick claiming ────────────────────────────────────────────────────────
 
     private boolean canClaimAllBricks(Level level, BlockPos ctrlPos, Direction intoStructure) {
         final boolean[] ok = {true};
@@ -610,13 +526,11 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
                 state -> state.getBlock() instanceof ForgeBrickBlock);
     }
 
-    // ── Kbelík ────────────────────────────────────────────────────────────────
-
     @Override
     protected void tryFillBucket(Player player, InteractionHand hand, ItemStack heldBucket) {
-        // Upřednostni preferredOutputTank, pak render order
         int[] order = preferredOutputTank >= 0
-                ? new int[]{preferredOutputTank, fluidRenderOrder[0], fluidRenderOrder[1], fluidRenderOrder[2], fluidRenderOrder[3]}
+                ? new int[]{preferredOutputTank, fluidRenderOrder[0], fluidRenderOrder[1], fluidRenderOrder[2],
+                fluidRenderOrder[3], fluidRenderOrder[4], fluidRenderOrder[5], fluidRenderOrder[6], fluidRenderOrder[7]}
                 : fluidRenderOrder;
         for (int idx : order) {
             if (idx < 0 || idx >= FLUID_TANK_COUNT) continue;
@@ -633,24 +547,66 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         }
     }
 
-    // ── Goggle tooltip ────────────────────────────────────────────────────────
-
     @Override protected Component getGoggleName() { return Component.literal("◆ Forge Furnace"); }
     @Override protected ChatFormatting getGoggleNameColor() { return ChatFormatting.GOLD; }
 
     @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        tooltip.add(Component.literal(goggleTooltipFix + getGoggleName().getString())
+                .withStyle(getGoggleNameColor(), ChatFormatting.BOLD));
+        final BlockState state  = getBlockState();
+        final boolean    formed = state.hasProperty(getFormedProperty()) && state.getValue(getFormedProperty());
+        if (!formed) {
+            tooltip.add(isConflicted
+                    ? Component.literal(goggleTooltipFix + " ⚠ Structure already uses some blocks").withStyle(ChatFormatting.DARK_RED)
+                    : Component.literal(goggleTooltipFix + " Structure is NOT formed!").withStyle(ChatFormatting.RED));
+            return true;
+        }
+        appendFormedTooltip(tooltip, isPlayerSneaking);
+        if (state.getValue(getActiveProperty()) && totalTime > 0) {
+            int pct      = (int)(((double) progress / totalTime) * 100.0);
+            int secsLeft = Math.max(0, (totalTime - progress) / 20);
+            tooltip.add(Component.literal(goggleTooltipFix + " ▶ Progress: ").withStyle(ChatFormatting.GRAY)
+                    .append(Component.literal(pct + "% (" + secsLeft + "s left)").withStyle(ChatFormatting.GREEN)));
+        } else {
+            tooltip.add(Component.literal(goggleTooltipFix + " ▶ Status: ").withStyle(ChatFormatting.GRAY)
+                    .append(Component.literal("Idle").withStyle(ChatFormatting.YELLOW)));
+        }
+        return true;
+    }
+
+    @Override
     protected void appendFormedTooltip(List<Component> tooltip) {
+        appendFormedTooltip(tooltip, false);
+    }
+
+    private void appendFormedTooltip(List<Component> tooltip, boolean sneaking) {
         tooltip.add(Component.literal(goggleTooltipFix + " ▶ Heat: " + heatColor(cachedHeatPoints) + cachedHeatPoints + "§7/18").withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.literal(goggleTooltipFix + " ▶ Layers: " + glassLayers + "/" + ForgeMultiblockHelper.MAX_GLASS_LAYERS).withStyle(ChatFormatting.GRAY));
-        int used = 0; for (int i = 0; i < forgeInventory.getSlots(); i++) if (!forgeInventory.getStackInSlot(i).isEmpty()) used++;
+        int used = 0;
+        for (int i = 0; i < forgeInventory.getSlots(); i++) if (!forgeInventory.getStackInSlot(i).isEmpty()) used++;
         if (forgeInventory.getSlots() > 0) tooltip.add(Component.literal(goggleTooltipFix + " ▶ Queue: " + used + "/" + forgeInventory.getSlots()).withStyle(ChatFormatting.GRAY));
         if (locked) tooltip.add(Component.literal(goggleTooltipFix + " ⚠ LOCKED").withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD));
+
+        java.util.List<FluidTank> filled = new java.util.ArrayList<>();
         for (int i = 0; i < FLUID_TANK_COUNT; i++) {
-            FluidTank t = fluidTanks[i];
-            if (!t.isEmpty()) {
-                String prefix = (i == preferredOutputTank) ? "§6▶ §r" : "";
-                appendFluidSlot(tooltip, goggleTooltipFix + " " + prefix + "Tank " + (i + 1) + ": ", t);
+            int idx = fluidRenderOrder[i];
+            if (!fluidTanks[idx].isEmpty()) filled.add(fluidTanks[idx]);
+        }
+        if (filled.isEmpty()) return;
+
+        int showCount = sneaking ? filled.size() : Math.min(4, filled.size());
+        for (int i = 0; i < showCount; i++) {
+            FluidTank t = filled.get(i);
+            boolean isPref = false;
+            for (int j = 0; j < FLUID_TANK_COUNT; j++) {
+                if (fluidTanks[j] == t && j == preferredOutputTank) { isPref = true; break; }
             }
+            String prefix = isPref ? "§6▶ §r" : "";
+            appendFluidSlot(tooltip, goggleTooltipFix + " " + prefix, t);
+        }
+        if (!sneaking && filled.size() > 4) {
+            tooltip.add(Component.literal(goggleTooltipFix + " §8[Shift] show all " + filled.size() + " fluids").withStyle(ChatFormatting.DARK_GRAY));
         }
     }
 
@@ -662,15 +618,11 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         return mb >= 1000 ? String.format("%.1fB", mb / 1000f) : mb + "mB";
     }
 
-    // ── Properties ────────────────────────────────────────────────────────────
-
     @Override protected DirectionProperty getFacingProperty() { return ForgeFurnaceController.FACING; }
     @Override protected BooleanProperty   getFormedProperty() { return ForgeFurnaceController.FORMED; }
     @Override protected BooleanProperty   getActiveProperty() { return ForgeFurnaceController.ACTIVE; }
     @Override protected @NotNull Component getDefaultName()   { return Component.translatable("container.dif.forge_furnace"); }
     @Override public @NotNull Component getDisplayName()      { return Component.translatable("container.dif.forge_furnace"); }
-
-    // ── WorldlyContainer ──────────────────────────────────────────────────────
 
     @Override public net.neoforged.neoforge.items.ItemStackHandler getInventory() { return forgeInventory; }
 
@@ -694,10 +646,8 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
     @Override protected void setItems(@NotNull net.minecraft.core.NonNullList<ItemStack> stacks) {
         for (int i = 0; i < stacks.size() && i < forgeInventory.getSlots(); i++) forgeInventory.setStackInSlot(i, stacks.get(i));
     }
-    @Override protected void insertOrSwapInput(Player player, InteractionHand hand, ItemStack held) { /* handled in handleInteraction */ }
-    @Override protected void extractOutput(Player player, InteractionHand hand) { /* handled in handleInteraction */ }
-
-    // ── NBT ───────────────────────────────────────────────────────────────────
+    @Override protected void insertOrSwapInput(Player player, InteractionHand hand, ItemStack held) { }
+    @Override protected void extractOutput(Player player, InteractionHand hand) { }
 
     @Override
     protected void saveExtraData(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
@@ -721,7 +671,11 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         cachedHeatSpeed      = tag.getFloat("heatSpeed");
         preferredOutputTank  = tag.contains("preferredOutputTank") ? tag.getInt("preferredOutputTank") : -1;
         int[] savedOrder = tag.getIntArray("renderOrder");
-        if (savedOrder.length == FLUID_TANK_COUNT) System.arraycopy(savedOrder, 0, fluidRenderOrder, 0, FLUID_TANK_COUNT);
+        if (savedOrder.length == FLUID_TANK_COUNT) {
+            System.arraycopy(savedOrder, 0, fluidRenderOrder, 0, FLUID_TANK_COUNT);
+        } else {
+            for (int i = 0; i < FLUID_TANK_COUNT; i++) fluidRenderOrder[i] = i;
+        }
         if (tag.contains("fluidTanks")) {
             ListTag tl = tag.getList("fluidTanks", Tag.TAG_COMPOUND);
             for (int i = 0; i < Math.min(tl.size(), FLUID_TANK_COUNT); i++) fluidTanks[i].readFromNBT(provider, tl.getCompound(i));
