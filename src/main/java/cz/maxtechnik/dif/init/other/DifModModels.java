@@ -24,5 +24,6 @@ public class DifModModels{
 	@SubscribeEvent
 	public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerBlockEntityRenderer(DifModBlockEntities.FORGE_FURNACE_CONTROLLER.get(), ForgeGlassRenderer::new);
+		event.registerBlockEntityRenderer(DifModBlockEntities.FORGE_GLASS.get(), cz.maxtechnik.dif.client.renderer.ForgeGlassBlockEntityRenderer::new);
 	}
 }

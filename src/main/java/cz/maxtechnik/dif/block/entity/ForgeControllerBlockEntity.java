@@ -362,7 +362,33 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
 
         this.glassLayers = newLayers;
         resizeTankCapacity();
+        propagateControllerPosToGlass(level, pos, blockState, newLayers);
         setChanged();
+    }
+
+    /**
+     * Writes this controller's BlockPos into every ForgeGlassBlockEntity that
+     * belongs to the current structure (layers 1..newLayers).
+     * Pass newLayers=0 to clear the reference from all formerly-owned glass blocks.
+     */
+    private void propagateControllerPosToGlass(Level level, BlockPos ctrlPos,
+                                                BlockState blockState, int layers) {
+        Direction facing = blockState.getOptionalValue(getFacingProperty()).orElse(Direction.SOUTH);
+        Direction intoStr = facing.getOpposite();
+        Direction right   = intoStr.getClockWise();
+
+        // Clear first: scan a safe max range in case layers decreased
+        int scanDepth = Math.max(layers, ForgeMultiblockHelper.MAX_GLASS_LAYERS);
+        for (int layer = 1; layer <= scanDepth; layer++) {
+            for (int z = 0; z < 3; z++) {
+                for (int x = -1; x <= 1; x++) {
+                    BlockPos gp = ctrlPos.relative(intoStr, z).relative(right, x).above(layer);
+                    if (level.getBlockEntity(gp) instanceof cz.maxtechnik.dif.block.entity.ForgeGlassBlockEntity gbe) {
+                        gbe.setControllerPos(layer <= layers ? ctrlPos : null);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -471,11 +497,10 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
      */
     private void resizeTankCapacity() {
         int totalMb = ForgeMultiblockHelper.totalFluidCapacity(glassLayers);
-        int perTank = glassLayers == 0 ? 0 : Math.max(1000, totalMb / FLUID_TANK_COUNT);
         for (FluidTank tank : fluidTanks) {
             // Nesmíme snížit kapacitu pod aktuální obsah!
             int minCap = tank.getFluidAmount();
-            tank.setCapacity(Math.max(minCap, perTank));
+            tank.setCapacity(Math.max(minCap, totalMb));
         }
         // Resize inventáře podle nových vrstev
         int newInvSize = glassLayers * SLOTS_PER_LAYER;
@@ -515,13 +540,37 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
      *
      * @return množství skutečně přidaného fluidu
      */
+    public int getTotalFluidAmount() {
+        int total = 0;
+        for (FluidTank tank : fluidTanks) {
+            total += tank.getFluidAmount();
+        }
+        return total;
+    }
+
+    /**
+     * Přidá roztavený fluid do prvního volného nebo odpovídajícího tanku.
+     * Pokud je locked, odmítne přidat.
+     *
+     * @return množství skutečně přidaného fluidu
+     */
     public int addMoltenFluid(FluidStack fluid) {
-        if (locked) return 0;
+        if (locked || fluid.isEmpty()) return 0;
+
+        int totalMb = ForgeMultiblockHelper.totalFluidCapacity(glassLayers);
+        int currentTotal = getTotalFluidAmount();
+        int spaceLeft = Math.max(0, totalMb - currentTotal);
+        if (spaceLeft <= 0) return 0;
+
+        FluidStack resource = fluid.copy();
+        if (resource.getAmount() > spaceLeft) {
+            resource.setAmount(spaceLeft);
+        }
 
         // Nejdřív najdi tank se stejným fluidem
         for (FluidTank tank : fluidTanks) {
-            if (!tank.isEmpty() && tank.getFluid().getFluid() == fluid.getFluid()) {
-                int filled = tank.fill(fluid, IFluidHandler.FluidAction.EXECUTE);
+            if (!tank.isEmpty() && tank.getFluid().getFluid() == resource.getFluid()) {
+                int filled = tank.fill(resource, IFluidHandler.FluidAction.EXECUTE);
                 compactFluids();
                 return filled;
             }
@@ -529,7 +578,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         // Pak první prázdný tank
         for (FluidTank tank : fluidTanks) {
             if (tank.isEmpty()) {
-                int filled = tank.fill(fluid, IFluidHandler.FluidAction.EXECUTE);
+                int filled = tank.fill(resource, IFluidHandler.FluidAction.EXECUTE);
                 compactFluids();
                 return filled;
             }
@@ -687,7 +736,39 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
                 return true;
             }
             @Override public int fill(@NotNull FluidStack resource, @NotNull FluidAction action) {
-                return 0; // Nelze plnit zvenku přímo — jen přes tavení
+                if (locked || resource.isEmpty()) return 0;
+
+                int totalMb = ForgeMultiblockHelper.totalFluidCapacity(glassLayers);
+                int currentTotal = getTotalFluidAmount();
+                int spaceLeft = Math.max(0, totalMb - currentTotal);
+                if (spaceLeft <= 0) return 0;
+
+                FluidStack toFill = resource.copy();
+                if (toFill.getAmount() > spaceLeft) {
+                    toFill.setAmount(spaceLeft);
+                }
+
+                // 1. Try to find existing matching tank
+                for (FluidTank tank : fluidTanks) {
+                    if (!tank.isEmpty() && tank.getFluid().getFluid() == toFill.getFluid()) {
+                        int filled = tank.fill(toFill, action);
+                        if (action.execute() && filled > 0) {
+                            compactFluids();
+                        }
+                        return filled;
+                    }
+                }
+                // 2. Try to find first empty tank
+                for (FluidTank tank : fluidTanks) {
+                    if (tank.isEmpty()) {
+                        int filled = tank.fill(toFill, action);
+                        if (action.execute() && filled > 0) {
+                            compactFluids();
+                        }
+                        return filled;
+                    }
+                }
+                return 0;
             }
             @Override public @NotNull FluidStack drain(@NotNull FluidStack resource, @NotNull FluidAction action) {
                 FluidStack drained = FluidStack.EMPTY;
@@ -1025,4 +1106,5 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         // Přepočítej kapacitu tanků
         resizeTankCapacity();
     }
+
 }

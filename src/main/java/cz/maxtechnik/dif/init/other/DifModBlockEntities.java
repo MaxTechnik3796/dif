@@ -54,6 +54,7 @@ public class DifModBlockEntities{
 
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<cz.maxtechnik.dif.block.entity.ForgeBrickBlockEntity>> FORGE_BRICK=register("forge_brick",DifModBlocks.FORGE_BRICK,cz.maxtechnik.dif.block.entity.ForgeBrickBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<cz.maxtechnik.dif.block.entity.ForgeControllerBlockEntity>> FORGE_FURNACE_CONTROLLER=register("forge_furnace_controller",DifModBlocks.FORGE_FURNACE_CONTROLLER,cz.maxtechnik.dif.block.entity.ForgeControllerBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<cz.maxtechnik.dif.block.entity.ForgeGlassBlockEntity>> FORGE_GLASS=register("forge_glass",DifModBlocks.FORGE_GLASS,cz.maxtechnik.dif.block.entity.ForgeGlassBlockEntity::new);
 
 	private static <T extends net.minecraft.world.level.block.entity.BlockEntity> DeferredHolder<BlockEntityType<?>,BlockEntityType<T>> register(String name,Supplier<? extends Block> block,BlockEntityType.BlockEntitySupplier<T> supplier){
 		return REGISTRY.register(name,()->BlockEntityType.Builder.of(supplier,block.get()).build(null));

@@ -1,29 +1,40 @@
 package cz.maxtechnik.dif.block;
 
 import cz.maxtechnik.dif.block.entity.ForgeControllerBlockEntity;
+import cz.maxtechnik.dif.block.entity.ForgeGlassBlockEntity;
+import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.TransparentBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Forge Glass — sklo vrstva Forge pece.
  *
- * Extends TransparentBlock (Minecraft 1.21.1 — GlassBlock/AbstractGlassBlock
- * were merged into HalfTransparentBlock → TransparentBlock).
- * skipRendering is inherited from HalfTransparentBlock and automatically
- * hides internal faces between adjacent ForgeGlassBlock blocks.
+ * Extends TransparentBlock (Minecraft 1.21.1).
+ * Implements EntityBlock so each glass block has a ForgeGlassBlockEntity
+ * that stores the controller position, allowing the glass-side BER to
+ * render fluid without requiring the controller to be in the camera frustum.
  */
-public class ForgeGlassBlock extends TransparentBlock {
+public class ForgeGlassBlock extends TransparentBlock implements EntityBlock {
 
     public ForgeGlassBlock(BlockBehaviour.Properties properties) {
         super(properties);
     }
 
-    // skipRendering inherited from HalfTransparentBlock:
-    //   adjacentBlockState.is(this) → hides shared face between two ForgeGlass blocks
+    // ── EntityBlock ───────────────────────────────────────────────────────────
+
+    @Override
+    public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
+        return new ForgeGlassBlockEntity(pos, state);
+    }
+
+    // ── Placement / removal ───────────────────────────────────────────────────
 
     @Override
     protected void onRemove(
@@ -34,6 +45,10 @@ public class ForgeGlassBlock extends TransparentBlock {
             boolean movedByPiston
     ) {
         if (!blockState.is(newState.getBlock()) && !level.isClientSide) {
+            // Clear controller reference in the block entity before it is removed
+            if (level.getBlockEntity(pos) instanceof ForgeGlassBlockEntity gbe) {
+                gbe.setControllerPos(null);
+            }
             notifyNearbyController(level, pos);
         }
         super.onRemove(blockState, level, pos, newState, movedByPiston);
@@ -52,6 +67,8 @@ public class ForgeGlassBlock extends TransparentBlock {
             notifyNearbyController(level, pos);
         }
     }
+
+    // ── Helper ────────────────────────────────────────────────────────────────
 
     /**
      * Searches for a ForgeControllerBlockEntity below this position
