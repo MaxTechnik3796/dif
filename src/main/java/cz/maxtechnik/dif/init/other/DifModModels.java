@@ -1,5 +1,7 @@
 package cz.maxtechnik.dif.init.other;
 
+import cz.maxtechnik.dif.client.renderer.ForgeGlassRenderer;
+import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.model.*;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -17,5 +19,10 @@ public class DifModModels{
 		event.registerLayerDefinition(ModelJetpack.LAYER_LOCATION, ModelJetpack::createBodyLayer);
 		event.registerLayerDefinition(ModelElectroRunners.LAYER_LOCATION,ModelElectroRunners::createBodyLayer);
 		event.registerLayerDefinition(FormulaModel.LAYER_LOCATION, FormulaModel::createBodyLayer);
+	}
+
+	@SubscribeEvent
+	public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+		event.registerBlockEntityRenderer(DifModBlockEntities.FORGE_FURNACE_CONTROLLER.get(), ForgeGlassRenderer::new);
 	}
 }

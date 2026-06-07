@@ -11,30 +11,19 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Forge Glass — sklo vrstva Forge pece.
  *
- * Tento blok nemá vlastní BlockEntity — veškerá logika je v controlleru.
- * Vizuální renderování kapaliny uvnitř řešíš vlastním rendererem
- * (ForgeFluidRenderer) který čte data z ForgeControllerBlockEntity.
- *
- * Chování při zničení:
- *   Při onRemove controller detekuje chybějící sklo a přejde do
- *   jednoho ze dvou stavů:
- *     a) Vrstva nad hladinou kapaliny → jen sníží kapacitu, nezamkne se
- *     b) Vrstva na úrovni nebo pod hladinou → controller se uzamkne (LOCKED state)
- *
- * Chování při položení:
- *   Controller při příštím validačním ticku detekuje novou vrstvu
- *   a automaticky rozšíří kapacitu (pokud uzavírá chybějící blok při LOCKED).
- *
- * Extends TransparentBlock (Minecraft 1.21.1 — dřívější GlassBlock/AbstractGlassBlock
- * byly sloučeny do HalfTransparentBlock → TransparentBlock).
- * skipRendering je zděděno z HalfTransparentBlock a skrývá vnitřní strany
- * mezi dvěma sousedními ForgeGlassBlock bloky automaticky.
+ * Extends TransparentBlock (Minecraft 1.21.1 — GlassBlock/AbstractGlassBlock
+ * were merged into HalfTransparentBlock → TransparentBlock).
+ * skipRendering is inherited from HalfTransparentBlock and automatically
+ * hides internal faces between adjacent ForgeGlassBlock blocks.
  */
 public class ForgeGlassBlock extends TransparentBlock {
 
     public ForgeGlassBlock(BlockBehaviour.Properties properties) {
         super(properties);
     }
+
+    // skipRendering inherited from HalfTransparentBlock:
+    //   adjacentBlockState.is(this) → hides shared face between two ForgeGlass blocks
 
     @Override
     protected void onRemove(
@@ -45,7 +34,6 @@ public class ForgeGlassBlock extends TransparentBlock {
             boolean movedByPiston
     ) {
         if (!blockState.is(newState.getBlock()) && !level.isClientSide) {
-            // Najdi controller pod tímto sklem (může být několik vrstev níže)
             notifyNearbyController(level, pos);
         }
         super.onRemove(blockState, level, pos, newState, movedByPiston);
@@ -61,18 +49,15 @@ public class ForgeGlassBlock extends TransparentBlock {
     ) {
         super.onPlace(blockState, level, pos, oldState, movedByPiston);
         if (!level.isClientSide) {
-            // Nově položené sklo může uzavřít díru → upozorni controller
             notifyNearbyController(level, pos);
         }
     }
 
     /**
-     * Hledá ForgeControllerBlockEntity pod touto pozicí (max 18 bloků dolů =
-     * MAX_GLASS_LAYERS + controller vrstva + burner vrstva).
-     * Když najde, nastaví forceValidation = true.
+     * Searches for a ForgeControllerBlockEntity below this position
+     * (max MAX_GLASS_LAYERS + 2 blocks down) and forces revalidation.
      */
     private void notifyNearbyController(Level level, BlockPos glassPos) {
-        // Hledá controller v 5x5 sloupci pod tímto sklem
         int searchDepth = cz.maxtechnik.dif.util.ForgeMultiblockHelper.MAX_GLASS_LAYERS + 2;
         for (int dy = 1; dy <= searchDepth; dy++) {
             int y = glassPos.getY() - dy;
