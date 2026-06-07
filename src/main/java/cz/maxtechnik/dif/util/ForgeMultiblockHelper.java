@@ -44,11 +44,12 @@ public final class ForgeMultiblockHelper {
      * @param controller pozice controller bloku (Y+1 vrstva)
      * @param burnerPred predikát pro Blaze Burner blok
      */
-    public static boolean validateBurnerLayer(Level level, BlockPos controller,
+    public static boolean validateBurnerLayer(Level level, BlockPos controller, Direction intoStructure,
                                               Predicate<BlockState> burnerPred) {
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dz = -1; dz <= 1; dz++) {
-                BlockPos check = controller.offset(dx, -1, dz);
+        Direction right = intoStructure.getClockWise();
+        for (int z = 0; z < 3; z++) {
+            for (int x = -1; x <= 1; x++) {
+                BlockPos check = controller.relative(intoStructure, z).relative(right, x).below();
                 if (!burnerPred.test(level.getBlockState(check))) return false;
             }
         }
@@ -63,12 +64,13 @@ public final class ForgeMultiblockHelper {
      * @param ctrlPos  pozice controlleru
      * @param brickPred predikát pro Forge Brick blok
      */
-    public static boolean validateBrickLayer(Level level, BlockPos ctrlPos,
+    public static boolean validateBrickLayer(Level level, BlockPos ctrlPos, Direction intoStructure,
                                              Predicate<BlockState> brickPred) {
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dz = -1; dz <= 1; dz++) {
-                if (dx == 0 && dz == 0) continue; // controller samotný se přeskakuje
-                BlockPos check = ctrlPos.offset(dx, 0, dz);
+        Direction right = intoStructure.getClockWise();
+        for (int z = 0; z < 3; z++) {
+            for (int x = -1; x <= 1; x++) {
+                if (z == 0 && x == 0) continue; // controller samotný se přeskakuje
+                BlockPos check = ctrlPos.relative(intoStructure, z).relative(right, x);
                 if (!brickPred.test(level.getBlockState(check))) return false;
             }
         }
@@ -91,11 +93,11 @@ public final class ForgeMultiblockHelper {
      * @param glassPred predikát pro ForgeGlass blok
      * @return počet kompletních vrstev (0 až MAX_GLASS_LAYERS)
      */
-    public static int countGlassLayers(Level level, BlockPos ctrlPos,
+    public static int countGlassLayers(Level level, BlockPos ctrlPos, Direction intoStructure,
                                        Predicate<BlockState> glassPred) {
         int count = 0;
         for (int layer = 1; layer <= MAX_GLASS_LAYERS; layer++) {
-            if (isGlassLayerComplete(level, ctrlPos, layer, glassPred)) {
+            if (isGlassLayerComplete(level, ctrlPos, intoStructure, layer, glassPred)) {
                 count++;
             } else {
                 break; // Přeruš při první neúplné vrstvě
@@ -107,14 +109,14 @@ public final class ForgeMultiblockHelper {
     /**
      * Zkontroluje jednu konkrétní sklo vrstvu.
      *
-     * @param layer  1 = první sklo vrstva (Y+2 od controlleru), 2 = Y+3 atd.
+     * @param layer  1 = první sklo vrstva (Y+1 od controlleru), 2 = Y+2 atd.
      */
-    public static boolean isGlassLayerComplete(Level level, BlockPos ctrlPos,
+    public static boolean isGlassLayerComplete(Level level, BlockPos ctrlPos, Direction intoStructure,
                                                int layer, Predicate<BlockState> glassPred) {
-        int worldY = ctrlPos.getY() + layer; // Sklo začíná na Y+1 nad controllerem
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dz = -1; dz <= 1; dz++) {
-                BlockPos check = new BlockPos(ctrlPos.getX() + dx, worldY, ctrlPos.getZ() + dz);
+        Direction right = intoStructure.getClockWise();
+        for (int z = 0; z < 3; z++) {
+            for (int x = -1; x <= 1; x++) {
+                BlockPos check = ctrlPos.relative(intoStructure, z).relative(right, x).above(layer);
                 if (!glassPred.test(level.getBlockState(check))) return false;
             }
         }
@@ -153,11 +155,12 @@ public final class ForgeMultiblockHelper {
      * @param ctrlPos  pozice controlleru
      * @return celkové heat body 0–18
      */
-    public static int calculateHeatPoints(Level level, BlockPos ctrlPos) {
+    public static int calculateHeatPoints(Level level, BlockPos ctrlPos, Direction intoStructure) {
         int points = 0;
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dz = -1; dz <= 1; dz++) {
-                BlockPos burnerPos = ctrlPos.offset(dx, -1, dz);
+        Direction right = intoStructure.getClockWise();
+        for (int z = 0; z < 3; z++) {
+            for (int x = -1; x <= 1; x++) {
+                BlockPos burnerPos = ctrlPos.relative(intoStructure, z).relative(right, x).below();
                 BlockState burnerState = level.getBlockState(burnerPos);
                 com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel heat =
                         com.simibubi.create.content.processing.burner.BlazeBurnerBlock.getHeatLevelOf(burnerState);
@@ -210,12 +213,14 @@ public final class ForgeMultiblockHelper {
     /**
      * Iteruje přes 8 brick pozic v controller vrstvě (bez controlleru samotného).
      */
-    public static void forEachBrick(BlockPos ctrlPos, BrickVisitor visitor) {
+    public static void forEachBrick(BlockPos ctrlPos, Direction intoStructure, BrickVisitor visitor) {
         BlockPos.MutableBlockPos mp = new BlockPos.MutableBlockPos();
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dz = -1; dz <= 1; dz++) {
-                if (dx == 0 && dz == 0) continue;
-                mp.set(ctrlPos.getX() + dx, ctrlPos.getY(), ctrlPos.getZ() + dz);
+        Direction right = intoStructure.getClockWise();
+        for (int z = 0; z < 3; z++) {
+            for (int x = -1; x <= 1; x++) {
+                if (z == 0 && x == 0) continue;
+                BlockPos pos = ctrlPos.relative(intoStructure, z).relative(right, x);
+                mp.set(pos.getX(), pos.getY(), pos.getZ());
                 if (!visitor.visit(mp)) return;
             }
         }
@@ -224,12 +229,12 @@ public final class ForgeMultiblockHelper {
     /**
      * Iteruje přes všechny bloky skla v daném počtu vrstev.
      */
-    public static void forEachGlassBlock(BlockPos ctrlPos, int glassLayers, GlassVisitor visitor) {
+    public static void forEachGlassBlock(BlockPos ctrlPos, Direction intoStructure, int glassLayers, GlassVisitor visitor) {
+        Direction right = intoStructure.getClockWise();
         for (int layer = 1; layer <= glassLayers; layer++) {
-            int worldY = ctrlPos.getY() + layer; // Sklo začíná na Y+1 nad controllerem
-            for (int dx = -1; dx <= 1; dx++) {
-                for (int dz = -1; dz <= 1; dz++) {
-                    BlockPos pos = new BlockPos(ctrlPos.getX() + dx, worldY, ctrlPos.getZ() + dz);
+            for (int z = 0; z < 3; z++) {
+                for (int x = -1; x <= 1; x++) {
+                    BlockPos pos = ctrlPos.relative(intoStructure, z).relative(right, x).above(layer);
                     if (!visitor.visit(pos, layer)) return;
                 }
             }

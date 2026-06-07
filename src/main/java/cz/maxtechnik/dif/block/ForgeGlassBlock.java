@@ -67,12 +67,12 @@ public class ForgeGlassBlock extends Block {
      * Když najde, nastaví forceValidation = true.
      */
     private void notifyNearbyController(Level level, BlockPos glassPos) {
-        // Hledá controller v 3x3 sloupci pod tímto sklem
+        // Hledá controller v 5x5 sloupci pod tímto sklem
         int searchDepth = cz.maxtechnik.dif.util.ForgeMultiblockHelper.MAX_GLASS_LAYERS + 2;
         for (int dy = 1; dy <= searchDepth; dy++) {
             int y = glassPos.getY() - dy;
-            for (int dx = -1; dx <= 1; dx++) {
-                for (int dz = -1; dz <= 1; dz++) {
+            for (int dx = -2; dx <= 2; dx++) {
+                for (int dz = -2; dz <= 2; dz++) {
                     BlockPos check = new BlockPos(glassPos.getX() + dx, y, glassPos.getZ() + dz);
                     if (level.getBlockEntity(check) instanceof ForgeControllerBlockEntity ctrl) {
                         ctrl.forceValidation = true;

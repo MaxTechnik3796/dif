@@ -120,7 +120,10 @@ public class ForgeFurnaceController extends Block implements EntityBlock, IWrenc
     }
 
     private static void releaseBricks(Level level, ForgeControllerBlockEntity be) {
-        cz.maxtechnik.dif.util.ForgeMultiblockHelper.forEachBrick(be.getBlockPos(), brickPos -> {
+        net.minecraft.core.Direction facing = level.getBlockState(be.getBlockPos())
+                .getOptionalValue(FACING).orElse(net.minecraft.core.Direction.SOUTH);
+        net.minecraft.core.Direction intoStructure = facing.getOpposite();
+        cz.maxtechnik.dif.util.ForgeMultiblockHelper.forEachBrick(be.getBlockPos(), intoStructure, brickPos -> {
             if (level.getBlockEntity(brickPos) instanceof cz.maxtechnik.dif.block.entity.ForgeBrickBlockEntity brick) {
                 brick.setControllerPos(null);
             }
