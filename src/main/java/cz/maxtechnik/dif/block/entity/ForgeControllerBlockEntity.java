@@ -1,13 +1,10 @@
 package cz.maxtechnik.dif.block.entity;
 
-import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import cz.maxtechnik.dif.block.ForgeBrickBlock;
 import cz.maxtechnik.dif.block.ForgeFurnaceController;
 import cz.maxtechnik.dif.block.ForgeGlassBlock;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
 import cz.maxtechnik.dif.recipe.ForgeSmeltingRecipe;
 import cz.maxtechnik.dif.util.ForgeMultiblockHelper;
 import net.minecraft.ChatFormatting;
@@ -21,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -33,119 +31,62 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
 import static cz.maxtechnik.dif.DifMod.goggleTooltipFix;
 
-/**
- * ForgeControllerBlockEntity — řídicí block entity Forge pece.
- *
- * ═══════════════════════════════════════════════════════════════
- *  LOGIKA STRUKTURY
- * ═══════════════════════════════════════════════════════════════
- *
- * Validace probíhá ve dvou fázích:
- *   1. validateBase()  → ověří Blaze Burner vrstvu (Y-1) a Brick vrstvu (Y+0)
- *   2. countGlass()    → spočítá sklo vrstvy od Y+2 nahoru
- *
- * Kapacita se dynamicky přepočítává podle počtu sklo vrstev:
- *   - glassLayers × MB_PER_GLASS_LAYER mB fluid kapacity
- *   - glassLayers × SLOTS_PER_GLASS_LAYER item slotů
- *
- * ═══════════════════════════════════════════════════════════════
- *  LOCKED STATE (uzamčení při poškození skla)
- * ═══════════════════════════════════════════════════════════════
- *
- * Controller porovnává uložený glassLayers s aktuálním countGlass().
- * Pokud aktuální < uložený:
- *   - Kapalina sahá pouze do intaktních vrstev → jen sníží kapacitu
- *   - Kapalina sahá do poškozené/chybějící vrstvy → LOCKED = true
- *
- * LOCKED blokuje: nové suroviny do vstupní fronty, výstup přes spout/pipe
- * Odemknutí: hráč dostaví sklo NEBO vypustí kapalinu pod kritickou hladinu
- *
- * ═══════════════════════════════════════════════════════════════
- *  MULTI-FLUID (4 oddělené tanky)
- * ═══════════════════════════════════════════════════════════════
- *
- * Kapaliny se nemíchají. Každý fluid má vlastní tank (FluidTank).
- * Pořadí (pro rendering) lze měnit přes GUI — hráč přetáhne kapaliny.
- * Renderování čte fluidTanks[] + fillLevel pro výšku hladiny.
- */
 public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBlockEntity<ForgeSmeltingRecipe> {
 
     // ═══════════════════════════════════════════════════════════
     //  KONSTANTY
     // ═══════════════════════════════════════════════════════════
 
-    private static final int HEAT_CACHE_PERIOD  = 20;  // ticků mezi refreshem heat
-    private static final int GLASS_CHECK_PERIOD = 20;  // ticků mezi kontrolou skla
+    private static final int HEAT_CACHE_PERIOD  = 20;
+    private static final int GLASS_CHECK_PERIOD = 20;
 
-    /** Počet oddělených fluid tanků (různé kapaliny vedle sebe). */
     public static final int FLUID_TANK_COUNT = 4;
-
-    /** Počet item slotů na jednu sklo vrstvu. */
-    public static final int SLOTS_PER_LAYER = 9;
+    public static final int SLOTS_PER_LAYER  = 9;
 
     // ═══════════════════════════════════════════════════════════
     //  FLUID TANKY
     // ═══════════════════════════════════════════════════════════
 
-    /**
-     * 4 oddělené tanky pro různé roztavené kapaliny.
-     * Kapacita každého tanku = totalFluidCapacity / FLUID_TANK_COUNT.
-     * Při změně glassLayers se kapacita dynamicky přepočítá.
-     */
     public final FluidTank[] fluidTanks = new FluidTank[FLUID_TANK_COUNT];
 
     /**
-     * Pořadí tanků pro rendering (index do fluidTanks[]).
-     * Hráč může měnit pořadí přes GUI — nejtěžší kapalina typicky dole.
+     * Pořadí tanků pro rendering — index 0 = nejníže vizuálně (první na výstupu).
+     * cyclePreferredOutputTank() rotuje vybraný tank na pozici 0.
      */
     private final int[] fluidRenderOrder = {0, 1, 2, 3};
 
+    /**
+     * Index tanku upřednostněného při výstupu přes pipe/spout/kbelík.
+     * -1 = první neprázdný v render orderu (výchozí).
+     * Nastavuje se přes wrench → cyclePreferredOutputTank().
+     */
+    private int preferredOutputTank = -1;
+
     // ═══════════════════════════════════════════════════════════
-    //  DYNAMICKÝ INVENTÁŘ (18 slotů × počet sklo vrstev)
+    //  INVENTÁŘ
     // ═══════════════════════════════════════════════════════════
 
-    /**
-     * Vlastní inventář Forge pece — počet slotů se mění dynamicky.
-     * Výchozí kapacita 0 (dokud není sklo vrstva).
-     */
     public net.neoforged.neoforge.items.ItemStackHandler forgeInventory =
             new net.neoforged.neoforge.items.ItemStackHandler(0) {
-                @Override
-                protected void onContentsChanged(int slot) {
-                    cachedRecipe = null;
-                    setChanged();
-                }
-
-                @Override
-                public int getSlotLimit(int slot) {
-                    return 1;
-                }
+                @Override protected void onContentsChanged(int slot) { cachedRecipe = null; setChanged(); }
+                @Override public int getSlotLimit(int slot) { return 1; }
             };
 
     // ═══════════════════════════════════════════════════════════
-    //  STAV STRUKTURY
+    //  STAV
     // ═══════════════════════════════════════════════════════════
 
-    /** Počet aktuálně potvrzených sklo vrstev. */
-    private int glassLayers = 0;
-
-    /** True pokud controller nelze použít kvůli poškozené vrstvě pod kapalinou. */
-    private boolean locked = false;
-
-    /** Heat body ze všech 9 Blaze Burnerů (0–18). Cachováno každých 20 ticků. */
-    private int cachedHeatPoints = 0;
-
-    /** Rychlostní multiplikátor z heat bodů. */
-    private float cachedHeatSpeed = 0f;
-
-    private int heatCacheTick  = 0;
-    private int glassCacheTick = 0;
+    private int   glassLayers     = 0;
+    private boolean locked        = false;
+    private int   cachedHeatPoints = 0;
+    private float cachedHeatSpeed  = 0f;
+    private int   heatCacheTick   = 0;
+    private int   glassCacheTick  = 0;
 
     // ═══════════════════════════════════════════════════════════
     //  KONSTRUKTOR
@@ -153,17 +94,12 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
 
     public ForgeControllerBlockEntity(BlockPos pos, BlockState blockState) {
         super(DifModBlockEntities.FORGE_FURNACE_CONTROLLER.get(), pos, blockState);
-
-        // Inicializace tanků — kapacita se nastaví až při první validaci
         for (int i = 0; i < FLUID_TANK_COUNT; i++) {
-            final int tankIndex = i;
             fluidTanks[i] = new FluidTank(0) {
-                @Override
-                protected void onContentsChanged() {
+                @Override protected void onContentsChanged() {
                     super.onContentsChanged();
                     cachedRecipe = null;
                     setChanged();
-                    // Zkontroluj uzamčení při každé změně hladiny
                     checkLockState();
                 }
             };
@@ -171,273 +107,134 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
     }
 
     // ═══════════════════════════════════════════════════════════
-    //  TICKER FACTORY
+    //  TICKER
     // ═══════════════════════════════════════════════════════════
 
     public static <T extends net.minecraft.world.level.block.entity.BlockEntity>
     BlockEntityTicker<T> ticker(BlockEntityType<T> type) {
-        BlockEntityType<ForgeControllerBlockEntity> expected =
-                DifModBlockEntities.FORGE_FURNACE_CONTROLLER.get();
+        BlockEntityType<ForgeControllerBlockEntity> expected = DifModBlockEntities.FORGE_FURNACE_CONTROLLER.get();
         return type.equals(expected)
                 ? (lvl, pos, state, be) -> ((ForgeControllerBlockEntity) be).tick(lvl, pos, state)
                 : null;
     }
 
     // ═══════════════════════════════════════════════════════════
-    //  TICK OVERRIDE — rozšiřuje AbstractMultiblockControllerBlockEntity
+    //  TICK
     // ═══════════════════════════════════════════════════════════
 
-    /**
-     * Rozšíření tick() z abstraktní třídy.
-     * Přidává: heat refresh, glass check, lock kontrolu, integrita briků.
-     *
-     * VOLÁ SE Z: ticker() factory výše.
-     * POZN: super.tick() voláme ručně aby se zachovala validace struktury.
-     */
     @Override
     protected void tick(Level level, BlockPos pos, BlockState blockState) {
-        // 1. Heat refresh (každých 20 ticků)
-        if (heatCacheTick-- <= 0) {
-            heatCacheTick = HEAT_CACHE_PERIOD;
-            refreshHeat(level, pos);
-        }
+        if (heatCacheTick-- <= 0) { heatCacheTick = HEAT_CACHE_PERIOD; refreshHeat(level, pos); }
 
-        // 2. Validace struktury (nahrazuje validaci z abstraktní třídy)
         final boolean wasFormed = blockState.getValue(getFormedProperty());
         final int period = wasFormed ? FORMED_REVALIDATE_PERIOD : UNFORMED_REVALIDATE_PERIOD;
         final boolean shouldValidate = forceValidation || level.getGameTime() % period == 0;
-
         boolean isFormed = wasFormed;
 
-        final Direction facing = blockState.getOptionalValue(getFacingProperty()).orElse(Direction.SOUTH);
+        final Direction facing        = blockState.getOptionalValue(getFacingProperty()).orElse(Direction.SOUTH);
         final Direction intoStructure = facing.getOpposite();
 
         if (shouldValidate) {
             forceValidation = false;
-            // Struktura je zformovaná pokud má hotovou bázi a alespoň 1 vrstvu skla
             int actualGlass = countActualGlassLayers(level, pos, intoStructure);
             isFormed = validateBaseStructure(level) && actualGlass >= 1;
-
-            // Nová formace — zkontroluj, zda jsou cihličky volné k zabrání
             if (isFormed && !wasFormed && !canClaimAllBricks(level, pos, intoStructure)) {
                 isFormed = false;
-                if (!isConflicted) {
-                    isConflicted = true;
-                    setChanged();
-                }
+                if (!isConflicted) { isConflicted = true; setChanged(); }
             }
         }
 
         if (isFormed != wasFormed) {
-            if (isFormed) {
-                claimBricks(level, pos, intoStructure, pos);
-                isConflicted = false;
-            } else {
-                claimBricks(level, pos, intoStructure, null);
-                resetProgress();
-                setLocked(false); // Reset locked stavu při deformování
-                this.glassLayers = 0;
-                resizeTankCapacity();
-            }
-            blockState = blockState
-                    .setValue(getFormedProperty(), isFormed)
-                    .setValue(getActiveProperty(), false);
+            if (isFormed) { claimBricks(level, pos, intoStructure, pos); isConflicted = false; }
+            else { claimBricks(level, pos, intoStructure, null); resetProgress(); setLocked(false); glassLayers = 0; resizeTankCapacity(); }
+            blockState = blockState.setValue(getFormedProperty(), isFormed).setValue(getActiveProperty(), false);
             level.setBlock(pos, blockState, 3);
             setChanged();
         }
 
         if (!isFormed) return;
 
-        // ── Glass check (každých 20 ticků nebo při by-validation změnách) ──
-        if (glassCacheTick-- <= 0 || shouldValidate) {
-            glassCacheTick = GLASS_CHECK_PERIOD;
-            refreshGlassLayers(level, pos, blockState);
-        }
-
-        // ── Pokud je locked, přeskoč processing ───────────────────────────────
-        if (locked) {
-            return;
-        }
-
-        // ── Pokud není heat, nezpracovávej ────────────────────────────────────
-        if (cachedHeatPoints == 0) {
-            resetProgressAndDeactivate(level, pos, blockState);
-            return;
-        }
-
-        // Vstup → recept
-        if (!hasValidInput()) {
-            resetProgressAndDeactivate(level, pos, blockState);
-            return;
-        }
+        if (glassCacheTick-- <= 0 || shouldValidate) { glassCacheTick = GLASS_CHECK_PERIOD; refreshGlassLayers(level, pos, blockState); }
+        if (locked) return;
+        if (cachedHeatPoints == 0) { resetProgressAndDeactivate(level, pos, blockState); return; }
+        if (!hasValidInput())      { resetProgressAndDeactivate(level, pos, blockState); return; }
 
         final ForgeSmeltingRecipe recipe = findRecipe(level);
-        if (recipe == null) {
-            resetProgressAndDeactivate(level, pos, blockState);
-            return;
-        }
+        if (recipe == null) { resetProgressAndDeactivate(level, pos, blockState); return; }
 
         totalTime = getProcessingTime(recipe);
-
-        if (!canOutput(recipe)) {
-            setActive(level, pos, blockState, false);
-            return;
-        }
+        if (!canOutput(recipe)) { setActive(level, pos, blockState, false); return; }
 
         setActive(level, pos, blockState, true);
         progress++;
-
-        if (progress >= totalTime) {
-            finishRecipe(recipe);
-            progress = 0;
-            setChanged();
-        } else if (progress % 10 == 0) {
-            setChanged();
-        }
-    }
-
-    private int countActualGlassLayers(Level level, BlockPos pos, Direction intoStructure) {
-        Predicate<BlockState> glassPred = state -> state.getBlock() instanceof ForgeGlassBlock;
-        return ForgeMultiblockHelper.countGlassLayers(level, pos, intoStructure, glassPred);
-    }
-
-    private boolean canClaimAllBricks(Level level, BlockPos controllerPos, Direction intoStructure) {
-        final boolean[] ok = {true};
-        ForgeMultiblockHelper.forEachBrick(controllerPos, intoStructure, mp -> {
-            if (!brickCanBeClaimedBy(level, mp, controllerPos)) {
-                ok[0] = false;
-                return false; // stop
-            }
-            return true;
-        });
-        return ok[0];
-    }
-
-    private void claimBricks(Level level, BlockPos controllerPos, Direction intoStructure, @Nullable BlockPos owner) {
-        ForgeMultiblockHelper.forEachBrick(controllerPos, intoStructure, mp -> {
-            setBrickController(level, mp, owner);
-            return true;
-        });
+        if (progress >= totalTime) { finishRecipe(recipe); progress = 0; setChanged(); }
+        else if (progress % 10 == 0) setChanged();
     }
 
     // ═══════════════════════════════════════════════════════════
-    //  HEAT LOGIKA
+    //  HEAT
     // ═══════════════════════════════════════════════════════════
 
     private void refreshHeat(Level level, BlockPos pos) {
-        Direction facing = getBlockState().getOptionalValue(getFacingProperty()).orElse(Direction.SOUTH);
-        Direction intoStructure = facing.getOpposite();
+        Direction intoStructure = getBlockState().getOptionalValue(getFacingProperty()).orElse(Direction.SOUTH).getOpposite();
         cachedHeatPoints = ForgeMultiblockHelper.calculateHeatPoints(level, pos, intoStructure);
         cachedHeatSpeed  = ForgeMultiblockHelper.heatPointsToSpeed(cachedHeatPoints);
         setChanged();
     }
 
-    public int getHeatPoints()  { return cachedHeatPoints; }
-    public float getHeatSpeed() { return cachedHeatSpeed; }
+    public int   getHeatPoints() { return cachedHeatPoints; }
+    public float getHeatSpeed()  { return cachedHeatSpeed; }
 
     // ═══════════════════════════════════════════════════════════
-    //  GLASS LAYER LOGIKA
+    //  GLASS LAYERS
     // ═══════════════════════════════════════════════════════════
+
+    private int countActualGlassLayers(Level level, BlockPos pos, Direction intoStructure) {
+        return ForgeMultiblockHelper.countGlassLayers(level, pos, intoStructure,
+                state -> state.getBlock() instanceof ForgeGlassBlock);
+    }
 
     private void refreshGlassLayers(Level level, BlockPos pos, BlockState blockState) {
         if (!blockState.getValue(ForgeFurnaceController.FORMED)) return;
-
-        Predicate<net.minecraft.world.level.block.state.BlockState> glassPred =
-                state -> state.getBlock() instanceof ForgeGlassBlock;
-
-        Direction facing = blockState.getOptionalValue(getFacingProperty()).orElse(Direction.SOUTH);
-        Direction intoStructure = facing.getOpposite();
-
-        int newLayers = ForgeMultiblockHelper.countGlassLayers(level, pos, intoStructure, glassPred);
-
-        if (newLayers == glassLayers) return; // Žádná změna
-
-        if (newLayers < glassLayers) {
-            // Vrstvy ubývají — zkontroluj uzamčení
-            handleGlassRemoved(newLayers);
-        } else {
-            // Vrstvy přibývají — rozšiř kapacitu
-            handleGlassAdded(newLayers);
-        }
-
+        Direction intoStructure = blockState.getOptionalValue(getFacingProperty()).orElse(Direction.SOUTH).getOpposite();
+        int newLayers = ForgeMultiblockHelper.countGlassLayers(level, pos, intoStructure,
+                state -> state.getBlock() instanceof ForgeGlassBlock);
+        if (newLayers == glassLayers) return;
+        if (newLayers < glassLayers) handleGlassRemoved(newLayers);
+        else if (locked) checkLockState();
         this.glassLayers = newLayers;
         resizeTankCapacity();
         propagateControllerPosToGlass(level, pos, blockState, newLayers);
         setChanged();
     }
 
-    /**
-     * Writes this controller's BlockPos into every ForgeGlassBlockEntity that
-     * belongs to the current structure (layers 1..newLayers).
-     * Pass newLayers=0 to clear the reference from all formerly-owned glass blocks.
-     */
-    private void propagateControllerPosToGlass(Level level, BlockPos ctrlPos,
-                                                BlockState blockState, int layers) {
-        Direction facing = blockState.getOptionalValue(getFacingProperty()).orElse(Direction.SOUTH);
-        Direction intoStr = facing.getOpposite();
+    private void propagateControllerPosToGlass(Level level, BlockPos ctrlPos, BlockState blockState, int layers) {
+        Direction intoStr = blockState.getOptionalValue(getFacingProperty()).orElse(Direction.SOUTH).getOpposite();
         Direction right   = intoStr.getClockWise();
-
-        // Clear first: scan a safe max range in case layers decreased
         int scanDepth = Math.max(layers, ForgeMultiblockHelper.MAX_GLASS_LAYERS);
-        for (int layer = 1; layer <= scanDepth; layer++) {
-            for (int z = 0; z < 3; z++) {
+        for (int layer = 1; layer <= scanDepth; layer++)
+            for (int z = 0; z < 3; z++)
                 for (int x = -1; x <= 1; x++) {
                     BlockPos gp = ctrlPos.relative(intoStr, z).relative(right, x).above(layer);
-                    if (level.getBlockEntity(gp) instanceof cz.maxtechnik.dif.block.entity.ForgeGlassBlockEntity gbe) {
+                    if (level.getBlockEntity(gp) instanceof ForgeGlassBlockEntity gbe)
                         gbe.setControllerPos(layer <= layers ? ctrlPos : null);
-                    }
                 }
-            }
-        }
     }
 
-    /**
-     * Při úbytku sklo vrstev:
-     *  - Fluidy zůstávají (neztrácejí se, kapacita se snižuje ale obsah zůstane).
-     *  - Přebytečné itemy nad limit nové kapacity vypadnou na zem.
-     *  - LOCKED se nastaví pouze pokud controller nemá ani 1 sklo vrstvu.
-     */
     private void handleGlassRemoved(int newLayers) {
-        // Vyhoď přebytečné itemy
         trimExcessItems(newLayers);
-        // Uzamkni pouze pokud nejsou žádné sklo vrstvy (min. 1 pro funkčnost)
-        if (newLayers == 0) {
-            setLocked(true);
-        }
+        if (newLayers == 0) setLocked(true);
     }
 
-    private void handleGlassAdded(int newLayers) {
-        // Pokud byl locked a nová vrstva uzavírá díru → zkus odemknout
-        if (locked) {
-            checkLockState();
-        }
-    }
-
-    /**
-     * Přepočítá kolik vrstev je obsazeno kapalinou (odspodu).
-     * 1 vrstva = MB_PER_GLASS_LAYER mB.
-     */
     private int getOccupiedLayerCount() {
-        long totalFilled = 0;
-        for (FluidTank tank : fluidTanks) {
-            totalFilled += tank.getFluidAmount();
-        }
-        int mbPerLayer = ForgeMultiblockHelper.MB_PER_GLASS_LAYER;
-        return (int) Math.ceil((double) totalFilled / mbPerLayer);
+        long total = 0;
+        for (FluidTank t : fluidTanks) total += t.getFluidAmount();
+        return (int) Math.ceil((double) total / ForgeMultiblockHelper.MB_PER_GLASS_LAYER);
     }
 
-    /**
-     * Zkontroluje zda lze odemknout controller.
-     * Odemkne se pokud: kapalina sahá max do glassLayers vrstev.
-     */
     private void checkLockState() {
-        if (!locked) return;
-        if (level == null) return;
-
-        int occupied = getOccupiedLayerCount();
-        if (occupied <= glassLayers) {
-            setLocked(false);
-        }
+        if (!locked || level == null) return;
+        if (getOccupiedLayerCount() <= glassLayers) setLocked(false);
     }
 
     private void setLocked(boolean value) {
@@ -445,162 +242,147 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         this.locked = value;
         if (level != null && !level.isClientSide) {
             BlockState state = getBlockState();
-            if (state.hasProperty(ForgeFurnaceController.LOCKED)) {
-                level.setBlock(worldPosition,
-                        state.setValue(ForgeFurnaceController.LOCKED, value), 3);
-            }
+            if (state.hasProperty(ForgeFurnaceController.LOCKED))
+                level.setBlock(worldPosition, state.setValue(ForgeFurnaceController.LOCKED, value), 3);
         }
         setChanged();
     }
 
-    /** Vyhodí přebytečné itemy ze vstupní fronty pokud se snížil počet slotů. */
     private void trimExcessItems(int newLayers) {
         int newSize = newLayers * SLOTS_PER_LAYER;
-        // Vyhoď vše nad nový limit
         for (int i = newSize; i < forgeInventory.getSlots(); i++) {
             ItemStack excess = forgeInventory.getStackInSlot(i);
             if (!excess.isEmpty() && level != null) {
-                net.minecraft.world.Containers.dropItemStack(
-                        level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), excess);
+                net.minecraft.world.Containers.dropItemStack(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), excess);
                 forgeInventory.setStackInSlot(i, ItemStack.EMPTY);
             }
         }
-        // Zmenši velikost inventáře
         resizeInventory(newSize);
     }
 
-    /** Změní počet slotů inventáře a zkopíruje stávající obsah. */
     private void resizeInventory(int newSize) {
         var newInv = new net.neoforged.neoforge.items.ItemStackHandler(newSize) {
-            @Override
-            protected void onContentsChanged(int slot) {
-                cachedRecipe = null;
-                setChanged();
-            }
-
-            @Override
-            public int getSlotLimit(int slot) {
-                return 1;
-            }
+            @Override protected void onContentsChanged(int slot) { cachedRecipe = null; setChanged(); }
+            @Override public int getSlotLimit(int slot) { return 1; }
         };
         int copy = Math.min(forgeInventory.getSlots(), newSize);
-        for (int i = 0; i < copy; i++) {
-            newInv.setStackInSlot(i, forgeInventory.getStackInSlot(i));
-        }
+        for (int i = 0; i < copy; i++) newInv.setStackInSlot(i, forgeInventory.getStackInSlot(i));
         forgeInventory = newInv;
     }
 
-    /**
-     * Přepočítá kapacitu tanků.
-     * DŮLEŽITÉ: kapacita se NIKDY nesnižuje pod aktuální obsah —
-     * fluidy zůstanou i když se zničí sklo vrstva.
-     */
     private void resizeTankCapacity() {
         int totalMb = ForgeMultiblockHelper.totalFluidCapacity(glassLayers);
-        for (FluidTank tank : fluidTanks) {
-            // Nesmíme snížit kapacitu pod aktuální obsah!
-            int minCap = tank.getFluidAmount();
-            tank.setCapacity(Math.max(minCap, totalMb));
-        }
-        // Resize inventáře podle nových vrstev
+        for (FluidTank tank : fluidTanks) tank.setCapacity(Math.max(tank.getFluidAmount(), totalMb));
         int newInvSize = glassLayers * SLOTS_PER_LAYER;
-        if (newInvSize != forgeInventory.getSlots()) {
-            resizeInventory(newInvSize);
+        if (newInvSize != forgeInventory.getSlots()) resizeInventory(newInvSize);
+    }
+
+    public int     getGlassLayers() { return glassLayers; }
+    public boolean isLocked()       { return locked; }
+
+    // ═══════════════════════════════════════════════════════════
+    //  PREFERRED OUTPUT + RENDER ORDER
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Wrench → cykluje preferovanou výstupní kapalinu.
+     * Vybraná kapalina se přesune na index 0 v render orderu
+     * (= vizuálně nejníže v peci, první na výstupu přes pipe/spout).
+     */
+    public void cyclePreferredOutputTank(Player player) {
+        // Najdi další neprázdný tank (od aktuálně preferovaného + 1)
+        int start = (preferredOutputTank + 1) % FLUID_TANK_COUNT;
+        for (int i = 0; i < FLUID_TANK_COUNT; i++) {
+            int candidate = (start + i) % FLUID_TANK_COUNT;
+            if (!fluidTanks[candidate].isEmpty()) {
+                preferredOutputTank = candidate;
+                // Přesuň na pozici 0 v render orderu — stane se nejnižší vizuálně
+                promoteToBottom(candidate);
+                FluidStack fs = fluidTanks[candidate].getFluid();
+                player.displayClientMessage(
+                        Component.literal("§6Output: §f" + fs.getHoverName().getString()
+                                + " §7(" + formatMb(fs.getAmount()) + ")"), true);
+                setChanged();
+                return;
+            }
         }
+        // Žádná kapalina → reset
+        preferredOutputTank = -1;
+        player.displayClientMessage(Component.literal("§7Output: auto"), true);
+        setChanged();
     }
 
-    public int getGlassLayers() { return glassLayers; }
-    public boolean isLocked()   { return locked; }
+    /**
+     * Přesune daný tank index na pozici 0 v render orderu
+     * (ostatní se posunou doprava). Pozice 0 = vizuálně nejníže.
+     */
+    private void promoteToBottom(int tankIdx) {
+        // Najdi aktuální pozici v render orderu
+        int pos = -1;
+        for (int i = 0; i < FLUID_TANK_COUNT; i++) {
+            if (fluidRenderOrder[i] == tankIdx) { pos = i; break; }
+        }
+        if (pos <= 0) return; // Už je dole nebo nenalezen
+        // Rotuj: přesuň na index 0, ostatní posuň o 1 nahoru
+        for (int i = pos; i > 0; i--) fluidRenderOrder[i] = fluidRenderOrder[i - 1];
+        fluidRenderOrder[0] = tankIdx;
+    }
+
+    public int[]  getFluidRenderOrder()     { return fluidRenderOrder; }
+    public int    getPreferredOutputTank()  { return preferredOutputTank; }
+
+    public void applyRenderOrder(int[] newOrder) {
+        if (newOrder.length != FLUID_TANK_COUNT) return;
+        System.arraycopy(newOrder, 0, fluidRenderOrder, 0, FLUID_TANK_COUNT);
+        setChanged();
+    }
 
     // ═══════════════════════════════════════════════════════════
-    //  MULTI-FLUID API (pro spout a pipe)
+    //  FLUID API
     // ═══════════════════════════════════════════════════════════
 
-    /**
-     * Vrátí fluid z konkrétního tanku podle indexu.
-     * Spout zavolá tuto metodu s indexem kapaliny kterou chce.
-     */
-    public FluidStack getFluidInTank(int tankIndex) {
-        if (tankIndex < 0 || tankIndex >= FLUID_TANK_COUNT) return FluidStack.EMPTY;
-        return fluidTanks[tankIndex].getFluid();
+    public FluidStack getFluidInTank(int idx) {
+        return (idx < 0 || idx >= FLUID_TANK_COUNT) ? FluidStack.EMPTY : fluidTanks[idx].getFluid();
     }
 
-    /**
-     * Odebere fluid z konkrétního tanku (volá spout).
-     * Pokud je locked, vrátí EMPTY a nic neodebere.
-     */
-    public FluidStack drainFromTank(int tankIndex, int amount, IFluidHandler.FluidAction action) {
-        if (tankIndex < 0 || tankIndex >= FLUID_TANK_COUNT) return FluidStack.EMPTY;
-        return fluidTanks[tankIndex].drain(amount, action);
+    public FluidStack drainFromTank(int idx, int amount, IFluidHandler.FluidAction action) {
+        if (idx < 0 || idx >= FLUID_TANK_COUNT) return FluidStack.EMPTY;
+        return fluidTanks[idx].drain(amount, action);
     }
 
-    /**
-     * Přidá roztavený fluid do prvního volného nebo odpovídajícího tanku.
-     * Pokud je locked, odmítne přidat.
-     *
-     * @return množství skutečně přidaného fluidu
-     */
     public int getTotalFluidAmount() {
         int total = 0;
-        for (FluidTank tank : fluidTanks) {
-            total += tank.getFluidAmount();
-        }
+        for (FluidTank t : fluidTanks) total += t.getFluidAmount();
         return total;
     }
 
-    /**
-     * Přidá roztavený fluid do prvního volného nebo odpovídajícího tanku.
-     * Pokud je locked, odmítne přidat.
-     *
-     * @return množství skutečně přidaného fluidu
-     */
     public int addMoltenFluid(FluidStack fluid) {
         if (locked || fluid.isEmpty()) return 0;
-
-        int totalMb = ForgeMultiblockHelper.totalFluidCapacity(glassLayers);
-        int currentTotal = getTotalFluidAmount();
-        int spaceLeft = Math.max(0, totalMb - currentTotal);
+        int spaceLeft = Math.max(0, ForgeMultiblockHelper.totalFluidCapacity(glassLayers) - getTotalFluidAmount());
         if (spaceLeft <= 0) return 0;
-
-        FluidStack resource = fluid.copy();
-        if (resource.getAmount() > spaceLeft) {
-            resource.setAmount(spaceLeft);
+        FluidStack res = fluid.copy();
+        if (res.getAmount() > spaceLeft) res.setAmount(spaceLeft);
+        for (FluidTank t : fluidTanks) {
+            if (!t.isEmpty() && t.getFluid().getFluid() == res.getFluid()) { int f = t.fill(res, IFluidHandler.FluidAction.EXECUTE); compactFluids(); return f; }
         }
-
-        // Nejdřív najdi tank se stejným fluidem
-        for (FluidTank tank : fluidTanks) {
-            if (!tank.isEmpty() && tank.getFluid().getFluid() == resource.getFluid()) {
-                int filled = tank.fill(resource, IFluidHandler.FluidAction.EXECUTE);
-                compactFluids();
-                return filled;
-            }
+        for (FluidTank t : fluidTanks) {
+            if (t.isEmpty()) { int f = t.fill(res, IFluidHandler.FluidAction.EXECUTE); compactFluids(); return f; }
         }
-        // Pak první prázdný tank
-        for (FluidTank tank : fluidTanks) {
-            if (tank.isEmpty()) {
-                int filled = tank.fill(resource, IFluidHandler.FluidAction.EXECUTE);
-                compactFluids();
-                return filled;
-            }
-        }
-        return 0; // Všechny tanky plné nebo obsazené jiným fluidem
+        return 0;
     }
 
-    /**
-     * Posune kapaliny směrem dolů v pořadí vykreslování (fluidRenderOrder),
-     * pokud je některý z nižších tanků prázdný.
-     */
+    /** Posune prázdné tanky na konec render orderu. */
     public void compactFluids() {
         for (int i = 0; i < FLUID_TANK_COUNT - 1; i++) {
-            int targetIdx = fluidRenderOrder[i];
-            if (fluidTanks[targetIdx].isEmpty()) {
-                // Najdi první neprázdný tank nad ním
+            int ti = fluidRenderOrder[i];
+            if (fluidTanks[ti].isEmpty()) {
                 for (int j = i + 1; j < FLUID_TANK_COUNT; j++) {
-                    int sourceIdx = fluidRenderOrder[j];
-                    if (!fluidTanks[sourceIdx].isEmpty()) {
-                        FluidStack sourceFluid = fluidTanks[sourceIdx].getFluid();
-                        fluidTanks[targetIdx].setFluid(sourceFluid.copy());
-                        fluidTanks[sourceIdx].setFluid(FluidStack.EMPTY);
+                    int si = fluidRenderOrder[j];
+                    if (!fluidTanks[si].isEmpty()) {
+                        fluidTanks[ti].setFluid(fluidTanks[si].getFluid().copy());
+                        fluidTanks[si].setFluid(FluidStack.EMPTY);
+                        // Aktualizuj preferredOutputTank pokud jsme přesunuli jeho fluid
+                        if (preferredOutputTank == si) preferredOutputTank = ti;
                         setChanged();
                         break;
                     }
@@ -609,452 +391,310 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         }
     }
 
-    /** Render order pro klientský renderer — pořadí vrstev kapaliny. */
-    public int[] getFluidRenderOrder() { return fluidRenderOrder; }
-
     // ═══════════════════════════════════════════════════════════
-    //  ABSTRAKTNÍ METODY — implementace
+    //  INTERAKCE HRÁČE
     // ═══════════════════════════════════════════════════════════
 
     @Override
-    protected Predicate<BlockState>[][][] getPattern() {
-        // Forge pec nepoužívá standardní MultiblockHelper pattern —
-        // validace probíhá přes ForgeMultiblockHelper.validateBase()
-        // Vrátíme null a přepíšeme validaci v tick()
-        // POZN: AbstractMultiblockControllerBlockEntity.tick() volá
-        //       MultiblockHelper.isValid() s tímto patternem.
-        //       Proto vracíme prázdné pole — reálná validace je níže.
-        return new Predicate[0][0][0];
+    public boolean handleInteraction(Player player, InteractionHand hand) {
+        if (level == null || level.isClientSide) return true;
+        final ItemStack held = player.getItemInHand(hand);
+
+        // Kbelík → naplnit
+        if (held.getItem() == Items.BUCKET) {
+            tryFillBucket(player, hand, held);
+            return true;
+        }
+
+        // Item v ruce → vložit celý stack do fronty (kolik se vejde)
+        if (!held.isEmpty()) {
+            if (locked) return true;
+            int inserted = 0;
+            for (int i = 0; i < forgeInventory.getSlots() && !held.isEmpty(); i++) {
+                if (forgeInventory.getStackInSlot(i).isEmpty()) {
+                    forgeInventory.insertItem(i, held.copyWithCount(1), false);
+                    held.shrink(1);
+                    inserted++;
+                }
+            }
+            if (inserted > 0) { player.setItemInHand(hand, held); setChanged(); }
+            return true;
+        }
+
+        // Prázdná ruka + shift → vyndej celý stack z posledního neprázdného slotu
+        if (player.isShiftKeyDown()) {
+            for (int i = forgeInventory.getSlots() - 1; i >= 0; i--) {
+                ItemStack stack = forgeInventory.getStackInSlot(i);
+                if (!stack.isEmpty()) {
+                    if (!player.getInventory().add(stack.copy())) player.drop(stack.copy(), false);
+                    forgeInventory.setStackInSlot(i, ItemStack.EMPTY);
+                    setChanged();
+                    return true;
+                }
+            }
+            return true;
+        }
+
+        // Prázdná ruka → vyndej 1 item, zkus stackovat do inv
+        for (int i = forgeInventory.getSlots() - 1; i >= 0; i--) {
+            ItemStack stack = forgeInventory.getStackInSlot(i);
+            if (!stack.isEmpty()) {
+                ItemStack one = stack.copyWithCount(1);
+                boolean stacked = false;
+                for (int s = 0; s < player.getInventory().getContainerSize(); s++) {
+                    ItemStack inv = player.getInventory().getItem(s);
+                    if (!inv.isEmpty() && ItemStack.isSameItemSameComponents(inv, one) && inv.getCount() < inv.getMaxStackSize()) {
+                        inv.grow(1); stacked = true; break;
+                    }
+                }
+                if (!stacked) player.setItemInHand(hand, one);
+                stack.shrink(1);
+                forgeInventory.setStackInSlot(i, stack.isEmpty() ? ItemStack.EMPTY : stack);
+                setChanged();
+                return true;
+            }
+        }
+        return true;
     }
 
-    /**
-     * Přepisujeme validaci struktury — nepoužíváme standardní MultiblockHelper.
-     * Forge pec validuje zvlášť spodní vrstvu a sklo vrstvy.
-     *
-     * POZN: Tato metoda se volá z AbstractMultiblockControllerBlockEntity.tick()
-     * přes MultiblockHelper.isValid(). Protože getPattern() vrací prázdné pole,
-     * musíme validaci celou přepsat.
-     *
-     * Řešení: Override tick() (viz výše) volá super.tick() ALE my v getPattern()
-     * vrátíme funkční predikáty jen pro bázi. Sklo řešíme separátně.
-     */
+    // ═══════════════════════════════════════════════════════════
+    //  ABSTRAKTNÍ METODY
+    // ═══════════════════════════════════════════════════════════
+
+    @Override protected Predicate<BlockState>[][][] getPattern() { return new Predicate[0][0][0]; }
+
     @Override
     protected boolean hasValidInput() {
-        // Vstup je platný pokud je něco v forgeInventory
-        for (int i = 0; i < forgeInventory.getSlots(); i++) {
+        for (int i = 0; i < forgeInventory.getSlots(); i++)
             if (!forgeInventory.getStackInSlot(i).isEmpty()) return true;
-        }
         return false;
     }
 
-    /**
-     * Najde recept pro první neprázdný slot v forgeInventory.
-     * Cachuje pouze recept (ne slot — ten se hledá vždy znovu).
-     */
     @Override
     protected @Nullable ForgeSmeltingRecipe findRecipe(Level level) {
         for (int i = 0; i < forgeInventory.getSlots(); i++) {
             ItemStack input = forgeInventory.getStackInSlot(i);
             if (input.isEmpty()) continue;
-
-            // Zkontroluj cache
-            if (cachedRecipe != null && cachedRecipe.matches(input, cachedHeatPoints)) {
-                return cachedRecipe;
-            }
-
-            // Hledej v receptech
-            for (var holder : level.getRecipeManager().getAllRecipesFor(DifModRecipes.FORGE_SMELTING_TYPE.get())) {
-                if (holder.value().matches(input, cachedHeatPoints)) {
-                    cachedRecipe = holder.value();
-                    return cachedRecipe;
-                }
-            }
+            if (cachedRecipe != null && cachedRecipe.matches(input, cachedHeatPoints)) return cachedRecipe;
+            for (var h : level.getRecipeManager().getAllRecipesFor(DifModRecipes.FORGE_SMELTING_TYPE.get()))
+                if (h.value().matches(input, cachedHeatPoints)) { cachedRecipe = h.value(); return cachedRecipe; }
         }
         cachedRecipe = null;
         return null;
     }
 
-    /** Vrátí index prvního slotu kde item odpovídá receptu, nebo -1. */
     private int findRecipeSlot(ForgeSmeltingRecipe recipe) {
         if (recipe == null) return -1;
-        for (int i = 0; i < forgeInventory.getSlots(); i++) {
+        for (int i = 0; i < forgeInventory.getSlots(); i++)
             if (recipe.matches(forgeInventory.getStackInSlot(i), cachedHeatPoints)) return i;
-        }
         return -1;
     }
 
     @Override
     protected boolean canOutput(ForgeSmeltingRecipe recipe) {
-        // Zkontroluj jestli je volný tank pro výstupní fluid
         if (recipe == null) return false;
-        FluidStack output = recipe.outputFluid();
-        for (FluidTank tank : fluidTanks) {
-            if (tank.isEmpty() || tank.getFluid().getFluid() == output.getFluid()) {
-                if (tank.fill(output, IFluidHandler.FluidAction.SIMULATE) >= output.getAmount()) {
-                    return true;
-                }
-            }
-        }
+        FluidStack out = recipe.outputFluid();
+        for (FluidTank t : fluidTanks)
+            if ((t.isEmpty() || t.getFluid().getFluid() == out.getFluid())
+                    && t.fill(out, IFluidHandler.FluidAction.SIMULATE) >= out.getAmount()) return true;
         return false;
     }
 
     @Override
     protected void finishRecipe(ForgeSmeltingRecipe recipe) {
         if (recipe == null) return;
-        // Spotřebuj 1 item z prvního slotu kde sedí recept
         int slot = findRecipeSlot(recipe);
-        if (slot >= 0) {
-            ItemStack input = forgeInventory.getStackInSlot(slot);
-            input.shrink(1);
-            forgeInventory.setStackInSlot(slot, input);
-        }
-        // Přidej výstupní fluid
+        if (slot >= 0) { ItemStack in = forgeInventory.getStackInSlot(slot); in.shrink(1); forgeInventory.setStackInSlot(slot, in); }
         addMoltenFluid(recipe.outputFluid());
     }
 
     @Override
     protected int getProcessingTime(ForgeSmeltingRecipe recipe) {
-        if (recipe == null) return 80;
-        // Základní čas upravený heat speedem
-        int base = recipe.baseTime();
-        if (cachedHeatSpeed <= 0) return base;
-        return Math.max(1, (int)(base / cachedHeatSpeed));
+        if (recipe == null || cachedHeatSpeed <= 0) return recipe == null ? 80 : recipe.baseTime();
+        return Math.max(1, (int)(recipe.baseTime() / cachedHeatSpeed));
     }
 
     @Override
     public @Nullable IFluidHandler getFluidCapability(@Nullable Direction side) {
-        // Kombinovaný handler přes všechny 4 tanky
         return new IFluidHandler() {
             @Override public int getTanks() { return FLUID_TANK_COUNT; }
-            @Override public @NotNull FluidStack getFluidInTank(int tank) {
-                return fluidTanks[tank].getFluid();
-            }
-            @Override public int getTankCapacity(int tank) {
-                return fluidTanks[tank].getCapacity();
-            }
-            @Override public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
-                return true;
-            }
+            @Override public @NotNull FluidStack getFluidInTank(int tank) { return fluidTanks[tank].getFluid(); }
+            @Override public int getTankCapacity(int tank) { return fluidTanks[tank].getCapacity(); }
+            @Override public boolean isFluidValid(int tank, @NotNull FluidStack stack) { return true; }
+
             @Override public int fill(@NotNull FluidStack resource, @NotNull FluidAction action) {
                 if (locked || resource.isEmpty()) return 0;
-
-                int totalMb = ForgeMultiblockHelper.totalFluidCapacity(glassLayers);
-                int currentTotal = getTotalFluidAmount();
-                int spaceLeft = Math.max(0, totalMb - currentTotal);
-                if (spaceLeft <= 0) return 0;
-
+                int space = Math.max(0, ForgeMultiblockHelper.totalFluidCapacity(glassLayers) - getTotalFluidAmount());
+                if (space <= 0) return 0;
                 FluidStack toFill = resource.copy();
-                if (toFill.getAmount() > spaceLeft) {
-                    toFill.setAmount(spaceLeft);
-                }
-
-                // 1. Try to find existing matching tank
-                for (FluidTank tank : fluidTanks) {
-                    if (!tank.isEmpty() && tank.getFluid().getFluid() == toFill.getFluid()) {
-                        int filled = tank.fill(toFill, action);
-                        if (action.execute() && filled > 0) {
-                            compactFluids();
-                        }
+                if (toFill.getAmount() > space) toFill.setAmount(space);
+                for (FluidTank t : fluidTanks) {
+                    if (!t.isEmpty() && t.getFluid().getFluid() == toFill.getFluid()) {
+                        int filled = t.fill(toFill, action);
+                        if (action.execute() && filled > 0) compactFluids();
                         return filled;
                     }
                 }
-                // 2. Try to find first empty tank
-                for (FluidTank tank : fluidTanks) {
-                    if (tank.isEmpty()) {
-                        int filled = tank.fill(toFill, action);
-                        if (action.execute() && filled > 0) {
-                            compactFluids();
-                        }
+                for (FluidTank t : fluidTanks) {
+                    if (t.isEmpty()) {
+                        int filled = t.fill(toFill, action);
+                        if (action.execute() && filled > 0) compactFluids();
                         return filled;
                     }
                 }
                 return 0;
             }
+
             @Override public @NotNull FluidStack drain(@NotNull FluidStack resource, @NotNull FluidAction action) {
-                FluidStack drained = FluidStack.EMPTY;
-                for (FluidTank tank : fluidTanks) {
-                    if (tank.getFluid().getFluid() == resource.getFluid()) {
-                        drained = tank.drain(resource, action);
-                        break;
+                for (FluidTank t : fluidTanks) {
+                    if (t.getFluid().getFluid() == resource.getFluid()) {
+                        FluidStack d = t.drain(resource, action);
+                        if (action.execute() && !d.isEmpty()) compactFluids();
+                        return d;
                     }
                 }
-                if (action.execute() && !drained.isEmpty()) {
-                    compactFluids();
-                }
-                return drained;
+                return FluidStack.EMPTY;
             }
+
             @Override public @NotNull FluidStack drain(int maxDrain, @NotNull FluidAction action) {
-                FluidStack drained = FluidStack.EMPTY;
-                // Pipou lze vytáhnout tu tekutinu, co je nejníže v render orderu
+                // Upřednostni preferredOutputTank
+                if (preferredOutputTank >= 0 && preferredOutputTank < FLUID_TANK_COUNT
+                        && !fluidTanks[preferredOutputTank].isEmpty()) {
+                    FluidStack d = fluidTanks[preferredOutputTank].drain(maxDrain, action);
+                    if (action.execute() && !d.isEmpty()) compactFluids();
+                    return d;
+                }
+                // Fallback: index 0 v render orderu (nejníže = nejdřív ven)
                 for (int i = 0; i < FLUID_TANK_COUNT; i++) {
                     int idx = fluidRenderOrder[i];
-                    FluidTank tank = fluidTanks[idx];
-                    if (!tank.isEmpty()) {
-                        drained = tank.drain(maxDrain, action);
-                        break;
+                    if (!fluidTanks[idx].isEmpty()) {
+                        FluidStack d = fluidTanks[idx].drain(maxDrain, action);
+                        if (action.execute() && !d.isEmpty()) compactFluids();
+                        return d;
                     }
                 }
-                if (action.execute() && !drained.isEmpty()) {
-                    compactFluids();
-                }
-                return drained;
+                return FluidStack.EMPTY;
             }
         };
     }
 
     // ── Brick claiming ────────────────────────────────────────────────────────
 
+    private boolean canClaimAllBricks(Level level, BlockPos ctrlPos, Direction intoStructure) {
+        final boolean[] ok = {true};
+        ForgeMultiblockHelper.forEachBrick(ctrlPos, intoStructure, mp -> {
+            if (!brickCanBeClaimedBy(level, mp, ctrlPos)) { ok[0] = false; return false; }
+            return true;
+        });
+        return ok[0];
+    }
+
+    private void claimBricks(Level level, BlockPos ctrlPos, Direction intoStructure, @Nullable BlockPos owner) {
+        ForgeMultiblockHelper.forEachBrick(ctrlPos, intoStructure, mp -> { setBrickController(level, mp, owner); return true; });
+    }
+
     @Override
-    protected boolean brickCanBeClaimedBy(Level level, BlockPos brickPos, BlockPos controllerPos) {
-        return !(level.getBlockEntity(brickPos) instanceof ForgeBrickBlockEntity brick)
-                || brick.canBeClaimedBy(controllerPos);
+    protected boolean brickCanBeClaimedBy(Level level, BlockPos brickPos, BlockPos ctrlPos) {
+        return !(level.getBlockEntity(brickPos) instanceof ForgeBrickBlockEntity b) || b.canBeClaimedBy(ctrlPos);
     }
 
     @Override
     protected void setBrickController(Level level, BlockPos brickPos, @Nullable BlockPos owner) {
-        if (level.getBlockEntity(brickPos) instanceof ForgeBrickBlockEntity brick) {
-            brick.setControllerPos(owner);
-        }
+        if (level.getBlockEntity(brickPos) instanceof ForgeBrickBlockEntity b) b.setControllerPos(owner);
     }
 
-    // ── Pattern pro validaci báze ─────────────────────────────────────────────
-
-    /**
-     * Validace základní struktury (bez skla) — volá se z tick() přes forceValidation.
-     * Ověří Blaze Burnery a Forge Briky.
-     */
     public boolean validateBaseStructure(Level level) {
-        Predicate<BlockState> brickPred =
-                state -> state.getBlock() instanceof ForgeBrickBlock;
-        Direction facing = getBlockState().getOptionalValue(getFacingProperty()).orElse(Direction.SOUTH);
-        Direction intoStructure = facing.getOpposite();
-        return ForgeMultiblockHelper.validateBrickLayer(level, worldPosition, intoStructure, brickPred);
+        Direction intoStructure = getBlockState().getOptionalValue(getFacingProperty()).orElse(Direction.SOUTH).getOpposite();
+        return ForgeMultiblockHelper.validateBrickLayer(level, worldPosition, intoStructure,
+                state -> state.getBlock() instanceof ForgeBrickBlock);
     }
 
     // ── Kbelík ────────────────────────────────────────────────────────────────
 
     @Override
     protected void tryFillBucket(Player player, InteractionHand hand, ItemStack heldBucket) {
-        // Naplní kbelík z nejnižšího neprázdného tanku v render orderu s dostatkem kapaliny
-        for (int i = 0; i < FLUID_TANK_COUNT; i++) {
-            int idx = fluidRenderOrder[i];
-            FluidTank tank = fluidTanks[idx];
-            if (tank.getFluidAmount() >= 1000) {
-                FluidStack drained = tank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-                if (drained.isEmpty()) continue;
-                heldBucket.shrink(1);
-                ItemStack filled = new ItemStack(drained.getFluid().getBucket());
-                if (heldBucket.isEmpty()) player.setItemInHand(hand, filled);
-                else if (!player.getInventory().add(filled)) player.drop(filled, false);
-                compactFluids();
-                setChanged();
-                return;
-            }
+        // Upřednostni preferredOutputTank, pak render order
+        int[] order = preferredOutputTank >= 0
+                ? new int[]{preferredOutputTank, fluidRenderOrder[0], fluidRenderOrder[1], fluidRenderOrder[2], fluidRenderOrder[3]}
+                : fluidRenderOrder;
+        for (int idx : order) {
+            if (idx < 0 || idx >= FLUID_TANK_COUNT) continue;
+            if (fluidTanks[idx].getFluidAmount() < 1000) continue;
+            FluidStack drained = fluidTanks[idx].drain(1000, IFluidHandler.FluidAction.EXECUTE);
+            if (drained.isEmpty()) continue;
+            heldBucket.shrink(1);
+            ItemStack filled = new ItemStack(drained.getFluid().getBucket());
+            if (heldBucket.isEmpty()) player.setItemInHand(hand, filled);
+            else if (!player.getInventory().add(filled)) player.drop(filled, false);
+            compactFluids();
+            setChanged();
+            return;
         }
     }
 
     // ── Goggle tooltip ────────────────────────────────────────────────────────
 
-    @Override
-    protected Component getGoggleName() {
-        return Component.literal("◆ Forge Furnace");
-    }
-
-    @Override
-    protected ChatFormatting getGoggleNameColor() {
-        return ChatFormatting.GOLD;
-    }
+    @Override protected Component getGoggleName() { return Component.literal("◆ Forge Furnace"); }
+    @Override protected ChatFormatting getGoggleNameColor() { return ChatFormatting.GOLD; }
 
     @Override
     protected void appendFormedTooltip(List<Component> tooltip) {
-        // Heat — plynulý přechod: červená (0) → zelená (9) → modrá (18)
-        String heatColor = heatColor(cachedHeatPoints);
-        tooltip.add(Component.literal(goggleTooltipFix + " ▶ Heat: " + heatColor + cachedHeatPoints + "§7/18")
-                .withStyle(ChatFormatting.GRAY));
-
-        // Sklo vrstvy
-        tooltip.add(Component.literal(goggleTooltipFix + " ▶ Glass layers: " + glassLayers + "/" + ForgeMultiblockHelper.MAX_GLASS_LAYERS)
-                .withStyle(ChatFormatting.GRAY));
-
-        // Item sloty
-        int usedSlots = 0;
-        for (int i = 0; i < forgeInventory.getSlots(); i++) {
-            if (!forgeInventory.getStackInSlot(i).isEmpty()) usedSlots++;
-        }
-        if (forgeInventory.getSlots() > 0) {
-            tooltip.add(Component.literal(goggleTooltipFix + " ▶ Queue: " + usedSlots + "/" + forgeInventory.getSlots())
-                    .withStyle(ChatFormatting.GRAY));
-        }
-
-        // Locked stav
-        if (locked) {
-            tooltip.add(Component.literal(goggleTooltipFix + " ⚠ LOCKED — add glass layer!")
-                    .withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD));
-        }
-
-        // Fluid tanky
+        tooltip.add(Component.literal(goggleTooltipFix + " ▶ Heat: " + heatColor(cachedHeatPoints) + cachedHeatPoints + "§7/18").withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.literal(goggleTooltipFix + " ▶ Layers: " + glassLayers + "/" + ForgeMultiblockHelper.MAX_GLASS_LAYERS).withStyle(ChatFormatting.GRAY));
+        int used = 0; for (int i = 0; i < forgeInventory.getSlots(); i++) if (!forgeInventory.getStackInSlot(i).isEmpty()) used++;
+        if (forgeInventory.getSlots() > 0) tooltip.add(Component.literal(goggleTooltipFix + " ▶ Queue: " + used + "/" + forgeInventory.getSlots()).withStyle(ChatFormatting.GRAY));
+        if (locked) tooltip.add(Component.literal(goggleTooltipFix + " ⚠ LOCKED").withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD));
         for (int i = 0; i < FLUID_TANK_COUNT; i++) {
-            FluidTank tank = fluidTanks[i];
-            if (!tank.isEmpty()) {
-                appendFluidSlot(tooltip,
-                        goggleTooltipFix + " ▶ Tank " + (i + 1) + ": ", tank);
+            FluidTank t = fluidTanks[i];
+            if (!t.isEmpty()) {
+                String prefix = (i == preferredOutputTank) ? "§6▶ §r" : "";
+                appendFluidSlot(tooltip, goggleTooltipFix + " " + prefix + "Tank " + (i + 1) + ": ", t);
             }
         }
     }
 
-    /**
-     * Vrátí § barevný kód pro heat body.
-     * 0      → §c (červená)
-     * 1–8    → plynulý přechod červená→žlutá
-     * 9      → §a (zelená)
-     * 10–17  → plynulý přechod zelená→akvamarín
-     * 18     → §b (světle modrá)
-     */
     private static String heatColor(int heat) {
-        if (heat <= 0)  return "§c"; // červená
-        if (heat < 9)  return "§e"; // žlutá (přechod)
-        if (heat == 9) return "§a"; // zelená
-        if (heat < 18) return "§2"; // tmavě zelená (přechod)
-        return "§b";                // světle modrá
+        if (heat <= 0) return "§c"; if (heat < 9) return "§e"; if (heat == 9) return "§a"; if (heat < 18) return "§2"; return "§b";
     }
 
-    @Override
-    protected DirectionProperty getFacingProperty() { return ForgeFurnaceController.FACING; }
-
-    @Override
-    protected BooleanProperty getFormedProperty() { return ForgeFurnaceController.FORMED; }
-
-    @Override
-    protected BooleanProperty getActiveProperty() { return ForgeFurnaceController.ACTIVE; }
-
-    @Override
-    protected @NotNull Component getDefaultName() {
-        return Component.translatable("container.dif.forge_furnace");
+    private static String formatMb(int mb) {
+        return mb >= 1000 ? String.format("%.1fB", mb / 1000f) : mb + "mB";
     }
 
-    @Override
-    public @NotNull Component getDisplayName() {
-        return Component.translatable("container.dif.forge_furnace");
+    // ── Properties ────────────────────────────────────────────────────────────
+
+    @Override protected DirectionProperty getFacingProperty() { return ForgeFurnaceController.FACING; }
+    @Override protected BooleanProperty   getFormedProperty() { return ForgeFurnaceController.FORMED; }
+    @Override protected BooleanProperty   getActiveProperty() { return ForgeFurnaceController.ACTIVE; }
+    @Override protected @NotNull Component getDefaultName()   { return Component.translatable("container.dif.forge_furnace"); }
+    @Override public @NotNull Component getDisplayName()      { return Component.translatable("container.dif.forge_furnace"); }
+
+    // ── WorldlyContainer ──────────────────────────────────────────────────────
+
+    @Override public net.neoforged.neoforge.items.ItemStackHandler getInventory() { return forgeInventory; }
+
+    @Override public int @NotNull [] getSlotsForFace(@NotNull Direction side) {
+        int[] s = new int[forgeInventory.getSlots()]; for (int i = 0; i < s.length; i++) s[i] = i; return s;
     }
-
-    // ── Helper pro tick() override ────────────────────────────────────────────
-
-    // ── WorldlyContainer Overrides delegující na forgeInventory ──────────────────
-
-    @Override
-    public net.neoforged.neoforge.items.ItemStackHandler getInventory() {
-        return forgeInventory;
-    }
-
-    @Override
-    public int @NotNull [] getSlotsForFace(@NotNull Direction side) {
-        int[] slots = new int[forgeInventory.getSlots()];
-        for (int i = 0; i < slots.length; i++) {
-            slots[i] = i;
-        }
-        return slots;
-    }
-
-    @Override
-    public boolean canPlaceItemThroughFace(int index, @NotNull ItemStack itemStack, @Nullable Direction side) {
-        if (locked) return false;
-        return index >= 0 && index < forgeInventory.getSlots();
-    }
-
-    @Override
-    public boolean canTakeItemThroughFace(int index, @NotNull ItemStack itemStack, @NotNull Direction side) {
-        return index >= 0 && index < forgeInventory.getSlots();
-    }
-
-    @Override
-    public boolean canPlaceItem(int index, @NotNull ItemStack itemStack) {
-        if (locked) return false;
-        return index >= 0 && index < forgeInventory.getSlots();
-    }
-
-    @Override
-    public int getContainerSize() {
-        return forgeInventory.getSlots();
-    }
-
-    @Override
-    public @NotNull ItemStack getItem(int index) {
-        return forgeInventory.getStackInSlot(index);
-    }
-
-    @Override
-    public void setItem(int index, @NotNull ItemStack itemStack) {
-        forgeInventory.setStackInSlot(index, itemStack);
-    }
-
-    @Override
-    public @NotNull ItemStack removeItem(int slot, int amount) {
-        return forgeInventory.extractItem(slot, amount, false);
-    }
-
-    @Override
-    public @NotNull ItemStack removeItemNoUpdate(int index) {
-        ItemStack stack = forgeInventory.getStackInSlot(index);
-        forgeInventory.setStackInSlot(index, ItemStack.EMPTY);
-        return stack;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        for (int i = 0; i < forgeInventory.getSlots(); i++) {
-            if (!forgeInventory.getStackInSlot(i).isEmpty()) return false;
-        }
-        return true;
-    }
-
-    @Override
-    protected @NotNull net.minecraft.core.NonNullList<ItemStack> getItems() {
-        net.minecraft.core.NonNullList<ItemStack> list = net.minecraft.core.NonNullList.withSize(forgeInventory.getSlots(), ItemStack.EMPTY);
-        for (int i = 0; i < forgeInventory.getSlots(); i++) {
-            list.set(i, forgeInventory.getStackInSlot(i));
-        }
+    @Override public boolean canPlaceItemThroughFace(int index, @NotNull ItemStack stack, @Nullable Direction side) { return !locked && index >= 0 && index < forgeInventory.getSlots(); }
+    @Override public boolean canTakeItemThroughFace(int index, @NotNull ItemStack stack, @NotNull Direction side)   { return index >= 0 && index < forgeInventory.getSlots(); }
+    @Override public boolean canPlaceItem(int index, @NotNull ItemStack stack) { return !locked && index >= 0 && index < forgeInventory.getSlots(); }
+    @Override public int getContainerSize() { return forgeInventory.getSlots(); }
+    @Override public @NotNull ItemStack getItem(int index) { return forgeInventory.getStackInSlot(index); }
+    @Override public void setItem(int index, @NotNull ItemStack stack) { forgeInventory.setStackInSlot(index, stack); }
+    @Override public @NotNull ItemStack removeItem(int slot, int amount) { return forgeInventory.extractItem(slot, amount, false); }
+    @Override public @NotNull ItemStack removeItemNoUpdate(int index) { ItemStack s = forgeInventory.getStackInSlot(index); forgeInventory.setStackInSlot(index, ItemStack.EMPTY); return s; }
+    @Override public boolean isEmpty() { for (int i = 0; i < forgeInventory.getSlots(); i++) if (!forgeInventory.getStackInSlot(i).isEmpty()) return false; return true; }
+    @Override protected @NotNull net.minecraft.core.NonNullList<ItemStack> getItems() {
+        var list = net.minecraft.core.NonNullList.withSize(forgeInventory.getSlots(), ItemStack.EMPTY);
+        for (int i = 0; i < forgeInventory.getSlots(); i++) list.set(i, forgeInventory.getStackInSlot(i));
         return list;
     }
-
-    @Override
-    protected void setItems(@NotNull net.minecraft.core.NonNullList<ItemStack> stacks) {
-        for (int i = 0; i < stacks.size() && i < forgeInventory.getSlots(); i++) {
-            forgeInventory.setStackInSlot(i, stacks.get(i));
-        }
+    @Override protected void setItems(@NotNull net.minecraft.core.NonNullList<ItemStack> stacks) {
+        for (int i = 0; i < stacks.size() && i < forgeInventory.getSlots(); i++) forgeInventory.setStackInSlot(i, stacks.get(i));
     }
-
-    @Override
-    protected void insertOrSwapInput(Player player, InteractionHand hand, ItemStack held) {
-        if (locked) return;
-        // Try to insert into first available slot in forgeInventory
-        ItemStack toInsert = held.copy();
-        toInsert.setCount(1); // Insert 1 by 1
-        for (int i = 0; i < forgeInventory.getSlots(); i++) {
-            if (forgeInventory.getStackInSlot(i).isEmpty()) {
-                forgeInventory.insertItem(i, toInsert, false);
-                held.shrink(1);
-                setChanged();
-                return;
-            }
-        }
-    }
-
-    @Override
-    protected void extractOutput(Player player, InteractionHand hand) {
-        // Vyjme item z posledního neprázdného slotu v forgeInventory
-        for (int i = forgeInventory.getSlots() - 1; i >= 0; i--) {
-            ItemStack stack = forgeInventory.getStackInSlot(i);
-            if (!stack.isEmpty()) {
-                player.setItemInHand(hand, stack.copy());
-                forgeInventory.setStackInSlot(i, ItemStack.EMPTY);
-                setChanged();
-                return;
-            }
-        }
-    }
-
-    // Potřebujeme přístup k setActive z abstraktní třídy — je protected, dostaneme se k ní
-    // přímo protože jsme podtřída. Kompilátor to povolí.
+    @Override protected void insertOrSwapInput(Player player, InteractionHand hand, ItemStack held) { /* handled in handleInteraction */ }
+    @Override protected void extractOutput(Player player, InteractionHand hand) { /* handled in handleInteraction */ }
 
     // ── NBT ───────────────────────────────────────────────────────────────────
 
@@ -1065,46 +705,29 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         tag.putInt("heatPoints", cachedHeatPoints);
         tag.putFloat("heatSpeed", cachedHeatSpeed);
         tag.putIntArray("renderOrder", fluidRenderOrder);
-
-        // Ulož fluid tanky
+        tag.putInt("preferredOutputTank", preferredOutputTank);
         ListTag tanksTag = new ListTag();
-        for (FluidTank tank : fluidTanks) {
-            tanksTag.add(tank.writeToNBT(provider, new CompoundTag()));
-        }
+        for (FluidTank t : fluidTanks) tanksTag.add(t.writeToNBT(provider, new CompoundTag()));
         tag.put("fluidTanks", tanksTag);
-
-        // Ulož forgeInventory
         tag.put("forgeInv", forgeInventory.serializeNBT(provider));
     }
 
     @Override
     protected void loadExtraData(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        glassLayers      = tag.getInt("glassLayers");
-        locked           = tag.getBoolean("locked");
-        cachedHeatPoints = tag.getInt("heatPoints");
-        cachedHeatSpeed  = tag.getFloat("heatSpeed");
-
+        glassLayers          = tag.getInt("glassLayers");
+        locked               = tag.getBoolean("locked");
+        cachedHeatPoints     = tag.getInt("heatPoints");
+        cachedHeatSpeed      = tag.getFloat("heatSpeed");
+        preferredOutputTank  = tag.contains("preferredOutputTank") ? tag.getInt("preferredOutputTank") : -1;
         int[] savedOrder = tag.getIntArray("renderOrder");
-        if (savedOrder.length == FLUID_TANK_COUNT) {
-            System.arraycopy(savedOrder, 0, fluidRenderOrder, 0, FLUID_TANK_COUNT);
-        }
-
+        if (savedOrder.length == FLUID_TANK_COUNT) System.arraycopy(savedOrder, 0, fluidRenderOrder, 0, FLUID_TANK_COUNT);
         if (tag.contains("fluidTanks")) {
-            ListTag tanksTag = tag.getList("fluidTanks", Tag.TAG_COMPOUND);
-            for (int i = 0; i < Math.min(tanksTag.size(), FLUID_TANK_COUNT); i++) {
-                fluidTanks[i].readFromNBT(provider, tanksTag.getCompound(i));
-            }
+            ListTag tl = tag.getList("fluidTanks", Tag.TAG_COMPOUND);
+            for (int i = 0; i < Math.min(tl.size(), FLUID_TANK_COUNT); i++) fluidTanks[i].readFromNBT(provider, tl.getCompound(i));
         }
-
-        // Načti forgeInventory — nejdřív nastav správnou velikost, pak obsah
         int invSize = glassLayers * SLOTS_PER_LAYER;
         resizeInventory(invSize);
-        if (tag.contains("forgeInv")) {
-            forgeInventory.deserializeNBT(provider, tag.getCompound("forgeInv"));
-        }
-
-        // Přepočítej kapacitu tanků
+        if (tag.contains("forgeInv")) forgeInventory.deserializeNBT(provider, tag.getCompound("forgeInv"));
         resizeTankCapacity();
     }
-
 }
