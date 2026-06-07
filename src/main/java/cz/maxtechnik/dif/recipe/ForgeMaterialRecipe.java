@@ -22,22 +22,21 @@ import java.util.List;
 /**
  * Recept pro tavení materiálu v Forge peci.
  * Jeden JSON pokrývá všechny formy materiálu (ingot, block, ruda, raw).
- *
  * JSON příklad:
  * {
  *   "type": "dif:forge_material",
  *   "min_heat_tier": 1,
  *   "processing_time": 80,
  *   "conversions": [
- *     { "ingredient": { "item": "minecraft:iron_ingot" }, "ingot_value": 1.0 },
- *     { "ingredient": { "item": "minecraft:iron_block" }, "ingot_value": 9.0 },
- *     { "ingredient": { "item": "minecraft:raw_iron"   }, "ingot_value": 1.5 }
+ *     { "ingredient": { "item": "minecraft:iron_ingot" }, "ingot_value": 1.0, "processing_time_multiplier": 1.0 },
+ *     { "ingredient": { "item": "minecraft:iron_block" }, "ingot_value": 9.0, "processing_time_multiplier": 2.0 },
+ *     { "ingredient": { "item": "minecraft:raw_iron"   }, "ingot_value": 1.5, "processing_time_multiplier": 0.8 }
  *   ],
  *   "result_fluid": { "id": "dif:molten_iron", "amount": 144 }
  * }
- *
  * result_fluid.amount = mB za 1 ingot (ingot_value=1.0).
  * Výstup = result_fluid.amount * ingot_value, zaokrouhleno.
+ * Čas = base * processing_time_multiplier.
  */
 public record ForgeMaterialRecipe(
         int minHeatTier,
@@ -48,16 +47,18 @@ public record ForgeMaterialRecipe(
 
     // ── Nested record ─────────────────────────────────────────────────────────
 
-    public record MaterialConversion(Ingredient ingredient, float ingotValue) {
+    public record MaterialConversion(Ingredient ingredient, float ingotValue, float processingTimeMultiplier) {
         public static final Codec<MaterialConversion> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Ingredient.CODEC.fieldOf("ingredient").forGetter(MaterialConversion::ingredient),
-                Codec.FLOAT.optionalFieldOf("ingot_value", 1.0f).forGetter(MaterialConversion::ingotValue)
+                Codec.FLOAT.optionalFieldOf("ingot_value", 1.0f).forGetter(MaterialConversion::ingotValue),
+                Codec.FLOAT.optionalFieldOf("processing_time_multiplier", 1.0f).forGetter(MaterialConversion::processingTimeMultiplier)
         ).apply(i, MaterialConversion::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, MaterialConversion> STREAM_CODEC =
                 StreamCodec.composite(
                         Ingredient.CONTENTS_STREAM_CODEC, MaterialConversion::ingredient,
                         ByteBufCodecs.FLOAT, MaterialConversion::ingotValue,
+                        ByteBufCodecs.FLOAT, MaterialConversion::processingTimeMultiplier,
                         MaterialConversion::new);
     }
 
@@ -101,6 +102,13 @@ public record ForgeMaterialRecipe(
         if (conv == null) return FluidStack.EMPTY;
         int amount = Math.round(resultFluidPerIngot.getAmount() * conv.ingotValue());
         return amount > 0 ? new FluidStack(resultFluidPerIngot.getFluid(), amount) : FluidStack.EMPTY;
+    }
+
+    /** Vrátí čas zpracování pro daný item (base * multiplier), nebo baseTime. */
+    public int getProcessingTimeFor(ItemStack item) {
+        var conv = findConversion(item);
+        if (conv == null) return baseTime;
+        return Math.round(baseTime * conv.processingTimeMultiplier());
     }
 
     // ── Recipe boilerplate ────────────────────────────────────────────────────

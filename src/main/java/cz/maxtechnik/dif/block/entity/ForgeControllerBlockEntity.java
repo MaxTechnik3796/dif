@@ -5,7 +5,7 @@ import cz.maxtechnik.dif.block.ForgeFurnaceController;
 import cz.maxtechnik.dif.block.ForgeGlassBlock;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
-import cz.maxtechnik.dif.recipe.ForgeSmeltingRecipe;
+import cz.maxtechnik.dif.recipe.ForgeMaterialRecipe;
 import cz.maxtechnik.dif.util.ForgeMultiblockHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -36,7 +36,7 @@ import java.util.function.Predicate;
 
 import static cz.maxtechnik.dif.DifMod.goggleTooltipFix;
 
-public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBlockEntity<ForgeSmeltingRecipe> {
+public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBlockEntity<ForgeMaterialRecipe> {
 
     private static final int HEAT_CACHE_PERIOD  = 20;
     private static final int GLASS_CHECK_PERIOD = 20;
@@ -123,7 +123,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         if (cachedHeatPoints == 0) { resetProgressAndDeactivate(level, pos, blockState); return; }
         if (!hasValidInput())      { resetProgressAndDeactivate(level, pos, blockState); return; }
 
-        final ForgeSmeltingRecipe recipe = findRecipe(level);
+        final ForgeMaterialRecipe recipe = findRecipe(level);
         if (recipe == null) { resetProgressAndDeactivate(level, pos, blockState); return; }
 
         totalTime = getProcessingTime(recipe);
@@ -392,47 +392,64 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
     }
 
     @Override
-    protected @Nullable ForgeSmeltingRecipe findRecipe(Level level) {
+    protected @Nullable ForgeMaterialRecipe findRecipe(Level level) {
         for (int i = 0; i < forgeInventory.getSlots(); i++) {
             ItemStack input = forgeInventory.getStackInSlot(i);
             if (input.isEmpty()) continue;
-            if (cachedRecipe != null && cachedRecipe.matches(input, cachedHeatPoints)) return cachedRecipe;
-            for (var h : level.getRecipeManager().getAllRecipesFor(DifModRecipes.FORGE_SMELTING_TYPE.get()))
-                if (h.value().matches(input, cachedHeatPoints)) { cachedRecipe = h.value(); return cachedRecipe; }
+            if (cachedRecipe != null && cachedRecipe.matchesItem(input, cachedHeatPoints)) return cachedRecipe;
+            for (var h : level.getRecipeManager().getAllRecipesFor(DifModRecipes.FORGE_MATERIAL_TYPE.get()))
+                if (h.value().matchesItem(input, cachedHeatPoints)) { cachedRecipe = h.value(); return cachedRecipe; }
         }
         cachedRecipe = null;
         return null;
     }
 
-    private int findRecipeSlot(ForgeSmeltingRecipe recipe) {
+    private int findRecipeSlot(ForgeMaterialRecipe recipe) {
         if (recipe == null) return -1;
         for (int i = 0; i < forgeInventory.getSlots(); i++)
-            if (recipe.matches(forgeInventory.getStackInSlot(i), cachedHeatPoints)) return i;
+            if (recipe.matchesItem(forgeInventory.getStackInSlot(i), cachedHeatPoints)) return i;
         return -1;
     }
 
     @Override
-    protected boolean canOutput(ForgeSmeltingRecipe recipe) {
+    protected boolean canOutput(ForgeMaterialRecipe recipe) {
         if (recipe == null) return false;
-        FluidStack out = recipe.outputFluid();
-        for (FluidTank t : fluidTanks)
-            if ((t.isEmpty() || t.getFluid().getFluid() == out.getFluid())
-                    && t.fill(out, IFluidHandler.FluidAction.SIMULATE) >= out.getAmount()) return true;
+        for (int i = 0; i < forgeInventory.getSlots(); i++) {
+            ItemStack input = forgeInventory.getStackInSlot(i);
+            if (input.isEmpty()) continue;
+            FluidStack out = recipe.getOutputFor(input);
+            if (out.isEmpty()) continue;
+            for (FluidTank t : fluidTanks)
+                if ((t.isEmpty() || t.getFluid().getFluid() == out.getFluid())
+                        && t.fill(out, IFluidHandler.FluidAction.SIMULATE) >= out.getAmount()) return true;
+        }
         return false;
     }
 
     @Override
-    protected void finishRecipe(ForgeSmeltingRecipe recipe) {
+    protected void finishRecipe(ForgeMaterialRecipe recipe) {
         if (recipe == null) return;
         int slot = findRecipeSlot(recipe);
-        if (slot >= 0) { ItemStack in = forgeInventory.getStackInSlot(slot); in.shrink(1); forgeInventory.setStackInSlot(slot, in); }
-        addMoltenFluid(recipe.outputFluid());
+        if (slot < 0) return;
+        ItemStack input = forgeInventory.getStackInSlot(slot);
+        FluidStack out  = recipe.getOutputFor(input);
+        input.shrink(1);
+        forgeInventory.setStackInSlot(slot, input);
+        if (!out.isEmpty()) addMoltenFluid(out);
     }
 
     @Override
-    protected int getProcessingTime(ForgeSmeltingRecipe recipe) {
-        if (recipe == null || cachedHeatSpeed <= 0) return recipe == null ? 80 : recipe.baseTime();
-        return Math.max(1, (int)(recipe.baseTime() / cachedHeatSpeed));
+    protected int getProcessingTime(ForgeMaterialRecipe recipe) {
+        if (recipe == null || cachedHeatSpeed <= 0) return 80;
+        int baseTime = recipe.baseTime();
+        for (int i = 0; i < forgeInventory.getSlots(); i++) {
+            ItemStack input = forgeInventory.getStackInSlot(i);
+            if (!input.isEmpty() && recipe.matchesItem(input, cachedHeatPoints)) {
+                baseTime = recipe.getProcessingTimeFor(input);
+                break;
+            }
+        }
+        return Math.max(1, (int)(baseTime / cachedHeatSpeed));
     }
 
     @Override
@@ -530,7 +547,13 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
     protected void tryFillBucket(Player player, InteractionHand hand, ItemStack heldBucket) {
         int[] order = preferredOutputTank >= 0
                 ? new int[]{preferredOutputTank, fluidRenderOrder[0], fluidRenderOrder[1], fluidRenderOrder[2],
-                fluidRenderOrder[3], fluidRenderOrder[4], fluidRenderOrder[5], fluidRenderOrder[6], fluidRenderOrder[7]}
+                fluidRenderOrder[3], fluidRenderOrder[4], fluidRenderOrder[5], fluidRenderOrder[6],
+                fluidRenderOrder[7], fluidRenderOrder[8], fluidRenderOrder[9], fluidRenderOrder[10], fluidRenderOrder[11],
+                fluidRenderOrder[12], fluidRenderOrder[13], fluidRenderOrder[14], fluidRenderOrder[15],
+                fluidRenderOrder[16], fluidRenderOrder[17], fluidRenderOrder[18], fluidRenderOrder[19],
+                fluidRenderOrder[20], fluidRenderOrder[21], fluidRenderOrder[22], fluidRenderOrder[23],
+                fluidRenderOrder[24], fluidRenderOrder[25], fluidRenderOrder[26], fluidRenderOrder[27],
+                fluidRenderOrder[28], fluidRenderOrder[29], fluidRenderOrder[30], fluidRenderOrder[31]}
                 : fluidRenderOrder;
         for (int idx : order) {
             if (idx < 0 || idx >= FLUID_TANK_COUNT) continue;
