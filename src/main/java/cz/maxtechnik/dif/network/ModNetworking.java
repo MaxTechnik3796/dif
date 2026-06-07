@@ -31,6 +31,7 @@ public class ModNetworking{
 		registrar.playToClient(JetpackSyncMessage.TYPE,JetpackSyncMessage.STREAM_CODEC,JetpackSyncMessage::handle); // ← přidej toto
 		// Client-bound packets (Server -> Client)
 		registrar.playToClient(SyncCarPositionPacket.TYPE,SyncCarPositionPacket.STREAM_CODEC,SyncCarPositionPacket::handle);
+		registrar.playToServer(cz.maxtechnik.dif.network.ForgeSelectFluidPacket.TYPE, cz.maxtechnik.dif.network.ForgeSelectFluidPacket.STREAM_CODEC, cz.maxtechnik.dif.network.ForgeSelectFluidPacket::handle);
 	}
 	public record ShiftGearPacket(int direction) implements CustomPacketPayload{
 		public static final Type<ShiftGearPacket> TYPE=new Type<>(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"shift_gear"));

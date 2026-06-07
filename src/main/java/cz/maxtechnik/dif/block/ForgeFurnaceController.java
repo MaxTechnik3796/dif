@@ -145,13 +145,14 @@ public class ForgeFurnaceController extends Block implements EntityBlock, IWrenc
         if (!(level.getBlockEntity(pos) instanceof ForgeControllerBlockEntity be))
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
-        // Wrench detekce přes Create tag
-        boolean isWrench = heldItem.is(
-                net.minecraft.tags.ItemTags.create(
-                        net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("create", "wrenches")));
+        // Wrench detekce — Create WrenchItem
+        boolean isWrench = heldItem.getItem() instanceof com.simibubi.create.content.equipment.wrench.WrenchItem;
 
         if (isWrench) {
-            if (!level.isClientSide) be.cyclePreferredOutputTank(player);
+            if (level.isClientSide) {
+                net.minecraft.client.Minecraft.getInstance()
+                        .setScreen(new cz.maxtechnik.dif.gui.screen.ForgeRadialScreen(be));
+            }
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
 

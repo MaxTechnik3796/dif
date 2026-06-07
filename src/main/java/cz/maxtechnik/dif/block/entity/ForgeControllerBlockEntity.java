@@ -45,7 +45,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
     private static final int HEAT_CACHE_PERIOD  = 20;
     private static final int GLASS_CHECK_PERIOD = 20;
 
-    public static final int FLUID_TANK_COUNT = 4;
+    public static final int FLUID_TANK_COUNT = 32;
     public static final int SLOTS_PER_LAYER  = 9;
 
     // ═══════════════════════════════════════════════════════════
@@ -289,26 +289,18 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
      * Vybraná kapalina se přesune na index 0 v render orderu
      * (= vizuálně nejníže v peci, první na výstupu přes pipe/spout).
      */
-    public void cyclePreferredOutputTank(Player player) {
-        // Najdi další neprázdný tank (od aktuálně preferovaného + 1)
-        int start = (preferredOutputTank + 1) % FLUID_TANK_COUNT;
-        for (int i = 0; i < FLUID_TANK_COUNT; i++) {
-            int candidate = (start + i) % FLUID_TANK_COUNT;
-            if (!fluidTanks[candidate].isEmpty()) {
-                preferredOutputTank = candidate;
-                // Přesuň na pozici 0 v render orderu — stane se nejnižší vizuálně
-                promoteToBottom(candidate);
-                FluidStack fs = fluidTanks[candidate].getFluid();
-                player.displayClientMessage(
-                        Component.literal("§6Output: §f" + fs.getHoverName().getString()
-                                + " §7(" + formatMb(fs.getAmount()) + ")"), true);
-                setChanged();
-                return;
-            }
+    public void setPreferredOutputTank(int tankIndex, net.minecraft.world.entity.player.Player player) {
+        if (tankIndex < 0 || tankIndex >= FLUID_TANK_COUNT) {
+            preferredOutputTank = -1;
+            player.displayClientMessage(Component.literal("§7Output: auto"), true);
+        } else if (!fluidTanks[tankIndex].isEmpty()) {
+            preferredOutputTank = tankIndex;
+            promoteToBottom(tankIndex);
+            FluidStack fs = fluidTanks[tankIndex].getFluid();
+            player.displayClientMessage(
+                    Component.literal("§6Output: §f" + fs.getHoverName().getString()
+                            + " §7(" + formatMb(fs.getAmount()) + ")"), true);
         }
-        // Žádná kapalina → reset
-        preferredOutputTank = -1;
-        player.displayClientMessage(Component.literal("§7Output: auto"), true);
         setChanged();
     }
 
@@ -372,22 +364,29 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
     }
 
     /** Posune prázdné tanky na konec render orderu. */
+    private boolean compacting = false;
+
     public void compactFluids() {
-        for (int i = 0; i < FLUID_TANK_COUNT - 1; i++) {
-            int ti = fluidRenderOrder[i];
-            if (fluidTanks[ti].isEmpty()) {
-                for (int j = i + 1; j < FLUID_TANK_COUNT; j++) {
-                    int si = fluidRenderOrder[j];
-                    if (!fluidTanks[si].isEmpty()) {
-                        fluidTanks[ti].setFluid(fluidTanks[si].getFluid().copy());
-                        fluidTanks[si].setFluid(FluidStack.EMPTY);
-                        // Aktualizuj preferredOutputTank pokud jsme přesunuli jeho fluid
-                        if (preferredOutputTank == si) preferredOutputTank = ti;
-                        setChanged();
-                        break;
+        if (compacting) return; // zabraň rekurzi
+        compacting = true;
+        try {
+            for (int i = 0; i < FLUID_TANK_COUNT - 1; i++) {
+                int ti = fluidRenderOrder[i];
+                if (fluidTanks[ti].isEmpty()) {
+                    for (int j = i + 1; j < FLUID_TANK_COUNT; j++) {
+                        int si = fluidRenderOrder[j];
+                        if (!fluidTanks[si].isEmpty()) {
+                            fluidTanks[ti].setFluid(fluidTanks[si].getFluid().copy());
+                            fluidTanks[si].setFluid(FluidStack.EMPTY);
+                            if (preferredOutputTank == si) preferredOutputTank = ti;
+                            setChanged();
+                            break;
+                        }
                     }
                 }
             }
+        } finally {
+            compacting = false;
         }
     }
 
@@ -422,16 +421,18 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         }
 
         // Prázdná ruka + shift → vyndej celý stack z posledního neprázdného slotu
+        // Prázdná ruka + shift → vyndej VŠECHNY itemy naráz do inventáře
         if (player.isShiftKeyDown()) {
-            for (int i = forgeInventory.getSlots() - 1; i >= 0; i--) {
+            boolean any = false;
+            for (int i = 0; i < forgeInventory.getSlots(); i++) {
                 ItemStack stack = forgeInventory.getStackInSlot(i);
                 if (!stack.isEmpty()) {
                     if (!player.getInventory().add(stack.copy())) player.drop(stack.copy(), false);
                     forgeInventory.setStackInSlot(i, ItemStack.EMPTY);
-                    setChanged();
-                    return true;
+                    any = true;
                 }
             }
+            if (any) setChanged();
             return true;
         }
 
