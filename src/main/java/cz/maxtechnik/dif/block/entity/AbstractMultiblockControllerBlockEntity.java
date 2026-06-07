@@ -283,7 +283,7 @@ public abstract class AbstractMultiblockControllerBlockEntity<R>
         cachedRecipe = null;
     }
 
-    private void resetProgressAndDeactivate(Level level, BlockPos pos, BlockState blockState) {
+    protected void resetProgressAndDeactivate(Level level, BlockPos pos, BlockState blockState) {
         if (progress != 0 || totalTime != 0) {
             resetProgress();
             setChanged();

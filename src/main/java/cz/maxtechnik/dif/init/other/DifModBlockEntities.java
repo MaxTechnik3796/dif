@@ -52,6 +52,9 @@ public class DifModBlockEntities{
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<cz.maxtechnik.dif.block.entity.BlastSmelteryControllerBlockEntity>> BLAST_SMELTERY_CONTROLLER=register("blast_smeltery_controller",DifModBlocks.BLAST_SMELTERY_CONTROLLER,cz.maxtechnik.dif.block.entity.BlastSmelteryControllerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<cz.maxtechnik.dif.block.entity.BlastSmelteryBlockEntity>> BLAST_SMELTERY=register("blast_smeltery",DifModBlocks.BLAST_SMELTERY,cz.maxtechnik.dif.block.entity.BlastSmelteryBlockEntity::new);
 
+	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<cz.maxtechnik.dif.block.entity.ForgeBrickBlockEntity>> FORGE_BRICK=register("forge_brick",DifModBlocks.FORGE_BRICK,cz.maxtechnik.dif.block.entity.ForgeBrickBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<cz.maxtechnik.dif.block.entity.ForgeControllerBlockEntity>> FORGE_FURNACE_CONTROLLER=register("forge_furnace_controller",DifModBlocks.FORGE_FURNACE_CONTROLLER,cz.maxtechnik.dif.block.entity.ForgeControllerBlockEntity::new);
+
 	private static <T extends net.minecraft.world.level.block.entity.BlockEntity> DeferredHolder<BlockEntityType<?>,BlockEntityType<T>> register(String name,Supplier<? extends Block> block,BlockEntityType.BlockEntitySupplier<T> supplier){
 		return REGISTRY.register(name,()->BlockEntityType.Builder.of(supplier,block.get()).build(null));
 	}
