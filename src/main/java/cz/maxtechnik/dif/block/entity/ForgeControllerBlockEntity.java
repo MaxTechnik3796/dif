@@ -51,17 +51,21 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
 
     public net.neoforged.neoforge.items.ItemStackHandler forgeInventory =
             new net.neoforged.neoforge.items.ItemStackHandler(0) {
-                @Override protected void onContentsChanged(int slot) { cachedRecipe = null; setChanged(); }
+                @Override protected void onContentsChanged(int slot) { resetSlotProgress(slot); setChanged(); }
                 @Override public int getSlotLimit(int slot) { return 1; }
             };
 
-    private int   glassLayers     = 0;
-    private boolean locked        = false;
-    private int   cachedHeatPoints = 0;
-    private float cachedHeatSpeed  = 0f;
-    private int   heatCacheTick   = 0;
-    private int   glassCacheTick  = 0;
-    private boolean compacting    = false;
+    private int   glassLayers       = 0;
+    private boolean locked          = false;
+    private int   cachedHeatPoints  = 0;
+    private float cachedHeatSpeed   = 0f;
+    private int   heatCacheTick     = 0;
+    private int   glassCacheTick    = 0;
+    private boolean compacting     = false;
+
+    private transient ForgeMaterialRecipe[] cachedSlotRecipes = new ForgeMaterialRecipe[0];
+    private int[] slotProgress = new int[0];
+    private int[] slotTotalTime = new int[0];
 
     public ForgeControllerBlockEntity(BlockPos pos, BlockState blockState) {
         super(DifModBlockEntities.FORGE_FURNACE_CONTROLLER.get(), pos, blockState);
@@ -121,18 +125,39 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         if (glassCacheTick-- <= 0 || shouldValidate) { glassCacheTick = GLASS_CHECK_PERIOD; refreshGlassLayers(level, pos, blockState); }
         if (locked) return;
         if (cachedHeatPoints == 0) { resetProgressAndDeactivate(level, pos, blockState); return; }
-        if (!hasValidInput())      { resetProgressAndDeactivate(level, pos, blockState); return; }
+        if (!hasValidInput()) { resetProgressAndDeactivate(level, pos, blockState); return; }
 
-        final ForgeMaterialRecipe recipe = findRecipe(level);
-        if (recipe == null) { resetProgressAndDeactivate(level, pos, blockState); return; }
+        boolean anyActive = false;
+        int slots = forgeInventory.getSlots();
+        for (int i = 0; i < slots; i++) {
+            ItemStack input = forgeInventory.getStackInSlot(i);
+            if (input.isEmpty()) continue;
 
-        totalTime = getProcessingTime(recipe);
-        if (!canOutput(recipe)) { setActive(level, pos, blockState, false); return; }
+            ForgeMaterialRecipe recipe = findRecipeForSlot(level, i);
+            if (recipe == null) continue;
+            if (!canOutputForSlot(recipe, input)) continue;
 
-        setActive(level, pos, blockState, true);
-        progress++;
-        if (progress >= totalTime) { finishRecipe(recipe); progress = 0; setChanged(); }
-        else if (progress % 10 == 0) setChanged();
+            int requiredTime = getProcessingTimeForSlot(recipe, input);
+            if (slotTotalTime[i] != requiredTime) {
+                slotProgress[i] = 0;
+            }
+            slotTotalTime[i] = requiredTime;
+
+            if (requiredTime <= 0) continue;
+            slotProgress[i]++;
+            anyActive = true;
+
+            if (slotProgress[i] >= slotTotalTime[i]) {
+                finishRecipe(recipe, i);
+                slotProgress[i] = 0;
+                slotTotalTime[i] = 0;
+                setChanged();
+            } else if (slotProgress[i] % 10 == 0) {
+                setChanged();
+            }
+        }
+
+        setActive(level, pos, blockState, anyActive);
     }
 
     private void refreshHeat(Level level, BlockPos pos) {
@@ -224,6 +249,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         int copy = Math.min(forgeInventory.getSlots(), newSize);
         for (int i = 0; i < copy; i++) newInv.setStackInSlot(i, forgeInventory.getStackInSlot(i));
         forgeInventory = newInv;
+        resizeSlotProcessing(newSize);
     }
 
     private void resizeTankCapacity() {
@@ -231,6 +257,76 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         for (FluidTank tank : fluidTanks) tank.setCapacity(Math.max(tank.getFluidAmount(), totalMb));
         int newInvSize = glassLayers * SLOTS_PER_LAYER;
         if (newInvSize != forgeInventory.getSlots()) resizeInventory(newInvSize);
+    }
+
+    private void resizeSlotProcessing(int newSize) {
+        if (newSize == slotProgress.length) return;
+        int[] newProgress = new int[newSize];
+        int[] newTotalTime = new int[newSize];
+        ForgeMaterialRecipe[] newRecipes = new ForgeMaterialRecipe[newSize];
+        int copy = Math.min(slotProgress.length, newSize);
+        System.arraycopy(slotProgress, 0, newProgress, 0, copy);
+        System.arraycopy(slotTotalTime, 0, newTotalTime, 0, copy);
+        System.arraycopy(cachedSlotRecipes, 0, newRecipes, 0, copy);
+        slotProgress = newProgress;
+        slotTotalTime = newTotalTime;
+        cachedSlotRecipes = newRecipes;
+    }
+
+    private void resetSlotProgress(int slot) {
+        if (slot < 0 || slot >= slotProgress.length) return;
+        slotProgress[slot] = 0;
+        slotTotalTime[slot] = 0;
+        cachedSlotRecipes[slot] = null;
+    }
+
+    private void resetSlotProgresses() {
+        for (int i = 0; i < slotProgress.length; i++) {
+            slotProgress[i] = 0;
+            slotTotalTime[i] = 0;
+            cachedSlotRecipes[i] = null;
+        }
+    }
+
+    @Override
+    protected void resetProgress() {
+        super.resetProgress();
+        resetSlotProgresses();
+    }
+
+    private ForgeMaterialRecipe findRecipeForSlot(Level level, int slot) {
+        if (slot < 0 || slot >= forgeInventory.getSlots()) return null;
+        ItemStack input = forgeInventory.getStackInSlot(slot);
+        if (input.isEmpty()) return null;
+        ForgeMaterialRecipe cached = slot < cachedSlotRecipes.length ? cachedSlotRecipes[slot] : null;
+        if (cached != null && cached.matchesItem(input, cachedHeatPoints)) return cached;
+        for (var h : level.getRecipeManager().getAllRecipesFor(DifModRecipes.FORGE_MATERIAL_TYPE.get()))
+            if (h.value().matchesItem(input, cachedHeatPoints)) {
+                if (slot < cachedSlotRecipes.length) cachedSlotRecipes[slot] = h.value();
+                return h.value();
+            }
+        if (slot < cachedSlotRecipes.length) cachedSlotRecipes[slot] = null;
+        return null;
+    }
+
+    private boolean canOutputForSlot(ForgeMaterialRecipe recipe, ItemStack input) {
+        if (recipe == null || input.isEmpty()) return false;
+        FluidStack out = recipe.getOutputFor(input);
+        if (out.isEmpty()) return false;
+        for (FluidTank t : fluidTanks)
+            if ((t.isEmpty() || t.getFluid().getFluid() == out.getFluid())
+                    && t.fill(out, IFluidHandler.FluidAction.SIMULATE) >= out.getAmount()) return true;
+        return false;
+    }
+
+    private void finishRecipe(ForgeMaterialRecipe recipe, int slot) {
+        if (recipe == null || slot < 0 || slot >= forgeInventory.getSlots()) return;
+        ItemStack input = forgeInventory.getStackInSlot(slot);
+        if (input.isEmpty() || !recipe.matchesItem(input, cachedHeatPoints)) return;
+        FluidStack out = recipe.getOutputFor(input);
+        input.shrink(1);
+        forgeInventory.setStackInSlot(slot, input);
+        if (!out.isEmpty()) addMoltenFluid(out);
     }
 
     public int     getGlassLayers() { return glassLayers; }
@@ -435,24 +531,22 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         if (recipe == null) return;
         int slot = findRecipeSlot(recipe);
         if (slot < 0) return;
-        ItemStack input = forgeInventory.getStackInSlot(slot);
-        FluidStack out  = recipe.getOutputFor(input);
-        input.shrink(1);
-        forgeInventory.setStackInSlot(slot, input);
-        if (!out.isEmpty()) addMoltenFluid(out);
+        finishRecipe(recipe, slot);
+    }
+
+    private int getProcessingTimeForSlot(ForgeMaterialRecipe recipe, ItemStack input) {
+        if (recipe == null || input.isEmpty() || cachedHeatSpeed <= 0) return 80;
+        int baseTime = recipe.baseTime();
+        if (recipe.matchesItem(input, cachedHeatPoints)) {
+            baseTime = recipe.getProcessingTimeFor(input);
+        }
+        return Math.max(1, (int)(baseTime / cachedHeatSpeed));
     }
 
     @Override
     protected int getProcessingTime(ForgeMaterialRecipe recipe) {
         if (recipe == null || cachedHeatSpeed <= 0) return 80;
         int baseTime = recipe.baseTime();
-        for (int i = 0; i < forgeInventory.getSlots(); i++) {
-            ItemStack input = forgeInventory.getStackInSlot(i);
-            if (!input.isEmpty() && recipe.matchesItem(input, cachedHeatPoints)) {
-                baseTime = recipe.getProcessingTimeFor(input);
-                break;
-            }
-        }
         return Math.max(1, (int)(baseTime / cachedHeatSpeed));
     }
 
@@ -590,11 +684,19 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
             return true;
         }
         appendFormedTooltip(tooltip, isPlayerSneaking);
-        if (state.getValue(getActiveProperty()) && totalTime > 0) {
-            int pct      = (int)(((double) progress / totalTime) * 100.0);
-            int secsLeft = Math.max(0, (totalTime - progress) / 20);
+        int activeSlots = 0;
+        int shortestRemaining = Integer.MAX_VALUE;
+        for (int i = 0; i < forgeInventory.getSlots(); i++) {
+            if (i < slotTotalTime.length && slotTotalTime[i] > 0) {
+                activeSlots++;
+                shortestRemaining = Math.min(shortestRemaining, slotTotalTime[i] - slotProgress[i]);
+            }
+        }
+        if (activeSlots > 0) {
+            int secsLeft = Math.max(0, shortestRemaining / 20);
             tooltip.add(Component.literal(goggleTooltipFix + " ▶ Progress: ").withStyle(ChatFormatting.GRAY)
-                    .append(Component.literal(pct + "% (" + secsLeft + "s left)").withStyle(ChatFormatting.GREEN)));
+                    .append(Component.literal(activeSlots + "/" + forgeInventory.getSlots() + " slots active "
+                            + "(" + secsLeft + "s left)").withStyle(ChatFormatting.GREEN)));
         } else {
             tooltip.add(Component.literal(goggleTooltipFix + " ▶ Status: ").withStyle(ChatFormatting.GRAY)
                     .append(Component.literal("Idle").withStyle(ChatFormatting.YELLOW)));
@@ -688,6 +790,8 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         for (FluidTank t : fluidTanks) tanksTag.add(t.writeToNBT(provider, new CompoundTag()));
         tag.put("fluidTanks", tanksTag);
         tag.put("forgeInv", forgeInventory.serializeNBT(provider));
+        tag.putIntArray("slotProgress", slotProgress);
+        tag.putIntArray("slotTotalTime", slotTotalTime);
     }
 
     @Override
@@ -710,6 +814,14 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         int invSize = glassLayers * SLOTS_PER_LAYER;
         resizeInventory(invSize);
         if (tag.contains("forgeInv")) forgeInventory.deserializeNBT(provider, tag.getCompound("forgeInv"));
+        if (tag.contains("slotProgress")) {
+            int[] savedProgress = tag.getIntArray("slotProgress");
+            System.arraycopy(savedProgress, 0, slotProgress, 0, Math.min(savedProgress.length, slotProgress.length));
+        }
+        if (tag.contains("slotTotalTime")) {
+            int[] savedTotalTime = tag.getIntArray("slotTotalTime");
+            System.arraycopy(savedTotalTime, 0, slotTotalTime, 0, Math.min(savedTotalTime.length, slotTotalTime.length));
+        }
         resizeTankCapacity();
     }
 }
