@@ -51,7 +51,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
 
     public net.neoforged.neoforge.items.ItemStackHandler forgeInventory =
             new net.neoforged.neoforge.items.ItemStackHandler(0) {
-                @Override protected void onContentsChanged(int slot) { resetSlotProgress(slot); setChanged(); }
+                @Override protected void onContentsChanged(int slot) { resetSlotProgress(slot); capacityDirty = true; setChanged(); }
                 @Override public int getSlotLimit(int slot) { return 1; }
             };
 
@@ -63,6 +63,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
     private int   glassCacheTick    = 0;
     private int   capacityCheckTick = 0;
     private boolean compacting     = false;
+    private boolean capacityDirty  = true;
 
     private transient ForgeMaterialRecipe[] cachedSlotRecipes = new ForgeMaterialRecipe[0];
     private int[] slotProgress = new int[0];
@@ -76,6 +77,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
                 @Override protected void onContentsChanged() {
                     super.onContentsChanged();
                     cachedRecipe = null;
+                    capacityDirty = true;
                     setChanged();
                     checkLockState();
                 }
@@ -125,7 +127,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         if (!isFormed) return;
 
         if (glassCacheTick-- <= 0 || shouldValidate) { glassCacheTick = GLASS_CHECK_PERIOD; refreshGlassLayers(level, pos, blockState); }
-        if (capacityCheckTick-- <= 0) { capacityCheckTick = 20; refreshSlotCapacity(level); }
+        if (capacityDirty || capacityCheckTick-- <= 0) { capacityCheckTick = 20; refreshSlotCapacity(level); }
         if (locked) return;
         if (cachedHeatPoints == 0) { resetProgressAndDeactivate(level, pos, blockState); return; }
         if (!hasValidInput()) { resetProgressAndDeactivate(level, pos, blockState); return; }
@@ -258,6 +260,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         int copy = Math.min(forgeInventory.getSlots(), newSize);
         for (int i = 0; i < copy; i++) newInv.setStackInSlot(i, forgeInventory.getStackInSlot(i));
         forgeInventory = newInv;
+        capacityDirty = true;
         resizeSlotProcessing(newSize);
     }
 
@@ -325,12 +328,19 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
     }
 
     private void refreshSlotCapacity(Level level) {
+        capacityDirty = false;
         int slots = forgeInventory.getSlots();
-        for (int i = 0; i < slots; i++) {
-            slotCapacityOk[i] = false;
-        }
+        for (int i = 0; i < slots; i++) slotCapacityOk[i] = false;
 
+        // Skutečná volná kapacita celého systému per fluid
+        // Klíč: fluid, hodnota: kolik mB je reálně volno (omezeno globální kapacitou tanku)
+        int globalFreeSpace = Math.max(0, ForgeMultiblockHelper.totalFluidCapacity(glassLayers) - getTotalFluidAmount());
+        if (globalFreeSpace == 0) return; // nikdo se nevleze
+
+        // rezervace: kolik mB jsme už přislíbili pro daný fluid v tomto průchodu
         java.util.Map<net.minecraft.world.level.material.Fluid, Integer> reserved = new java.util.HashMap<>();
+        int totalReserved = 0;
+
         for (int i = 0; i < slots; i++) {
             ItemStack input = forgeInventory.getStackInSlot(i);
             if (input.isEmpty()) continue;
@@ -341,23 +351,37 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
 
             net.minecraft.world.level.material.Fluid fluid = out.getFluid();
             int needed = out.getAmount();
-            int available = getPotentialCapacityForFluid(fluid);
+
+            // 1) Globální check: je vůbec dost volného místa v systému?
+            if (totalReserved + needed > globalFreeSpace) continue;
+
+            // 2) Per-fluid check: vejde se do konkrétních tanků pro tento fluid?
+            int perFluidFree = getPerFluidFreeSpace(fluid);
             int alreadyReserved = reserved.getOrDefault(fluid, 0);
-            if (available - alreadyReserved >= needed) {
-                slotCapacityOk[i] = true;
-                reserved.put(fluid, alreadyReserved + needed);
-            }
+            if (perFluidFree - alreadyReserved < needed) continue;
+
+            slotCapacityOk[i] = true;
+            reserved.put(fluid, alreadyReserved + needed);
+            totalReserved += needed;
         }
     }
 
-    private int getPotentialCapacityForFluid(net.minecraft.world.level.material.Fluid fluid) {
+    /**
+     * Kolik mB může tento fluid reálně dostat — buď do existujícího tanku se stejným fluidem,
+     * nebo do prázdných tanků. Nezahrnuje globální limit (ten řeší volající).
+     */
+    private int getPerFluidFreeSpace(net.minecraft.world.level.material.Fluid fluid) {
         int available = 0;
         for (FluidTank t : fluidTanks) {
-            if (t.isEmpty() || t.getFluid().getFluid() == fluid) {
+            if (!t.isEmpty() && t.getFluid().getFluid() == fluid) {
                 available += t.getCapacity() - t.getFluidAmount();
+            } else if (t.isEmpty()) {
+                available += t.getCapacity();
             }
         }
-        return available;
+        // Omezte na globální volné místo, aby nedošlo k přetečení přes prázdné tanky
+        int globalFree = Math.max(0, ForgeMultiblockHelper.totalFluidCapacity(glassLayers) - getTotalFluidAmount());
+        return Math.min(available, globalFree);
     }
 
     private boolean canOutputForSlot(ForgeMaterialRecipe recipe, ItemStack input) {
