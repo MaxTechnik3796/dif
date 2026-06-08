@@ -31,6 +31,7 @@
 	"container.dif.old_chest":"Alpha Chest",
 	"container.dif.coke_oven": "Coke Oven",
 	"container.dif.space_crate": "Space Crate",
+	"container.dif.forge_furnace":"Forge Furnace",
 
 	"item.dif.beer_bucket":"GoldBerg Bucket",
 	"block.dif.beer_fluid":"GoldBerg",
