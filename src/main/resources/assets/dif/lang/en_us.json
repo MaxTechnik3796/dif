@@ -353,5 +353,10 @@
 
 	"block.dif.blast_smeltery":"Blast Smeltery",
 	"block.dif.blast_smeltery_controller":"Blast Smeltery Controller",
-	"container.dif.blast_smeltery":"Blast Smeltery"
+	"container.dif.blast_smeltery":"Blast Smeltery",
+
+
+	"block.dif.forge_brick":"Forge Brick",
+	"block.dif.forge_glass":"Forge Glass",
+	"block.dif.forge_furnace_controller":"Forge Controller"
 }
