@@ -19,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
  * Pokud jsou v peci obě vstupní kapaliny, každý tick se odebere
  * (consumeA * batches) mB z A a (consumeB * batches) mB z B,
  * kde batches = min(availableA/consumeA, availableB/consumeB, maxPerTick).
- *
  * JSON příklad:
  * {
  *   "type": "dif:forge_fluid_mixing",
@@ -29,7 +28,6 @@ import org.jetbrains.annotations.NotNull;
  *   "max_per_tick":  20,
  *   "min_heat_tier": 1
  * }
- *
  * max_per_tick: kolik dávek se zpracuje za 1 tick (výchozí 1).
  *   Příklad: amount=1, max_per_tick=20 → max 20 mB za tick.
  *   Bucket (1000 mB) pak trvá min. 50 ticků = 2.5s.
@@ -84,9 +82,6 @@ public record ForgeFluidMixingRecipe(
 
     /** Kolik mB B se odebere za 1 dávku. */
     public int consumeB() { return inputFluidB.getAmount(); }
-
-    /** Kolik mB výstupu se přidá za 1 dávku. */
-    public int produceAmount() { return resultFluid.getAmount(); }
 
     /**
      * Spočítá kolik dávek se zpracuje tento tick.

@@ -19,7 +19,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -181,9 +180,6 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         cachedHeatSpeed  = ForgeMultiblockHelper.heatPointsToSpeed(cachedHeatPoints);
         setChanged();
     }
-
-    public int   getHeatPoints() { return cachedHeatPoints; }
-    public float getHeatSpeed()  { return cachedHeatSpeed; }
 
     private int countActualGlassLayers(Level level, BlockPos pos, Direction intoStructure) {
         return ForgeMultiblockHelper.countGlassLayers(level, pos, intoStructure,
@@ -466,7 +462,6 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
     }
 
     public int     getGlassLayers() { return glassLayers; }
-    public boolean isLocked()       { return locked; }
 
     public void setPreferredOutputTank(int tankIndex, Player player) {
         if (tankIndex < 0 || tankIndex >= FLUID_TANK_COUNT) {
@@ -496,21 +491,6 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
     public int[]  getFluidRenderOrder()     { return fluidRenderOrder; }
     public int    getPreferredOutputTank()  { return preferredOutputTank; }
 
-    public void applyRenderOrder(int[] newOrder) {
-        if (newOrder.length != FLUID_TANK_COUNT) return;
-        System.arraycopy(newOrder, 0, fluidRenderOrder, 0, FLUID_TANK_COUNT);
-        setChanged();
-    }
-
-    public FluidStack getFluidInTank(int idx) {
-        return (idx < 0 || idx >= FLUID_TANK_COUNT) ? FluidStack.EMPTY : fluidTanks[idx].getFluid();
-    }
-
-    public FluidStack drainFromTank(int idx, int amount, IFluidHandler.FluidAction action) {
-        if (idx < 0 || idx >= FLUID_TANK_COUNT) return FluidStack.EMPTY;
-        return fluidTanks[idx].drain(amount, action);
-    }
-
     public int getTotalFluidAmount() {
         int total = 0;
         for (FluidTank t : fluidTanks) total += t.getFluidAmount();
@@ -520,7 +500,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
     public int addMoltenFluid(FluidStack fluid) {
         if (locked || fluid.isEmpty()) return 0;
         int spaceLeft = Math.max(0, ForgeMultiblockHelper.totalFluidCapacity(glassLayers) - getTotalFluidAmount());
-        if (spaceLeft <= 0) return 0;
+        if (spaceLeft == 0) return 0;
         FluidStack res = fluid.copy();
         if (res.getAmount() > spaceLeft) res.setAmount(spaceLeft);
 
@@ -577,11 +557,6 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
     public boolean handleInteraction(Player player, InteractionHand hand) {
         if (level == null || level.isClientSide) return true;
         final ItemStack held = player.getItemInHand(hand);
-
-        if (held.getItem() == Items.BUCKET) {
-            tryFillBucket(player, hand, held);
-            return true;
-        }
 
         if (!held.isEmpty()) {
             if (locked) return true;
@@ -645,7 +620,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
     }
 
     @Override
-    protected @Nullable ForgeMaterialRecipe findRecipe(Level level) {
+    protected ForgeMaterialRecipe findRecipe(Level level) {
         for (int i = 0; i < forgeInventory.getSlots(); i++) {
             ItemStack input = forgeInventory.getStackInSlot(i);
             if (input.isEmpty()) continue;
@@ -714,7 +689,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
             @Override public int fill(@NotNull FluidStack resource, @NotNull FluidAction action) {
                 if (locked || resource.isEmpty()) return 0;
                 int space = Math.max(0, ForgeMultiblockHelper.totalFluidCapacity(glassLayers) - getTotalFluidAmount());
-                if (space <= 0) return 0;
+                if (space == 0) return 0;
                 FluidStack toFill = resource.copy();
                 if (toFill.getAmount() > space) toFill.setAmount(space);
                 for (FluidTank t : fluidTanks) {
