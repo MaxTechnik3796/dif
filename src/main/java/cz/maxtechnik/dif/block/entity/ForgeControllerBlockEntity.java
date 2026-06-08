@@ -349,15 +349,19 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         }
 
         if (player.isShiftKeyDown()) {
+            boolean extractedAny = false;
             for (int i = forgeInventory.getSlots() - 1; i >= 0; i--) {
                 ItemStack stack = forgeInventory.getStackInSlot(i);
-                if (!stack.isEmpty()) {
-                    if (!player.getInventory().add(stack.copy())) player.drop(stack.copy(), false);
-                    forgeInventory.setStackInSlot(i, ItemStack.EMPTY);
-                    setChanged();
-                    return true;
+                if (stack.isEmpty()) continue;
+
+                ItemStack extracted = stack.copy();
+                if (!player.getInventory().add(extracted)) {
+                    player.drop(extracted, false);
                 }
+                forgeInventory.setStackInSlot(i, ItemStack.EMPTY);
+                extractedAny = true;
             }
+            if (extractedAny) setChanged();
             return true;
         }
 
