@@ -61,11 +61,13 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
     private float cachedHeatSpeed   = 0f;
     private int   heatCacheTick     = 0;
     private int   glassCacheTick    = 0;
+    private int   capacityCheckTick = 0;
     private boolean compacting     = false;
 
     private transient ForgeMaterialRecipe[] cachedSlotRecipes = new ForgeMaterialRecipe[0];
     private int[] slotProgress = new int[0];
     private int[] slotTotalTime = new int[0];
+    private boolean[] slotCapacityOk = new boolean[0];
 
     public ForgeControllerBlockEntity(BlockPos pos, BlockState blockState) {
         super(DifModBlockEntities.FORGE_FURNACE_CONTROLLER.get(), pos, blockState);
@@ -123,6 +125,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         if (!isFormed) return;
 
         if (glassCacheTick-- <= 0 || shouldValidate) { glassCacheTick = GLASS_CHECK_PERIOD; refreshGlassLayers(level, pos, blockState); }
+        if (capacityCheckTick-- <= 0) { capacityCheckTick = 20; refreshSlotCapacity(level); }
         if (locked) return;
         if (cachedHeatPoints == 0) { resetProgressAndDeactivate(level, pos, blockState); return; }
         if (!hasValidInput()) { resetProgressAndDeactivate(level, pos, blockState); return; }
@@ -131,11 +134,17 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         int slots = forgeInventory.getSlots();
         for (int i = 0; i < slots; i++) {
             ItemStack input = forgeInventory.getStackInSlot(i);
-            if (input.isEmpty()) continue;
+            if (input.isEmpty()) {
+                resetSlotProgress(i);
+                continue;
+            }
 
             ForgeMaterialRecipe recipe = findRecipeForSlot(level, i);
-            if (recipe == null) continue;
-            if (!canOutputForSlot(recipe, input)) continue;
+            if (recipe == null) {
+                resetSlotProgress(i);
+                continue;
+            }
+            if (!slotCapacityOk[i] || !canOutputForSlot(recipe, input)) continue;
 
             int requiredTime = getProcessingTimeForSlot(recipe, input);
             if (slotTotalTime[i] != requiredTime) {
@@ -243,7 +252,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
 
     private void resizeInventory(int newSize) {
         var newInv = new net.neoforged.neoforge.items.ItemStackHandler(newSize) {
-            @Override protected void onContentsChanged(int slot) { cachedRecipe = null; setChanged(); }
+            @Override protected void onContentsChanged(int slot) { resetSlotProgress(slot); setChanged(); }
             @Override public int getSlotLimit(int slot) { return 1; }
         };
         int copy = Math.min(forgeInventory.getSlots(), newSize);
@@ -264,13 +273,16 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         int[] newProgress = new int[newSize];
         int[] newTotalTime = new int[newSize];
         ForgeMaterialRecipe[] newRecipes = new ForgeMaterialRecipe[newSize];
+        boolean[] newCapacityOk = new boolean[newSize];
         int copy = Math.min(slotProgress.length, newSize);
         System.arraycopy(slotProgress, 0, newProgress, 0, copy);
         System.arraycopy(slotTotalTime, 0, newTotalTime, 0, copy);
         System.arraycopy(cachedSlotRecipes, 0, newRecipes, 0, copy);
+        System.arraycopy(slotCapacityOk, 0, newCapacityOk, 0, copy);
         slotProgress = newProgress;
         slotTotalTime = newTotalTime;
         cachedSlotRecipes = newRecipes;
+        slotCapacityOk = newCapacityOk;
     }
 
     private void resetSlotProgress(int slot) {
@@ -278,6 +290,8 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         slotProgress[slot] = 0;
         slotTotalTime[slot] = 0;
         cachedSlotRecipes[slot] = null;
+        if (slot < slotCapacityOk.length) slotCapacityOk[slot] = false;
+        cachedRecipe = null;
     }
 
     private void resetSlotProgresses() {
@@ -285,6 +299,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
             slotProgress[i] = 0;
             slotTotalTime[i] = 0;
             cachedSlotRecipes[i] = null;
+            slotCapacityOk[i] = false;
         }
     }
 
@@ -309,13 +324,55 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         return null;
     }
 
+    private void refreshSlotCapacity(Level level) {
+        int slots = forgeInventory.getSlots();
+        for (int i = 0; i < slots; i++) {
+            slotCapacityOk[i] = false;
+        }
+
+        java.util.Map<net.minecraft.world.level.material.Fluid, Integer> reserved = new java.util.HashMap<>();
+        for (int i = 0; i < slots; i++) {
+            ItemStack input = forgeInventory.getStackInSlot(i);
+            if (input.isEmpty()) continue;
+            ForgeMaterialRecipe recipe = findRecipeForSlot(level, i);
+            if (recipe == null) continue;
+            FluidStack out = recipe.getOutputFor(input);
+            if (out.isEmpty()) continue;
+
+            net.minecraft.world.level.material.Fluid fluid = out.getFluid();
+            int needed = out.getAmount();
+            int available = getPotentialCapacityForFluid(fluid);
+            int alreadyReserved = reserved.getOrDefault(fluid, 0);
+            if (available - alreadyReserved >= needed) {
+                slotCapacityOk[i] = true;
+                reserved.put(fluid, alreadyReserved + needed);
+            }
+        }
+    }
+
+    private int getPotentialCapacityForFluid(net.minecraft.world.level.material.Fluid fluid) {
+        int available = 0;
+        for (FluidTank t : fluidTanks) {
+            if (t.isEmpty() || t.getFluid().getFluid() == fluid) {
+                available += t.getCapacity() - t.getFluidAmount();
+            }
+        }
+        return available;
+    }
+
     private boolean canOutputForSlot(ForgeMaterialRecipe recipe, ItemStack input) {
         if (recipe == null || input.isEmpty()) return false;
         FluidStack out = recipe.getOutputFor(input);
         if (out.isEmpty()) return false;
-        for (FluidTank t : fluidTanks)
-            if ((t.isEmpty() || t.getFluid().getFluid() == out.getFluid())
-                    && t.fill(out, IFluidHandler.FluidAction.SIMULATE) >= out.getAmount()) return true;
+
+        int needed = out.getAmount();
+        int available = 0;
+        for (FluidTank t : fluidTanks) {
+            if (t.isEmpty() || t.getFluid().getFluid() == out.getFluid()) {
+                available += t.getCapacity() - t.getFluidAmount();
+                if (available >= needed) return true;
+            }
+        }
         return false;
     }
 
@@ -324,9 +381,13 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         ItemStack input = forgeInventory.getStackInSlot(slot);
         if (input.isEmpty() || !recipe.matchesItem(input, cachedHeatPoints)) return;
         FluidStack out = recipe.getOutputFor(input);
+        if (out.isEmpty()) return;
+
+        int filled = addMoltenFluid(out);
+        if (filled < out.getAmount()) return;
+
         input.shrink(1);
         forgeInventory.setStackInSlot(slot, input);
-        if (!out.isEmpty()) addMoltenFluid(out);
     }
 
     public int     getGlassLayers() { return glassLayers; }
@@ -387,13 +448,30 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         if (spaceLeft <= 0) return 0;
         FluidStack res = fluid.copy();
         if (res.getAmount() > spaceLeft) res.setAmount(spaceLeft);
+
+        int totalFilled = 0;
         for (FluidTank t : fluidTanks) {
-            if (!t.isEmpty() && t.getFluid().getFluid() == res.getFluid()) { int f = t.fill(res, IFluidHandler.FluidAction.EXECUTE); compactFluids(); return f; }
+            if (!t.isEmpty() && t.getFluid().getFluid() == res.getFluid()) {
+                int filled = t.fill(res, IFluidHandler.FluidAction.EXECUTE);
+                if (filled > 0) {
+                    totalFilled += filled;
+                    res.shrink(filled);
+                }
+                if (res.isEmpty()) break;
+            }
         }
         for (FluidTank t : fluidTanks) {
-            if (t.isEmpty()) { int f = t.fill(res, IFluidHandler.FluidAction.EXECUTE); compactFluids(); return f; }
+            if (res.isEmpty()) break;
+            if (t.isEmpty()) {
+                int filled = t.fill(res, IFluidHandler.FluidAction.EXECUTE);
+                if (filled > 0) {
+                    totalFilled += filled;
+                    res.shrink(filled);
+                }
+            }
         }
-        return 0;
+        if (totalFilled > 0) compactFluids();
+        return totalFilled;
     }
 
     public void compactFluids() {
@@ -713,8 +791,16 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         tooltip.add(Component.literal(goggleTooltipFix + " ▶ Heat: " + heatColor(cachedHeatPoints) + cachedHeatPoints + "§7/18").withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.literal(goggleTooltipFix + " ▶ Layers: " + glassLayers + "/" + ForgeMultiblockHelper.MAX_GLASS_LAYERS).withStyle(ChatFormatting.GRAY));
         int used = 0;
-        for (int i = 0; i < forgeInventory.getSlots(); i++) if (!forgeInventory.getStackInSlot(i).isEmpty()) used++;
-        if (forgeInventory.getSlots() > 0) tooltip.add(Component.literal(goggleTooltipFix + " ▶ Queue: " + used + "/" + forgeInventory.getSlots()).withStyle(ChatFormatting.GRAY));
+        int totalItems = 0;
+        for (int i = 0; i < forgeInventory.getSlots(); i++) {
+            ItemStack stack = forgeInventory.getStackInSlot(i);
+            if (!stack.isEmpty()) {
+                used++;
+                totalItems += stack.getCount();
+            }
+        }
+        if (forgeInventory.getSlots() > 0) tooltip.add(Component.literal(goggleTooltipFix + " ▶ Queue: " + used + "/" + forgeInventory.getSlots()
+                + " (" + totalItems + " items)").withStyle(ChatFormatting.GRAY));
         if (locked) tooltip.add(Component.literal(goggleTooltipFix + " ⚠ LOCKED").withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD));
 
         java.util.List<FluidTank> filled = new java.util.ArrayList<>();
