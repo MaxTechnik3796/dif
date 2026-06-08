@@ -183,8 +183,8 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>COKE_OVEN=REGISTRY.register("coke_oven",()->new CokeOven(BlockBehaviour.Properties.of().strength(3F,4F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
 	public static final DeferredBlock<Block>COKE_OVEN_CONTROLLER=REGISTRY.register("coke_oven_controller",()->new CokeOvenController(BlockBehaviour.Properties.of().strength(3F,4F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
 
-	public static final DeferredBlock<Block>BLAST_SMELTERY=REGISTRY.register("blast_smeltery",()->new cz.maxtechnik.dif.block.BlastSmeltery(BlockBehaviour.Properties.of().strength(4F,5F).requiresCorrectToolForDrops().sound(SoundType.NETHERITE_BLOCK)));
-	public static final DeferredBlock<Block>BLAST_SMELTERY_CONTROLLER=REGISTRY.register("blast_smeltery_controller",()->new cz.maxtechnik.dif.block.BlastSmelteryController(BlockBehaviour.Properties.of().strength(4F,5F).requiresCorrectToolForDrops().sound(SoundType.NETHERITE_BLOCK)));
+	public static final DeferredBlock<Block>BLAST_SMELTERY=REGISTRY.register("blast_smeltery",()->new BlastSmeltery(BlockBehaviour.Properties.of().strength(4F,5F).requiresCorrectToolForDrops().sound(SoundType.NETHERITE_BLOCK)));
+	public static final DeferredBlock<Block>BLAST_SMELTERY_CONTROLLER=REGISTRY.register("blast_smeltery_controller",()->new BlastSmelteryController(BlockBehaviour.Properties.of().strength(4F,5F).requiresCorrectToolForDrops().sound(SoundType.NETHERITE_BLOCK)));
 
 	public static final BlockBehaviour.Properties ENGINE_PROPERTIES=BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops();
 	public static final DeferredBlock<Block>ENGINE2=REGISTRY.register("engine2",()->new Engine(ENGINE_PROPERTIES));
@@ -196,7 +196,7 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>ENGINE_EXTENDER_LPG=REGISTRY.register("engine_extender_lpg",()->new EngineExtender(ENGINE_EXTENDER_PROPERTIES));
 	public static final DeferredBlock<Block>ENGINE_EXTENDER_HEAVY_FUEL_OIL=REGISTRY.register("engine_extender_heavy_fuel_oil",()->new EngineExtender(ENGINE_EXTENDER_PROPERTIES));
 
-	public static final DeferredBlock<Block>FORGE_BRICK=REGISTRY.register("forge_brick",()->new cz.maxtechnik.dif.block.ForgeBrickBlock(BlockBehaviour.Properties.of().strength(3.5F,6F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
-	public static final DeferredBlock<Block>FORGE_GLASS=REGISTRY.register("forge_glass",()->new cz.maxtechnik.dif.block.ForgeGlassBlock(BlockBehaviour.Properties.of().strength(2F,4F).requiresCorrectToolForDrops().sound(SoundType.GLASS).noOcclusion()));
-	public static final DeferredBlock<Block>FORGE_FURNACE_CONTROLLER=REGISTRY.register("forge_furnace_controller",()->new cz.maxtechnik.dif.block.ForgeFurnaceController(BlockBehaviour.Properties.of().strength(4F,8F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+	public static final DeferredBlock<Block>FORGE_BRICK=REGISTRY.register("forge_brick",()->new ForgeBrickBlock(BlockBehaviour.Properties.of().strength(3.5F,6F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
+	public static final DeferredBlock<Block>FORGE_GLASS=REGISTRY.register("forge_glass",()->new ForgeGlassBlock(BlockBehaviour.Properties.of().strength(2F,4F).requiresCorrectToolForDrops().sound(SoundType.GLASS).noOcclusion()));
+	public static final DeferredBlock<Block>FORGE_FURNACE_CONTROLLER=REGISTRY.register("forge_furnace_controller",()->new ForgeFurnaceController(BlockBehaviour.Properties.of().strength(4F,8F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
 }
