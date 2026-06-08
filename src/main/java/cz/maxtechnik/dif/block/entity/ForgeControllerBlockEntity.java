@@ -435,13 +435,15 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
             if (!recipe.canMix(availableA, availableB, cachedHeatPoints)) continue;
 
             // Zkontroluj jestli je místo pro výstup
-            FluidStack output = recipe.makeOutput();
+            int batches = recipe.calcBatches(availableA, availableB);
+            if (batches <= 0) continue;
+            FluidStack output = recipe.makeOutput(batches);
             int globalFree = Math.max(0, ForgeMultiblockHelper.totalFluidCapacity(glassLayers) - getTotalFluidAmount());
             if (globalFree < output.getAmount()) continue;
 
             // Odeber vstupy
-            int toConsumeA = recipe.consumeA();
-            int toConsumeB = recipe.consumeB();
+            int toConsumeA = recipe.consumeA() * batches;
+            int toConsumeB = recipe.consumeB() * batches;
             for (FluidTank t : fluidTanks) {
                 if (toConsumeA <= 0 && toConsumeB <= 0) break;
                 if (t.isEmpty()) continue;

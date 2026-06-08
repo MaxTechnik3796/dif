@@ -17,24 +17,29 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Recept pro míchání kapalin v Forge peci.
  * Pokud jsou v peci obě vstupní kapaliny, každý tick se odebere
- * inputAmountPerTick mB z každé a přidá outputAmountPerTick mB výstupu.
+ * (consumeA * batches) mB z A a (consumeB * batches) mB z B,
+ * kde batches = min(availableA/consumeA, availableB/consumeB, maxPerTick).
  *
  * JSON příklad:
  * {
  *   "type": "dif:forge_fluid_mixing",
- *   "input_fluid_a": { "id": "minecraft:water",     "amount": 1 },
- *   "input_fluid_b": { "id": "minecraft:lava",      "amount": 1 },
- *   "result_fluid":  { "id": "create:honey",        "amount": 1 },
+ *   "input_fluid_a": { "id": "minecraft:water", "amount": 1 },
+ *   "input_fluid_b": { "id": "minecraft:lava",  "amount": 1 },
+ *   "result_fluid":  { "id": "create:honey",    "amount": 1 },
+ *   "max_per_tick":  20,
  *   "min_heat_tier": 1
  * }
  *
- * Množství jsou mB per tick. Pokud chceš pomalejší míchání, použij nižší čísla.
+ * max_per_tick: kolik dávek se zpracuje za 1 tick (výchozí 1).
+ *   Příklad: amount=1, max_per_tick=20 → max 20 mB za tick.
+ *   Bucket (1000 mB) pak trvá min. 50 ticků = 2.5s.
  */
 public record ForgeFluidMixingRecipe(
         FluidStack inputFluidA,
         FluidStack inputFluidB,
         FluidStack resultFluid,
-        int minHeatTier
+        int minHeatTier,
+        int maxPerTick
 ) implements Recipe<SingleRecipeInput> {
 
     // ── Codec ─────────────────────────────────────────────────────────────────
@@ -43,7 +48,8 @@ public record ForgeFluidMixingRecipe(
             FluidStack.CODEC.fieldOf("input_fluid_a").forGetter(ForgeFluidMixingRecipe::inputFluidA),
             FluidStack.CODEC.fieldOf("input_fluid_b").forGetter(ForgeFluidMixingRecipe::inputFluidB),
             FluidStack.CODEC.fieldOf("result_fluid").forGetter(ForgeFluidMixingRecipe::resultFluid),
-            ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("min_heat_tier", 0).forGetter(ForgeFluidMixingRecipe::minHeatTier)
+            ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("min_heat_tier", 0).forGetter(ForgeFluidMixingRecipe::minHeatTier),
+            ExtraCodecs.POSITIVE_INT.optionalFieldOf("max_per_tick", 1).forGetter(ForgeFluidMixingRecipe::maxPerTick)
     ).apply(i, ForgeFluidMixingRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ForgeFluidMixingRecipe> STREAM_CODEC =
@@ -52,17 +58,14 @@ public record ForgeFluidMixingRecipe(
                     FluidStack.STREAM_CODEC, ForgeFluidMixingRecipe::inputFluidB,
                     FluidStack.STREAM_CODEC, ForgeFluidMixingRecipe::resultFluid,
                     ByteBufCodecs.INT,        ForgeFluidMixingRecipe::minHeatTier,
+                    ByteBufCodecs.INT,        ForgeFluidMixingRecipe::maxPerTick,
                     ForgeFluidMixingRecipe::new);
 
     // ── API ───────────────────────────────────────────────────────────────────
 
     /**
-     * Vrátí true pokud pec obsahuje dostatek obou vstupních kapalin
+     * Vrátí true pokud pec obsahuje alespoň 1 dávku obou vstupních kapalin
      * a heat je dostatečný.
-     *
-     * @param availableA  kolik mB kapaliny A je v peci
-     * @param availableB  kolik mB kapaliny B je v peci
-     * @param heatPoints  aktuální heat pece
      */
     public boolean canMix(int availableA, int availableB, int heatPoints) {
         return availableA >= inputFluidA.getAmount()
@@ -76,17 +79,30 @@ public record ForgeFluidMixingRecipe(
     /** Fluid B který recept konzumuje. */
     public net.minecraft.world.level.material.Fluid fluidB() { return inputFluidB.getFluid(); }
 
-    /** Kolik mB A se odebere za 1 tick míchání. */
+    /** Kolik mB A se odebere za 1 dávku. */
     public int consumeA() { return inputFluidA.getAmount(); }
 
-    /** Kolik mB B se odebere za 1 tick míchání. */
+    /** Kolik mB B se odebere za 1 dávku. */
     public int consumeB() { return inputFluidB.getAmount(); }
 
-    /** Kolik mB výstupu se přidá za 1 tick míchání. */
+    /** Kolik mB výstupu se přidá za 1 dávku. */
     public int produceAmount() { return resultFluid.getAmount(); }
 
-    /** FluidStack výstupu (kopie) pro přidání do tanku. */
-    public FluidStack makeOutput() { return resultFluid.copy(); }
+    /**
+     * Spočítá kolik dávek se zpracuje tento tick.
+     * Omezeno dostupným množstvím obou kapalin a maxPerTick.
+     */
+    public int calcBatches(int availableA, int availableB) {
+        return Math.min(
+                Math.min(availableA / consumeA(), availableB / consumeB()),
+                maxPerTick
+        );
+    }
+
+    /** FluidStack výstupu pro daný počet dávek. */
+    public FluidStack makeOutput(int batches) {
+        return new FluidStack(resultFluid.getFluid(), resultFluid.getAmount() * batches);
+    }
 
     // ── Recipe boilerplate (fluid recept, item input nedává smysl) ────────────
 
