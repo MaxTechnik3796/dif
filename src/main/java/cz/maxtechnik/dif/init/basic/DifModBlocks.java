@@ -198,5 +198,5 @@ public class DifModBlocks{
 
 	public static final DeferredBlock<Block>FORGE_BRICK=REGISTRY.register("forge_brick",()->new ForgeBrickBlock(BlockBehaviour.Properties.of().strength(3.5F,6F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
 	public static final DeferredBlock<Block>FORGE_GLASS=REGISTRY.register("forge_glass",()->new ForgeGlassBlock(BlockBehaviour.Properties.of().strength(2F,4F).requiresCorrectToolForDrops().sound(SoundType.GLASS).noOcclusion()));
-	public static final DeferredBlock<Block>FORGE_FURNACE_CONTROLLER=REGISTRY.register("forge_furnace_controller",()->new ForgeFurnaceController(BlockBehaviour.Properties.of().strength(4F,8F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+	public static final DeferredBlock<Block>FORGE_FURNACE_CONTROLLER=REGISTRY.register("forge_furnace_controller",()->new ForgeFurnaceController(BlockBehaviour.Properties.of().strength(4F,8F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
 }
