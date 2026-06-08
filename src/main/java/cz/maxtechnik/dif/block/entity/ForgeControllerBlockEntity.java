@@ -1,8 +1,8 @@
 package cz.maxtechnik.dif.block.entity;
 
-import cz.maxtechnik.dif.block.ForgeBrickBlock;
+import cz.maxtechnik.dif.block.ForgeBrick;
 import cz.maxtechnik.dif.block.ForgeFurnaceController;
-import cz.maxtechnik.dif.block.ForgeGlassBlock;
+import cz.maxtechnik.dif.block.ForgeGlass;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
 import cz.maxtechnik.dif.recipe.ForgeMaterialRecipe;
@@ -147,14 +147,14 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
 
     private int countActualGlassLayers(Level level, BlockPos pos, Direction intoStructure) {
         return ForgeMultiblockHelper.countGlassLayers(level, pos, intoStructure,
-                state -> state.getBlock() instanceof ForgeGlassBlock);
+                state -> state.getBlock() instanceof ForgeGlass);
     }
 
     private void refreshGlassLayers(Level level, BlockPos pos, BlockState blockState) {
         if (!blockState.getValue(ForgeFurnaceController.FORMED)) return;
         Direction intoStructure = blockState.getOptionalValue(getFacingProperty()).orElse(Direction.SOUTH).getOpposite();
         int newLayers = ForgeMultiblockHelper.countGlassLayers(level, pos, intoStructure,
-                state -> state.getBlock() instanceof ForgeGlassBlock);
+                state -> state.getBlock() instanceof ForgeGlass);
         if (newLayers == glassLayers) return;
         if (newLayers < glassLayers) handleGlassRemoved(newLayers);
         else if (locked) checkLockState();
@@ -540,7 +540,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
     public boolean validateBaseStructure(Level level) {
         Direction intoStructure = getBlockState().getOptionalValue(getFacingProperty()).orElse(Direction.SOUTH).getOpposite();
         return ForgeMultiblockHelper.validateBrickLayer(level, worldPosition, intoStructure,
-                state -> state.getBlock() instanceof ForgeBrickBlock);
+                state -> state.getBlock() instanceof ForgeBrick);
     }
 
     @Override

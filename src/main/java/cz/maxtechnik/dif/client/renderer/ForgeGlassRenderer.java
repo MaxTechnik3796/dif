@@ -2,7 +2,7 @@ package cz.maxtechnik.dif.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import cz.maxtechnik.dif.block.ForgeFurnaceController;
-import cz.maxtechnik.dif.block.ForgeGlassBlock;
+import cz.maxtechnik.dif.block.ForgeGlass;
 import cz.maxtechnik.dif.block.entity.ForgeControllerBlockEntity;
 import cz.maxtechnik.dif.util.ForgeMultiblockHelper;
 import net.createmod.catnip.platform.NeoForgeCatnipServices;
@@ -132,7 +132,7 @@ public class ForgeGlassRenderer implements BlockEntityRenderer<ForgeControllerBl
         for (int z = 0; z < 3; z++) {
             for (int x = -1; x <= 1; x++) {
                 BlockPos gp = ctrlPos.relative(intoStr, z).relative(right, x).above(layer);
-                if (!(level.getBlockState(gp).getBlock() instanceof ForgeGlassBlock)) return false;
+                if (!(level.getBlockState(gp).getBlock() instanceof ForgeGlass)) return false;
             }
         }
         return true;
