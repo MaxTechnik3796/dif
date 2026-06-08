@@ -770,31 +770,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
     }
 
     @Override
-    protected void tryFillBucket(Player player, InteractionHand hand, ItemStack heldBucket) {
-        int[] order = preferredOutputTank >= 0
-                ? new int[]{preferredOutputTank, fluidRenderOrder[0], fluidRenderOrder[1], fluidRenderOrder[2],
-                fluidRenderOrder[3], fluidRenderOrder[4], fluidRenderOrder[5], fluidRenderOrder[6],
-                fluidRenderOrder[7], fluidRenderOrder[8], fluidRenderOrder[9], fluidRenderOrder[10], fluidRenderOrder[11],
-                fluidRenderOrder[12], fluidRenderOrder[13], fluidRenderOrder[14], fluidRenderOrder[15],
-                fluidRenderOrder[16], fluidRenderOrder[17], fluidRenderOrder[18], fluidRenderOrder[19],
-                fluidRenderOrder[20], fluidRenderOrder[21], fluidRenderOrder[22], fluidRenderOrder[23],
-                fluidRenderOrder[24], fluidRenderOrder[25], fluidRenderOrder[26], fluidRenderOrder[27],
-                fluidRenderOrder[28], fluidRenderOrder[29], fluidRenderOrder[30], fluidRenderOrder[31]}
-                : fluidRenderOrder;
-        for (int idx : order) {
-            if (idx < 0 || idx >= FLUID_TANK_COUNT) continue;
-            if (fluidTanks[idx].getFluidAmount() < 1000) continue;
-            FluidStack drained = fluidTanks[idx].drain(1000, IFluidHandler.FluidAction.EXECUTE);
-            if (drained.isEmpty()) continue;
-            heldBucket.shrink(1);
-            ItemStack filled = new ItemStack(drained.getFluid().getBucket());
-            if (heldBucket.isEmpty()) player.setItemInHand(hand, filled);
-            else if (!player.getInventory().add(filled)) player.drop(filled, false);
-            compactFluids();
-            setChanged();
-            return;
-        }
-    }
+    protected void tryFillBucket(Player player, InteractionHand hand, ItemStack heldBucket) { }
 
     @Override protected Component getGoggleName() { return Component.literal("◆ Forge Furnace"); }
     @Override protected ChatFormatting getGoggleNameColor() { return ChatFormatting.GOLD; }
