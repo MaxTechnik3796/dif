@@ -1,0 +1,7 @@
+{
+  "type": "dif:forge_fluid_mixing",
+  "input_fluid_a": { "id": "minecraft:water", "amount": 1 },
+  "input_fluid_b": { "id": "minecraft:lava",  "amount": 1 },
+  "result_fluid":  { "id": "create:honey",    "amount": 2 },
+  "min_heat_tier": 1
+}

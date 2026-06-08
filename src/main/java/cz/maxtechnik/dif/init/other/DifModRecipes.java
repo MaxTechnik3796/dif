@@ -29,4 +29,6 @@ public class DifModRecipes{
 	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<cz.maxtechnik.dif.recipe.BlastSmelteryRecipe>> BLAST_SMELTERY_SERIALIZER = REGISTRY.register("blast_smeltery", cz.maxtechnik.dif.recipe.BlastSmelteryRecipe.Serializer::new);
 	public static final DeferredHolder<RecipeType<?>,RecipeType<cz.maxtechnik.dif.recipe.ForgeMaterialRecipe>> FORGE_MATERIAL_TYPE=TYPE_REGISTRY.register("forge_material",()->RecipeType.simple(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("dif","forge_material")));
 	public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<cz.maxtechnik.dif.recipe.ForgeMaterialRecipe>> FORGE_MATERIAL_SERIALIZER=REGISTRY.register("forge_material",cz.maxtechnik.dif.recipe.ForgeMaterialRecipe.Serializer::new);
+	public static final DeferredHolder<RecipeType<?>, RecipeType<cz.maxtechnik.dif.recipe.ForgeFluidMixingRecipe>> FORGE_FLUID_MIXING_TYPE = TYPE_REGISTRY.register("forge_fluid_mixing", () -> RecipeType.simple(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("dif", "forge_fluid_mixing")));
+	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<cz.maxtechnik.dif.recipe.ForgeFluidMixingRecipe>> FORGE_FLUID_MIXING_SERIALIZER = REGISTRY.register("forge_fluid_mixing", cz.maxtechnik.dif.recipe.ForgeFluidMixingRecipe.Serializer::new);
 }

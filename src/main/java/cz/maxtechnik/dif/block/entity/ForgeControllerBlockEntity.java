@@ -9,6 +9,7 @@ import cz.maxtechnik.dif.recipe.ForgeMaterialRecipe;
 import cz.maxtechnik.dif.util.ForgeMultiblockHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import cz.maxtechnik.dif.recipe.ForgeFluidMixingRecipe;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -64,6 +65,8 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
     private int   capacityCheckTick = 0;
     private boolean compacting     = false;
     private boolean capacityDirty  = true;
+    private int mixingTick = 0;
+    private static final int MIXING_PERIOD = 1;
 
     private transient ForgeMaterialRecipe[] cachedSlotRecipes = new ForgeMaterialRecipe[0];
     private int[] slotProgress = new int[0];
@@ -127,6 +130,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
         if (!isFormed) return;
 
         if (glassCacheTick-- <= 0 || shouldValidate) { glassCacheTick = GLASS_CHECK_PERIOD; refreshGlassLayers(level, pos, blockState); }
+        if (mixingTick-- <= 0) { mixingTick = MIXING_PERIOD; tickFluidMixing(level); }
         if (capacityDirty || capacityCheckTick-- <= 0) { capacityCheckTick = 20; refreshSlotCapacity(level); }
         if (locked) return;
         if (cachedHeatPoints == 0) { resetProgressAndDeactivate(level, pos, blockState); return; }
@@ -412,6 +416,51 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
 
         input.shrink(1);
         forgeInventory.setStackInSlot(slot, input);
+    }
+
+    private void tickFluidMixing(Level level) {
+        if (locked || cachedHeatPoints == 0) return;
+
+        for (var holder : level.getRecipeManager().getAllRecipesFor(DifModRecipes.FORGE_FLUID_MIXING_TYPE.get())) {
+            ForgeFluidMixingRecipe recipe = holder.value();
+
+            // Najdi kolik mB každého fluidu je v peci
+            int availableA = 0, availableB = 0;
+            for (FluidTank t : fluidTanks) {
+                if (t.isEmpty()) continue;
+                if (t.getFluid().getFluid() == recipe.fluidA()) availableA += t.getFluidAmount();
+                if (t.getFluid().getFluid() == recipe.fluidB()) availableB += t.getFluidAmount();
+            }
+
+            if (!recipe.canMix(availableA, availableB, cachedHeatPoints)) continue;
+
+            // Zkontroluj jestli je místo pro výstup
+            FluidStack output = recipe.makeOutput();
+            int globalFree = Math.max(0, ForgeMultiblockHelper.totalFluidCapacity(glassLayers) - getTotalFluidAmount());
+            if (globalFree < output.getAmount()) continue;
+
+            // Odeber vstupy
+            int toConsumeA = recipe.consumeA();
+            int toConsumeB = recipe.consumeB();
+            for (FluidTank t : fluidTanks) {
+                if (toConsumeA <= 0 && toConsumeB <= 0) break;
+                if (t.isEmpty()) continue;
+                if (toConsumeA > 0 && t.getFluid().getFluid() == recipe.fluidA()) {
+                    FluidStack drained = t.drain(toConsumeA, IFluidHandler.FluidAction.EXECUTE);
+                    toConsumeA -= drained.getAmount();
+                } else if (toConsumeB > 0 && t.getFluid().getFluid() == recipe.fluidB()) {
+                    FluidStack drained = t.drain(toConsumeB, IFluidHandler.FluidAction.EXECUTE);
+                    toConsumeB -= drained.getAmount();
+                }
+            }
+
+            // Přidej výstup
+            addMoltenFluid(output);
+            capacityDirty = true;
+            setChanged();
+            // Jeden recept za tick stačí — pokud chceš zpracovat víc receptů najednou, odstraň break
+            break;
+        }
     }
 
     public int     getGlassLayers() { return glassLayers; }
