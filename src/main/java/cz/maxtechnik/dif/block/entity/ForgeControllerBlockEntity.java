@@ -823,28 +823,25 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
 					+" ("+totalItems+" items)").withStyle(ChatFormatting.GRAY));
 		if(locked)
 			tooltip.add(Component.literal(goggleTooltipFix+" ⚠ LOCKED").withStyle(ChatFormatting.DARK_RED,ChatFormatting.BOLD));
-		java.util.List<FluidTank> filled=new java.util.ArrayList<>();
-		for(int i=0;i<FLUID_TANK_COUNT;i++){
-			int idx=fluidRenderOrder[i];
-			if(!fluidTanks[idx].isEmpty()) filled.add(fluidTanks[idx]);
-		}
-		if(filled.isEmpty()) return;
-		int showCount=sneaking?filled.size():Math.min(4,filled.size());
-		for(int i=0;i<showCount;i++){
-			FluidTank t=filled.get(i);
-			boolean isPref=false;
-			for(int j=0;j<FLUID_TANK_COUNT;j++){
-				if(fluidTanks[j]==t&&j==preferredOutputTank){
-					isPref=true;
-					break;
-				}
+		FluidTank bottomTank = null;
+		for(int i = 0; i < FLUID_TANK_COUNT; i++){
+			int idx = fluidRenderOrder[i];
+			if(!fluidTanks[idx].isEmpty()){
+				bottomTank = fluidTanks[idx];
+				break;
 			}
-			String prefix=isPref?"§6▶ §r":"";
-			appendFluidSlot(tooltip,goggleTooltipFix+" "+prefix,t);
 		}
-		if(!sneaking&&filled.size()>4){
-			tooltip.add(Component.literal(goggleTooltipFix+" §8[Shift] show all "+filled.size()+" fluids").withStyle(ChatFormatting.DARK_GRAY));
-		}
+		if(bottomTank == null) return;
+
+		appendFluidSlot(tooltip, goggleTooltipFix + " ", bottomTank);
+
+		int totalCap = ForgeMultiblockHelper.totalFluidCapacity(glassLayers);
+		int totalUsed = getTotalFluidAmount();
+		int free = Math.max(0, totalCap - totalUsed);
+		tooltip.add(Component.literal(goggleTooltipFix + " ▶ Free: ")
+				.withStyle(ChatFormatting.GRAY)
+				.append(Component.literal(formatMb(free) + " / " + formatMb(totalCap))
+						.withStyle(ChatFormatting.WHITE)));
 	}
 	private static String heatColor(int heat){
 		if(heat<=0) return "§c";
