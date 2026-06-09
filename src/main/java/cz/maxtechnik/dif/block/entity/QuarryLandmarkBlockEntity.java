@@ -36,50 +36,93 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 	}
 	public void onRightClick(Player player){
 		if(level==null||level.isClientSide) return;
-		if(formed&&!partnerPositions.isEmpty()){
-			for(BlockPos partnerPos: partnerPositions){
-				if(!level.getBlockState(partnerPos).is(DifModBlocks.QUARRY_LANDMARK.get())){
-					resetFormation();
-					break;
+		if(formed) return;
+
+		// Najdi landmarky ve 4 směrech
+		List<BlockPos> found = new ArrayList<>();
+		int myX = worldPosition.getX();
+		int myY = worldPosition.getY();
+		int myZ = worldPosition.getZ();
+
+		boolean tooClose = false;
+		for(int[] dir : new int[][]{{0,-1},{0,1},{-1,0},{1,0}}){
+			ScanResult sr = scanDirectionFull(myX, myY, myZ, dir[0], dir[1]);
+			if(sr == null) continue;
+			if(sr.tooClose()){ tooClose = true; continue; }
+			found.add(sr.pos());
+		}
+		if(tooClose){
+			player.sendSystemMessage(Component.literal("§cA landmark is too close (min "+MIN_DISTANCE+" blocks)."));
+			return;
+		}
+
+		// Pokud mám 2 — zkontroluj jestli tvoří L se mnou jako rohem
+		if(found.size() >= 2){
+			// Zkus všechny kombinace dvou z nalezených
+			for(int a = 0; a < found.size(); a++){
+				for(int b = a+1; b < found.size(); b++){
+					List<BlockPos> candidate = new ArrayList<>();
+					candidate.add(worldPosition);
+					candidate.add(found.get(a));
+					candidate.add(found.get(b));
+					FormResult result = tryForm(candidate);
+					if(result != null){
+						applyFormation(candidate, result);
+						player.sendSystemMessage(Component.literal("§aArea marked: §f"+result.sizeX()+"§ax§f"+result.sizeZ()+" §ablocks. Place Quarry at the edge."));
+						return;
+					}
 				}
 			}
 		}
-		List<BlockPos> foundLandmarks=scanLandmarks();
-		int totalCount=foundLandmarks.size()+1;
-		if(totalCount==1){
-			player.sendSystemMessage(Component.literal("§eNalezen §f1§e/§f3§e landmark. Chybí §f2§e."));
-			return;
-		}
-		if(totalCount==2){
-			player.sendSystemMessage(Component.literal("§eNalezeny §f2§e/§f3§e landmarky. Chybí §f1§e."));
-			return;
-		}
-		if(totalCount>3){
-			player.sendSystemMessage(Component.literal("§cV okolí je více než 3 landmarky – nelze určit oblast."));
-			return;
-		}
-		List<BlockPos> allLandmarks=new ArrayList<>(foundLandmarks);
-		allLandmarks.add(worldPosition);
-		FormResult formResult=tryForm(allLandmarks);
-		if(formResult==null){
-			player.sendSystemMessage(Component.literal("§cLandmarky netvoří správný L-tvar nebo je vzdálenost mimo rozsah "+"(min 3, max §f"+MAX_SEARCH+"§c bloků)."));
-			return;
-		}
-		applyFormation(allLandmarks,formResult);
-		player.sendSystemMessage(Component.literal("§aFormace: §f"+formResult.sizeX()+"§ax§f"+formResult.sizeZ()+" §abloků. Polož Quarry ke kraji oblasti."));
-	}
-	private List<BlockPos> scanLandmarks(){
-		List<BlockPos> found=new ArrayList<>(3);
-		if(level==null) return found;
-		int scanY=worldPosition.getY();
-		for(int dx=-MAX_SEARCH;dx<=MAX_SEARCH&&found.size()<3;dx++){
-			for(int dz=-MAX_SEARCH;dz<=MAX_SEARCH&&found.size()<3;dz++){
-				if(dx==0&&dz==0) continue;
-				BlockPos scanPos=new BlockPos(worldPosition.getX()+dx,scanY,worldPosition.getZ()+dz);
-				if(level.getBlockState(scanPos).is(DifModBlocks.QUARRY_LANDMARK.get())) found.add(scanPos);
+
+		// Pokud mám 1 — ten jeden zkontroluje své 2 kolmé směry
+		if(!found.isEmpty()){
+			for(BlockPos first : found){
+				boolean firstOnX = first.getZ() == worldPosition.getZ();
+				// Kolmé směry od prvního
+				int[] perp1 = firstOnX ? new int[]{0,-1} : new int[]{-1,0};
+				int[] perp2 = firstOnX ? new int[]{0, 1} : new int[]{1, 0};
+				BlockPos third1 = scanDirectionFrom(first, perp1[0], perp1[1]);
+				BlockPos third2 = scanDirectionFrom(first, perp2[0], perp2[1]);
+				for(BlockPos third : new BlockPos[]{third1, third2}){
+					if(third == null || third.equals(worldPosition)) continue;
+					List<BlockPos> candidate = new ArrayList<>();
+					candidate.add(worldPosition);
+					candidate.add(first);
+					candidate.add(third);
+					FormResult result = tryForm(candidate);
+					if(result != null){
+						applyFormation(candidate, result);
+						player.sendSystemMessage(Component.literal("§aArea marked: §f"+result.sizeX()+"§ax§f"+result.sizeZ()+" §ablocks. Place Quarry at the edge."));
+						return;
+					}
+				}
 			}
 		}
-		return found;
+
+		player.sendSystemMessage(Component.literal("§cNo valid area found. Place 3 landmarks in an L-shape on the same lines."));
+	}
+
+	// ZA:
+	private static final int MIN_DISTANCE = 5;
+	private record ScanResult(BlockPos pos, boolean tooClose){}
+
+	private ScanResult scanDirectionFull(int fromX, int fromY, int fromZ, int dx, int dz){
+		if(level == null) return null;
+		for(int d = 1; d <= MAX_SEARCH; d++){
+			BlockPos pos = new BlockPos(fromX + dx*d, fromY, fromZ + dz*d);
+			if(level.getBlockState(pos).is(DifModBlocks.QUARRY_LANDMARK.get())){
+				if(level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity lm && lm.formed) return null;
+				if(d < MIN_DISTANCE) return new ScanResult(pos, true);
+				return new ScanResult(pos, false);
+			}
+		}
+		return null;
+	}
+
+	private BlockPos scanDirectionFrom(BlockPos from, int dx, int dz){
+		ScanResult sr = scanDirectionFull(from.getX(), from.getY(), from.getZ(), dx, dz);
+		return (sr == null || sr.tooClose()) ? null : sr.pos();
 	}
 	@Nullable
 	public static FormResult tryForm(List<BlockPos> allLandmarks){
@@ -95,7 +138,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 		int spanZ=maxZ-minZ;
 		if(spanX<2||spanZ<2) return null;
 		if(spanX>MAX_SEARCH||spanZ>MAX_SEARCH) return null;
-		if(isLShape(lmA,lmB,lmC)&&isLShape(lmB,lmA,lmC)&&isLShape(lmC,lmA,lmB)) return null;
+		if(isLShape(lmA, lmB, lmC) && isLShape(lmB, lmA, lmC) && isLShape(lmC, lmA, lmB)) return null;
 		int centerX=(minX+maxX)/2;
 		int centerZ=(minZ+maxZ)/2;
 		int halfX=Math.max(centerX-minX,maxX-centerX);
@@ -105,7 +148,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 		return new FormResult(sizeX,sizeZ,halfX,halfZ,new BlockPos(centerX,lmA.getY(),centerZ));
 	}
 	private static boolean isLShape(BlockPos corner,BlockPos pos1,BlockPos pos2){
-		return (corner.getX()!=pos1.getX()||corner.getZ()!=pos2.getZ())&&(corner.getX()!=pos2.getX()||corner.getZ()!=pos1.getZ());
+		return (corner.getX() == pos1.getX() && corner.getZ() == pos2.getZ()) || (corner.getX() == pos2.getX() && corner.getZ() == pos1.getZ());
 	}
 	private void applyFormation(List<BlockPos> allLandmarks,FormResult formResult){
 		if(level==null) return;
@@ -121,14 +164,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 			level.sendBlockUpdated(lmPos,lmEntity.getBlockState(),lmEntity.getBlockState(),3);
 		}
 	}
-	private void resetFormation(){
-		formed=false;
-		formedCenter=null;
-		formedHalfX=formedHalfZ=0;
-		partnerPositions.clear();
-		setChanged();
-		if(level!=null) level.sendBlockUpdated(worldPosition,getBlockState(),getBlockState(),3);
-	}
+
 	public void applyToQuarry(Level level,BlockPos quarryPos){
 		if(!formed||formedCenter==null) return;
 		if(!(level.getBlockEntity(quarryPos) instanceof QuarryBlockEntity quarryEntity)) return;
