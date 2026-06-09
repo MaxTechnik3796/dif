@@ -3,10 +3,11 @@ package cz.maxtechnik.dif.gui.screen;
 import cz.maxtechnik.dif.block.entity.ForgeControllerBlockEntity;
 import cz.maxtechnik.dif.network.ForgeSelectFluidPacket;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -19,237 +20,331 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @SuppressWarnings("deprecation")
-public class ForgeRadialScreen extends Screen{
-	private static final int[] RING_RADII_OUTER={90,58,30};
-	private static final int[] RING_RADII_INNER={64,36,12};
-	private static final int ICON_SIZE=16;
-	private static final int ICON_HALF=ICON_SIZE/2;
-	private static final int[] MAX_PER_RING={12,12,8};
+public class ForgeRadialScreen extends Screen {
+
+	// ── Layout constants ──────────────────────────────────────────────────
+	private static final int COLS     = 8;
+	private static final int CARD_W   = 40;
+	private static final int CARD_H   = 40;
+	private static final int CARD_GAP = 4;
+	private static final int CORNER_R = 4;
+	private static final int BORDER_W = 2;
+
 	private final ForgeControllerBlockEntity be;
 	private final BlockPos ctrlPos;
-	private final List<int[]> activeTanks=new ArrayList<>();
-	private int selectedIdx=-1;
-	private long openTime=0;
-	public ForgeRadialScreen(ForgeControllerBlockEntity be){
+	private final List<Integer> tankIndices = new ArrayList<>();
+	private int selectedIdx = -1;
+	private long openTime;
+
+	public ForgeRadialScreen(ForgeControllerBlockEntity be) {
 		super(Component.empty());
-		this.be=be;
-		this.ctrlPos=be.getBlockPos();
-		for(int i=0;i<ForgeControllerBlockEntity.FLUID_TANK_COUNT;i++)
-			if(!be.fluidTanks[i].isEmpty()) activeTanks.add(new int[]{i});
-		int pref=be.getPreferredOutputTank();
-		for(int i=0;i<activeTanks.size();i++){
-			if(activeTanks.get(i)[0]==pref){
-				selectedIdx=i;
-				break;
-			}
-		}
+		this.be      = be;
+		this.ctrlPos = be.getBlockPos();
+		for (int i = 0; i < ForgeControllerBlockEntity.FLUID_TANK_COUNT; i++)
+			if (!be.fluidTanks[i].isEmpty()) tankIndices.add(i);
+		int pref = be.getPreferredOutputTank();
+		for (int i = 0; i < tankIndices.size(); i++)
+			if (tankIndices.get(i) == pref) { selectedIdx = i; break; }
 	}
-	@Override
-	protected void init(){
-		super.init();
-		openTime=System.currentTimeMillis();
+
+	@Override protected void init() { super.init(); openTime = System.currentTimeMillis(); }
+
+	// ── Top-left corner of the whole grid (centred on screen) ─────────────
+	private int gridX() {
+		int total = tankIndices.size();
+		int cols  = Math.min(COLS, total);
+		return width  / 2 - (cols * (CARD_W + CARD_GAP) - CARD_GAP) / 2;
 	}
+	private int gridY() {
+		int total = tankIndices.size();
+		if (total == 0) return height / 2;
+		int cols = Math.min(COLS, total);
+		int rows = (int) Math.ceil((double) total / cols);
+		return height / 2 - (rows * (CARD_H + CARD_GAP) - CARD_GAP) / 2 - 12;
+	}
+
+	// ── Card top-left for index i ─────────────────────────────────────────
+	private int cardX(int i) { return gridX() + (i % COLS) * (CARD_W + CARD_GAP); }
+	private int cardY(int i) { return gridY() + (i / COLS) * (CARD_H + CARD_GAP); }
+
+	// ── Main render ───────────────────────────────────────────────────────
 	@Override
-	public void render(@NotNull GuiGraphics gfx,int mx,int my,float partial){
-		int cx=width/2, cy=height/2;
-		long elapsed=System.currentTimeMillis()-openTime;
-		float pulse=(float)(Math.sin(elapsed/400.0)*0.12+0.88);
-		int total=activeTanks.size();
-		if(total==0){
-			int bw=140, bh=32;
-			gfx.fill(cx-bw/2,cy-bh/2,cx+bw/2,cy+bh/2,0xCC111111);
-			gfx.fill(cx-bw/2,cy-bh/2,cx+bw/2,cy-bh/2+1,0xFF6B3D1A);
-			gfx.drawCenteredString(font,"§7No fluids in forge",cx,cy-4,0xFFCCCCCC);
-			super.render(gfx,mx,my,partial);
+	public void render(@NotNull GuiGraphics gfx, int mx, int my, float partial) {
+		int total = tankIndices.size();
+
+		// Poloprůhledné tmavé pozadí (MC GUI styl)
+		gfx.fill(0, 0, width, height, 0x88000000);
+
+		if (total == 0) {
+			gfx.drawCenteredString(font, "§7No fluids in forge", width / 2, height / 2 - 4, 0xFFCCCCCC);
+			super.render(gfx, mx, my, partial);
 			return;
 		}
-		int hoveredIdx=getHoveredIdx(mx-cx,my-cy);
-		int drawn=0;
-		for(int ring=0;ring<MAX_PER_RING.length&&drawn<total;ring++){
-			int countInRing=Math.min(MAX_PER_RING[ring],total-drawn);
-			for(int s=0;s<countInRing;s++){
-				int gi=drawn+s;
-				drawSegment(gfx,cx,cy,s,countInRing,gi,
-						RING_RADII_INNER[ring],RING_RADII_OUTER[ring],
-						hoveredIdx==gi,selectedIdx==gi,pulse);
+
+		long elapsed  = System.currentTimeMillis() - openTime;
+		float pulse   = (float)(Math.sin(elapsed / 350.0) * 0.18 + 0.82);
+		int hoveredIdx = getHoveredIdx(mx, my);
+
+		for (int i = 0; i < total; i++) {
+			boolean hov = hoveredIdx == i;
+			boolean sel = selectedIdx == i;
+			drawCard(gfx, i, hov, sel, pulse, elapsed);
+		}
+
+		// Tooltip
+		if (hoveredIdx >= 0) drawTooltip(gfx, hoveredIdx, mx, my);
+
+		// Selected label
+		int labelY = gridY() + getGridHeight() + 10;
+		if (selectedIdx >= 0) {
+			FluidStack sf = be.fluidTanks[tankIndices.get(selectedIdx)].getFluid();
+			gfx.drawCenteredString(font,
+					"§6Selected: §f" + sf.getHoverName().getString(),
+					width / 2, labelY, 0xFFFFFFFF);
+		}
+		gfx.drawCenteredString(font, "§8click to select  ·  esc to cancel",
+				width / 2, labelY + 12, 0xFF555555);
+
+		super.render(gfx, mx, my, partial);
+	}
+
+	private int getGridHeight() {
+		int total = tankIndices.size();
+		if (total == 0) return 0;
+		int rows = (int) Math.ceil((double) total / Math.min(COLS, total));
+		return rows * (CARD_H + CARD_GAP) - CARD_GAP;
+	}
+
+	// ── Draw one card ─────────────────────────────────────────────────────
+	private void drawCard(GuiGraphics gfx, int idx,
+	                      boolean hovered, boolean selected,
+	                      float pulse, long elapsed) {
+		int x  = cardX(idx);
+		int y  = cardY(idx);
+		FluidStack fs = be.fluidTanks[tankIndices.get(idx)].getFluid();
+		int fc = getFluidColor(fs);
+
+		// Hover: lehký pulz alpha
+		float hoverA = hovered
+				? (float)(Math.sin(elapsed / 200.0) * 0.1 + 0.9)
+				: 1.0f;
+
+		// 1) Tmavé zaoblené pozadí karty
+		fillRoundRect(gfx, x, y, CARD_W, CARD_H, CORNER_R, 0xCC111111);
+
+		// 2) Fluid textura přes celou kartu (ořezaná zaoblením)
+		renderFluidTiled(gfx, fs, x + BORDER_W, y + BORDER_W,
+				CARD_W - BORDER_W * 2, CARD_H - BORDER_W * 2 - 12, fc, hoverA);
+
+		// 3) Tmavý gradient overlay dole (pro čitelnost textu)
+		fillRoundRect(gfx, x, y + CARD_H - 16, CARD_W, 16, 0, 0xBB000000);
+
+		// 4) Množství
+		String amt = formatMbShort(fs.getAmount());
+		gfx.drawCenteredString(font, "§f" + amt, x + CARD_W / 2, y + CARD_H - 11, 0xFFFFFFFF);
+
+		// 5) Border — barva fluidu
+		int borderCol = (fc & 0x00FFFFFF) | 0xDD000000;
+		strokeRoundRect(gfx, x, y, CARD_W, CARD_H, CORNER_R, BORDER_W, borderCol);
+
+		// 6) Selected overlay — zlatý border + pulzující vnitřní glow
+		if (selected) {
+			strokeRoundRect(gfx, x - 1, y - 1, CARD_W + 2, CARD_H + 2,
+					CORNER_R + 1, BORDER_W, 0xFFD4891A);
+			// Vnitřní glow (druhý border těsně uvnitř)
+			int glowA = (int)(pulse * 180);
+			strokeRoundRect(gfx, x + 1, y + 1, CARD_W - 2, CARD_H - 2,
+					CORNER_R - 1, 1, (glowA << 24) | 0xD4891A);
+		}
+
+		// 7) Hover highlight
+		if (hovered && !selected) {
+			strokeRoundRect(gfx, x - 1, y - 1, CARD_W + 2, CARD_H + 2,
+					CORNER_R + 1, BORDER_W, 0x99FFFFFF);
+		}
+	}
+
+	// ── Tooltip ───────────────────────────────────────────────────────────
+	private void drawTooltip(GuiGraphics gfx, int idx, int mx, int my) {
+		FluidStack fs  = be.fluidTanks[tankIndices.get(idx)].getFluid();
+		String name    = fs.getHoverName().getString();
+		String amount  = formatMb(fs.getAmount());
+		int tw  = Math.max(font.width(name), font.width(amount)) + 16;
+		int th  = 24;
+		int tx  = mx + 10;
+		int ty  = my - th - 4;
+		if (tx + tw > width  - 4) tx = mx - tw - 10;
+		if (ty < 4)               ty = my + 10;
+		// Pozadí
+		gfx.fill(tx, ty, tx + tw, ty + th, 0xEE0D0D0D);
+		// Top border zlatý
+		gfx.fill(tx, ty, tx + tw, ty + 1, 0xFFD4891A);
+		// Bottom border dim
+		gfx.fill(tx, ty + th - 1, tx + tw, ty + th, 0x66D4891A);
+		gfx.drawString(font, name,   tx + 8, ty + 3,  0xFFEEEEEE, false);
+		gfx.drawString(font, amount, tx + 8, ty + 13, 0xFF999999, false);
+	}
+
+	// ── Filled rounded rectangle ──────────────────────────────────────────
+	private void fillRoundRect(GuiGraphics gfx, int x, int y, int w, int h, int r, int color) {
+		if (r <= 0) { gfx.fill(x, y, x + w, y + h, color); return; }
+		// Centre body
+		gfx.fill(x + r, y,     x + w - r, y + h,     color);
+		gfx.fill(x,     y + r, x + r,     y + h - r, color);
+		gfx.fill(x + w - r, y + r, x + w, y + h - r, color);
+		// Corners (quarter-circles)
+		fillCorner(gfx, x + r,         y + r,         r, color, 180);
+		fillCorner(gfx, x + w - r - 1, y + r,         r, color, 270);
+		fillCorner(gfx, x + r,         y + h - r - 1, r, color,  90);
+		fillCorner(gfx, x + w - r - 1, y + h - r - 1, r, color,   0);
+	}
+
+	/** Vyplní čtvrt-kruh v rohu. quadrant: 0=BR,90=BL,180=TL,270=TR */
+	private void fillCorner(GuiGraphics gfx, int cx, int cy, int r, int color, int quadrant) {
+		for (int dy = 0; dy < r; dy++) {
+			int hw = (int) Math.sqrt((double)(r * r) - (double)((r - 1 - dy) * (r - 1 - dy)));
+			int px, py, pw;
+			switch (quadrant) {
+				case 180 -> { px = cx - hw; py = cy - r + dy; pw = hw; }  // TL
+				case 270 -> { px = cx + 1;  py = cy - r + dy; pw = hw; }  // TR
+				case  90 -> { px = cx - hw; py = cy + dy + 1; pw = hw; }  // BL
+				default  -> { px = cx + 1;  py = cy + dy + 1; pw = hw; }  // BR
 			}
-			drawn+=countInRing;
-		}
-		int cr=RING_RADII_INNER[RING_RADII_INNER.length-1]-1;
-		drawDisk(gfx,cx,cy,cr);
-		if(selectedIdx>=0&&selectedIdx<total){
-			FluidStack sf=be.fluidTanks[activeTanks.get(selectedIdx)[0]].getFluid();
-			String sname=shortenName(sf.getHoverName().getString());
-			gfx.drawCenteredString(font,"§6"+sname,cx,cy-4,0xFFFFFFFF);
-		}else
-			gfx.drawCenteredString(font,"§8select",cx,cy-4,0xFF555555);
-		if(hoveredIdx>=0&&hoveredIdx<total){
-			FluidStack hfs=be.fluidTanks[activeTanks.get(hoveredIdx)[0]].getFluid();
-			String hname=hfs.getHoverName().getString();
-			String hamount=formatMb(hfs.getAmount());
-			int tw=Math.max(font.width(hname),font.width(hamount))+16;
-			int tx=cx-tw/2;
-			int ty=cy-RING_RADII_OUTER[0]-30;
-			gfx.fill(tx,ty,tx+tw,ty+22,0xBB111111);
-			gfx.fill(tx,ty,tx+tw,ty+1,0xFFD4891A);
-			gfx.drawString(font,hname,tx+8,ty+3,0xFFEEEEEE,false);
-			gfx.drawString(font,hamount,tx+8,ty+13,0xFF888888,false);
-		}
-		gfx.drawCenteredString(font,"§8click to select  ·  esc to cancel",cx,cy+RING_RADII_OUTER[0]+14,0xFF444444);
-		super.render(gfx,mx,my,partial);
-	}
-	private void drawSegment(GuiGraphics gfx,int cx,int cy,int segInRing,int totalInRing,int globalIdx,int rInner,int rOuter,boolean hovered,boolean selected,float pulse){
-		FluidStack fs=be.fluidTanks[activeTanks.get(globalIdx)[0]].getFluid();
-		int fc=getFluidColor(fs);
-		int fr=(fc>>16)&0xFF;
-		int fg=(fc>>8)&0xFF;
-		int fb=fc&0xFF;
-		float baseA=selected?pulse:hovered?0.90f:0.70f;
-		int rEnd=hovered||selected?rOuter+6:rOuter;
-		float segAngle=(float)(Math.PI*2/totalInRing);
-		float gap=totalInRing>1?0.04f:0f;
-		float startA=segAngle*segInRing-(float)(Math.PI/2)+gap;
-		float endA=startA+segAngle-2*gap;
-		int steps=Math.max(10,(int)(rOuter*segAngle/2.5f));
-		var buffer=gfx.bufferSource().getBuffer(RenderType.gui());
-		var mat=gfx.pose().last().pose();
-		for(int s=0;s<steps;s++){
-			float a0=startA+(endA-startA)*s/steps;
-			float a1=startA+(endA-startA)*(s+1)/steps;
-			float x0i=cx+(float)Math.cos(a0)*rInner;
-			float y0i=cy+(float)Math.sin(a0)*rInner;
-			float x1i=cx+(float)Math.cos(a1)*rInner;
-			float y1i=cy+(float)Math.sin(a1)*rInner;
-			float x0o=cx+(float)Math.cos(a0)*rEnd;
-			float y0o=cy+(float)Math.sin(a0)*rEnd;
-			float x1o=cx+(float)Math.cos(a1)*rEnd;
-			float y1o=cy+(float)Math.sin(a1)*rEnd;
-			float r=fr/255f, g=fg/255f, b=fb/255f;
-			buffer.addVertex(mat,x0i,y0i,0).setColor(r,g,b,baseA);
-			buffer.addVertex(mat,x0o,y0o,0).setColor(r,g,b,baseA);
-			buffer.addVertex(mat,x1o,y1o,0).setColor(r,g,b,baseA);
-			buffer.addVertex(mat,x0i,y0i,0).setColor(r,g,b,baseA);
-			buffer.addVertex(mat,x0i,y0i,0).setColor(r,g,b,baseA);
-			buffer.addVertex(mat,x1o,y1o,0).setColor(r,g,b,baseA);
-			buffer.addVertex(mat,x1i,y1i,0).setColor(r,g,b,baseA);
-			buffer.addVertex(mat,x0i,y0i,0).setColor(r,g,b,baseA);
-		}
-		if(selected){
-			drawArcLine(gfx,cx,cy,rEnd,startA,endA,0xFFD4891A,steps);
-			drawArcLine(gfx,cx,cy,rInner,startA,endA,0xFFD4891A,steps);
-		}else if(hovered){
-			drawArcLine(gfx,cx,cy,rEnd,startA,endA,0xAAFFFFFF,steps);
-		}
-		float midA=(startA+endA)/2f;
-		float midR=(rInner+rEnd)/2f;
-		int iconX=cx+(int)(Math.cos(midA)*midR)-ICON_HALF;
-		int iconY=cy+(int)(Math.sin(midA)*midR)-ICON_HALF;
-		renderFluidIcon(gfx,fs,iconX,iconY,fc);
-	}
-	private void drawDisk(GuiGraphics gfx,int cx,int cy,int r){
-		for(int dy=-r;dy<=r;dy++){
-			int hw=(int)Math.sqrt(r*r-dy*dy);
-			gfx.fill(cx-hw,cy+dy,cx+hw,cy+dy+1,-871757302);
+			gfx.fill(px, py, px + pw, py + 1, color);
 		}
 	}
-	private void renderFluidIcon(GuiGraphics gfx,FluidStack fs,int x,int y,int color){
-		try{
-			IClientFluidTypeExtensions ext=IClientFluidTypeExtensions.of(fs.getFluid());
-			ResourceLocation texLoc=ext.getStillTexture(fs);
-			var atlas=Minecraft.getInstance().getTextureAtlas(
-					TextureAtlas.LOCATION_BLOCKS);
-			TextureAtlasSprite sprite=atlas.apply(texLoc);
-			float r=((color>>16)&0xFF)/255f;
-			float g=((color>>8)&0xFF)/255f;
-			float b=((color)&0xFF)/255f;
-			RenderSystem.setShaderTexture(0,TextureAtlas.LOCATION_BLOCKS);
-			RenderSystem.setShaderColor(r,g,b,1f);
-			var pose=gfx.pose();
-			var tess=com.mojang.blaze3d.vertex.Tesselator.getInstance();
-			var buf=tess.begin(com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS,
-					com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_TEX);
-			var mat=pose.last().pose();
-			buf.addVertex(mat,x,y+ICON_SIZE,0).setUv(sprite.getU0(),sprite.getV1());
-			buf.addVertex(mat,x+ICON_SIZE,y+ICON_SIZE,0).setUv(sprite.getU1(),sprite.getV1());
-			buf.addVertex(mat,x+ICON_SIZE,y,0).setUv(sprite.getU1(),sprite.getV0());
-			buf.addVertex(mat,x,y,0).setUv(sprite.getU0(),sprite.getV0());
-			RenderSystem.setShader(net.minecraft.client.renderer.GameRenderer::getPositionTexShader);
-			com.mojang.blaze3d.vertex.BufferUploader.drawWithShader(buf.buildOrThrow());
-			RenderSystem.setShaderColor(1f,1f,1f,1f);
-		}catch(Exception e){
-			drawColorDot(gfx,x,y,color);
+
+	// ── Stroked rounded rectangle ─────────────────────────────────────────
+	private void strokeRoundRect(GuiGraphics gfx, int x, int y, int w, int h, int r, int bw, int color) {
+		for (int t = 0; t < bw; t++) {
+			int xi = x + t, yi = y + t, wi = w - t * 2, hi = h - t * 2, ri = Math.max(0, r - t);
+			// Top / bottom edges
+			gfx.fill(xi + ri, yi,          xi + wi - ri, yi + 1,          color);
+			gfx.fill(xi + ri, yi + hi - 1, xi + wi - ri, yi + hi,         color);
+			// Left / right edges
+			gfx.fill(xi,          yi + ri, xi + 1,          yi + hi - ri, color);
+			gfx.fill(xi + wi - 1, yi + ri, xi + wi,         yi + hi - ri, color);
+			// Corner arcs
+			strokeCornerArc(gfx, xi + ri,          yi + ri,          ri, color, 180);
+			strokeCornerArc(gfx, xi + wi - ri - 1, yi + ri,          ri, color, 270);
+			strokeCornerArc(gfx, xi + ri,          yi + hi - ri - 1, ri, color,  90);
+			strokeCornerArc(gfx, xi + wi - ri - 1, yi + hi - ri - 1, ri, color,   0);
 		}
 	}
-	/** Fallback — malý barevný kruh místo textury. */
-	private void drawColorDot(GuiGraphics gfx,int x,int y,int color){
-		int cx=x+ICON_HALF, cy=y+ICON_HALF, r=ICON_HALF-1;
-		for(int dy=-r;dy<=r;dy++){
-			int hw=(int)Math.sqrt(r*r-dy*dy);
-			gfx.fill(cx-hw,cy+dy,cx+hw,cy+dy+1,color|0xFF000000);
-		}
-	}
-	private void drawArcLine(GuiGraphics gfx,int cx,int cy,int r,
-	                         float startA,float endA,int color,int steps){
-		for(int s=0;s<=steps;s++){
-			float a=startA+(endA-startA)*s/steps;
-			int px=cx+(int)(Math.cos(a)*r);
-			int py=cy+(int)(Math.sin(a)*r);
-			gfx.fill(px,py,px+1,py+1,color);
-		}
-	}
-	private int getHoveredIdx(int dx,int dy){
-		double dist=Math.sqrt(dx*dx+dy*dy);
-		double angle=Math.atan2(dy,dx)+Math.PI/2;
-		if(angle<0) angle+=Math.PI*2;
-		int total=activeTanks.size(), drawn=0;
-		for(int ring=0;ring<MAX_PER_RING.length&&drawn<total;ring++){
-			int countInRing=Math.min(MAX_PER_RING[ring],total-drawn);
-			int rOuter=RING_RADII_OUTER[ring]+7;
-			int rInner=RING_RADII_INNER[ring];
-			if(dist>=rInner&&dist<=rOuter){
-				float segAngle=(float)(Math.PI*2/countInRing);
-				return drawn+(int)(angle/segAngle)%countInRing;
+
+	private void strokeCornerArc(GuiGraphics gfx, int cx, int cy, int r, int color, int quadrant) {
+		if (r <= 0) return;
+		for (int i = 0; i <= 90; i += 2) {
+			double a = Math.toRadians(i);
+			int ox = (int) Math.round(Math.cos(a) * r);
+			int oy = (int) Math.round(Math.sin(a) * r);
+			int px, py;
+			switch (quadrant) {
+				case 180 -> { px = cx - ox; py = cy - oy; }
+				case 270 -> { px = cx + ox; py = cy - oy; }
+				case  90 -> { px = cx - ox; py = cy + oy; }
+				default  -> { px = cx + ox; py = cy + oy; }
 			}
-			drawn+=countInRing;
+			gfx.fill(px, py, px + 1, py + 1, color);
+		}
+	}
+
+	// ── Fluid texture tiled across card area ──────────────────────────────
+	private void renderFluidTiled(GuiGraphics gfx, FluidStack fs,
+	                              int x, int y, int w, int h,
+	                              int color, float alpha) {
+		try {
+			IClientFluidTypeExtensions ext = IClientFluidTypeExtensions.of(fs.getFluid());
+			ResourceLocation texLoc = ext.getStillTexture(fs);
+			TextureAtlasSprite sprite = Minecraft.getInstance()
+					.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(texLoc);
+
+			float r = ((color >> 16) & 0xFF) / 255f;
+			float g = ((color >>  8) & 0xFF) / 255f;
+			float b = ( color        & 0xFF) / 255f;
+
+			RenderSystem.enableBlend();
+			RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
+			RenderSystem.setShaderColor(r, g, b, alpha);
+
+			var tess = Tesselator.getInstance();
+			var buf  = tess.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+			var mat  = gfx.pose().last().pose();
+
+			// Tile 16×16 sprite across the card area
+			int tileSize = 16;
+			for (int ty = 0; ty < h; ty += tileSize) {
+				for (int tx = 0; tx < w; tx += tileSize) {
+					int tw = Math.min(tileSize, w - tx);
+					int th = Math.min(tileSize, h - ty);
+					float u1 = sprite.getU((float) tw / tileSize);
+					float v1 = sprite.getV((float) th / tileSize);
+					buf.addVertex(mat, x + tx,      y + ty + th, 0).setUv(sprite.getU0(), v1);
+					buf.addVertex(mat, x + tx + tw, y + ty + th, 0).setUv(u1,             v1);
+					buf.addVertex(mat, x + tx + tw, y + ty,      0).setUv(u1,             sprite.getV0());
+					buf.addVertex(mat, x + tx,      y + ty,      0).setUv(sprite.getU0(), sprite.getV0());
+				}
+			}
+			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+			BufferUploader.drawWithShader(buf.buildOrThrow());
+			RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+			RenderSystem.disableBlend();
+		} catch (Exception e) {
+			// Fallback: plná barva fluidu
+			int fa = ((int)(alpha * 0xDD)) << 24;
+			fillRoundRect(gfx, x, y, w, h, CORNER_R - BORDER_W, fa | (color & 0x00FFFFFF));
+		}
+	}
+
+	// ── Hit detection ─────────────────────────────────────────────────────
+	private int getHoveredIdx(int mx, int my) {
+		for (int i = 0; i < tankIndices.size(); i++) {
+			int x = cardX(i), y = cardY(i);
+			if (mx >= x && mx < x + CARD_W && my >= y && my < y + CARD_H) return i;
 		}
 		return -1;
 	}
+
+	// ── Input ─────────────────────────────────────────────────────────────
 	@Override
-	public boolean mouseClicked(double mx,double my,int button){
-		if(button!=0) return super.mouseClicked(mx,my,button);
-		int seg=getHoveredIdx((int)mx-width/2,(int)my-height/2);
-		if(seg>=0&&seg<activeTanks.size()){
-			selectedIdx=seg;
-			PacketDistributor.sendToServer(new ForgeSelectFluidPacket(ctrlPos,activeTanks.get(seg)[0]));
+	public boolean mouseClicked(double mx, double my, int button) {
+		if (button != 0) return super.mouseClicked(mx, my, button);
+		int idx = getHoveredIdx((int) mx, (int) my);
+		if (idx >= 0) {
+			selectedIdx = idx;
+			PacketDistributor.sendToServer(
+					new ForgeSelectFluidPacket(ctrlPos, tankIndices.get(idx)));
 			onClose();
 			return true;
 		}
-		return super.mouseClicked(mx,my,button);
+		return super.mouseClicked(mx, my, button);
 	}
+
 	@Override
-	public boolean keyPressed(int key,int scan,int mods){
-		if(key==256){
-			onClose();
-			return true;
-		}
-		return super.keyPressed(key,scan,mods);
+	public boolean keyPressed(int key, int scan, int mods) {
+		if (key == 256) { onClose(); return true; }
+		return super.keyPressed(key, scan, mods);
 	}
-	private static int getFluidColor(FluidStack fs){
-		try{
-			return IClientFluidTypeExtensions.of(fs.getFluid()).getTintColor(fs);
-		}catch(Exception e){
-			return 0xFFFF6600;
-		}
+
+	// ── Helpers ───────────────────────────────────────────────────────────
+	private static int getFluidColor(FluidStack fs) {
+		try { return IClientFluidTypeExtensions.of(fs.getFluid()).getTintColor(fs); }
+		catch (Exception e) { return 0xFFFF6600; }
 	}
-	private static String shortenName(String name){
-		return name.length()>7?name.substring(0,7-1)+"…":name;
+
+	private static String formatMb(int mb) {
+		if (mb >= 1_000_000) return String.format("%.2fkB", mb / 1000f);
+		if (mb >= 1_000)     return String.format("%.1f B", mb / 1000f);
+		return mb + " mB";
 	}
-	private static String formatMb(int mb){
-		return mb>=1000?String.format("%.1fB",mb/1000f):mb+" mB";
+
+	private static String formatMbShort(int mb) {
+		if (mb >= 1_000_000) return String.format("%.0fkB", mb / 1000f);
+		if (mb >= 1_000)     return String.format("%.1fB",  mb / 1000f);
+		return mb + "m";
 	}
-	@Override
-	public boolean isPauseScreen(){
-		return false;
-	}
+
+	@Override public boolean isPauseScreen() { return false; }
 }
