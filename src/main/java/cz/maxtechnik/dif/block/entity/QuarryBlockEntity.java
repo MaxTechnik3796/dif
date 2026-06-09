@@ -92,7 +92,9 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 				hasLiquidRemover=true;
 			}else if(stack.is(Items.ENCHANTED_BOOK)){
 				var stored=stack.get(net.minecraft.core.component.DataComponents.STORED_ENCHANTMENTS);
-				if(stored!=null) stored.keySet().forEach(holder->{if(holder.is(Enchantments.SILK_TOUCH)) hasSilkTouch=true;});
+				if(stored!=null) stored.keySet().forEach(holder->{
+					if(holder.is(Enchantments.SILK_TOUCH)) hasSilkTouch=true;
+				});
 			}
 		}
 	}
@@ -185,7 +187,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 			}
 		}
 		if(blockEntity.chunksNeedReload&&blockEntity.quarryState==State.MINING&&level instanceof ServerLevel sl){
-			if(blockEntity.sectionMaxX<=blockEntity.sectionMinX||blockEntity.sectionMaxZ<=blockEntity.sectionMinZ) blockEntity.initSections(blockState);
+			if(blockEntity.sectionMaxX<=blockEntity.sectionMinX||blockEntity.sectionMaxZ<=blockEntity.sectionMinZ)
+				blockEntity.initSections(blockState);
 			blockEntity.loadSectionChunks(sl);
 			blockEntity.chunksNeedReload=false;
 		}
@@ -345,7 +348,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		miningProgressAcc+=progressStep;
 		int safety=0;
 		while(safety++<1000){
-			while(level.isEmptyBlock(miningPos)&&level.getBlockState(miningPos).getFluidState().isEmpty()) if(handleMiningAdvance(level,pos,blockState)) return;
+			while(level.isEmptyBlock(miningPos)&&level.getBlockState(miningPos).getFluidState().isEmpty())
+				if(handleMiningAdvance(level,pos,blockState)) return;
 			BlockState target=level.getBlockState(miningPos);
 			if(!target.getFluidState().isEmpty()){
 				if(hasLiquidRemover){
@@ -459,10 +463,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 	private void initSections(BlockState blockState){
 		BlockPos center=getAreaCenter(blockState);
 		if(center==null) return;
-
 		// Odečtením 1 zajistíme, že se vnitřní výpočty ohraničí UVNITŘ rámu
-		int ihx=halfX() - 1, ihz=halfZ() - 1;
-
+		int ihx=halfX()-1, ihz=halfZ()-1;
 		sectionsX=(ihx*2+1>64)?2:1;
 		sectionsZ=(ihz*2+1>64)?2:1;
 		totalSections=sectionsX*sectionsZ;
@@ -472,10 +474,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 	private void applySectionBounds(BlockState blockState){
 		BlockPos center=getAreaCenter(blockState);
 		if(center==null) return;
-
 		// Zde také zmenšíme poloměr o 1 blok směrem dovnitř
-		int ihx=halfX() - 1, ihz=halfZ() - 1;
-
+		int ihx=halfX()-1, ihz=halfZ()-1;
 		int fmx=center.getX()-ihx, fxx=center.getX()+ihx;
 		int fmz=center.getZ()-ihz, fxz=center.getZ()+ihz;
 		int col=currentSection%sectionsX, row=currentSection/sectionsX;
