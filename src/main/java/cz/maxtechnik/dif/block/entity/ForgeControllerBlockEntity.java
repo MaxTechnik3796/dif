@@ -806,7 +806,7 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
 	protected void appendFormedTooltip(List<Component> tooltip){
 		appendFormedTooltip(tooltip,false);
 	}
-	private void appendFormedTooltip(List<Component> tooltip,boolean sneaking){
+	private void appendFormedTooltip(List<Component> tooltip,boolean ignoredSneaking){
 		tooltip.add(Component.literal(goggleTooltipFix+" ▶ Heat: "+heatColor(cachedHeatPoints)+cachedHeatPoints+"§7/18").withStyle(ChatFormatting.GRAY));
 		tooltip.add(Component.literal(goggleTooltipFix+" ▶ Layers: "+glassLayers+"/"+ForgeMultiblockHelper.MAX_GLASS_LAYERS).withStyle(ChatFormatting.GRAY));
 		int used=0;
@@ -823,24 +823,22 @@ public class ForgeControllerBlockEntity extends AbstractMultiblockControllerBloc
 					+" ("+totalItems+" items)").withStyle(ChatFormatting.GRAY));
 		if(locked)
 			tooltip.add(Component.literal(goggleTooltipFix+" ⚠ LOCKED").withStyle(ChatFormatting.DARK_RED,ChatFormatting.BOLD));
-		FluidTank bottomTank = null;
-		for(int i = 0; i < FLUID_TANK_COUNT; i++){
-			int idx = fluidRenderOrder[i];
+		FluidTank bottomTank=null;
+		for(int i=0;i<FLUID_TANK_COUNT;i++){
+			int idx=fluidRenderOrder[i];
 			if(!fluidTanks[idx].isEmpty()){
-				bottomTank = fluidTanks[idx];
+				bottomTank=fluidTanks[idx];
 				break;
 			}
 		}
-		if(bottomTank == null) return;
-
-		appendFluidSlot(tooltip, goggleTooltipFix + " ", bottomTank);
-
-		int totalCap = ForgeMultiblockHelper.totalFluidCapacity(glassLayers);
-		int totalUsed = getTotalFluidAmount();
-		int free = Math.max(0, totalCap - totalUsed);
-		tooltip.add(Component.literal(goggleTooltipFix + " ▶ Free: ")
+		if(bottomTank==null) return;
+		appendFluidSlot(tooltip,goggleTooltipFix+" ",bottomTank);
+		int totalCap=ForgeMultiblockHelper.totalFluidCapacity(glassLayers);
+		int totalUsed=getTotalFluidAmount();
+		int free=Math.max(0,totalCap-totalUsed);
+		tooltip.add(Component.literal(goggleTooltipFix+" ▶ Free: ")
 				.withStyle(ChatFormatting.GRAY)
-				.append(Component.literal(formatMb(free) + " / " + formatMb(totalCap))
+				.append(Component.literal(formatMb(free)+" / "+formatMb(totalCap))
 						.withStyle(ChatFormatting.WHITE)));
 	}
 	private static String heatColor(int heat){
