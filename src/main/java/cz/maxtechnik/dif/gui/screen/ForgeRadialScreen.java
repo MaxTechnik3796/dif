@@ -49,6 +49,10 @@ public class ForgeRadialScreen extends Screen {
 			if (tankIndices.get(i) == pref) { selectedIdx = i; break; }
 	}
 
+	@Override
+	public void renderBackground(@NotNull GuiGraphics gfx, int mx, int my, float partial) {
+	}
+
 	@Override protected void init() { super.init(); openTime = System.currentTimeMillis(); }
 
 	// ── Top-left corner of the whole grid (centred on screen) ─────────────
@@ -136,7 +140,7 @@ public class ForgeRadialScreen extends Screen {
 
 		// 2) Fluid textura přes celou kartu (ořezaná zaoblením)
 		renderFluidTiled(gfx, fs, x + BORDER_W, y + BORDER_W,
-				CARD_W - BORDER_W * 2, CARD_H - BORDER_W * 2 - 12, fc, hoverA);
+				fc, hoverA);
 
 		// 3) Tmavý gradient overlay dole (pro čitelnost textu)
 		fillRoundRect(gfx, x, y + CARD_H - 16, CARD_W, 16, 0, 0xBB000000);
@@ -178,7 +182,7 @@ public class ForgeRadialScreen extends Screen {
 		if (tx + tw > width  - 4) tx = mx - tw - 10;
 		if (ty < 4)               ty = my + 10;
 		// Pozadí
-		gfx.fill(tx, ty, tx + tw, ty + th, 0xEE0D0D0D);
+		gfx.fill(tx, ty, tx + tw, ty + th, 0xFF0D0D0D);
 		// Top border zlatý
 		gfx.fill(tx, ty, tx + tw, ty + 1, 0xFFD4891A);
 		// Bottom border dim
@@ -253,7 +257,7 @@ public class ForgeRadialScreen extends Screen {
 
 	// ── Fluid texture tiled across card area ──────────────────────────────
 	private void renderFluidTiled(GuiGraphics gfx, FluidStack fs,
-	                              int x, int y, int w, int h,
+	                              int x, int y,
 	                              int color, float alpha) {
 		try {
 			IClientFluidTypeExtensions ext = IClientFluidTypeExtensions.of(fs.getFluid());
@@ -275,10 +279,10 @@ public class ForgeRadialScreen extends Screen {
 
 			// Tile 16×16 sprite across the card area
 			int tileSize = 16;
-			for (int ty = 0; ty < h; ty += tileSize) {
-				for (int tx = 0; tx < w; tx += tileSize) {
-					int tw = Math.min(tileSize, w - tx);
-					int th = Math.min(tileSize, h - ty);
+			for (int ty = 0; ty < 24; ty += tileSize) {
+				for (int tx = 0; tx < 36; tx += tileSize) {
+					int tw = Math.min(tileSize, 36 - tx);
+					int th = Math.min(tileSize, 24 - ty);
 					float u1 = sprite.getU((float) tw / tileSize);
 					float v1 = sprite.getV((float) th / tileSize);
 					buf.addVertex(mat, x + tx,      y + ty + th, 0).setUv(sprite.getU0(), v1);
@@ -294,7 +298,7 @@ public class ForgeRadialScreen extends Screen {
 		} catch (Exception e) {
 			// Fallback: plná barva fluidu
 			int fa = ((int)(alpha * 0xDD)) << 24;
-			fillRoundRect(gfx, x, y, w, h, CORNER_R - BORDER_W, fa | (color & 0x00FFFFFF));
+			fillRoundRect(gfx, x, y, 36, 24, CORNER_R - BORDER_W, fa | (color & 0x00FFFFFF));
 		}
 	}
 
