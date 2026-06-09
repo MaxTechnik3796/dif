@@ -459,7 +459,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 	private void initSections(BlockState blockState){
 		BlockPos center=getAreaCenter(blockState);
 		if(center==null) return;
-		int ihx=halfX()-1, ihz=halfZ()-1;
+		//tady je to int ihx=halfX(), ihz=halfZ()-1; dělá že to nebude těžit pod jedním z okrajů
+		int ihx=halfX(), ihz=halfZ();
 		sectionsX=(ihx*2+1>64)?2:1;
 		sectionsZ=(ihz*2+1>64)?2:1;
 		totalSections=sectionsX*sectionsZ;
@@ -469,7 +470,8 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 	private void applySectionBounds(BlockState blockState){
 		BlockPos center=getAreaCenter(blockState);
 		if(center==null) return;
-		int ihx=halfX()-1, ihz=halfZ()-1;
+		//tady je to int ihx=halfX(), ihz=halfZ()-1; dělá že to nebude těžit pod jedním z okrajů
+		int ihx=halfX(), ihz=halfZ();
 		int fmx=center.getX()-ihx, fxx=center.getX()+ihx;
 		int fmz=center.getZ()-ihz, fxz=center.getZ()+ihz;
 		int col=currentSection%sectionsX, row=currentSection/sectionsX;

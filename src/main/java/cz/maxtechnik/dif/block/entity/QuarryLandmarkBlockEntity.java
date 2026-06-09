@@ -139,13 +139,11 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 		if(spanX<2||spanZ<2) return null;
 		if(spanX>MAX_SEARCH||spanZ>MAX_SEARCH) return null;
 		if(isLShape(lmA, lmB, lmC) && isLShape(lmB, lmA, lmC) && isLShape(lmC, lmA, lmB)) return null;
-		int centerX=(minX+maxX)/2;
-		int centerZ=(minZ+maxZ)/2;
-		int halfX=Math.max(centerX-minX,maxX-centerX);
-		int halfZ=Math.max(centerZ-minZ,maxZ-centerZ);
-		int sizeX=spanX-1;
-		int sizeZ=spanZ-1;
-		return new FormResult(sizeX,sizeZ,halfX,halfZ,new BlockPos(centerX,lmA.getY(),centerZ));
+		int halfX=spanX/2;
+		int halfZ=spanZ/2;
+		int centerX=minX+halfX;
+		int centerZ=minZ+halfZ;
+		return new FormResult(spanX+1,spanZ+1,halfX,halfZ,new BlockPos(centerX,lmA.getY(),centerZ));
 	}
 	private static boolean isLShape(BlockPos corner,BlockPos pos1,BlockPos pos2){
 		return (corner.getX() == pos1.getX() && corner.getZ() == pos2.getZ()) || (corner.getX() == pos2.getX() && corner.getZ() == pos1.getZ());
