@@ -61,7 +61,7 @@ public class ModularTool extends DiggerItem{
 		},BlockTags.MINEABLE_WITH_PICKAXE,new Properties().stacksTo(1).fireResistant());
 	}
 	private ModularToolProperties getProps(ItemStack itemStack){
-		ModularToolProperties props=itemStack.get(DifModComponents.MODULAR_PROPERTIES.get());
+		ModularToolProperties props=itemStack.get(DifModComponents.MODULAR_TOOL_PROPERTIES.get());
 		return props!=null?props:ModularToolProperties.DEFAULT;
 	}
 	// Pomocná metoda pro zjištění, zda je nástroj zlomený

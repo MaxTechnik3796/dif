@@ -1,0 +1,16 @@
+{
+	"parent": "item/generated",
+	"textures": {
+		"layer0": "dif:item/error"
+	},
+	"overrides": [
+		{ "predicate": { "dif:part_state": 1.0 }, "model": "dif:item/modular_part_handle" },
+		{ "predicate": { "dif:part_state": 2.0 }, "model": "dif:item/modular_part_binding" },
+		{ "predicate": { "dif:part_state": 3.0 }, "model": "dif:item/modular_part_axe_head" },
+		{ "predicate": { "dif:part_state": 4.0 }, "model": "dif:item/modular_part_pickaxe_head" },
+		{ "predicate": { "dif:part_state": 5.0 }, "model": "dif:item/modular_part_sword_head" },
+		{ "predicate": { "dif:part_state": 6.0 }, "model": "dif:item/modular_part_shovel_head" },
+		{ "predicate": { "dif:part_state": 7.0 }, "model": "dif:item/modular_part_sword_binding" },
+		{ "predicate": { "dif:part_state": 8.0 }, "model": "dif:item/modular_part_hoe_head" }
+	]
+}

@@ -1,8 +1,0 @@
-{
-	"parent": "minecraft:item/generated",
-	"textures": {
-		"layer0": "dif:item/modular_hoe_handle",
-		"layer1": "dif:item/modular_hoe_binding",
-		"layer2": "dif:item/modular_hoe_head_broken"
-	}
-}

@@ -5,6 +5,7 @@ import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
+import cz.maxtechnik.dif.item.modular.v2.ModularPart;
 import cz.maxtechnik.dif.item.modular.v2.ModularTool;
 import cz.maxtechnik.dif.item.quarry.DrillHeadItem;
 import cz.maxtechnik.dif.item.tool.*;
@@ -74,9 +75,9 @@ public class DifModItems{
 	public static final DeferredItem<Item> CHUNK_LOADER_1X1 = REGISTRY.register("chunk_loader_1x1",()->new BlockItem(DifModBlocks.CHUNK_LOADER_1X1.get(),new Item.Properties()){@Override public boolean isFoil(@NotNull ItemStack stack){return true;}});
 	public static final DeferredItem<Item> CHUNK_LOADER_3X3 = REGISTRY.register("chunk_loader_3x3",()->new BlockItem(DifModBlocks.CHUNK_LOADER_3X3.get(),new Item.Properties()){@Override public boolean isFoil(@NotNull ItemStack stack){return true;}});
 
-	//Modular Tools:
+	//Modular Stuff:
 	public static final DeferredItem<Item>MODULAR_TOOL=REGISTRY.register("modular_tool",ModularTool::new);
-
+	public static final DeferredItem<Item>MODULAR_PART=REGISTRY.register("modular_part",ModularPart::new);
 
 	public static final DeferredItem<Item> PORTAL_GUN=REGISTRY.register("portal_gun",PortalGun::new);
 

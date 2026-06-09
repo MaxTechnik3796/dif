@@ -1,18 +1,18 @@
 {
-	"parent": "minecraft:item/generated",
+	"parent": "item/generated",
 	"textures": {
-		"layer0": "dif:item/modular_tool_error"
+		"layer0": "dif:item/error"
 	},
 	"overrides": [
-		{ "predicate": { "dif:tool_state": 1.0 }, "model": "dif:item/modular_pickaxe" },
-		{ "predicate": { "dif:tool_state": 1.5 }, "model": "dif:item/modular_pickaxe_broken" },
-		{ "predicate": { "dif:tool_state": 2.0 }, "model": "dif:item/modular_axe" },
-		{ "predicate": { "dif:tool_state": 2.5 }, "model": "dif:item/modular_axe_broken" },
-		{ "predicate": { "dif:tool_state": 3.0 }, "model": "dif:item/modular_sword" },
-		{ "predicate": { "dif:tool_state": 3.5 }, "model": "dif:item/modular_sword_broken" },
-		{ "predicate": { "dif:tool_state": 4.0 }, "model": "dif:item/modular_shovel" },
-		{ "predicate": { "dif:tool_state": 4.5 }, "model": "dif:item/modular_shovel_broken" },
-		{ "predicate": { "dif:tool_state": 5.0 }, "model": "dif:item/modular_hoe" },
-		{ "predicate": { "dif:tool_state": 5.5 }, "model": "dif:item/modular_hoe_broken" }
+		{ "predicate": { "dif:tool_state": 1.0 }, "model": "dif:item/modular_tool_pickaxe" },
+		{ "predicate": { "dif:tool_state": 1.5 }, "model": "dif:item/modular_tool_pickaxe_broken" },
+		{ "predicate": { "dif:tool_state": 2.0 }, "model": "dif:item/modular_tool_axe" },
+		{ "predicate": { "dif:tool_state": 2.5 }, "model": "dif:item/modular_tool_axe_broken" },
+		{ "predicate": { "dif:tool_state": 3.0 }, "model": "dif:item/modular_tool_sword" },
+		{ "predicate": { "dif:tool_state": 3.5 }, "model": "dif:item/modular_tool_sword_broken" },
+		{ "predicate": { "dif:tool_state": 4.0 }, "model": "dif:item/modular_tool_shovel" },
+		{ "predicate": { "dif:tool_state": 4.5 }, "model": "dif:item/modular_tool_shovel_broken" },
+		{ "predicate": { "dif:tool_state": 5.0 }, "model": "dif:item/modular_tool_hoe" },
+		{ "predicate": { "dif:tool_state": 5.5 }, "model": "dif:item/modular_tool_hoe_broken" }
 	]
 }

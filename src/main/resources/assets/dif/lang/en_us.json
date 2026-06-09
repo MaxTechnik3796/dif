@@ -230,6 +230,18 @@
 	"item.dif.modular_tool.sword":"Modular Sword",
 	"item.dif.modular_tool.hoe":"Modular Hoe",
 
+
+	"item.dif.modular_part":"Modular Part",
+	"item.dif.modular_part.handle":"Modular Handle",
+	"item.dif.modular_part.binding":"Modular Binding",
+	"item.dif.modular_part.axe_head":"Modular Axe Head",
+	"item.dif.modular_part.pickaxe_head":"Modular Pickaxe Head",
+	"item.dif.modular_part.shovel_head":"Modular Shovel Head",
+	"item.dif.modular_part.sword_head":"Modular Sword Head",
+	"item.dif.modular_part.sword_binding":"Modular Sword Binding",
+	"item.dif.modular_part.hoe_head":"Modular Hoe Head",
+
+
 	"dif.material.wood":"Wood",
 	"dif.material.stone":"Stone",
 	"dif.material.iron":"Iron",

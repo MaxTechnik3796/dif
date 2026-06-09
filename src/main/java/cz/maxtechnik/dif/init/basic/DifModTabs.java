@@ -3,6 +3,7 @@ package cz.maxtechnik.dif.init.basic;
 import com.simibubi.create.AllCreativeModeTabs;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.other.DifModComponents;
+import cz.maxtechnik.dif.item.modular.v2.ModularPartProperties;
 import cz.maxtechnik.dif.item.modular.v2.ModularToolProperties;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -152,10 +153,14 @@ public class DifModTabs{
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>MODULAR_TOOLS=REGISTER.register("modular_tools",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.SPACE.getKey()).title(Component.translatable("creative_tab.dif.modular_tools")).icon(()->new ItemStack(Items.SMITHING_TABLE)).displayItems(((parameters, tabData)->{
 		tabData.accept(Items.SMITHING_TABLE);
-		ItemStack ePickaxe=new ItemStack(MODULAR_TOOL.get());ePickaxe.set(DifModComponents.MODULAR_PROPERTIES.get(),new ModularToolProperties("pickaxe","diamond","iron","wood","common"));
+		ItemStack ePickaxe=new ItemStack(MODULAR_TOOL.get());ePickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties("pickaxe","diamond","iron","wood","common"));
 		tabData.accept(ePickaxe);
+		ItemStack ePart=new ItemStack(MODULAR_PART.get());ePart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties("handle","stone"));
+		tabData.accept(ePart);
 
-		tabData.accept(MODULAR_TOOL);
+
+		ItemStack fPart=new ItemStack(MODULAR_PART.get());fPart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties("axe_head","steel"));
+		tabData.accept(fPart);
 	})).build());
 
 
