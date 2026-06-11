@@ -315,26 +315,40 @@ public class ModularTool extends DiggerItem{
 		);
 		list.add(
 				Component.literal(" Head: ").withStyle(Style.EMPTY.withColor(0x888888))
-						.append(Component.translatable("dif.material."+head.getId())
+						.append(Component.translatable("dif.material."+head.getName())
 								.withStyle(Style.EMPTY.withColor(head.getColor())))
 						.append(Component.literal("  "+head.getHeadDurability())
 								.withStyle(Style.EMPTY.withColor(0xFFAA00)))
 		);
 		list.add(
 				Component.literal(" Binding: ").withStyle(Style.EMPTY.withColor(0x888888))
-						.append(Component.translatable("dif.material."+binding.getId())
+						.append(Component.translatable("dif.material."+binding.getName())
 								.withStyle(Style.EMPTY.withColor(binding.getColor())))
 						.append(Component.literal("  "+binding.getBindingDurability())
 								.withStyle(Style.EMPTY.withColor(0xFFAA00)))
 		);
 		list.add(
 				Component.literal(" Handle: ").withStyle(Style.EMPTY.withColor(0x888888))
-						.append(Component.translatable("dif.material."+handle.getId())
+						.append(Component.translatable("dif.material."+handle.getName())
 								.withStyle(Style.EMPTY.withColor(handle.getColor())))
 						.append(Component.literal("  "+
 										handle.getHandleDurability())
 								.withStyle(Style.EMPTY.withColor(0xFFAA00)))
 		);
+		list.add(
+				Component.literal("───── Modifiers ─────")
+						.withStyle(Style.EMPTY.withColor(0x6644BB))
+		);
+		list.add(
+				Component.translatable("dif.modifier."+head.getModifier()).withStyle(Style.EMPTY.withColor(head.getColor()))
+		);
+		list.add(
+				Component.translatable("dif.modifier."+binding.getModifier()).withStyle(Style.EMPTY.withColor(binding.getColor()))
+		);
+		list.add(
+				Component.translatable("dif.modifier."+handle.getModifier()).withStyle(Style.EMPTY.withColor(handle.getColor()))
+		);
+
 	}
 	@Override
 	public boolean isEnchantable(@NotNull ItemStack itemStack){

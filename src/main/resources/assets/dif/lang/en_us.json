@@ -249,6 +249,22 @@
 	"dif.material.gold":"Gold",
 	"dif.material.steel":"Steel",
 
+	"dif.modifier.efficiency":"Efficiency",
+	"dif.modifier.fortune":"Fortune",
+	"dif.modifier.silk_touch":"Silk_touch",
+	"dif.modifier.sharpness":"Sharpness",
+
+	"dif.modifier.ecological":"Ecological",
+	"dif.modifier.magnetic":"Magnetic",
+	"dif.modifier.cheap":"Cheap",
+	"dif.modifier.shiny":"Shiny",
+
+	"dif.modifier.excavator":"Excavator",
+
+
+
+
+
 	"dif.mining_level.0":"Wooden",
 	"dif.mining_level.1":"Stone",
 	"dif.mining_level.2":"Iron",

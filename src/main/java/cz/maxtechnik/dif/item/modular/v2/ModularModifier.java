@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.item.modular.v2;
 
 import java.util.Locale;
-public enum ModularModifiers{
+public enum ModularModifier{
 	//regular:
 	EFFICIENCY("efficiency",5),
 	FORTUNE("fortune",3),
@@ -19,7 +19,7 @@ public enum ModularModifiers{
 	EXCAVATOR("excavator",-2);
 	private final String name;
 	private final int maxLvl;
-	ModularModifiers(String name, int maxLvl){
+	ModularModifier(String name,int maxLvl){
 		this.name=name;
 		this.maxLvl=maxLvl;
 	}
@@ -29,9 +29,9 @@ public enum ModularModifiers{
 	public int getMaxLvl(){
 		return maxLvl;
 	}
-	public static ModularModifiers byName(String name){
+	public static ModularModifier byName(String name){
 		try{
-			return ModularModifiers.valueOf(name.toUpperCase(Locale.ROOT));
+			return ModularModifier.valueOf(name.toUpperCase(Locale.ROOT));
 		}catch(IllegalArgumentException exception){
 			return EFFICIENCY;
 		}

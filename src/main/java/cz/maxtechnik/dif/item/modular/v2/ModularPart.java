@@ -25,6 +25,7 @@ public class ModularPart extends Item{
 		if(props.partType().equals("none")) return;
 		ModularMaterial material=ModularMaterial.byName(props.material());
 		ModularTier tier=material.getTier();
+		ModularModifier modifier=material.getModifier();
 		list.add(
 				Component.literal("───── Stats ─────")
 						.withStyle(Style.EMPTY.withColor(0x6644BB))
@@ -35,7 +36,12 @@ public class ModularPart extends Item{
 		);
 		list.add(
 				Component.literal("Material: ").withStyle(Style.EMPTY.withColor(0x888888))
-						.append(Component.translatable("dif.material."+material.getId())
+						.append(Component.translatable("dif.material."+material.getName())
+								.withStyle(Style.EMPTY.withColor(material.getColor())))
+		);
+		list.add(
+				Component.literal("Modifier: ").withStyle(Style.EMPTY.withColor(0x888888))
+						.append(Component.translatable("dif.modifier."+modifier.getName())
 								.withStyle(Style.EMPTY.withColor(material.getColor())))
 		);
 	}
