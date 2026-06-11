@@ -127,7 +127,14 @@ public class ForgeRadialScreen extends Screen{
 			int sy=y+BORDER_W;
 			int sw=CARD_W-BORDER_W*2;
 			int sh=CARD_H-BORDER_W*2-12;
+			int tint=ext.getTintColor(fs);
+			float r=((tint>>16)&0xFF)/255f;
+			float g=((tint>>8)&0xFF)/255f;
+			float b=(tint&0xFF)/255f;
+			float a=((tint>>24)&0xFF)/255f;
+			gfx.setColor(r,g,b,a);
 			gfx.blit(sx,sy,0,sw,sh,sprite);
+			gfx.setColor(1f,1f,1f,1f);
 		}catch(Exception e){
 			gfx.fill(x+BORDER_W,y+BORDER_W,
 					x+CARD_W-BORDER_W,y+CARD_H-BORDER_W-12,

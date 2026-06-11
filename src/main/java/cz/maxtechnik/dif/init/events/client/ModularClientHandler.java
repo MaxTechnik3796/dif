@@ -38,8 +38,20 @@ public class ModularClientHandler{
 					if(color!=-1) return color|0xFF000000;
 				}
 			}
+            return tintIndex;
+        },DifModItems.MODULAR_TOOL,DifModItems.MODULAR_PART);
+
+		// Registrace barvy pro fluidní vrstvu kbelíků (tintIndex 1 bývá default u neoforge:fluid_container loaderu pro itemy)
+		event.register((itemStack,tintIndex)->{
+			if(tintIndex==1){
+				var contained = net.neoforged.neoforge.fluids.FluidUtil.getFluidContained(itemStack);
+				if(contained.isPresent() && !contained.get().isEmpty()){
+					return net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions.of(contained.get().getFluid()).getTintColor();
+				}
+			}
 			return -1;
-		},DifModItems.MODULAR_TOOL,DifModItems.MODULAR_PART);
+		},
+		DifModItems.MOLTEN_COPPER_BUCKET);
 	}
 	// 3. REGISTRACE PREDICATU PRO PŘEPÍNÁNÍ MODELŮ (ZŮSTÁVÁ STEJNÁ)
 	@SubscribeEvent
