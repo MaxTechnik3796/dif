@@ -2,14 +2,15 @@ package cz.maxtechnik.dif.item.modular.v2;
 
 import java.util.Locale;
 
+import static cz.maxtechnik.dif.item.modular.v2.ModularModifiers.*;
 import static cz.maxtechnik.dif.item.modular.v2.ModularTier.*;
 public enum ModularMaterial{
-	WOOD("wood",60,2F,0,0F,10,1,0.2F,COMMON,0x745631),
-	STONE("stone",130,4F,1,1F,20,1,0.0F,COMMON,0x838383),
-	IRON("iron",250,6F,2,2F,50,1,0.1F,RARE,0xDCDCDC),
-	COPPER("copper",180,5.5F,1,1.5F,30,1,0.1F,RARE,0xD4845A),
-	GOLD("gold",32,12F,0,0F,5,1,0.6F,RARE,0xFFD700),
-	STEEL("steel",1,12F,3,2F,1,1,0.1F,EPIC,0xFF0000);
+	WOOD("wood",60,2F,0,0F,10,1,0.2F,COMMON,ECOLOGICAL,0x745631),
+	STONE("stone",130,4F,1,1F,20,1,0.0F,COMMON,CHEAP,0x838383),
+	IRON("iron",250,6F,2,2F,50,1,0.1F,RARE,MAGNETIC,0xDCDCDC),
+	COPPER("copper",180,5.5F,1,1.5F,30,1,0.1F,RARE,SHINY,0xD4845A),
+	GOLD("gold",32,12F,0,0F,5,1,0.6F,RARE,SHINY,0xFFD700),
+	STEEL("steel",1,12F,3,2F,1,1,0.1F,EPIC,MAGNETIC,0xFF0000);
 	private final String id;
 	// Head stats
 	private final int headDurability;
@@ -22,9 +23,10 @@ public enum ModularMaterial{
 	private final int handleDurability;
 	private final float attackSpeedBonus;
 	private final ModularTier tier;
+	private final ModularModifiers modifier;
 	private final int color;
 	public static final int[] miningLevelColor={WOOD.getColor(),STONE.getColor(),IRON.getColor(),0x6DEDE4,0x524B52};
-	ModularMaterial(String id,int headDurability,float headEfficiency,int miningLevel,float attackDamage,int bindingDurability,int handleDurability,float attackSpeedBonus,ModularTier tier,int color){
+	ModularMaterial(String id,int headDurability,float headEfficiency,int miningLevel,float attackDamage,int bindingDurability,int handleDurability,float attackSpeedBonus,ModularTier tier,ModularModifiers modifier,int color){
 		this.id=id;
 		this.headDurability=headDurability;
 		this.headEfficiency=headEfficiency;
@@ -34,6 +36,7 @@ public enum ModularMaterial{
 		this.handleDurability=handleDurability;
 		this.attackSpeedBonus=attackSpeedBonus;
 		this.tier=tier;
+		this.modifier=modifier;
 		this.color=color;
 	}
 	public String getId(){
@@ -62,6 +65,9 @@ public enum ModularMaterial{
 	}
 	public ModularTier getTier(){
 		return tier;
+	}
+	public ModularModifiers getModifier(){
+		return modifier;
 	}
 	public int getColor(){
 		return color;
