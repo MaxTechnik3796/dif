@@ -1,12 +1,13 @@
-package cz.maxtechnik.dif.network;
+package cz.maxtechnik.dif.init.events.client;
 
 import cz.maxtechnik.dif.entity.vehicle.BaseCarEntity;
+import cz.maxtechnik.dif.network.SyncCarPositionPacket;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ClientPacketHandler{
-	public static void handleSyncCarPosition(ModNetworking.SyncCarPositionPacket packet){
+	public static void handleSyncCarPosition(SyncCarPositionPacket packet){
 		Minecraft mc=Minecraft.getInstance();
 		if(mc.level!=null&&mc.level.getEntity(packet.entityId()) instanceof BaseCarEntity entity){
 			if(mc.player==null||mc.player.getVehicle()!=entity)

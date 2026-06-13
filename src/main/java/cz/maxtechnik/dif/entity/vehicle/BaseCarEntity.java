@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.entity.vehicle;
 
 import cz.maxtechnik.dif.init.events.client.CarEngineSoundInstance;
-import cz.maxtechnik.dif.network.ModNetworking.SyncCarPositionPacket;
+import cz.maxtechnik.dif.network.SyncCarPositionPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -11,35 +11,41 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CarpetBlock;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
+@SuppressWarnings("unused")
 public abstract class BaseCarEntity extends Entity{
 	protected static final EntityDataAccessor<Float> DATA_RPM=SynchedEntityData.defineId(BaseCarEntity.class,EntityDataSerializers.FLOAT);
 	protected static final EntityDataAccessor<Integer> DATA_GEAR=SynchedEntityData.defineId(BaseCarEntity.class,EntityDataSerializers.INT);
 	protected static final EntityDataAccessor<Float> DATA_SPEED=SynchedEntityData.defineId(BaseCarEntity.class,EntityDataSerializers.FLOAT);
 	protected static final EntityDataAccessor<Boolean> DATA_ENGINE_ON=SynchedEntityData.defineId(BaseCarEntity.class,EntityDataSerializers.BOOLEAN);
 	protected static final EntityDataAccessor<Float> DATA_FUEL=SynchedEntityData.defineId(BaseCarEntity.class,EntityDataSerializers.FLOAT);
-	protected float velocity=0f;
+	protected float velocity=0F;
 	protected int shiftCooldown=0;
-	private float prevVelocity=0f, fuelAccumulator=0f;
+	private float prevVelocity=0F, fuelAccumulator=0F;
 	private int crashDamageCooldown=0, fuelSyncTick=0;
 	protected float currentSteering=0f;
 	protected float motionYaw=0f;
 	protected int spinoutTimer=0;
 	protected int oversteerTimer=0;
 	protected int driftRecoveryTimer=0;
-	protected float spinoutDirection=1f;
+	protected float spinoutDirection=1F;
 	public boolean isSoundPlaying=false;
 	public enum SurfaceType{NORMAL,SOUL_SAND,ICE,CARPET,GRASS}
 	private static Field jumpingField;

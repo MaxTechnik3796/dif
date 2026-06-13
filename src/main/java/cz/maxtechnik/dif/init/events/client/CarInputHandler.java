@@ -3,7 +3,8 @@ package cz.maxtechnik.dif.init.events.client;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.entity.vehicle.BaseCarEntity;
 import cz.maxtechnik.dif.init.other.DifModKeys;
-import cz.maxtechnik.dif.network.ModNetworking;
+import cz.maxtechnik.dif.init.other.DifModNetworking;
+import cz.maxtechnik.dif.network.ShiftGearPacket;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -55,7 +56,7 @@ public class CarInputHandler{
 			// Okamžitá klientská predikce → HUD se okamžitě aktualizuje
 			car.setCurrentGear(newGear);
 			// Autoritativní potvrzení serveru
-			PacketDistributor.sendToServer(new ModNetworking.ShiftGearPacket(direction));
+			PacketDistributor.sendToServer(new ShiftGearPacket(direction));
 		}
 	}
 }

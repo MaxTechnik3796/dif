@@ -312,10 +312,6 @@ public class DifModTabs{
 			tabData.accept(FAST_POWERED_RAIL);
 			tabData.accept(FAST_RAIL);
 
-			tabData.accept(REMOTE_CONTROLLER);
-			tabData.accept(REMOTE_MINECART);
-			tabData.accept(REMOTE_MINECART_BLOCK);
-
 			tabData.accept(NUCLEAR_BOMB);
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){

@@ -15,7 +15,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-
 @SuppressWarnings("deprecation")
 public class NuclearExplosionEntity extends Entity{
 	// KONSTANTY ────────────────────────────────────────────────────────────
