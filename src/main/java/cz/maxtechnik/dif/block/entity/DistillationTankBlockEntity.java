@@ -169,6 +169,24 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 		super.notifyMultiUpdated();
 		cacheTick=0;
 		progress=0;
+		updateTowerState();
+	}
+
+	public void updateTowerState() {
+		if (level == null || level.isClientSide) return;
+		BlockState state = getBlockState();
+		if (!(state.getBlock() instanceof cz.maxtechnik.dif.block.DistillationTank)) return;
+
+		boolean hasTankBelow = level.getBlockState(worldPosition.below()).getBlock() instanceof cz.maxtechnik.dif.block.DistillationTank;
+		boolean hasTankAbove = level.getBlockState(worldPosition.above()).getBlock() instanceof cz.maxtechnik.dif.block.DistillationTank;
+
+		BlockState newState = state.setValue(cz.maxtechnik.dif.block.DistillationTank.BOTTOM, !hasTankBelow)
+				.setValue(cz.maxtechnik.dif.block.DistillationTank.TOP, !hasTankAbove);
+
+		if (state != newState) {
+			level.setBlock(worldPosition, newState, net.minecraft.world.level.block.Block.UPDATE_CLIENTS | net.minecraft.world.level.block.Block.UPDATE_INVISIBLE);
+			level.sendBlockUpdated(worldPosition, state, newState, 3);
+		}
 	}
 	@Override
 	public boolean addToGoggleTooltip(List<Component> tooltip,boolean isPlayerSneaking){

@@ -47,8 +47,8 @@ public class DistillationTankModel extends CTModel {
 			BlockPos neighbor = pos.relative(d);
 			boolean sameTank = world.getBlockState(neighbor).getBlock() instanceof DistillationTank;
 			if (d.getAxis().isVertical()) {
-				// Vršek/spodek schovej jen když je tam další tank (skládání věže)
-				cull.set(d, sameTank);
+				// Use the TOP/BOTTOM properties computed by the block/blockentity
+				cull.set(d, d == Direction.UP ? !state.getValue(DistillationTank.TOP) : !state.getValue(DistillationTank.BOTTOM));
 			} else {
 				// Horizontálně schovej vnitřní stěnu mezi spojenými bloky
 				cull.set(d, sameTank && ConnectivityHandler.isConnected(world, pos, neighbor));

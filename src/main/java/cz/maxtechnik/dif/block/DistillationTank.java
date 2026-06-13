@@ -83,6 +83,15 @@ public class DistillationTank extends FluidTankBlock{
 	}
 
 	private void forceConnectivityUpdateInArea(Level level, BlockPos pos) {
+		if (level instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+			serverLevel.getServer().tell(new net.minecraft.server.TickTask(
+				serverLevel.getServer().getTickCount() + 1,
+				() -> rebuildArea(serverLevel, pos)
+			));
+		}
+	}
+
+	private void rebuildArea(Level level, BlockPos pos) {
 		java.util.List<DistillationTankBlockEntity> tanks = new java.util.ArrayList<>();
 		for (int x = -2; x <= 2; x++) {
 			for (int z = -2; z <= 2; z++) {
@@ -123,9 +132,9 @@ public class DistillationTank extends FluidTankBlock{
 			}
 		}
 
-		// Force render/model update on all tanks in the area
+		// Force vertical visual update on all tanks in the area
 		for (DistillationTankBlockEntity tank : tanks) {
-			level.sendBlockUpdated(tank.getBlockPos(), tank.getBlockState(), tank.getBlockState(), 3);
+			tank.updateTowerState();
 		}
 	}
 }
