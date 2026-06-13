@@ -28,7 +28,6 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>CHUNK_LOADER_3X3=REGISTRY.register("chunk_loader_3x3",ChunkLoader::new);
 	public static final DeferredBlock<Block>FAST_POWERED_RAIL=REGISTRY.register("fast_powered_rail",()->new FastPoweredRailBlock(BlockBehaviour.Properties.of().noCollission().strength(0.7F).sound(SoundType.METAL)));
 	public static final DeferredBlock<Block>FAST_RAIL=REGISTRY.register("fast_rail",()->new FastRailBlock(BlockBehaviour.Properties.of().noCollission().strength(0.7F).sound(SoundType.METAL)));
-	public static final DeferredBlock<Block>REMOTE_MINECART_BLOCK=REGISTRY.register("remote_minecart_block",RemoteMinecartBlock::new);
 
 	public static final DeferredBlock<Block>SLEEPING_BAG=REGISTRY.register("sleeping_bag",SleepingBagBlock::new);
 

@@ -1,6 +1,6 @@
 {
 	"type":"minecraft:block",
-	"random_sequence":"dif:blocks/remote_minecart_block",
+	"random_sequence":"dif:blocks/lap_timer",
 	"pools":[
 		{
 			"rolls":1.0,
@@ -12,7 +12,7 @@
 			"entries":[
 				{
 					"type":"minecraft:item",
-					"name":"dif:remote_minecart_block"
+					"name":"dif:lap_timer"
 				}
 			]
 		}

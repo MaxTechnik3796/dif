@@ -54,10 +54,6 @@ public class DifModItems{
 
 	public static final DeferredItem<Item> DISTILLATION_TANK = REGISTRY.register("distillation_tank", () -> new cz.maxtechnik.dif.item.DistillationTankItem(DifModBlocks.DISTILLATION_TANK.get(), new Item.Properties()));
 
-	public static final DeferredItem<Item>REMOTE_MINECART=REGISTRY.register("remote_minecart",()->new RemoteMinecartItem(new Item.Properties().stacksTo(1)));
-	public static final DeferredItem<Item>REMOTE_CONTROLLER=REGISTRY.register("remote_controller",()->new StackSize(1));
-	public static final DeferredItem<Item>REMOTE_MINECART_BLOCK=block(DifModBlocks.REMOTE_MINECART_BLOCK);
-
 	public static final DeferredItem<Item>CAMERA_MONITOR=block(DifModBlocks.CAMERA_MONITOR);
 	public static final DeferredItem<Item>CAMERA=block(DifModBlocks.CAMERA);
 	public static final DeferredItem<Item>CAMERA_LINK=REGISTRY.register("camera_link",()->new CameraLink(new Item.Properties().stacksTo(1)));
