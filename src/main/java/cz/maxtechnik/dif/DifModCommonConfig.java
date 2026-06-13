@@ -160,7 +160,7 @@ public class DifModCommonConfig{
 		ENGINE_DIESEL_SU=BUILDER.defineInRange("engine_diesel_su",2,0,MAX);
 		ENGINE_DIESEL_CONSUMPTION=BUILDER.defineInRange("engine_diesel_consumption",1,0,MAX);
 		BUILDER.pop();
-		BUILDER.push("Diesel");
+		BUILDER.push("HeavyFuelOil");
 		ENGINE_HEAVY_FUEL_OIL_SPEED=BUILDER.defineInRange("engine_heavy_fuel_oil_speed",12,1,MAX);
 		ENGINE_HEAVY_FUEL_OIL_SU=BUILDER.defineInRange("engine_heavy_fuel_oil_su",2,0,MAX);
 		ENGINE_HEAVY_FUEL_OIL_CONSUMPTION=BUILDER.defineInRange("engine_heavy_fuel_oil_consumption",1,0,MAX);
