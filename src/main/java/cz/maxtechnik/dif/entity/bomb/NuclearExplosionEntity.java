@@ -21,7 +21,7 @@ public class NuclearExplosionEntity extends Entity{
 	// KONSTANTY ────────────────────────────────────────────────────────────
 	private static final int BLOCKS_PER_TICK=16_000, PHASE_INIT=0, PHASE_CRATER=1, PHASE_DONE=2;
 	private static final float MAX_DESTROYABLE_RESISTANCE=1500F;
-	private static final double HOR_R_FULL=64, HOR_R_TOTAL=96, UP_R_FULL=52, UP_R_TOTAL=56, DOWN_R_FULL=16, DOWN_R_TOTAL=18, HOR_FULL_SQ=HOR_R_FULL*HOR_R_FULL, HOR_TOTAL_SQ=HOR_R_TOTAL*HOR_R_TOTAL, UP_FULL_SQ=UP_R_FULL*UP_R_FULL, UP_TOTAL_SQ=UP_R_TOTAL*UP_R_TOTAL, DN_FULL_SQ=DOWN_R_FULL*DOWN_R_FULL, DN_TOTAL_SQ=DOWN_R_TOTAL*DOWN_R_TOTAL;
+	private static final double HOR_R_FULL=96, HOR_R_TOTAL=128, UP_R_FULL=52, UP_R_TOTAL=56, DOWN_R_FULL=16, DOWN_R_TOTAL=18, HOR_FULL_SQ=HOR_R_FULL*HOR_R_FULL, HOR_TOTAL_SQ=HOR_R_TOTAL*HOR_R_TOTAL, UP_FULL_SQ=UP_R_FULL*UP_R_FULL, UP_TOTAL_SQ=UP_R_TOTAL*UP_R_TOTAL, DN_FULL_SQ=DOWN_R_FULL*DOWN_R_FULL, DN_TOTAL_SQ=DOWN_R_TOTAL*DOWN_R_TOTAL;
 	private static final BlockState AIR=Blocks.AIR.defaultBlockState();
 	private static final EntityDataAccessor<Integer> DATA_PHASE=SynchedEntityData.defineId(NuclearExplosionEntity.class,EntityDataSerializers.INT);
 	// Shell iterátor (kráter – od středu ven)

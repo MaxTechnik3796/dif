@@ -308,7 +308,7 @@ public class ModularTool extends DiggerItem{
 						.append(Component.literal(String.format(Locale.ROOT,"%.1f",spd))
 								.withStyle(ChatFormatting.YELLOW))
 		);
-		list.add(CommonComponents.EMPTY);
+
 		list.add(
 				Component.literal("───── Parts ─────")
 						.withStyle(Style.EMPTY.withColor(0x6644BB))
@@ -340,13 +340,13 @@ public class ModularTool extends DiggerItem{
 						.withStyle(Style.EMPTY.withColor(0x6644BB))
 		);
 		list.add(
-				Component.translatable("dif.modifier."+head.getModifier()).withStyle(Style.EMPTY.withColor(head.getColor()))
+				Component.translatable("dif.modifier."+head.getModifier().getName().toLowerCase(Locale.ROOT)).withStyle(Style.EMPTY.withColor(head.getColor()))
 		);
 		list.add(
-				Component.translatable("dif.modifier."+binding.getModifier()).withStyle(Style.EMPTY.withColor(binding.getColor()))
+				Component.translatable("dif.modifier."+binding.getModifier().getName().toLowerCase(Locale.ROOT)).withStyle(Style.EMPTY.withColor(binding.getColor()))
 		);
 		list.add(
-				Component.translatable("dif.modifier."+handle.getModifier()).withStyle(Style.EMPTY.withColor(handle.getColor()))
+				Component.translatable("dif.modifier."+handle.getModifier().getName().toLowerCase(Locale.ROOT)).withStyle(Style.EMPTY.withColor(handle.getColor()))
 		);
 
 	}
