@@ -38,7 +38,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+
 public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
+
+	// ── Konstanty ───────────────────────────────────────────────────────
 	public enum State{NO_ENERGY,CLEARING,BUILDING_FRAME,MINING,DONE}
 	private static final int ENERGY_CAPACITY=QuarryStats.QUARRY_ENERGY_CAPACITY;
 	private static final int ENERGY_INPUT=QuarryStats.QUARRY_ENERGY_INPUT;
@@ -47,83 +50,68 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 	private static final int FRAME_HEIGHT=3;
 	public static final int DEFAULT_RANGE=5;
 	public static final int MAX_AREA_SIDE=128;
+
+	// ── Stav ────────────────────────────────────────────────────────────
 	private State quarryState=State.NO_ENERGY;
 	private State activeState=State.CLEARING;
 	private BlockPos miningPos;
 	private int frameCheckTimer=0;
 	private boolean hasFEThisCycle=false;
 	private float miningProgressAcc=0f;
-	private int currentSection=0;
-	private int totalSections=1;
-	private int sectionsX=1, sectionsZ=1;
-	private int sectionMinX, sectionMaxX, sectionMinZ, sectionMaxZ;
+	private int feTickTimer=0;
+
+	// ── Oblast (přímo min/max, žádné half/center) ────────────────────────
+	private int areaMinX=Integer.MIN_VALUE,areaMaxX,areaMinZ,areaMaxZ;
+	private boolean hasArea(){ return areaMinX!=Integer.MIN_VALUE; }
+
+	// ── Těžební hranice (uvnitř rámu) ───────────────────────────────────
+	private int mineMinX,mineMaxX,mineMinZ,mineMaxZ;
+
+	// ── Chunkloading ────────────────────────────────────────────────────
 	private final List<ChunkPos> forcedChunks=new ArrayList<>();
 	private boolean chunksNeedReload=false;
+
+	// ── Pracovní fronta (clearing/building) ─────────────────────────────
 	private final ArrayList<BlockPos> workQueue=new ArrayList<>();
 	private int workIndex=0;
-	private int customHalfX=-1;
-	private int customHalfZ=-1;
-	@Nullable
-	private BlockPos customCenter=null;
-	@Nullable
-	private List<BlockPos> cachedFramePos=null;
-	@Nullable
-	private BlockPos cachedCenter=null;
-	@Nullable
-	private Direction cachedFacing=null;
-	private int cachedHalfX=Integer.MIN_VALUE;
-	private int cachedHalfZ=Integer.MIN_VALUE;
+
+	// ── Cache pro frame pozice ──────────────────────────────────────────
+	@Nullable private List<BlockPos> cachedFramePos=null;
+	@Nullable private BlockPos cachedCenter=null;
+
+	// ── Upgrady ─────────────────────────────────────────────────────────
 	private boolean hasSilkTouch=false;
 	private boolean hasLiquidRemover=false;
 	private final ItemStackHandler inventory=new ItemStackHandler(3){
-		@Override
-		protected void onContentsChanged(int index){
+		@Override protected void onContentsChanged(int index){
 			rebuildUpgradeCache();
 			setChanged();
 		}
 	};
-	private void rebuildUpgradeCache(){
-		hasSilkTouch=false;
-		hasLiquidRemover=false;
-		for(int i=1;i<=2;i++){
-			ItemStack stack=inventory.getStackInSlot(i);
-			if(stack.isEmpty()) continue;
-			if(stack.getItem()==Items.SPONGE){
-				hasLiquidRemover=true;
-			}else if(stack.is(Items.ENCHANTED_BOOK)){
-				var stored=stack.get(net.minecraft.core.component.DataComponents.STORED_ENCHANTMENTS);
-				if(stored!=null) stored.keySet().forEach(holder->{
-					if(holder.is(Enchantments.SILK_TOUCH)) hasSilkTouch=true;
-				});
-			}
-		}
-	}
-	private int feTickTimer=0;
+
+	// ── Energy + GUI data ───────────────────────────────────────────────
 	private final EnergyStorage energy=new EnergyStorage(ENERGY_CAPACITY,ENERGY_INPUT,ENERGY_CAPACITY);
 	public final ContainerData dataAccess=new ContainerData(){
-		@Override
-		public int get(int index){
+		@Override public int get(int index){
 			return switch(index){
 				case 0 -> quarryState.ordinal();
 				case 1 -> getTotalQP();
 				case 2 -> getTotalFECost();
-				case 3 -> getFrameHalfX()*2+1;
-				case 4 -> getFrameHalfZ()*2+1;
+				case 3 -> getAreaSizeX();
+				case 4 -> getAreaSizeZ();
 				case 5 -> getTotalQP()==0?1:0;
 				default -> 0;
 			};
 		}
-		@Override
-		public void set(int index,int value){
-		}
-		@Override
-		public int getCount(){
-			return 6;
-		}
+		@Override public void set(int index,int value){}
+		@Override public int getCount(){ return 6; }
 	};
+
 	public QuarryBlockEntity(BlockPos pos,BlockState blockState){
 		super(DifModBlockEntities.QUARRY.get(),pos,blockState);
 	}
+
+	// ── Engine stats ────────────────────────────────────────────────────
 	public int getTotalQP(){
 		int qp=0;
 		for(int i=0;i<3;i++){
@@ -146,6 +134,20 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		float t=Math.min(1f,(float)qp/QuarryStats.MAX_QP);
 		return QuarryStats.MIN_PROGRESS_PER_TICK+t*(QuarryStats.MAX_PROGRESS_PER_TICK-QuarryStats.MIN_PROGRESS_PER_TICK);
 	}
+
+	// ── Upgrade cache ───────────────────────────────────────────────────
+	private void rebuildUpgradeCache(){
+		hasSilkTouch=false; hasLiquidRemover=false;
+		for(int i=1;i<=2;i++){
+			ItemStack s=inventory.getStackInSlot(i);
+			if(s.isEmpty()) continue;
+			if(s.getItem()==Items.SPONGE) hasLiquidRemover=true;
+			else if(s.is(Items.ENCHANTED_BOOK)){
+				var stored=s.get(net.minecraft.core.component.DataComponents.STORED_ENCHANTMENTS);
+				if(stored!=null) stored.keySet().forEach(h->{ if(h.is(Enchantments.SILK_TOUCH)) hasSilkTouch=true; });
+			}
+		}
+	}
 	private ItemStack buildSimulatedTool(){
 		ItemStack tool=new ItemStack(Items.NETHERITE_PICKAXE);
 		if(hasSilkTouch&&level!=null){
@@ -154,84 +156,38 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 		}
 		return tool;
 	}
-	public static void tick(Level level,BlockPos pos,BlockState blockState,QuarryBlockEntity blockEntity){
-		if(level.isClientSide) return;
-		if(++blockEntity.feTickTimer>=FE_TICK_INTERVAL){
-			blockEntity.feTickTimer=0;
-			int feNeeded=blockEntity.getTotalFECost()*FE_TICK_INTERVAL;
-			if(blockEntity.quarryState!=State.DONE&&blockEntity.quarryState!=State.NO_ENERGY){
-				if(feNeeded==0||blockEntity.energy.getEnergyStored()>=feNeeded){
-					if(feNeeded>0) blockEntity.energy.extractEnergy(feNeeded,false);
-					blockEntity.hasFEThisCycle=true;
-				}else{
-					blockEntity.hasFEThisCycle=false;
-					blockEntity.activeState=blockEntity.quarryState;
-					blockEntity.quarryState=State.NO_ENERGY;
-					blockEntity.sync(level,pos,blockState);
-				}
-			}else if(blockEntity.quarryState==State.NO_ENERGY){
-				if(feNeeded==0||blockEntity.energy.getEnergyStored()>=feNeeded){
-					if(feNeeded>0) blockEntity.energy.extractEnergy(feNeeded,false);
-					blockEntity.hasFEThisCycle=true;
-					blockEntity.quarryState=blockEntity.activeState;
-					blockEntity.sync(level,pos,blockState);
-				}
-			}else blockEntity.hasFEThisCycle=true;
-		}
-		if(!blockEntity.hasFEThisCycle&&blockEntity.quarryState!=State.DONE) return;
-		switch(blockEntity.quarryState){
-			case CLEARING -> blockEntity.tickClearing(level,pos,blockState);
-			case BUILDING_FRAME -> blockEntity.tickBuildFrame(level,pos,blockState);
-			case MINING -> blockEntity.tickMine(level,pos,blockState);
-			default -> {
-			}
-		}
-		if(blockEntity.chunksNeedReload&&blockEntity.quarryState==State.MINING&&level instanceof ServerLevel sl){
-			if(blockEntity.sectionMaxX<=blockEntity.sectionMinX||blockEntity.sectionMaxZ<=blockEntity.sectionMinZ)
-				blockEntity.initSections(blockState);
-			blockEntity.loadSectionChunks(sl);
-			blockEntity.chunksNeedReload=false;
-		}
-	}
-	private int halfX(){
-		return customHalfX>0?customHalfX:DEFAULT_RANGE;
-	}
-	private int halfZ(){
-		return customHalfZ>0?customHalfZ:DEFAULT_RANGE;
-	}
-	public void setLandmarkArea(int halfX,int halfZ,BlockPos center){
-		this.customHalfX=Math.clamp(halfX,2,MAX_AREA_SIDE/2);
-		this.customHalfZ=Math.clamp(halfZ,2,MAX_AREA_SIDE/2);
-		this.customCenter=center;
-		invalidateCache();
+
+	// ── Oblast ───────────────────────────────────────────────────────────
+	public void setArea(int minX,int maxX,int minZ,int maxZ){
+		areaMinX=minX; areaMaxX=maxX; areaMinZ=minZ; areaMaxZ=maxZ;
+		cachedFramePos=null; cachedCenter=null;
 		setChanged();
 		if(level!=null&&!level.isClientSide) level.sendBlockUpdated(worldPosition,getBlockState(),getBlockState(),3);
 	}
-	private void invalidateCache(){
-		cachedFramePos=null;
-		cachedCenter=null;
-		cachedFacing=null;
-		cachedHalfX=Integer.MIN_VALUE;
-		cachedHalfZ=Integer.MIN_VALUE;
+	/** Velikost oblasti (pro GUI) */
+	public int getAreaSizeX(){ return hasArea()?areaMaxX-areaMinX+1:DEFAULT_RANGE*2+1; }
+	public int getAreaSizeZ(){ return hasArea()?areaMaxZ-areaMinZ+1:DEFAULT_RANGE*2+1; }
+	public int getAreaMinX(){ return hasArea()?areaMinX:getDefaultCenter().getX()-DEFAULT_RANGE; }
+	public int getAreaMaxX(){ return hasArea()?areaMaxX:getDefaultCenter().getX()+DEFAULT_RANGE; }
+	public int getAreaMinZ(){ return hasArea()?areaMinZ:getDefaultCenter().getZ()-DEFAULT_RANGE; }
+	public int getAreaMaxZ(){ return hasArea()?areaMaxZ:getDefaultCenter().getZ()+DEFAULT_RANGE; }
+
+	private BlockPos getDefaultCenter(){
+		Direction facing=getBlockState().getValue(Quarry.FACING);
+		return worldPosition.relative(facing.getOpposite(),DEFAULT_RANGE+1);
 	}
+
+	// ── Frame pozice (cache) ────────────────────────────────────────────
 	public List<BlockPos> computeFramePositions(BlockState blockState){
-		Direction facing=blockState.getValue(Quarry.FACING);
-		int hx=halfX(), hz=halfZ();
-		if(cachedFramePos!=null&&facing==cachedFacing&&hx==cachedHalfX&&hz==cachedHalfZ) return cachedFramePos;
-		cachedFacing=facing;
-		cachedHalfX=hx;
-		cachedHalfZ=hz;
-		cachedCenter=(customCenter!=null)?customCenter:worldPosition.relative(facing.getOpposite(),hx+1);
-		cachedFramePos=buildFramePosList(hx,hz,worldPosition.getY());
-		return cachedFramePos;
-	}
-	private @NotNull List<BlockPos> buildFramePosList(int hx,int hz,int yBase){
+		if(cachedFramePos!=null) return cachedFramePos;
+		int mnX=getAreaMinX(), mxX=getAreaMaxX(), mnZ=getAreaMinZ(), mxZ=getAreaMaxZ();
+		cachedCenter=new BlockPos((mnX+mxX)/2,worldPosition.getY(),(mnZ+mxZ)/2);
 		List<BlockPos> result=new ArrayList<>();
-		assert cachedCenter!=null;
-		for(int x=cachedCenter.getX()-hx;x<=cachedCenter.getX()+hx;x++){
-			for(int z=cachedCenter.getZ()-hz;z<=cachedCenter.getZ()+hz;z++){
-				boolean edgeX=(x==cachedCenter.getX()-hx||x==cachedCenter.getX()+hx);
-				boolean edgeZ=(z==cachedCenter.getZ()-hz||z==cachedCenter.getZ()+hz);
+		int yBase=worldPosition.getY();
+		for(int x=mnX;x<=mxX;x++){
+			for(int z=mnZ;z<=mxZ;z++){
+				boolean edgeX=x==mnX||x==mxX;
+				boolean edgeZ=z==mnZ||z==mxZ;
 				if(!edgeX&&!edgeZ) continue;
 				result.add(new BlockPos(x,yBase,z));
 				result.add(new BlockPos(x,yBase+FRAME_HEIGHT,z));
@@ -241,68 +197,105 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 				}
 			}
 		}
+		cachedFramePos=result;
 		return result;
 	}
-	private BlockPos getAreaCenter(BlockState blockState){
+	public BlockPos getAreaCenter(BlockState blockState){
 		computeFramePositions(blockState);
 		return cachedCenter;
 	}
-	private void startClearing(Level level,BlockState blockState,BlockPos pos){
-		BlockPos center=getAreaCenter(blockState);
-		int hx=halfX(), hz=halfZ(), yBase=worldPosition.getY();
-		workQueue.clear();
-		workIndex=0;
+	public BlockPos getAreaCenter(){ return getAreaCenter(getBlockState()); }
+	/** Zpětná kompatibilita pro renderer */
+	public int getFrameHalfX(){ return(getAreaSizeX()-1)/2; }
+	public int getFrameHalfZ(){ return(getAreaSizeZ()-1)/2; }
+
+	// ══════════════════════════════════════════════════════════════════════
+	// ── TICK ─────────────────────────────────────────────────────────────
+	// ══════════════════════════════════════════════════════════════════════
+	public static void tick(Level level,BlockPos pos,BlockState blockState,QuarryBlockEntity be){
+		if(level.isClientSide) return;
+		// ── Energy management ──
+		if(++be.feTickTimer>=FE_TICK_INTERVAL){
+			be.feTickTimer=0;
+			int feNeeded=be.getTotalFECost()*FE_TICK_INTERVAL;
+			if(be.quarryState!=State.DONE&&be.quarryState!=State.NO_ENERGY){
+				if(feNeeded==0||be.energy.getEnergyStored()>=feNeeded){
+					if(feNeeded>0) be.energy.extractEnergy(feNeeded,false);
+					be.hasFEThisCycle=true;
+				}else{
+					be.hasFEThisCycle=false;
+					be.activeState=be.quarryState;
+					be.quarryState=State.NO_ENERGY;
+					be.sync(level,pos,blockState);
+				}
+			}else if(be.quarryState==State.NO_ENERGY){
+				if(feNeeded==0||be.energy.getEnergyStored()>=feNeeded){
+					if(feNeeded>0) be.energy.extractEnergy(feNeeded,false);
+					be.hasFEThisCycle=true;
+					be.quarryState=be.activeState;
+					be.sync(level,pos,blockState);
+				}
+			}else be.hasFEThisCycle=true;
+		}
+		if(!be.hasFEThisCycle&&be.quarryState!=State.DONE) return;
+		// ── State machine ──
+		switch(be.quarryState){
+			case CLEARING -> be.tickClearing(level,pos,blockState);
+			case BUILDING_FRAME -> be.tickBuildFrame(level,pos,blockState);
+			case MINING -> be.tickMine(level,pos,blockState);
+			default -> {}
+		}
+		// ── Reload chunků po loadu světa ──
+		if(be.chunksNeedReload&&be.quarryState==State.MINING&&level instanceof ServerLevel sl){
+			be.computeMineBounds();
+			be.loadMiningChunks(sl);
+			be.chunksNeedReload=false;
+		}
+	}
+
+	// ── CLEARING ────────────────────────────────────────────────────────
+	private void startClearing(Level level,BlockState bs,BlockPos pos){
+		int mnX=getAreaMinX(),mxX=getAreaMaxX(),mnZ=getAreaMinZ(),mxZ=getAreaMaxZ();
+		int yBase=worldPosition.getY();
+		workQueue.clear(); workIndex=0;
 		for(int y=yBase+FRAME_HEIGHT;y>=yBase;y--)
-			for(int x=center.getX()-hx;x<=center.getX()+hx;x++)
-				for(int z=center.getZ()-hz;z<=center.getZ()+hz;z++){
+			for(int x=mnX;x<=mxX;x++)
+				for(int z=mnZ;z<=mxZ;z++){
 					BlockPos bp=new BlockPos(x,y,z);
 					if(!level.isEmptyBlock(bp)&&isOwnedFrame(level,bp)) workQueue.add(bp);
 				}
-		if(workQueue.isEmpty()){
-			startBuildingFrame(level,blockState,pos);
-			return;
-		}
-		quarryState=State.CLEARING;
-		miningProgressAcc=0f;
-		sync(level,pos,blockState);
+		if(workQueue.isEmpty()){ startBuildingFrame(level,bs,pos); return; }
+		quarryState=State.CLEARING; miningProgressAcc=0f;
+		sync(level,pos,bs);
 	}
-	private void tickClearing(Level level,BlockPos pos,BlockState blockState){
-		if(workQueue.isEmpty()){
-			startClearing(level,blockState,pos);
-			return;
-		}
-		float progress=getProgressPerTick();
-		if(progress<=0f) return;
+	private void tickClearing(Level level,BlockPos pos,BlockState bs){
+		if(workQueue.isEmpty()){ startClearing(level,bs,pos); return; }
+		float progress=getProgressPerTick(); if(progress<=0f) return;
 		miningProgressAcc+=progress;
 		float cost=10f;
 		while(workIndex<workQueue.size()&&miningProgressAcc>=cost){
 			BlockPos bp=workQueue.get(workIndex++);
 			if(!level.isEmptyBlock(bp)&&isOwnedFrame(level,bp)){
-				level.removeBlock(bp,false);
-				miningProgressAcc-=cost;
+				level.removeBlock(bp,false); miningProgressAcc-=cost;
 			}
 		}
 		if(workIndex>=workQueue.size()){
-			workQueue.clear();
-			workIndex=0;
-			miningProgressAcc=0f;
-			startBuildingFrame(level,blockState,pos);
+			workQueue.clear(); workIndex=0; miningProgressAcc=0f;
+			startBuildingFrame(level,bs,pos);
 		}
 	}
-	private void startBuildingFrame(Level level,BlockState blockState,BlockPos pos){
+
+	// ── BUILDING FRAME ──────────────────────────────────────────────────
+	private void startBuildingFrame(Level level,BlockState bs,BlockPos pos){
 		quarryState=State.BUILDING_FRAME;
 		workQueue.clear();
-		workQueue.addAll(computeFramePositions(blockState));
+		workQueue.addAll(computeFramePositions(bs));
 		workIndex=0;
-		sync(level,pos,blockState);
+		sync(level,pos,bs);
 	}
-	private void tickBuildFrame(Level level,BlockPos pos,BlockState blockState){
-		if(workQueue.isEmpty()){
-			startBuildingFrame(level,blockState,pos);
-			return;
-		}
-		float progress=getProgressPerTick();
-		if(progress<=0f) return;
+	private void tickBuildFrame(Level level,BlockPos pos,BlockState bs){
+		if(workQueue.isEmpty()){ startBuildingFrame(level,bs,pos); return; }
+		float progress=getProgressPerTick(); if(progress<=0f) return;
 		miningProgressAcc+=progress;
 		float cost=15f;
 		while(workIndex<workQueue.size()&&miningProgressAcc>=cost){
@@ -314,122 +307,122 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 			}
 		}
 		if(workIndex>=workQueue.size()){
-			workQueue.clear();
-			workIndex=0;
-			miningProgressAcc=0f;
-			activeState=State.MINING;
-			quarryState=State.MINING;
-			initSections(blockState);
-			resetMiningPos();
-			if(level instanceof ServerLevel sl) loadSectionChunks(sl);
-			sync(level,pos,blockState);
+			workQueue.clear(); workIndex=0; miningProgressAcc=0f;
+			activeState=State.MINING; quarryState=State.MINING;
+			computeMineBounds();
+			miningPos=new BlockPos(mineMinX,worldPosition.getY()-1,mineMinZ);
+			if(level instanceof ServerLevel sl) loadMiningChunks(sl);
+			sync(level,pos,bs);
 		}
 	}
-	private void tickMine(Level level,BlockPos pos,BlockState blockState){
+
+	// ── MINING ──────────────────────────────────────────────────────────
+	private void tickMine(Level level,BlockPos pos,BlockState bs){
+		// Periodický frame check
 		if(++frameCheckTimer>=FRAME_CHECK_INTERVAL){
 			frameCheckTimer=0;
-			if(!isFrameIntact(level,blockState)){
+			if(!isFrameIntact(level,bs)){
 				if(level instanceof ServerLevel sl) unloadForcedChunks(sl);
-				quarryState=State.CLEARING;
-				activeState=State.CLEARING;
-				workQueue.clear();
-				workIndex=0;
-				miningPos=null;
-				sync(level,pos,blockState);
-				return;
+				quarryState=State.CLEARING; activeState=State.CLEARING;
+				workQueue.clear(); workIndex=0; miningPos=null;
+				sync(level,pos,bs); return;
 			}
 		}
-		float progressStep=getProgressPerTick();
-		if(progressStep<=0f) return;
+		float step=getProgressPerTick(); if(step<=0f) return;
 		if(!(level instanceof ServerLevel sl)) return;
-		if(miningPos==null) resetMiningPos();
-		if(miningPos==null) return;
+		if(miningPos==null) miningPos=new BlockPos(mineMinX,worldPosition.getY()-1,mineMinZ);
 		ItemStack tool=buildSimulatedTool();
-		miningProgressAcc+=progressStep;
+		miningProgressAcc+=step;
 		int safety=0;
 		while(safety++<1000){
+			// Přeskočit prázdné bloky
 			while(level.isEmptyBlock(miningPos)&&level.getBlockState(miningPos).getFluidState().isEmpty())
-				if(handleMiningAdvance(level,pos,blockState)) return;
+				if(!advanceMiningPos()){ finishMining(level,pos,bs); return; }
 			BlockState target=level.getBlockState(miningPos);
+			// Kapaliny
 			if(!target.getFluidState().isEmpty()){
 				if(hasLiquidRemover){
 					float fluidCost=target.getFluidState().isSource()?5f:1f;
 					if(miningProgressAcc>=fluidCost){
 						miningProgressAcc-=fluidCost;
 						level.setBlock(miningPos,Blocks.AIR.defaultBlockState(),2);
-						if(handleMiningAdvance(level,pos,blockState)) return;
+						if(!advanceMiningPos()){ finishMining(level,pos,bs); return; }
 						continue;
 					}else return;
 				}
-				if(handleMiningAdvance(level,pos,blockState)) return;
+				if(!advanceMiningPos()){ finishMining(level,pos,bs); return; }
 				continue;
 			}
+			// Nezničitelné
 			float hardness=target.getDestroySpeed(level,miningPos);
 			if(hardness<0){
 				miningProgressAcc=0f;
-				if(handleMiningAdvance(level,pos,blockState)) return;
+				if(!advanceMiningPos()){ finishMining(level,pos,bs); return; }
 				continue;
 			}
-			float requiredProgress=Math.max(1f,hardness*10f);
-			if(miningProgressAcc<requiredProgress) return;
-			miningProgressAcc-=requiredProgress;
+			// Těžení
+			float required=Math.max(1f,hardness*10f);
+			if(miningProgressAcc<required) return;
+			miningProgressAcc-=required;
 			List<ItemStack> drops=Block.getDrops(target,sl,miningPos,sl.getBlockEntity(miningPos),null,tool);
 			level.removeBlock(miningPos,false);
 			if(!drops.isEmpty()) distributeDrops(level,drops);
-			if(handleMiningAdvance(level,pos,blockState)) return;
+			if(!advanceMiningPos()){ finishMining(level,pos,bs); return; }
 		}
+	}
+
+	// ── Mining helpers ──────────────────────────────────────────────────
+	private void computeMineBounds(){
+		mineMinX=getAreaMinX()+1; mineMaxX=getAreaMaxX()-1;
+		mineMinZ=getAreaMinZ()+1; mineMaxZ=getAreaMaxZ()-1;
+	}
+	/** Posun na další blok. Vrací true = lze pokračovat, false = hotovo. */
+	private boolean advanceMiningPos(){
+		if(miningPos==null||level==null) return false;
+		int nx=miningPos.getX()+1, nz=miningPos.getZ(), ny=miningPos.getY();
+		if(nx>mineMaxX){ nx=mineMinX; nz++; }
+		if(nz>mineMaxZ){ nz=mineMinZ; ny--; }
+		miningPos=new BlockPos(nx,ny,nz);
+		setChanged();
+		return ny>level.getMinBuildHeight();
+	}
+	private void finishMining(Level level,BlockPos pos,BlockState bs){
+		quarryState=State.DONE; miningPos=null;
+		if(level instanceof ServerLevel sl) unloadForcedChunks(sl);
+		sync(level,pos,bs);
 	}
 	private void distributeDrops(Level level,List<ItemStack> drops){
 		List<IItemHandler> handlers=new ArrayList<>(6);
-		for(Direction dir: Direction.values()){
+		for(Direction dir:Direction.values()){
 			IItemHandler h=level.getCapability(Capabilities.ItemHandler.BLOCK,worldPosition.relative(dir),dir.getOpposite());
 			if(h!=null) handlers.add(h);
 		}
-		for(ItemStack drop: drops){
+		for(ItemStack drop:drops){
 			if(drop.isEmpty()) continue;
-			ItemStack remaining=drop;
-			for(IItemHandler h: handlers){
-				if(remaining.isEmpty()) break;
-				remaining=ItemHandlerHelper.insertItemStacked(h,remaining,false);
+			ItemStack rem=drop;
+			for(IItemHandler h:handlers){ if(rem.isEmpty()) break; rem=ItemHandlerHelper.insertItemStacked(h,rem,false); }
+			if(!rem.isEmpty()) Block.popResource(level,worldPosition.above(),rem);
+		}
+	}
+
+	// ── Chunkloading (jen těžební oblast) ───────────────────────────────
+	private void loadMiningChunks(ServerLevel sl){
+		unloadForcedChunks(sl);
+		int mnCx=mineMinX>>4, mxCx=mineMaxX>>4, mnCz=mineMinZ>>4, mxCz=mineMaxZ>>4;
+		for(int cx=mnCx;cx<=mxCx;cx++)
+			for(int cz=mnCz;cz<=mxCz;cz++){
+				sl.setChunkForced(cx,cz,true);
+				forcedChunks.add(new ChunkPos(cx,cz));
 			}
-			if(!remaining.isEmpty()) Block.popResource(level,worldPosition.above(),remaining);
-		}
 	}
-	private boolean handleMiningAdvance(Level level,BlockPos pos,BlockState blockState){
-		if(advanceMiningPos()) return false;
-		if(advanceToNextSection(level,blockState)) return false;
-		finishMining(level,pos,blockState);
-		return true;
+	private void unloadForcedChunks(ServerLevel sl){
+		for(ChunkPos cp:forcedChunks) sl.setChunkForced(cp.x,cp.z,false);
+		forcedChunks.clear();
 	}
-	private void finishMining(Level level,BlockPos pos,BlockState blockState){
-		quarryState=State.DONE;
-		miningPos=null;
-		if(level instanceof ServerLevel serverLevel) unloadForcedChunks(serverLevel);
-		sync(level,pos,blockState);
-	}
-	public void onFrameDestroyed(Level level){
-		if(level==null||level.isClientSide) return;
-		if(level instanceof ServerLevel serverLevel) unloadForcedChunks(serverLevel);
-		quarryState=State.CLEARING;
-		workQueue.clear();
-		workIndex=0;
-		miningPos=null;
-		setChanged();
-		level.sendBlockUpdated(worldPosition,getBlockState(),getBlockState(),3);
-	}
-	public void onQuarryRemoved(){
-		if(level==null||level.isClientSide) return;
-		if(level instanceof ServerLevel serverLevel) unloadForcedChunks(serverLevel);
-		for(int i=0;i<inventory.getSlots();i++){
-			ItemStack itemStack=inventory.getStackInSlot(i);
-			if(!itemStack.isEmpty()) Block.popResource(level,worldPosition,itemStack);
-		}
-		for(BlockPos fp: computeFramePositions(getBlockState()))
-			if(level.getBlockEntity(fp) instanceof QuarryFrameBlockEntity frame&&worldPosition.equals(frame.getOwnerPos()))
-				frame.scheduleRemoval();
-	}
-	public boolean isFrameIntact(Level level,BlockState blockState){
-		for(BlockPos fp: computeFramePositions(blockState)){
+
+	// ── Frame utility ───────────────────────────────────────────────────
+	public boolean isFrameIntact(Level level,BlockState bs){
+		for(BlockPos fp:computeFramePositions(bs)){
 			if(!level.isLoaded(fp)) continue;
 			if(isFrameBlock(level,fp)) return false;
 		}
@@ -441,196 +434,101 @@ public class QuarryBlockEntity extends BlockEntity implements MenuProvider{
 	private boolean isOwnedFrame(Level level,BlockPos pos){
 		return isFrameBlock(level,pos)||!(level.getBlockEntity(pos) instanceof QuarryFrameBlockEntity frame)||!worldPosition.equals(frame.getOwnerPos());
 	}
-	private void resetMiningPos(){
-		miningPos=new BlockPos(sectionMinX,worldPosition.getY()-1,sectionMinZ);
-		setChanged();
+	public void onFrameDestroyed(Level level){
+		if(level==null||level.isClientSide) return;
+		if(level instanceof ServerLevel sl) unloadForcedChunks(sl);
+		quarryState=State.CLEARING; workQueue.clear(); workIndex=0; miningPos=null;
+		setChanged(); level.sendBlockUpdated(worldPosition,getBlockState(),getBlockState(),3);
 	}
-	private boolean advanceMiningPos(){
-		if(miningPos==null||level==null) return false;
-		int nx=miningPos.getX()+1, nz=miningPos.getZ(), ny=miningPos.getY();
-		if(nx>sectionMaxX){
-			nx=sectionMinX;
-			nz++;
+	public void onQuarryRemoved(){
+		if(level==null||level.isClientSide) return;
+		if(level instanceof ServerLevel sl) unloadForcedChunks(sl);
+		for(int i=0;i<inventory.getSlots();i++){
+			ItemStack s=inventory.getStackInSlot(i);
+			if(!s.isEmpty()) Block.popResource(level,worldPosition,s);
 		}
-		if(nz>sectionMaxZ){
-			nz=sectionMinZ;
-			ny--;
-		}
-		miningPos=new BlockPos(nx,ny,nz);
-		setChanged();
-		return ny>level.getMinBuildHeight();
+		for(BlockPos fp:computeFramePositions(getBlockState()))
+			if(level.getBlockEntity(fp) instanceof QuarryFrameBlockEntity frame&&worldPosition.equals(frame.getOwnerPos()))
+				frame.scheduleRemoval();
 	}
-	private void initSections(BlockState blockState){
-		BlockPos center=getAreaCenter(blockState);
-		if(center==null) return;
-		// Odečtením 1 zajistíme, že se vnitřní výpočty ohraničí UVNITŘ rámu
-		int ihx=halfX()-1, ihz=halfZ()-1;
-		sectionsX=(ihx*2+1>64)?2:1;
-		sectionsZ=(ihz*2+1>64)?2:1;
-		totalSections=sectionsX*sectionsZ;
-		currentSection=0;
-		applySectionBounds(blockState);
+
+	// ── Sync ────────────────────────────────────────────────────────────
+	private void sync(Level level,BlockPos pos,BlockState bs){
+		level.sendBlockUpdated(pos,bs,bs,3); setChanged();
 	}
-	private void applySectionBounds(BlockState blockState){
-		BlockPos center=getAreaCenter(blockState);
-		if(center==null) return;
-		// Zde také zmenšíme poloměr o 1 blok směrem dovnitř
-		int ihx=halfX()-1, ihz=halfZ()-1;
-		int fmx=center.getX()-ihx, fxx=center.getX()+ihx;
-		int fmz=center.getZ()-ihz, fxz=center.getZ()+ihz;
-		int col=currentSection%sectionsX, row=currentSection/sectionsX;
-		if(sectionsX==1){
-			sectionMinX=fmx;
-			sectionMaxX=fxx;
-		}else{
-			int wa=(fxx-fmx+1)/2;
-			sectionMinX=(col==0)?fmx:fmx+wa;
-			sectionMaxX=(col==0)?fmx+wa-1:fxx;
-		}
-		if(sectionsZ==1){
-			sectionMinZ=fmz;
-			sectionMaxZ=fxz;
-		}else{
-			int da=(fxz-fmz+1)/2;
-			sectionMinZ=(row==0)?fmz:fmz+da;
-			sectionMaxZ=(row==0)?fmz+da-1:fxz;
-		}
-	}
-	private boolean advanceToNextSection(Level level,BlockState blockState){
-		currentSection++;
-		if(currentSection>=totalSections) return false;
-		applySectionBounds(blockState);
-		if(level instanceof ServerLevel sl) loadSectionChunks(sl);
-		miningPos=new BlockPos(sectionMinX,worldPosition.getY()-1,sectionMinZ);
-		miningProgressAcc=0f;
-		setChanged();
-		return true;
-	}
-	private void loadSectionChunks(ServerLevel serverLevel){
-		unloadForcedChunks(serverLevel);
-		int mnx=sectionMinX>>4, mxx=sectionMaxX>>4, mnz=sectionMinZ>>4, mxz=sectionMaxZ>>4;
-		for(int cx=mnx;cx<=mxx;cx++)
-			for(int cz=mnz;cz<=mxz;cz++){
-				serverLevel.setChunkForced(cx,cz,true);
-				forcedChunks.add(new ChunkPos(cx,cz));
-			}
-	}
-	private void unloadForcedChunks(ServerLevel serverLevel){
-		for(ChunkPos cp: forcedChunks) serverLevel.setChunkForced(cp.x,cp.z,false);
-		forcedChunks.clear();
-	}
-	private void sync(Level level,BlockPos pos,BlockState blockState){
-		level.sendBlockUpdated(pos,blockState,blockState,3);
-		setChanged();
-	}
-	@Override
-	public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider provider){
+
+	// ── NBT ─────────────────────────────────────────────────────────────
+	@Override public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider p){
 		CompoundTag tag=new CompoundTag();
 		tag.putInt("QS",quarryState.ordinal());
 		if(miningPos!=null){
-			tag.putInt("MineX",miningPos.getX());
-			tag.putInt("MineY",miningPos.getY());
-			tag.putInt("MineZ",miningPos.getZ());
+			tag.putInt("MineX",miningPos.getX()); tag.putInt("MineY",miningPos.getY()); tag.putInt("MineZ",miningPos.getZ());
 		}
-		if(customHalfX>0){
-			tag.putInt("LmHX",customHalfX);
-			tag.putInt("LmHZ",customHalfZ);
-		}
-		if(customCenter!=null){
-			tag.putInt("LmCX",customCenter.getX());
-			tag.putInt("LmCY",customCenter.getY());
-			tag.putInt("LmCZ",customCenter.getZ());
+		if(hasArea()){
+			tag.putInt("AMnX",areaMinX); tag.putInt("AMxX",areaMaxX);
+			tag.putInt("AMnZ",areaMinZ); tag.putInt("AMxZ",areaMaxZ);
 		}
 		return tag;
 	}
-	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket(){
+	@Override public ClientboundBlockEntityDataPacket getUpdatePacket(){
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
-	@Override
-	public void loadAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider provider){
-		super.loadAdditional(tag,provider);
-		if(tag.contains("Inventory")) inventory.deserializeNBT(provider,tag.getCompound("Inventory"));
+	@Override public void loadAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider p){
+		super.loadAdditional(tag,p);
+		if(tag.contains("Inventory")) inventory.deserializeNBT(p,tag.getCompound("Inventory"));
 		rebuildUpgradeCache();
-		int storedFE=tag.getInt("Energy");
-		energy.receiveEnergy(storedFE-energy.getEnergyStored(),false);
+		energy.receiveEnergy(tag.getInt("Energy")-energy.getEnergyStored(),false);
 		int ord=tag.getInt("QS");
 		quarryState=(ord>=0&&ord<State.values().length)?State.values()[ord]:State.NO_ENERGY;
 		if(tag.contains("MineX")) miningPos=new BlockPos(tag.getInt("MineX"),tag.getInt("MineY"),tag.getInt("MineZ"));
 		workIndex=tag.getInt("WI");
-		if(tag.contains("LmHX")){
-			customHalfX=tag.getInt("LmHX");
-			customHalfZ=tag.getInt("LmHZ");
+		// Oblast — nový formát
+		if(tag.contains("AMnX")){
+			areaMinX=tag.getInt("AMnX"); areaMaxX=tag.getInt("AMxX");
+			areaMinZ=tag.getInt("AMnZ"); areaMaxZ=tag.getInt("AMxZ");
 		}
-		customCenter=tag.contains("LmCX")?new BlockPos(tag.getInt("LmCX"),tag.getInt("LmCY"),tag.getInt("LmCZ")):null;
-		currentSection=tag.getInt("SecCur");
-		totalSections=Math.max(1,tag.getInt("SecTot"));
-		sectionsX=Math.max(1,tag.getInt("SecGX"));
-		sectionsZ=Math.max(1,tag.getInt("SecGZ"));
-		sectionMinX=tag.getInt("SecMnX");
-		sectionMaxX=tag.getInt("SecMxX");
-		sectionMinZ=tag.getInt("SecMnZ");
-		sectionMaxZ=tag.getInt("SecMxZ");
+		// Zpětná kompatibilita — starý halfX/center formát
+		else if(tag.contains("LmHX")&&tag.contains("LmCX")){
+			int hx=tag.getInt("LmHX"), hz=tag.getInt("LmHZ");
+			int cx=tag.getInt("LmCX"), cz=tag.getInt("LmCZ");
+			areaMinX=cx-hx; areaMaxX=cx+hx; areaMinZ=cz-hz; areaMaxZ=cz+hz;
+		}else areaMinX=Integer.MIN_VALUE;
+		// Těžební hranice
+		if(tag.contains("MMnX")){
+			mineMinX=tag.getInt("MMnX"); mineMaxX=tag.getInt("MMxX");
+			mineMinZ=tag.getInt("MMnZ"); mineMaxZ=tag.getInt("MMxZ");
+		}
+		// Zpětná kompatibilita — staré sekce → přepočítat mine bounds
+		else if(quarryState==State.MINING&&hasArea()) computeMineBounds();
+		cachedFramePos=null; cachedCenter=null;
 		if(quarryState==State.MINING) chunksNeedReload=true;
 	}
-	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider provider){
-		super.saveAdditional(tag,provider);
-		tag.put("Inventory",inventory.serializeNBT(provider));
+	@Override protected void saveAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider p){
+		super.saveAdditional(tag,p);
+		tag.put("Inventory",inventory.serializeNBT(p));
 		tag.putInt("Energy",energy.getEnergyStored());
 		tag.putInt("QS",quarryState.ordinal());
 		tag.putInt("WI",workIndex);
 		if(miningPos!=null){
-			tag.putInt("MineX",miningPos.getX());
-			tag.putInt("MineY",miningPos.getY());
-			tag.putInt("MineZ",miningPos.getZ());
+			tag.putInt("MineX",miningPos.getX()); tag.putInt("MineY",miningPos.getY()); tag.putInt("MineZ",miningPos.getZ());
 		}
-		if(customHalfX>0){
-			tag.putInt("LmHX",customHalfX);
-			tag.putInt("LmHZ",customHalfZ);
+		if(hasArea()){
+			tag.putInt("AMnX",areaMinX); tag.putInt("AMxX",areaMaxX);
+			tag.putInt("AMnZ",areaMinZ); tag.putInt("AMxZ",areaMaxZ);
 		}
-		if(customCenter!=null){
-			tag.putInt("LmCX",customCenter.getX());
-			tag.putInt("LmCY",customCenter.getY());
-			tag.putInt("LmCZ",customCenter.getZ());
-		}
-		tag.putInt("SecCur",currentSection);
-		tag.putInt("SecTot",totalSections);
-		tag.putInt("SecGX",sectionsX);
-		tag.putInt("SecGZ",sectionsZ);
-		tag.putInt("SecMnX",sectionMinX);
-		tag.putInt("SecMxX",sectionMaxX);
-		tag.putInt("SecMnZ",sectionMinZ);
-		tag.putInt("SecMxZ",sectionMaxZ);
+		tag.putInt("MMnX",mineMinX); tag.putInt("MMxX",mineMaxX);
+		tag.putInt("MMnZ",mineMinZ); tag.putInt("MMxZ",mineMaxZ);
 	}
-	public BlockPos getMiningPos(){
-		return miningPos;
-	}
-	public State getQuarryState(){
-		return quarryState;
-	}
-	public BlockPos getAreaCenter(){
-		return getAreaCenter(getBlockState());
-	}
-	public int getFrameHalfX(){
-		return halfX();
-	}
-	public int getFrameHalfZ(){
-		return halfZ();
-	}
-	@Override
-	public @NotNull Component getDisplayName(){
-		return Component.translatable("block.dif.quarry");
-	}
-	@Nullable
-	@Override
-	public AbstractContainerMenu createMenu(int id,@NotNull Inventory playerInv,@NotNull Player player){
-		return new QuarryMenu(id,playerInv,this);
-	}
-	public IItemHandler getInventory(){
-		return inventory;
-	}
-	public IEnergyStorage getEnergyStorage(){
-		return energy;
+
+	// ── Gettery ─────────────────────────────────────────────────────────
+	public BlockPos getMiningPos(){ return miningPos; }
+	public State getQuarryState(){ return quarryState; }
+	public IItemHandler getInventory(){ return inventory; }
+	public IEnergyStorage getEnergyStorage(){ return energy; }
+
+	// ── Menu ────────────────────────────────────────────────────────────
+	@Override public @NotNull Component getDisplayName(){ return Component.translatable("block.dif.quarry"); }
+	@Nullable @Override public AbstractContainerMenu createMenu(int id,@NotNull Inventory inv,@NotNull Player player){
+		return new QuarryMenu(id,inv,this);
 	}
 }
