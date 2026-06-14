@@ -38,8 +38,8 @@ public class QuarryRenderer implements BlockEntityRenderer<QuarryBlockEntity>{
 		State state=be.getQuarryState();
 		if(state==State.DONE) return;
 		Level level=Minecraft.getInstance().level;
-		if(state==State.MINING&&level!=null&&be.isFrameIntact(level,be.getBlockState())) return;
-		if(state==State.NO_ENERGY&&level!=null&&be.isFrameIntact(level,be.getBlockState())) return;
+		if(state==State.MINING&&level!=null&&be.isFrameIntact(level)) return;
+		if(state==State.NO_ENERGY&&level!=null&&be.isFrameIntact(level)) return;
 		BlockPos qPos=be.getBlockPos();
 		// Střed bloků (+0.5f)
 		float minX=be.getAreaMinX()-qPos.getX()+0.5f;
