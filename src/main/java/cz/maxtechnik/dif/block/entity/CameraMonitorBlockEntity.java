@@ -27,7 +27,8 @@ public class CameraMonitorBlockEntity extends BlockEntity{
 	}
 	public void linkCamera(BlockPos camPos){
 		this.linkedCameraPos=camPos;
-		if(level!=null) level.setBlock(worldPosition,getBlockState().setValue(CameraMonitor.STATE,CameraMonitorState.INACTIVE),3);
+		if(level!=null)
+			level.setBlock(worldPosition,getBlockState().setValue(CameraMonitor.STATE,CameraMonitorState.INACTIVE),3);
 		setChanged();
 	}
 	public InteractionResult useMonitor(Player player){
@@ -37,7 +38,8 @@ public class CameraMonitorBlockEntity extends BlockEntity{
 			ServerLevel serverLevel=(ServerLevel)level;
 			ChunkPos chunkPos=new ChunkPos(linkedCameraPos);
 			serverLevel.getChunkSource().addRegionTicket(TicketType.FORCED,chunkPos,3,chunkPos);
-			if(level.getBlockState(linkedCameraPos).getBlock().equals(DifModBlocks.CAMERA.get())) level.setBlock(worldPosition,getBlockState().setValue(CameraMonitor.STATE,CameraMonitorState.ACTIVE),3);
+			if(level.getBlockState(linkedCameraPos).getBlock().equals(DifModBlocks.CAMERA.get()))
+				level.setBlock(worldPosition,getBlockState().setValue(CameraMonitor.STATE,CameraMonitorState.ACTIVE),3);
 			else player.displayClientMessage(Component.literal("Camera is not available!"),true);
 		}
 		if(level.isClientSide){

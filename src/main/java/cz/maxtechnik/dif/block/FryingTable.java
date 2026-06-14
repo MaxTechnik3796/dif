@@ -106,7 +106,8 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 	}
 	@Override
 	public @NotNull BlockState updateShape(BlockState blockState,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
-		if(blockState.getValue(WATERLOGGED)) world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
+		if(blockState.getValue(WATERLOGGED))
+			world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
 		return super.updateShape(blockState,facing,facingState,world,currentPos,facingPos);
 	}
 	@Override
@@ -168,7 +169,8 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 		if(handItem.is(DifModItems.SUNFLOWER_OIL_BUCKET.get())){
 			int accepted=be.fluidTank.fill(new FluidStack(DifModFluids.SUNFLOWER_OIL.get(),1000),IFluidHandler.FluidAction.EXECUTE);
 			if(accepted>0){
-				if(!player.getAbilities().instabuild) player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,new ItemStack(net.minecraft.world.item.Items.BUCKET));
+				if(!player.getAbilities().instabuild)
+					player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,new ItemStack(net.minecraft.world.item.Items.BUCKET));
 				world.playSound(null,pos,SoundEvents.BUCKET_EMPTY,SoundSource.BLOCKS,1F,1F);
 				be.setChanged();
 				return InteractionResult.SUCCESS;
@@ -181,7 +183,8 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 				ItemStack oilBucket=new ItemStack(DifModItems.SUNFLOWER_OIL_BUCKET.get());
 				if(!player.getAbilities().instabuild){
 					handItem.shrink(1);
-					if(handItem.isEmpty()) player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,oilBucket);
+					if(handItem.isEmpty())
+						player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,oilBucket);
 					else if(!player.getInventory().add(oilBucket)) player.drop(oilBucket,false);
 				}
 				world.playSound(null,pos,SoundEvents.BUCKET_FILL,SoundSource.BLOCKS,1F,1F);
@@ -197,7 +200,8 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 				handItem.setCount(0);
 				be.setChanged();
 				world.playSound(null,pos,SoundEvents.LANTERN_PLACE,SoundSource.BLOCKS,1F,1F);
-				if(blockstate.getValue(OIL)&&blockstate.getValue(HEATED)) world.playSound(null,pos,ModSounds.BLOCK_SKILLET_ADD_FOOD.get(),SoundSource.BLOCKS,1F,1F);
+				if(blockstate.getValue(OIL)&&blockstate.getValue(HEATED))
+					world.playSound(null,pos,ModSounds.BLOCK_SKILLET_ADD_FOOD.get(),SoundSource.BLOCKS,1F,1F);
 				return InteractionResult.SUCCESS;
 			}
 		}else{

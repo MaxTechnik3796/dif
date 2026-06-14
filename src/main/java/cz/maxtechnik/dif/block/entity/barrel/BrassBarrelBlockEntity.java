@@ -54,7 +54,8 @@ public class BrassBarrelBlockEntity extends RandomizableContainerBlockEntity imp
 		}
 		@Override
 		protected boolean isOwnContainer(Player player){
-			if(player.containerMenu instanceof BrassBarrelMenu menu) return menu.getBlockEntity().equals(BrassBarrelBlockEntity.this);
+			if(player.containerMenu instanceof BrassBarrelMenu menu)
+				return menu.getBlockEntity().equals(BrassBarrelBlockEntity.this);
 			return false;
 		}
 	};

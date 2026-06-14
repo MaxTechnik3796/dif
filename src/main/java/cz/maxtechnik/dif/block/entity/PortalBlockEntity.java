@@ -26,7 +26,10 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 public class PortalBlockEntity extends BlockEntity{
 	private UUID owner;
 	private boolean isBlue;
@@ -65,20 +68,23 @@ public class PortalBlockEntity extends BlockEntity{
 				level.setBlock(pos,newState,3);
 				BlockPos extPos=pos.relative(currentState.getValue(PortalBlock.EXTENSION_DIR));
 				BlockState extState=level.getBlockState(extPos);
-				if(extState.is(currentState.getBlock())&&extState.getValue(PortalBlock.HALF)==DoubleBlockHalf.UPPER) level.setBlock(extPos,extState.setValue(PortalBlock.IS_LINKED,linked),3);
+				if(extState.is(currentState.getBlock())&&extState.getValue(PortalBlock.HALF)==DoubleBlockHalf.UPPER)
+					level.setBlock(extPos,extState.setValue(PortalBlock.IS_LINKED,linked),3);
 				currentState=newState;
 			}
 		}
 		if(!currentState.getValue(PortalBlock.IS_LINKED)) return;
 		AABB box=currentState.getShape(level,pos).bounds().move(pos);
 		BlockPos extPos=pos.relative(currentState.getValue(PortalBlock.EXTENSION_DIR));
-		if(level.getBlockState(extPos).is(currentState.getBlock())) box=box.minmax(level.getBlockState(extPos).getShape(level,extPos).bounds().move(extPos));
+		if(level.getBlockState(extPos).is(currentState.getBlock()))
+			box=box.minmax(level.getBlockState(extPos).getShape(level,extPos).bounds().move(extPos));
 		long now=level.getGameTime();
 		List<Player> players=level.getEntitiesOfClass(Player.class,box);
 		for(Player p: players){
 			UUID pid=p.getUUID();
 			if(now-blockEntity.lastTeleportTime<=DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get()) continue;
-			if(entityCooldowns.containsKey(pid)&&now-entityCooldowns.get(pid)<=DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get()) continue;
+			if(entityCooldowns.containsKey(pid)&&now-entityCooldowns.get(pid)<=DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get())
+				continue;
 			blockEntity.tryTeleportPlayer(p,serverLevel,now);
 		}
 		if(DifModCommonConfig.PORTAL_ALLOW_ENTITIES.get()){
@@ -88,7 +94,8 @@ public class PortalBlockEntity extends BlockEntity{
 				if(mob instanceof Player) continue;
 				if(count>=DifModCommonConfig.PORTAL_MAX_ENTITIES_PER_TICK.get()) break;
 				UUID mid=mob.getUUID();
-				if(entityCooldowns.containsKey(mid)&&now-entityCooldowns.get(mid)<=DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get()) continue;
+				if(entityCooldowns.containsKey(mid)&&now-entityCooldowns.get(mid)<=DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get())
+					continue;
 				blockEntity.tryTeleportEntity(mob,serverLevel,now,false);
 				count++;
 			}
@@ -96,7 +103,8 @@ public class PortalBlockEntity extends BlockEntity{
 			for(Entity e: misc){
 				if(count>=DifModCommonConfig.PORTAL_MAX_ENTITIES_PER_TICK.get()) break;
 				UUID eid=e.getUUID();
-				if(entityCooldowns.containsKey(eid)&&now-entityCooldowns.get(eid)<=DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get()) continue;
+				if(entityCooldowns.containsKey(eid)&&now-entityCooldowns.get(eid)<=DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get())
+					continue;
 				blockEntity.tryTeleportEntity(e,serverLevel,now,false);
 				count++;
 			}
@@ -126,7 +134,8 @@ public class PortalBlockEntity extends BlockEntity{
 			assert level!=null;
 			AABB box=this.getBlockState().getShape(level,worldPosition).bounds().move(worldPosition);
 			BlockPos extPos=worldPosition.relative(this.getBlockState().getValue(PortalBlock.EXTENSION_DIR));
-			if(level.getBlockState(extPos).is(this.getBlockState().getBlock())) box=box.minmax(level.getBlockState(extPos).getShape(level,extPos).bounds().move(extPos));
+			if(level.getBlockState(extPos).is(this.getBlockState().getBlock()))
+				box=box.minmax(level.getBlockState(extPos).getShape(level,extPos).bounds().move(extPos));
 			box=box.inflate(1.5);
 			if(!box.contains(p.position())){
 				waitingPlayers.remove(pid);
@@ -183,7 +192,8 @@ public class PortalBlockEntity extends BlockEntity{
 		double tx=target.getX()+0.5+(other.facing.getStepX()*offsetScale);
 		double ty=target.getY()+0.5+(other.facing.getStepY()*offsetScale);
 		double tz=target.getZ()+0.5+(other.facing.getStepZ()*offsetScale);
-		if(!isItem&&entity instanceof LivingEntity living) ty=target.getY()+(other.facing==Direction.UP?0.5:(other.facing==Direction.DOWN?-living.getBbHeight():0));
+		if(!isItem&&entity instanceof LivingEntity living)
+			ty=target.getY()+(other.facing==Direction.UP?0.5:(other.facing==Direction.DOWN?-living.getBbHeight():0));
 		entity.teleportTo(tx,ty,tz);
 		entity.setDeltaMovement(newMotion);
 		entity.hurtMarked=true;
@@ -224,12 +234,14 @@ public class PortalBlockEntity extends BlockEntity{
 		BlockPos portal=getPortal(serverLevel,uuid,b);
 		if(portal==null) return;
 		PortalData.get(serverLevel).remove(uuid,b);
-		if(serverLevel.isLoaded(portal)) if(serverLevel.getBlockEntity(portal) instanceof PortalBlockEntity) serverLevel.destroyBlock(portal,false);
-		else{
-			serverLevel.setChunkForced(portal.getX()>>4,portal.getZ()>>4,true);
+		if(serverLevel.isLoaded(portal))
 			if(serverLevel.getBlockEntity(portal) instanceof PortalBlockEntity) serverLevel.destroyBlock(portal,false);
-			serverLevel.setChunkForced(portal.getX()>>4,portal.getZ()>>4,false);
-		}
+			else{
+				serverLevel.setChunkForced(portal.getX()>>4,portal.getZ()>>4,true);
+				if(serverLevel.getBlockEntity(portal) instanceof PortalBlockEntity)
+					serverLevel.destroyBlock(portal,false);
+				serverLevel.setChunkForced(portal.getX()>>4,portal.getZ()>>4,false);
+			}
 	}
 	@Override
 	public void loadAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider provider){

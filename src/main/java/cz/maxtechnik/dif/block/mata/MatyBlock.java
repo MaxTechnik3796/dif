@@ -28,6 +28,7 @@ public class MatyBlock extends Block{
 	@Override
 	public void stepOn(@NotNull Level world,@NotNull BlockPos pos,@NotNull BlockState blockstate,@NotNull Entity entity){
 		super.stepOn(world,pos,blockstate,entity);
-		if(entity instanceof LivingEntity livingEntity) livingEntity.addEffect(new MobEffectInstance(Holder.direct(DifModMobEffects.REDSTONE_IQ.get()),60,0));
+		if(entity instanceof LivingEntity livingEntity)
+			livingEntity.addEffect(new MobEffectInstance(Holder.direct(DifModMobEffects.REDSTONE_IQ.get()),60,0));
 	}
 }

@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 public class CustomWaterloggedHorizontalRotation extends Block implements SimpleWaterloggedBlock{
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
-	public CustomWaterloggedHorizontalRotation(BlockBehaviour.Properties properties) {
+	public CustomWaterloggedHorizontalRotation(BlockBehaviour.Properties properties){
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(WATERLOGGED,false));
 	}
@@ -59,7 +59,8 @@ public class CustomWaterloggedHorizontalRotation extends Block implements Simple
 	}
 	@Override
 	public @NotNull BlockState updateShape(BlockState blockState,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
-		if(blockState.getValue(WATERLOGGED)) world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
+		if(blockState.getValue(WATERLOGGED))
+			world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
 		return super.updateShape(blockState,facing,facingState,world,currentPos,facingPos);
 	}
 }

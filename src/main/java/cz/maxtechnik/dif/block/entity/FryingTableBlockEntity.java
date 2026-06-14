@@ -45,7 +45,8 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 		protected void onContentsChanged(){
 			super.onContentsChanged();
 			setChanged();
-			if(level!=null) level.sendBlockUpdated(worldPosition,level.getBlockState(worldPosition),level.getBlockState(worldPosition),2);
+			if(level!=null)
+				level.sendBlockUpdated(worldPosition,level.getBlockState(worldPosition),level.getBlockState(worldPosition),2);
 		}
 	};
 	private final IItemHandler[] itemHandlers=new IItemHandler[Direction.values().length];

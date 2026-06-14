@@ -87,7 +87,8 @@ public class EngineExtender extends Block implements SimpleWaterloggedBlock, IWr
 		BlockPos pos=context.getClickedPos();
 		Direction side=context.getClickedFace();
 		BlockState rotated=this.getRotatedBlockState(state,context.getClickedFace());
-		if(!side.equals(Direction.UP)&&!side.equals(Direction.DOWN)) rotated=level.getBlockState(pos).setValue(TOP,!level.getBlockState(pos).getValue(TOP));
+		if(!side.equals(Direction.UP)&&!side.equals(Direction.DOWN))
+			rotated=level.getBlockState(pos).setValue(TOP,!level.getBlockState(pos).getValue(TOP));
 		if(!rotated.canSurvive(level,context.getClickedPos())) return InteractionResult.PASS;
 		else{
 			level.setBlockAndUpdate(pos,rotated);

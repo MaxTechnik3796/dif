@@ -5,35 +5,33 @@ import cz.maxtechnik.dif.DifModCommonConfig;
 import cz.maxtechnik.dif.block.BurningGenerator;
 import cz.maxtechnik.dif.gui.menu.BurningGeneratorMenu;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
+import io.netty.buffer.Unpooled;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.WorldlyContainer;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.network.chat.Component;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-
-import javax.annotation.Nullable;
-
-import io.netty.buffer.Unpooled;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.stream.IntStream;
 public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer{
@@ -137,9 +135,12 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 			double[][] offsets;
 			Direction.Axis axis=blockState.getValue(BurningGenerator.FACING).getAxis();
 			if(axis.equals(Direction.Axis.X)) offsets=new double[][]{{0.42,0.15},{0.58,0.15},{0.42,0.85},{0.58,0.85}};
-			else if(axis.equals(Direction.Axis.Z)) offsets=new double[][]{{0.15,0.42},{0.15,0.58},{0.85,0.42},{0.85,0.58}};
+			else if(axis.equals(Direction.Axis.Z))
+				offsets=new double[][]{{0.15,0.42},{0.15,0.58},{0.85,0.42},{0.85,0.58}};
 			else return;
-			for(double[] offset: offsets) if(DifMod.rouletteBoolean(8)) level.addParticle(ParticleTypes.SMOKE,pos.getX()+offset[0],pos.getY()+Y_OFFSET,pos.getZ()+offset[1],0,Y_VELOCITY,0);
+			for(double[] offset: offsets)
+				if(DifMod.rouletteBoolean(8))
+					level.addParticle(ParticleTypes.SMOKE,pos.getX()+offset[0],pos.getY()+Y_OFFSET,pos.getZ()+offset[1],0,Y_VELOCITY,0);
 		}
 	}
 	public static void serverTick(Level level,BlockPos pos,BlockState blockState,BurningGeneratorBlockEntity entity){
@@ -166,7 +167,8 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 					if(burnDuration>0){
 						entity.burnTime=burnDuration;
 						entity.maxBurnTime=burnDuration;
-						if(fuelStack.getItem().equals(Items.LAVA_BUCKET)) entity.itemHandler.setStackInSlot(INPUT_SLOT,new ItemStack(Items.BUCKET));
+						if(fuelStack.getItem().equals(Items.LAVA_BUCKET))
+							entity.itemHandler.setStackInSlot(INPUT_SLOT,new ItemStack(Items.BUCKET));
 						else{
 							ItemStack copy=fuelStack.copy();
 							copy.shrink(1);
@@ -191,7 +193,8 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 				}
 			}
 		}
-		if(blockState.getValue(BurningGenerator.LIT)!=shouldBeLit) level.setBlock(pos,blockState.setValue(BurningGenerator.LIT,shouldBeLit),3);
+		if(blockState.getValue(BurningGenerator.LIT)!=shouldBeLit)
+			level.setBlock(pos,blockState.setValue(BurningGenerator.LIT,shouldBeLit),3);
 	}
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket(){

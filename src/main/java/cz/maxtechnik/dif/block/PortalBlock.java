@@ -9,7 +9,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -34,7 +37,8 @@ public class PortalBlock extends BaseEntityBlock{
 	public void neighborChanged(@NotNull BlockState blockState,Level level,@NotNull BlockPos pos,@NotNull Block block,@NotNull BlockPos fromPos,boolean isMoving){
 		if(!level.isClientSide){
 			Direction face=blockState.getValue(FACING);
-			if(pos.relative(face.getOpposite()).equals(fromPos)&&level.isEmptyBlock(fromPos)) level.destroyBlock(pos,false);
+			if(pos.relative(face.getOpposite()).equals(fromPos)&&level.isEmptyBlock(fromPos))
+				level.destroyBlock(pos,false);
 		}
 	}
 	@Override
@@ -75,7 +79,8 @@ public class PortalBlock extends BaseEntityBlock{
 	public @NotNull BlockState updateShape(BlockState blockState,@NotNull Direction dir,@NotNull BlockState adj,@NotNull LevelAccessor world,@NotNull BlockPos pos,@NotNull BlockPos adjPos){
 		DoubleBlockHalf half=blockState.getValue(HALF);
 		Direction ext=blockState.getValue(EXTENSION_DIR);
-		if((dir.equals(ext)&&half.equals(DoubleBlockHalf.LOWER))||(dir.equals(ext.getOpposite())&&half.equals(DoubleBlockHalf.UPPER))) return adj.is(this)?blockState:Blocks.AIR.defaultBlockState();
+		if((dir.equals(ext)&&half.equals(DoubleBlockHalf.LOWER))||(dir.equals(ext.getOpposite())&&half.equals(DoubleBlockHalf.UPPER)))
+			return adj.is(this)?blockState:Blocks.AIR.defaultBlockState();
 		return super.updateShape(blockState,dir,adj,world,pos,adjPos);
 	}
 	@Override

@@ -88,7 +88,8 @@ public class CopperBarrel extends Block implements EntityBlock{
 	@Override
 	public int getAnalogOutputSignal(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos){
 		BlockEntity blockEntity=world.getBlockEntity(pos);
-		if(blockEntity instanceof CopperBarrelBlockEntity be) return AbstractContainerMenu.getRedstoneSignalFromContainer(be);
+		if(blockEntity instanceof CopperBarrelBlockEntity be)
+			return AbstractContainerMenu.getRedstoneSignalFromContainer(be);
 		else return 0;
 	}
 }

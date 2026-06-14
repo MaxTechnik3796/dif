@@ -76,7 +76,8 @@ public class SuperBox extends Block implements SimpleWaterloggedBlock, EntityBlo
 	}
 	@Override
 	public @NotNull BlockState updateShape(BlockState blockState,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
-		if(blockState.getValue(WATERLOGGED)) world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
+		if(blockState.getValue(WATERLOGGED))
+			world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
 		return super.updateShape(blockState,facing,facingState,world,currentPos,facingPos);
 	}
 	@Override

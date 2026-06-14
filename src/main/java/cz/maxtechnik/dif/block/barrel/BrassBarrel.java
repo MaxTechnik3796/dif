@@ -88,7 +88,8 @@ public class BrassBarrel extends Block implements EntityBlock{
 	@Override
 	public int getAnalogOutputSignal(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos){
 		BlockEntity blockEntity=world.getBlockEntity(pos);
-		if(blockEntity instanceof BrassBarrelBlockEntity be) return AbstractContainerMenu.getRedstoneSignalFromContainer(be);
+		if(blockEntity instanceof BrassBarrelBlockEntity be)
+			return AbstractContainerMenu.getRedstoneSignalFromContainer(be);
 		else return 0;
 	}
 }

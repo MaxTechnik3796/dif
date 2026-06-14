@@ -5,7 +5,8 @@ import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import cz.maxtechnik.dif.block.entity.DistillationTankBlockEntity;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -14,8 +15,6 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.context.UseOnContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 /**
@@ -26,12 +25,12 @@ import org.jetbrains.annotations.Nullable;
 public class DistillationTank extends FluidTankBlock{
 	public DistillationTank(){
 		super(BlockBehaviour.Properties.of().strength(5F,6F).sound(SoundType.METAL).requiresCorrectToolForDrops(),false);
-		registerDefaultState(defaultBlockState().setValue(TOP, true)
-			.setValue(BOTTOM, true)
-			.setValue(SHAPE, Shape.PLAIN));
+		registerDefaultState(defaultBlockState().setValue(TOP,true)
+				.setValue(BOTTOM,true)
+				.setValue(SHAPE,Shape.PLAIN));
 	}
 	@Override
-	public InteractionResult onWrenched(BlockState state, UseOnContext context) {
+	public InteractionResult onWrenched(BlockState state,UseOnContext context){
 		return InteractionResult.PASS;
 	}
 	@Override
@@ -63,77 +62,68 @@ public class DistillationTank extends FluidTankBlock{
 			if(master!=null) master.notifyMultiUpdated();
 		}
 	}
-
 	@Override
-	public void onPlace(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
-	                    @NotNull BlockState oldState, boolean isMoving) {
-		super.onPlace(state, level, pos, oldState, isMoving);
-		if (level.isClientSide) return;
-		if (state.getBlock() == oldState.getBlock()) return;
-		forceConnectivityUpdateInArea(level, pos);
+	public void onPlace(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,
+	                    @NotNull BlockState oldState,boolean isMoving){
+		super.onPlace(state,level,pos,oldState,isMoving);
+		if(level.isClientSide) return;
+		if(state.getBlock()==oldState.getBlock()) return;
+		forceConnectivityUpdateInArea(level,pos);
 	}
-
 	@Override
-	public void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
-	                     @NotNull BlockState newState, boolean isMoving) {
-		super.onRemove(state, level, pos, newState, isMoving);
-		if (level.isClientSide) return;
-		if (state.getBlock() == newState.getBlock()) return;
-		forceConnectivityUpdateInArea(level, pos);
+	public void onRemove(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,
+	                     @NotNull BlockState newState,boolean isMoving){
+		super.onRemove(state,level,pos,newState,isMoving);
+		if(level.isClientSide) return;
+		if(state.getBlock()==newState.getBlock()) return;
+		forceConnectivityUpdateInArea(level,pos);
 	}
-
-	private void forceConnectivityUpdateInArea(Level level, BlockPos pos) {
-		if (level instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+	private void forceConnectivityUpdateInArea(Level level,BlockPos pos){
+		if(level instanceof net.minecraft.server.level.ServerLevel serverLevel){
 			serverLevel.getServer().tell(new net.minecraft.server.TickTask(
-				serverLevel.getServer().getTickCount() + 1,
-				() -> rebuildArea(serverLevel, pos)
+					serverLevel.getServer().getTickCount()+1,
+					()->rebuildArea(serverLevel,pos)
 			));
 		}
 	}
-
-	private void rebuildArea(Level level, BlockPos pos) {
-		java.util.List<DistillationTankBlockEntity> tanks = new java.util.ArrayList<>();
-		for (int x = -2; x <= 2; x++) {
-			for (int z = -2; z <= 2; z++) {
-				BlockEntity be = level.getBlockEntity(pos.offset(x, 0, z));
-				if (be instanceof DistillationTankBlockEntity tank) {
+	private void rebuildArea(Level level,BlockPos pos){
+		java.util.List<DistillationTankBlockEntity> tanks=new java.util.ArrayList<>();
+		for(int x=-2;x<=2;x++){
+			for(int z=-2;z<=2;z++){
+				BlockEntity be=level.getBlockEntity(pos.offset(x,0,z));
+				if(be instanceof DistillationTankBlockEntity tank){
 					tanks.add(tank);
 				}
 			}
 		}
-
 		// First, split all existing multiblocks in the area to start fresh
-		for (DistillationTankBlockEntity tank : tanks) {
+		for(DistillationTankBlockEntity tank: tanks){
 			com.simibubi.create.api.connectivity.ConnectivityHandler.splitMulti(tank);
 		}
-
 		// Re-collect tanks after split to ensure we have the fresh 1x1 states
 		tanks.clear();
-		for (int x = -2; x <= 2; x++) {
-			for (int z = -2; z <= 2; z++) {
-				BlockEntity be = level.getBlockEntity(pos.offset(x, 0, z));
-				if (be instanceof DistillationTankBlockEntity tank) {
+		for(int x=-2;x<=2;x++){
+			for(int z=-2;z<=2;z++){
+				BlockEntity be=level.getBlockEntity(pos.offset(x,0,z));
+				if(be instanceof DistillationTankBlockEntity tank){
 					tanks.add(tank);
 				}
 			}
 		}
-
 		// Sort tanks Northwest-to-Southeast (smallest X and Z first)
-		tanks.sort((a, b) -> {
-			int cmpX = Integer.compare(a.getBlockPos().getX(), b.getBlockPos().getX());
-			if (cmpX != 0) return cmpX;
-			return Integer.compare(a.getBlockPos().getZ(), b.getBlockPos().getZ());
+		tanks.sort((a,b)->{
+			int cmpX=Integer.compare(a.getBlockPos().getX(),b.getBlockPos().getX());
+			if(cmpX!=0) return cmpX;
+			return Integer.compare(a.getBlockPos().getZ(),b.getBlockPos().getZ());
 		});
-
 		// Form new multiblocks starting from the NW-most block of each group
-		for (DistillationTankBlockEntity tank : tanks) {
-			if (tank.isController()) {
+		for(DistillationTankBlockEntity tank: tanks){
+			if(tank.isController()){
 				com.simibubi.create.api.connectivity.ConnectivityHandler.formMulti(tank);
 			}
 		}
-
 		// Force vertical visual update on all tanks in the area
-		for (DistillationTankBlockEntity tank : tanks) {
+		for(DistillationTankBlockEntity tank: tanks){
 			tank.updateTowerState();
 		}
 	}

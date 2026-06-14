@@ -50,10 +50,12 @@ public class AndesiteBarrelBlockEntity extends RandomizableContainerBlockEntity 
 			level.setBlock(pos,blockState.setValue(AndesiteBarrel.OPEN,false),3);
 		}
 		@Override
-		protected void openerCountChanged(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState blockState,int i,int j){}
+		protected void openerCountChanged(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState blockState,int i,int j){
+		}
 		@Override
 		protected boolean isOwnContainer(Player player){
-			if(player.containerMenu instanceof AndesiteBarrelMenu menu) return menu.getBlockEntity().equals(AndesiteBarrelBlockEntity.this);
+			if(player.containerMenu instanceof AndesiteBarrelMenu menu)
+				return menu.getBlockEntity().equals(AndesiteBarrelBlockEntity.this);
 			return false;
 		}
 	};

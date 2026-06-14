@@ -32,7 +32,8 @@ public class SpaceshipGhostBlock extends Block{
 			for(int y=0;y<=1;y++){
 				for(int z=-1;z<=1;z++){
 					BlockPos checkPos=myPos.offset(x,y,z);
-					if(level.getBlockState(checkPos).getBlock() instanceof Spaceship master) if(master.getGhostPositions(checkPos).contains(myPos)) return checkPos;
+					if(level.getBlockState(checkPos).getBlock() instanceof Spaceship master)
+						if(master.getGhostPositions(checkPos).contains(myPos)) return checkPos;
 				}
 			}
 		}
@@ -49,7 +50,8 @@ public class SpaceshipGhostBlock extends Block{
 	@Override
 	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
 		BlockPos masterPos=findMyMaster(world,pos);
-		if(masterPos!=null) return world.getBlockState(masterPos).useWithoutItem(world,player,hit.withPosition(masterPos));
+		if(masterPos!=null)
+			return world.getBlockState(masterPos).useWithoutItem(world,player,hit.withPosition(masterPos));
 		return InteractionResult.PASS;
 	}
 }

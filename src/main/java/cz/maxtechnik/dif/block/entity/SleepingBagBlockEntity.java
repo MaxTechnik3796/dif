@@ -4,10 +4,10 @@ import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import org.jetbrains.annotations.NotNull;
 public class SleepingBagBlockEntity extends BlockEntity{
 	private DyeColor color=DyeColor.WHITE;

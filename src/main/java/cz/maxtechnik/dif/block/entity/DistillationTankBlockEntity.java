@@ -39,7 +39,7 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 	private FluidStack lastInput=FluidStack.EMPTY;
 	public DistillationTankBlockEntity(BlockEntityType<?> type,BlockPos pos,BlockState state){
 		super(type,pos,state);
-		this.window = false;
+		this.window=false;
 	}
 	@Override
 	public int getMaxWidth(){
@@ -50,7 +50,8 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 		return 1;
 	}
 	@Override
-	public void addBehaviours(List<BlockEntityBehaviour> list){}
+	public void addBehaviours(List<BlockEntityBehaviour> list){
+	}
 	public IFluidHandler getFluidCapability(){
 		return fluidCapability;
 	}
@@ -156,12 +157,14 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 		for(int i=0;i<outputs.size();i++){
 			IFluidHandler h=level.getCapability(Capabilities.FluidHandler.BLOCK,masterPos.above(i+1),null);
 			if(h==null) return false;
-			if(h.fill(outputs.get(i).copy(),IFluidHandler.FluidAction.SIMULATE)<outputs.get(i).getAmount()) return false;
+			if(h.fill(outputs.get(i).copy(),IFluidHandler.FluidAction.SIMULATE)<outputs.get(i).getAmount())
+				return false;
 		}
 		return true;
 	}
 	private static Optional<DistillationRecipe> findRecipe(Level level,FluidStack input){
-		for(RecipeHolder<DistillationRecipe> holder: level.getRecipeManager().getAllRecipesFor(DifModRecipes.DISTILLATION_TYPE.get())) if(holder.value().matches(input)) return Optional.of(holder.value());
+		for(RecipeHolder<DistillationRecipe> holder: level.getRecipeManager().getAllRecipesFor(DifModRecipes.DISTILLATION_TYPE.get()))
+			if(holder.value().matches(input)) return Optional.of(holder.value());
 		return Optional.empty();
 	}
 	@Override
@@ -171,21 +174,17 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 		progress=0;
 		updateTowerState();
 	}
-
-	public void updateTowerState() {
-		if (level == null || level.isClientSide) return;
-		BlockState state = getBlockState();
-		if (!(state.getBlock() instanceof cz.maxtechnik.dif.block.DistillationTank)) return;
-
-		boolean hasTankBelow = level.getBlockState(worldPosition.below()).getBlock() instanceof cz.maxtechnik.dif.block.DistillationTank;
-		boolean hasTankAbove = level.getBlockState(worldPosition.above()).getBlock() instanceof cz.maxtechnik.dif.block.DistillationTank;
-
-		BlockState newState = state.setValue(cz.maxtechnik.dif.block.DistillationTank.BOTTOM, !hasTankBelow)
-				.setValue(cz.maxtechnik.dif.block.DistillationTank.TOP, !hasTankAbove);
-
-		if (state != newState) {
-			level.setBlock(worldPosition, newState, net.minecraft.world.level.block.Block.UPDATE_CLIENTS | net.minecraft.world.level.block.Block.UPDATE_INVISIBLE);
-			level.sendBlockUpdated(worldPosition, state, newState, 3);
+	public void updateTowerState(){
+		if(level==null||level.isClientSide) return;
+		BlockState state=getBlockState();
+		if(!(state.getBlock() instanceof cz.maxtechnik.dif.block.DistillationTank)) return;
+		boolean hasTankBelow=level.getBlockState(worldPosition.below()).getBlock() instanceof cz.maxtechnik.dif.block.DistillationTank;
+		boolean hasTankAbove=level.getBlockState(worldPosition.above()).getBlock() instanceof cz.maxtechnik.dif.block.DistillationTank;
+		BlockState newState=state.setValue(cz.maxtechnik.dif.block.DistillationTank.BOTTOM,!hasTankBelow)
+				.setValue(cz.maxtechnik.dif.block.DistillationTank.TOP,!hasTankAbove);
+		if(state!=newState){
+			level.setBlock(worldPosition,newState,net.minecraft.world.level.block.Block.UPDATE_CLIENTS|net.minecraft.world.level.block.Block.UPDATE_INVISIBLE);
+			level.sendBlockUpdated(worldPosition,state,newState,3);
 		}
 	}
 	@Override
@@ -194,10 +193,12 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 		DistillationTankBlockEntity master=getTowerMaster();
 		if(master==null) return added;
 		tooltip.add(Component.literal(" "));
-		if(isTowerMaster()) tooltip.add(Component.literal(" ◆ TOWER MASTER").withStyle(ChatFormatting.GOLD,ChatFormatting.BOLD));
+		if(isTowerMaster())
+			tooltip.add(Component.literal(" ◆ TOWER MASTER").withStyle(ChatFormatting.GOLD,ChatFormatting.BOLD));
 		else tooltip.add(Component.literal(" ◆ TOWER").withStyle(ChatFormatting.GOLD,ChatFormatting.BOLD));
 		tooltip.add(Component.literal(" Heat: ").withStyle(ChatFormatting.GRAY).append(Component.literal(master.cachedHeatPoints+" / 10").withStyle(master.cachedHeatPoints>=10?ChatFormatting.GREEN:ChatFormatting.WHITE)));
-		if(master.cachedSpeed>0) tooltip.add(Component.literal(" Speed: ").withStyle(ChatFormatting.GRAY).append(Component.literal(master.cachedSpeed+"×").withStyle(master.cachedSpeed>=4.0f?ChatFormatting.GREEN:ChatFormatting.AQUA)));
+		if(master.cachedSpeed>0)
+			tooltip.add(Component.literal(" Speed: ").withStyle(ChatFormatting.GRAY).append(Component.literal(master.cachedSpeed+"×").withStyle(master.cachedSpeed>=4.0f?ChatFormatting.GREEN:ChatFormatting.AQUA)));
 		else tooltip.add(Component.literal(" No heat source!").withStyle(ChatFormatting.RED));
 		return true;
 	}
@@ -211,18 +212,18 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 	@Override
 	public void read(CompoundTag tag,HolderLookup.Provider registries,boolean clientPacket){
 		super.read(tag,registries,clientPacket);
-		this.window = false;
+		this.window=false;
 		progress=tag.getInt("dif_progress");
 		cachedHeatPoints=tag.getInt("dif_heatPoints");
 		cachedSpeed=tag.getFloat("dif_speed");
 		cacheTick=0;
-		if (clientPacket && level != null) {
+		if(clientPacket&&level!=null){
 			requestModelDataUpdate();
-			level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+			level.sendBlockUpdated(worldPosition,getBlockState(),getBlockState(),3);
 		}
 	}
 	@Override
-	public void setWindows(boolean window) {
+	public void setWindows(boolean window){
 		super.setWindows(false);
 	}
 }

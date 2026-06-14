@@ -48,7 +48,8 @@ public class SleepingBagBlock extends BaseEntityBlock{
 		BlockPos pos=ctx.getClickedPos();
 		BlockPos headPos=pos.relative(dir);
 		Level level=ctx.getLevel();
-		if(level.getBlockState(headPos).canBeReplaced(ctx)&&level.getWorldBorder().isWithinBounds(headPos)) return this.defaultBlockState().setValue(FACING,dir);
+		if(level.getBlockState(headPos).canBeReplaced(ctx)&&level.getWorldBorder().isWithinBounds(headPos))
+			return this.defaultBlockState().setValue(FACING,dir);
 		return null;
 	}
 	@Override

@@ -20,7 +20,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 public class CustomWaterlogged extends Block implements SimpleWaterloggedBlock{
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
-	public CustomWaterlogged(BlockBehaviour.Properties properties) {
+	public CustomWaterlogged(BlockBehaviour.Properties properties){
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED,false));
 	}
@@ -59,7 +59,8 @@ public class CustomWaterlogged extends Block implements SimpleWaterloggedBlock{
 	}
 	@Override
 	public @NotNull BlockState updateShape(BlockState blockState,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
-		if(blockState.getValue(WATERLOGGED)) world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
+		if(blockState.getValue(WATERLOGGED))
+			world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
 		return super.updateShape(blockState,facing,facingState,world,currentPos,facingPos);
 	}
 }

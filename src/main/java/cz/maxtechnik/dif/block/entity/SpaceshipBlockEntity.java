@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.block.entity;
 
+import cz.maxtechnik.dif.gui.menu.SpaceshipMenu;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -17,7 +18,6 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import cz.maxtechnik.dif.gui.menu.SpaceshipMenu;
 public class SpaceshipBlockEntity extends BlockEntity implements MenuProvider{
 	private final ItemStackHandler itemHandler=new ItemStackHandler(9){
 		@Override

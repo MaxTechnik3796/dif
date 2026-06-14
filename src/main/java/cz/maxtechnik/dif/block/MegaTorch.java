@@ -52,12 +52,14 @@ public class MegaTorch extends Block{
 		boolean isValid=height==5&&noHorizontalNeighbors(level,bottom);
 		boolean isCurrentlyFormed=level.getBlockState(bottom).getValue(FORMED);
 		if(isValid&&!isCurrentlyFormed){
-			for(int i=0;i<5;i++) level.setBlock(bottom.above(i),this.defaultBlockState().setValue(FORMED,true).setValue(PART,i),3);
+			for(int i=0;i<5;i++)
+				level.setBlock(bottom.above(i),this.defaultBlockState().setValue(FORMED,true).setValue(PART,i),3);
 			if(level instanceof ServerLevel serverLevel) TorchSavedData.get(serverLevel).addTorch(bottom);
 		}else if(!isValid&&isCurrentlyFormed){
 			for(int i=0;i<height;i++){
 				BlockState s=level.getBlockState(bottom.above(i));
-				if(s.is(this)&&s.getValue(FORMED)) level.setBlock(bottom.above(i),s.setValue(FORMED,false).setValue(PART,0),3);
+				if(s.is(this)&&s.getValue(FORMED))
+					level.setBlock(bottom.above(i),s.setValue(FORMED,false).setValue(PART,0),3);
 			}
 			if(level instanceof ServerLevel serverLevel) TorchSavedData.get(serverLevel).removeTorch(bottom);
 		}
@@ -73,7 +75,9 @@ public class MegaTorch extends Block{
 		return height;
 	}
 	private boolean noHorizontalNeighbors(Level level,BlockPos bottom){
-		for(int i=0;i<5;i++) for(Direction dir: Direction.Plane.HORIZONTAL) if(level.getBlockState(bottom.above(i).relative(dir)).is(this)) return false;
+		for(int i=0;i<5;i++)
+			for(Direction dir: Direction.Plane.HORIZONTAL)
+				if(level.getBlockState(bottom.above(i).relative(dir)).is(this)) return false;
 		return true;
 	}
 	public static final TagKey<EntityType<?>> BLOCKED_MOBS=TagKey.create(

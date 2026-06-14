@@ -12,17 +12,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import static cz.maxtechnik.dif.DifModCommonConfig.*;
@@ -42,7 +38,8 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		protected void onContentsChanged(){
 			super.onContentsChanged();
 			setChanged();
-			if(level!=null) level.sendBlockUpdated(worldPosition,level.getBlockState(worldPosition),level.getBlockState(worldPosition),2);
+			if(level!=null)
+				level.sendBlockUpdated(worldPosition,level.getBlockState(worldPosition),level.getBlockState(worldPosition),2);
 		}
 	};
 	@Override
@@ -222,6 +219,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	}
 	public void particle(Vec3 pos,Vec3 velocity){
 		if(level==null) return;
-		if(DifMod.rouletteBoolean(4)) level.addParticle(ParticleTypes.SMOKE,pos.x,pos.y,pos.z,velocity.x,velocity.y,velocity.z);
+		if(DifMod.rouletteBoolean(4))
+			level.addParticle(ParticleTypes.SMOKE,pos.x,pos.y,pos.z,velocity.x,velocity.y,velocity.z);
 	}
 }

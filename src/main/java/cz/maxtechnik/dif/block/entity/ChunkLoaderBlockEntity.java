@@ -1,8 +1,8 @@
 package cz.maxtechnik.dif.block.entity;
 
+import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.events.ChunkLoaderData;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
-import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -29,7 +29,8 @@ public class ChunkLoaderBlockEntity extends BlockEntity{
 			boolean is3x3=getBlockState().is(DifModBlocks.CHUNK_LOADER_3X3.get());
 			ChunkPos center=new ChunkPos(worldPosition);
 			int radius=is3x3?1:0;
-			for(int x=-radius;x<=radius;x++) for(int z=-radius;z<=radius;z++) serverLevel.setChunkForced(center.x+x,center.z+z,active);
+			for(int x=-radius;x<=radius;x++)
+				for(int z=-radius;z<=radius;z++) serverLevel.setChunkForced(center.x+x,center.z+z,active);
 			ChunkLoaderData.get(serverLevel).updateRecord(worldPosition,ownerUUID,ownerName,active,is3x3);
 		}
 	}

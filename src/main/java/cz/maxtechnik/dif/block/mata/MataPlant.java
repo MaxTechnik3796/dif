@@ -57,6 +57,7 @@ public class MataPlant extends SugarCaneBlock implements BonemealableBlock{
 	}
 	@Override
 	public void performBonemeal(@NotNull ServerLevel world,@NotNull RandomSource random,@NotNull BlockPos pos,@NotNull BlockState blockstate){
-		if(world.isEmptyBlock(pos.above())&&DifMod.rouletteBoolean(3)) world.setBlock(pos.above(),DifModBlocks.MATA_PLANT.get().defaultBlockState(),3);
+		if(world.isEmptyBlock(pos.above())&&DifMod.rouletteBoolean(3))
+			world.setBlock(pos.above(),DifModBlocks.MATA_PLANT.get().defaultBlockState(),3);
 	}
 }

@@ -10,20 +10,16 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-public class BlastSmeltery extends AbstractMultiblockBrick {
-
-    public BlastSmeltery(BlockBehaviour.Properties properties) {
-        super(properties);
-    }
-
-    @Override
-    public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState blockState) {
-        return DifModBlockEntities.BLAST_SMELTERY.get().create(pos, blockState);
-    }
-
-    @Override
-    protected @Nullable AbstractMultiblockBrickBlockEntity getBlockEntityFromPos(Level level, BlockPos pos) {
-        return level.getBlockEntity(pos) instanceof BlastSmelteryBlockEntity be ? be : null;
-    }
+public class BlastSmeltery extends AbstractMultiblockBrick{
+	public BlastSmeltery(BlockBehaviour.Properties properties){
+		super(properties);
+	}
+	@Override
+	public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
+		return DifModBlockEntities.BLAST_SMELTERY.get().create(pos,blockState);
+	}
+	@Override
+	protected @Nullable AbstractMultiblockBrickBlockEntity getBlockEntityFromPos(Level level,BlockPos pos){
+		return level.getBlockEntity(pos) instanceof BlastSmelteryBlockEntity be?be:null;
+	}
 }

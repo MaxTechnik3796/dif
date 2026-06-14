@@ -77,10 +77,10 @@ public class OldChest extends Block implements EntityBlock{
 	@Override
 	public int getAnalogOutputSignal(@NotNull BlockState blockState,Level world,@NotNull BlockPos pos){
 		BlockEntity blockEntity=world.getBlockEntity(pos);
-		if(blockEntity instanceof OldChestBlockEntity validBlockEntity) return AbstractContainerMenu.getRedstoneSignalFromContainer(validBlockEntity);
+		if(blockEntity instanceof OldChestBlockEntity validBlockEntity)
+			return AbstractContainerMenu.getRedstoneSignalFromContainer(validBlockEntity);
 		else return 0;
 	}
-
 	@Override
 	public MenuProvider getMenuProvider(@NotNull BlockState blockState,Level worldIn,@NotNull BlockPos pos){
 		BlockEntity blockEntity=worldIn.getBlockEntity(pos);

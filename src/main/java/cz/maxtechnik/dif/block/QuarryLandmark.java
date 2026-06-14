@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.block;
 
+import com.mojang.serialization.MapCodec;
 import cz.maxtechnik.dif.block.entity.QuarryLandmarkBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -8,12 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -25,7 +21,6 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("deprecation")
@@ -89,12 +84,14 @@ public class QuarryLandmark extends BaseEntityBlock{
 	}
 	@Override
 	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
-		if(!level.isClientSide&&level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity blockEntity) blockEntity.onRightClick(player);
+		if(!level.isClientSide&&level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity blockEntity)
+			blockEntity.onRightClick(player);
 		return InteractionResult.sidedSuccess(level.isClientSide);
 	}
 	@Override
 	public void onRemove(@NotNull BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState newState,boolean moving){
-		if(!blockState.is(newState.getBlock())&&!level.isClientSide) if(level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity lmEntity) lmEntity.onRemoved();
+		if(!blockState.is(newState.getBlock())&&!level.isClientSide)
+			if(level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity lmEntity) lmEntity.onRemoved();
 		super.onRemove(blockState,level,pos,newState,moving);
 	}
 }

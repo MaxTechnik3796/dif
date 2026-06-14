@@ -11,7 +11,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 public class CustomTransparent extends Block{
-	public CustomTransparent(BlockBehaviour.Properties properties) {
+	public CustomTransparent(BlockBehaviour.Properties properties){
 		super(properties);
 	}
 	@Override

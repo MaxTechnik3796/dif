@@ -50,10 +50,12 @@ public class CopperBarrelBlockEntity extends RandomizableContainerBlockEntity im
 			level.setBlock(pos,blockState.setValue(CopperBarrel.OPEN,false),3);
 		}
 		@Override
-		protected void openerCountChanged(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState blockState,int i,int j){}
+		protected void openerCountChanged(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState blockState,int i,int j){
+		}
 		@Override
 		protected boolean isOwnContainer(Player player){
-			if(player.containerMenu instanceof CopperBarrelMenu menu) return menu.getBlockEntity().equals(CopperBarrelBlockEntity.this);
+			if(player.containerMenu instanceof CopperBarrelMenu menu)
+				return menu.getBlockEntity().equals(CopperBarrelBlockEntity.this);
 			return false;
 		}
 	};

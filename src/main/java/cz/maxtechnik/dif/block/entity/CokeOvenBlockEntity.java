@@ -6,28 +6,27 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
-
-public class CokeOvenBlockEntity extends AbstractMultiblockBrickBlockEntity {
-
-	public CokeOvenBlockEntity(BlockPos pos, BlockState blockState) {
-		super(DifModBlockEntities.COKE_OVEN.get(), pos, blockState);
+public class CokeOvenBlockEntity extends AbstractMultiblockBrickBlockEntity{
+	public CokeOvenBlockEntity(BlockPos pos,BlockState blockState){
+		super(DifModBlockEntities.COKE_OVEN.get(),pos,blockState);
 	}
-
 	@Override
-	protected @Nullable AbstractMultiblockControllerBlockEntity<?> resolveController(BlockPos pos) {
-		if (level == null) return null;
-		var state = level.getBlockState(pos);
-		if (state.hasProperty(CokeOvenController.FORMED)
-				&& state.getValue(CokeOvenController.FORMED)
-				&& level.getBlockEntity(pos) instanceof CokeOvenControllerBlockEntity ctrl) {
+	protected @Nullable AbstractMultiblockControllerBlockEntity<?> resolveController(BlockPos pos){
+		if(level==null) return null;
+		var state=level.getBlockState(pos);
+		if(state.hasProperty(CokeOvenController.FORMED)
+				&&state.getValue(CokeOvenController.FORMED)
+				&&level.getBlockEntity(pos) instanceof CokeOvenControllerBlockEntity ctrl){
 			return ctrl;
 		}
 		return null;
 	}
-
 	@Override
-	protected String getGoggleDisplayName() { return "◆ Coke Oven"; }
-
+	protected String getGoggleDisplayName(){
+		return "◆ Coke Oven";
+	}
 	@Override
-	protected ChatFormatting getGoggleNameColor() { return ChatFormatting.GOLD; }
+	protected ChatFormatting getGoggleNameColor(){
+		return ChatFormatting.GOLD;
+	}
 }
