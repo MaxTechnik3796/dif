@@ -12,10 +12,10 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
@@ -24,14 +24,14 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 public class ModularTool extends DiggerItem{
-
 	public ModularTool(){
 		super(new Tier(){
 			@Override
@@ -308,7 +308,6 @@ public class ModularTool extends DiggerItem{
 						.append(Component.literal(String.format(Locale.ROOT,"%.1f",spd))
 								.withStyle(ChatFormatting.YELLOW))
 		);
-
 		list.add(
 				Component.literal("───── Parts ─────")
 						.withStyle(Style.EMPTY.withColor(0x6644BB))
@@ -339,16 +338,27 @@ public class ModularTool extends DiggerItem{
 				Component.literal("───── Modifiers ─────")
 						.withStyle(Style.EMPTY.withColor(0x6644BB))
 		);
-		list.add(
-				Component.translatable("dif.modifier."+head.getModifier().getName().toLowerCase(Locale.ROOT)).withStyle(Style.EMPTY.withColor(head.getColor()))
-		);
-		list.add(
-				Component.translatable("dif.modifier."+binding.getModifier().getName().toLowerCase(Locale.ROOT)).withStyle(Style.EMPTY.withColor(binding.getColor()))
-		);
-		list.add(
-				Component.translatable("dif.modifier."+handle.getModifier().getName().toLowerCase(Locale.ROOT)).withStyle(Style.EMPTY.withColor(handle.getColor()))
-		);
-
+		ArrayList<String> materialModifiers=getStrings(head,binding,handle);
+		for(String materialModifier: materialModifiers){
+			list.add(
+					Component.translatable("dif.modifier."+materialModifier).withStyle(Style.EMPTY.withColor(head.getColor()))
+			);
+		}
+	}
+	private static @NotNull ArrayList<String> getStrings(ModularMaterial head,ModularMaterial binding,ModularMaterial handle){
+		ArrayList<String> materialModifiers=new ArrayList<>();
+		String headModifier=head.getModifier().getName().toLowerCase(Locale.ROOT);
+		String bindingModifier=binding.getModifier().getName().toLowerCase(Locale.ROOT);
+		String handleModifier=handle.getModifier().getName().toLowerCase(Locale.ROOT);
+		materialModifiers.add(headModifier);
+		if(!materialModifiers.get(0).equals(bindingModifier))
+			materialModifiers.add(bindingModifier);
+		if(!materialModifiers.get(0).equals(handleModifier))
+			if(!(materialModifiers.size()==1)){
+				if(!materialModifiers.get(1).equals(handleModifier))
+					materialModifiers.add(handleModifier);
+			}else materialModifiers.add(handleModifier);
+		return materialModifiers;
 	}
 	@Override
 	public boolean isEnchantable(@NotNull ItemStack itemStack){
@@ -374,12 +384,73 @@ public class ModularTool extends DiggerItem{
 		return super.getDescriptionId(itemStack);
 	}
 	@Override
-	public @NotNull Component getName(@NotNull ItemStack itemStack) {
-		int rarityColor = ModularTier.byName(getProps(itemStack).tier()).getColor();
-
+	public @NotNull Component getName(@NotNull ItemStack itemStack){
+		int rarityColor=ModularTier.byName(getProps(itemStack).tier()).getColor();
 		return Component.translatable(getDescriptionId(itemStack))
 				.withStyle(Style.EMPTY
 						.withColor(rarityColor)
 						.withItalic(false));
 	}
+	public void addModifier(ItemStack itemStack,ModularModifier modifier,int lvl){
+		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
+		if(component==null) return;
+		component.modifiers().add(new ModularToolModifiers.entry(modifier.getName(),lvl));
+		itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,component);
+	}
+	public boolean isModifier(ItemStack itemStack,ModularModifier modifier){
+		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
+		if(component==null) return false;
+		for(ModularToolModifiers.entry entry: component.modifiers()){
+			if(entry.id().equals(modifier.getName())) return true;
+		}
+		return false;
+	}
+	public int getModifierLvl(ItemStack itemStack,ModularModifier modifier){
+		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
+		if(component==null) return -3;
+		for(ModularToolModifiers.entry entry: component.modifiers()){
+			if(entry.id().equals(modifier.getName())) return entry.lvl();
+		}
+		return -3;
+	}
+	public void setModifierLvl(ItemStack itemStack,ModularModifier modifier,int lvl){
+		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
+		if(component==null) return;
+		List<ModularToolModifiers.entry> newModifiers=new ArrayList<>();
+		boolean found=false;
+		for(ModularToolModifiers.entry entry: component.modifiers()){
+			if(entry.id().equals(modifier.getName())){
+				newModifiers.add(new ModularToolModifiers.entry(entry.id(),lvl));
+				found=true;
+			}else{
+				newModifiers.add(entry);
+			}
+		}
+		if(found)
+			itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(component.toolType(),newModifiers));
+	}
+	public void removeModifier(ItemStack itemStack,ModularModifier modifier){
+		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
+		if(component==null) return;
+		List<ModularToolModifiers.entry> newModifiers=new ArrayList<>();
+		boolean removed=false;
+		for(ModularToolModifiers.entry entry: component.modifiers()){
+			if(entry.id().equals(modifier.getName())) removed=true;
+			else newModifiers.add(entry);
+
+		}
+		if(removed)
+			itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(component.toolType(),newModifiers));
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
