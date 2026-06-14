@@ -139,6 +139,6 @@ public class Quarry extends BaseEntityBlock{
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState bs,@NotNull BlockEntityType<T> type){
-		return createTickerHelper(type,DifModBlockEntities.QUARRY.get(),(Level level1,BlockPos pos,BlockState be,E be2)->QuarryBlockEntity.tick(level1,be2));
+		return createTickerHelper(type,DifModBlockEntities.QUARRY.get(),(Level level1,BlockPos pos,BlockState be,QuarryBlockEntity be2)->QuarryBlockEntity.tick(level1,be2));
 	}
 }
