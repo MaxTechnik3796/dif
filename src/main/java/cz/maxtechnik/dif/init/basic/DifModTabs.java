@@ -159,8 +159,8 @@ public class DifModTabs{
 		ItemStack ePickaxe=new ItemStack(MODULAR_TOOL.get());ePickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties("pickaxe","gold","iron","wood","common"));
 		ItemStack e2Pickaxe=new ItemStack(MODULAR_TOOL.get());e2Pickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties("pickaxe","gold","iron","wood","common"));
 		tabData.accept(ePickaxe);
-		ArrayList<ModularToolModifiers.entry> neco=new ArrayList<>();
-		neco.add(new ModularToolModifiers.entry("fortune",2));
+		ArrayList<String> neco=new ArrayList<>();
+		neco.add("fortune");
 		e2Pickaxe.set(DifModComponents.MODULAR_TOOL_MODIFIERS.get(),new ModularToolModifiers(neco));
 		tabData.accept(e2Pickaxe);
 		ItemStack ePart=new ItemStack(MODULAR_PART.get());ePart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties("handle","stone"));

@@ -353,13 +353,9 @@ public class ModularTool extends DiggerItem{
 		}
 	}
 	private static @NotNull ArrayList<String> getModifiers(ItemStack itemStack){
-		ArrayList<String> modifiers=new ArrayList<>();
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
-		if(component==null) return modifiers;
-		for(ModularToolModifiers.entry entry: component.modifiers()){
-			modifiers.add(entry.id());
-		}
-		return modifiers;
+		if(component==null) return new ArrayList<>();
+		return new ArrayList<>(component.modifiers());
 	}
 	private static @NotNull ArrayList<String> getMaterialModifiers(ModularMaterial head,ModularMaterial binding,ModularMaterial handle){
 		ArrayList<String> materialModifiers=new ArrayList<>();
@@ -407,32 +403,27 @@ public class ModularTool extends DiggerItem{
 						.withColor(rarityColor)
 						.withItalic(false));
 	}
-	public void addModifier(ItemStack itemStack,ModularModifier modifier,int lvl){
+	public void addModifier(ItemStack itemStack,ModularModifier modifier){
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
 		if(component==null) return;
-		component.modifiers().add(new ModularToolModifiers.entry(modifier.getName(),lvl));
-		itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,component);
+		List<String> newModifiers=new ArrayList<>(component.modifiers());
+		if(!newModifiers.contains(modifier.getName())){
+			newModifiers.add(modifier.getName());
+			itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(newModifiers));
+		}
 	}
 	public boolean isModifier(ItemStack itemStack,ModularModifier modifier){
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
 		if(component==null) return false;
-		for(ModularToolModifiers.entry entry: component.modifiers()){
-			if(entry.id().equals(modifier.getName())) return true;
-		}
-		return false;
+		return component.modifiers().contains(modifier.getName());
 	}
 	public void removeModifier(ItemStack itemStack,ModularModifier modifier){
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
 		if(component==null) return;
-		List<ModularToolModifiers.entry> newModifiers=new ArrayList<>();
-		boolean removed=false;
-		for(ModularToolModifiers.entry entry: component.modifiers()){
-			if(entry.id().equals(modifier.getName())) removed=true;
-			else newModifiers.add(entry);
-
-		}
-		if(removed)
+		List<String> newModifiers=new ArrayList<>(component.modifiers());
+		if(newModifiers.remove(modifier.getName())){
 			itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(newModifiers));
+		}
 	}
 }
 
