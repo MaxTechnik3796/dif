@@ -5,29 +5,29 @@ import java.util.Locale;
 import static cz.maxtechnik.dif.item.modular.v2.ModularMaterial.*;
 public enum ModularModifier{
 	//regular(max lvl):
-	EFFICIENCY("efficiency",5,ModularMaterial.NONE),
-	FORTUNE("fortune",3,ModularMaterial.NONE),
-	SILK_TOUCH("silk_touch",1,ModularMaterial.NONE),
-	SHARPNESS("sharpness",5,ModularMaterial.NONE),
+	EFFICIENCY("efficiency",5,0xFFFFFF),
+	FORTUNE("fortune",3,0xFFFFFF),
+	SILK_TOUCH("silk_touch",1,0xFFFFFF),
+	SHARPNESS("sharpness",5,0xFFFFFF),
 
 
 	//material(-1):
-	ECOLOGICAL("ecological",-1,WOOD),
-	MAGNETIC("magnetic",-1,IRON),
-	CHEAP("cheap",-1,STONE),
-	SHINY("shiny",-1,GOLD),
+	ECOLOGICAL("ecological",-1,WOOD.getColor()),
+	MAGNETIC("magnetic",-1,IRON.getColor()),
+	CHEAP("cheap",-1,STONE.getColor()),
+	SHINY("shiny",-1,GOLD.getColor()),
 
 	//special(-2):
-	EXCAVATOR("excavator",-2,ModularMaterial.NONE),
+	EXCAVATOR("excavator",-2,0xFFFFFF),
 
-	NONE("none",-3,ModularMaterial.NONE);
+	NONE("none",-3,0xFFFFFF);
 	private final String name;
 	private final int maxLvl;
-	private final ModularMaterial material;
-	ModularModifier(String name,int maxLvl,ModularMaterial material){
+	private final int color;
+	ModularModifier(String name,int maxLvl,int color){
 		this.name=name;
 		this.maxLvl=maxLvl;
-		this.material=material;
+		this.color=color;
 	}
 	public String getName(){
 		return name;
@@ -35,8 +35,8 @@ public enum ModularModifier{
 	public int getMaxLvl(){
 		return maxLvl;
 	}
-	public ModularMaterial getMaterial(){
-		return material;
+	public int getColor(){
+		return color;
 	}
 	public static ModularModifier byName(String name){
 		try{

@@ -10,8 +10,7 @@ public enum ModularMaterial{
 	IRON("iron",250,6F,2,2F,50,1,0.1F,RARE,MAGNETIC,0xDCDCDC),
 	COPPER("copper",180,5.5F,1,1.5F,30,1,0.1F,RARE,SHINY,0xD4845A),
 	GOLD("gold",32,12F,0,0F,5,1,0.6F,RARE,SHINY,0xFFD700),
-	STEEL("steel",1,12F,3,2F,1,1,0.1F,EPIC,MAGNETIC,0xFF0000),
-	NONE("none",0,0F,0,0F,0,0,0F,COMMON,ModularModifier.NONE,0xFFFFFF);
+	STEEL("steel",1,12F,3,2F,1,1,0.1F,EPIC,MAGNETIC,0xFF0000);
 	private final String name;
 	// Head stats
 	private final int headDurability;

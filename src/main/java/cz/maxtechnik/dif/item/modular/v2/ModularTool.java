@@ -341,14 +341,14 @@ public class ModularTool extends DiggerItem{
 		ArrayList<String> materialModifiers=getMaterialModifiers(head,binding,handle);
 		for(String materialModifier: materialModifiers){
 			list.add(
-					Component.translatable("dif.modifier."+materialModifier).withStyle(Style.EMPTY.withColor(ModularModifier.byName(materialModifier).getMaterial().getColor()))
+					Component.translatable("dif.modifier."+materialModifier).withStyle(Style.EMPTY.withColor(ModularModifier.byName(materialModifier).getColor()))
 			);
 		}
 		list.add(CommonComponents.EMPTY);
 		ArrayList<String> modifiers=getModifiers(itemStack);
 		for(String modifier: modifiers){
 			list.add(
-				Component.translatable("dif.modifier."+modifier).withStyle(Style.EMPTY.withColor(ModularModifier.byName(modifier).getMaterial().getColor()))
+				Component.translatable("dif.modifier."+modifier).withStyle(Style.EMPTY.withColor(ModularModifier.byName(modifier).getColor()))
 			);
 		}
 	}
