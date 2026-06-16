@@ -347,8 +347,13 @@ public class ModularTool extends DiggerItem{
 		list.add(CommonComponents.EMPTY);
 		ArrayList<String> modifiers=getModifiers(itemStack);
 		for(String modifier: modifiers){
+			Component lvlComponent=CommonComponents.EMPTY;
+			if(ModularModifier.byName(modifier).getMaxLvl()>1)
+				lvlComponent=Component.literal(" "+getModifierLvl(itemStack,ModularModifier.byName(modifier)));
 			list.add(
-				Component.translatable("dif.modifier."+modifier).withStyle(Style.EMPTY.withColor(ModularModifier.byName(modifier).getColor()))
+				Component.translatable("dif.modifier."+modifier)
+						.withStyle(Style.EMPTY.withColor(ModularModifier.byName(modifier).getColor()))
+						.append(lvlComponent)
 			);
 		}
 	}
@@ -443,7 +448,7 @@ public class ModularTool extends DiggerItem{
 			}
 		}
 		if(found)
-			itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(component.toolType(),newModifiers));
+			itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(newModifiers));
 	}
 	public void removeModifier(ItemStack itemStack,ModularModifier modifier){
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
@@ -456,7 +461,7 @@ public class ModularTool extends DiggerItem{
 
 		}
 		if(removed)
-			itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(component.toolType(),newModifiers));
+			itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(newModifiers));
 	}
 }
 

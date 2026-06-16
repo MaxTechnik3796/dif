@@ -30,8 +30,6 @@ import cz.maxtechnik.dif.init.gui.DifModMenus;
 import cz.maxtechnik.dif.init.other.*;
 import cz.maxtechnik.dif.init.events.JetpackHandler;
 import cz.maxtechnik.dif.renderer.*;
-import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;

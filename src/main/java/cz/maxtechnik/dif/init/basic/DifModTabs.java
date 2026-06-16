@@ -4,6 +4,7 @@ import com.simibubi.create.AllCreativeModeTabs;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.other.DifModComponents;
 import cz.maxtechnik.dif.item.modular.v2.ModularPartProperties;
+import cz.maxtechnik.dif.item.modular.v2.ModularToolModifiers;
 import cz.maxtechnik.dif.item.modular.v2.ModularToolProperties;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -14,6 +15,8 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import vectorwing.farmersdelight.common.registry.ModCreativeTabs;
 import vectorwing.farmersdelight.common.registry.ModItems;
+
+import java.util.ArrayList;
 import java.util.Objects;
 import static cz.maxtechnik.dif.DifMod.addItemStacksBehind;
 import static cz.maxtechnik.dif.init.basic.DifModItems.*;
@@ -153,8 +156,13 @@ public class DifModTabs{
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>MODULAR_TOOLS=REGISTER.register("modular_tools",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.SPACE.getKey()).title(Component.translatable("creative_tab.dif.modular_tools")).icon(()->new ItemStack(Items.SMITHING_TABLE)).displayItems(((parameters, tabData)->{
 		tabData.accept(Items.SMITHING_TABLE);
-		ItemStack ePickaxe=new ItemStack(MODULAR_TOOL.get());ePickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties("pickaxe","diamond","iron","wood","common"));
+		ItemStack ePickaxe=new ItemStack(MODULAR_TOOL.get());ePickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties("pickaxe","gold","iron","wood","common"));
+		ItemStack e2Pickaxe=new ItemStack(MODULAR_TOOL.get());e2Pickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties("pickaxe","gold","iron","wood","common"));
 		tabData.accept(ePickaxe);
+		ArrayList<ModularToolModifiers.entry> neco=new ArrayList<>();
+		neco.add(new ModularToolModifiers.entry("fortune",2));
+		e2Pickaxe.set(DifModComponents.MODULAR_TOOL_MODIFIERS.get(),new ModularToolModifiers(neco));
+		tabData.accept(e2Pickaxe);
 		ItemStack ePart=new ItemStack(MODULAR_PART.get());ePart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties("handle","stone"));
 		tabData.accept(ePart);
 

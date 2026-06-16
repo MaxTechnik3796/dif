@@ -2,7 +2,6 @@
 	"replace":false,
 	"values":[
 		"dif:electrum_destroyer",
-		"dif:copper_pickaxe",
-		"dif:modular_pickaxe"
+		"dif:copper_pickaxe"
 	]
 }

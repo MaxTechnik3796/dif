@@ -2,7 +2,6 @@ package cz.maxtechnik.dif.item.modular.v2;
 
 import java.util.Locale;
 
-import static cz.maxtechnik.dif.item.modular.v2.ModularMaterial.*;
 public enum ModularModifier{
 	//regular(max lvl):
 	EFFICIENCY("efficiency",5,0xFFFFFF),

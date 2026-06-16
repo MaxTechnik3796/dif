@@ -1,8 +1,0 @@
-{
-	"replace":false,
-	"values":[
-		"#dif:modular_tools_parts/head",
-		"#dif:modular_tools_parts/binding",
-		"#dif:modular_tools_parts/handle"
-	]
-}
