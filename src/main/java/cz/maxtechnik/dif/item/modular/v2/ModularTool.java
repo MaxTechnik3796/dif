@@ -421,9 +421,8 @@ public class ModularTool extends DiggerItem{
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
 		if(component==null) return;
 		List<String> newModifiers=new ArrayList<>(component.modifiers());
-		if(newModifiers.remove(modifier.getName())){
+		if(newModifiers.remove(modifier.getName()))
 			itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(newModifiers));
-		}
 	}
 }
 
