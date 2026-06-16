@@ -12,10 +12,10 @@ public enum ModularModifier{
 
 
 	//material(-1):
-	ECOLOGICAL("ecological",-1,WOOD.getColor()),
-	MAGNETIC("magnetic",-1,IRON.getColor()),
-	CHEAP("cheap",-1,STONE.getColor()),
-	SHINY("shiny",-1,GOLD.getColor()),
+	ECOLOGICAL("ecological",-1,0x745631),
+	MAGNETIC("magnetic",-1,0xDCDCDC),
+	CHEAP("cheap",-1,0x838383),
+	SHINY("shiny",-1,0xFFD700),
 
 	//special(-2):
 	EXCAVATOR("excavator",-2,0xFFFFFF),
