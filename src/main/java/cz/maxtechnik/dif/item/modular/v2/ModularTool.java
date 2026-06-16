@@ -338,14 +338,30 @@ public class ModularTool extends DiggerItem{
 				Component.literal("───── Modifiers ─────")
 						.withStyle(Style.EMPTY.withColor(0x6644BB))
 		);
-		ArrayList<String> materialModifiers=getStrings(head,binding,handle);
+		ArrayList<String> materialModifiers=getMaterialModifiers(head,binding,handle);
 		for(String materialModifier: materialModifiers){
 			list.add(
-					Component.translatable("dif.modifier."+materialModifier).withStyle(Style.EMPTY.withColor(head.getColor()))
+					Component.translatable("dif.modifier."+materialModifier).withStyle(Style.EMPTY.withColor(ModularModifier.byName(materialModifier).getMaterial().getColor()))
+			);
+		}
+		list.add(CommonComponents.EMPTY);
+		ArrayList<String> modifiers=getModifiers(itemStack);
+		for(String modifier: modifiers){
+			list.add(
+				Component.translatable("dif.modifier."+modifier).withStyle(Style.EMPTY.withColor(ModularModifier.byName(modifier).getMaterial().getColor()))
 			);
 		}
 	}
-	private static @NotNull ArrayList<String> getStrings(ModularMaterial head,ModularMaterial binding,ModularMaterial handle){
+	private static @NotNull ArrayList<String> getModifiers(ItemStack itemStack){
+		ArrayList<String> modifiers=new ArrayList<>();
+		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
+		if(component==null) return modifiers;
+		for(ModularToolModifiers.entry entry: component.modifiers()){
+			modifiers.add(entry.id());
+		}
+		return modifiers;
+	}
+	private static @NotNull ArrayList<String> getMaterialModifiers(ModularMaterial head,ModularMaterial binding,ModularMaterial handle){
 		ArrayList<String> materialModifiers=new ArrayList<>();
 		String headModifier=head.getModifier().getName().toLowerCase(Locale.ROOT);
 		String bindingModifier=binding.getModifier().getName().toLowerCase(Locale.ROOT);
