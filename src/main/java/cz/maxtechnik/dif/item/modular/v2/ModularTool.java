@@ -347,13 +347,8 @@ public class ModularTool extends DiggerItem{
 		list.add(CommonComponents.EMPTY);
 		ArrayList<String> modifiers=getModifiers(itemStack);
 		for(String modifier: modifiers){
-			Component lvlComponent=CommonComponents.EMPTY;
-			if(ModularModifier.byName(modifier).getMaxLvl()>1)
-				lvlComponent=Component.literal(" "+getModifierLvl(itemStack,ModularModifier.byName(modifier)));
 			list.add(
-				Component.translatable("dif.modifier."+modifier)
-						.withStyle(Style.EMPTY.withColor(ModularModifier.byName(modifier).getColor()))
-						.append(lvlComponent)
+				Component.translatable("dif.modifier."+modifier).withStyle(Style.EMPTY.withColor(ModularModifier.byName(modifier).getColor()))
 			);
 		}
 	}
@@ -425,30 +420,6 @@ public class ModularTool extends DiggerItem{
 			if(entry.id().equals(modifier.getName())) return true;
 		}
 		return false;
-	}
-	public int getModifierLvl(ItemStack itemStack,ModularModifier modifier){
-		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
-		if(component==null) return -3;
-		for(ModularToolModifiers.entry entry: component.modifiers()){
-			if(entry.id().equals(modifier.getName())) return entry.lvl();
-		}
-		return -3;
-	}
-	public void setModifierLvl(ItemStack itemStack,ModularModifier modifier,int lvl){
-		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
-		if(component==null) return;
-		List<ModularToolModifiers.entry> newModifiers=new ArrayList<>();
-		boolean found=false;
-		for(ModularToolModifiers.entry entry: component.modifiers()){
-			if(entry.id().equals(modifier.getName())){
-				newModifiers.add(new ModularToolModifiers.entry(entry.id(),lvl));
-				found=true;
-			}else{
-				newModifiers.add(entry);
-			}
-		}
-		if(found)
-			itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(newModifiers));
 	}
 	public void removeModifier(ItemStack itemStack,ModularModifier modifier){
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
