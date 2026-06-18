@@ -348,7 +348,8 @@
 	"item.dif.baguette":"Baguette",
 	"block.dif.distillation_controller":"Distillation Controller",
 	"block.dif.distillation_tank":"Distillation Tank",
-	"block.dif.nuclear_bomb":"Nuclear Bomb",
+	"block.dif.nuke":"Nuke",
+	"block.dif.nuke_safe":"Nuke Safe",
 	"block.dif.big_girder":"Big Metal Girder",
 
 	"block.dif.zinc_casing":"Zinc Casing",

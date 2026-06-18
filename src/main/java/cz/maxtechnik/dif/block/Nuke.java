@@ -13,9 +13,9 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-public class NuclearBomb extends Block{
-	public NuclearBomb(){
-		super(BlockBehaviour.Properties.of().strength(5F,1200F).sound(SoundType.METAL).noOcclusion());
+public class Nuke extends Block{
+	public Nuke(BlockBehaviour.Properties properties){
+		super(properties);
 	}
 	@Override
 	public void neighborChanged(@NotNull BlockState state,Level level,@NotNull BlockPos pos,@NotNull Block block,@NotNull BlockPos fromPos,boolean isMoving){

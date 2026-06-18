@@ -324,7 +324,7 @@ public class DifModTabs{
 			tabData.accept(FAST_POWERED_RAIL);
 			tabData.accept(FAST_RAIL);
 
-			tabData.accept(NUCLEAR_BOMB);
+			tabData.accept(NUKE);
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
 			tabData.insertAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);

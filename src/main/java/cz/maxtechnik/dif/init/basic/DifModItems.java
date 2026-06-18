@@ -318,7 +318,7 @@ public class DifModItems{
 
 	public static final DeferredItem<Item>BIG_GIRDER=block(DifModBlocks.BIG_GIRDER);
 
-	public static final DeferredItem<Item>NUCLEAR_BOMB=block(DifModBlocks.NUCLEAR_BOMB,new Item.Properties().stacksTo(16));
+	public static final DeferredItem<Item>NUKE=block(DifModBlocks.NUKE,new Item.Properties().stacksTo(16));
 
 	public static final DeferredItem<Item>COKE_OVEN=block(DifModBlocks.COKE_OVEN);
 	public static final DeferredItem<Item>COKE_OVEN_CONTROLLER=block(DifModBlocks.COKE_OVEN_CONTROLLER);
