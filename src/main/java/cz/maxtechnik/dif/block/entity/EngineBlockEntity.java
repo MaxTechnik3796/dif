@@ -5,7 +5,6 @@ import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.block.Engine;
 import cz.maxtechnik.dif.block.EngineExtender;
-import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.util.FuelType;
 import net.minecraft.core.BlockPos;
