@@ -44,7 +44,7 @@ public class DifModBlockEntities{
 
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<DistillationTankBlockEntity>> DISTILLATION_TANK=REGISTRY.register("distillation_tank",()->BlockEntityType.Builder.of((pos,state)->new DistillationTankBlockEntity(DifModBlockEntities.DISTILLATION_TANK.get(),pos,state), DifModBlocks.DISTILLATION_TANK.get()).build(null));
 
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<EngineBlockEntity>>ENGINE=REGISTRY.register("engine",()->BlockEntityType.Builder.of(EngineBlockEntity::new,DifModBlocks.ENGINE2.get(),DifModBlocks.ENGINE4.get()).build(null));
+	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<EngineBlockEntity>>ENGINE=REGISTRY.register("engine",()->BlockEntityType.Builder.of(EngineBlockEntity::new,DifModBlocks.ENGINE2.get(),DifModBlocks.ENGINE4.get(),DifModBlocks.ENGINE_PORTABLE_DIESEL.get(),DifModBlocks.ENGINE_PORTABLE_GASOLINE.get(),DifModBlocks.ENGINE_PORTABLE_LPG.get()).build(null));
 
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<CokeOvenControllerBlockEntity>> COKE_OVEN_CONTROLLER=register("coke_oven_controller",DifModBlocks.COKE_OVEN_CONTROLLER,CokeOvenControllerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<CokeOvenBlockEntity>> COKE_OVEN=register("coke_oven",DifModBlocks.COKE_OVEN,CokeOvenBlockEntity::new);
