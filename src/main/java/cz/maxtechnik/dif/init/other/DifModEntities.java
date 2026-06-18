@@ -3,6 +3,7 @@ package cz.maxtechnik.dif.init.other;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.entity.bomb.NuclearExplosionEntity;
 import cz.maxtechnik.dif.entity.bomb.NuclearMushroomEntity;
+import cz.maxtechnik.dif.entity.bomb.NuclearRadiationEntity;
 import cz.maxtechnik.dif.entity.bomb.NuclearWaveEntity;
 import cz.maxtechnik.dif.entity.vehicle.FormulaEntity;
 import net.minecraft.core.registries.Registries;
@@ -36,4 +37,11 @@ public class DifModEntities{
 							.clientTrackingRange(512)
 							.updateInterval(1)
 							.build("nuclear_wave"));
+	public static final DeferredHolder<EntityType<?>,EntityType<NuclearRadiationEntity>> NUCLEAR_RADIATION=
+			REGISTRY.register("nuclear_radiation",()->
+					EntityType.Builder.of(NuclearRadiationEntity::new,MobCategory.MISC)
+							.sized(0F,0F)
+							.clientTrackingRange(512)
+							.updateInterval(20)
+							.build("nuclear_radiation"));
 }

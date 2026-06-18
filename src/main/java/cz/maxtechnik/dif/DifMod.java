@@ -114,6 +114,7 @@ public class DifMod{
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_EXPLOSION.get(),NoopRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_MUSHROOM.get(),NoopRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_WAVE.get(),NoopRenderer::new);
+			event.registerEntityRenderer(DifModEntities.NUCLEAR_RADIATION.get(),NoopRenderer::new);
 
 
 			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.ENGINE.get()).factory(SingleAxisRotatingVisual::shaft).neverSkipVanillaRender().apply();

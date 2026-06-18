@@ -25,7 +25,6 @@ public class NuclearExplosionEntity extends Entity{
 	private static final EntityDataAccessor<Integer> DATA_PHASE=SynchedEntityData.defineId(NuclearExplosionEntity.class,EntityDataSerializers.INT);
 	// Shell iterátor (kráter – od středu ven)
 	private int currentShell, maxShell, shellFace, shellU, shellV, radius=(int)HOR_R_TOTAL;
-	private boolean entitiesHit=false;
 	private final BlockPos.MutableBlockPos mutablePos=new BlockPos.MutableBlockPos();
 	public NuclearExplosionEntity(EntityType<?> type,Level level){
 		super(type,level);
@@ -52,7 +51,6 @@ public class NuclearExplosionEntity extends Entity{
 			case PHASE_INIT -> {
 				maxShell=(int)Math.ceil(HOR_R_TOTAL);
 				currentShell=shellFace=shellU=shellV=0;
-				hitEntities();
 				setPhase(PHASE_CRATER);
 			}
 			case PHASE_CRATER -> tickCrater();
@@ -177,38 +175,11 @@ public class NuclearExplosionEntity extends Entity{
 		if(state.getBlock().getExplosionResistance()>MAX_DESTROYABLE_RESISTANCE) return;
 		level().setBlock(mutablePos,AIR,2|16|64);
 	}
-	private void hitEntities() {
-		if (entitiesHit) return;
-		entitiesHit = true;
 
-		level().explode(null, getX(), getY() + 2.0, getZ(), 30, Level.ExplosionInteraction.NONE);
-
-		AABB area = new AABB(getX() - 320, getY() - 320, getZ() - 320, getX() + 320, getY() + 320, getZ() + 320);
-		for (LivingEntity entity : level().getEntitiesOfClass(LivingEntity.class, area)) {
-			if (entity.isSpectator()) continue;
-			if (entity instanceof Player player && player.isCreative()) continue;
-
-			double dist = entity.distanceTo(this);
-
-			// Wither efekt
-			if (dist <= 220.0) {
-				entity.addEffect(new MobEffectInstance(MobEffects.WITHER, 2400, 1));
-			}
-
-			// Damage do 128 bloků
-			if (dist <= 128.0) {
-				float damage = (float)(200.0 * (1.0 - dist / 128.0));
-				entity.invulnerableTime = 0;
-				entity.setHealth(entity.getHealth() - damage);
-				if (entity.getHealth() <= 0) entity.kill();
-			}
-		}
-	}
 	// ── NBT ───────────────────────────────────────────────────────────────
 	@Override
 	protected void readAdditionalSaveData(CompoundTag tag){
 		radius=tag.getInt("Radius");
-		entitiesHit=tag.getBoolean("EntitiesHit");
 		currentShell=tag.getInt("CurrentShell");
 		maxShell=tag.getInt("MaxShell");
 		shellFace=tag.getInt("ShellFace");
@@ -220,7 +191,6 @@ public class NuclearExplosionEntity extends Entity{
 	protected void addAdditionalSaveData(CompoundTag tag){
 		tag.putInt("Radius",radius);
 		tag.putInt("Phase",getPhase());
-		tag.putBoolean("EntitiesHit",entitiesHit);
 		tag.putInt("CurrentShell",currentShell);
 		tag.putInt("MaxShell",maxShell);
 		tag.putInt("ShellFace",shellFace);

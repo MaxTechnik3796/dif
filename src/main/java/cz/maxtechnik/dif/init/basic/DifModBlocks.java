@@ -166,7 +166,7 @@ public class DifModBlocks{
 
 	//nuke
 	public static final DeferredBlock<Block> NUKE= REGISTRY.register("nuke",()->new Nuke(BlockBehaviour.Properties.of().strength(5F,1200F).sound(SoundType.METAL).noOcclusion()));
-	//public static final DeferredBlock<Block> NUKE_SAFE= REGISTRY.register("nuke_safe",()->new Nuke(BlockBehaviour.Properties.of().strength(5F,1200F).sound(SoundType.METAL).noOcclusion()));
+	public static final DeferredBlock<Block> NUKE_SAFE= REGISTRY.register("nuke_safe",()->new NukeSafe(BlockBehaviour.Properties.of().strength(5F,1200F).sound(SoundType.METAL).noOcclusion()));
 
 
 	public static final DeferredBlock<Block>BIG_GIRDER=REGISTRY.register("big_girder",()->new RotatedPillarBlock(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops().strength(4F,5F)));
