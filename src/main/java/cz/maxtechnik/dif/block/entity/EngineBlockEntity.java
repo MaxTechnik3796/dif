@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 
 import static cz.maxtechnik.dif.DifModCommonConfig.*;
 import static cz.maxtechnik.dif.block.Engine.*;
+import static cz.maxtechnik.dif.init.basic.DifModBlocks.*;
 public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	boolean generating=false;
 	boolean uGenerating=false;
@@ -124,41 +125,50 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		boolean ext1;
 		boolean ext2;
 		double vel=0.007;
+		Block ownBlock=getBlockState().getBlock();
 		if(axis.equals(Direction.Axis.Z)){
-			ext1=isEngineExtender(worldPosition.east());
-			ext2=isEngineExtender(worldPosition.west());
-			if(ext0){
-				particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.3),new Vec3(0,vel,0));
-				particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
-				particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.7),new Vec3(0,vel,0));
-			}
-			if(ext1){
-				particle(new Vec3(worldPosition.getX()+2,worldPosition.getY()+0.5,worldPosition.getZ()+0.3),new Vec3(vel*2,vel,0));
-				particle(new Vec3(worldPosition.getX()+2,worldPosition.getY()+0.5,worldPosition.getZ()+0.5),new Vec3(vel*2,vel,0));
-				particle(new Vec3(worldPosition.getX()+2,worldPosition.getY()+0.5,worldPosition.getZ()+0.7),new Vec3(vel*2,vel,0));
-			}
-			if(ext2){
-				particle(new Vec3(worldPosition.getX()-1,worldPosition.getY()+0.5,worldPosition.getZ()+0.3),new Vec3(-vel*2,vel,0));
-				particle(new Vec3(worldPosition.getX()-1,worldPosition.getY()+0.5,worldPosition.getZ()+0.5),new Vec3(-vel*2,vel,0));
-				particle(new Vec3(worldPosition.getX()-1,worldPosition.getY()+0.5,worldPosition.getZ()+0.7),new Vec3(-vel*2,vel,0));
+			if(ownBlock.equals(ENGINE2.get())||ownBlock.equals(ENGINE4.get())){
+				ext1=isEngineExtender(worldPosition.east());
+				ext2=isEngineExtender(worldPosition.west());
+				if(ext0){
+					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.3),new Vec3(0,vel,0));
+					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
+					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.7),new Vec3(0,vel,0));
+				}
+				if(ext1){
+					particle(new Vec3(worldPosition.getX()+2,worldPosition.getY()+0.5,worldPosition.getZ()+0.3),new Vec3(vel*2,vel,0));
+					particle(new Vec3(worldPosition.getX()+2,worldPosition.getY()+0.5,worldPosition.getZ()+0.5),new Vec3(vel*2,vel,0));
+					particle(new Vec3(worldPosition.getX()+2,worldPosition.getY()+0.5,worldPosition.getZ()+0.7),new Vec3(vel*2,vel,0));
+				}
+				if(ext2){
+					particle(new Vec3(worldPosition.getX()-1,worldPosition.getY()+0.5,worldPosition.getZ()+0.3),new Vec3(-vel*2,vel,0));
+					particle(new Vec3(worldPosition.getX()-1,worldPosition.getY()+0.5,worldPosition.getZ()+0.5),new Vec3(-vel*2,vel,0));
+					particle(new Vec3(worldPosition.getX()-1,worldPosition.getY()+0.5,worldPosition.getZ()+0.7),new Vec3(-vel*2,vel,0));
+				}
+			}else{
+				particle(new Vec3(worldPosition.getX(),worldPosition.getY(),worldPosition.getZ()),new Vec3(0,vel,0));//OFFSET
 			}
 		}else if(axis.equals(Direction.Axis.X)){
-			ext1=isEngineExtender(worldPosition.north());
-			ext2=isEngineExtender(worldPosition.south());
-			if(ext0){
-				particle(new Vec3(worldPosition.getX()+0.3,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
-				particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
-				particle(new Vec3(worldPosition.getX()+0.7,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
-			}
-			if(ext1){
-				particle(new Vec3(worldPosition.getX()+0.3,worldPosition.getY()+0.5,worldPosition.getZ()-1),new Vec3(0,vel,-vel*2));
-				particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+0.5,worldPosition.getZ()-1),new Vec3(0,vel,-vel*2));
-				particle(new Vec3(worldPosition.getX()+0.7,worldPosition.getY()+0.5,worldPosition.getZ()-1),new Vec3(0,vel,-vel*2));
-			}
-			if(ext2){
-				particle(new Vec3(worldPosition.getX()+0.3,worldPosition.getY()+0.5,worldPosition.getZ()+2),new Vec3(0,vel,vel*2));
-				particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+0.5,worldPosition.getZ()+2),new Vec3(0,vel,vel*2));
-				particle(new Vec3(worldPosition.getX()+0.7,worldPosition.getY()+0.5,worldPosition.getZ()+2),new Vec3(0,vel,vel*2));
+			if(ownBlock.equals(ENGINE2.get())||ownBlock.equals(ENGINE4.get())){
+				ext1=isEngineExtender(worldPosition.north());
+				ext2=isEngineExtender(worldPosition.south());
+				if(ext0){
+					particle(new Vec3(worldPosition.getX()+0.3,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
+					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
+					particle(new Vec3(worldPosition.getX()+0.7,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
+				}
+				if(ext1){
+					particle(new Vec3(worldPosition.getX()+0.3,worldPosition.getY()+0.5,worldPosition.getZ()-1),new Vec3(0,vel,-vel*2));
+					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+0.5,worldPosition.getZ()-1),new Vec3(0,vel,-vel*2));
+					particle(new Vec3(worldPosition.getX()+0.7,worldPosition.getY()+0.5,worldPosition.getZ()-1),new Vec3(0,vel,-vel*2));
+				}
+				if(ext2){
+					particle(new Vec3(worldPosition.getX()+0.3,worldPosition.getY()+0.5,worldPosition.getZ()+2),new Vec3(0,vel,vel*2));
+					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+0.5,worldPosition.getZ()+2),new Vec3(0,vel,vel*2));
+					particle(new Vec3(worldPosition.getX()+0.7,worldPosition.getY()+0.5,worldPosition.getZ()+2),new Vec3(0,vel,vel*2));
+				}
+			}else{
+				particle(new Vec3(worldPosition.getX(),worldPosition.getY(),worldPosition.getZ()),new Vec3(0,vel,0));//OFFSET
 			}
 		}
 	}
@@ -166,56 +176,65 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		if(level==null) return FuelType.INVALID;
 		BlockState ownState=getBlockState();
 		if(!(ownState.getBlock() instanceof Engine)) return FuelType.INVALID;
-		Direction.Axis axis=ownState.getValue(FACING).getAxis();
-		FuelType ext0=getExtenderFuel(worldPosition.above());
-		FuelType ext1=FuelType.INVALID;
-		FuelType ext2=FuelType.INVALID;
-		if(axis==Direction.Axis.Z){
-			ext1=getExtenderFuel(worldPosition.east());
-			ext2=getExtenderFuel(worldPosition.west());
-		}else if(axis==Direction.Axis.X){
-			ext1=getExtenderFuel(worldPosition.north());
-			ext2=getExtenderFuel(worldPosition.south());
+		Block ownBlock=ownState.getBlock();
+		if(ownBlock.equals(ENGINE2.get())||ownBlock.equals(ENGINE4.get())){
+			Direction.Axis axis=ownState.getValue(FACING).getAxis();
+			FuelType ext0=getExtenderFuel(worldPosition.above());
+			FuelType ext1=FuelType.INVALID;
+			FuelType ext2=FuelType.INVALID;
+			if(axis==Direction.Axis.Z){
+				ext1=getExtenderFuel(worldPosition.east());
+				ext2=getExtenderFuel(worldPosition.west());
+			}else if(axis==Direction.Axis.X){
+				ext1=getExtenderFuel(worldPosition.north());
+				ext2=getExtenderFuel(worldPosition.south());
+			}
+			long validCount=Stream.of(ext0,ext1,ext2).filter(f->f!=FuelType.INVALID).count();
+			long uniqueValidCount=Stream.of(ext0,ext1,ext2).filter(f->f!=FuelType.INVALID).distinct().count();
+			if(validCount==0) return FuelType.INVALID;
+			if((validCount==3&&uniqueValidCount==1)||(validCount==2&&uniqueValidCount==1)||(validCount==1))
+				return Stream.of(ext0,ext1,ext2).filter(f->f!=FuelType.INVALID).findFirst().orElse(FuelType.INVALID);
+		}else{
+			if(ownBlock.equals(ENGINE_PORTABLE_DIESEL.get())) return FuelType.DIESEL;
+			else if(ownBlock.equals(ENGINE_PORTABLE_GASOLINE.get())) return FuelType.GASOLINE;
+			else if(ownBlock.equals(ENGINE_PORTABLE_LPG.get())) return FuelType.LPG;
 		}
-		long validCount=Stream.of(ext0,ext1,ext2).filter(f->f!=FuelType.INVALID).count();
-		long uniqueValidCount=Stream.of(ext0,ext1,ext2).filter(f->f!=FuelType.INVALID).distinct().count();
-		if(validCount==0) return FuelType.INVALID;
-		if((validCount==3&&uniqueValidCount==1)||(validCount==2&&uniqueValidCount==1)||(validCount==1))
-			return Stream.of(ext0,ext1,ext2).filter(f->f!=FuelType.INVALID).findFirst().orElse(FuelType.INVALID);
 		return FuelType.INVALID;
 	}
 	public FuelType getExtenderFuel(BlockPos pos){
 		if(level==null) return FuelType.INVALID;
 		Block block=level.getBlockState(pos).getBlock();
 		if(!(block instanceof EngineExtender)) return FuelType.INVALID;
-		if(block.equals(DifModBlocks.ENGINE_EXTENDER_DIESEL.get())) return FuelType.DIESEL;
-		if(block.equals(DifModBlocks.ENGINE_EXTENDER_GASOLINE.get())) return FuelType.GASOLINE;
-		if(block.equals(DifModBlocks.ENGINE_EXTENDER_LPG.get())) return FuelType.LPG;
-		if(block.equals(DifModBlocks.ENGINE_EXTENDER_HEAVY_FUEL_OIL.get())) return FuelType.HEAVY_FUEL_OIL;
+		if(block.equals(ENGINE_EXTENDER_DIESEL.get())) return FuelType.DIESEL;
+		if(block.equals(ENGINE_EXTENDER_GASOLINE.get())) return FuelType.GASOLINE;
+		if(block.equals(ENGINE_EXTENDER_LPG.get())) return FuelType.LPG;
+		if(block.equals(ENGINE_EXTENDER_HEAVY_FUEL_OIL.get())) return FuelType.HEAVY_FUEL_OIL;
 		return FuelType.INVALID;
 	}
 	public int countExtenders(){
 		if(level==null) return 0;
 		BlockState ownState=getBlockState();
 		if(!(ownState.getBlock() instanceof Engine)) return 0;
-		Direction.Axis axis=ownState.getValue(FACING).getAxis();
-		int count=0;
-		if(isEngineExtender(worldPosition.above())) count++;
-		if(axis==Direction.Axis.Z){
-			if(isEngineExtender(worldPosition.east())) count++;
-			if(isEngineExtender(worldPosition.west())) count++;
-		}else if(axis==Direction.Axis.X){
-			if(isEngineExtender(worldPosition.north())) count++;
-			if(isEngineExtender(worldPosition.south())) count++;
-		}
-		return count;
+		if(ownState.getBlock().equals(ENGINE2.get())||ownState.getBlock().equals(ENGINE4.get())){
+			Direction.Axis axis=ownState.getValue(FACING).getAxis();
+			int count=0;
+			if(isEngineExtender(worldPosition.above())) count++;
+			if(axis==Direction.Axis.Z){
+				if(isEngineExtender(worldPosition.east())) count++;
+				if(isEngineExtender(worldPosition.west())) count++;
+			}else if(axis==Direction.Axis.X){
+				if(isEngineExtender(worldPosition.north())) count++;
+				if(isEngineExtender(worldPosition.south())) count++;
+			}
+			return count;
+		}else return 1;
 	}
 	public boolean isEngineExtender(BlockPos pos){
 		if(level==null) return false;
 		return level.getBlockState(pos).getBlock() instanceof EngineExtender;
 	}
 	private boolean isEngine4(){
-		return getBlockState().getBlock().equals(DifModBlocks.ENGINE4.get());
+		return getBlockState().getBlock().equals(ENGINE4.get());
 	}
 	public void particle(Vec3 pos,Vec3 velocity){
 		if(level==null) return;

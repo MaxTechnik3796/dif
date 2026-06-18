@@ -365,6 +365,11 @@
 
 	"block.dif.engine2":"Engine 2",
 	"block.dif.engine4":"Engine 4",
+
+	"block.dif.engine_portable_diesel":"Portable Diesel Engine",
+	"block.dif.engine_portable_gasoline":"Portable Gasoline Engine",
+	"block.dif.engine_portable_lpg":"Portable LPG Engine",
+
 	"block.dif.engine_extender_diesel":"Engine Extender: Diesel",
 	"block.dif.engine_extender_gasoline":"Engine Extender: Gasoline",
 	"block.dif.engine_extender_lpg":"Engine Extender: LPG",

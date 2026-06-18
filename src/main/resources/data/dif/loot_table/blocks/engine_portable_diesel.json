@@ -1,0 +1,20 @@
+{
+	"type":"minecraft:block",
+	"random_sequence":"dif:blocks/engine_portable_diesel",
+	"pools":[
+		{
+			"rolls":1.0,
+			"conditions":[
+				{
+					"condition":"minecraft:survives_explosion"
+				}
+			],
+			"entries":[
+				{
+					"type":"minecraft:item",
+					"name":"dif:engine_portable_diesel"
+				}
+			]
+		}
+	]
+}

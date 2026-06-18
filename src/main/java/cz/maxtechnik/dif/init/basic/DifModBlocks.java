@@ -188,6 +188,9 @@ public class DifModBlocks{
 	public static final BlockBehaviour.Properties ENGINE_PROPERTIES=BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops();
 	public static final DeferredBlock<Block>ENGINE2=REGISTRY.register("engine2",()->new Engine(ENGINE_PROPERTIES));
 	public static final DeferredBlock<Block>ENGINE4=REGISTRY.register("engine4",()->new Engine(ENGINE_PROPERTIES));
+	public static final DeferredBlock<Block>ENGINE_PORTABLE_DIESEL=REGISTRY.register("engine_portable_diesel",()->new Engine(ENGINE_PROPERTIES));
+	public static final DeferredBlock<Block>ENGINE_PORTABLE_GASOLINE=REGISTRY.register("engine_portable_gasoline",()->new Engine(ENGINE_PROPERTIES));
+	public static final DeferredBlock<Block>ENGINE_PORTABLE_LPG=REGISTRY.register("engine_portable_lpg",()->new Engine(ENGINE_PROPERTIES));
 
 	public static final BlockBehaviour.Properties ENGINE_EXTENDER_PROPERTIES=BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops();
 	public static final DeferredBlock<Block>ENGINE_EXTENDER_DIESEL=REGISTRY.register("engine_extender_diesel",()->new EngineExtender(ENGINE_EXTENDER_PROPERTIES));

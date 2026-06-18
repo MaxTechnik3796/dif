@@ -104,6 +104,10 @@ public class DifModTabs{
 		tabData.accept(ENGINE2);
 		tabData.accept(ENGINE4);
 
+		tabData.accept(ENGINE_PORTABLE_DIESEL);
+		tabData.accept(ENGINE_PORTABLE_GASOLINE);
+		tabData.accept(ENGINE_PORTABLE_LPG);
+
 		tabData.accept(ENGINE_EXTENDER_DIESEL);
 		tabData.accept(ENGINE_EXTENDER_GASOLINE);
 		tabData.accept(ENGINE_EXTENDER_LPG);
