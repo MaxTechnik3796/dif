@@ -5,16 +5,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 @SuppressWarnings("deprecation")
 public class NuclearExplosionEntity extends Entity{
 	// KONSTANTY ────────────────────────────────────────────────────────────
@@ -175,7 +170,6 @@ public class NuclearExplosionEntity extends Entity{
 		if(state.getBlock().getExplosionResistance()>MAX_DESTROYABLE_RESISTANCE) return;
 		level().setBlock(mutablePos,AIR,2|16|64);
 	}
-
 	// ── NBT ───────────────────────────────────────────────────────────────
 	@Override
 	protected void readAdditionalSaveData(CompoundTag tag){
