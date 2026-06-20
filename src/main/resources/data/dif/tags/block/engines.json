@@ -3,6 +3,8 @@
 	"values":[
 		"dif:engine2",
 		"dif:engine4",
-		"dif:engine_portable"
+		"dif:engine_portable_diesel",
+		"dif:engine_portable_gasoline",
+		"dif:engine_portable_lpg"
 	]
 }
