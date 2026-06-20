@@ -62,13 +62,11 @@ public class DifModTabs{
 
 
 
-		tabData.accept(HEAVY_PLATE);
 		tabData.accept(MITHRIL);
 		tabData.accept(MITHRIL_PLATE);
 		tabData.accept(BLUESTONE);
 		tabData.accept(BLUE_PLATE);
 
-		tabData.accept(QUESTION_MARK);
 
 
 		tabData.accept(INCOMPLETE_MITHRIL_PLATE);

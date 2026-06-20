@@ -152,12 +152,11 @@ public class DifModItems{
 	public static final DeferredItem<Item> CANOLA_PLANT=block(DifModBlocks.CANOLA_PLANT);
 
 	//Tech & Stuff:
-	public static final DeferredItem<Item> QUESTION_MARK=REGISTRY.register("question_mark",Basic::new);
 	public static final DeferredItem<Item> INCOMPLETE_UNIVERSAL=REGISTRY.register("incomplete_universal",Basic::new);
 	public static final DeferredItem<Item> ELECTRUM_DESTROYER=REGISTRY.register("electrum_destroyer",ElectrumDestroyer::new);
 	public static final DeferredItem<Item> BLUESTONE=REGISTRY.register("bluestone",Basic::new);
 	public static final DeferredItem<Item> BLUE_PLATE=REGISTRY.register("blue_plate",Basic::new);
-	public static final DeferredItem<Item> HEAVY_PLATE=REGISTRY.register("heavy_plate",Basic::new);
+
 
 	public static final DeferredItem<Item> MITHRIL=REGISTRY.register("mithril",Basic::new);
 	public static final DeferredItem<Item> MITHRIL_PLATE=REGISTRY.register("mithril_plate",Basic::new);
