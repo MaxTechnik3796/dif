@@ -9,17 +9,23 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
-import static cz.maxtechnik.dif.init.basic.DifModItems.CASTING_MOLD_HANDLE;
-import static cz.maxtechnik.dif.init.basic.DifModItems.MODULAR_PART;
+import static cz.maxtechnik.dif.init.basic.DifModItems.*;
 public class DifModRecipex{
-	static String fluidCopper="c:molten_copper";
 	public static void onCommonSetup(final FMLCommonSetupEvent event){
 		event.enqueueWork(()->{
-			MTRecipexModRegistry.addCustom("copper_handle",addCasting(CASTING_MOLD_HANDLE.get(),fluidCopper,ModularParts.HANDLE,ModularMaterial.COPPER));
+			MTRecipexModRegistry.addCustom("copper_handle",addCasting(ModularParts.HANDLE,ModularMaterial.COPPER));
+			MTRecipexModRegistry.addCustom("copper_binding",addCasting(ModularParts.BINDING,ModularMaterial.COPPER));
+			MTRecipexModRegistry.addCustom("copper_axe_head",addCasting(ModularParts.AXE_HEAD,ModularMaterial.COPPER));
+			MTRecipexModRegistry.addCustom("copper_pickaxe_head",addCasting(ModularParts.PICKAXE_HEAD,ModularMaterial.COPPER));
+			MTRecipexModRegistry.addCustom("copper_shovel_head",addCasting(ModularParts.SHOVEL_HEAD,ModularMaterial.COPPER));
+			MTRecipexModRegistry.addCustom("copper_sword_head",addCasting(ModularParts.SWORD_HEAD,ModularMaterial.COPPER));
+			MTRecipexModRegistry.addCustom("copper_sword_binding",addCasting(ModularParts.SWORD_BINDING,ModularMaterial.COPPER));
+			MTRecipexModRegistry.addCustom("copper_hoe_head",addCasting(ModularParts.HOE_HEAD,ModularMaterial.COPPER));
 
 		});
 	}
-	private static JsonObject addCasting(Item casing_mold,String fluid,ModularParts partType,ModularMaterial material){
+	private static JsonObject addCasting(ModularParts partType,ModularMaterial material){
+		Item casing_mold=partType.getCastingMold();
 		JsonObject recipeJson=new JsonObject();
 		recipeJson.addProperty("type","create:filling");
 		JsonArray ingredientsArray=new JsonArray();
@@ -28,7 +34,7 @@ public class DifModRecipex{
 		ingredientsArray.add(itemObj);
 		JsonObject fluidObj=new JsonObject();
 		fluidObj.addProperty("type","neoforge:tag");
-		fluidObj.addProperty("tag",fluid);
+		fluidObj.addProperty("tag",material.getLiquid());
 		fluidObj.addProperty("amount",144);
 		ingredientsArray.add(fluidObj);
 		JsonArray resultsArray=new JsonArray();
