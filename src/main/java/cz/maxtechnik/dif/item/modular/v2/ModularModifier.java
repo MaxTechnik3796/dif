@@ -6,7 +6,7 @@ public enum ModularModifier{
 	//material:
 	ECOLOGICAL("ecological",1F,1F,1F,1F,0x745631),
 	MAGNETIC("magnetic",1F,1F,1F,1F,0xDCDCDC),
-	CHEAP("cheap",1F,1F,1F,1F,-0x838383),
+	CHEAP("cheap",1F,1F,1F,1F,0x838383),
 	SHINY("shiny",1F,1F,1F,1F,0xFFD700),
 
 	//special:
