@@ -156,17 +156,23 @@ public class DifModTabs{
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>MODULAR_TOOLS=REGISTER.register("modular_tools",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.SPACE.getKey()).title(Component.translatable("creative_tab.dif.modular_tools")).icon(()->new ItemStack(Items.SMITHING_TABLE)).displayItems(((parameters, tabData)->{
 		tabData.accept(Items.SMITHING_TABLE);
-		ItemStack ePickaxe=new ItemStack(MODULAR_TOOL.get());ePickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties("pickaxe",ModularMaterial.GOLD.getName(),ModularMaterial.IRON.getName(),ModularMaterial.WOOD.getName(),ModularTier.COMMON.getName()));
-		ItemStack e2Pickaxe=new ItemStack(MODULAR_TOOL.get());e2Pickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties("pickaxe",ModularMaterial.GOLD.getName(),ModularMaterial.IRON.getName(),ModularMaterial.WOOD.getName(),ModularTier.COMMON.getName()));
+		ItemStack ePickaxe=new ItemStack(MODULAR_TOOL.get());
+		ModularToolProperties pickaxe=new ModularToolProperties("pickaxe",ModularMaterial.GOLD.getName(),ModularMaterial.IRON.getName(),ModularMaterial.WOOD.getName(),ModularTier.COMMON.getName());
+		ePickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),pickaxe);
+		ItemStack e2Pickaxe=new ItemStack(MODULAR_TOOL.get());e2Pickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),pickaxe);
 		tabData.accept(ePickaxe);
 		ArrayList<String> neco=new ArrayList<>();
 		neco.add("excavator");
 		e2Pickaxe.set(DifModComponents.MODULAR_TOOL_MODIFIERS.get(),new ModularToolModifiers(neco));
 		tabData.accept(e2Pickaxe);
-		ItemStack ePart=new ItemStack(MODULAR_PART.get());ePart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties("handle",ModularMaterial.IRON.getName()));
+		ItemStack ePart=new ItemStack(MODULAR_PART.get());ePart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties(ModularParts.HANDLE.getName(),ModularMaterial.IRON.getName(),false));
 		tabData.accept(ePart);
-		ItemStack fPart=new ItemStack(MODULAR_PART.get());fPart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties("axe_head",ModularMaterial.STEEL.getName()));
+		ItemStack fPart=new ItemStack(MODULAR_PART.get());fPart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties(ModularParts.AXE_HEAD.getName(),ModularMaterial.STEEL.getName(),false));
 		tabData.accept(fPart);
+		ItemStack gPart=new ItemStack(MODULAR_PART.get());gPart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties(ModularParts.SWORD_HEAD.getName(),ModularMaterial.STEEL.getName(),true));
+		tabData.accept(gPart);
+		ItemStack hPart=new ItemStack(MODULAR_PART.get());hPart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties(ModularParts.HANDLE.getName(),ModularMaterial.COPPER.name(),true));
+		tabData.accept(hPart);
 		tabData.accept(CASTING_MOLD_HANDLE);
 	})).build());
 

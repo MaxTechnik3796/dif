@@ -21,7 +21,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 
 import java.util.Locale;
-
+@SuppressWarnings("deprecation")
 @EventBusSubscriber(modid = DifMod.MODID)
 public class ModularAnvilHandler {
 

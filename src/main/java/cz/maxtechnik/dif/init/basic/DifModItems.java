@@ -77,7 +77,13 @@ public class DifModItems{
 
 
 	public static final DeferredItem<Item>CASTING_MOLD_HANDLE=REGISTRY.register("casting_mold_handle",()->new Item(new Item.Properties()));
-
+	public static final DeferredItem<Item>CASTING_MOLD_BINDING=REGISTRY.register("casting_mold_binding",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item>CASTING_MOLD_AXE_HEAD=REGISTRY.register("casting_mold_axe_head",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item>CASTING_MOLD_PICKAXE_HEAD=REGISTRY.register("casting_mold_pickaxe_head",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item>CASTING_MOLD_SHOVEL_HEAD=REGISTRY.register("casting_mold_shovel_head",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item>CASTING_MOLD_SWORD_HEAD=REGISTRY.register("casting_mold_sword_head",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item>CASTING_MOLD_SWORD_BINDING=REGISTRY.register("casting_mold_sword_binding",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item>CASTING_MOLD_HOE_HEAD=REGISTRY.register("casting_mold_hoe_head",()->new Item(new Item.Properties()));
 
 	public static final DeferredItem<Item> PORTAL_GUN=REGISTRY.register("portal_gun",PortalGun::new);
 

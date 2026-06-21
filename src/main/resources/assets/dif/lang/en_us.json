@@ -244,6 +244,26 @@
 	"item.dif.modular_part.sword_binding":"Modular Sword Binding",
 	"item.dif.modular_part.hoe_head":"Modular Hoe Head",
 
+	"item.dif.modular_part.cast_mold":"Modular Part (Cast Mold)",
+	"item.dif.modular_part.handle.cast_mold":"Modular Handle (Cast Mold)",
+	"item.dif.modular_part.binding.cast_mold":"Modular Binding (Cast Mold)",
+	"item.dif.modular_part.axe_head.cast_mold":"Modular Axe Head (Cast Mold)",
+	"item.dif.modular_part.pickaxe_head.cast_mold":"Modular Pickaxe Head (Cast Mold)",
+	"item.dif.modular_part.shovel_head.cast_mold":"Modular Shovel Head (Cast Mold)",
+	"item.dif.modular_part.sword_head.cast_mold":"Modular Sword Head (Cast Mold)",
+	"item.dif.modular_part.sword_binding.cast_mold":"Modular Sword Binding (Cast Mold)",
+	"item.dif.modular_part.hoe_head.cast_mold":"Modular Hoe Head (Cast Mold)",
+
+	"item.dif.casting_mold_handle":"Casting Mold: Handle",
+	"item.dif.casting_mold_binding":"Casting Mold: Binding",
+	"item.dif.casting_mold_axe_head":"Casting Mold: Axe Head",
+	"item.dif.casting_mold_pickaxe_head":"Casting Mold: Pickaxe Head",
+	"item.dif.casting_mold_shovel_head":"Casting Mold: Shovel Head",
+	"item.dif.casting_mold_sword_head":"Casting Mold: Sword Head",
+	"item.dif.casting_mold_sword_binding":"Casting Mold: Sword Binding",
+	"item.dif.casting_mold_hoe_head":"Casting Mold: Hoe Head",
+
+
 
 	"dif.material.wood":"Wood",
 	"dif.material.stone":"Stone",
@@ -273,18 +293,7 @@
 	"dif.tier.legendary":"Legendary",
 	"dif.tier.mythic":"Mythic",
 
-	"item.dif.pickaxe_head":"Pickaxe Head",
-	"item.dif.axe_head":"Axe Head",
-	"item.dif.shovel_head":"Shovel Head",
-	"item.dif.sword_head":"Sword Blade",
-	"item.dif.binding":"Binding",
-	"item.dif.sword_binding":"Sword Handle",
-	"item.dif.handle":"Handle",
 
-
-
-
-	"item.dif.casting_mold_handle":"Casting Mold: Handle",
 
 
 	"block.dif.aurora_casing":"Aurora Casing",

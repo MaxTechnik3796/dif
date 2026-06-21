@@ -1,0 +1,7 @@
+{
+	"parent":"item/generated",
+	"textures":{
+		"layer0":"dif:item/sword_head_casting_mold",
+		"layer1":"dif:item/sword_head"
+	}
+}

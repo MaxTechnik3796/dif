@@ -34,7 +34,10 @@ public class ModularClientHandler{
 				ModularPartProperties props=itemStack.get(DifModComponents.MODULAR_PART_PROPERTIES.get());
 				if(props!=null){
 					int color=-1;
-					if(tintIndex==0) color=ModularMaterial.byName(props.material()).getColor();
+					if(props.castMold()){
+						if(tintIndex==0) color=0xFFFFFF;
+						if(tintIndex==1) color=ModularMaterial.byName(props.material()).getColor();
+					}else if(tintIndex==0) color=ModularMaterial.byName(props.material()).getColor();
 					if(color!=-1) return color|0xFF000000;
 				}
 			}
@@ -63,7 +66,6 @@ public class ModularClientHandler{
 					ModularToolProperties props=itemStack.get(DifModComponents.MODULAR_TOOL_PROPERTIES.get());
 					if(props==null) return 0.0F;
 					String type=props.toolType().toLowerCase(Locale.ROOT);
-					boolean broken=tool.isBroken(itemStack);
 					float base=switch(type){
 						case "pickaxe" -> 1.0F;
 						case "axe" -> 2.0F;
@@ -73,17 +75,17 @@ public class ModularClientHandler{
 						default -> 0.0F;
 					};
 					if(base==0.0F) return 0.0F;
-					return broken?base+0.5F:base;
+					return tool.isBroken(itemStack)?base+0.5F:base;
 				}
 		));
 		event.enqueueWork(()->ItemProperties.register(DifModItems.MODULAR_PART.get(),
 				ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"part_state"),
 				(itemStack,level,entity,seed)->{
-					if(!(itemStack.getItem() instanceof ModularPart)) return 0.0F;
+					if(!(itemStack.getItem() instanceof ModularPart part)) return 0.0F;
 					ModularPartProperties props=itemStack.get(DifModComponents.MODULAR_PART_PROPERTIES.get());
 					if(props==null) return 0.0F;
 					String type=props.partType().toLowerCase(Locale.ROOT);
-					return switch(type){
+					float base=switch(type){
 						case "handle" -> 1.0F;
 						case "binding" -> 2.0F;
 						case "axe_head" -> 3.0F;
@@ -94,6 +96,8 @@ public class ModularClientHandler{
 						case "hoe_head" -> 8.0F;
 						default -> 0.0F;
 					};
+					if(base==0.0F) return 0.0F;
+					return part.isCast(itemStack)?base+0.5F:base;
 				}
 		));
 	}
