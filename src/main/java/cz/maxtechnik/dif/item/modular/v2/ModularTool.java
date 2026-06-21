@@ -308,6 +308,13 @@ public class ModularTool extends DiggerItem{
 						.append(Component.literal(String.format(Locale.ROOT,"%.1f",spd))
 								.withStyle(ChatFormatting.YELLOW))
 		);
+		float critMult=props.critMultiplier();
+		int critColor=critMult>1.0F?0xFFAA00:critMult<1.0F?0xFF5555:0xAAAAAA;
+		list.add(
+				Component.literal("Crit: ").withStyle(ChatFormatting.GRAY)
+						.append(Component.literal(String.format(Locale.ROOT,"%.1fx",critMult))
+								.withStyle(Style.EMPTY.withColor(critColor)))
+		);
 		list.add(
 				Component.literal("───── Parts ─────")
 						.withStyle(Style.EMPTY.withColor(0x6644BB))
