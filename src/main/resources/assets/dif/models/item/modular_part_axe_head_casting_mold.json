@@ -1,7 +1,7 @@
 {
 	"parent":"item/generated",
 	"textures":{
-		"layer0":"dif:item/axe_head_casting_mold",
+		"layer0":"dif:item/casting_mold_axe_head",
 		"layer1":"dif:item/axe_head"
 	}
 }

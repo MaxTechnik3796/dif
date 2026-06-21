@@ -1,7 +1,7 @@
 {
 	"parent":"item/generated",
 	"textures":{
-		"layer0":"dif:item/shovel_head_casting_mold",
+		"layer0":"dif:item/casting_mold_shovel_head",
 		"layer1":"dif:item/shovel_head"
 	}
 }

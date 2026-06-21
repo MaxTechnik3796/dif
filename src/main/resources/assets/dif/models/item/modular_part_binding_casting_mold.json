@@ -1,7 +1,7 @@
 {
 	"parent":"item/generated",
 	"textures":{
-		"layer0":"dif:item/binding_casting_mold",
+		"layer0":"dif:item/casting_mold_binding",
 		"layer1":"dif:item/binding"
 	}
 }

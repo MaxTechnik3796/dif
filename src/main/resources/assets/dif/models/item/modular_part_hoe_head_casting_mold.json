@@ -1,7 +1,7 @@
 {
 	"parent":"item/generated",
 	"textures":{
-		"layer0":"dif:item/hoe_head_casting_mold",
+		"layer0":"dif:item/casting_mold_hoe_head",
 		"layer1":"dif:item/hoe_head"
 	}
 }
