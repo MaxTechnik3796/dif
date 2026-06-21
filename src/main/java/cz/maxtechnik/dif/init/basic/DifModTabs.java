@@ -3,9 +3,7 @@ package cz.maxtechnik.dif.init.basic;
 import com.simibubi.create.AllCreativeModeTabs;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.other.DifModComponents;
-import cz.maxtechnik.dif.item.modular.v2.ModularPartProperties;
-import cz.maxtechnik.dif.item.modular.v2.ModularToolModifiers;
-import cz.maxtechnik.dif.item.modular.v2.ModularToolProperties;
+import cz.maxtechnik.dif.item.modular.v2.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -158,19 +156,18 @@ public class DifModTabs{
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>MODULAR_TOOLS=REGISTER.register("modular_tools",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.SPACE.getKey()).title(Component.translatable("creative_tab.dif.modular_tools")).icon(()->new ItemStack(Items.SMITHING_TABLE)).displayItems(((parameters, tabData)->{
 		tabData.accept(Items.SMITHING_TABLE);
-		ItemStack ePickaxe=new ItemStack(MODULAR_TOOL.get());ePickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties("pickaxe","gold","iron","wood","common"));
-		ItemStack e2Pickaxe=new ItemStack(MODULAR_TOOL.get());e2Pickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties("pickaxe","gold","iron","wood","common"));
+		ItemStack ePickaxe=new ItemStack(MODULAR_TOOL.get());ePickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties("pickaxe",ModularMaterial.GOLD.getName(),ModularMaterial.IRON.getName(),ModularMaterial.WOOD.getName(),ModularTier.COMMON.getName()));
+		ItemStack e2Pickaxe=new ItemStack(MODULAR_TOOL.get());e2Pickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties("pickaxe",ModularMaterial.GOLD.getName(),ModularMaterial.IRON.getName(),ModularMaterial.WOOD.getName(),ModularTier.COMMON.getName()));
 		tabData.accept(ePickaxe);
 		ArrayList<String> neco=new ArrayList<>();
-		neco.add("fortune");
+		neco.add("excavator");
 		e2Pickaxe.set(DifModComponents.MODULAR_TOOL_MODIFIERS.get(),new ModularToolModifiers(neco));
 		tabData.accept(e2Pickaxe);
-		ItemStack ePart=new ItemStack(MODULAR_PART.get());ePart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties("handle","stone"));
+		ItemStack ePart=new ItemStack(MODULAR_PART.get());ePart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties("handle",ModularMaterial.IRON.getName()));
 		tabData.accept(ePart);
-
-
-		ItemStack fPart=new ItemStack(MODULAR_PART.get());fPart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties("axe_head","steel"));
+		ItemStack fPart=new ItemStack(MODULAR_PART.get());fPart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties("axe_head",ModularMaterial.STEEL.getName()));
 		tabData.accept(fPart);
+		tabData.accept(CASTING_MOLD_HANDLE);
 	})).build());
 
 

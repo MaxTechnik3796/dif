@@ -97,6 +97,13 @@
 	"fluid.dif.creosote_oil_fluid":"Creosote Oil",
 	"fluid_type.dif.creosote_oil_fluid":"Creosote Oil",
 
+	"item.dif.molten_copper_bucket":"Molten Copper Bucket",
+	"block.dif.molten_copper_fluid":"Molten Copper Oil",
+	"fluid.dif.molten_copper_fluid":"Molten Copper Oil",
+	"fluid_type.dif.molten_copper_fluid":"Molten Copper Oil",
+
+
+
 
 	"creative_tab.dif.main":"TheDifferential: Main",
 	"creative_tab.dif.industrials":"TheDifferential: Industrial",
@@ -254,9 +261,6 @@
 	"dif.modifier.excavator":"Excavator",
 
 
-
-
-
 	"dif.mining_level.0":"Wooden",
 	"dif.mining_level.1":"Stone",
 	"dif.mining_level.2":"Iron",
@@ -278,6 +282,9 @@
 	"item.dif.handle":"Handle",
 
 
+
+
+	"item.dif.casting_mold_handle":"Casting Mold: Handle",
 
 
 	"block.dif.aurora_casing":"Aurora Casing",

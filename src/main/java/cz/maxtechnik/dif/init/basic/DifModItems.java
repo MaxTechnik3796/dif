@@ -75,6 +75,10 @@ public class DifModItems{
 	public static final DeferredItem<Item>MODULAR_TOOL=REGISTRY.register("modular_tool",ModularTool::new);
 	public static final DeferredItem<Item>MODULAR_PART=REGISTRY.register("modular_part",ModularPart::new);
 
+
+	public static final DeferredItem<Item>CASTING_MOLD_HANDLE=REGISTRY.register("casting_mold_handle",()->new Item(new Item.Properties()));
+
+
 	public static final DeferredItem<Item> PORTAL_GUN=REGISTRY.register("portal_gun",PortalGun::new);
 
 	public static final DeferredItem<Item> ELECTRO_RUNNERS=REGISTRY.register("electro_runners",ElectroRunners.Boots::new);

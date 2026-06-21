@@ -19,6 +19,9 @@ public enum ModularTier{
 		this.attackDamage=attackDamage;
 		this.color=color;
 	}
+	public String getName(){
+		return name;
+	}
 	public float getEfficiencyModifier(){
 		return efficiency;
 	}

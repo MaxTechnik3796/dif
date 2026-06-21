@@ -76,6 +76,7 @@ public class DifMod{
 		bus.addListener(DifModTabs::addCreative);
 		modContainer.registerConfig(ModConfig.Type.COMMON,DifModCommonConfig.SPEC);
 		bus.addListener(DifModCapabilities::registerCapabilities);
+		bus.addListener(DifModRecipex::onCommonSetup);
 	}
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event){
