@@ -157,7 +157,7 @@ public class DifModTabs{
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>MODULAR_TOOLS=REGISTER.register("modular_tools",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.SPACE.getKey()).title(Component.translatable("creative_tab.dif.modular_tools")).icon(()->new ItemStack(Items.SMITHING_TABLE)).displayItems(((parameters, tabData)->{
 		tabData.accept(Items.SMITHING_TABLE);
 		ItemStack ePickaxe=new ItemStack(MODULAR_TOOL.get());
-		ModularToolProperties pickaxe=new ModularToolProperties("pickaxe",ModularMaterial.GOLD.getName(),ModularMaterial.IRON.getName(),ModularMaterial.WOOD.getName(),ModularTier.COMMON.getName());
+		ModularToolProperties pickaxe=new ModularToolProperties("pickaxe",ModularMaterial.GOLD.getName(),ModularMaterial.IRON.getName(),ModularMaterial.WOOD.getName(),ModularTier.COMMON.getName(),1.0F);
 		ePickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),pickaxe);
 		ItemStack e2Pickaxe=new ItemStack(MODULAR_TOOL.get());e2Pickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),pickaxe);
 		tabData.accept(ePickaxe);
