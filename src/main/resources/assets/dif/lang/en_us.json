@@ -381,5 +381,14 @@
 
 	"block.dif.forge_brick":"Forge Brick",
 	"block.dif.forge_glass":"Forge Glass",
-	"block.dif.forge_furnace_controller":"Forge Controller"
+	"block.dif.forge_furnace_controller":"Forge Controller",
+
+
+
+	"item.dif.nickel_ingot":"Nickel Ingot",
+	"item.dif.nickel_nugget":"Nickel Nugget",
+
+	"block.dif.nickel_ore":"Nickel Ore",
+	"block.dif.deepslate_nickel_ore":"Deepslate Nickel Ore",
+	"block.dif.nickel_block":"Nickel Block"
 }
