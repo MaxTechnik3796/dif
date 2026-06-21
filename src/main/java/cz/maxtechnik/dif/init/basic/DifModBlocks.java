@@ -184,8 +184,8 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>COKE_OVEN=REGISTRY.register("coke_oven",()->new CokeOven(BlockBehaviour.Properties.of().strength(3F,4F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
 	public static final DeferredBlock<Block>COKE_OVEN_CONTROLLER=REGISTRY.register("coke_oven_controller",()->new CokeOvenController(BlockBehaviour.Properties.of().strength(3F,4F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
 
-	public static final DeferredBlock<Block>BLAST_SMELTERY=REGISTRY.register("blast_smeltery",()->new BlastSmeltery(BlockBehaviour.Properties.of().strength(4F,5F).requiresCorrectToolForDrops().sound(SoundType.NETHERITE_BLOCK)));
-	public static final DeferredBlock<Block>BLAST_SMELTERY_CONTROLLER=REGISTRY.register("blast_smeltery_controller",()->new BlastSmelteryController(BlockBehaviour.Properties.of().strength(4F,5F).requiresCorrectToolForDrops().sound(SoundType.NETHERITE_BLOCK)));
+	public static final DeferredBlock<Block>BLAST_SMELTERY=REGISTRY.register("blast_smeltery",()->new BlastSmeltery(BlockBehaviour.Properties.of().strength(4F,5F).requiresCorrectToolForDrops().sound(SoundType.NETHER_BRICKS)));
+	public static final DeferredBlock<Block>BLAST_SMELTERY_CONTROLLER=REGISTRY.register("blast_smeltery_controller",()->new BlastSmelteryController(BlockBehaviour.Properties.of().strength(4F,5F).requiresCorrectToolForDrops().sound(SoundType.NETHER_BRICKS)));
 
 	public static final BlockBehaviour.Properties ENGINE_PROPERTIES=BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops();
 	public static final DeferredBlock<Block>ENGINE2=REGISTRY.register("engine2",()->new Engine(ENGINE_PROPERTIES));
