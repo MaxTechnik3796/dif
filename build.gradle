@@ -103,7 +103,7 @@ dependencies {
         exclude group: "com.simibubi.create", module: "create"
     }
 
-    runtimeOnly "curse.maven:opm-1551501:8137500"
+    runtimeOnly "curse.maven:opm-1551501:8258285"
     runtimeOnly "curse.maven:jade-324717:7545219"
     runtimeOnly "curse.maven:mouse-tweaks-60089:5637846"
     runtimeOnly "curse.maven:appleskin-248787:7854442"
