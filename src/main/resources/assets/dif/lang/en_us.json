@@ -280,6 +280,10 @@
 
 	"dif.modifier.excavator":"Excavator",
 
+	"dif.modifier.excavator.desc":"Simple Excavator Description",
+
+
+
 
 	"dif.mining_level.0":"Wooden",
 	"dif.mining_level.1":"Stone",
