@@ -36,7 +36,7 @@ public class ModularPart extends Item{
 		);
 		list.add(
 				Component.literal("Tier: ").withStyle(ChatFormatting.GRAY)
-						.append(Component.translatable("dif.tier."+tier.name).withColor(ModularTier.byName(tier.name).getColor()))
+						.append(Component.translatable("dif.tier."+tier.getName()).withColor(ModularTier.byName(tier.getName()).getColor()))
 		);
 		list.add(
 				Component.literal("Material: ").withStyle(Style.EMPTY.withColor(0x888888))

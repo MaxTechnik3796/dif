@@ -18,14 +18,11 @@ public enum ModularMaterial{
 	MITHRIL("mithril","c:molten_mithril",1,12F,3,2F,1,1,0.1F,EPIC,MAGNETIC,0x80CDB4);
 	private final String name;
 	private final String liquid;
-	// Head stats
 	private final int headDurability;
 	private final float headEfficiency;
 	private final int miningLevel;
 	private final float attackDamage;
-	// Binding stats
 	private final int bindingDurability;
-	// Handle stats
 	private final int handleDurability;
 	private final float attackSpeedBonus;
 	private final ModularTier tier;
