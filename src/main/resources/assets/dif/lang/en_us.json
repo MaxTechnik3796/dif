@@ -273,6 +273,22 @@
 	"dif.material.steel":"Steel",
 
 
+	"dif.modifier.silk_touch":"Silk Touch",
+	"dif.modifier.fortune":"Fortune",
+	"dif.modifier.looting":"Looting",
+	"dif.modifier.fire_aspect":"Fire Aspect",
+	"dif.modifier.sweeping_edge":"Sweeping Edge",
+	"dif.modifier.mending":"Mending",
+
+	"dif.modifier.knockback":"Knockback",
+	"dif.modifier.sharpness":"Sharpness",
+	"dif.modifier.efficiency":"Efficiency",
+	"dif.modifier.reinforced":"Reinforced",
+
+
+
+
+
 	"dif.modifier.ecological":"Ecological",
 	"dif.modifier.magnetic":"Magnetic",
 	"dif.modifier.cheap":"Cheap",
