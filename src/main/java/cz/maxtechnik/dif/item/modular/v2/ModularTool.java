@@ -93,11 +93,24 @@ public class ModularTool extends DiggerItem{
 		ModularMaterial binding=ModularMaterial.byName(props.bindingMaterial());
 		ModularMaterial handle=ModularMaterial.byName(props.handleMaterial());
 		ModularTier tier=ModularTier.byName(props.tier());
-		return (int)(((head.getHeadDurability()+binding.getBindingDurability())+handle.getHandleDurability())*tier.getDurabilityModifier());
+		float base=(head.getHeadDurability()+binding.getBindingDurability()+handle.getHandleDurability())*tier.getDurabilityModifier();
+		// Aplikuj modifiery: každý modifier aplikuje factor^lvl
+		for(ModularToolModifiers.entry e: getAllModifiersRaw(itemStack))
+			base*=(float)Math.pow(ModularModifier.byName(e.id()).getDurability(),e.lvl());
+		return (int)base;
 	}
 	private float getLiveEfficiency(ItemStack itemStack){
 		if(isBroken(itemStack)) return 1F;
-		return ModularMaterial.byName(getProps(itemStack).headMaterial()).getHeadEfficiency()*ModularTier.byName(getProps(itemStack).tier()).getEfficiencyModifier();
+		float base=ModularMaterial.byName(getProps(itemStack).headMaterial()).getHeadEfficiency()*ModularTier.byName(getProps(itemStack).tier()).getEfficiencyModifier();
+		for(ModularToolModifiers.entry e: getAllModifiersRaw(itemStack))
+			base*=(float)Math.pow(ModularModifier.byName(e.id()).getEfficiency(),e.lvl());
+		return base;
+	}
+	/** Vrátí seznam všech extra modifierů uložených na nástroji jako entry {id, lvl}. */
+	private static List<ModularToolModifiers.entry> getAllModifiersRaw(ItemStack itemStack){
+		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
+		if(component==null) return List.of();
+		return component.modifiers();
 	}
 	private int getLiveMiningLevel(ItemStack itemStack){
 		if(isBroken(itemStack)) return 0;
@@ -248,6 +261,12 @@ public class ModularTool extends DiggerItem{
 			ModularMaterial handle=ModularMaterial.byName(props.handleMaterial());
 			finalDamage=(getBaseDamageForType(props.toolType())+head.getAttackDamage())*ModularTier.byName(props.tier()).getAttackDamageModifier();
 			finalSpeed=getBaseSpeedForType(props.toolType())+handle.getAttackSpeedBonus();
+			// Aplikuj modifiery: factor^lvl
+			for(ModularToolModifiers.entry e: getAllModifiersRaw(itemStack)){
+				ModularModifier mm=ModularModifier.byName(e.id());
+				finalDamage*=(float)Math.pow(mm.getAttackDamage(),e.lvl());
+				finalSpeed*=(float)Math.pow(mm.getAttackSpeed(),e.lvl());
+			}
 		}
 		builder.add(Attributes.ATTACK_DAMAGE,new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID,finalDamage,AttributeModifier.Operation.ADD_VALUE),EquipmentSlotGroup.MAINHAND);
 		builder.add(Attributes.ATTACK_SPEED,new AttributeModifier(Item.BASE_ATTACK_SPEED_ID,finalSpeed,AttributeModifier.Operation.ADD_VALUE),EquipmentSlotGroup.MAINHAND);
@@ -263,8 +282,16 @@ public class ModularTool extends DiggerItem{
 		int maxDmg=getMaxDamage(itemStack);
 		int miningLvl=getLiveMiningLevel(itemStack);
 		float eff=getLiveEfficiency(itemStack);
-		float dmg=1F+(getBaseDamageForType(props.toolType())+head.getAttackDamage())*ModularTier.byName(props.tier()).getAttackDamageModifier();
-		float spd=4F+getBaseSpeedForType(props.toolType())+handle.getAttackSpeedBonus();
+		// Damage a speed s modifiery (pro tooltip)
+		float baseDmg=(getBaseDamageForType(props.toolType())+head.getAttackDamage())*ModularTier.byName(props.tier()).getAttackDamageModifier();
+		float baseSpd=getBaseSpeedForType(props.toolType())+handle.getAttackSpeedBonus();
+		for(ModularToolModifiers.entry e: getAllModifiersRaw(itemStack)){
+			ModularModifier mm=ModularModifier.byName(e.id());
+			baseDmg*=(float)Math.pow(mm.getAttackDamage(),e.lvl());
+			baseSpd*=(float)Math.pow(mm.getAttackSpeed(),e.lvl());
+		}
+		float dmg=1F+baseDmg;
+		float spd=4F+baseSpd;
 		int remaining=Math.max(0,maxDmg-itemStack.getDamageValue());
 		float ratio=maxDmg>0?(float)remaining/maxDmg:0;
 		int durColor=((int)(255*(1-ratio))<<16)|((int)(255*ratio)<<8);
@@ -345,18 +372,20 @@ public class ModularTool extends DiggerItem{
 			);
 		}
 		list.add(CommonComponents.EMPTY);
-		ArrayList<String> modifiers=getModifiers(itemStack);
-		for(String modifier: modifiers){
-			list.add(
-				Component.translatable("dif.modifier."+modifier).withStyle(Style.EMPTY.withColor(ModularModifier.byName(modifier).getColor()))
-			);
+		// Modifiery s levely: {id, lvl}
+		for(ModularToolModifiers.entry e: getAllModifiersRaw(itemStack)){
+			ModularModifier mm=ModularModifier.byName(e.id());
+			Component nameComp=Component.translatable("dif.modifier."+e.id());
+			if(e.lvl()>1) nameComp=nameComp.copy().append(Component.literal(" "+e.lvl()).withStyle(ChatFormatting.WHITE));
+			list.add(nameComp.copy().withStyle(Style.EMPTY.withColor(mm.getColor())));
 		}
 	}
-	private static @NotNull ArrayList<String> getModifiers(ItemStack itemStack){
+	private static @NotNull List<ModularToolModifiers.entry> getModifiers(ItemStack itemStack){
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
-		if(component==null) return new ArrayList<>();
-		return new ArrayList<>(component.modifiers());
+		if(component==null) return List.of();
+		return component.modifiers();
 	}
+
 	private static @NotNull ArrayList<String> getMaterialModifiers(ModularMaterial head,ModularMaterial binding,ModularMaterial handle){
 		ArrayList<String> materialModifiers=new ArrayList<>();
 		String headModifier=head.getModifier().getName().toLowerCase(Locale.ROOT);
@@ -404,24 +433,47 @@ public class ModularTool extends DiggerItem{
 						.withItalic(false));
 	}
 	public void addModifier(ItemStack itemStack,ModularModifier modifier){
+		addModifier(itemStack,modifier,1);
+	}
+	/** Přidá modifier na nástroj. Pokud již existuje, zvýší jeho level o `levels`. */
+	public void addModifier(ItemStack itemStack,ModularModifier modifier,int levels){
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
 		if(component==null) return;
-		List<String> newModifiers=new ArrayList<>(component.modifiers());
-		if(!newModifiers.contains(modifier.getName())){
-			newModifiers.add(modifier.getName());
-			itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(newModifiers));
+		List<ModularToolModifiers.entry> newModifiers=new ArrayList<>(component.modifiers());
+		boolean found=false;
+		for(int i=0;i<newModifiers.size();i++){
+			if(newModifiers.get(i).id().equals(modifier.getName())){
+				ModularToolModifiers.entry existing=newModifiers.get(i);
+				newModifiers.set(i,new ModularToolModifiers.entry(existing.id(),existing.lvl()+levels));
+				found=true;
+				break;
+			}
 		}
+		if(!found) newModifiers.add(new ModularToolModifiers.entry(modifier.getName(),levels));
+		itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(newModifiers));
 	}
 	public boolean isModifier(ItemStack itemStack,ModularModifier modifier){
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
 		if(component==null) return false;
-		return component.modifiers().contains(modifier.getName());
+		for(ModularToolModifiers.entry e: component.modifiers())
+			if(e.id().equals(modifier.getName())) return true;
+		return false;
+	}
+	/** Vrátí level daného modifieru (0 pokud není přitožen). */
+	public int getModifierLevel(ItemStack itemStack,ModularModifier modifier){
+		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
+		if(component==null) return 0;
+		for(ModularToolModifiers.entry e: component.modifiers())
+			if(e.id().equals(modifier.getName())) return e.lvl();
+		return 0;
 	}
 	public void removeModifier(ItemStack itemStack,ModularModifier modifier){
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
 		if(component==null) return;
-		List<String> newModifiers=new ArrayList<>(component.modifiers());
-		if(newModifiers.remove(modifier.getName()))
+		List<ModularToolModifiers.entry> newModifiers=component.modifiers().stream()
+				.filter(e->!e.id().equals(modifier.getName()))
+				.collect(java.util.stream.Collectors.toList());
+		if(newModifiers.size()!=component.modifiers().size())
 			itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(newModifiers));
 	}
 }
