@@ -92,19 +92,14 @@ public class ModularTool extends DiggerItem{
 		ModularMaterial head=ModularMaterial.byName(props.headMaterial());
 		ModularMaterial binding=ModularMaterial.byName(props.bindingMaterial());
 		ModularMaterial handle=ModularMaterial.byName(props.handleMaterial());
-		ModularTier tier=ModularTier.byName(props.tier());
-		float base=(head.getHeadDurability()+binding.getBindingDurability()+handle.getHandleDurability())*tier.getDurabilityModifier();
-		// Aplikuj modifiery: každý modifier aplikuje factor^lvl
-		for(ModularToolModifiers.entry e: getAllModifiersRaw(itemStack))
-			base*=(float)Math.pow(ModularModifier.byName(e.id()).getDurability(),e.lvl());
+		float base=head.getHeadDurability()+binding.getBindingDurability()+handle.getHandleDurability();
 		return (int)base;
 	}
 	private float getLiveEfficiency(ItemStack itemStack){
 		if(isBroken(itemStack)) return 1F;
-		float base=ModularMaterial.byName(getProps(itemStack).headMaterial()).getHeadEfficiency()*ModularTier.byName(getProps(itemStack).tier()).getEfficiencyModifier();
-		for(ModularToolModifiers.entry e: getAllModifiersRaw(itemStack))
-			base*=(float)Math.pow(ModularModifier.byName(e.id()).getEfficiency(),e.lvl());
-		return base;
+		float headEff=ModularMaterial.byName(getProps(itemStack).headMaterial()).getHeadEfficiency();
+		float modifierEff=0F;
+		return headEff*modifierEff;
 	}
 	/** Vrátí seznam všech extra modifierů uložených na nástroji jako entry {id, lvl}. */
 	private static List<ModularToolModifiers.entry> getAllModifiersRaw(ItemStack itemStack){
@@ -194,13 +189,13 @@ public class ModularTool extends DiggerItem{
 		if(isBroken(itemStack)) return false;
 		String type=getProps(itemStack).toolType().toLowerCase();
 		if(type.equals("pickaxe")&&itemAbility.equals(ItemAbilities.PICKAXE_DIG)) return true;
-		if(type.equals("axe")&&(itemAbility.equals(ItemAbilities.AXE_DIG)||itemAbility.equals(ItemAbilities.AXE_STRIP)||itemAbility.equals(ItemAbilities.AXE_SCRAPE)||itemAbility.equals(ItemAbilities.AXE_WAX_OFF)))
+		else if(type.equals("axe")&&(itemAbility.equals(ItemAbilities.AXE_DIG)||itemAbility.equals(ItemAbilities.AXE_STRIP)||itemAbility.equals(ItemAbilities.AXE_SCRAPE)||itemAbility.equals(ItemAbilities.AXE_WAX_OFF)))
 			return true;
-		if(type.equals("shovel")&&(itemAbility.equals(ItemAbilities.SHOVEL_DIG)||itemAbility.equals(ItemAbilities.SHOVEL_FLATTEN)||itemAbility.equals(ItemAbilities.SHOVEL_DOUSE)))
+		else if(type.equals("shovel")&&(itemAbility.equals(ItemAbilities.SHOVEL_DIG)||itemAbility.equals(ItemAbilities.SHOVEL_FLATTEN)||itemAbility.equals(ItemAbilities.SHOVEL_DOUSE)))
 			return true;
-		if(type.equals("hoe")&&(itemAbility.equals(ItemAbilities.HOE_DIG)||itemAbility.equals(ItemAbilities.HOE_TILL)))
+		else if(type.equals("hoe")&&(itemAbility.equals(ItemAbilities.HOE_DIG)||itemAbility.equals(ItemAbilities.HOE_TILL)))
 			return true;
-		if(type.equals("sword")&&itemAbility.equals(ItemAbilities.SWORD_DIG)) return true;//DO NOT TOUCH
+		else if(type.equals("sword")&&itemAbility.equals(ItemAbilities.SWORD_DIG)) return true;//DO NOT TOUCH
 		return false;
 	}
 	@Override
@@ -259,14 +254,8 @@ public class ModularTool extends DiggerItem{
 		if(!isBroken(itemStack)){
 			ModularMaterial head=ModularMaterial.byName(props.headMaterial());
 			ModularMaterial handle=ModularMaterial.byName(props.handleMaterial());
-			finalDamage=(getBaseDamageForType(props.toolType())+head.getAttackDamage())*ModularTier.byName(props.tier()).getAttackDamageModifier();
+			finalDamage=getBaseDamageForType(props.toolType())+head.getAttackDamage();
 			finalSpeed=getBaseSpeedForType(props.toolType())+handle.getAttackSpeedBonus();
-			// Aplikuj modifiery: factor^lvl
-			for(ModularToolModifiers.entry e: getAllModifiersRaw(itemStack)){
-				ModularModifier mm=ModularModifier.byName(e.id());
-				finalDamage*=(float)Math.pow(mm.getAttackDamage(),e.lvl());
-				finalSpeed*=(float)Math.pow(mm.getAttackSpeed(),e.lvl());
-			}
 		}
 		builder.add(Attributes.ATTACK_DAMAGE,new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID,finalDamage,AttributeModifier.Operation.ADD_VALUE),EquipmentSlotGroup.MAINHAND);
 		builder.add(Attributes.ATTACK_SPEED,new AttributeModifier(Item.BASE_ATTACK_SPEED_ID,finalSpeed,AttributeModifier.Operation.ADD_VALUE),EquipmentSlotGroup.MAINHAND);
@@ -283,13 +272,8 @@ public class ModularTool extends DiggerItem{
 		int miningLvl=getLiveMiningLevel(itemStack);
 		float eff=getLiveEfficiency(itemStack);
 		// Damage a speed s modifiery (pro tooltip)
-		float baseDmg=(getBaseDamageForType(props.toolType())+head.getAttackDamage())*ModularTier.byName(props.tier()).getAttackDamageModifier();
+		float baseDmg=getBaseDamageForType(props.toolType())+head.getAttackDamage();
 		float baseSpd=getBaseSpeedForType(props.toolType())+handle.getAttackSpeedBonus();
-		for(ModularToolModifiers.entry e: getAllModifiersRaw(itemStack)){
-			ModularModifier mm=ModularModifier.byName(e.id());
-			baseDmg*=(float)Math.pow(mm.getAttackDamage(),e.lvl());
-			baseSpd*=(float)Math.pow(mm.getAttackSpeed(),e.lvl());
-		}
 		float dmg=1F+baseDmg;
 		float spd=4F+baseSpd;
 		int remaining=Math.max(0,maxDmg-itemStack.getDamageValue());
