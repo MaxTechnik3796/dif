@@ -13,7 +13,8 @@ public enum ModularParts{
 	SWORD_HEAD("sword_head",CASTING_MOLD_SWORD_HEAD.get()),
 	SHOVEL_HEAD("shovel_head",CASTING_MOLD_SHOVEL_HEAD.get()),
 	SWORD_BINDING("sword_binding",CASTING_MOLD_SWORD_BINDING.get()),
-	HOE_HEAD("hoe_head",CASTING_MOLD_HOE_HEAD.get()),;
+	HOE_HEAD("hoe_head",CASTING_MOLD_HOE_HEAD.get()),
+	;
 	private final String name;
 	private final Item castingMold;
 	ModularParts(String name,Item castingMold){

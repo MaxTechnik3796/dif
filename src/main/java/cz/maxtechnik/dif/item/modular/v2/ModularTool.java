@@ -33,6 +33,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import static java.lang.Math.round;
 public class ModularTool extends DiggerItem{
 	public ModularTool(){
 		super(new Tier(){
@@ -75,13 +77,6 @@ public class ModularTool extends DiggerItem{
 		int maxDmg=getMaxDamage(itemStack);
 		int currentDmg=itemStack.getDamageValue();
 		int newDmg=currentDmg+amount;
-		int reinChance=switch(getModifierLevel(itemStack,ModularModifier.REINFORCED)){
-			case 1 -> 15;
-			case 2 -> 10;
-			case 3 -> 5;
-			default -> 0;
-		};
-		if(reinChance>0&&DifMod.rouletteBoolean(reinChance)) newDmg=currentDmg;
 		if(newDmg>=maxDmg){
 			itemStack.setDamageValue(maxDmg);
 			if(entity instanceof Player){
@@ -97,15 +92,19 @@ public class ModularTool extends DiggerItem{
 	@Override
 	public int getMaxDamage(@NotNull ItemStack itemStack){
 		ModularToolProperties props=getProps(itemStack);
-		ModularMaterial head=ModularMaterial.byName(props.headMaterial());
-		ModularMaterial binding=ModularMaterial.byName(props.bindingMaterial());
-		ModularMaterial handle=ModularMaterial.byName(props.handleMaterial());
-		float base=head.getHeadDurability()+binding.getBindingDurability()+handle.getHandleDurability();
-		return (int)base;
+		int head=ModularMaterial.byName(props.headMaterial()).getHeadDurability();
+		int binding=ModularMaterial.byName(props.bindingMaterial()).getBindingDurability();
+		int handle=ModularMaterial.byName(props.handleMaterial()).getHandleDurability();
+		int modifier=reinforcedLevel(itemStack);
+		float reforge=ModularReforge.byName(getProps(itemStack).reforge()).getDurability()[ModularTier.byName(getProps(itemStack).tier()).getReforgeIndex()];
+		return round((head+binding+handle+modifier)*reforge);
 	}
 	private float getLiveEfficiency(ItemStack itemStack){
 		if(isBroken(itemStack)) return 1F;
-		return ModularMaterial.byName(getProps(itemStack).headMaterial()).getHeadEfficiency()+efficiencyLevel(itemStack);
+		float head=ModularMaterial.byName(getProps(itemStack).headMaterial()).getHeadEfficiency();
+		float modifier=efficiencyLevel(itemStack);
+		float reforge=ModularReforge.byName(getProps(itemStack).reforge()).getEfficiency()[ModularTier.byName(getProps(itemStack).tier()).getReforgeIndex()];
+		return head+modifier+reforge;
 	}
 	private static List<ModularToolModifiers.entry> getAllModifiers(ItemStack itemStack){
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
@@ -280,6 +279,15 @@ public class ModularTool extends DiggerItem{
 			default -> 0F;
 		};
 	}
+	public int reinforcedLevel(ItemStack itemStack){
+		return switch(getModifierLevel(itemStack,ModularModifier.REINFORCED)){
+			case 1 -> 2;
+			case 2 -> 3;
+			case 3 -> 4;
+			case 4 -> 5;
+			default -> 0;
+		};
+	}
 	@Override
 	public @NotNull ItemAttributeModifiers getDefaultAttributeModifiers(@NotNull ItemStack itemStack){
 		ModularToolProperties props=getProps(itemStack);
@@ -290,8 +298,8 @@ public class ModularTool extends DiggerItem{
 		if(!isBroken(itemStack)){
 			ModularMaterial head=ModularMaterial.byName(props.headMaterial());
 			ModularMaterial handle=ModularMaterial.byName(props.handleMaterial());
-			finalDamage=getBaseDamageForType(props.toolType())+head.getAttackDamage()+sharpnessDamage(itemStack);
-			finalSpeed=getBaseSpeedForType(props.toolType())+handle.getAttackSpeedBonus();
+			finalDamage=getBaseDamageForType(props.toolType())+head.getAttackDamage()+sharpnessDamage(itemStack)+ModularReforge.byName(getProps(itemStack).reforge()).getAttackDamage()[ModularTier.byName(getProps(itemStack).tier()).getReforgeIndex()];
+			finalSpeed=getBaseSpeedForType(props.toolType())+handle.getAttackSpeedBonus()+ModularReforge.byName(getProps(itemStack).reforge()).getAttackSpeed()[ModularTier.byName(getProps(itemStack).tier()).getReforgeIndex()];
 			finalKnockback=knockbackLevel(itemStack);
 		}
 		builder.add(Attributes.ATTACK_DAMAGE,new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID,finalDamage,AttributeModifier.Operation.ADD_VALUE),EquipmentSlotGroup.MAINHAND);

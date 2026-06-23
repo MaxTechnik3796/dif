@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 public record ModularToolModifiers(List<entry> modifiers){
 	public ModularToolModifiers{
 		// Ochrana proti duplicitním modifierům (podle ID) - pokud by se nějak dostaly duplikáty, sečteme levely
