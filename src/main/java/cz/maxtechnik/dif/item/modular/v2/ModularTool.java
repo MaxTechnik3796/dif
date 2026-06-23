@@ -395,11 +395,11 @@ public class ModularTool extends DiggerItem{
 		}
 		list.add(CommonComponents.EMPTY);
 		for(ModularToolModifiers.entry entry: getAllModifiers(itemStack)){
-			ModularModifier mm=ModularModifier.byName(entry.id());
+			ModularModifier modifier=ModularModifier.byName(entry.id());
 			Component nameComp=Component.translatable("dif.modifier."+entry.id());
 			if(ModularModifier.byName(entry.id()).getMaxLvl()>1)
 				nameComp=nameComp.copy().append(Component.literal(" ")).append(Component.translatable("enchantment.level."+entry.lvl()).withStyle(ChatFormatting.WHITE));
-			list.add(nameComp.copy().withStyle(Style.EMPTY.withColor(mm.getColor())));
+			list.add(nameComp.copy().withStyle(Style.EMPTY.withColor(modifier.getColor())));
 		}
 	}
 	private static @NotNull ArrayList<String> getMaterialModifiers(ModularMaterial head,ModularMaterial binding,ModularMaterial handle){
