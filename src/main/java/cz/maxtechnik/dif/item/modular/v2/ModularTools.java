@@ -7,7 +7,12 @@ public enum ModularTools{
 	PICKAXE("pickaxe"),
 	SWORD("sword"),
 	SHOVEL("shovel"),
-	HOE("hoe");
+	HOE("hoe"),
+	KATANA("katana"),
+	BATTLE_AXE("battle_axe"),
+	HAMMER("hammer"),
+	TIMBER_AXE("timber_axe"),
+	EXCAVATOR("excavator");
 	private final String name;
 	ModularTools(String name){
 		this.name=name;
