@@ -2,34 +2,24 @@ package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
-import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
-import cz.maxtechnik.dif.particle.FireballParticle;
-import cz.maxtechnik.dif.particle.HugeSmoke;
-import net.minecraft.client.renderer.entity.NoopRenderer;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import org.slf4j.Logger;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
 import cz.maxtechnik.dif.command.IsChunkLoadedCommand;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.basic.DifModSounds;
 import cz.maxtechnik.dif.init.basic.DifModTabs;
+import cz.maxtechnik.dif.init.events.JetpackHandler;
 import cz.maxtechnik.dif.init.fluid.DifModFluidTypes;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import cz.maxtechnik.dif.init.other.*;
-import cz.maxtechnik.dif.init.events.JetpackHandler;
+import cz.maxtechnik.dif.particle.FireballParticle;
+import cz.maxtechnik.dif.particle.HugeSmoke;
 import cz.maxtechnik.dif.renderer.*;
+import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -40,12 +30,22 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import org.slf4j.Logger;
 @SuppressWarnings({"removal","deprecation","unused"})
 @Mod(DifMod.MODID)
 public class DifMod{
@@ -116,8 +116,6 @@ public class DifMod{
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_MUSHROOM.get(),NoopRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_WAVE.get(),NoopRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_RADIATION.get(),NoopRenderer::new);
-
-
 			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.ENGINE.get()).factory(SingleAxisRotatingVisual::shaft).neverSkipVanillaRender().apply();
 		}
 		@SubscribeEvent
@@ -130,8 +128,8 @@ public class DifMod{
 	public static boolean rouletteBoolean(int range){
 		return 0==Mth.nextInt(RandomSource.create(),0,range);
 	}
-	public static boolean rouletteFloat(float chance){
-		return !(RandomSource.create().nextFloat() < chance);
+	public static boolean rouletteBoolean(float chance){
+		return !(RandomSource.create().nextFloat()<chance);
 	}
 	public static boolean mouseIn(int mouseX,int mouseY,int x,int y,int w,int h){
 		return mouseX>=x&&mouseX<x+w&&mouseY>=y&&mouseY<y+h;
