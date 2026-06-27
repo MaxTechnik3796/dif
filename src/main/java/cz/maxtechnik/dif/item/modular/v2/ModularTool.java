@@ -104,7 +104,7 @@ public class ModularTool extends DiggerItem{
 		float head=ModularMaterial.byName(getProps(itemStack).headMaterial()).getHeadEfficiency();
 		float modifier=efficiencyLevel(itemStack);
 		float reforge=ModularReforge.byName(getProps(itemStack).reforge()).getEfficiency()[ModularTier.byName(getProps(itemStack).tier()).getReforgeIndex()];
-		return head+modifier+reforge;
+		return (head+modifier)*reforge;
 	}
 	private static List<ModularToolModifiers.entry> getAllModifiers(ItemStack itemStack){
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
@@ -301,8 +301,8 @@ public class ModularTool extends DiggerItem{
 		if(!isBroken(itemStack)){
 			ModularMaterial head=ModularMaterial.byName(props.headMaterial());
 			ModularMaterial handle=ModularMaterial.byName(props.handleMaterial());
-			finalDamage=getBaseDamageForType(props.toolType())+head.getAttackDamage()+sharpnessDamage(itemStack)+ModularReforge.byName(getProps(itemStack).reforge()).getAttackDamage()[ModularTier.byName(getProps(itemStack).tier()).getReforgeIndex()];
-			finalSpeed=getBaseSpeedForType(props.toolType())+handle.getAttackSpeedBonus()+ModularReforge.byName(getProps(itemStack).reforge()).getAttackSpeed()[ModularTier.byName(getProps(itemStack).tier()).getReforgeIndex()];
+			finalDamage=(getBaseDamageForType(props.toolType())+head.getAttackDamage()+sharpnessDamage(itemStack))*ModularReforge.byName(getProps(itemStack).reforge()).getAttackDamage()[ModularTier.byName(getProps(itemStack).tier()).getReforgeIndex()];
+			finalSpeed=(getBaseSpeedForType(props.toolType())+handle.getAttackSpeedBonus())*ModularReforge.byName(getProps(itemStack).reforge()).getAttackSpeed()[ModularTier.byName(getProps(itemStack).tier()).getReforgeIndex()];
 			finalKnockback=knockbackLevel(itemStack);
 		}
 		builder.add(Attributes.ATTACK_DAMAGE,new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID,finalDamage,AttributeModifier.Operation.ADD_VALUE),EquipmentSlotGroup.MAINHAND);
