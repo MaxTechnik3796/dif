@@ -24,12 +24,12 @@ public class ModularSubscriber{
 		switch(reforge){
 			case VAMPIRIC,DRAIN -> {
 				if(attacker.getHealth()>=attacker.getMaxHealth()) return;
-				if(!(chances[tier]==0)&&DifMod.rouletteBoolean(chances[tier])) return;
-				attacker.heal(Math.clamp(dmg/2F,0.5F,target.getHealth()));
+				if(!(chances[tier]==0)&&DifMod.rouletteBoolean(chances[tier]))
+					attacker.heal(Math.clamp(dmg/2F,0.5F,target.getHealth()));
 			}
 			case PHANTOM -> {
-				if(!(chances[tier]==0)&&DifMod.rouletteBoolean(chances[tier])) return;
-				event.setAmount(dmg+Math.max(0.5F,dmg/2F));
+				if(!(chances[tier]==0)&&DifMod.rouletteBoolean(chances[tier]))
+					event.setAmount(dmg+Math.max(0.5F,dmg/2F));
 			}
 		}
 	}
