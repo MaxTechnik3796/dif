@@ -68,7 +68,7 @@ public class ModularTool extends DiggerItem{
 	 * @param itemStack tool
 	 * @return props (components)
 	 */
-	private ModularToolProperties getProps(ItemStack itemStack){
+	public static ModularToolProperties getProps(ItemStack itemStack){
 		ModularToolProperties props=itemStack.get(DifModComponents.MODULAR_TOOL_PROPERTIES.get());
 		return props!=null?props:ModularToolProperties.DEFAULT;
 	}
@@ -249,8 +249,8 @@ public class ModularTool extends DiggerItem{
 	@Override
 	public boolean hurtEnemy(@NotNull ItemStack itemStack,@NotNull LivingEntity target,@NotNull LivingEntity attacker){
 		if(!isBroken(itemStack)){
-			int amt=getProps(itemStack).toolType().toLowerCase(Locale.ROOT).equals(ModularTools.SWORD.getName())?1:2;
-			//life steal here
+			ModularToolProperties props=getProps(itemStack);
+			int amt=props.toolType().toLowerCase(Locale.ROOT).equals(ModularTools.SWORD.getName())?1:2;
 			this.damageTool(itemStack,amt,attacker);
 		}
 		return true;
