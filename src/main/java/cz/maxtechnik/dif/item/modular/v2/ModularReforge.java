@@ -30,37 +30,37 @@ public enum ModularReforge{
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F}),
-// (lifesteal je special efekt, ne v těchto polích)
+	// (lifesteal je special efekt, ne v těchto polích)
 	FROZEN("frozen",new ModularTools[]{SWORD,KATANA},
 			new Float[]{1F,1F,1.05F,1.1F,1.15F},        // attackDamage: +5/10/15%
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F}),
-// (slow je special efekt)
+	// (slow je special efekt)
 	PHANTOM("phantom",new ModularTools[]{SWORD,BATTLE_AXE,KATANA},
 			new Float[]{1F,1F,1.05F,1.1F,1.15F},        // attackDamage: +5/10/15%
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F}),
-// (strike chance je special efekt)
+	// (strike chance je special efekt)
 	CURSE("curse",new ModularTools[]{KATANA},
 			new Float[]{1F,1F,1.15F,1.2F,1.25F},        // attackDamage: +15/20/25%
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F}),
-// (weakness je special efekt)
+	// (weakness je special efekt)
 	DRAIN("drain",new ModularTools[]{BATTLE_AXE},
 			new Float[]{1F,1F,1.1F,1.15F,1.2F},         // attackDamage: +10/15/20%
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F}),
-// (lifesteal je special efekt)
+	// (lifesteal je special efekt)
 	SAVAGE("savage",new ModularTools[]{AXE,BATTLE_AXE},
 			new Float[]{1F,1F,1.15F,1.2F,1.25F},        // attackDamage: +15/20/25%
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F}),
-// (armor pierce je special efekt)
+	// (armor pierce je special efekt)
 	// TĚŽEBNÍ
 	REINFORCED("reinforced",new ModularTools[]{AXE,PICKAXE,SWORD,SHOVEL,HOE,BATTLE_AXE,HAMMER,EXCAVATOR,TIMBER_AXE},
 			new Float[]{1F,1F,1F,1F,1F},
@@ -92,7 +92,7 @@ public enum ModularReforge{
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1.1F,1.15F,1.25F},        // efficiency: +10/15/25%
 			new Float[]{1F,1F,1F,1F,1F}),
-// (looting je special efekt)
+	// (looting je special efekt)
 	LUMBERING("lumbering",new ModularTools[]{AXE,TIMBER_AXE},
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
