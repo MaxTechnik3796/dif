@@ -128,9 +128,6 @@ public class DifMod{
 	public static boolean rouletteBoolean(int range){
 		return 0==Mth.nextInt(RandomSource.create(),0,range);
 	}
-	public static boolean rouletteBoolean(float chance){
-		return RandomSource.create().nextFloat() < chance;
-	}
 	public static boolean mouseIn(int mouseX,int mouseY,int x,int y,int w,int h){
 		return mouseX>=x&&mouseX<x+w&&mouseY>=y&&mouseY<y+h;
 	}

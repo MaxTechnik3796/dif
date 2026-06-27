@@ -20,16 +20,15 @@ public class ModularSubscriber{
 		if(props==null) return;
 		ModularReforge reforge=ModularReforge.byName(props.reforge());
 		int tier=ModularTier.byName(props.tier()).getReforgeIndex();
+		int[] chances={0,0,9,6,4};
 		switch(reforge){
 			case VAMPIRIC,DRAIN -> {
 				if(attacker.getHealth()>=attacker.getMaxHealth()) return;
-				float[] chances={0F,0F,0.05F,0.10F,0.15F};
-				if(chances[tier]==0F||DifMod.rouletteBoolean(chances[tier])) return;
+				if(!(chances[tier]==0)&&DifMod.rouletteBoolean(chances[tier])) return;
 				attacker.heal(Math.clamp(dmg/2F,0.5F,target.getHealth()));
 			}
 			case PHANTOM -> {
-				float[] chances={0F,0F,0.1F,0.15F,0.2F};
-				if(chances[tier]==0F||DifMod.rouletteBoolean(chances[tier])) return;
+				if(!(chances[tier]==0)&&DifMod.rouletteBoolean(chances[tier])) return;
 				event.setAmount(dmg+Math.max(0.5F,dmg/2F));
 			}
 		}
