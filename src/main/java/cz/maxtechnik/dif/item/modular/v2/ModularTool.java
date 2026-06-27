@@ -250,9 +250,7 @@ public class ModularTool extends DiggerItem{
 	public boolean hurtEnemy(@NotNull ItemStack itemStack,@NotNull LivingEntity target,@NotNull LivingEntity attacker){
 		if(!isBroken(itemStack)){
 			int amt=getProps(itemStack).toolType().toLowerCase(Locale.ROOT).equals(ModularTools.SWORD.getName())?1:2;
-
 			//life steal here
-
 			this.damageTool(itemStack,amt,attacker);
 		}
 		return true;

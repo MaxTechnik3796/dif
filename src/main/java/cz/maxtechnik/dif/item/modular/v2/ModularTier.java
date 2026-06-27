@@ -8,8 +8,8 @@ public enum ModularTier{
 	LEGENDARY("legendary",3,0xFFAA00),
 	MYTHIC("mythic",4,0xFF55FF);
 	private final String name;
-	private  final int reforgeIndex;
-	private  final int color;
+	private final int reforgeIndex;
+	private final int color;
 	ModularTier(String name,int reforgeIndex,int color){
 		this.name=name;
 		this.reforgeIndex=reforgeIndex;
