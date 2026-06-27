@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.item.modular.v2.ModularRecipes;
 import cz.maxtechnik.dif.recipe.CokeOvenRecipe;
 import cz.maxtechnik.dif.recipe.DistillationRecipe;
 import cz.maxtechnik.dif.recipe.FryingRecipe;
@@ -21,8 +22,10 @@ public class DifModRecipes{
 		@Override
 		public String toString(){
 			return DifMod.MODID+":distillation";
+
 		}
 	});
+	public static final net.neoforged.neoforge.registries.DeferredHolder<RecipeSerializer<?>,RecipeSerializer<?>> MODULAR_REPAIR_SERIALIZER=REGISTRY.register("modular_recipe", ModularRecipes.Serializer::new);
 	public static final DeferredHolder<RecipeType<?>, RecipeType<CokeOvenRecipe>> COKE_OVEN_TYPE = TYPE_REGISTRY.register("coke_oven", () -> RecipeType.simple(ResourceLocation.fromNamespaceAndPath("dif", "coke_oven")));
 	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<CokeOvenRecipe>> COKE_OVEN_SERIALIZER = REGISTRY.register("coke_oven", CokeOvenRecipe.Serializer::new);
 	public static final DeferredHolder<RecipeType<?>, RecipeType<cz.maxtechnik.dif.recipe.BlastSmelteryRecipe>> BLAST_SMELTERY_TYPE = TYPE_REGISTRY.register("blast_smeltery", () -> RecipeType.simple(ResourceLocation.fromNamespaceAndPath("dif", "blast_smeltery")));

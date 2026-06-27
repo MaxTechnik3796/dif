@@ -1,6 +1,8 @@
 package cz.maxtechnik.dif.item.modular.v2;
 
 import cz.maxtechnik.dif.DifMod;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -32,6 +34,18 @@ public class ModularSubscriber{
 				if(chances[tier]!=0&&DifMod.rouletteBoolean(chances[tier])){
 					float newDmg = dmg + Math.max(0.5F, dmg/2F);
 					event.setNewDamage(newDmg);
+				}
+			}
+			case FROZEN -> {
+				if(tier==2||tier==3){
+					target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,160,0));
+				}else if(tier==4){
+					target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,160,1));
+				}
+			}
+			case CURSE -> {
+				if(tier>=2){
+					target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS,100,0));
 				}
 			}
 		}
