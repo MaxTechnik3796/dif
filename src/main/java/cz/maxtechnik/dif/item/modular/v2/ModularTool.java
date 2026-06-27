@@ -78,7 +78,8 @@ public class ModularTool extends DiggerItem{
 	 * @return Is tool broken? (T/F)
 	 */
 	public boolean isBroken(ItemStack itemStack){
-		return itemStack.getDamageValue()>=getMaxDamage(itemStack);
+		int max=getMaxDamage(itemStack);
+		return max>0&&itemStack.getDamageValue()>=max-1;
 	}
 	/**
 	 *
@@ -92,13 +93,14 @@ public class ModularTool extends DiggerItem{
 		int currentDmg=itemStack.getDamageValue();
 		int newDmg=currentDmg+amount;
 		if(newDmg>=maxDmg){
-			itemStack.setDamageValue(maxDmg);
-			if(entity instanceof Player){
-				entity.level().playSound(null,entity.getX(),entity.getY(),entity.getZ(),
-						SoundEvents.ITEM_BREAK,SoundSource.PLAYERS,1F,1F);
-			}
-		}else
+			itemStack.setDamageValue(maxDmg-1);
+		}else{
 			itemStack.setDamageValue(newDmg);
+		}
+		if(isBroken(itemStack)&&entity instanceof Player){
+			entity.level().playSound(null,entity.getX(),entity.getY(),entity.getZ(),
+					SoundEvents.ITEM_BREAK,SoundSource.PLAYERS,1F,1F);
+		}
 	}
 	/**
 	 * Get Durability from components.
@@ -541,6 +543,12 @@ public class ModularTool extends DiggerItem{
 					materialModifiers.add(handleModifier);
 			}else materialModifiers.add(handleModifier);
 		return materialModifiers;
+	}
+
+	@Override
+	public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, @org.jetbrains.annotations.Nullable T entity, java.util.function.Consumer<net.minecraft.world.item.Item> onBroken){
+		// intentionally return 0: actual damage is applied via damageTool() in mineBlock/hurtEnemy/useOn
+		return 0;
 	}
 	@Override
 	public boolean isEnchantable(@NotNull ItemStack itemStack){
