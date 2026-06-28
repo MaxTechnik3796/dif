@@ -23,13 +23,13 @@ public enum ModularModifier{
 	private final int maxLvl;
 	private final boolean hasDescription;
 	private final int color;
-	private final ModularTools[] allowedTools;
+	private final ModularTools[] tools;
 	ModularModifier(String name,int maxLvl,boolean hasDescription,int color,ModularTools[] allowedTools){
 		this.name=name;
 		this.maxLvl=maxLvl;
 		this.hasDescription=hasDescription;
 		this.color=color;
-		this.allowedTools=allowedTools;
+		this.tools=allowedTools;
 	}
 	public String getName(){
 		return name;
@@ -43,12 +43,12 @@ public enum ModularModifier{
 	public int getColor(){
 		return color;
 	}
-	public ModularTools[] getAllowedTools(){
-		return allowedTools;
+	public ModularTools[] getTools(){
+		return tools;
 	}
 	public boolean isAllowedOn(ModularTools tool){
-		for(ModularTools t: allowedTools){
-			if(t==tool) return true;
+		for(ModularTools modularTools: tools){
+			if(modularTools==tool) return true;
 		}
 		return false;
 	}
