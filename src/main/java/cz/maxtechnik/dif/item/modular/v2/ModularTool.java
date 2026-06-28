@@ -42,6 +42,7 @@ import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static cz.maxtechnik.dif.item.modular.v2.ModularReforge.REAPER;
 import static java.lang.Math.round;
 public class ModularTool extends DiggerItem{
 	public ModularTool(){
@@ -798,15 +799,18 @@ public class ModularTool extends DiggerItem{
 	}
 	/**
 	 * Set new ModularReforge to tool.
+	 * @param level level
 	 * @param itemStack tool
 	 * @param reforge reforge
 	 */
-	public static void setReforge(ItemStack itemStack,ModularReforge reforge){
+	public static void setReforge(Level level,ItemStack itemStack,ModularReforge reforge){
 		ModularToolProperties props=getProps(itemStack);
 		ModularReforge oldReforge=ModularReforge.byName(props.reforge());
 		if(oldReforge==null) return;
 		if(oldReforge.equals(reforge)) return;
 		itemStack.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(props.toolType(),props.headMaterial(),props.bindingMaterial(),props.handleMaterial(),props.tier(),reforge.name()));
+		if(oldReforge.equals(REAPER)) subtractEnchantment(level,itemStack,Enchantments.LOOTING,1);
+		if(reforge.equals(REAPER)) addEnchantment(level,itemStack,Enchantments.LOOTING,1);
 	}
 	/**
 	 * Get ModularReforge from tool.
