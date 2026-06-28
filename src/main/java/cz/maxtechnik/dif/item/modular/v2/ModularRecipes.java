@@ -47,6 +47,7 @@ public class ModularRecipes implements SmithingRecipe{
 		ItemStack addition=container.getItem(2).copy();
 		if(template.getItem().equals(DifModItems.MODULAR_TEMPLATE_EFFICIENCY.get()))
 			ModularTool.upgradeModifier(provider,base,ModularModifier.EFFICIENCY);
+		// + sežrat 64 addition
 		return base;
 	}
 	@Override
