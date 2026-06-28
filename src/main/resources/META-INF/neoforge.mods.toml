@@ -12,11 +12,11 @@ logoFile = "pack.png"
 description = '''${mod_description}'''
 
 [[dependencies."${mod_id}"]]
-modId="jei"
-type="optional"
-versionRange="[0,)"
-ordering="NONE"
-side="CLIENT"
+modId = "jei"
+type = "optional"
+versionRange = "[0,)"
+ordering = "NONE"
+side = "CLIENT"
 
 [[dependencies."${mod_id}"]]
 modId = "neoforge"
@@ -24,6 +24,13 @@ mandatory = true
 versionRange = "${neo_version_range}"
 ordering = "AFTER"
 side = "BOTH"
+
+[[dependencies."${mod_id}"]]
+modId = "mtrecipex"
+mandatory = true
+versionRange = "[0,)"
+ordering = "AFTER"
+side = "SERVER"
 
 [[dependencies."${mod_id}"]]
 modId = "minecraft"
