@@ -24,12 +24,12 @@ public enum ModularModifier{
 	private final boolean hasDescription;
 	private final int color;
 	private final ModularTools[] tools;
-	ModularModifier(String name,int maxLvl,boolean hasDescription,int color,ModularTools[] allowedTools){
+	ModularModifier(String name,int maxLvl,boolean hasDescription,int color,ModularTools[] tools){
 		this.name=name;
 		this.maxLvl=maxLvl;
 		this.hasDescription=hasDescription;
 		this.color=color;
-		this.tools=allowedTools;
+		this.tools=tools;
 	}
 	public String getName(){
 		return name;
