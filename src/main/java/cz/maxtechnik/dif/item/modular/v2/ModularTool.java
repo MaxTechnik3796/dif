@@ -587,9 +587,12 @@ public class ModularTool extends DiggerItem{
 	 */
 	@Override
 	public @NotNull String getDescriptionId(@NotNull ItemStack itemStack){
-		String type=getProps(itemStack).toolType().toLowerCase(Locale.ROOT);
+		String type=getProps(itemStack).toolType();
+		String reforge=getReforge(itemStack).getName();
 		if(!type.isEmpty()&&!type.equals("none"))
-			return super.getDescriptionId(itemStack)+"."+type;
+			if(!reforge.isEmpty()&&!reforge.equals("none"))
+				return super.getDescriptionId(itemStack)+"."+type+"."+reforge;
+			else return super.getDescriptionId(itemStack)+"."+type;
 		return super.getDescriptionId(itemStack);
 	}
 	/**
