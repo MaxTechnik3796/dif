@@ -2,6 +2,7 @@ package cz.maxtechnik.dif.item.modular.v2;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -25,10 +26,14 @@ public class ModularRecipes implements SmithingRecipe{
 		this.result=result;
 	}
 	@Override
-	public boolean matches(@NotNull SmithingRecipeInput container,@NotNull Level world){
+	public boolean matches(@NotNull SmithingRecipeInput container,@NotNull Level level){
 		ItemStack template=container.getItem(0).copy();
 		ItemStack base=container.getItem(1).copy();
 		ItemStack addition=container.getItem(2).copy();
+		if(this.template.test(template)&&this.base.test(base)&&this.addition.test(addition))
+			if(template.getItem().equals(DifModItems.MODULAR_TEMPLATE_EFFICIENCY.get()))
+				if(ModularTool.getModifierLevel(base,ModularModifier.EFFICIENCY)<ModularModifier.EFFICIENCY.getMaxLvl())
+					return true;
 		return false;
 	}
 	@Override
@@ -36,7 +41,9 @@ public class ModularRecipes implements SmithingRecipe{
 		ItemStack template=container.getItem(0).copy();
 		ItemStack base=container.getItem(1).copy();
 		ItemStack addition=container.getItem(2).copy();
-		return template;
+		if(template.getItem().equals(DifModItems.MODULAR_TEMPLATE_EFFICIENCY.get()))
+			ModularTool.addModifier(provider,base,ModularModifier.EFFICIENCY);
+		return base;
 	}
 	@Override
 	public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider provider){
