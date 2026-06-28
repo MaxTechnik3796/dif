@@ -8,7 +8,7 @@
 	},
 	"addition":{
 		"count":64,
-		"tag":"dif:modular_modifiers"
+		"tag":"dif:modular_modifiers_hyper"
 	},
 	"result":{
 		"id":"dif:modular_tool"

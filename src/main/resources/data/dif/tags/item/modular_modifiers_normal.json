@@ -1,0 +1,12 @@
+{
+	"replace":false,
+	"values":[
+		"minecraft:lapis_lazuli",
+		"minecraft:quartz",
+		"minecraft:redstone",
+		"minecraft:diamond",
+		"minecraft:iron_ingot",
+		"create:experience_block",
+		"dif:silky_stone"
+	]
+}

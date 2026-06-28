@@ -5,6 +5,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -637,13 +638,16 @@ public class ModularTool extends DiggerItem{
 		if(!found) newModifiers.add(new ModularToolModifiers.entry(modifier.getName(),lvl));
 		itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(newModifiers));
 		switch(modifier){
-			case SILK_TOUCH -> addEnchantment(provider,itemStack,Enchantments.SILK_TOUCH,lvl);
+			case SILK_TOUCH ->
+					addEnchantment(provider,itemStack,Enchantments.SILK_TOUCH,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.SILK_TOUCH));
 			case LUCK -> {
-				addEnchantment(provider,itemStack,Enchantments.FORTUNE,lvl);
-				addEnchantment(provider,itemStack,Enchantments.LOOTING,lvl);
+				addEnchantment(provider,itemStack,Enchantments.FORTUNE,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.FORTUNE));
+				addEnchantment(provider,itemStack,Enchantments.LOOTING,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.LOOTING));
 			}
-			case SWEEPING_EDGE -> addEnchantment(provider,itemStack,Enchantments.SWEEPING_EDGE,lvl);
-			case MENDING -> addEnchantment(provider,itemStack,Enchantments.MENDING,lvl);
+			case SWEEPING_EDGE ->
+					addEnchantment(provider,itemStack,Enchantments.SWEEPING_EDGE,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.SWEEPING_EDGE));
+			case MENDING ->
+					addEnchantment(provider,itemStack,Enchantments.MENDING,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.MENDING));
 			default -> {
 			}
 		}
@@ -792,6 +796,12 @@ public class ModularTool extends DiggerItem{
 				}
 			}
 		});
+		hideEnchantments(itemStack);
+	}
+	private static void hideEnchantments(ItemStack itemStack){
+		var enchants=itemStack.get(DataComponents.ENCHANTMENTS);
+		if(enchants!=null)
+			itemStack.set(DataComponents.ENCHANTMENTS,enchants.withTooltip(false));
 	}
 	/**
 	 * Get Holder<Enchantment> of enchantment.

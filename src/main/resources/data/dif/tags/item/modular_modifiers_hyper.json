@@ -1,0 +1,10 @@
+{
+	"replace":false,
+	"values":[
+		"minecraft:lapis_block",
+		"minecraft:quartz_block",
+		"minecraft:redstone_block",
+		"minecraft:diamond",
+		"minecraft:iron_block"
+	]
+}

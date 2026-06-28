@@ -1,6 +1,6 @@
 {
 	"parent":"item/generated",
 	"textures":{
-		"layer0":"dif:item/modular_template_mending"
+		"layer0":"dif:item/silky_stone"
 	}
 }

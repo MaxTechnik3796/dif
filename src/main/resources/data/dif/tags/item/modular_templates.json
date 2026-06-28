@@ -1,10 +1,7 @@
 {
 	"replace":false,
 	"values":[
-		"dif:modular_template_efficiency",
-		"dif:modular_template_silk_touch",
-		"dif:modular_template_luck",
-		"dif:modular_template_sweeping_edge",
-		"dif:modular_template_mending"
+		"dif:modular_template_normal",
+		"dif:modular_template_hyper"
 	]
 }

@@ -159,11 +159,10 @@ public class DifModTabs{
 		tabData.accept(Items.SMITHING_TABLE);
 		tabData.accept(MODULAR_REFORGE_TABLE);
 
-		tabData.accept(MODULAR_TEMPLATE_EFFICIENCY);
-		tabData.accept(MODULAR_TEMPLATE_SILK_TOUCH);
-		tabData.accept(MODULAR_TEMPLATE_LUCK);
-		tabData.accept(MODULAR_TEMPLATE_SWEEPING_EDGE);
-		tabData.accept(MODULAR_TEMPLATE_MENDING);
+		tabData.accept(MODULAR_TEMPLATE_NORMAL);
+		tabData.accept(MODULAR_TEMPLATE_HYPER);
+
+		tabData.accept(SILKY_STONE);
 
 		ItemStack ePickaxe=new ItemStack(MODULAR_TOOL.get());
 		ItemStack e2Pickaxe=new ItemStack(MODULAR_TOOL.get());
