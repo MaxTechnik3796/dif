@@ -4,8 +4,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
-import cz.maxtechnik.mtrecipex.recipe.SizedIngredientExtra; // Import z tvého API
-import cz.maxtechnik.mtrecipex.recipe.SmithingExtraRecipe; // Dědíme z tvé nové třídy
+import cz.maxtechnik.mtrecipex.recipe.SizedIngredientExtra;
+import cz.maxtechnik.mtrecipex.recipe.SmithingExtraRecipe;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -15,7 +15,18 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-public class ModularRecipes extends SmithingExtraRecipe{ // FIX: Nyní regulérně extends Class
+public class ModularRecipes extends SmithingExtraRecipe{
+	private int efficiencyItems(ItemStack itemStack){
+		return switch(ModularTool.getModifierLevel(itemStack,ModularModifier.EFFICIENCY)){
+			case 0 -> 10;
+			case 1 -> 20;
+			case 2 -> 30;
+			case 3 -> 40;
+			case 4 -> 50;
+			case 5 -> 64;
+			default -> 0;
+		};
+	}
 	public ModularRecipes(Ingredient template,Ingredient base,Ingredient addition,ItemStack result){
 		// Zavoláme rodičovský konstruktor z Recipexu.
 		// Pro šablonu a zbraň chceme 1 kus, pro modifikační materiál (addition) vyžadujeme celých 64 kusů!
@@ -28,47 +39,29 @@ public class ModularRecipes extends SmithingExtraRecipe{ // FIX: Nyní regulérn
 	}
 	@Override
 	public boolean matches(@NotNull SmithingRecipeInput container,@NotNull Level level){
-		ItemStack template=container.getItem(0);
-		ItemStack base=container.getItem(1);
-		ItemStack addition=container.getItem(2);
-		// Používáme vnitřní testování skrze zděděné SizedIngredientExtra struktury
+		ItemStack template=container.getItem(0).copy();
+		ItemStack base=container.getItem(1).copy();
+		ItemStack addition=container.getItem(2).copy();
 		if(this.template.ingredient().test(template)&&this.base.ingredient().test(base)&&this.addition.ingredient().test(addition)){
-			int b=switch(ModularTool.getModifierLevel(base,ModularModifier.EFFICIENCY)){
-				case 0-> 10;
-				case 1-> 20;
-				case 2-> 30;
-				case 3-> 40;
-				case 4-> 50;
-				default -> 0;
-			};
-			if(template.getItem().equals(DifModItems.MODULAR_TEMPLATE_EFFICIENCY.get())&&addition.getCount()>=b){
+			if(template.getItem().equals(DifModItems.MODULAR_TEMPLATE_EFFICIENCY.get())&&addition.getCount()>=efficiencyItems(base))
 				return ModularTool.getModifierLevel(base,ModularModifier.EFFICIENCY)<ModularModifier.EFFICIENCY.getMaxLvl();
-			}
 		}
 		return false;
 	}
 	@Override
 	public @NotNull ItemStack assemble(SmithingRecipeInput container,@NotNull HolderLookup.Provider provider){
-		ItemStack template=container.getItem(0);
+		ItemStack template=container.getItem(0).copy();
 		ItemStack base=container.getItem(1).copy();
-		if(template.getItem().equals(DifModItems.MODULAR_TEMPLATE_EFFICIENCY.get())){
+		if(template.getItem().equals(DifModItems.MODULAR_TEMPLATE_EFFICIENCY.get()))
 			ModularTool.upgradeModifier(provider,base,ModularModifier.EFFICIENCY);
-		}
 		return base;
 	}
 	@Override
-	public int getAdditionConsumeCount(SmithingRecipeInput input){
-		if(input.getItem(0).getItem().equals(DifModItems.MODULAR_TEMPLATE_EFFICIENCY.get())){
-			return switch(ModularTool.getModifierLevel(input.getItem(1),ModularModifier.EFFICIENCY)){
-				case 0 -> 10;
-				case 1 -> 20;
-				case 2 -> 30;
-				case 3 -> 40;
-				case 4 -> 50;
-				default -> 0;
-			};
-		}else
-			return this.addition.count();
+	public int getAdditionConsumeCount(SmithingRecipeInput container){
+		ItemStack template=container.getItem(0).copy();
+		ItemStack base=container.getItem(1).copy();
+		if(template.getItem().equals(DifModItems.MODULAR_TEMPLATE_EFFICIENCY.get())) return efficiencyItems(base);
+		else return this.addition.count();
 	}
 	public Ingredient getJsonTemplate(){
 		return this.template.ingredient();
