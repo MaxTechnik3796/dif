@@ -89,14 +89,9 @@ public class ModularRecipes extends SmithingExtraRecipe{
 		return this.addition.ingredient().test(itemStack);
 	}
 	private boolean isModifierAllowed(ItemStack base, ModularModifier modifier) {
-		String type = ModularTool.getProps(base).toolType().toLowerCase(java.util.Locale.ROOT);
-		if (type.equals("axe") || type.equals("battle_axe")) {
-			return modifier!=ModularModifier.SWEEPING_EDGE&&modifier!=ModularModifier.LUCK;
-		} else if (type.equals("sword") || type.equals("katana")) {
-			return modifier!=ModularModifier.EFFICIENCY&&modifier!=ModularModifier.SILK_TOUCH;
-		} else {
-			return modifier!=ModularModifier.SHARPNESS&&modifier!=ModularModifier.LUCK&&modifier!=ModularModifier.SWEEPING_EDGE;
-		}
+		String typeName = ModularTool.getProps(base).toolType();
+		ModularTools tool = ModularTools.byName(typeName);
+		return modifier.isAllowedOn(tool);
 	}
 
 	private ModularModifier getModifierForTemplate(Item templateItem,Item additionItem) {
