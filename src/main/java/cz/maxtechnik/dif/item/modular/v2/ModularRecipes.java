@@ -7,13 +7,18 @@ import cz.maxtechnik.dif.init.other.DifModRecipes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.inventory.SmithingMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import net.minecraft.world.level.Level;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
+@EventBusSubscriber
 public class ModularRecipes implements SmithingRecipe{
 	final Ingredient template;
 	final Ingredient base;
@@ -43,8 +48,30 @@ public class ModularRecipes implements SmithingRecipe{
 		ItemStack addition=container.getItem(2).copy();
 		if(template.getItem().equals(DifModItems.MODULAR_TEMPLATE_EFFICIENCY.get()))
 			ModularTool.upgradeModifier(provider,base,ModularModifier.EFFICIENCY);
-		addition.shrink(63);
 		return base;
+	}
+	@SubscribeEvent
+	public static void onItemCrafted(PlayerEvent.ItemCraftedEvent event) {
+		System.out.println("neco");
+		// 1. Zkontrolujeme, zda hráč právě pracoval v kovářském stole (SmithingMenu)
+		if (event.getEntity().containerMenu instanceof SmithingMenu) {
+
+			// V kovářském stole nám event.getInventory() vrátí jeho 3 vstupní sloty
+			var inputs = event.getInventory();
+			ItemStack template = inputs.getItem(0);
+			ItemStack addition = inputs.getItem(2);
+
+			// 2. Zkontrolujeme, zda hráč použil tvou šablonu pro efektivitu
+			if (template.is(DifModItems.MODULAR_TEMPLATE_EFFICIENCY.get())) {
+
+				// POZOR ZDRADA: Tento event se spustí AŽ POTÉ, co vanila kód stolu vykonal svou práci.
+				// To znamená, že vanila už stihla ubrat svůj 1 kus.
+				// Pokud jich tam hráč vložil 64, v tuto chvíli jich ve slotu zbývá přesně 63!
+				if (addition.getCount() == 63) {
+					addition.setCount(0); // Vynulujeme slot -> sežralo to celých 64 kusů
+				}
+			}
+		}
 	}
 	@Override
 	public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider provider){
