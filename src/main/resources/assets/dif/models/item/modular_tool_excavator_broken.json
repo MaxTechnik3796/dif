@@ -1,0 +1,8 @@
+{
+	"parent":"item/generated",
+	"textures":{
+		"layer0":"dif:item/modular_excavator_handle",
+		"layer1":"dif:item/modular_excavator_binding",
+		"layer2":"dif:item/modular_excavator_head_broken"
+	}
+}

@@ -72,6 +72,11 @@ public class ModularClientHandler{
 						case "sword" -> 3.0F;
 						case "shovel" -> 4.0F;
 						case "hoe" -> 5.0F;
+						case "katana"-> 6.0F;
+						case "battle_axe" -> 7.0F;
+						case "hammer"  -> 8.0F;
+						case "timber_axe" -> 9.0F;
+						case "excavator"  -> 10.0F;
 						default -> 0.0F;
 					};
 					if(base==0.0F) return 0.0F;

@@ -233,6 +233,14 @@
 	"item.dif.modular_tool.sword":"Modular Sword",
 	"item.dif.modular_tool.hoe":"Modular Hoe",
 
+	"item.dif.modular_tool.katana":"Modular Katana",
+	"item.dif.modular_tool.battle_axe":"Modular Battle Axe",
+	"item.dif.modular_tool.hammer":"Modular Hammer",
+	"item.dif.modular_tool.timber_axe":"Modular Timber Axe",
+	"item.dif.modular_tool.excavator":"Modular Excavator",
+
+
+
 
 	"item.dif.modular_part":"Modular Part",
 	"item.dif.modular_part.handle":"Modular Handle",

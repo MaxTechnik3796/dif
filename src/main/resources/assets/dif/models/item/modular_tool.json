@@ -13,6 +13,16 @@
 		{ "predicate": { "dif:tool_state": 4.0 }, "model": "dif:item/modular_tool_shovel" },
 		{ "predicate": { "dif:tool_state": 4.5 }, "model": "dif:item/modular_tool_shovel_broken" },
 		{ "predicate": { "dif:tool_state": 5.0 }, "model": "dif:item/modular_tool_hoe" },
-		{ "predicate": { "dif:tool_state": 5.5 }, "model": "dif:item/modular_tool_hoe_broken" }
+		{ "predicate": { "dif:tool_state": 5.5 }, "model": "dif:item/modular_tool_hoe_broken" },
+		{ "predicate": { "dif:tool_state": 6.0 }, "model": "dif:item/modular_tool_katana" },
+		{ "predicate": { "dif:tool_state": 6.5 }, "model": "dif:item/modular_tool_katana_broken" },
+		{ "predicate": { "dif:tool_state": 7.0 }, "model": "dif:item/modular_tool_battle_axe" },
+		{ "predicate": { "dif:tool_state": 7.5 }, "model": "dif:item/modular_tool_battle_axe_broken" },
+		{ "predicate": { "dif:tool_state": 8.0 }, "model": "dif:item/modular_tool_hammer" },
+		{ "predicate": { "dif:tool_state": 8.5 }, "model": "dif:item/modular_tool_hammer_broken" },
+		{ "predicate": { "dif:tool_state": 9.0 }, "model": "dif:item/modular_tool_timber_axe" },
+		{ "predicate": { "dif:tool_state": 9.5 }, "model": "dif:item/modular_tool_timber_axe_broken" },
+		{ "predicate": { "dif:tool_state": 10.0 }, "model": "dif:item/modular_tool_excavator" },
+		{ "predicate": { "dif:tool_state": 10.5 }, "model": "dif:item/modular_tool_excavator_broken" }
 	]
 }
