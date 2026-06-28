@@ -114,11 +114,12 @@ dependencies {
     runtimeOnly "curse.maven:worldedit-225608:5830452"
 
     runtimeOnly fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'sourceLibs', include: ['*.jar'])
 
 
 
-    implementation "curse.maven:mt-recipex-1554878:8150745"
-    jarJar "curse.maven:mt-recipex-1554878:8150745"
+    //implementation "curse.maven:mt-recipex-1554878:8150745"
+    //jarJar "curse.maven:mt-recipex-1554878:8150745"
 }
 
 tasks.named('processResources', ProcessResources).configure {
