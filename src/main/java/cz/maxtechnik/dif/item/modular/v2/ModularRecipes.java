@@ -99,40 +99,45 @@ public class ModularRecipes extends SmithingExtraRecipe{
 		return true;
 	}
 
+	private ModularModifier getModifierForTemplate(net.minecraft.world.item.Item templateItem, net.minecraft.world.item.Item additionItem) {
+		if (templateItem.equals(MODULAR_TEMPLATE_NORMAL.get())) {
+			if (additionItem.equals(REDSTONE)) return EFFICIENCY;
+			if (additionItem.equals(LAPIS_LAZULI)) return LUCK;
+			if (additionItem.equals(QUARTZ)) return SHARPNESS;
+			if (additionItem.equals(DIAMOND)) return REINFORCED;
+			if (additionItem.equals(IRON_INGOT)) return SWEEPING_EDGE;
+			if (additionItem.equals(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.parse("create:experience_block"))))) return MENDING;
+			if (additionItem.equals(SILKY_STONE.get())) return SILK_TOUCH;
+		} else if (templateItem.equals(MODULAR_TEMPLATE_HYPER.get())) {
+			if (additionItem.equals(REDSTONE_BLOCK)) return EFFICIENCY;
+			if (additionItem.equals(LAPIS_BLOCK)) return LUCK;
+			if (additionItem.equals(QUARTZ_BLOCK)) return SHARPNESS;
+			if (additionItem.equals(DIAMOND)) return REINFORCED;
+			if (additionItem.equals(IRON_BLOCK)) return SWEEPING_EDGE;
+		}
+		return null;
+	}
+
 	@Override
 	public boolean matches(@NotNull SmithingRecipeInput container,@NotNull Level level){
 		ItemStack template=container.getItem(0).copy();
 		ItemStack base=container.getItem(1).copy();
 		ItemStack addition=container.getItem(2).copy();
 		if(this.template.ingredient().test(template)&&this.base.ingredient().test(base)&&this.addition.ingredient().test(addition)){
-			if(template.getItem().equals(MODULAR_TEMPLATE_NORMAL.get())){
-				if(addition.getItem().equals(REDSTONE)&&addition.getCount()>=getItemCount(base,EFFICIENCY))
-					return isModifierAllowed(base, EFFICIENCY) && getModifierLevel(base,EFFICIENCY)<EFFICIENCY.getMaxLvl();
-				if(addition.getItem().equals(LAPIS_LAZULI)&&addition.getCount()>=getItemCount(base,LUCK))
-					return isModifierAllowed(base, LUCK) && getModifierLevel(base,LUCK)<LUCK.getMaxLvl() && getModifierLevel(base,SILK_TOUCH)==0;
-				if(addition.getItem().equals(QUARTZ)&&addition.getCount()>=getItemCount(base,SHARPNESS))
-					return isModifierAllowed(base, SHARPNESS) && getModifierLevel(base,SHARPNESS)<SHARPNESS.getMaxLvl();
-				if(addition.getItem().equals(DIAMOND)&&addition.getCount()>=getItemCount(base,REINFORCED))
-					return isModifierAllowed(base, REINFORCED) && getModifierLevel(base,REINFORCED)<REINFORCED.getMaxLvl();
-				if(addition.getItem().equals(IRON_INGOT)&&addition.getCount()>=getItemCount(base,SWEEPING_EDGE))
-					return isModifierAllowed(base, SWEEPING_EDGE) && getModifierLevel(base,SWEEPING_EDGE)<SWEEPING_EDGE.getMaxLvl();
-				if(addition.getItem().equals(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.parse("create:experience_block"))))&&addition.getCount()>=getItemCount(base,MENDING))
-					return isModifierAllowed(base, MENDING) && getModifierLevel(base,MENDING)<MENDING.getMaxLvl();
-				if(addition.getItem().equals(SILKY_STONE.get())&&addition.getCount()>=getItemCount(base,SILK_TOUCH))
-					return isModifierAllowed(base, SILK_TOUCH) && getModifierLevel(base,SILK_TOUCH)<SILK_TOUCH.getMaxLvl() && getModifierLevel(base,LUCK)==0;
-			}
-			if(template.getItem().equals(MODULAR_TEMPLATE_HYPER.get())){
-				if(addition.getItem().equals(REDSTONE_BLOCK)&&addition.getCount()>=getItemCount(base,EFFICIENCY))
-					return isModifierAllowed(base, EFFICIENCY) && getModifierLevel(base,EFFICIENCY)==EFFICIENCY.getMaxLvl();
-				if(addition.getItem().equals(LAPIS_BLOCK)&&addition.getCount()>=getItemCount(base,LUCK))
-					return isModifierAllowed(base, LUCK) && getModifierLevel(base,LUCK)==LUCK.getMaxLvl() && getModifierLevel(base,SILK_TOUCH)==0;
-				if(addition.getItem().equals(QUARTZ_BLOCK)&&addition.getCount()>=getItemCount(base,SHARPNESS))
-					return isModifierAllowed(base, SHARPNESS) && getModifierLevel(base,SHARPNESS)==SHARPNESS.getMaxLvl();
-				if(addition.getItem().equals(DIAMOND)&&addition.getCount()>=getItemCount(base,REINFORCED))
-					return isModifierAllowed(base, REINFORCED) && getModifierLevel(base,REINFORCED)==REINFORCED.getMaxLvl();
-				if(addition.getItem().equals(IRON_BLOCK)&&addition.getCount()>=getItemCount(base,SWEEPING_EDGE))
-					return isModifierAllowed(base, SWEEPING_EDGE) && getModifierLevel(base,SWEEPING_EDGE)==SWEEPING_EDGE.getMaxLvl();
-			}
+			ModularModifier modifier = getModifierForTemplate(template.getItem(), addition.getItem());
+			if (modifier == null) return false;
+
+			if (!isModifierAllowed(base, modifier)) return false;
+			if (addition.getCount() < getItemCount(base, modifier)) return false;
+
+			if (modifier == LUCK && getModifierLevel(base, SILK_TOUCH) > 0) return false;
+			if (modifier == SILK_TOUCH && getModifierLevel(base, LUCK) > 0) return false;
+
+			int currentLvl = getModifierLevel(base, modifier);
+			int maxLvl = modifier.getMaxLvl();
+
+			if (template.getItem().equals(MODULAR_TEMPLATE_NORMAL.get())) return currentLvl < maxLvl;
+			if (template.getItem().equals(MODULAR_TEMPLATE_HYPER.get())) return currentLvl == maxLvl;
 		}
 		return false;
 	}
