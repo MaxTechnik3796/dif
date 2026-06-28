@@ -785,6 +785,12 @@ public class ModularTool extends DiggerItem{
 			}
 		});
 	}
+	/**
+	 * Get Holder<Enchantment> of enchantment.
+	 * @param level level
+	 * @param enchantment enchantment
+	 * @return Holder<Enchantment>
+	 */
 	private Holder<Enchantment> getEnchantmentHolder(Level level,ResourceKey<Enchantment> enchantment){
 		return level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(enchantment);
 	}
