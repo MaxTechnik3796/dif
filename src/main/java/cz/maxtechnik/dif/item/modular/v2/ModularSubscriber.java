@@ -9,7 +9,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-
 @EventBusSubscriber
 public class ModularSubscriber{
 	@SubscribeEvent
@@ -17,11 +16,11 @@ public class ModularSubscriber{
 		if(!(event.getSource().getEntity() instanceof Player attacker)) return;
 		LivingEntity target=event.getEntity();
 		float dmg=event.getNewDamage();
-		ItemStack tool=attacker.getMainHandItem();
-		if(!(tool.getItem() instanceof ModularTool)) return;
-		ModularToolProperties props=ModularTool.getProps(tool);
+		ItemStack itemStack=attacker.getMainHandItem();
+		if(!(itemStack.getItem() instanceof ModularTool)) return;
+		ModularToolProperties props=ModularTool.getProps(itemStack);
 		if(props==null) return;
-		ModularReforge reforge=ModularReforge.byName(props.reforge());
+		ModularReforge reforge=ModularTool.getReforge(itemStack);
 		int tier=ModularTier.byName(props.tier()).getReforgeIndex();
 		int[] chances={0,0,8,5,3};
 		switch(reforge){
@@ -32,7 +31,7 @@ public class ModularSubscriber{
 			}
 			case PHANTOM -> {
 				if(chances[tier]!=0&&DifMod.rouletteBoolean(chances[tier])){
-					float newDmg = dmg + Math.max(0.5F, dmg/2F);
+					float newDmg=dmg+Math.max(0.5F,dmg/2F);
 					event.setNewDamage(newDmg);
 				}
 			}

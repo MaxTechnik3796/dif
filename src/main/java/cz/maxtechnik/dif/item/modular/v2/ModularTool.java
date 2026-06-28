@@ -123,7 +123,7 @@ public class ModularTool extends DiggerItem{
 		int binding=ModularMaterial.byName(props.bindingMaterial()).getBindingDurability();
 		int handle=ModularMaterial.byName(props.handleMaterial()).getHandleDurability();
 		int modifier=reinforcedLevel(itemStack);
-		float reforge=ModularReforge.byName(getProps(itemStack).reforge()).getDurability()[ModularTier.byName(getProps(itemStack).tier()).getReforgeIndex()];
+		float reforge=getReforge(itemStack).getDurability()[getTier(itemStack).getReforgeIndex()];
 		return round((head+binding+handle+modifier)*reforge);
 	}
 	/**
@@ -135,7 +135,7 @@ public class ModularTool extends DiggerItem{
 		if(isBroken(itemStack)) return 1F;
 		float head=ModularMaterial.byName(getProps(itemStack).headMaterial()).getHeadEfficiency();
 		float modifier=efficiencyLevel(itemStack);
-		float reforge=ModularReforge.byName(getProps(itemStack).reforge()).getEfficiency()[ModularTier.byName(getProps(itemStack).tier()).getReforgeIndex()];
+		float reforge=getReforge(itemStack).getEfficiency()[getTier(itemStack).getReforgeIndex()];
 		return (head+modifier)*reforge;
 	}
 	/**
@@ -412,8 +412,8 @@ public class ModularTool extends DiggerItem{
 		if(!isBroken(itemStack)){
 			ModularMaterial head=ModularMaterial.byName(props.headMaterial());
 			ModularMaterial handle=ModularMaterial.byName(props.handleMaterial());
-			finalDamage=(getBaseDamageForType(props.toolType())+head.getAttackDamage()+sharpnessDamage(itemStack))*ModularReforge.byName(getProps(itemStack).reforge()).getAttackDamage()[ModularTier.byName(getProps(itemStack).tier()).getReforgeIndex()];
-			finalSpeed=(getBaseSpeedForType(props.toolType())+handle.getAttackSpeedBonus())*ModularReforge.byName(getProps(itemStack).reforge()).getAttackSpeed()[ModularTier.byName(getProps(itemStack).tier()).getReforgeIndex()];
+			finalDamage=(getBaseDamageForType(props.toolType())+head.getAttackDamage()+sharpnessDamage(itemStack))*getReforge(itemStack).getAttackDamage()[getTier(itemStack).getReforgeIndex()];
+			finalSpeed=(getBaseSpeedForType(props.toolType())+handle.getAttackSpeedBonus())*getReforge(itemStack).getAttackSpeed()[getTier(itemStack).getReforgeIndex()];
 			finalKnockback=knockbackLevel(itemStack);
 		}
 		builder.add(Attributes.ATTACK_DAMAGE,new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID,finalDamage,AttributeModifier.Operation.ADD_VALUE),EquipmentSlotGroup.MAINHAND);
@@ -457,7 +457,7 @@ public class ModularTool extends DiggerItem{
 		);
 		list.add(
 				Component.literal("Tier: ").withStyle(ChatFormatting.GRAY)
-						.append(Component.translatable("dif.tier."+props.tier()).withColor(ModularTier.byName(props.tier()).getColor()))
+						.append(Component.translatable("dif.tier."+props.tier()).withColor(getTier(itemStack).getColor()))
 		);
 		list.add(
 				Component.literal("Mining: ").withStyle(ChatFormatting.GRAY)
@@ -596,7 +596,7 @@ public class ModularTool extends DiggerItem{
 	 */
 	@Override
 	public @NotNull Component getName(@NotNull ItemStack itemStack){
-		int rarityColor=ModularTier.byName(getProps(itemStack).tier()).getColor();
+		int rarityColor=getTier(itemStack).getColor();
 		return Component.translatable(getDescriptionId(itemStack)).withStyle(Style.EMPTY.withColor(rarityColor).withItalic(false));
 	}
 	/**
@@ -605,7 +605,7 @@ public class ModularTool extends DiggerItem{
 	 * @param itemStack tool
 	 * @param modifier modifier
 	 */
-	public void addModifier(Level level,ItemStack itemStack,ModularModifier modifier){
+	public static void addModifier(Level level,ItemStack itemStack,ModularModifier modifier){
 		addModifier(level,itemStack,modifier,1);
 	}
 	/**
@@ -615,7 +615,7 @@ public class ModularTool extends DiggerItem{
 	 * @param modifier modifier
 	 * @param lvl modifier lvl
 	 */
-	public void addModifier(Level level,ItemStack itemStack,ModularModifier modifier,int lvl){
+	public static void addModifier(Level level,ItemStack itemStack,ModularModifier modifier,int lvl){
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
 		if(component==null) return;
 		List<ModularToolModifiers.entry> newModifiers=new ArrayList<>(component.modifiers());
@@ -647,7 +647,7 @@ public class ModularTool extends DiggerItem{
 	 * @param modifier modifier
 	 * @return Is modifier on tool?
 	 */
-	public boolean isModifier(ItemStack itemStack,ModularModifier modifier){
+	public static boolean isModifier(ItemStack itemStack,ModularModifier modifier){
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
 		if(component==null) return false;
 		for(ModularToolModifiers.entry entry: component.modifiers())
@@ -660,7 +660,7 @@ public class ModularTool extends DiggerItem{
 	 * @param modifier modifier
 	 * @return Modifier lvl.
 	 */
-	public int getModifierLevel(ItemStack itemStack,ModularModifier modifier){
+	public static int getModifierLevel(ItemStack itemStack,ModularModifier modifier){
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
 		if(component==null) return 0;
 		for(ModularToolModifiers.entry entry: component.modifiers())
@@ -673,7 +673,7 @@ public class ModularTool extends DiggerItem{
 	 * @param itemStack tool
 	 * @param modifier modifier
 	 */
-	public void removeModifier(Level level,ItemStack itemStack,ModularModifier modifier){
+	public static void removeModifier(Level level,ItemStack itemStack,ModularModifier modifier){
 		int oldLvl=getModifierLevel(itemStack,modifier);
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
 		if(component==null) return;
@@ -700,7 +700,7 @@ public class ModularTool extends DiggerItem{
 	 * @param itemStack tool
 	 * @param modifier modifier
 	 */
-	public void upgradeModifier(Level level,ItemStack itemStack,ModularModifier modifier){
+	public static void upgradeModifier(Level level,ItemStack itemStack,ModularModifier modifier){
 		upgradeModifier(level,itemStack,modifier,1);
 	}
 	/**
@@ -710,7 +710,7 @@ public class ModularTool extends DiggerItem{
 	 * @param modifier modifier
 	 * @param lvl lvl
 	 */
-	public void upgradeModifier(Level level,ItemStack itemStack,ModularModifier modifier,int lvl){
+	public static void upgradeModifier(Level level,ItemStack itemStack,ModularModifier modifier,int lvl){
 		if(isModifier(itemStack,modifier)){
 			int newLvl=getModifierLevel(itemStack,modifier)+lvl;
 			addModifier(level,itemStack,modifier,newLvl);
@@ -723,7 +723,7 @@ public class ModularTool extends DiggerItem{
 	 * @param enchantment enchantment
 	 * @return Enchantment lvl.
 	 */
-	public int getEnchantmentLevel(Level level,ItemStack itemStack,ResourceKey<Enchantment> enchantment){
+	public static int getEnchantmentLevel(Level level,ItemStack itemStack,ResourceKey<Enchantment> enchantment){
 		Holder<Enchantment> holder=getEnchantmentHolder(level,enchantment);
 		return itemStack.getEnchantmentLevel(holder);
 	}
@@ -734,7 +734,7 @@ public class ModularTool extends DiggerItem{
 	 * @param enchantment enchantment
 	 * @param lvl lvl
 	 */
-	public void addEnchantment(Level level,ItemStack itemStack,ResourceKey<Enchantment> enchantment,int lvl){
+	public static void addEnchantment(Level level,ItemStack itemStack,ResourceKey<Enchantment> enchantment,int lvl){
 		manipulateEnchantment(level,itemStack,enchantment,lvl,0);
 	}
 	/**
@@ -744,7 +744,7 @@ public class ModularTool extends DiggerItem{
 	 * @param enchantment enchantment
 	 * @param lvl lvl
 	 */
-	public void subtractEnchantment(Level level,ItemStack itemStack,ResourceKey<Enchantment> enchantment,int lvl){
+	public static void subtractEnchantment(Level level,ItemStack itemStack,ResourceKey<Enchantment> enchantment,int lvl){
 		manipulateEnchantment(level,itemStack,enchantment,lvl,1);
 	}
 	/**
@@ -754,7 +754,7 @@ public class ModularTool extends DiggerItem{
 	 * @param enchantment enchantment
 	 * @param lvl lvl
 	 */
-	public void setEnchantment(Level level,ItemStack itemStack,ResourceKey<Enchantment> enchantment,int lvl){
+	public static void setEnchantment(Level level,ItemStack itemStack,ResourceKey<Enchantment> enchantment,int lvl){
 		manipulateEnchantment(level,itemStack,enchantment,lvl,2);
 	}
 	/**
@@ -765,7 +765,7 @@ public class ModularTool extends DiggerItem{
 	 * @param lvl lvl
 	 * @param mode mode
 	 */
-	private void manipulateEnchantment(Level level,ItemStack itemStack,ResourceKey<Enchantment> enchantment,int lvl,int mode){
+	private static void manipulateEnchantment(Level level,ItemStack itemStack,ResourceKey<Enchantment> enchantment,int lvl,int mode){
 		Holder<Enchantment> enchantmentHolder=getEnchantmentHolder(level,enchantment);
 		EnchantmentHelper.updateEnchantments(itemStack,mutable->{
 			if(lvl<=0) mutable.removeIf(holder->holder.is(enchantment));
@@ -791,8 +791,50 @@ public class ModularTool extends DiggerItem{
 	 * @param enchantment enchantment
 	 * @return Holder<Enchantment>
 	 */
-	private Holder<Enchantment> getEnchantmentHolder(Level level,ResourceKey<Enchantment> enchantment){
+	private static Holder<Enchantment> getEnchantmentHolder(Level level,ResourceKey<Enchantment> enchantment){
 		return level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(enchantment);
+	}
+	/**
+	 * Set new ModularReforge to tool.
+	 * @param itemStack tool
+	 * @param reforge reforge
+	 */
+	public static void setReforge(ItemStack itemStack,ModularReforge reforge){
+		ModularToolProperties props=getProps(itemStack);
+		ModularReforge oldReforge=ModularReforge.byName(props.reforge());
+		if(oldReforge==null) return;
+		if(oldReforge.equals(reforge)) return;
+		itemStack.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(props.toolType(),props.headMaterial(),props.bindingMaterial(),props.handleMaterial(),props.tier(),reforge.name()));
+	}
+	/**
+	 * Get ModularReforge from tool.
+	 * @param itemStack tool
+	 * @return ModularReforge.
+	 */
+	public static ModularReforge getReforge(ItemStack itemStack){
+		ModularToolProperties props=getProps(itemStack);
+		return ModularReforge.byName(props.reforge());
+	}
+	/**
+	 * Set new ModularTier to tool.
+	 * @param itemStack tool
+	 * @param tier tier
+	 */
+	public static void setTier(ItemStack itemStack,ModularTier tier){
+		ModularToolProperties props=getProps(itemStack);
+		ModularTier oldTier=ModularTier.byName(props.tier());
+		if(oldTier==null) return;
+		if(oldTier.equals(tier)) return;
+		itemStack.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(props.toolType(),props.headMaterial(),props.bindingMaterial(),props.handleMaterial(),tier.getName(),props.reforge()));
+	}
+	/**
+	 * Get ModularTier from tool.
+	 * @param itemStack tool
+	 * @return ModularTier.
+	 */
+	public static ModularTier getTier(ItemStack itemStack){
+		ModularToolProperties props=getProps(itemStack);
+		return ModularTier.byName(props.tier());
 	}
 }
 
