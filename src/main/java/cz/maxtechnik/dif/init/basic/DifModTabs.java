@@ -15,6 +15,7 @@ import vectorwing.farmersdelight.common.registry.ModCreativeTabs;
 import vectorwing.farmersdelight.common.registry.ModItems;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import static cz.maxtechnik.dif.DifMod.addItemStacksBehind;
 import static cz.maxtechnik.dif.init.basic.DifModItems.*;
@@ -157,13 +158,14 @@ public class DifModTabs{
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>MODULAR_TOOLS=REGISTER.register("modular_tools",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.SPACE.getKey()).title(Component.translatable("creative_tab.dif.modular_tools")).icon(()->new ItemStack(Items.SMITHING_TABLE)).displayItems(((parameters, tabData)->{
 		tabData.accept(Items.SMITHING_TABLE);
 		ItemStack ePickaxe=new ItemStack(MODULAR_TOOL.get());
+		ItemStack e2Pickaxe=new ItemStack(MODULAR_TOOL.get());
 		ModularToolProperties pickaxe=new ModularToolProperties(ModularTools.PICKAXE.getName(),ModularMaterial.GOLD.getName(),ModularMaterial.IRON.getName(),ModularMaterial.WOOD.getName(),ModularTier.COMMON.getName(),ModularReforge.NONE.getName());
-		ePickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),pickaxe);
-		ItemStack e2Pickaxe=new ItemStack(MODULAR_TOOL.get());e2Pickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),pickaxe);
-		tabData.accept(ePickaxe);
-		java.util.List<ModularToolModifiers.entry> neco=new java.util.ArrayList<>();
+		List<ModularToolModifiers.entry> neco=new ArrayList<>();
 		neco.add(new ModularToolModifiers.entry("excavator",1));
+		ePickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),pickaxe);
+		e2Pickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),pickaxe);
 		e2Pickaxe.set(DifModComponents.MODULAR_TOOL_MODIFIERS.get(),new ModularToolModifiers(neco));
+		tabData.accept(ePickaxe);
 		tabData.accept(e2Pickaxe);
 		ItemStack ePart=new ItemStack(MODULAR_PART.get());ePart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties(ModularParts.HANDLE.getName(),ModularMaterial.IRON.getName(),false));
 		tabData.accept(ePart);
