@@ -21,7 +21,7 @@ public class ModularSubscriber{
 		ModularToolProperties props=ModularTool.getProps(itemStack);
 		if(props==null) return;
 		ModularReforge reforge=ModularTool.getReforge(itemStack);
-		int tier=ModularTier.byName(props.tier()).getReforgeIndex();
+		int tier=ModularTool.getTier(itemStack).getReforgeIndex();
 		int[] chances={0,0,8,5,3};
 		switch(reforge){
 			case VAMPIRIC,DRAIN -> {
