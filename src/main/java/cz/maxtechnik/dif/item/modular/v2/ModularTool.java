@@ -3,9 +3,12 @@ package cz.maxtechnik.dif.item.modular.v2;
 import cz.maxtechnik.dif.init.other.DifModComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -22,6 +25,8 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -681,6 +686,78 @@ public class ModularTool extends DiggerItem{
 			int newLvl=getModifierLevel(itemStack,modifier)+lvl;
 			addModifier(itemStack,modifier,newLvl);
 		}else addModifier(itemStack,modifier,lvl);
+	}
+	/**
+	 * Get enchantment lvl from tool.
+	 * @param level level
+	 * @param itemStack tool
+	 * @param enchantment enchantment
+	 * @return Enchantment lvl.
+	 */
+	public int getEnchantmentLevel(Level level,ItemStack itemStack,ResourceKey<Enchantment> enchantment){
+		Holder<Enchantment> holder=getEnchantmentHolder(level,enchantment);
+		return itemStack.getEnchantmentLevel(holder);
+	}
+	/**
+	 * Add/Create enchantment on tool.
+	 * @param level level
+	 * @param itemStack tool
+	 * @param enchantment enchantment
+	 * @param lvl lvl
+	 */
+	public void addEnchantment(Level level,ItemStack itemStack,ResourceKey<Enchantment> enchantment,int lvl){
+		manipulateEnchantment(level,itemStack,enchantment,lvl,0);
+	}
+	/**
+	 * Subtract/Remove enchantment on tool.
+	 * @param level level
+	 * @param itemStack tool
+	 * @param enchantment enchantment
+	 * @param lvl lvl
+	 */
+	public void subtractEnchantment(Level level,ItemStack itemStack,ResourceKey<Enchantment> enchantment,int lvl){
+		manipulateEnchantment(level,itemStack,enchantment,lvl,1);
+	}
+	/**
+	 * Set/Create/Remove enchantment lvl on tool.
+	 * @param level level
+	 * @param itemStack tool
+	 * @param enchantment enchantment
+	 * @param lvl lvl
+	 */
+	public void setEnchantment(Level level,ItemStack itemStack,ResourceKey<Enchantment> enchantment,int lvl){
+		manipulateEnchantment(level,itemStack,enchantment,lvl,2);
+	}
+	/**
+	 * Manipulate with tool enchantments.
+	 * @param level level
+	 * @param itemStack tool
+	 * @param enchantment enchantment
+	 * @param lvl lvl
+	 * @param mode mode
+	 */
+	private void manipulateEnchantment(Level level,ItemStack itemStack,ResourceKey<Enchantment> enchantment,int lvl,int mode){
+		Holder<Enchantment> enchantmentHolder=getEnchantmentHolder(level,enchantment);
+		EnchantmentHelper.updateEnchantments(itemStack,mutable->{
+			if(lvl<=0) mutable.removeIf(holder->holder.is(enchantment));
+			else{
+				switch(mode){
+					case 0 -> mutable.set(enchantmentHolder,itemStack.getEnchantmentLevel(enchantmentHolder)+lvl);
+					case 1 -> {
+						if(itemStack.getEnchantmentLevel(enchantmentHolder)-lvl<=0)
+							manipulateEnchantment(level,itemStack,enchantment,-1,0);
+						else
+							mutable.set(enchantmentHolder,itemStack.getEnchantmentLevel(enchantmentHolder)-lvl);
+					}
+					case 2 -> mutable.set(enchantmentHolder,lvl);
+					default -> {
+					}
+				}
+			}
+		});
+	}
+	private Holder<Enchantment> getEnchantmentHolder(Level level,ResourceKey<Enchantment> enchantment){
+		return level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(enchantment);
 	}
 }
 
