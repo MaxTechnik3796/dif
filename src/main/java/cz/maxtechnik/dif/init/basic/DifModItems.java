@@ -15,6 +15,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.*;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import cz.maxtechnik.dif.init.events.QuarryStats;
@@ -163,15 +164,15 @@ public class DifModItems{
 	public static final DeferredItem<Item> CANOLA_PLANT=block(DifModBlocks.CANOLA_PLANT);
 
 	//Tech & Stuff:
-	public static final DeferredItem<Item> INCOMPLETE_UNIVERSAL=REGISTRY.register("incomplete_universal",Basic::new);
+	public static final DeferredItem<Item> INCOMPLETE_UNIVERSAL=REGISTRY.register("incomplete_universal",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item> ELECTRUM_DESTROYER=REGISTRY.register("electrum_destroyer",ElectrumDestroyer::new);
-	public static final DeferredItem<Item> BLUESTONE=REGISTRY.register("bluestone",Basic::new);
-	public static final DeferredItem<Item> BLUE_PLATE=REGISTRY.register("blue_plate",Basic::new);
+	public static final DeferredItem<Item> BLUESTONE=REGISTRY.register("bluestone",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item> BLUE_PLATE=REGISTRY.register("blue_plate",()->new Item(new Item.Properties()));
 
 
-	public static final DeferredItem<Item> MITHRIL=REGISTRY.register("mithril",Basic::new);
-	public static final DeferredItem<Item> MITHRIL_PLATE=REGISTRY.register("mithril_plate",Basic::new);
-	public static final DeferredItem<Item> INCOMPLETE_MITHRIL_PLATE=REGISTRY.register("incomplete_mithril_plate",Basic::new);
+	public static final DeferredItem<Item> MITHRIL=REGISTRY.register("mithril",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item> MITHRIL_PLATE=REGISTRY.register("mithril_plate",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item> INCOMPLETE_MITHRIL_PLATE=REGISTRY.register("incomplete_mithril_plate",()->new Item(new Item.Properties()));
 
 
 
@@ -205,13 +206,13 @@ public class DifModItems{
 	public static final DeferredItem<Item> COPPER_BARREL=block(DifModBlocks.COPPER_BARREL);
 	public static final DeferredItem<Item> BRASS_BARREL=block(DifModBlocks.BRASS_BARREL);
 
-	public static final DeferredItem<Item> RUBY=REGISTRY.register("ruby",Basic::new);
+	public static final DeferredItem<Item> RUBY=REGISTRY.register("ruby",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item> RUBY_ORE=block(DifModBlocks.RUBY_ORE);
 	public static final DeferredItem<Item> RUBY_BLOCK=block(DifModBlocks.RUBY_BLOCK);
 
 
 
-	public static final DeferredItem<Item> SOLAR_PANEL_INC=REGISTRY.register("solar_panel_inc",Basic::new);
+	public static final DeferredItem<Item> SOLAR_PANEL_INC=REGISTRY.register("solar_panel_inc",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item> SOLAR_PANEL_00=block(DifModBlocks.SOLAR_PANEL_00);
 	public static final DeferredItem<Item> SOLAR_PANEL_01=block(DifModBlocks.SOLAR_PANEL_01);
 	public static final DeferredItem<Item> SOLAR_PANEL_02=block(DifModBlocks.SOLAR_PANEL_02);
@@ -229,10 +230,10 @@ public class DifModItems{
 
 	public static final DeferredItem<Item> BAUXITE_ORE=block(DifModBlocks.BAUXITE_ORE);
 	public static final DeferredItem<Item> DEEPSLATE_BAUXITE_ORE=block(DifModBlocks.DEEPSLATE_BAUXITE_ORE);
-	public static final DeferredItem<Item> RAW_BAUXITE=REGISTRY.register("raw_bauxite",Basic::new);
-	public static final DeferredItem<Item> CRUSHED_RAW_BAUXITE=REGISTRY.register("crushed_raw_bauxite",Basic::new);
-	public static final DeferredItem<Item> ALUMINUM_INGOT=REGISTRY.register("aluminum_ingot",Basic::new);
-	public static final DeferredItem<Item> ALUMINUM_NUGGET=REGISTRY.register("aluminum_nugget",Basic::new);
+	public static final DeferredItem<Item> RAW_BAUXITE=REGISTRY.register("raw_bauxite",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item> CRUSHED_RAW_BAUXITE=REGISTRY.register("crushed_raw_bauxite",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item> ALUMINUM_INGOT=REGISTRY.register("aluminum_ingot",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item> ALUMINUM_NUGGET=REGISTRY.register("aluminum_nugget",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item> ALUMINUM_BLOCK=block(DifModBlocks.ALUMINUM_BLOCK);
 	public static final DeferredItem<Item> ALUMINUM_PROFILE=block(DifModBlocks.ALUMINUM_PROFILE);
 
@@ -249,7 +250,7 @@ public class DifModItems{
 	public static final DeferredItem<Item> LARGE_ENERGY_BUD=block(DifModBlocks.LARGE_ENERGY_BUD);
 	public static final DeferredItem<Item> MEDIUM_ENERGY_BUD=block(DifModBlocks.MEDIUM_ENERGY_BUD);
 	public static final DeferredItem<Item> SMALL_ENERGY_BUD=block(DifModBlocks.SMALL_ENERGY_BUD);
-	public static final DeferredItem<Item> ENERGY_SHARD=REGISTRY.register("energy_shard",Basic::new);
+	public static final DeferredItem<Item> ENERGY_SHARD=REGISTRY.register("energy_shard",()->new Item(new Item.Properties()));
 
 
 
@@ -286,10 +287,10 @@ public class DifModItems{
 
 	//Space:
 	public static final DeferredItem<Item> AURORA_CASING=block(DifModBlocks.AURORA_CASING);
-	public static final DeferredItem<Item> AURORA_INGOT=REGISTRY.register("aurora_ingot",Basic::new);
+	public static final DeferredItem<Item> AURORA_INGOT=REGISTRY.register("aurora_ingot",()->new Item(new Item.Properties()));
 
-	public static final DeferredItem<Item> ROCKET_FUEL=REGISTRY.register("rocket_fuel",()->new StackSize(16));
-	public static final DeferredItem<Item> EMPTY_ROCKET_FUEL=REGISTRY.register("empty_rocket_fuel",()->new StackSize(16));
+	public static final DeferredItem<Item> ROCKET_FUEL=REGISTRY.register("rocket_fuel",()->new Item(new Item.Properties().stacksTo(16)));
+	public static final DeferredItem<Item> EMPTY_ROCKET_FUEL=REGISTRY.register("empty_rocket_fuel",()->new Item(new Item.Properties().stacksTo(16)));
 
 	public static final DeferredItem<Item> SPACE_SUIT_HELMET=REGISTRY.register("space_suit_helmet",SpaceSuit.Helmet::new);
 	public static final DeferredItem<Item> SPACE_SUIT_CHESTPLATE=REGISTRY.register("space_suit_chestplate",SpaceSuit.Chestplate::new);

@@ -2,7 +2,10 @@ package cz.maxtechnik.dif.item.armor;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.other.DifModTiers;
-import cz.maxtechnik.dif.model.*;
+import cz.maxtechnik.dif.model.ModelSpaceBoots;
+import cz.maxtechnik.dif.model.ModelSpaceChestplate;
+import cz.maxtechnik.dif.model.ModelSpaceHelmet;
+import cz.maxtechnik.dif.model.ModelSpaceLeggings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;

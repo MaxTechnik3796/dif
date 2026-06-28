@@ -1,12 +1,12 @@
 package cz.maxtechnik.dif.item;
 
 import cz.maxtechnik.dif.init.other.DifModEntities;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.core.BlockPos;
 import org.jetbrains.annotations.NotNull;
 public class FormulaItem extends Item{
 	public FormulaItem(Properties properties){

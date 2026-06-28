@@ -2,12 +2,12 @@ package cz.maxtechnik.dif.item.tool;
 
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.NotNull;
 public class ElectrumDestroyer extends PickaxeItem{
 	private static final Tier ELECTRUM_TIER=new Tier(){

@@ -30,16 +30,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-
 @SuppressWarnings("removal")
 public abstract class Jetpack extends ArmorItem{
 	// Kapacita nádrže v mB
 	public static final int CAPACITY=16000;
-
 	public Jetpack(ArmorItem.Type type,Item.Properties properties){
 		super(DifModTiers.ARMOR_MATERIAL_JETPACK,type,properties.stacksTo(1));
 	}
-
 	public static class Chestplate extends Jetpack{
 		public Chestplate(){
 			super(Type.CHESTPLATE,new Item.Properties().stacksTo(1));
@@ -70,7 +67,6 @@ public abstract class Jetpack extends ArmorItem{
 				}
 			});
 		}
-
 		// === Palivo (Thrust) v mB ===
 		public static int getThrust(ItemStack stack){
 			CustomData data=stack.get(DataComponents.CUSTOM_DATA);
@@ -84,7 +80,6 @@ public abstract class Jetpack extends ArmorItem{
 		public static int getMax(){
 			return CAPACITY;
 		}
-
 		// === Stav jetpacku: 0=let, 1=hover, 2=vypnuto ===
 		public static int getMode(ItemStack stack){
 			CustomData data=stack.get(DataComponents.CUSTOM_DATA);
@@ -95,9 +90,12 @@ public abstract class Jetpack extends ArmorItem{
 			stack.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,
 					data->data.update(tag->tag.putInt("Mode",Mth.clamp(mode,0,2))));
 		}
-		public static boolean isHovering(ItemStack stack){ return getMode(stack)==1; }
-		public static boolean isOff(ItemStack stack){ return getMode(stack)==2; }
-
+		public static boolean isHovering(ItemStack stack){
+			return getMode(stack)==1;
+		}
+		public static boolean isOff(ItemStack stack){
+			return getMode(stack)==2;
+		}
 		// === Fluid capability ===
 		// Registruje se v DifMod.registerCapabilities přes Capabilities.FluidHandler.ITEM.
 		// Spout (i jakýkoliv tank/stroj) tím pádem může jetpack plnit, fill() bere přesně
@@ -152,7 +150,6 @@ public abstract class Jetpack extends ArmorItem{
 				return new FluidStack(DifModFluids.JETPACK_FUEL.get(),drained);
 			}
 		}
-
 		// Bar ukazuje naplnění
 		@Override
 		public int getBarWidth(@NotNull ItemStack stack){

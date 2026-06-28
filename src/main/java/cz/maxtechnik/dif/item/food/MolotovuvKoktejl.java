@@ -1,4 +1,3 @@
-
 package cz.maxtechnik.dif.item.food;
 
 import cz.maxtechnik.dif.DifMod;
