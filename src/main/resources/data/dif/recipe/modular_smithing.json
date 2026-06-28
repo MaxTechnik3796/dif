@@ -10,6 +10,6 @@
 		"item":"minecraft:netherite_ingot"
 	},
 	"result":{
-		"item":"dif:modular_tool"
+		"id":"dif:modular_tool"
 	}
 }
