@@ -59,7 +59,6 @@ public class ModularRecipes extends SmithingExtraRecipe{ // FIX: Nyní regulérn
 	@Override
 	public int getAdditionConsumeCount(SmithingRecipeInput input){
 		if(input.getItem(0).getItem().equals(DifModItems.MODULAR_TEMPLATE_EFFICIENCY.get())){
-			System.out.println(ModularTool.getModifierLevel(input.getItem(1),ModularModifier.EFFICIENCY));
 			return switch(ModularTool.getModifierLevel(input.getItem(1),ModularModifier.EFFICIENCY)){
 				case 0 -> 10;
 				case 1 -> 20;
