@@ -25,12 +25,17 @@ public class ModularRecipes implements SmithingRecipe{
 		this.result=result;
 	}
 	@Override
-	public boolean matches(SmithingRecipeInput container,@NotNull Level world){
+	public boolean matches(@NotNull SmithingRecipeInput container,@NotNull Level world){
+		ItemStack template=container.getItem(0).copy();
+		ItemStack base=container.getItem(1).copy();
+		ItemStack addition=container.getItem(2).copy();
 		return false;
 	}
 	@Override
 	public @NotNull ItemStack assemble(SmithingRecipeInput container,@NotNull HolderLookup.Provider provider){
 		ItemStack template=container.getItem(0).copy();
+		ItemStack base=container.getItem(1).copy();
+		ItemStack addition=container.getItem(2).copy();
 		return template;
 	}
 	@Override
