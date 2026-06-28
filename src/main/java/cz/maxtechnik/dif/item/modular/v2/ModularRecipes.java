@@ -10,6 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -88,18 +89,17 @@ public class ModularRecipes extends SmithingExtraRecipe{
 		return this.addition.ingredient().test(itemStack);
 	}
 	private boolean isModifierAllowed(ItemStack base, ModularModifier modifier) {
-		String type = cz.maxtechnik.dif.item.modular.v2.ModularTool.getProps(base).toolType().toLowerCase(java.util.Locale.ROOT);
+		String type = ModularTool.getProps(base).toolType().toLowerCase(java.util.Locale.ROOT);
 		if (type.equals("axe") || type.equals("battle_axe")) {
-			if (modifier == ModularModifier.SWEEPING_EDGE || modifier == ModularModifier.LUCK) return false;
+			return modifier!=ModularModifier.SWEEPING_EDGE&&modifier!=ModularModifier.LUCK;
 		} else if (type.equals("sword") || type.equals("katana")) {
-			if (modifier == ModularModifier.EFFICIENCY || modifier == ModularModifier.SILK_TOUCH) return false;
+			return modifier!=ModularModifier.EFFICIENCY&&modifier!=ModularModifier.SILK_TOUCH;
 		} else {
-			if (modifier == ModularModifier.SHARPNESS || modifier == ModularModifier.LUCK || modifier == ModularModifier.SWEEPING_EDGE) return false;
+			return modifier!=ModularModifier.SHARPNESS&&modifier!=ModularModifier.LUCK&&modifier!=ModularModifier.SWEEPING_EDGE;
 		}
-		return true;
 	}
 
-	private ModularModifier getModifierForTemplate(net.minecraft.world.item.Item templateItem, net.minecraft.world.item.Item additionItem) {
+	private ModularModifier getModifierForTemplate(Item templateItem,Item additionItem) {
 		if (templateItem.equals(MODULAR_TEMPLATE_NORMAL.get())) {
 			if (additionItem.equals(REDSTONE)) return EFFICIENCY;
 			if (additionItem.equals(LAPIS_LAZULI)) return LUCK;
