@@ -28,10 +28,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 import static java.lang.Math.round;
 public class ModularTool extends DiggerItem{
@@ -544,10 +546,8 @@ public class ModularTool extends DiggerItem{
 			}else materialModifiers.add(handleModifier);
 		return materialModifiers;
 	}
-
 	@Override
-	public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, @org.jetbrains.annotations.Nullable T entity, java.util.function.Consumer<net.minecraft.world.item.Item> onBroken){
-		// intentionally return 0: actual damage is applied via damageTool() in mineBlock/hurtEnemy/useOn
+	public <T extends LivingEntity> int damageItem(@NotNull ItemStack itemStack,int amount,@Nullable T entity,@NotNull Consumer<Item> onBroken){
 		return 0;
 	}
 	@Override
