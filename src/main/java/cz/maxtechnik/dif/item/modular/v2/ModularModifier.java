@@ -4,9 +4,7 @@ import java.util.Locale;
 public enum ModularModifier{
 	//enchant holder:
 	SILK_TOUCH("silk_touch",1,false,0xFFFFFF),
-	FORTUNE("fortune",3,false,0xFFFFFF),
-	LOOTING("looting",3,false,0xFFFFFF),
-	FIRE_ASPECT("fire_aspect",2,false,0xFFFFFF),
+	LUCK("luck",3,false,0xFFFFFF),
 	SWEEPING_EDGE("sweeping_edge",3,false,0xFFFFFF),
 	MENDING("mending",1,false,0xFFFFFF),
 	//custom stats:

@@ -638,9 +638,10 @@ public class ModularTool extends DiggerItem{
 		itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(newModifiers));
 		switch(modifier){
 			case SILK_TOUCH -> addEnchantment(provider,itemStack,Enchantments.SILK_TOUCH,lvl);
-			case FORTUNE -> addEnchantment(provider,itemStack,Enchantments.FORTUNE,lvl);
-			case LOOTING -> addEnchantment(provider,itemStack,Enchantments.LOOTING,lvl);
-			case FIRE_ASPECT -> addEnchantment(provider,itemStack,Enchantments.FIRE_ASPECT,lvl);
+			case LUCK -> {
+				addEnchantment(provider,itemStack,Enchantments.FORTUNE,lvl);
+				addEnchantment(provider,itemStack,Enchantments.LOOTING,lvl);
+			}
 			case SWEEPING_EDGE -> addEnchantment(provider,itemStack,Enchantments.SWEEPING_EDGE,lvl);
 			case MENDING -> addEnchantment(provider,itemStack,Enchantments.MENDING,lvl);
 			default -> {
@@ -690,9 +691,10 @@ public class ModularTool extends DiggerItem{
 			itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(newModifiers));
 			switch(modifier){
 				case SILK_TOUCH -> subtractEnchantment(provider,itemStack,Enchantments.SILK_TOUCH,oldLvl);
-				case FORTUNE -> subtractEnchantment(provider,itemStack,Enchantments.FORTUNE,oldLvl);
-				case LOOTING -> subtractEnchantment(provider,itemStack,Enchantments.LOOTING,oldLvl);
-				case FIRE_ASPECT -> subtractEnchantment(provider,itemStack,Enchantments.FIRE_ASPECT,oldLvl);
+				case LUCK -> {
+					subtractEnchantment(provider,itemStack,Enchantments.FORTUNE,oldLvl);
+					subtractEnchantment(provider,itemStack,Enchantments.LOOTING,oldLvl);
+				}
 				case SWEEPING_EDGE -> subtractEnchantment(provider,itemStack,Enchantments.SWEEPING_EDGE,oldLvl);
 				case MENDING -> subtractEnchantment(provider,itemStack,Enchantments.MENDING,oldLvl);
 				default -> {

@@ -2,7 +2,6 @@ package cz.maxtechnik.dif.item.modular.v2;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
 import cz.maxtechnik.mtrecipex.recipe.SizedIngredientExtra;
 import cz.maxtechnik.mtrecipex.recipe.SmithingExtraRecipe;
@@ -15,21 +14,41 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import static cz.maxtechnik.dif.init.basic.DifModItems.*;
+import static cz.maxtechnik.dif.item.modular.v2.ModularModifier.*;
+import static cz.maxtechnik.dif.item.modular.v2.ModularTool.getModifierLevel;
+import static cz.maxtechnik.dif.item.modular.v2.ModularTool.upgradeModifier;
 public class ModularRecipes extends SmithingExtraRecipe{
-	private int efficiencyItems(ItemStack itemStack){
-		return switch(ModularTool.getModifierLevel(itemStack,ModularModifier.EFFICIENCY)){
-			case 0 -> 10;
-			case 1 -> 20;
-			case 2 -> 30;
-			case 3 -> 40;
-			case 4 -> 50;
-			case 5 -> 64;
+	private int getItemCount(ItemStack itemStack,ModularModifier modifier){
+		return switch(modifier){
+			case EFFICIENCY-> switch(getModifierLevel(itemStack,EFFICIENCY)){
+				case 0 -> 10;
+				case 1 -> 20;
+				case 2 -> 30;
+				case 3 -> 40;
+				case 4 -> 50;
+				case 5 -> 64;
+				default -> 0;
+			};
+			case LUCK -> switch(getModifierLevel(itemStack,ModularModifier.LUCK)){
+				case 0 -> 10;
+				case 1 -> 20;
+				case 2 -> 30;
+				case 3 -> 40;
+				default -> 0;
+			};
+			case SWEEPING_EDGE -> switch(getModifierLevel(itemStack,ModularModifier.SWEEPING_EDGE)){
+				case 0 -> 10;
+				case 1 -> 20;
+				case 2 -> 30;
+				case 3 -> 40;
+				default -> 0;
+			};
 			default -> 0;
 		};
 	}
 	public ModularRecipes(Ingredient template,Ingredient base,Ingredient addition,ItemStack result){
-		// Zavoláme rodičovský konstruktor z Recipexu.
-		// Pro šablonu a zbraň chceme 1 kus, pro modifikační materiál (addition) vyžadujeme celých 64 kusů!
 		super(
 				new SizedIngredientExtra(template,1),
 				new SizedIngredientExtra(base,1),
@@ -43,8 +62,12 @@ public class ModularRecipes extends SmithingExtraRecipe{
 		ItemStack base=container.getItem(1).copy();
 		ItemStack addition=container.getItem(2).copy();
 		if(this.template.ingredient().test(template)&&this.base.ingredient().test(base)&&this.addition.ingredient().test(addition)){
-			if(template.getItem().equals(DifModItems.MODULAR_TEMPLATE_EFFICIENCY.get())&&addition.getCount()>=efficiencyItems(base))
-				return ModularTool.getModifierLevel(base,ModularModifier.EFFICIENCY)<ModularModifier.EFFICIENCY.getMaxLvl();
+			if(template.getItem().equals(MODULAR_TEMPLATE_EFFICIENCY.get())&&addition.getCount()>=getItemCount(base,EFFICIENCY))
+				return getModifierLevel(base,EFFICIENCY)<EFFICIENCY.getMaxLvl();
+			if(template.getItem().equals(MODULAR_TEMPLATE_LUCK.get())&&addition.getCount()>=getItemCount(base,ModularModifier.LUCK))
+				return getModifierLevel(base,LUCK)<LUCK.getMaxLvl();
+			if(template.getItem().equals(MODULAR_TEMPLATE_SWEEPING_EDGE.get())&&addition.getCount()>=getItemCount(base,ModularModifier.SWEEPING_EDGE))
+				return getModifierLevel(base,SWEEPING_EDGE)<SWEEPING_EDGE.getMaxLvl();
 		}
 		return false;
 	}
@@ -52,15 +75,21 @@ public class ModularRecipes extends SmithingExtraRecipe{
 	public @NotNull ItemStack assemble(SmithingRecipeInput container,@NotNull HolderLookup.Provider provider){
 		ItemStack template=container.getItem(0).copy();
 		ItemStack base=container.getItem(1).copy();
-		if(template.getItem().equals(DifModItems.MODULAR_TEMPLATE_EFFICIENCY.get()))
-			ModularTool.upgradeModifier(provider,base,ModularModifier.EFFICIENCY);
+		if(template.getItem().equals(MODULAR_TEMPLATE_EFFICIENCY.get()))
+			upgradeModifier(provider,base,EFFICIENCY);
+		if(template.getItem().equals(MODULAR_TEMPLATE_LUCK.get()))
+			upgradeModifier(provider,base,ModularModifier.LUCK);
+		if(template.getItem().equals(MODULAR_TEMPLATE_SWEEPING_EDGE.get()))
+			upgradeModifier(provider,base,SWEEPING_EDGE);
 		return base;
 	}
 	@Override
 	public int getAdditionConsumeCount(SmithingRecipeInput container){
 		ItemStack template=container.getItem(0).copy();
 		ItemStack base=container.getItem(1).copy();
-		if(template.getItem().equals(DifModItems.MODULAR_TEMPLATE_EFFICIENCY.get())) return efficiencyItems(base);
+		if(template.getItem().equals(MODULAR_TEMPLATE_EFFICIENCY.get())) return getItemCount(base,EFFICIENCY);
+		if(template.getItem().equals(MODULAR_TEMPLATE_LUCK.get())) return getItemCount(base,ModularModifier.LUCK);
+		if(template.getItem().equals(MODULAR_TEMPLATE_SWEEPING_EDGE.get())) return getItemCount(base,SWEEPING_EDGE);
 		else return this.addition.count();
 	}
 	public Ingredient getJsonTemplate(){

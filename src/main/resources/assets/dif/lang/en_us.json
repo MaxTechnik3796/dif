@@ -323,9 +323,14 @@
 
 
 	"item.dif.modular_template":"Modular Template",
-	"item.dif.modular_template_efficiency":"Efficiency",
+	"dif:modular_template_efficiency":"Efficiency",
+	"dif:modular_template_silk_touch":"Silk Touch",
+	"dif:modular_template_luck":"Luck",
+	"dif:modular_template_sweeping_edge":"Sweeping Edge",
+	"dif:modular_template_mending":"Mending",
 
 
+	"block.dif.modular_reforge_table":"Reforge Table",
 
 	"block.dif.aurora_casing":"Aurora Casing",
 	"block.dif.broken_track00":"Broken Track (1)",

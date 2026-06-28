@@ -1,14 +1,14 @@
 {
 	"type":"dif:modular_recipe",
 	"template":{
-		"item":"dif:modular_template_efficiency"
+		"tag":"dif:modular_templates"
 	},
 	"base":{
 		"item":"dif:modular_tool"
 	},
 	"addition":{
 		"count":64,
-		"item":"minecraft:netherite_ingot"
+		"tag":"dif:modular_modifiers"
 	},
 	"result":{
 		"id":"dif:modular_tool"

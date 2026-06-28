@@ -160,6 +160,10 @@ public class DifModTabs{
 		tabData.accept(MODULAR_REFORGE_TABLE);
 
 		tabData.accept(MODULAR_TEMPLATE_EFFICIENCY);
+		tabData.accept(MODULAR_TEMPLATE_SILK_TOUCH);
+		tabData.accept(MODULAR_TEMPLATE_LUCK);
+		tabData.accept(MODULAR_TEMPLATE_SWEEPING_EDGE);
+		tabData.accept(MODULAR_TEMPLATE_MENDING);
 
 		ItemStack ePickaxe=new ItemStack(MODULAR_TOOL.get());
 		ItemStack e2Pickaxe=new ItemStack(MODULAR_TOOL.get());

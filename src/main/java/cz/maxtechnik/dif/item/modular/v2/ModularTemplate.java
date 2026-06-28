@@ -19,6 +19,6 @@ public class ModularTemplate extends Item{
 	@Override
 	public void appendHoverText(@NotNull ItemStack itemStack,@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
 		list.add(Component.literal("Modifier:").withStyle(ChatFormatting.GRAY));
-		list.add(Component.literal(" ").append(Component.translatable("item.dif.modular_template_efficiency").withStyle(ChatFormatting.BLUE)));
+		list.add(Component.literal(" ").append(Component.translatable(itemStack.getItem().toString()).withStyle(ChatFormatting.BLUE)));
 	}
 }

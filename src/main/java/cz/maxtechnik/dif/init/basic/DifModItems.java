@@ -15,7 +15,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import cz.maxtechnik.dif.init.events.QuarryStats;
@@ -359,4 +358,8 @@ public class DifModItems{
 
 	public static final DeferredItem<Item>MODULAR_REFORGE_TABLE=block(DifModBlocks.MODULAR_REFORGE_TABLE);
 	public static final DeferredItem<Item>MODULAR_TEMPLATE_EFFICIENCY=REGISTRY.register("modular_template_efficiency",()->new ModularTemplate(new Item.Properties()));
+	public static final DeferredItem<Item>MODULAR_TEMPLATE_SILK_TOUCH=REGISTRY.register("modular_template_silk_touch",()->new ModularTemplate(new Item.Properties()));
+	public static final DeferredItem<Item>MODULAR_TEMPLATE_LUCK=REGISTRY.register("modular_template_luck",()->new ModularTemplate(new Item.Properties()));
+	public static final DeferredItem<Item>MODULAR_TEMPLATE_SWEEPING_EDGE=REGISTRY.register("modular_template_sweeping_edge",()->new ModularTemplate(new Item.Properties()));
+	public static final DeferredItem<Item>MODULAR_TEMPLATE_MENDING=REGISTRY.register("modular_template_mending",()->new ModularTemplate(new Item.Properties()));
 }
