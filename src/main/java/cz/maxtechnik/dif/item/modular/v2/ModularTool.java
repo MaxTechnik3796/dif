@@ -529,6 +529,8 @@ public class ModularTool extends DiggerItem{
 			if(ModularModifier.byName(entry.id()).getMaxLvl()>1)
 				nameComp=nameComp.copy().append(Component.literal(" ")).append(Component.translatable("enchantment.level."+entry.lvl()).withStyle(ChatFormatting.WHITE));
 			list.add(nameComp.copy().withStyle(Style.EMPTY.withColor(modifier.getColor())));
+			if(ModularModifier.byName(entry.id()).hasDescription())
+				list.add(Component.literal("  ").append(Component.translatable("dif.modifier."+entry.id()+".desc").withStyle(Style.EMPTY.withColor(modifier.getColor()).withItalic(true))));
 		}
 	}
 	/**
