@@ -27,6 +27,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static java.lang.Math.round;
 public class ModularTool extends DiggerItem{
@@ -599,19 +601,21 @@ public class ModularTool extends DiggerItem{
 	}
 	/**
 	 * Add modifier to tool.
+	 * @param level level
 	 * @param itemStack tool
 	 * @param modifier modifier
 	 */
-	public void addModifier(ItemStack itemStack,ModularModifier modifier){
-		addModifier(itemStack,modifier,1);
+	public void addModifier(Level level,ItemStack itemStack,ModularModifier modifier){
+		addModifier(level,itemStack,modifier,1);
 	}
 	/**
 	 * Add modifier to tool with lvl.
+	 * @param level level
 	 * @param itemStack tool
 	 * @param modifier modifier
 	 * @param lvl modifier lvl
 	 */
-	public void addModifier(ItemStack itemStack,ModularModifier modifier,int lvl){
+	public void addModifier(Level level,ItemStack itemStack,ModularModifier modifier,int lvl){
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
 		if(component==null) return;
 		List<ModularToolModifiers.entry> newModifiers=new ArrayList<>(component.modifiers());
@@ -626,6 +630,16 @@ public class ModularTool extends DiggerItem{
 		}
 		if(!found) newModifiers.add(new ModularToolModifiers.entry(modifier.getName(),lvl));
 		itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(newModifiers));
+		switch(modifier){
+			case SILK_TOUCH -> addEnchantment(level,itemStack,Enchantments.SILK_TOUCH,lvl);
+			case FORTUNE -> addEnchantment(level,itemStack,Enchantments.FORTUNE,lvl);
+			case LOOTING -> addEnchantment(level,itemStack,Enchantments.LOOTING,lvl);
+			case FIRE_ASPECT -> addEnchantment(level,itemStack,Enchantments.FIRE_ASPECT,lvl);
+			case SWEEPING_EDGE -> addEnchantment(level,itemStack,Enchantments.SWEEPING_EDGE,lvl);
+			case MENDING -> addEnchantment(level,itemStack,Enchantments.MENDING,lvl);
+			default -> {
+			}
+		}
 	}
 	/**
 	 * Check if is modifier on tool.
@@ -655,37 +669,52 @@ public class ModularTool extends DiggerItem{
 	}
 	/**
 	 * Remove modifier from tool.
+	 * @param level level
 	 * @param itemStack tool
 	 * @param modifier modifier
 	 */
-	public void removeModifier(ItemStack itemStack,ModularModifier modifier){
+	public void removeModifier(Level level,ItemStack itemStack,ModularModifier modifier){
+		int oldLvl=getModifierLevel(itemStack,modifier);
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
 		if(component==null) return;
 		List<ModularToolModifiers.entry> newModifiers=component.modifiers().stream()
 				.filter(entry->!entry.id().equals(modifier.getName()))
-				.collect(java.util.stream.Collectors.toList());
-		if(newModifiers.size()!=component.modifiers().size())
+				.collect(Collectors.toList());
+		if(newModifiers.size()!=component.modifiers().size()){
 			itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(newModifiers));
+			switch(modifier){
+				case SILK_TOUCH -> subtractEnchantment(level,itemStack,Enchantments.SILK_TOUCH,oldLvl);
+				case FORTUNE -> subtractEnchantment(level,itemStack,Enchantments.FORTUNE,oldLvl);
+				case LOOTING -> subtractEnchantment(level,itemStack,Enchantments.LOOTING,oldLvl);
+				case FIRE_ASPECT -> subtractEnchantment(level,itemStack,Enchantments.FIRE_ASPECT,oldLvl);
+				case SWEEPING_EDGE -> subtractEnchantment(level,itemStack,Enchantments.SWEEPING_EDGE,oldLvl);
+				case MENDING -> subtractEnchantment(level,itemStack,Enchantments.MENDING,oldLvl);
+				default -> {
+				}
+			}
+		}
 	}
 	/**
 	 * Upgrade modifier on tool by 1 lvl.
+	 * @param level level
 	 * @param itemStack tool
 	 * @param modifier modifier
 	 */
-	public void upgradeModifier(ItemStack itemStack,ModularModifier modifier){
-		upgradeModifier(itemStack,modifier,1);
+	public void upgradeModifier(Level level,ItemStack itemStack,ModularModifier modifier){
+		upgradeModifier(level,itemStack,modifier,1);
 	}
 	/**
 	 * Upgrade modifier on tool by lvl amount.
+	 * @param level level
 	 * @param itemStack tool
 	 * @param modifier modifier
 	 * @param lvl lvl
 	 */
-	public void upgradeModifier(ItemStack itemStack,ModularModifier modifier,int lvl){
+	public void upgradeModifier(Level level,ItemStack itemStack,ModularModifier modifier,int lvl){
 		if(isModifier(itemStack,modifier)){
 			int newLvl=getModifierLevel(itemStack,modifier)+lvl;
-			addModifier(itemStack,modifier,newLvl);
-		}else addModifier(itemStack,modifier,lvl);
+			addModifier(level,itemStack,modifier,newLvl);
+		}else addModifier(level,itemStack,modifier,lvl);
 	}
 	/**
 	 * Get enchantment lvl from tool.
