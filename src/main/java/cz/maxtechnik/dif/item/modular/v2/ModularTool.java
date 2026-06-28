@@ -439,7 +439,6 @@ public class ModularTool extends DiggerItem{
 		int maxDmg=getMaxDamage(itemStack);
 		int miningLvl=getLiveMiningLevel(itemStack);
 		float eff=getLiveEfficiency(itemStack);
-		// Damage a speed s modifiery (pro tooltip)
 		float baseDmg=getBaseDamageForType(props.toolType())+head.getAttackDamage();
 		float baseSpd=getBaseSpeedForType(props.toolType())+handle.getAttackSpeedBonus();
 		float dmg=1F+baseDmg;
