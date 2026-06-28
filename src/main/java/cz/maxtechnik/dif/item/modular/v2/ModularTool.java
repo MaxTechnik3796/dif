@@ -611,8 +611,8 @@ public class ModularTool extends DiggerItem{
 	 * @param itemStack tool
 	 * @param modifier modifier
 	 */
-	public static void addModifier(HolderLookup.Provider provider,ItemStack itemStack,ModularModifier modifier){
-		addModifier(provider,itemStack,modifier,1);
+	public static void setModifier(HolderLookup.Provider provider,ItemStack itemStack,ModularModifier modifier){
+		setModifier(provider,itemStack,modifier,1);
 	}
 	/**
 	 * Add modifier to tool with lvl.
@@ -621,9 +621,9 @@ public class ModularTool extends DiggerItem{
 	 * @param modifier modifier
 	 * @param lvl modifier lvl
 	 */
-	public static void addModifier(HolderLookup.Provider provider,ItemStack itemStack,ModularModifier modifier,int lvl){
+	public static void setModifier(HolderLookup.Provider provider,ItemStack itemStack,ModularModifier modifier,int lvl){
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
-		if(component==null) return;
+		if(component==null) component=ModularToolModifiers.DEFAULT;
 		List<ModularToolModifiers.entry> newModifiers=new ArrayList<>(component.modifiers());
 		boolean found=false;
 		for(int i=0;i<newModifiers.size();i++){
@@ -719,8 +719,8 @@ public class ModularTool extends DiggerItem{
 	public static void upgradeModifier(HolderLookup.Provider provider,ItemStack itemStack,ModularModifier modifier,int lvl){
 		if(isModifier(itemStack,modifier)){
 			int newLvl=getModifierLevel(itemStack,modifier)+lvl;
-			addModifier(provider,itemStack,modifier,newLvl);
-		}else addModifier(provider,itemStack,modifier,lvl);
+			setModifier(provider,itemStack,modifier,newLvl);
+		}else setModifier(provider,itemStack,modifier,lvl);
 	}
 	/**
 	 * Get enchantment lvl from tool.

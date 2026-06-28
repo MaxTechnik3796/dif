@@ -1,5 +1,5 @@
 {
-	"parent":"item/generated",
+	"parent":"item/handheld",
 	"textures":{
 		"layer0":"dif:item/modular_sword_handle",
 		"layer1":"dif:item/modular_sword_binding",

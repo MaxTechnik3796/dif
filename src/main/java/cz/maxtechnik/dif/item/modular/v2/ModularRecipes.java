@@ -31,7 +31,7 @@ public class ModularRecipes implements SmithingRecipe{
 		ItemStack base=container.getItem(1).copy();
 		ItemStack addition=container.getItem(2).copy();
 		if(this.template.test(template)&&this.base.test(base)&&this.addition.test(addition))
-			if(template.getItem().equals(DifModItems.MODULAR_TEMPLATE_EFFICIENCY.get()))
+			if(template.getItem().equals(DifModItems.MODULAR_TEMPLATE_EFFICIENCY.get())&&addition.getCount()==64)
 				if(ModularTool.getModifierLevel(base,ModularModifier.EFFICIENCY)<ModularModifier.EFFICIENCY.getMaxLvl())
 					return true;
 		return false;
@@ -42,7 +42,8 @@ public class ModularRecipes implements SmithingRecipe{
 		ItemStack base=container.getItem(1).copy();
 		ItemStack addition=container.getItem(2).copy();
 		if(template.getItem().equals(DifModItems.MODULAR_TEMPLATE_EFFICIENCY.get()))
-			ModularTool.addModifier(provider,base,ModularModifier.EFFICIENCY);
+			ModularTool.upgradeModifier(provider,base,ModularModifier.EFFICIENCY);
+		addition.shrink(63);
 		return base;
 	}
 	@Override
