@@ -76,6 +76,18 @@ public class ModularRecipes extends SmithingExtraRecipe{
 		);
 	}
 	@Override
+	public boolean isTemplateIngredient(@NotNull ItemStack itemStack){
+		return this.template.ingredient().test(itemStack);
+	}
+	@Override
+	public boolean isBaseIngredient(@NotNull ItemStack itemStack){
+		return this.base.ingredient().test(itemStack);
+	}
+	@Override
+	public boolean isAdditionIngredient(@NotNull ItemStack itemStack){
+		return this.addition.ingredient().test(itemStack);
+	}
+	@Override
 	public boolean matches(@NotNull SmithingRecipeInput container,@NotNull Level level){
 		ItemStack template=container.getItem(0).copy();
 		ItemStack base=container.getItem(1).copy();
