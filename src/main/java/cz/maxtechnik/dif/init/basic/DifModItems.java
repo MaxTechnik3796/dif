@@ -6,6 +6,7 @@ import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
 import cz.maxtechnik.dif.item.modular.v2.ModularPart;
+import cz.maxtechnik.dif.item.modular.v2.ModularTemplate;
 import cz.maxtechnik.dif.item.modular.v2.ModularTool;
 import cz.maxtechnik.dif.item.quarry.DrillHeadItem;
 import cz.maxtechnik.dif.item.tool.*;
@@ -356,4 +357,5 @@ public class DifModItems{
 
 
 	public static final DeferredItem<Item>MODULAR_REFORGE_TABLE=block(DifModBlocks.MODULAR_REFORGE_TABLE);
+	public static final DeferredItem<Item>MODULAR_TEMPLATE_EFFICIENCY=REGISTRY.register("modular_template_efficiency",()->new ModularTemplate(new Item.Properties()));
 }

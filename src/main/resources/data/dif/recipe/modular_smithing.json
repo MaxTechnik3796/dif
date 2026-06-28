@@ -1,0 +1,15 @@
+{
+	"type":"dif:modular_recipe",
+	"template":{
+		"item":"dif:modular_template_efficiency"
+	},
+	"base":{
+		"item":"dif:modular_tool"
+	},
+	"addition":{
+		"item":"minecraft:netherite_ingot"
+	},
+	"result":{
+		"item":"dif:modular_tool"
+	}
+}
