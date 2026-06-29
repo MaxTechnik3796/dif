@@ -1,14 +1,20 @@
 package cz.maxtechnik.dif.item.modular.v2;
 
 import cz.maxtechnik.dif.DifMod;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.*;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.level.BlockDropsEvent;
+
+import java.util.Optional;
 @EventBusSubscriber
 public class ModularSubscriber{
 	@SubscribeEvent
@@ -49,21 +55,19 @@ public class ModularSubscriber{
 			}
 		}
 	}
-
 	@SubscribeEvent
-	public static void onBlockDrops(net.neoforged.neoforge.event.level.BlockDropsEvent event){
+	public static void onBlockDrops(BlockDropsEvent event){
 		if(!(event.getBreaker() instanceof Player player)) return;
 		ItemStack tool=player.getMainHandItem();
 		if(!(tool.getItem() instanceof ModularTool)) return;
 		if(!ModularTool.isModifier(tool,ModularModifier.VOLCANIC)) return;
-		if(!(event.getLevel() instanceof net.minecraft.server.level.ServerLevel level)) return;
-
-		net.minecraft.world.item.crafting.RecipeManager recipeManager=level.getRecipeManager();
-		for(net.minecraft.world.entity.item.ItemEntity dropEntity: event.getDrops()){
+		ServerLevel level=event.getLevel();
+		RecipeManager recipeManager=level.getRecipeManager();
+		for(ItemEntity dropEntity: event.getDrops()){
 			ItemStack stack=dropEntity.getItem();
-			net.minecraft.world.item.crafting.SingleRecipeInput input=new net.minecraft.world.item.crafting.SingleRecipeInput(stack);
-			java.util.Optional<net.minecraft.world.item.crafting.RecipeHolder<net.minecraft.world.item.crafting.SmeltingRecipe>> recipeHolder=
-					recipeManager.getRecipeFor(net.minecraft.world.item.crafting.RecipeType.SMELTING,input,level);
+			SingleRecipeInput input=new SingleRecipeInput(stack);
+			Optional<RecipeHolder<SmeltingRecipe>> recipeHolder=
+					recipeManager.getRecipeFor(RecipeType.SMELTING,input,level);
 			if(recipeHolder.isPresent()){
 				ItemStack result=recipeHolder.get().value().getResultItem(level.registryAccess());
 				if(!result.isEmpty()){
