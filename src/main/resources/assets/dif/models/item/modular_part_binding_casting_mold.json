@@ -2,6 +2,6 @@
 	"parent":"item/generated",
 	"textures":{
 		"layer0":"dif:item/casting_mold_binding",
-		"layer1":"dif:item/binding"
+		"layer1":"dif:item/modular_part_binding"
 	}
 }

@@ -1,6 +1,6 @@
 {
 	"parent":"item/generated",
 	"textures":{
-		"layer0":"dif:item/hoe_head"
+		"layer0":"dif:item/modular_part_hoe_head"
 	}
 }

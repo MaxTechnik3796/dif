@@ -2,6 +2,6 @@
 	"parent":"item/generated",
 	"textures":{
 		"layer0":"dif:item/casting_mold_sword_head",
-		"layer1":"dif:item/sword_head"
+		"layer1":"dif:item/modular_part_sword_head"
 	}
 }

@@ -2,6 +2,6 @@
 	"parent":"item/generated",
 	"textures":{
 		"layer0":"dif:item/casting_mold_pickaxe_head",
-		"layer1":"dif:item/pickaxe_head"
+		"layer1":"dif:item/modular_part_pickaxe_head"
 	}
 }
