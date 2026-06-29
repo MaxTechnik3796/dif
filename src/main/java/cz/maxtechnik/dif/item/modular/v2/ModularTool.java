@@ -94,6 +94,19 @@ public class ModularTool extends DiggerItem{
 		return max>0&&itemStack.getDamageValue()>=max-1;
 	}
 	/**
+	 * Check if tool has a specific material modifier.
+	 * @param itemStack tool
+	 * @param modifier modifier
+	 * @return T/F
+	 */
+	public static boolean hasMaterialModifier(ItemStack itemStack, ModularModifier modifier){
+		ModularToolProperties props=getProps(itemStack);
+		ModularMaterial head=ModularMaterial.byName(props.headMaterial());
+		ModularMaterial binding=ModularMaterial.byName(props.bindingMaterial());
+		ModularMaterial handle=ModularMaterial.byName(props.handleMaterial());
+		return head.getModifier()==modifier||binding.getModifier()==modifier||handle.getModifier()==modifier;
+	}
+	/**
 	 *
 	 * Apply damage to tool.
 	 * @param itemStack tool
@@ -101,8 +114,16 @@ public class ModularTool extends DiggerItem{
 	 * @param entity player
 	 */
 	public void damageTool(ItemStack itemStack,int amount,LivingEntity entity){
+		if(hasMaterialModifier(itemStack, ModularModifier.UNBREAKABLE_MAT)){
+			if(entity.level().getRandom().nextBoolean()) return;
+		}
 		int maxDmg=getMaxDamage(itemStack);
 		int currentDmg=itemStack.getDamageValue();
+		if(hasMaterialModifier(itemStack, ModularModifier.STONEBOUND)){
+			if(currentDmg >= maxDmg / 2){
+				if(entity.level().getRandom().nextBoolean()) return;
+			}
+		}
 		int newDmg=currentDmg+amount;
 		if(newDmg>=maxDmg){
 			itemStack.setDamageValue(maxDmg-1);
@@ -127,7 +148,11 @@ public class ModularTool extends DiggerItem{
 		int handle=ModularMaterial.byName(props.handleMaterial()).getHandleDurability();
 		int modifier=reinforcedLevel(itemStack);
 		float reforge=getReforge(itemStack).getDurability()[getTier(itemStack).getReforgeIndex()];
-		return round((head+binding+handle+modifier)*reforge);
+		float baseMax = (head+binding+handle+modifier)*reforge;
+		if(hasMaterialModifier(itemStack, ModularModifier.PRECISE)){
+			baseMax *= 1.10F;
+		}
+		return round(baseMax);
 	}
 	/**
 	 * Get Efficiency from components.
@@ -139,7 +164,11 @@ public class ModularTool extends DiggerItem{
 		float head=ModularMaterial.byName(getProps(itemStack).headMaterial()).getHeadEfficiency();
 		float modifier=efficiencyLevel(itemStack);
 		float reforge=getReforge(itemStack).getEfficiency()[getTier(itemStack).getReforgeIndex()];
-		return (head+modifier)*reforge;
+		float eff = (head+modifier)*reforge;
+		if(hasMaterialModifier(itemStack, ModularModifier.LIGHTWEIGHT)){
+			eff *= 1.10F;
+		}
+		return eff;
 	}
 	/**
 	 * Get All ModularToolModifiers in List from components.
@@ -417,12 +446,47 @@ public class ModularTool extends DiggerItem{
 			ModularMaterial handle=ModularMaterial.byName(props.handleMaterial());
 			finalDamage=(getBaseDamageForType(props.toolType())+head.getAttackDamage()+sharpnessDamage(itemStack))*getReforge(itemStack).getAttackDamage()[getTier(itemStack).getReforgeIndex()];
 			finalSpeed=(getBaseSpeedForType(props.toolType())+handle.getAttackSpeedBonus())*getReforge(itemStack).getAttackSpeed()[getTier(itemStack).getReforgeIndex()];
+			if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)){
+				finalSpeed*=1.10F;
+			}
 			finalKnockback=knockbackLevel(itemStack);
 		}
 		builder.add(Attributes.ATTACK_DAMAGE,new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID,finalDamage,AttributeModifier.Operation.ADD_VALUE),EquipmentSlotGroup.MAINHAND);
 		builder.add(Attributes.ATTACK_SPEED,new AttributeModifier(Item.BASE_ATTACK_SPEED_ID,finalSpeed,AttributeModifier.Operation.ADD_VALUE),EquipmentSlotGroup.MAINHAND);
 		builder.add(Attributes.ATTACK_KNOCKBACK,new AttributeModifier(ResourceLocation.withDefaultNamespace("base_attack_knockback"),finalKnockback,AttributeModifier.Operation.ADD_VALUE),EquipmentSlotGroup.MAINHAND);
 		return builder.build();
+	}
+	@Override
+	public void inventoryTick(@NotNull ItemStack itemStack,@NotNull Level level,@NotNull net.minecraft.world.entity.Entity entity,int slot,boolean isSelected){
+		super.inventoryTick(itemStack,level,entity,slot,isSelected);
+		if(level.isClientSide) return;
+		long gameTime=level.getGameTime();
+
+		if(itemStack.isDamaged()){
+			if(gameTime%40==0&&hasMaterialModifier(itemStack,ModularModifier.RENEWABLE)){
+				itemStack.setDamageValue(Math.max(0,itemStack.getDamageValue()-1));
+			}else if(gameTime%80==0&&hasMaterialModifier(itemStack,ModularModifier.SELF_REPAIR)){
+				itemStack.setDamageValue(Math.max(0,itemStack.getDamageValue()-1));
+			}
+		}
+
+		if(gameTime%10==0&&(isSelected||(entity instanceof Player p&&(p.getMainHandItem()==itemStack||p.getOffhandItem()==itemStack)))){
+			if(hasMaterialModifier(itemStack,ModularModifier.MAGNETIC)&&entity instanceof Player player){
+				net.minecraft.world.phys.AABB box=player.getBoundingBox().inflate(5.0);
+				List<net.minecraft.world.entity.item.ItemEntity> items=level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,box);
+				for(net.minecraft.world.entity.item.ItemEntity item: items){
+					if(item.isAlive()&&!item.hasPickUpDelay()){
+						item.teleportTo(player.getX(),player.getY()+0.5,player.getZ());
+					}
+				}
+				List<net.minecraft.world.entity.ExperienceOrb> orbs=level.getEntitiesOfClass(net.minecraft.world.entity.ExperienceOrb.class,box);
+				for(net.minecraft.world.entity.ExperienceOrb orb: orbs){
+					if(orb.isAlive()){
+						orb.teleportTo(player.getX(),player.getY()+0.5,player.getZ());
+					}
+				}
+			}
+		}
 	}
 	/**
 	 * Create list for hover text.
