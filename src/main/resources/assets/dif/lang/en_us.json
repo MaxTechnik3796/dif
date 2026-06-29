@@ -97,12 +97,50 @@
 	"fluid.dif.creosote_oil_fluid":"Creosote Oil",
 	"fluid_type.dif.creosote_oil_fluid":"Creosote Oil",
 
+	"item.dif.molten_iron_bucket":"Molten Iron Bucket",
+	"block.dif.molten_iron_fluid":"Molten Iron Oil",
+	"fluid.dif.molten_iron_fluid":"Molten Iron Oil",
+	"fluid_type.dif.molten_iron_fluid":"Molten Iron Oil",
+
 	"item.dif.molten_copper_bucket":"Molten Copper Bucket",
 	"block.dif.molten_copper_fluid":"Molten Copper Oil",
 	"fluid.dif.molten_copper_fluid":"Molten Copper Oil",
 	"fluid_type.dif.molten_copper_fluid":"Molten Copper Oil",
 
+	"item.dif.molten_gold_bucket":"Molten Gold Bucket",
+	"block.dif.molten_gold_fluid":"Molten Gold Oil",
+	"fluid.dif.molten_gold_fluid":"Molten Gold Oil",
+	"fluid_type.dif.molten_gold_fluid":"Molten Gold Oil",
 
+	"item.dif.molten_steel_bucket":"Molten Steel Bucket",
+	"block.dif.molten_steel_fluid":"Molten Steel Oil",
+	"fluid.dif.molten_steel_fluid":"Molten Steel Oil",
+	"fluid_type.dif.molten_steel_fluid":"Molten Steel Oil",
+
+	"item.dif.molten_obsidian_bucket":"Molten Obsidian Bucket",
+	"block.dif.molten_obsidian_fluid":"Molten Obsidian Oil",
+	"fluid.dif.molten_obsidian_fluid":"Molten Obsidian Oil",
+	"fluid_type.dif.molten_obsidian_fluid":"Molten Obsidian Oil",
+
+	"item.dif.molten_zinc_bucket":"Molten Zinc Bucket",
+	"block.dif.molten_zinc_fluid":"Molten Zinc Oil",
+	"fluid.dif.molten_zinc_fluid":"Molten Zinc Oil",
+	"fluid_type.dif.molten_zinc_fluid":"Molten Zinc Oil",
+
+	"item.dif.molten_brass_bucket":"Molten Brass Bucket",
+	"block.dif.molten_brass_fluid":"Molten Brass Oil",
+	"fluid.dif.molten_brass_fluid":"Molten Brass Oil",
+	"fluid_type.dif.molten_brass_fluid":"Molten Brass Oil",
+
+	"item.dif.molten_nickel_bucket":"Molten Nickel Bucket",
+	"block.dif.molten_nickel_fluid":"Molten Nickel Oil",
+	"fluid.dif.molten_nickel_fluid":"Molten Nickel Oil",
+	"fluid_type.dif.molten_nickel_fluid":"Molten Nickel Oil",
+
+	"item.dif.molten_mithril_bucket":"Molten Mithril Bucket",
+	"block.dif.molten_mithril_fluid":"Molten Mithril Oil",
+	"fluid.dif.molten_mithril_fluid":"Molten Mithril Oil",
+	"fluid_type.dif.molten_mithril_fluid":"Molten Mithril Oil",
 
 
 	"creative_tab.dif.main":"TheDifferential: Main",
