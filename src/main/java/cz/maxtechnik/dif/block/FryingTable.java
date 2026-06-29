@@ -168,7 +168,7 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 		if(!(blockEntity instanceof FryingTableBlockEntity be)) return InteractionResult.PASS;
 		ItemStack handItem=player.getMainHandItem();
 		if(handItem.getItem().equals(Items.ICE)){
-			world.explode(null,pos.getX(),pos.getY(),pos.getZ(),10,Level.ExplosionInteraction.BLOCK);
+			world.explode(null,pos.getX(),pos.getY(),pos.getZ(),1,Level.ExplosionInteraction.BLOCK);
 			return InteractionResult.SUCCESS;
 		}
 		if(handItem.is(DifModItems.SUNFLOWER_OIL_BUCKET.get())){
