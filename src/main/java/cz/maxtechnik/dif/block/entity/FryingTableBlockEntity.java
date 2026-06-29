@@ -1,6 +1,8 @@
 package cz.maxtechnik.dif.block.entity;
 
 import cz.maxtechnik.dif.block.FryingTable;
+import cz.maxtechnik.dif.block.Nuke;
+import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
@@ -22,6 +24,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
@@ -144,29 +147,27 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 		BlockState newState=blockState.setValue(FryingTable.OIL,hasOil).setValue(FryingTable.HEATED,heated).setValue(FryingTable.TRAY,tray);
 		if(!newState.equals(blockState))
 			world.setBlock(pos,newState,3);
-		ItemStack inputStack = be.getItem(INPUT_SLOT);
-		boolean isExplosive = inputStack.is(net.minecraft.world.item.Items.ICE) || inputStack.is(cz.maxtechnik.dif.init.basic.DifModItems.NUKE.get());
-		if (isExplosive) {
-			if (heated) {
+		ItemStack inputStack=be.getItem(INPUT_SLOT);
+		boolean isExplosive=inputStack.is(Items.ICE)||inputStack.is(DifModItems.NUKE.get());
+		if(isExplosive){
+			if(heated){
 				be.progress++;
-				if (be.progress >= 100) {
-					be.progress = 0;
-					if (inputStack.is(net.minecraft.world.item.Items.ICE)) {
-						world.explode(null, pos.getX(), pos.getY(), pos.getZ(), 1, Level.ExplosionInteraction.BLOCK);
-					} else {
-						cz.maxtechnik.dif.block.Nuke.spawnNuclearExplosion(world, pos);
-					}
+				if(be.progress>=100){
+					be.progress=0;
+					if(inputStack.is(Items.ICE))
+						world.explode(null,pos.getX(),pos.getY(),pos.getZ(),5,Level.ExplosionInteraction.BLOCK);
+					else
+						Nuke.spawnNuclearExplosion(world,pos);
 				}
 				be.setChanged();
-			} else {
-				if (be.progress != 0) {
-					be.progress = 0;
+			}else{
+				if(be.progress!=0){
+					be.progress=0;
 					be.setChanged();
 				}
 			}
 			return;
 		}
-
 		// Vaření: potřebuje olej I heat source
 		if(!hasOil||!heated){
 			if(be.progress!=0){
@@ -190,12 +191,10 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 					be.progress=0;
 				}
 				be.setChanged();
-			}else{
+			}else
 				be.progress=0;
-			}
-		}else{
+		}else
 			be.progress=0;
-		}
 	}
 	public static void clientTick(Level world,BlockPos pos){
 		RandomSource rng=world.getRandom();
