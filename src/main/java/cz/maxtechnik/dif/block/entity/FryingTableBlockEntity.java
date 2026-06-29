@@ -150,7 +150,7 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 		ItemStack inputStack=be.getItem(INPUT_SLOT);
 		boolean isExplosive=inputStack.is(Items.ICE)||inputStack.is(DifModItems.NUKE.get());
 		if(isExplosive){
-			if(heated){
+			if(heated&&hasOil){
 				be.progress++;
 				if(be.progress>=100){
 					be.progress=0;
