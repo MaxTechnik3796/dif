@@ -202,6 +202,7 @@
 	"block.dif.brass_barrel":"Brass Barrel",
 	"item.dif.horse_meat":"§lKoňské Maso§r",
 	"item.dif.cooked_horse_meat":"§lVařené Koňské Maso§r",
+
 	"item.dif.wooden_battle_axe":"Wooden Battle Axe",
 	"item.dif.golden_battle_axe":"Golden Battle Axe",
 	"item.dif.stone_battle_axe":"Stone Battle Axe",
@@ -209,6 +210,7 @@
 	"item.dif.iron_battle_axe":"Iron Battle Axe",
 	"item.dif.diamond_battle_axe":"Diamond Battle Axe",
 	"item.dif.netherite_battle_axe":"Netherite Battle Axe",
+
 	"item.dif.wooden_katana":"Wooden Katana",
 	"item.dif.golden_katana":"Golden Katana",
 	"item.dif.stone_katana":"Stone Katana",
@@ -216,15 +218,19 @@
 	"item.dif.iron_katana":"Iron Katana",
 	"item.dif.diamond_katana":"Diamond Katana",
 	"item.dif.netherite_katana":"Netherite Katana",
+
 	"item.dif.copper_shovel":"Copper Shovel",
 	"item.dif.copper_pickaxe":"Copper Pickaxe",
 	"item.dif.copper_sword":"Copper Sword",
 	"item.dif.copper_axe":"Copper Axe",
 	"item.dif.copper_hoe":"Copper Hoe",
+
 	"item.dif.copper_boots":"Copper Boots",
 	"item.dif.copper_leggings":"Copper Leggings",
 	"item.dif.copper_chestplate":"Copper Chestplate",
 	"item.dif.copper_helmet":"Copper Helmet",
+
+
 
 	"item.dif.modular_tool":"Modular Tool",
 	"item.dif.modular_tool.pickaxe":"Modular Pickaxe",
@@ -271,15 +277,17 @@
 	"item.dif.casting_mold_sword_binding":"Casting Mold: Sword Binding",
 	"item.dif.casting_mold_hoe_head":"Casting Mold: Hoe Head",
 
-
-
 	"dif.material.wood":"Wood",
 	"dif.material.stone":"Stone",
 	"dif.material.iron":"Iron",
 	"dif.material.copper":"Copper",
 	"dif.material.gold":"Gold",
 	"dif.material.steel":"Steel",
-
+	"dif.material.obsidian":"Obsidian",
+	"dif.material.zinc":"Zinc",
+	"dif.material.brass":"Brass",
+	"dif.material.nickel":"Nickel",
+	"dif.material.mithril":"Mithril",
 
 	"dif.modifier.silk_touch":"Silk Touch",
 	"dif.modifier.luck":"Luck",
@@ -298,9 +306,9 @@
 	"dif.modifier.cheap":"Cheap",
 	"dif.modifier.shiny":"Shiny",
 
-	"dif.modifier.excavator":"Excavator",
+	"dif.reforge.sturdy.desc":"Sturdy Reforge desc :]",
 
-	"dif.modifier.excavator.desc":"Simple Excavator Description",
+
 
 	"dif.mining_level.0":"Wooden",
 	"dif.mining_level.1":"Stone",
