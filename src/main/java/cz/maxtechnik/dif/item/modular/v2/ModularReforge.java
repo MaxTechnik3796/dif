@@ -78,6 +78,12 @@ public enum ModularReforge{
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1.25F,1.3F,1.4F},
 			new Float[]{1F,1F,0.9F,0.9F,0.85F}),
+	GLEAMING("gleaming",new ModularTools[]{PICKAXE,HAMMER,SHOVEL,EXCAVATOR},false,
+			new Float[]{1F,1F,1F,1F,1F},
+			new Float[]{1F,1F,1F,1F,1F},
+			new Float[]{1F,1F,1F,1F,1F},
+			new Float[]{1F,1F,1F,1F,1F}),
+	//Gleaming tady je epic a legendary +1 fortune a mythic +2 fortune
 	CRUSHER("crusher",new ModularTools[]{HAMMER},false,
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
@@ -88,12 +94,24 @@ public enum ModularReforge{
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1.1F,1.15F,1.25F},
 			new Float[]{1F,1F,1F,1F,1F}),
-	// (looting je special efekt)
+	//looting nebude potřeba
 	LUMBERING("lumbering",new ModularTools[]{AXE,TIMBER_AXE},false,
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1.2F,1.25F,1.35F},
 			new Float[]{1F,1F,1F,1F,1F}),
+	HARWESTER("harwester",new ModularTools[]{HOE},false,
+			new Float[]{1F,1F,1F,1F,1F},
+			new Float[]{1F,1F,1F,1F,1F},
+			new Float[]{1F,1F,1F,1F,1F},
+			new Float[]{1F,1F,1F,1F,1F}),
+	//Harwester tady je epic +1 fortune, legendary +2 fortune a mythic +3 fortune
+	CULTIVATOR("cultivator",new ModularTools[]{HOE},false,
+			new Float[]{1F,1F,1F,1F,1F},
+			new Float[]{1F,1F,1F,1F,1F},
+			new Float[]{1F,1F,1F,1F,1F},
+			new Float[]{1F,1F,1F,1.25F,1.25F}),
+	//Harwester tady je epic a legendary aoe 3x3 a mythic aoe 5x5
 	SWIFTDIG("swiftdig",new ModularTools[]{SHOVEL,EXCAVATOR},false,
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},

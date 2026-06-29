@@ -205,9 +205,10 @@ public class ModularTool extends DiggerItem{
 	 */
 	private float getBaseDamageForType(String type){
 		return switch(type.toLowerCase(Locale.ROOT)){
-			case "sword" -> 3F;
-			case "axe" -> 5F;
-			case "shovel" -> 1.5F;
+			case "sword", "katana" -> 3F;
+			case "axe", "timber_axe" -> 5F;
+			case "battle_axe" -> 6F;
+			case "shovel", "excavator" -> 1.5F;
 			case "hoe" -> 0F;
 			default -> 1F;
 		};
@@ -219,8 +220,8 @@ public class ModularTool extends DiggerItem{
 	 */
 	private float getBaseSpeedForType(String type){
 		return switch(type.toLowerCase(Locale.ROOT)){
-			case "pickaxe" -> -2.8F;
-			case "axe","shovel" -> -3F;
+			case "pickaxe", "hammer" -> -2.8F;
+			case "axe", "shovel", "timber_axe", "excavator", "battle_axe" -> -3F;
 			case "hoe" -> -1F;
 			default -> -2.4F;
 		};
@@ -239,11 +240,11 @@ public class ModularTool extends DiggerItem{
 		int miningLevel=getLiveMiningLevel(itemStack);
 		float efficiency=getLiveEfficiency(itemStack);
 		boolean matches=false;
-		if(type.equals("pickaxe")&&blockState.is(BlockTags.MINEABLE_WITH_PICKAXE)) matches=true;
-		else if(type.equals("axe")&&blockState.is(BlockTags.MINEABLE_WITH_AXE)) matches=true;
-		else if(type.equals("shovel")&&blockState.is(BlockTags.MINEABLE_WITH_SHOVEL)) matches=true;
+		if((type.equals("pickaxe")||type.equals("hammer"))&&blockState.is(BlockTags.MINEABLE_WITH_PICKAXE)) matches=true;
+		else if((type.equals("axe")||type.equals("timber_axe")||type.equals("battle_axe"))&&blockState.is(BlockTags.MINEABLE_WITH_AXE)) matches=true;
+		else if((type.equals("shovel")||type.equals("excavator"))&&blockState.is(BlockTags.MINEABLE_WITH_SHOVEL)) matches=true;
 		else if(type.equals("hoe")&&blockState.is(BlockTags.MINEABLE_WITH_HOE)) matches=true;
-		else if(type.equals("sword")&&blockState.is(BlockTags.SWORD_EFFICIENT)) return efficiency;
+		else if((type.equals("sword")||type.equals("katana"))&&blockState.is(BlockTags.SWORD_EFFICIENT)) return efficiency;
 		if(matches){
 			if(blockState.is(BlockTags.NEEDS_DIAMOND_TOOL)&&miningLevel<3) return 1F;
 			if(blockState.is(BlockTags.NEEDS_IRON_TOOL)&&miningLevel<2) return 1F;
@@ -264,9 +265,9 @@ public class ModularTool extends DiggerItem{
 		String type=getProps(itemStack).toolType().toLowerCase();
 		int miningLevel=getLiveMiningLevel(itemStack);
 		boolean isCorrectType=false;
-		if(type.equals("pickaxe")&&blockState.is(BlockTags.MINEABLE_WITH_PICKAXE)) isCorrectType=true;
-		else if(type.equals("axe")&&blockState.is(BlockTags.MINEABLE_WITH_AXE)) isCorrectType=true;
-		else if(type.equals("shovel")&&blockState.is(BlockTags.MINEABLE_WITH_SHOVEL)) isCorrectType=true;
+		if((type.equals("pickaxe")||type.equals("hammer"))&&blockState.is(BlockTags.MINEABLE_WITH_PICKAXE)) isCorrectType=true;
+		else if((type.equals("axe")||type.equals("timber_axe")||type.equals("battle_axe"))&&blockState.is(BlockTags.MINEABLE_WITH_AXE)) isCorrectType=true;
+		else if((type.equals("shovel")||type.equals("excavator"))&&blockState.is(BlockTags.MINEABLE_WITH_SHOVEL)) isCorrectType=true;
 		else if(type.equals("hoe")&&blockState.is(BlockTags.MINEABLE_WITH_HOE)) isCorrectType=true;
 		if(isCorrectType){
 			if(blockState.is(BlockTags.NEEDS_DIAMOND_TOOL)&&miningLevel<3) return false;
@@ -302,7 +303,8 @@ public class ModularTool extends DiggerItem{
 	public boolean hurtEnemy(@NotNull ItemStack itemStack,@NotNull LivingEntity target,@NotNull LivingEntity attacker){
 		if(!isBroken(itemStack)){
 			ModularToolProperties props=getProps(itemStack);
-			int amt=props.toolType().toLowerCase(Locale.ROOT).equals(ModularTools.SWORD.getName())?1:2;
+			String type=props.toolType().toLowerCase(Locale.ROOT);
+			int amt=(type.equals("sword")||type.equals("katana"))?1:2;
 			this.damageTool(itemStack,amt,attacker);
 		}
 		return true;
@@ -317,14 +319,14 @@ public class ModularTool extends DiggerItem{
 	public boolean canPerformAction(@NotNull ItemStack itemStack,@NotNull ItemAbility itemAbility){
 		if(isBroken(itemStack)) return false;
 		String type=getProps(itemStack).toolType().toLowerCase();
-		if(type.equals("pickaxe")&&itemAbility.equals(ItemAbilities.PICKAXE_DIG)) return true;
-		else if(type.equals("axe")&&(itemAbility.equals(ItemAbilities.AXE_DIG)||itemAbility.equals(ItemAbilities.AXE_STRIP)||itemAbility.equals(ItemAbilities.AXE_SCRAPE)||itemAbility.equals(ItemAbilities.AXE_WAX_OFF)))
+		if((type.equals("pickaxe")||type.equals("hammer"))&&itemAbility.equals(ItemAbilities.PICKAXE_DIG)) return true;
+		else if((type.equals("axe")||type.equals("timber_axe")||type.equals("battle_axe"))&&(itemAbility.equals(ItemAbilities.AXE_DIG)||itemAbility.equals(ItemAbilities.AXE_STRIP)||itemAbility.equals(ItemAbilities.AXE_SCRAPE)||itemAbility.equals(ItemAbilities.AXE_WAX_OFF)))
 			return true;
-		else if(type.equals("shovel")&&(itemAbility.equals(ItemAbilities.SHOVEL_DIG)||itemAbility.equals(ItemAbilities.SHOVEL_FLATTEN)||itemAbility.equals(ItemAbilities.SHOVEL_DOUSE)))
+		else if((type.equals("shovel")||type.equals("excavator"))&&(itemAbility.equals(ItemAbilities.SHOVEL_DIG)||itemAbility.equals(ItemAbilities.SHOVEL_FLATTEN)||itemAbility.equals(ItemAbilities.SHOVEL_DOUSE)))
 			return true;
 		else if(type.equals("hoe")&&(itemAbility.equals(ItemAbilities.HOE_DIG)||itemAbility.equals(ItemAbilities.HOE_TILL)))
 			return true;
-		else if(type.equals("sword")&&itemAbility.equals(ItemAbilities.SWORD_DIG)) return true;//DO NOT TOUCH
+		else if((type.equals("sword")||type.equals("katana"))&&itemAbility.equals(ItemAbilities.SWORD_DIG)) return true;//DO NOT TOUCH
 		return false;
 	}
 	/**
@@ -343,7 +345,7 @@ public class ModularTool extends DiggerItem{
 		BlockState modified=null;
 		SoundEvent sound=null;
 		switch(type){
-			case "axe" -> {
+			case "axe", "timber_axe", "battle_axe" -> {
 				modified=state.getToolModifiedState(context,ItemAbilities.AXE_STRIP,false);
 				if(modified!=null) sound=SoundEvents.AXE_STRIP;
 				else{
@@ -356,6 +358,19 @@ public class ModularTool extends DiggerItem{
 				}
 			}
 			case "hoe" -> {
+				// CULTIVATOR reforge: AOE tilling (EPIC/LEGENDARY=3×3, MYTHIC=5×5)
+				if(getReforge(itemStack)==ModularReforge.CULTIVATOR){
+					ModularTier tier=getTier(itemStack);
+					if(tier==ModularTier.EPIC||tier==ModularTier.LEGENDARY||tier==ModularTier.MYTHIC){
+						int radius=tier==ModularTier.MYTHIC?2:1; // 5×5 = radius 2, 3×3 = radius 1
+						if(ModularMiningHandler.hoeCultivatorTill(context,this,radius)){
+							Player player=context.getPlayer();
+							level.playSound(player,pos,SoundEvents.HOE_TILL,SoundSource.BLOCKS,1F,1F);
+							return InteractionResult.sidedSuccess(level.isClientSide);
+						}
+					}
+				}
+				// Default: single-block till
 				modified=state.getToolModifiedState(context,ItemAbilities.HOE_TILL,false);
 				if(modified!=null) sound=SoundEvents.HOE_TILL;
 			}
@@ -365,6 +380,14 @@ public class ModularTool extends DiggerItem{
 				else{
 					modified=state.getToolModifiedState(context,ItemAbilities.SHOVEL_DOUSE,false);
 					if(modified!=null) sound=SoundEvents.FIRE_EXTINGUISH;
+				}
+			}
+			// Excavator 3×3 flatten on RMB – delegates to ModularMiningHandler
+			case "excavator" -> {
+				if(ModularMiningHandler.excavatorFlatten(context,this)){
+					Player player=context.getPlayer();
+					level.playSound(player,pos,SoundEvents.SHOVEL_FLATTEN,SoundSource.BLOCKS,1F,1F);
+					return InteractionResult.sidedSuccess(level.isClientSide);
 				}
 			}
 		}
