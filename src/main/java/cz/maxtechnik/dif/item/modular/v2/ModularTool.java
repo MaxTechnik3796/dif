@@ -94,17 +94,25 @@ public class ModularTool extends DiggerItem{
 		return max>0&&itemStack.getDamageValue()>=max-1;
 	}
 	/**
+	 * Get all active material modifiers for a tool (reads props + 3 materials once).
+	 * @param itemStack tool
+	 * @return EnumSet of active material modifiers
+	 */
+	public static java.util.EnumSet<ModularModifier> getMaterialModifiers(ItemStack itemStack){
+		ModularToolProperties props=getProps(itemStack);
+		ModularModifier head=ModularMaterial.byName(props.headMaterial()).getModifier();
+		ModularModifier binding=ModularMaterial.byName(props.bindingMaterial()).getModifier();
+		ModularModifier handle=ModularMaterial.byName(props.handleMaterial()).getModifier();
+		return java.util.EnumSet.of(head,binding,handle);
+	}
+	/**
 	 * Check if tool has a specific material modifier.
 	 * @param itemStack tool
 	 * @param modifier modifier
 	 * @return T/F
 	 */
 	public static boolean hasMaterialModifier(ItemStack itemStack,ModularModifier modifier){
-		ModularToolProperties props=getProps(itemStack);
-		ModularMaterial head=ModularMaterial.byName(props.headMaterial());
-		ModularMaterial binding=ModularMaterial.byName(props.bindingMaterial());
-		ModularMaterial handle=ModularMaterial.byName(props.handleMaterial());
-		return head.getModifier()==modifier||binding.getModifier()==modifier||handle.getModifier()==modifier;
+		return getMaterialModifiers(itemStack).contains(modifier);
 	}
 	/**
 	 *
@@ -114,12 +122,13 @@ public class ModularTool extends DiggerItem{
 	 * @param entity player
 	 */
 	public void damageTool(ItemStack itemStack,int amount,LivingEntity entity){
-		if(hasMaterialModifier(itemStack,ModularModifier.UNBREAKABLE_MAT)){
+		java.util.EnumSet<ModularModifier> mods=getMaterialModifiers(itemStack);
+		if(mods.contains(ModularModifier.UNBREAKABLE_MAT)){
 			if(entity.level().getRandom().nextBoolean()) return;
 		}
 		int maxDmg=getMaxDamage(itemStack);
 		int currentDmg=itemStack.getDamageValue();
-		if(hasMaterialModifier(itemStack,ModularModifier.STONEBOUND)){
+		if(mods.contains(ModularModifier.STONEBOUND)){
 			if(currentDmg>=maxDmg/2){
 				if(entity.level().getRandom().nextBoolean()) return;
 			}
@@ -461,27 +470,24 @@ public class ModularTool extends DiggerItem{
 		super.inventoryTick(itemStack,level,entity,slot,isSelected);
 		if(level.isClientSide) return;
 		long gameTime=level.getGameTime();
-		if(itemStack.isDamaged()){
-			if(gameTime%40==0&&hasMaterialModifier(itemStack,ModularModifier.RENEWABLE)){
+		// Self-repair: only evaluate when tick aligns and tool is damaged (cheap guard first)
+		if(itemStack.isDamaged()&&(gameTime%40==0||gameTime%80==0)){
+			java.util.EnumSet<ModularModifier> mods=getMaterialModifiers(itemStack);
+			if(gameTime%40==0&&mods.contains(ModularModifier.RENEWABLE)){
 				itemStack.setDamageValue(Math.max(0,itemStack.getDamageValue()-1));
-			}else if(gameTime%80==0&&hasMaterialModifier(itemStack,ModularModifier.SELF_REPAIR)){
+			}else if(gameTime%80==0&&mods.contains(ModularModifier.SELF_REPAIR)){
 				itemStack.setDamageValue(Math.max(0,itemStack.getDamageValue()-1));
 			}
 		}
-		if(gameTime%10==0&&(isSelected||(entity instanceof Player p&&(p.getMainHandItem()==itemStack||p.getOffhandItem()==itemStack)))){
-			if(hasMaterialModifier(itemStack,ModularModifier.MAGNETIC)&&entity instanceof Player player){
+		// Magnetic: only when held in hand and every 10 ticks
+		if(gameTime%10==0&&entity instanceof Player player&&(player.getMainHandItem()==itemStack||player.getOffhandItem()==itemStack)){
+			if(getMaterialModifiers(itemStack).contains(ModularModifier.MAGNETIC)){
 				net.minecraft.world.phys.AABB box=player.getBoundingBox().inflate(5.0);
-				List<net.minecraft.world.entity.item.ItemEntity> items=level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,box);
-				for(net.minecraft.world.entity.item.ItemEntity item: items){
-					if(item.isAlive()&&!item.hasPickUpDelay()){
-						item.teleportTo(player.getX(),player.getY()+0.5,player.getZ());
-					}
+				for(net.minecraft.world.entity.item.ItemEntity item:level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,box)){
+					if(item.isAlive()&&!item.hasPickUpDelay()) item.teleportTo(player.getX(),player.getY()+0.5,player.getZ());
 				}
-				List<net.minecraft.world.entity.ExperienceOrb> orbs=level.getEntitiesOfClass(net.minecraft.world.entity.ExperienceOrb.class,box);
-				for(net.minecraft.world.entity.ExperienceOrb orb: orbs){
-					if(orb.isAlive()){
-						orb.teleportTo(player.getX(),player.getY()+0.5,player.getZ());
-					}
+				for(net.minecraft.world.entity.ExperienceOrb orb:level.getEntitiesOfClass(net.minecraft.world.entity.ExperienceOrb.class,box)){
+					if(orb.isAlive()) orb.teleportTo(player.getX(),player.getY()+0.5,player.getZ());
 				}
 			}
 		}
@@ -924,14 +930,3 @@ public class ModularTool extends DiggerItem{
 		return ModularTier.byName(props.tier());
 	}
 }
-
-
-
-
-
-
-
-
-
-
-

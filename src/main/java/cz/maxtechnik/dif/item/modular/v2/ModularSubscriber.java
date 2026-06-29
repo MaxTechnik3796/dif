@@ -48,7 +48,8 @@ public class ModularSubscriber{
 				}
 			}
 		}
-		if(ModularTool.hasMaterialModifier(itemStack,ModularModifier.TOXIC)){
+		// Material modifiers: parse materials once for this event
+		if(ModularTool.getMaterialModifiers(itemStack).contains(ModularModifier.TOXIC)){
 			if(attacker.level().getRandom().nextFloat()<0.30F){
 				target.addEffect(new MobEffectInstance(MobEffects.POISON,60,0));
 			}
@@ -69,7 +70,9 @@ public class ModularSubscriber{
 		ItemStack tool=player.getMainHandItem();
 		if(!(tool.getItem() instanceof ModularTool)) return;
 		net.minecraft.server.level.ServerLevel level=event.getLevel();
-		if(ModularTool.hasMaterialModifier(tool,ModularModifier.MOMENTUM)){
+		// Parse materials once for all checks in this event
+		java.util.EnumSet<ModularModifier> mods=ModularTool.getMaterialModifiers(tool);
+		if(mods.contains(ModularModifier.MOMENTUM)){
 			if(level.getRandom().nextFloat()<0.10F){
 				player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED,100,0));
 			}
