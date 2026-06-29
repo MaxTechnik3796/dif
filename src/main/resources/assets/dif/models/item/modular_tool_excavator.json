@@ -1,8 +1,8 @@
 {
 	"parent":"item/handheld",
 	"textures":{
-		"layer0":"dif:item/modular_excavator_handle",
-		"layer1":"dif:item/modular_excavator_binding",
-		"layer2":"dif:item/modular_excavator_head"
+		"layer0":"dif:item/modular_tool_excavator_handle",
+		"layer1":"dif:item/modular_tool_excavator_binding",
+		"layer2":"dif:item/modular_tool_excavator_head"
 	}
 }
