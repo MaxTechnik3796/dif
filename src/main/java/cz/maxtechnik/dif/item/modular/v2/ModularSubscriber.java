@@ -48,6 +48,21 @@ public class ModularSubscriber{
 				}
 			}
 		}
+		if(ModularTool.hasMaterialModifier(itemStack,ModularModifier.TOXIC)){
+			if(attacker.level().getRandom().nextFloat()<0.30F){
+				target.addEffect(new MobEffectInstance(MobEffects.POISON,60,0));
+			}
+		}
+	}
+
+	@SubscribeEvent
+	public static void onLivingExp(net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent event){
+		if(event.getAttackingPlayer()!=null){
+			ItemStack tool=event.getAttackingPlayer().getMainHandItem();
+			if(ModularTool.hasMaterialModifier(tool,ModularModifier.LUCKY_MAT)){
+				event.setDroppedExperience((int)Math.ceil(event.getDroppedExperience()*1.25));
+			}
+		}
 	}
 
 	@SubscribeEvent
@@ -55,21 +70,28 @@ public class ModularSubscriber{
 		if(!(event.getBreaker() instanceof Player player)) return;
 		ItemStack tool=player.getMainHandItem();
 		if(!(tool.getItem() instanceof ModularTool)) return;
-		if(!ModularTool.isModifier(tool,ModularModifier.VOLCANIC)) return;
 		if(!(event.getLevel() instanceof net.minecraft.server.level.ServerLevel level)) return;
 
-		net.minecraft.world.item.crafting.RecipeManager recipeManager=level.getRecipeManager();
-		for(net.minecraft.world.entity.item.ItemEntity dropEntity: event.getDrops()){
-			ItemStack stack=dropEntity.getItem();
-			net.minecraft.world.item.crafting.SingleRecipeInput input=new net.minecraft.world.item.crafting.SingleRecipeInput(stack);
-			java.util.Optional<net.minecraft.world.item.crafting.RecipeHolder<net.minecraft.world.item.crafting.SmeltingRecipe>> recipeHolder=
-					recipeManager.getRecipeFor(net.minecraft.world.item.crafting.RecipeType.SMELTING,input,level);
-			if(recipeHolder.isPresent()){
-				ItemStack result=recipeHolder.get().value().getResultItem(level.registryAccess());
-				if(!result.isEmpty()){
-					ItemStack newStack=result.copy();
-					newStack.setCount(stack.getCount()*result.getCount());
-					dropEntity.setItem(newStack);
+		if(ModularTool.hasMaterialModifier(tool,ModularModifier.MOMENTUM)){
+			if(level.getRandom().nextFloat()<0.10F){
+				player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED,100,0));
+			}
+		}
+
+		if(ModularTool.isModifier(tool,ModularModifier.VOLCANIC)){
+			net.minecraft.world.item.crafting.RecipeManager recipeManager=level.getRecipeManager();
+			for(net.minecraft.world.entity.item.ItemEntity dropEntity: event.getDrops()){
+				ItemStack stack=dropEntity.getItem();
+				net.minecraft.world.item.crafting.SingleRecipeInput input=new net.minecraft.world.item.crafting.SingleRecipeInput(stack);
+				java.util.Optional<net.minecraft.world.item.crafting.RecipeHolder<net.minecraft.world.item.crafting.SmeltingRecipe>> recipeHolder=
+						recipeManager.getRecipeFor(net.minecraft.world.item.crafting.RecipeType.SMELTING,input,level);
+				if(recipeHolder.isPresent()){
+					ItemStack result=recipeHolder.get().value().getResultItem(level.registryAccess());
+					if(!result.isEmpty()){
+						ItemStack newStack=result.copy();
+						newStack.setCount(stack.getCount()*result.getCount());
+						dropEntity.setItem(newStack);
+					}
 				}
 			}
 		}

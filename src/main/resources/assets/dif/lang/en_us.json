@@ -302,10 +302,17 @@
 	"dif.modifier.reinforced":"Reinforced",
 
 
-	"dif.modifier.ecological":"Ecological",
+	"dif.modifier.renewable":"Renewable",
+	"dif.modifier.stonebound":"Stonebound",
 	"dif.modifier.magnetic":"Magnetic",
-	"dif.modifier.cheap":"Cheap",
-	"dif.modifier.shiny":"Shiny",
+	"dif.modifier.verdant":"Verdant",
+	"dif.modifier.lucky_mat":"Lucky",
+	"dif.modifier.momentum":"Momentum",
+	"dif.modifier.unbreakable_mat":"Unbreakable",
+	"dif.modifier.self_repair":"Precise",
+	"dif.modifier.toxic":"Toxic",
+	"dif.modifier.precise":"Precise",
+	"dif.modifier.lightweight":"Lightweight",
 
 	"dif.reforge.sturdy.desc":"Sturdy Reforge desc :]",
 
