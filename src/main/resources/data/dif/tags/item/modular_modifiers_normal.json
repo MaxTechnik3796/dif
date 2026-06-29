@@ -7,6 +7,7 @@
 		"minecraft:diamond",
 		"minecraft:iron_ingot",
 		"create:experience_block",
-		"dif:silky_stone"
+		"dif:silky_stone",
+		"minecraft:lava_bucket"
 	]
 }

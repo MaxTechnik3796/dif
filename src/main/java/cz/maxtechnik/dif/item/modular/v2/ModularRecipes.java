@@ -65,6 +65,7 @@ public class ModularRecipes extends SmithingExtraRecipe{
 				case 3 -> 24;
 				default -> 0;
 			};
+			case VOLCANIC -> 1;
 			default -> 0;
 		};
 	}
@@ -103,6 +104,7 @@ public class ModularRecipes extends SmithingExtraRecipe{
 			if(additionItem.equals(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.parse("create:experience_block")))))
 				return MENDING;
 			if(additionItem.equals(SILKY_STONE.get())) return SILK_TOUCH;
+			if(additionItem.equals(LAVA_BUCKET)) return VOLCANIC;
 		}else if(templateItem.equals(MODULAR_TEMPLATE_HYPER.get())){
 			if(additionItem.equals(REDSTONE_BLOCK)) return EFFICIENCY;
 			if(additionItem.equals(LAPIS_BLOCK)) return LUCK;
@@ -149,6 +151,8 @@ public class ModularRecipes extends SmithingExtraRecipe{
 			upgradeModifier(provider,base,MENDING);
 		else if(addition.getItem().equals(SILKY_STONE.get()))
 			upgradeModifier(provider,base,SILK_TOUCH);
+		else if(addition.getItem().equals(LAVA_BUCKET))
+			upgradeModifier(provider,base,VOLCANIC);
 		return base;
 	}
 	@Override
@@ -167,6 +171,7 @@ public class ModularRecipes extends SmithingExtraRecipe{
 		else if(addition.getItem().equals(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.parse("create:experience_block")))))
 			return 1;
 		else if(addition.getItem().equals(SILKY_STONE.get())) return 1;
+		else if(addition.getItem().equals(LAVA_BUCKET)) return 1;
 		else return this.addition.count();
 	}
 	public Ingredient getJsonTemplate(){

@@ -49,4 +49,29 @@ public class ModularSubscriber{
 			}
 		}
 	}
+
+	@SubscribeEvent
+	public static void onBlockDrops(net.neoforged.neoforge.event.level.BlockDropsEvent event){
+		if(!(event.getBreaker() instanceof Player player)) return;
+		ItemStack tool=player.getMainHandItem();
+		if(!(tool.getItem() instanceof ModularTool)) return;
+		if(!ModularTool.isModifier(tool,ModularModifier.VOLCANIC)) return;
+		if(!(event.getLevel() instanceof net.minecraft.server.level.ServerLevel level)) return;
+
+		net.minecraft.world.item.crafting.RecipeManager recipeManager=level.getRecipeManager();
+		for(net.minecraft.world.entity.item.ItemEntity dropEntity: event.getDrops()){
+			ItemStack stack=dropEntity.getItem();
+			net.minecraft.world.item.crafting.SingleRecipeInput input=new net.minecraft.world.item.crafting.SingleRecipeInput(stack);
+			java.util.Optional<net.minecraft.world.item.crafting.RecipeHolder<net.minecraft.world.item.crafting.SmeltingRecipe>> recipeHolder=
+					recipeManager.getRecipeFor(net.minecraft.world.item.crafting.RecipeType.SMELTING,input,level);
+			if(recipeHolder.isPresent()){
+				ItemStack result=recipeHolder.get().value().getResultItem(level.registryAccess());
+				if(!result.isEmpty()){
+					ItemStack newStack=result.copy();
+					newStack.setCount(stack.getCount()*result.getCount());
+					dropEntity.setItem(newStack);
+				}
+			}
+		}
+	}
 }

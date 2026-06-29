@@ -649,6 +649,8 @@ public class ModularTool extends DiggerItem{
 					addEnchantment(provider,itemStack,Enchantments.SWEEPING_EDGE,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.SWEEPING_EDGE));
 			case MENDING ->
 					addEnchantment(provider,itemStack,Enchantments.MENDING,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.MENDING));
+			case VOLCANIC ->
+					addEnchantment(provider,itemStack,Enchantments.FIRE_ASPECT,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.FIRE_ASPECT));
 			default -> {
 			}
 		}
@@ -702,6 +704,7 @@ public class ModularTool extends DiggerItem{
 				}
 				case SWEEPING_EDGE -> subtractEnchantment(provider,itemStack,Enchantments.SWEEPING_EDGE,oldLvl);
 				case MENDING -> subtractEnchantment(provider,itemStack,Enchantments.MENDING,oldLvl);
+				case VOLCANIC -> subtractEnchantment(provider,itemStack,Enchantments.FIRE_ASPECT,oldLvl);
 				default -> {
 				}
 			}
