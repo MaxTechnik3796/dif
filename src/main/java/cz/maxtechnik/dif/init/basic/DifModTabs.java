@@ -251,7 +251,15 @@ public class DifModTabs{
 							new ItemStack(HEAVY_FUEL_OIL_BUCKET.get()),
 							new ItemStack(CREOSOTE_OIL_BUCKET.get()),
 
+							new ItemStack(MOLTEN_IRON_BUCKET.get()),
 							new ItemStack(MOLTEN_COPPER_BUCKET.get()),
+							new ItemStack(MOLTEN_GOLD_BUCKET.get()),
+							new ItemStack(MOLTEN_STEEL_BUCKET.get()),
+							new ItemStack(MOLTEN_OBSIDIAN_BUCKET.get()),
+							new ItemStack(MOLTEN_ZINC_BUCKET.get()),
+							new ItemStack(MOLTEN_BRASS_BUCKET.get()),
+							new ItemStack(MOLTEN_NICKEL_BUCKET.get()),
+							new ItemStack(MOLTEN_MITHRIL_BUCKET.get()),
 					});
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.COMBAT)){
 			tabData.insertAfter(new ItemStack(Items.STONE_SWORD),new ItemStack(COPPER_SWORD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
