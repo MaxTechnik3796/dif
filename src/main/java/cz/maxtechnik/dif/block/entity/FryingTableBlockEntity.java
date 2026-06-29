@@ -3,6 +3,7 @@ package cz.maxtechnik.dif.block.entity;
 import cz.maxtechnik.dif.block.FryingTable;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
+import cz.maxtechnik.dif.init.other.DifModRecipes;
 import cz.maxtechnik.dif.recipe.FryingRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -143,6 +144,29 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 		BlockState newState=blockState.setValue(FryingTable.OIL,hasOil).setValue(FryingTable.HEATED,heated).setValue(FryingTable.TRAY,tray);
 		if(!newState.equals(blockState))
 			world.setBlock(pos,newState,3);
+		ItemStack inputStack = be.getItem(INPUT_SLOT);
+		boolean isExplosive = inputStack.is(net.minecraft.world.item.Items.ICE) || inputStack.is(cz.maxtechnik.dif.init.basic.DifModItems.NUKE.get());
+		if (isExplosive) {
+			if (heated) {
+				be.progress++;
+				if (be.progress >= 100) {
+					be.progress = 0;
+					if (inputStack.is(net.minecraft.world.item.Items.ICE)) {
+						world.explode(null, pos.getX(), pos.getY(), pos.getZ(), 1, Level.ExplosionInteraction.BLOCK);
+					} else {
+						cz.maxtechnik.dif.block.Nuke.spawnNuclearExplosion(world, pos);
+					}
+				}
+				be.setChanged();
+			} else {
+				if (be.progress != 0) {
+					be.progress = 0;
+					be.setChanged();
+				}
+			}
+			return;
+		}
+
 		// Vaření: potřebuje olej I heat source
 		if(!hasOil||!heated){
 			if(be.progress!=0){
@@ -153,7 +177,7 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 		}
 		SingleRecipeInput recipeInput=new SingleRecipeInput(be.getItem(INPUT_SLOT));
 		Optional<RecipeHolder<FryingRecipe>> recipeOpt=
-				world.getRecipeManager().getRecipeFor(FryingRecipe.Type.INSTANCE,recipeInput,world);
+				world.getRecipeManager().getRecipeFor(DifModRecipes.FRYING_TYPE.get(),recipeInput,world);
 		if(recipeOpt.isPresent()){
 			FryingRecipe recipe=recipeOpt.get().value();
 			ItemStack result=recipe.getResultItem(world.registryAccess());

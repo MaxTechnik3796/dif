@@ -167,14 +167,7 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 		BlockEntity blockEntity=world.getBlockEntity(pos);
 		if(!(blockEntity instanceof FryingTableBlockEntity be)) return InteractionResult.PASS;
 		ItemStack handItem=player.getMainHandItem();
-		if(handItem.getItem().equals(Items.ICE)){
-			world.explode(null,pos.getX(),pos.getY(),pos.getZ(),1,Level.ExplosionInteraction.BLOCK);
-			return InteractionResult.SUCCESS;
-		}
-		if(handItem.getItem().equals(DifModItems.NUKE.get())){
-			Nuke.spawnNuclearExplosion(world,pos);
-			return InteractionResult.SUCCESS;
-		}
+
 		if(handItem.is(DifModItems.SUNFLOWER_OIL_BUCKET.get())){
 			int accepted=be.fluidTank.fill(new FluidStack(DifModFluids.SUNFLOWER_OIL.get(),1000),IFluidHandler.FluidAction.EXECUTE);
 			if(accepted>0){
