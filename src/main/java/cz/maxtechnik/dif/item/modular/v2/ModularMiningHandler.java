@@ -310,12 +310,14 @@ public final class ModularMiningHandler{
 	@EventBusSubscriber(modid=DifMod.MODID,value=Dist.CLIENT)
 	public static final class ClientOverlay{
 		private ClientOverlay(){}
+		// Vanilla default block hover outline colour
+		private static final float OR=0f,OG=0f,OB=0f,OA=0.4f;
 		@SubscribeEvent
 		public static void onRenderLevel(RenderLevelStageEvent event){
 			if(event.getStage()!=RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) return;
 			Minecraft mc=Minecraft.getInstance();
 			Player player=mc.player;
-			if(player==null) return;
+			if(player==null||mc.level==null) return;
 			ItemStack tool=player.getMainHandItem();
 			if(!(tool.getItem() instanceof ModularTool modularTool)) return;
 			if(modularTool.isBroken(tool)) return;
@@ -335,6 +337,7 @@ public final class ModularMiningHandler{
 			if(!(hit instanceof BlockHitResult blockHit)) return;
 			if(blockHit.getType()==HitResult.Type.MISS) return;
 
+			Level level=mc.level;
 			BlockPos centre=blockHit.getBlockPos();
 			Direction face=blockHit.getDirection();
 			Vec3 camPos=event.getCamera().getPosition();
@@ -345,72 +348,65 @@ public final class ModularMiningHandler{
 			VertexConsumer lines=buf.getBuffer(RenderType.lines());
 
 			if(isTimberAxe){
-				Level level=mc.level;
-				if(level!=null&&level.getBlockState(centre).is(BlockTags.LOGS)){
+				if(level.getBlockState(centre).is(BlockTags.LOGS)){
 					List<BlockPos> logs=collectLogs(level,centre,false);
 					if(isNaturalTree(level,logs)){
-						// Green = natural tree
-						for(BlockPos pos:logs) renderBlockOutline(ps,lines,pos,0.2f,1.0f,0.2f,0.5f);
+						// Only highlight logs at or above the hit block – below will remain standing
+						for(BlockPos pos:logs)
+							if(pos.getY()>=centre.getY()) renderBlockOutline(ps,lines,pos);
 					}else{
-						renderPlane(ps,lines,get3x3Plane(centre,face),centre,1.0f,0.55f,0.1f,0.6f);
+						renderPlane(ps,lines,level,get3x3Plane(centre,face),centre);
 					}
 				}else{
-					renderPlane(ps,lines,get3x3Plane(centre,face),centre,1.0f,0.55f,0.1f,0.6f);
+					renderPlane(ps,lines,level,get3x3Plane(centre,face),centre);
 				}
 			}else if(isHoe){
 				if(face==Direction.UP){
-					// Tilling preview: lime 3×3 / yellow-green 5×5
 					ModularTier tier=ModularTool.getTier(tool);
 					int radius=(tier==ModularTier.MYTHIC)?2:1;
-					float gr=(radius==1)?0.6f:0.75f;
 					for(BlockPos pos:getAoePlane(centre,Direction.UP,radius))
-						renderBlockOutline(ps,lines,pos,gr,1.0f,0.1f,0.55f);
+						if(!level.getBlockState(pos).isAir()) renderBlockOutline(ps,lines,pos);
 				}else{
-					renderPlane(ps,lines,get3x3Plane(centre,face),centre,0.6f,1.0f,0.1f,0.55f);
+					renderPlane(ps,lines,level,get3x3Plane(centre,face),centre);
 				}
 			}else{
-				// Hammer = gold, Excavator = teal
-				float r=isHammer?1.0f:0.2f;
-				float g=isHammer?0.85f:0.9f;
-				float b=isHammer?0.1f:0.85f;
-				renderPlane(ps,lines,get3x3Plane(centre,face),centre,r,g,b,0.6f);
+				renderPlane(ps,lines,level,get3x3Plane(centre,face),centre);
 			}
 			buf.endBatch(RenderType.lines());
 			ps.popPose();
 		}
-		/** Renders {@code plane} + {@code centre} block outlines in a single call. */
-		private static void renderPlane(PoseStack ps,VertexConsumer lines,
-				List<BlockPos> plane,BlockPos centre,float r,float g,float b,float a){
-			renderBlockOutline(ps,lines,centre,r,g,b,a);
-			for(BlockPos pos:plane) renderBlockOutline(ps,lines,pos,r,g,b,a);
+		/** Renders centre + all non-air blocks in {@code plane} with the shared grey colour. */
+		private static void renderPlane(PoseStack ps,VertexConsumer lines,Level level,
+				List<BlockPos> plane,BlockPos centre){
+			if(!level.getBlockState(centre).isAir()) renderBlockOutline(ps,lines,centre);
+			for(BlockPos pos:plane)
+				if(!level.getBlockState(pos).isAir()) renderBlockOutline(ps,lines,pos);
 		}
-		private static void renderBlockOutline(PoseStack ps,VertexConsumer lines,
-				BlockPos pos,float r,float g,float b,float a){
+		private static void renderBlockOutline(PoseStack ps,VertexConsumer lines,BlockPos pos){
 			Matrix4f mat=ps.last().pose();
 			float x=pos.getX(),y=pos.getY(),z=pos.getZ();
 			float x1=x+1f,y1=y+1f,z1=z+1f;
-			line(lines,mat,x,y,z,   x1,y,z,  r,g,b,a);
-			line(lines,mat,x1,y,z,  x1,y,z1, r,g,b,a);
-			line(lines,mat,x1,y,z1, x,y,z1,  r,g,b,a);
-			line(lines,mat,x,y,z1,  x,y,z,   r,g,b,a);
-			line(lines,mat,x,y1,z,  x1,y1,z, r,g,b,a);
-			line(lines,mat,x1,y1,z, x1,y1,z1,r,g,b,a);
-			line(lines,mat,x1,y1,z1,x,y1,z1, r,g,b,a);
-			line(lines,mat,x,y1,z1, x,y1,z,  r,g,b,a);
-			line(lines,mat,x,y,z,   x,y1,z,  r,g,b,a);
-			line(lines,mat,x1,y,z,  x1,y1,z, r,g,b,a);
-			line(lines,mat,x1,y,z1, x1,y1,z1,r,g,b,a);
-			line(lines,mat,x,y,z1,  x,y1,z1, r,g,b,a);
+			line(lines,mat,x,y,z,   x1,y,z);
+			line(lines,mat,x1,y,z,  x1,y,z1);
+			line(lines,mat,x1,y,z1, x,y,z1);
+			line(lines,mat,x,y,z1,  x,y,z);
+			line(lines,mat,x,y1,z,  x1,y1,z);
+			line(lines,mat,x1,y1,z, x1,y1,z1);
+			line(lines,mat,x1,y1,z1,x,y1,z1);
+			line(lines,mat,x,y1,z1, x,y1,z);
+			line(lines,mat,x,y,z,   x,y1,z);
+			line(lines,mat,x1,y,z,  x1,y1,z);
+			line(lines,mat,x1,y,z1, x1,y1,z1);
+			line(lines,mat,x,y,z1,  x,y1,z1);
 		}
 		private static void line(VertexConsumer vc,Matrix4f mat,
-				float x0,float y0,float z0,float x1,float y1,float z1,
-				float r,float g,float b,float a){
+				float x0,float y0,float z0,float x1,float y1,float z1){
 			float nx=x1-x0,ny=y1-y0,nz=z1-z0;
 			float len=(float)Math.sqrt(nx*nx+ny*ny+nz*nz);
 			if(len==0f) return;
 			nx/=len;ny/=len;nz/=len;
-			vc.addVertex(mat,x0,y0,z0).setColor(r,g,b,a).setNormal(nx,ny,nz);
-			vc.addVertex(mat,x1,y1,z1).setColor(r,g,b,a).setNormal(nx,ny,nz);
+			vc.addVertex(mat,x0,y0,z0).setColor(OR,OG,OB,OA).setNormal(nx,ny,nz);
+			vc.addVertex(mat,x1,y1,z1).setColor(OR,OG,OB,OA).setNormal(nx,ny,nz);
 		}
 	}
 }
