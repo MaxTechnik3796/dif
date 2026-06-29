@@ -1,6 +1,6 @@
 {
-  "values": [
-    "dif:flowing_molten_copper_fluid",
-    "dif:molten_copper_fluid"
-  ]
+	"values":[
+		"dif:flowing_molten_copper_fluid",
+		"dif:molten_copper_fluid"
+	]
 }
