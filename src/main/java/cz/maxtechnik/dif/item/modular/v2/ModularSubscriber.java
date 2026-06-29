@@ -1,14 +1,21 @@
 package cz.maxtechnik.dif.item.modular.v2;
 
 import cz.maxtechnik.dif.DifMod;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.*;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
+import net.neoforged.neoforge.event.level.BlockDropsEvent;
+
+import java.util.EnumSet;
+import java.util.Optional;
 @EventBusSubscriber
 public class ModularSubscriber{
 	@SubscribeEvent
@@ -36,54 +43,49 @@ public class ModularSubscriber{
 				}
 			}
 			case FROZEN -> {
-				if(tier==2||tier==3){
+				if(tier==2||tier==3)
 					target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,160,0));
-				}else if(tier==4){
+				else if(tier==4)
 					target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,160,1));
-				}
+
 			}
 			case CURSE -> {
-				if(tier>=2){
+				if(tier>=2)
 					target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS,100,0));
-				}
 			}
 		}
 		// Material modifiers: parse materials once for this event
 		if(ModularTool.getMaterialModifiers(itemStack).contains(ModularModifier.TOXIC)){
-			if(attacker.level().getRandom().nextFloat()<0.30F){
+			if(attacker.level().getRandom().nextFloat()<0.3F)
 				target.addEffect(new MobEffectInstance(MobEffects.POISON,60,0));
-			}
 		}
 	}
 	@SubscribeEvent
-	public static void onLivingExp(net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent event){
+	public static void onLivingExp(LivingExperienceDropEvent event){
 		if(event.getAttackingPlayer()!=null){
 			ItemStack tool=event.getAttackingPlayer().getMainHandItem();
-			if(ModularTool.hasMaterialModifier(tool,ModularModifier.LUCKY_MAT)){
+			if(ModularTool.hasMaterialModifier(tool,ModularModifier.LUCKY_MAT))
 				event.setDroppedExperience((int)Math.ceil(event.getDroppedExperience()*1.25));
-			}
 		}
 	}
 	@SubscribeEvent
-	public static void onBlockDrops(net.neoforged.neoforge.event.level.BlockDropsEvent event){
+	public static void onBlockDrops(BlockDropsEvent event){
 		if(!(event.getBreaker() instanceof Player player)) return;
 		ItemStack tool=player.getMainHandItem();
 		if(!(tool.getItem() instanceof ModularTool)) return;
-		net.minecraft.server.level.ServerLevel level=event.getLevel();
+		ServerLevel level=event.getLevel();
 		// Parse materials once for all checks in this event
-		java.util.EnumSet<ModularModifier> mods=ModularTool.getMaterialModifiers(tool);
+		EnumSet<ModularModifier> mods=ModularTool.getMaterialModifiers(tool);
 		if(mods.contains(ModularModifier.MOMENTUM)){
-			if(level.getRandom().nextFloat()<0.10F){
+			if(level.getRandom().nextFloat()<0.1F)
 				player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED,100,0));
-			}
 		}
 		if(ModularTool.isModifier(tool,ModularModifier.VOLCANIC)){
-			net.minecraft.world.item.crafting.RecipeManager recipeManager=level.getRecipeManager();
+			RecipeManager recipeManager=level.getRecipeManager();
 			for(net.minecraft.world.entity.item.ItemEntity dropEntity: event.getDrops()){
 				ItemStack stack=dropEntity.getItem();
-				net.minecraft.world.item.crafting.SingleRecipeInput input=new net.minecraft.world.item.crafting.SingleRecipeInput(stack);
-				java.util.Optional<net.minecraft.world.item.crafting.RecipeHolder<net.minecraft.world.item.crafting.SmeltingRecipe>> recipeHolder=
-						recipeManager.getRecipeFor(net.minecraft.world.item.crafting.RecipeType.SMELTING,input,level);
+				SingleRecipeInput input=new SingleRecipeInput(stack);
+				Optional<RecipeHolder<SmeltingRecipe>> recipeHolder=recipeManager.getRecipeFor(RecipeType.SMELTING,input,level);
 				if(recipeHolder.isPresent()){
 					ItemStack result=recipeHolder.get().value().getResultItem(level.registryAccess());
 					if(!result.isEmpty()){
