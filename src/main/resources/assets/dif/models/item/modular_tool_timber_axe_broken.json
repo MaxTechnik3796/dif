@@ -1,7 +1,7 @@
 {
 	"parent":"item/handheld",
 	"textures":{
-		"layer0":"dif:item/modular_tool_timber_axe_handle",
+		"layer0":"dif:item/modular_tool_axe_handle",
 		"layer1":"dif:item/modular_tool_timber_axe_binding",
 		"layer2":"dif:item/modular_tool_timber_axe_head_broken"
 	}
