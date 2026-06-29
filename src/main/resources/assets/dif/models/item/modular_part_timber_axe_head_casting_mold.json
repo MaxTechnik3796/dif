@@ -1,0 +1,7 @@
+{
+	"parent":"item/generated",
+	"textures":{
+		"layer0":"dif:item/casting_mold_timber_axe_head",
+		"layer1":"dif:item/modular_part_timber_axe_head"
+	}
+}

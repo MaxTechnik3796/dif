@@ -1,0 +1,6 @@
+{
+	"parent":"item/generated",
+	"textures":{
+		"layer0":"dif:item/casting_mold_timber_axe_head"
+	}
+}

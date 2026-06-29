@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.init.events.client;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.other.DifModComponents;
 import cz.maxtechnik.dif.item.modular.v2.*;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -13,10 +12,11 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 
 import java.util.Locale;
+
+import static cz.maxtechnik.dif.init.basic.DifModItems.*;
 @SuppressWarnings("removal")
 @EventBusSubscriber(modid=DifMod.MODID, bus=EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
 public class ModularClientHandler{
-	// 1. REGISTRACE BARVENÍ VRSTEV (S FIXEM PRO PRŮHLEDNOST)
 	@SubscribeEvent
 	public static void registerItemColors(RegisterColorHandlersEvent.Item event){
 		event.register((itemStack,tintIndex)->{
@@ -27,7 +27,6 @@ public class ModularClientHandler{
 					if(tintIndex==0) color=ModularMaterial.byName(props.handleMaterial()).getColor();
 					if(tintIndex==1) color=ModularMaterial.byName(props.bindingMaterial()).getColor();
 					if(tintIndex==2) color=ModularMaterial.byName(props.headMaterial()).getColor();
-					// FIX: Pomocí bitového operátoru OR (|) vnutíne barvě plnou hodnotu Alpha kanálu (0xFF000000)
 					if(color!=-1) return color|0xFF000000;
 				}
 			}else if(itemStack.getItem() instanceof ModularPart){
@@ -42,9 +41,7 @@ public class ModularClientHandler{
 				}
 			}
             return tintIndex;
-        },DifModItems.MODULAR_TOOL,DifModItems.MODULAR_PART);
-
-		// Registrace barvy pro fluidní vrstvu kbelíků (tintIndex 1 bývá default u neoforge:fluid_container loaderu pro itemy)
+        },MODULAR_TOOL,MODULAR_PART);
 		event.register((itemStack,tintIndex)->{
 			if(tintIndex==1){
 				var contained = net.neoforged.neoforge.fluids.FluidUtil.getFluidContained(itemStack);
@@ -53,13 +50,11 @@ public class ModularClientHandler{
 				}
 			}
 			return -1;
-		},
-		DifModItems.MOLTEN_COPPER_BUCKET);
+		},MOLTEN_IRON_BUCKET,MOLTEN_COPPER_BUCKET,MOLTEN_GOLD_BUCKET,MOLTEN_STEEL_BUCKET,MOLTEN_OBSIDIAN_BUCKET,MOLTEN_ZINC_BUCKET,MOLTEN_BRASS_BUCKET,MOLTEN_NICKEL_BUCKET,MOLTEN_MITHRIL_BUCKET);
 	}
-	// 3. REGISTRACE PREDICATU PRO PŘEPÍNÁNÍ MODELŮ (ZŮSTÁVÁ STEJNÁ)
 	@SubscribeEvent
 	public static void clientSetup(FMLClientSetupEvent event){
-		event.enqueueWork(()->ItemProperties.register(DifModItems.MODULAR_TOOL.get(),
+		event.enqueueWork(()->ItemProperties.register(MODULAR_TOOL.get(),
 				ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"tool_state"),
 				(itemStack,level,entity,seed)->{
 					if(!(itemStack.getItem() instanceof ModularTool tool)) return 0.0F;
@@ -83,7 +78,7 @@ public class ModularClientHandler{
 					return tool.isBroken(itemStack)?base+0.5F:base;
 				}
 		));
-		event.enqueueWork(()->ItemProperties.register(DifModItems.MODULAR_PART.get(),
+		event.enqueueWork(()->ItemProperties.register(MODULAR_PART.get(),
 				ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"part_state"),
 				(itemStack,level,entity,seed)->{
 					if(!(itemStack.getItem() instanceof ModularPart part)) return 0.0F;
@@ -99,6 +94,11 @@ public class ModularClientHandler{
 						case "shovel_head" -> 6.0F;
 						case "sword_binding" -> 7.0F;
 						case "hoe_head" -> 8.0F;
+						case "battle_axe_head" -> 9.0F;
+						case "katana_head" -> 10.0F;
+						case "timber_axe_head" ->11.0F;
+						case "hammer_head" -> 12.0F;
+						case "excavator_head" -> 13.0F;
 						default -> 0.0F;
 					};
 					if(base==0.0F) return 0.0F;

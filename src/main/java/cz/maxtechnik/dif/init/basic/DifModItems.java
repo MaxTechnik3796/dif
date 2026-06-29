@@ -80,6 +80,7 @@ public class DifModItems{
 	public static final DeferredItem<Item>MODULAR_TEMPLATE_NORMAL=REGISTRY.register("modular_template_normal",()->new ModularTemplate(new Item.Properties()));
 	public static final DeferredItem<Item>MODULAR_TEMPLATE_HYPER=REGISTRY.register("modular_template_hyper",()->new ModularTemplate(new Item.Properties().rarity(Rarity.EPIC)));
 
+	public static final DeferredItem<Item>CASTING_MOLD=REGISTRY.register("casting_mold",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item>CASTING_MOLD_HANDLE=REGISTRY.register("casting_mold_handle",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item>CASTING_MOLD_BINDING=REGISTRY.register("casting_mold_binding",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item>CASTING_MOLD_AXE_HEAD=REGISTRY.register("casting_mold_axe_head",()->new Item(new Item.Properties()));
@@ -88,6 +89,12 @@ public class DifModItems{
 	public static final DeferredItem<Item>CASTING_MOLD_SWORD_HEAD=REGISTRY.register("casting_mold_sword_head",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item>CASTING_MOLD_SWORD_BINDING=REGISTRY.register("casting_mold_sword_binding",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item>CASTING_MOLD_HOE_HEAD=REGISTRY.register("casting_mold_hoe_head",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item>CASTING_MOLD_BATTLE_AXE_HEAD=REGISTRY.register("casting_mold_battle_axe_head",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item>CASTING_MOLD_KATANA_HEAD=REGISTRY.register("casting_mold_katana_head",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item>CASTING_MOLD_TIMBER_AXE_HEAD=REGISTRY.register("casting_mold_timber_axe_head",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item>CASTING_MOLD_HAMMER_HEAD=REGISTRY.register("casting_mold_hammer_head",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item>CASTING_MOLD_EXCAVATOR_HEAD=REGISTRY.register("casting_mold_excavator_head",()->new Item(new Item.Properties()));
+
 
 	public static final DeferredItem<Item> PORTAL_GUN=REGISTRY.register("portal_gun",PortalGun::new);
 
