@@ -59,7 +59,16 @@ public class DifModBlocks{
 
 	public static final DeferredBlock<Block>CREOSOTE_OIL_FLUID=REGISTRY.register("creosote_oil_fluid",()->new LiquidBlock(DifModFluids.CREOSOTE_OIL.get(),FLUID_PROPERTIES));
 
+
+	public static final DeferredBlock<Block>MOLTEN_IRON_FLUID=REGISTRY.register("molten_iron_fluid",()->new MoltenBlock(DifModFluids.MOLTEN_IRON.get(),FLUID_PROPERTIES));
 	public static final DeferredBlock<Block>MOLTEN_COPPER_FLUID=REGISTRY.register("molten_copper_fluid",()->new MoltenBlock(DifModFluids.MOLTEN_COPPER.get(),FLUID_PROPERTIES));
+	public static final DeferredBlock<Block>MOLTEN_GOLD_FLUID=REGISTRY.register("molten_gold_fluid",()->new MoltenBlock(DifModFluids.MOLTEN_GOLD.get(),FLUID_PROPERTIES));
+	public static final DeferredBlock<Block>MOLTEN_STEEL_FLUID=REGISTRY.register("molten_steel_fluid",()->new MoltenBlock(DifModFluids.MOLTEN_STEEL.get(),FLUID_PROPERTIES));
+	public static final DeferredBlock<Block>MOLTEN_OBSIDIAN_FLUID=REGISTRY.register("molten_obsidian_fluid",()->new MoltenBlock(DifModFluids.MOLTEN_OBSIDIAN.get(),FLUID_PROPERTIES));
+	public static final DeferredBlock<Block>MOLTEN_ZINC_FLUID=REGISTRY.register("molten_zinc_fluid",()->new MoltenBlock(DifModFluids.MOLTEN_ZINC.get(),FLUID_PROPERTIES));
+	public static final DeferredBlock<Block>MOLTEN_BRASS_FLUID=REGISTRY.register("molten_brass_fluid",()->new MoltenBlock(DifModFluids.MOLTEN_BRASS.get(),FLUID_PROPERTIES));
+	public static final DeferredBlock<Block>MOLTEN_NICKEL_FLUID=REGISTRY.register("molten_nickel_fluid",()->new MoltenBlock(DifModFluids.MOLTEN_NICKEL.get(),FLUID_PROPERTIES));
+	public static final DeferredBlock<Block>MOLTEN_MITHRIL_FLUID=REGISTRY.register("molten_mithril_fluid",()->new MoltenBlock(DifModFluids.MOLTEN_MITHRIL.get(),FLUID_PROPERTIES));
 
 	//Random (0):
 	public static final DeferredBlock<Block> MEGA_TORCH = REGISTRY.register("mega_torch",()->new MegaTorch(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(2F,3F).sound(SoundType.WOOD).pushReaction(PushReaction.BLOCK).lightLevel(state->15)));

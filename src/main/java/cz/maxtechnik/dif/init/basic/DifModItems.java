@@ -75,7 +75,10 @@ public class DifModItems{
 	//Modular Stuff:
 	public static final DeferredItem<Item>MODULAR_TOOL=REGISTRY.register("modular_tool",ModularTool::new);
 	public static final DeferredItem<Item>MODULAR_PART=REGISTRY.register("modular_part",ModularPart::new);
-
+	public static final DeferredItem<Item>SILKY_STONE=REGISTRY.register("silky_stone",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item>MODULAR_REFORGE_TABLE=block(DifModBlocks.MODULAR_REFORGE_TABLE);
+	public static final DeferredItem<Item>MODULAR_TEMPLATE_NORMAL=REGISTRY.register("modular_template_normal",()->new ModularTemplate(new Item.Properties()));
+	public static final DeferredItem<Item>MODULAR_TEMPLATE_HYPER=REGISTRY.register("modular_template_hyper",()->new ModularTemplate(new Item.Properties().rarity(Rarity.EPIC)));
 
 	public static final DeferredItem<Item>CASTING_MOLD_HANDLE=REGISTRY.register("casting_mold_handle",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item>CASTING_MOLD_BINDING=REGISTRY.register("casting_mold_binding",()->new Item(new Item.Properties()));
@@ -111,13 +114,18 @@ public class DifModItems{
 	public static final DeferredItem<Item>LUBRICATING_OIL_BUCKET=REGISTRY.register("lubricating_oil_bucket",()->new BucketItem(DifModFluids.LUBRICATING_OIL.get(),BUCKET_PROPERTIES));
 	public static final DeferredItem<Item>HEAVY_FUEL_OIL_BUCKET=REGISTRY.register("heavy_fuel_oil_bucket",()->new BucketItem(DifModFluids.HEAVY_FUEL_OIL.get(),BUCKET_PROPERTIES));
 
+	public static final DeferredItem<Item>MOLTEN_IRON_BUCKET=REGISTRY.register("molten_iron_bucket",()->new BucketItem(DifModFluids.MOLTEN_IRON.get(),BUCKET_PROPERTIES));
 	public static final DeferredItem<Item>MOLTEN_COPPER_BUCKET=REGISTRY.register("molten_copper_bucket",()->new BucketItem(DifModFluids.MOLTEN_COPPER.get(),BUCKET_PROPERTIES));
-
+	public static final DeferredItem<Item>MOLTEN_GOLD_BUCKET=REGISTRY.register("molten_gold_bucket",()->new BucketItem(DifModFluids.MOLTEN_GOLD.get(),BUCKET_PROPERTIES));
+	public static final DeferredItem<Item>MOLTEN_STEEL_BUCKET=REGISTRY.register("molten_steel_bucket",()->new BucketItem(DifModFluids.MOLTEN_STEEL.get(),BUCKET_PROPERTIES));
+	public static final DeferredItem<Item>MOLTEN_OBSIDIAN_BUCKET=REGISTRY.register("molten_obsidian_bucket",()->new BucketItem(DifModFluids.MOLTEN_OBSIDIAN.get(),BUCKET_PROPERTIES));
+	public static final DeferredItem<Item>MOLTEN_ZINC_BUCKET=REGISTRY.register("molten_zinc_bucket",()->new BucketItem(DifModFluids.MOLTEN_ZINC.get(),BUCKET_PROPERTIES));
+	public static final DeferredItem<Item>MOLTEN_BRASS_BUCKET=REGISTRY.register("molten_brass_bucket",()->new BucketItem(DifModFluids.MOLTEN_BRASS.get(),BUCKET_PROPERTIES));
+	public static final DeferredItem<Item>MOLTEN_NICKEL_BUCKET=REGISTRY.register("molten_nickel_bucket",()->new BucketItem(DifModFluids.MOLTEN_NICKEL.get(),BUCKET_PROPERTIES));
+	public static final DeferredItem<Item>MOLTEN_MITHRIL_BUCKET=REGISTRY.register("molten_mithril_bucket",()->new BucketItem(DifModFluids.MOLTEN_MITHRIL.get(),BUCKET_PROPERTIES));
 
 	//Vanilla + :
 	public static final DeferredItem<Item> END_PORTAL=V_REGISTRY.register("end_portal",()->new BlockItem(Blocks.END_PORTAL,new Item.Properties()));
-
-
 	public static final DeferredItem<Item> END_GATEWAY=V_REGISTRY.register("end_gateway",()->new BlockItem(Blocks.END_GATEWAY,new Item.Properties()));
 	public static final DeferredItem<Item> NETHER_PORTAL=V_REGISTRY.register("nether_portal",()->new BlockItem(Blocks.NETHER_PORTAL,new Item.Properties()));
 	public static final DeferredItem<Item> WATER=V_REGISTRY.register("water",()->new BlockItem(Blocks.WATER,new Item.Properties()));
@@ -353,10 +361,4 @@ public class DifModItems{
 	public static final DeferredItem<Item>ENGINE_EXTENDER_GASOLINE=block(DifModBlocks.ENGINE_EXTENDER_GASOLINE);
 	public static final DeferredItem<Item>ENGINE_EXTENDER_LPG=block(DifModBlocks.ENGINE_EXTENDER_LPG);
 	public static final DeferredItem<Item>ENGINE_EXTENDER_HEAVY_FUEL_OIL=block(DifModBlocks.ENGINE_EXTENDER_HEAVY_FUEL_OIL);
-
-
-	public static final DeferredItem<Item>SILKY_STONE=REGISTRY.register("silky_stone",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item>MODULAR_REFORGE_TABLE=block(DifModBlocks.MODULAR_REFORGE_TABLE);
-	public static final DeferredItem<Item>MODULAR_TEMPLATE_NORMAL=REGISTRY.register("modular_template_normal",()->new ModularTemplate(new Item.Properties()));
-	public static final DeferredItem<Item>MODULAR_TEMPLATE_HYPER=REGISTRY.register("modular_template_hyper",()->new ModularTemplate(new Item.Properties().rarity(Rarity.EPIC)));
 }

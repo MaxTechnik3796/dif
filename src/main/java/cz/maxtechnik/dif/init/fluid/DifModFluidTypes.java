@@ -26,5 +26,16 @@ public class DifModFluidTypes{
 	public static final DeferredHolder<FluidType,FluidType>HEAVY_FUEL_OIL_TYPE=REGISTRY.register("heavy_fuel_oil_fluid",()->new BaseFluidType(HeavyFuelOil.PROPERTIES,"heavy_fuel_oil"));
 	public static final DeferredHolder<FluidType,FluidType>CREOSOTE_OIL_TYPE=REGISTRY.register("creosote_oil_fluid",()->new BaseFluidType(CreosoteOil.PROPERTIES,"creosote_oil"));
 
+	public static final DeferredHolder<FluidType,FluidType>MOLTEN_IRON_TYPE=REGISTRY.register("molten_iron_fluid",()->new BaseMoltenFluidType(Molten.PROPERTIES,"molten_iron",ModularMaterial.IRON.getColor()));
 	public static final DeferredHolder<FluidType,FluidType>MOLTEN_COPPER_TYPE=REGISTRY.register("molten_copper_fluid",()->new BaseMoltenFluidType(Molten.PROPERTIES,"molten_copper",ModularMaterial.COPPER.getColor()));
+	public static final DeferredHolder<FluidType,FluidType>MOLTEN_GOLD_TYPE=REGISTRY.register("molten_gold_fluid",()->new BaseMoltenFluidType(Molten.PROPERTIES,"molten_gold",ModularMaterial.GOLD.getColor()));
+	public static final DeferredHolder<FluidType,FluidType>MOLTEN_STEEL_TYPE=REGISTRY.register("molten_steel_fluid",()->new BaseMoltenFluidType(Molten.PROPERTIES,"molten_steel",ModularMaterial.STEEL.getColor()));
+	public static final DeferredHolder<FluidType,FluidType>MOLTEN_OBSIDIAN_TYPE=REGISTRY.register("molten_obsidian_fluid",()->new BaseMoltenFluidType(Molten.PROPERTIES,"molten_obsidian",ModularMaterial.OBSIDIAN.getColor()));
+	public static final DeferredHolder<FluidType,FluidType>MOLTEN_ZINC_TYPE=REGISTRY.register("molten_zinc_fluid",()->new BaseMoltenFluidType(Molten.PROPERTIES,"molten_zinc",ModularMaterial.ZINC.getColor()));
+	public static final DeferredHolder<FluidType,FluidType>MOLTEN_BRASS_TYPE=REGISTRY.register("molten_brass_fluid",()->new BaseMoltenFluidType(Molten.PROPERTIES,"molten_brass",ModularMaterial.BRASS.getColor()));
+	public static final DeferredHolder<FluidType,FluidType>MOLTEN_NICKEL_TYPE=REGISTRY.register("molten_nickel_fluid",()->new BaseMoltenFluidType(Molten.PROPERTIES,"molten_nickel",ModularMaterial.NICKEL.getColor()));
+	public static final DeferredHolder<FluidType,FluidType>MOLTEN_MITHRIL_TYPE=REGISTRY.register("molten_mithril_fluid",()->new BaseMoltenFluidType(Molten.PROPERTIES,"molten_mithril",ModularMaterial.MITHRIL.getColor()));
+
+
+
 }

@@ -2,27 +2,38 @@ package cz.maxtechnik.dif.init.other;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.item.modular.v2.ModularMaterial;
 import cz.maxtechnik.dif.item.modular.v2.ModularParts;
-import cz.maxtechnik.mtrecipex.MTRecipexModRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-
-import static cz.maxtechnik.dif.init.basic.DifModItems.*;
+import static cz.maxtechnik.dif.item.modular.v2.ModularMaterial.*;
+import static cz.maxtechnik.mtrecipex.MTRecipexModRegistry.addCustom;
 public class DifModRecipex{
 	public static void onCommonSetup(final FMLCommonSetupEvent event){
 		event.enqueueWork(()->{
-			MTRecipexModRegistry.addCustom("copper_handle",addCasting(ModularParts.HANDLE,ModularMaterial.COPPER));
-			MTRecipexModRegistry.addCustom("copper_binding",addCasting(ModularParts.BINDING,ModularMaterial.COPPER));
-			MTRecipexModRegistry.addCustom("copper_axe_head",addCasting(ModularParts.AXE_HEAD,ModularMaterial.COPPER));
-			MTRecipexModRegistry.addCustom("copper_pickaxe_head",addCasting(ModularParts.PICKAXE_HEAD,ModularMaterial.COPPER));
-			MTRecipexModRegistry.addCustom("copper_shovel_head",addCasting(ModularParts.SHOVEL_HEAD,ModularMaterial.COPPER));
-			MTRecipexModRegistry.addCustom("copper_sword_head",addCasting(ModularParts.SWORD_HEAD,ModularMaterial.COPPER));
-			MTRecipexModRegistry.addCustom("copper_sword_binding",addCasting(ModularParts.SWORD_BINDING,ModularMaterial.COPPER));
-			MTRecipexModRegistry.addCustom("copper_hoe_head",addCasting(ModularParts.HOE_HEAD,ModularMaterial.COPPER));
-
+			addAllTypes(IRON);
+			addAllTypes(COPPER);
+			addAllTypes(GOLD);
+			addAllTypes(STEEL);
+			addAllTypes(OBSIDIAN);
+			addAllTypes(ZINC);
+			addAllTypes(BRASS);
+			addAllTypes(NICKEL);
+			addAllTypes(MITHRIL);
 		});
+	}
+	private static void addAllTypes(ModularMaterial material){
+		String sMaterial=material.getName();
+		addCustom(sMaterial+"_handle",addCasting(ModularParts.HANDLE,material));
+		addCustom(sMaterial+"_binding",addCasting(ModularParts.BINDING,material));
+		addCustom(sMaterial+"_axe_head",addCasting(ModularParts.AXE_HEAD,material));
+		addCustom(sMaterial+"_pickaxe_head",addCasting(ModularParts.PICKAXE_HEAD,material));
+		addCustom(sMaterial+"_shovel_head",addCasting(ModularParts.SHOVEL_HEAD,material));
+		addCustom(sMaterial+"_sword_head",addCasting(ModularParts.SWORD_HEAD,material));
+		addCustom(sMaterial+"_sword_binding",addCasting(ModularParts.SWORD_BINDING,material));
+		addCustom(sMaterial+"_hoe_head",addCasting(ModularParts.HOE_HEAD,material));
 	}
 	private static JsonObject addCasting(ModularParts partType,ModularMaterial material){
 		Item casing_mold=partType.getCastingMold();
@@ -39,7 +50,7 @@ public class DifModRecipex{
 		ingredientsArray.add(fluidObj);
 		JsonArray resultsArray=new JsonArray();
 		JsonObject resObj=new JsonObject();
-		resObj.addProperty("id",BuiltInRegistries.ITEM.getKey(MODULAR_PART.get()).toString());
+		resObj.addProperty("id",BuiltInRegistries.ITEM.getKey(DifModItems.MODULAR_PART.get()).toString());
 		JsonObject comObj=new JsonObject();
 		JsonObject mpp=new JsonObject();
 		mpp.addProperty("part_type",partType.getName());
