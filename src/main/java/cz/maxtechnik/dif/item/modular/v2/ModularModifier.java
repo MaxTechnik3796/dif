@@ -6,7 +6,7 @@ import static cz.maxtechnik.dif.item.modular.v2.ModularTools.*;
 public enum ModularModifier{
 	//enchant holder:
 	SILK_TOUCH("silk_touch",1,0xFFFFFF,new ModularTools[]{AXE,PICKAXE,SHOVEL,HOE,HAMMER,TIMBER_AXE,EXCAVATOR,BATTLE_AXE}),
-	LUCK("luck",3,0xFFFFFF,new ModularTools[]{SWORD,KATANA}),
+	LUCK("luck",3,0xFFFFFF,new ModularTools[]{SWORD,KATANA,AXE,PICKAXE,SHOVEL,HOE,HAMMER,TIMBER_AXE,EXCAVATOR,BATTLE_AXE}),
 	SWEEPING_EDGE("sweeping_edge",3,0xFFFFFF,new ModularTools[]{SWORD,KATANA}),
 	MENDING("mending",1,0xFFFFFF,new ModularTools[]{AXE,PICKAXE,SWORD,SHOVEL,HOE,KATANA,BATTLE_AXE,HAMMER,TIMBER_AXE,EXCAVATOR}),
 	//custom stats:
