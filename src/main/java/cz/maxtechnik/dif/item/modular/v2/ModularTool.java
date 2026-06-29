@@ -99,7 +99,7 @@ public class ModularTool extends DiggerItem{
 	 * @param modifier modifier
 	 * @return T/F
 	 */
-	public static boolean hasMaterialModifier(ItemStack itemStack, ModularModifier modifier){
+	public static boolean hasMaterialModifier(ItemStack itemStack,ModularModifier modifier){
 		ModularToolProperties props=getProps(itemStack);
 		ModularMaterial head=ModularMaterial.byName(props.headMaterial());
 		ModularMaterial binding=ModularMaterial.byName(props.bindingMaterial());
@@ -114,13 +114,13 @@ public class ModularTool extends DiggerItem{
 	 * @param entity player
 	 */
 	public void damageTool(ItemStack itemStack,int amount,LivingEntity entity){
-		if(hasMaterialModifier(itemStack, ModularModifier.UNBREAKABLE_MAT)){
+		if(hasMaterialModifier(itemStack,ModularModifier.UNBREAKABLE_MAT)){
 			if(entity.level().getRandom().nextBoolean()) return;
 		}
 		int maxDmg=getMaxDamage(itemStack);
 		int currentDmg=itemStack.getDamageValue();
-		if(hasMaterialModifier(itemStack, ModularModifier.STONEBOUND)){
-			if(currentDmg >= maxDmg / 2){
+		if(hasMaterialModifier(itemStack,ModularModifier.STONEBOUND)){
+			if(currentDmg>=maxDmg/2){
 				if(entity.level().getRandom().nextBoolean()) return;
 			}
 		}
@@ -148,9 +148,9 @@ public class ModularTool extends DiggerItem{
 		int handle=ModularMaterial.byName(props.handleMaterial()).getHandleDurability();
 		int modifier=reinforcedLevel(itemStack);
 		float reforge=getReforge(itemStack).getDurability()[getTier(itemStack).getReforgeIndex()];
-		float baseMax = (head+binding+handle+modifier)*reforge;
-		if(hasMaterialModifier(itemStack, ModularModifier.PRECISE)){
-			baseMax *= 1.10F;
+		float baseMax=(head+binding+handle+modifier)*reforge;
+		if(hasMaterialModifier(itemStack,ModularModifier.PRECISE)){
+			baseMax*=1.10F;
 		}
 		return round(baseMax);
 	}
@@ -164,9 +164,9 @@ public class ModularTool extends DiggerItem{
 		float head=ModularMaterial.byName(getProps(itemStack).headMaterial()).getHeadEfficiency();
 		float modifier=efficiencyLevel(itemStack);
 		float reforge=getReforge(itemStack).getEfficiency()[getTier(itemStack).getReforgeIndex()];
-		float eff = (head+modifier)*reforge;
-		if(hasMaterialModifier(itemStack, ModularModifier.LIGHTWEIGHT)){
-			eff *= 1.10F;
+		float eff=(head+modifier)*reforge;
+		if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)){
+			eff*=1.10F;
 		}
 		return eff;
 	}
@@ -461,7 +461,6 @@ public class ModularTool extends DiggerItem{
 		super.inventoryTick(itemStack,level,entity,slot,isSelected);
 		if(level.isClientSide) return;
 		long gameTime=level.getGameTime();
-
 		if(itemStack.isDamaged()){
 			if(gameTime%40==0&&hasMaterialModifier(itemStack,ModularModifier.RENEWABLE)){
 				itemStack.setDamageValue(Math.max(0,itemStack.getDamageValue()-1));
@@ -469,7 +468,6 @@ public class ModularTool extends DiggerItem{
 				itemStack.setDamageValue(Math.max(0,itemStack.getDamageValue()-1));
 			}
 		}
-
 		if(gameTime%10==0&&(isSelected||(entity instanceof Player p&&(p.getMainHandItem()==itemStack||p.getOffhandItem()==itemStack)))){
 			if(hasMaterialModifier(itemStack,ModularModifier.MAGNETIC)&&entity instanceof Player player){
 				net.minecraft.world.phys.AABB box=player.getBoundingBox().inflate(5.0);

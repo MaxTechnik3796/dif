@@ -54,7 +54,6 @@ public class ModularSubscriber{
 			}
 		}
 	}
-
 	@SubscribeEvent
 	public static void onLivingExp(net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent event){
 		if(event.getAttackingPlayer()!=null){
@@ -64,20 +63,17 @@ public class ModularSubscriber{
 			}
 		}
 	}
-
 	@SubscribeEvent
 	public static void onBlockDrops(net.neoforged.neoforge.event.level.BlockDropsEvent event){
 		if(!(event.getBreaker() instanceof Player player)) return;
 		ItemStack tool=player.getMainHandItem();
 		if(!(tool.getItem() instanceof ModularTool)) return;
-		if(!(event.getLevel() instanceof net.minecraft.server.level.ServerLevel level)) return;
-
+		net.minecraft.server.level.ServerLevel level=event.getLevel();
 		if(ModularTool.hasMaterialModifier(tool,ModularModifier.MOMENTUM)){
 			if(level.getRandom().nextFloat()<0.10F){
 				player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED,100,0));
 			}
 		}
-
 		if(ModularTool.isModifier(tool,ModularModifier.VOLCANIC)){
 			net.minecraft.world.item.crafting.RecipeManager recipeManager=level.getRecipeManager();
 			for(net.minecraft.world.entity.item.ItemEntity dropEntity: event.getDrops()){
