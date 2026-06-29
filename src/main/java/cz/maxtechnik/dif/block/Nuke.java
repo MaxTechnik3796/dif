@@ -25,7 +25,7 @@ public class Nuke extends Block{
 			spawnNuclearExplosion(level,pos);
 		}
 	}
-	private void spawnNuclearExplosion(Level level,BlockPos pos){
+	public static void spawnNuclearExplosion(Level level,BlockPos pos){
 		double x=pos.getX()+0.5;
 		double y=pos.getY();
 		double z=pos.getZ()+0.5;
