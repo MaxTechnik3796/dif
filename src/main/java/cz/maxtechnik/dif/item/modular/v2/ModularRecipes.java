@@ -22,7 +22,8 @@ import java.util.Objects;
 
 import static cz.maxtechnik.dif.init.basic.DifModItems.*;
 import static cz.maxtechnik.dif.item.modular.v2.ModularModifier.*;
-import static cz.maxtechnik.dif.item.modular.v2.ModularTool.*;
+import static cz.maxtechnik.dif.item.modular.v2.ModularTool.getModifierLevel;
+import static cz.maxtechnik.dif.item.modular.v2.ModularTool.upgradeModifier;
 import static net.minecraft.world.item.Items.*;
 public class ModularRecipes extends SmithingExtraRecipe{
 	private int getItemCount(ItemStack itemStack,ModularModifier modifier){
@@ -126,16 +127,14 @@ public class ModularRecipes extends SmithingExtraRecipe{
 			int currentLvl=getModifierLevel(base,modifier);
 			int maxLvl=modifier.getMaxLvl();
 			if(template.getItem().equals(MODULAR_TEMPLATE_NORMAL.get())) return currentLvl<maxLvl;
-			if(template.getItem().equals(MODULAR_TEMPLATE_HYPER.get())&&getHyperCount(base)==0) return currentLvl==maxLvl;
+			if(template.getItem().equals(MODULAR_TEMPLATE_HYPER.get())) return currentLvl==maxLvl;
 		}
 		return false;
 	}
 	@Override
 	public @NotNull ItemStack assemble(SmithingRecipeInput container,@NotNull HolderLookup.Provider provider){
-		ItemStack template=container.getItem(0).copy();
 		ItemStack base=container.getItem(1).copy();
 		ItemStack addition=container.getItem(2).copy();
-		if(template.getItem().equals(MODULAR_TEMPLATE_HYPER.get())) addHyperCount(base);
 		if(addition.getItem().equals(REDSTONE)||addition.getItem().equals(REDSTONE_BLOCK))
 			upgradeModifier(provider,base,EFFICIENCY);
 		else if(addition.getItem().equals(LAPIS_LAZULI)||addition.getItem().equals(LAPIS_BLOCK))
