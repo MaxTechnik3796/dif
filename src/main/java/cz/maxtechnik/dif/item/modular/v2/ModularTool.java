@@ -824,7 +824,7 @@ public class ModularTool extends DiggerItem{
 		ModularReforge oldReforge=ModularReforge.byName(props.reforge());
 		if(oldReforge==null) return;
 		if(oldReforge.equals(reforge)) return;
-		itemStack.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(props.toolType(),props.headMaterial(),props.bindingMaterial(),props.handleMaterial(),props.tier(),reforge.name()));
+		itemStack.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(props.toolType(),props.headMaterial(),props.bindingMaterial(),props.handleMaterial(),props.tier(),reforge.name(),props.hyperCount()));
 		if(oldReforge.equals(REAPER)) subtractEnchantment(provider,itemStack,Enchantments.LOOTING,1);
 		if(reforge.equals(REAPER)) addEnchantment(provider,itemStack,Enchantments.LOOTING,1);
 	}
@@ -847,7 +847,7 @@ public class ModularTool extends DiggerItem{
 		ModularTier oldTier=ModularTier.byName(props.tier());
 		if(oldTier==null) return;
 		if(oldTier.equals(tier)) return;
-		itemStack.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(props.toolType(),props.headMaterial(),props.bindingMaterial(),props.handleMaterial(),tier.getName(),props.reforge()));
+		itemStack.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(props.toolType(),props.headMaterial(),props.bindingMaterial(),props.handleMaterial(),tier.getName(),props.reforge(),props.hyperCount()));
 	}
 	/**
 	 * Get ModularTier from tool.
@@ -857,6 +857,42 @@ public class ModularTool extends DiggerItem{
 	public static ModularTier getTier(ItemStack itemStack){
 		ModularToolProperties props=getProps(itemStack);
 		return ModularTier.byName(props.tier());
+	}
+	/**
+	 * Set new HyperCount to tool.
+	 * @param itemStack tool
+	 * @param hyperCount count
+	 */
+	public static void setHyperCount(ItemStack itemStack,int hyperCount){
+		ModularToolProperties props=getProps(itemStack);
+		int oldHyperCount=props.hyperCount();
+		if(oldHyperCount==hyperCount) return;
+		itemStack.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(props.toolType(),props.headMaterial(),props.bindingMaterial(),props.handleMaterial(),props.tier(),props.reforge(),hyperCount));
+	}
+	/**
+	 * Get HyperCount from tool.
+	 * @param itemStack tool
+	 * @return HyperCount.
+	 */
+	public static int getHyperCount(ItemStack itemStack){
+		ModularToolProperties props=getProps(itemStack);
+		return props.hyperCount();
+	}
+	/**
+	 * Add 1 HyperCount to tool.
+	 * @param itemStack tool
+	 */
+	public static void addHyperCount(ItemStack itemStack){
+		addHyperCount(itemStack,1);
+	}
+	/**
+	 * Add HyperCount to tool.
+	 * @param itemStack tool
+	 * @param hyperCount count
+	 */
+	public static void addHyperCount(ItemStack itemStack,int hyperCount){
+		ModularToolProperties props=getProps(itemStack);
+		setHyperCount(itemStack,props.hyperCount()+hyperCount);
 	}
 }
 
