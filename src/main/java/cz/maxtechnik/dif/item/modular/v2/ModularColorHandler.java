@@ -1,8 +1,7 @@
-package cz.maxtechnik.dif.init.events.client;
+package cz.maxtechnik.dif.item.modular.v2;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.other.DifModComponents;
-import cz.maxtechnik.dif.item.modular.v2.*;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
@@ -16,7 +15,7 @@ import java.util.Locale;
 import static cz.maxtechnik.dif.init.basic.DifModItems.*;
 @SuppressWarnings("removal")
 @EventBusSubscriber(modid=DifMod.MODID, bus=EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
-public class ModularClientHandler{
+public class ModularColorHandler{
 	@SubscribeEvent
 	public static void registerItemColors(RegisterColorHandlersEvent.Item event){
 		event.register((itemStack,tintIndex)->{
@@ -81,7 +80,7 @@ public class ModularClientHandler{
 		event.enqueueWork(()->ItemProperties.register(MODULAR_PART.get(),
 				ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"part_state"),
 				(itemStack,level,entity,seed)->{
-					if(!(itemStack.getItem() instanceof ModularPart part)) return 0.0F;
+					if(!(itemStack.getItem() instanceof ModularPart)) return 0.0F;
 					ModularPartProperties props=itemStack.get(DifModComponents.MODULAR_PART_PROPERTIES.get());
 					if(props==null) return 0.0F;
 					String type=props.partType().toLowerCase(Locale.ROOT);
@@ -102,7 +101,7 @@ public class ModularClientHandler{
 						default -> 0.0F;
 					};
 					if(base==0.0F) return 0.0F;
-					return part.isCast(itemStack)?base+0.5F:base;
+					return ModularPart.isCast(itemStack)?base+0.5F:base;
 				}
 		));
 	}
