@@ -182,7 +182,21 @@ public class DifModTabs{
 		tabData.accept(gPart);
 		ItemStack hPart=new ItemStack(MODULAR_PART.get());hPart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties(ModularParts.HANDLE.getName(),ModularMaterial.COPPER.name(),true));
 		tabData.accept(hPart);
+
+
 		tabData.accept(CASTING_MOLD_HANDLE);
+		tabData.accept(CASTING_MOLD_BINDING);
+		tabData.accept(CASTING_MOLD_AXE_HEAD);
+		tabData.accept(CASTING_MOLD_PICKAXE_HEAD);
+		tabData.accept(CASTING_MOLD_SWORD_HEAD);
+		tabData.accept(CASTING_MOLD_SHOVEL_HEAD);
+		tabData.accept(CASTING_MOLD_SWORD_BINDING);
+		tabData.accept(CASTING_MOLD_HOE_HEAD);
+		tabData.accept(CASTING_MOLD_BATTLE_AXE_HEAD);
+		tabData.accept(CASTING_MOLD_TIMBER_AXE_HEAD);
+		tabData.accept(CASTING_MOLD_HAMMER_HEAD);
+		tabData.accept(CASTING_MOLD_EXCAVATOR_HEAD);
+
 	})).build());
 
 

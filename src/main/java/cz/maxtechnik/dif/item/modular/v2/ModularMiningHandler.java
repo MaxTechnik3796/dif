@@ -3,13 +3,11 @@ package cz.maxtechnik.dif.item.modular.v2;
 import cz.maxtechnik.dif.DifMod;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.player.Player;
@@ -26,6 +24,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import org.joml.Matrix4f;
 import java.util.*;
@@ -37,7 +36,7 @@ import java.util.*;
  * <ul>
  *   <li>3×3 plane perpendicular to hit face (Hoe always 3×3, even at MYTHIC).</li>
  *   <li>2 blocks = 1 durability (rounded up). Bonus: if remaining == 8, 9th block is free.</li>
- *   <li>Hardness protection: neighbour skipped when hardness {@code > centre × 2}.</li>
+ *   <li>Hardness protection: neighbor skipped when hardness {@code > centre × 2}.</li>
  * </ul>
  *
  * <h3>Timber Axe</h3>
@@ -108,7 +107,7 @@ public final class ModularMiningHandler{
 			ModularTool modularTool,BlockPos centre,BlockState centreState,boolean isExcavator){
 		Direction face=getPlayerFacingFace(player);
 		List<BlockPos> neighbours=get3x3Plane(centre,face);
-		float centreHardness=centreState.getDestroySpeed((ServerLevel)level,centre);
+		float centreHardness=centreState.getDestroySpeed(level,centre);
 
 		int maxDmg=modularTool.getMaxDamage(tool);
 		int remaining=Math.max(0,(maxDmg-1)-tool.getDamageValue());
@@ -121,8 +120,8 @@ public final class ModularMiningHandler{
 			BlockState state=level.getBlockState(pos);
 			if(state.isAir()) continue;
 			if(!canToolMine(modularTool,tool,state,isExcavator)) continue;
-			// Hardness protection: skip blocks more than 2× harder than centre
-			float nHardness=state.getDestroySpeed((ServerLevel)level,pos);
+			// Hardness protection: skip blocks more than 2× harder than center
+			float nHardness=state.getDestroySpeed(level,pos);
 			if(centreHardness>0f&&nHardness>centreHardness*HARDNESS_MULTIPLIER) continue;
 
 			boolean isBonusBlock=bonusBlock&&(minedCount==AOE_SIZE-1);
@@ -162,7 +161,7 @@ public final class ModularMiningHandler{
 			if(state.isAir()) continue;
 			level.destroyBlock(logs.get(i),true,player);
 			if(!player.isCreative()){
-				int expectedDmg=(i+2)/2; // ceil((i+1)/2) – i+1 total including centre
+				int expectedDmg=(i+2)/2; // cell((i+1)/2) – i+1 total including center
 				int dmgNow=expectedDmg-damageApplied;
 				if(dmgNow>0){
 					modularTool.damageTool(tool,dmgNow,player);
@@ -181,7 +180,7 @@ public final class ModularMiningHandler{
 	 * @return {@code true} if at least one block was modified
 	 */
 	public static boolean excavatorFlatten(UseOnContext context,ModularTool modularTool){
-		return applyToolModifiedState(context,modularTool,Direction.UP,1,ItemAbilities.SHOVEL_FLATTEN);
+		return applyToolModifiedState(context,modularTool,1,ItemAbilities.SHOVEL_FLATTEN);
 	}
 	/**
 	 * Hoe CULTIVATOR RMB: till a NxN area via {@code HOE_TILL}.
@@ -189,26 +188,26 @@ public final class ModularMiningHandler{
 	 * @return {@code true} if at least one block was modified
 	 */
 	public static boolean hoeCultivatorTill(UseOnContext context,ModularTool modularTool,int radius){
-		return applyToolModifiedState(context,modularTool,Direction.UP,radius,ItemAbilities.HOE_TILL);
+		return applyToolModifiedState(context,modularTool,radius,ItemAbilities.HOE_TILL);
 	}
 	/**
 	 * Generic AOE {@code getToolModifiedState} applicator used by both
 	 * {@link #excavatorFlatten} and {@link #hoeCultivatorTill}.
 	 * Only fires on the top face ({@code Direction.UP}).
 	 */
-	private static boolean applyToolModifiedState(UseOnContext context,ModularTool modularTool,
-			Direction requiredFace,int radius,net.neoforged.neoforge.common.ItemAbility ability){
+	private static boolean applyToolModifiedState(UseOnContext context,ModularTool modularTool,int radius,ItemAbility ability){
 		ItemStack tool=context.getItemInHand();
 		if(modularTool.isBroken(tool)) return false;
-		if(context.getClickedFace()!=requiredFace) return false;
+		if(context.getClickedFace()!=Direction.UP) return false;
 		Level level=context.getLevel();
 		BlockPos centre=context.getClickedPos();
 		boolean anyModified=false;
-		for(BlockPos pos:getAoePlane(centre,requiredFace,radius)){
+		for(BlockPos pos:getAoePlane(centre,Direction.UP,radius)){
 			BlockState state=level.getBlockState(pos);
+			assert context.getPlayer()!=null;
 			BlockState modified=state.getToolModifiedState(
 					new UseOnContext(context.getPlayer(),context.getHand(),
-							new BlockHitResult(Vec3.atCenterOf(pos),requiredFace,pos,false)),
+							new BlockHitResult(Vec3.atCenterOf(pos),Direction.UP,pos,false)),
 					ability,false);
 			if(modified==null) continue;
 			if(!level.isClientSide){
@@ -225,8 +224,8 @@ public final class ModularMiningHandler{
 	// Shared helpers
 	// -------------------------------------------------------------------------
 	/**
-	 * 3×3 plane excluding the centre block (used for break-event AOE).
-	 * Centre is already broken by the vanilla event that triggered the handler.
+	 * 3×3 plane excluding the center block (used for break-event AOE).
+	 * Center is already broken by the vanilla event that triggered the handler.
 	 */
 	public static List<BlockPos> get3x3Plane(BlockPos centre,Direction face){
 		List<BlockPos> all=getAoePlane(centre,face,1);
@@ -234,7 +233,7 @@ public final class ModularMiningHandler{
 		return all;
 	}
 	/**
-	 * Full (2*radius+1)² plane including centre (used for RMB tilling / overlay).
+	 * Full (2*radius+1)² plane including center (used for RMB tilling / overlay).
 	 */
 	public static List<BlockPos> getAoePlane(BlockPos centre,Direction face,int radius){
 		Direction[] axes=perpendicularAxes(face);
@@ -290,8 +289,8 @@ public final class ModularMiningHandler{
 		return result;
 	}
 	/**
-	 * Tree is "natural" when at least one neighbouring leaf block has {@code PERSISTENT=false}
-	 * (placed by worldgen, not by a player).
+	 * Tree is "natural" when at least one neighboring leaf block has {@code PERSISTENT=false}
+	 * (placed by WorldWind, not by a player).
 	 */
 	private static boolean isNaturalTree(Level level,List<BlockPos> logs){
 		for(BlockPos logPos:logs)
@@ -310,7 +309,7 @@ public final class ModularMiningHandler{
 	@EventBusSubscriber(modid=DifMod.MODID,value=Dist.CLIENT)
 	public static final class ClientOverlay{
 		private ClientOverlay(){}
-		// Vanilla default block hover outline colour
+		// Vanilla default block hover outline color
 		private static final float OR=0f,OG=0f,OB=0f,OA=0.4f;
 		@SubscribeEvent
 		public static void onRenderLevel(RenderLevelStageEvent event){
@@ -375,7 +374,7 @@ public final class ModularMiningHandler{
 			buf.endBatch(RenderType.lines());
 			ps.popPose();
 		}
-		/** Renders centre + all non-air blocks in {@code plane} with the shared grey colour. */
+		/** Renders center + all non-air blocks in {@code plane} with the shared gray color. */
 		private static void renderPlane(PoseStack ps,VertexConsumer lines,Level level,
 				List<BlockPos> plane,BlockPos centre){
 			if(!level.getBlockState(centre).isAir()) renderBlockOutline(ps,lines,centre);

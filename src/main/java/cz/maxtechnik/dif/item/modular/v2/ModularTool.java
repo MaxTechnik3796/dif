@@ -44,7 +44,7 @@ import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static cz.maxtechnik.dif.item.modular.v2.ModularReforge.REAPER;
+import static cz.maxtechnik.dif.item.modular.v2.ModularReforge.*;
 import static java.lang.Math.round;
 public class ModularTool extends DiggerItem{
 	public ModularTool(){
@@ -123,22 +123,16 @@ public class ModularTool extends DiggerItem{
 	 */
 	public void damageTool(ItemStack itemStack,int amount,LivingEntity entity){
 		java.util.EnumSet<ModularModifier> mods=getMaterialModifiers(itemStack);
-		if(mods.contains(ModularModifier.UNBREAKABLE_MAT)){
+		if(mods.contains(ModularModifier.UNBREAKABLE_MAT))
 			if(entity.level().getRandom().nextBoolean()) return;
-		}
 		int maxDmg=getMaxDamage(itemStack);
 		int currentDmg=itemStack.getDamageValue();
 		if(mods.contains(ModularModifier.STONEBOUND)){
-			if(currentDmg>=maxDmg/2){
-				if(entity.level().getRandom().nextBoolean()) return;
-			}
+			if(currentDmg>=maxDmg/2) if(entity.level().getRandom().nextBoolean()) return;
 		}
 		int newDmg=currentDmg+amount;
-		if(newDmg>=maxDmg){
-			itemStack.setDamageValue(maxDmg-1);
-		}else{
-			itemStack.setDamageValue(newDmg);
-		}
+		if(newDmg>=maxDmg) itemStack.setDamageValue(maxDmg-1);
+		else itemStack.setDamageValue(newDmg);
 		if(isBroken(itemStack)&&entity instanceof Player){
 			entity.level().playSound(null,entity.getX(),entity.getY(),entity.getZ(),
 					SoundEvents.ITEM_BREAK,SoundSource.PLAYERS,1F,1F);
@@ -159,7 +153,7 @@ public class ModularTool extends DiggerItem{
 		float reforge=getReforge(itemStack).getDurability()[getTier(itemStack).getReforgeIndex()];
 		float baseMax=(head+binding+handle+modifier)*reforge;
 		if(hasMaterialModifier(itemStack,ModularModifier.PRECISE)){
-			baseMax*=1.10F;
+			baseMax*=1.1F;
 		}
 		return round(baseMax);
 	}
@@ -175,7 +169,7 @@ public class ModularTool extends DiggerItem{
 		float reforge=getReforge(itemStack).getEfficiency()[getTier(itemStack).getReforgeIndex()];
 		float eff=(head+modifier)*reforge;
 		if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)){
-			eff*=1.10F;
+			eff*=1.1F;
 		}
 		return eff;
 	}
@@ -915,10 +909,17 @@ public class ModularTool extends DiggerItem{
 	 */
 	public static void setReforge(HolderLookup.Provider provider,ItemStack itemStack,ModularReforge reforge){
 		ModularToolProperties props=getProps(itemStack);
-		ModularReforge oldReforge=ModularReforge.byName(props.reforge());
+		ModularReforge oldReforge=getReforge(itemStack);
+		ModularTier tier=getTier(itemStack);
 		if(oldReforge==null) return;
 		if(oldReforge.equals(reforge)) return;
 		itemStack.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(props.toolType(),props.headMaterial(),props.bindingMaterial(),props.handleMaterial(),props.tier(),reforge.name()));
+		if(oldReforge.equals(GLEAMING)) subtractEnchantment(provider,itemStack,Enchantments.FORTUNE,Math.min(1,tier.getReforgeIndex()-2));
+		if(reforge.equals(GLEAMING)) addEnchantment(provider,itemStack,Enchantments.FORTUNE,Math.min(1,tier.getReforgeIndex()-2));
+
+		if(oldReforge.equals(HARVESTER)) subtractEnchantment(provider,itemStack,Enchantments.FORTUNE,Math.min(1,tier.getReforgeIndex()-1));
+		if(reforge.equals(HARVESTER)) addEnchantment(provider,itemStack,Enchantments.FORTUNE,Math.min(1,tier.getReforgeIndex()-1));
+
 		if(oldReforge.equals(REAPER)) subtractEnchantment(provider,itemStack,Enchantments.LOOTING,1);
 		if(reforge.equals(REAPER)) addEnchantment(provider,itemStack,Enchantments.LOOTING,1);
 	}

@@ -100,18 +100,18 @@ public enum ModularReforge{
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1.2F,1.25F,1.35F},
 			new Float[]{1F,1F,1F,1F,1F}),
-	HARWESTER("harwester",new ModularTools[]{HOE},false,
+	HARVESTER("harvester",new ModularTools[]{HOE},false,
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F}),
-	//Harwester tady je epic +1 fortune, legendary +2 fortune a mythic +3 fortune
+	//Harvester tady je epic +1 fortune, legendary +2 fortune a mythic +3 fortune
 	CULTIVATOR("cultivator",new ModularTools[]{HOE},false,
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1.25F,1.25F}),
-	//Harwester tady je epic a legendary aoe 3x3 a mythic aoe 5x5
+	//Harvester tady je epic a legendary aoe 3x3 a mythic aoe 5x5
 	SWIFTDIG("swiftdig",new ModularTools[]{SHOVEL,EXCAVATOR},false,
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
