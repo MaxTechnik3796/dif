@@ -3,7 +3,9 @@ package cz.maxtechnik.dif.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import cz.maxtechnik.dif.init.other.DifModComponents;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
+import cz.maxtechnik.dif.item.modular.v2.ModularPartProperties;
 import cz.maxtechnik.dif.util.ForgeMultiblockHelper;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -18,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Recept pro tavení materiálu v Forge peci.
@@ -47,11 +50,13 @@ public record ForgeMaterialRecipe(
 
     // ── Nested record ─────────────────────────────────────────────────────────
 
-    public record MaterialConversion(Ingredient ingredient, float ingotValue, float processingTimeMultiplier) {
+    public record MaterialConversion(Ingredient ingredient, float ingotValue, float processingTimeMultiplier, Optional<String> partType, Optional<String> partMaterial) {
         public static final Codec<MaterialConversion> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Ingredient.CODEC.fieldOf("ingredient").forGetter(MaterialConversion::ingredient),
                 Codec.FLOAT.optionalFieldOf("ingot_value", 1.0f).forGetter(MaterialConversion::ingotValue),
-                Codec.FLOAT.optionalFieldOf("processing_time_multiplier", 1.0f).forGetter(MaterialConversion::processingTimeMultiplier)
+                Codec.FLOAT.optionalFieldOf("processing_time_multiplier", 1.0f).forGetter(MaterialConversion::processingTimeMultiplier),
+                Codec.STRING.optionalFieldOf("part_type").forGetter(MaterialConversion::partType),
+                Codec.STRING.optionalFieldOf("part_material").forGetter(MaterialConversion::partMaterial)
         ).apply(i, MaterialConversion::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, MaterialConversion> STREAM_CODEC =
@@ -59,6 +64,8 @@ public record ForgeMaterialRecipe(
                         Ingredient.CONTENTS_STREAM_CODEC, MaterialConversion::ingredient,
                         ByteBufCodecs.FLOAT, MaterialConversion::ingotValue,
                         ByteBufCodecs.FLOAT, MaterialConversion::processingTimeMultiplier,
+                        ByteBufCodecs.optional(ByteBufCodecs.STRING_UTF8), MaterialConversion::partType,
+                        ByteBufCodecs.optional(ByteBufCodecs.STRING_UTF8), MaterialConversion::partMaterial,
                         MaterialConversion::new);
     }
 
@@ -85,7 +92,16 @@ public record ForgeMaterialRecipe(
     public @Nullable MaterialConversion findConversion(ItemStack item) {
         if (item.isEmpty()) return null;
         for (var c : conversions) {
-            if (c.ingredient().test(item)) return c;
+            if (!c.ingredient().test(item)) continue;
+            // Pokud má konverze component požadavky (modular part), ověř je ručně
+            if (c.partType().isPresent() || c.partMaterial().isPresent()) {
+                ModularPartProperties props = item.get(DifModComponents.MODULAR_PART_PROPERTIES.get());
+                if (props == null) continue;
+                if (props.castMold()) continue; // formy (cast molds) se netaví
+                if (c.partType().isPresent() && !c.partType().get().equals(props.partType())) continue;
+                if (c.partMaterial().isPresent() && !c.partMaterial().get().equals(props.material())) continue;
+            }
+            return c;
         }
         return null;
     }

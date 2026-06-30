@@ -94,16 +94,10 @@ public class DifModRecipex{
 			int ingotValue=(int)entry[1];
 			JsonObject conv=new JsonObject();
 			JsonObject ingredient=new JsonObject();
-			ingredient.addProperty("type","neoforge:components");
 			ingredient.addProperty("item",BuiltInRegistries.ITEM.getKey(DifModItems.MODULAR_PART.get()).toString());
-			JsonObject comObj=new JsonObject();
-			JsonObject mpp=new JsonObject();
-			mpp.addProperty("part_type",part.getName());
-			mpp.addProperty("material",material.getName());
-			mpp.addProperty("cast_mold",false);
-			comObj.add("dif:modular_part_properties",mpp);
-			ingredient.add("components",comObj);
 			conv.add("ingredient",ingredient);
+			conv.addProperty("part_type",part.getName());
+			conv.addProperty("part_material",material.getName());
 			conv.addProperty("ingot_value",(float)ingotValue);
 			conv.addProperty("processing_time_multiplier",1.0f);
 			conversions.add(conv);
