@@ -53,9 +53,6 @@ public enum ModularMaterial{
 	public int getHeadDurability(){
 		return headDurability;
 	}
-	public static int getHeadDurability(ModularMaterial material){
-		return material.getHeadDurability();
-	}
 	public float getHeadEfficiency(){
 		return headEfficiency;
 	}
@@ -68,14 +65,8 @@ public enum ModularMaterial{
 	public int getBindingDurability(){
 		return bindingDurability;
 	}
-	public static int getBindingDurability(ModularMaterial material){
-		return material.getBindingDurability();
-	}
 	public int getHandleDurability(){
 		return handleDurability;
-	}
-	public static int getHandleDurability(ModularMaterial material){
-		return material.getHandleDurability();
 	}
 	public float getAttackSpeedBonus(){
 		return attackSpeedBonus;

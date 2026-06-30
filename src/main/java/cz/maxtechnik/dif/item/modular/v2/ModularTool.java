@@ -44,6 +44,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -142,12 +143,10 @@ public class ModularTool extends DiggerItem{
 	 */
 	public void damageTool(ItemStack itemStack,int amount,LivingEntity entity){
 		EnumSet<ModularModifier> mods=getMaterialModifiers(itemStack);
-		if(mods.contains(ModularModifier.UNBREAKABLE_MAT)) if(entity.level().getRandom().nextBoolean()) return;
+		if(mods.contains(ModularModifier.UNBREAKABLE_MAT)&&entity.level().getRandom().nextBoolean()) return;
 		int maxDmg=getMaxDamage(itemStack);
 		int currentDmg=itemStack.getDamageValue();
-		if(mods.contains(ModularModifier.STONEBOUND)){
-			if(currentDmg>=maxDmg/2) if(entity.level().getRandom().nextBoolean()) return;
-		}
+		if(mods.contains(ModularModifier.STONEBOUND)&&currentDmg>=maxDmg/2&&entity.level().getRandom().nextBoolean()) return;
 		int newDmg=currentDmg+amount;
 		if(newDmg>=maxDmg) itemStack.setDamageValue(maxDmg-1);
 		else itemStack.setDamageValue(newDmg);
@@ -246,20 +245,11 @@ public class ModularTool extends DiggerItem{
 	@Override
 	public float getDestroySpeed(@NotNull ItemStack itemStack,@NotNull BlockState blockState){
 		if(isBroken(itemStack)) return 1.0F;
-		ModularToolProperties props=getProps(itemStack);
-		String type=props.toolType().toLowerCase();
-		int miningLevel=getLiveMiningLevel(itemStack);
+		String type=getProps(itemStack).toolType().toLowerCase();
 		float efficiency=getLiveEfficiency(itemStack);
-		boolean matches=false;
-		if((type.equals("pickaxe")||type.equals("hammer"))&&blockState.is(BlockTags.MINEABLE_WITH_PICKAXE)) matches=true;
-		else if((type.equals("axe")||type.equals("timber_axe")||type.equals("battle_axe"))&&blockState.is(BlockTags.MINEABLE_WITH_AXE)) matches=true;
-		else if((type.equals("shovel")||type.equals("excavator"))&&blockState.is(BlockTags.MINEABLE_WITH_SHOVEL)) matches=true;
-		else if(type.equals("hoe")&&blockState.is(BlockTags.MINEABLE_WITH_HOE)) matches=true;
-		else if((type.equals("sword")||type.equals("katana"))&&blockState.is(BlockTags.SWORD_EFFICIENT)) return efficiency;
-		if(matches){
-			if(blockState.is(BlockTags.NEEDS_DIAMOND_TOOL)&&miningLevel<3) return 1F;
-			if(blockState.is(BlockTags.NEEDS_IRON_TOOL)&&miningLevel<2) return 1F;
-			if(blockState.is(BlockTags.NEEDS_STONE_TOOL)&&miningLevel<1) return 1F;
+		if((type.equals("sword")||type.equals("katana"))&&blockState.is(BlockTags.SWORD_EFFICIENT)) return efficiency;
+		if(matchesToolType(type,blockState)){
+			if(!meetsMiningLevel(getLiveMiningLevel(itemStack),blockState)) return 1F;
 			return efficiency;
 		}
 		return 1F;
@@ -274,19 +264,37 @@ public class ModularTool extends DiggerItem{
 	public boolean isCorrectToolForDrops(@NotNull ItemStack itemStack,@NotNull BlockState blockState){
 		if(isBroken(itemStack)) return false;
 		String type=getProps(itemStack).toolType().toLowerCase();
-		int miningLevel=getLiveMiningLevel(itemStack);
-		boolean isCorrectType=false;
-		if((type.equals("pickaxe")||type.equals("hammer"))&&blockState.is(BlockTags.MINEABLE_WITH_PICKAXE)) isCorrectType=true;
-		else if((type.equals("axe")||type.equals("timber_axe")||type.equals("battle_axe"))&&blockState.is(BlockTags.MINEABLE_WITH_AXE)) isCorrectType=true;
-		else if((type.equals("shovel")||type.equals("excavator"))&&blockState.is(BlockTags.MINEABLE_WITH_SHOVEL)) isCorrectType=true;
-		else if(type.equals("hoe")&&blockState.is(BlockTags.MINEABLE_WITH_HOE)) isCorrectType=true;
-		if(isCorrectType){
-			if(blockState.is(BlockTags.NEEDS_DIAMOND_TOOL)&&miningLevel<3) return false;
-			if(blockState.is(BlockTags.NEEDS_IRON_TOOL)&&miningLevel<2) return false;
-			if(blockState.is(BlockTags.NEEDS_STONE_TOOL)&&miningLevel<1) return false;//DO NOT TOUCH
+		if(matchesToolType(type,blockState)){
+			if(!meetsMiningLevel(getLiveMiningLevel(itemStack),blockState)) return false;
 			return true;
 		}
 		return super.isCorrectToolForDrops(itemStack,blockState);
+	}
+	/**
+	 * Check if the tool type matches the block's mineable tag.
+	 * Swords are NOT included here – handled separately in {@link #getDestroySpeed}.
+	 * @param type tool type (lowercase)
+	 * @param blockState target block
+	 * @return true if this tool type can mine this block
+	 */
+	private static boolean matchesToolType(String type,BlockState blockState){
+		if((type.equals("pickaxe")||type.equals("hammer"))&&blockState.is(BlockTags.MINEABLE_WITH_PICKAXE)) return true;
+		if((type.equals("axe")||type.equals("timber_axe")||type.equals("battle_axe"))&&blockState.is(BlockTags.MINEABLE_WITH_AXE)) return true;
+		if((type.equals("shovel")||type.equals("excavator"))&&blockState.is(BlockTags.MINEABLE_WITH_SHOVEL)) return true;
+		if(type.equals("hoe")&&blockState.is(BlockTags.MINEABLE_WITH_HOE)) return true;
+		return false;
+	}
+	/**
+	 * Check if the tool's mining level meets the block's tier requirement.
+	 * @param miningLevel tool mining level
+	 * @param blockState target block
+	 * @return true if the tool can harvest the block
+	 */
+	private static boolean meetsMiningLevel(int miningLevel,BlockState blockState){
+		if(blockState.is(BlockTags.NEEDS_DIAMOND_TOOL)&&miningLevel<3) return false;
+		if(blockState.is(BlockTags.NEEDS_IRON_TOOL)&&miningLevel<2) return false;
+		if(blockState.is(BlockTags.NEEDS_STONE_TOOL)&&miningLevel<1) return false;//DO NOT TOUCH
+		return true;
 	}
 	/**
 	 * On block is mined with tool.
@@ -415,15 +423,7 @@ public class ModularTool extends DiggerItem{
 	 * @return efficiency modifier value.
 	 */
 	public float efficiencyLevel(ItemStack itemStack){
-		return switch(getModifierLevel(itemStack,ModularModifier.EFFICIENCY)){
-			case 1 -> 1F;
-			case 2 -> 2F;
-			case 3 -> 3F;
-			case 4 -> 4F;
-			case 5 -> 5F;
-			case 6 -> 6F;
-			default -> 0;
-		};
+		return (float)getModifierLevel(itemStack,ModularModifier.EFFICIENCY);
 	}
 	/**
 	 * Get knockback modifier value.
@@ -431,12 +431,7 @@ public class ModularTool extends DiggerItem{
 	 * @return knockback modifier value.
 	 */
 	public float knockbackLevel(ItemStack itemStack){
-		return switch(getModifierLevel(itemStack,ModularModifier.KNOCKBACK)){
-			case 1 -> 0.2F;
-			case 2 -> 0.4F;
-			case 3 -> 0.6F;
-			default -> 0F;
-		};
+		return getModifierLevel(itemStack,ModularModifier.KNOCKBACK)*0.2F;
 	}
 	/**
 	 * Get sharpness modifier value.
@@ -444,15 +439,8 @@ public class ModularTool extends DiggerItem{
 	 * @return sharpness modifier value.
 	 */
 	public float sharpnessDamage(ItemStack itemStack){
-		return switch(getModifierLevel(itemStack,ModularModifier.SHARPNESS)){
-			case 1 -> 2F;
-			case 2 -> 3F;
-			case 3 -> 4F;
-			case 4 -> 5F;
-			case 5 -> 6F;
-			case 6 -> 7F;
-			default -> 0F;
-		};
+		int lvl=getModifierLevel(itemStack,ModularModifier.SHARPNESS);
+		return lvl>0?lvl+1F:0F;
 	}
 	/**
 	 * Get reinforced modifier value.
@@ -460,13 +448,8 @@ public class ModularTool extends DiggerItem{
 	 * @return reinforced modifier value.
 	 */
 	public int reinforcedLevel(ItemStack itemStack){
-		return switch(getModifierLevel(itemStack,ModularModifier.REINFORCED)){
-			case 1 -> 2;
-			case 2 -> 3;
-			case 3 -> 4;
-			case 4 -> 5;
-			default -> 0;
-		};
+		int lvl=getModifierLevel(itemStack,ModularModifier.REINFORCED);
+		return lvl>0?lvl+1:0;
 	}
 	/**
 	 * Apply ItemAttributeModifiers.
@@ -562,7 +545,7 @@ public class ModularTool extends DiggerItem{
 		list.add(Component.literal(" Binding: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.material."+binding.getName()).withStyle(Style.EMPTY.withColor(binding.getColor()))).append(Component.literal("  "+binding.getBindingDurability()).withColor(0xFFAA00)));
 		list.add(Component.literal(" Handle: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.material."+handle.getName()).withStyle(Style.EMPTY.withColor(handle.getColor()))).append(Component.literal("  "+handle.getHandleDurability()).withColor(0xFFAA00)));
 		list.add(Component.literal("───── Modifiers ─────").withStyle(Style.EMPTY.withColor(0x6644BB)));
-		ArrayList<String> materialModifiers=getMaterialModifiers(head,binding,handle);
+		List<String> materialModifiers=getMaterialModifierNames(head,binding,handle);
 		for(String materialModifier: materialModifiers){
 			list.add(Component.translatable("dif.modifier."+materialModifier).withStyle(Style.EMPTY.withColor(ModularModifier.byName(materialModifier).getColor())));
 		}
@@ -579,23 +562,18 @@ public class ModularTool extends DiggerItem{
 		}
 	}
 	/**
-	 * Get all MaterialModifiers in ArrayList.
+	 * Get unique material modifier names for tooltip (deduplicates, preserves insertion order).
 	 * @param head head material
 	 * @param binding binding material
 	 * @param handle handle material
-	 * @return All MaterialModifiers in ArrayList.
+	 * @return Unique modifier names in order: head, binding (if different), handle (if different).
 	 */
-	private static @NotNull ArrayList<String> getMaterialModifiers(ModularMaterial head,ModularMaterial binding,ModularMaterial handle){
-		ArrayList<String> materialModifiers=new ArrayList<>();
-		String headModifier=head.getModifier().getName().toLowerCase(Locale.ROOT);
-		String bindingModifier=binding.getModifier().getName().toLowerCase(Locale.ROOT);
-		String handleModifier=handle.getModifier().getName().toLowerCase(Locale.ROOT);
-		materialModifiers.add(headModifier);
-		if(!materialModifiers.get(0).equals(bindingModifier)) materialModifiers.add(bindingModifier);
-		if(!materialModifiers.get(0).equals(handleModifier)) if(!(materialModifiers.size()==1)){
-			if(!materialModifiers.get(1).equals(handleModifier)) materialModifiers.add(handleModifier);
-		}else materialModifiers.add(handleModifier);
-		return materialModifiers;
+	private static @NotNull List<String> getMaterialModifierNames(ModularMaterial head,ModularMaterial binding,ModularMaterial handle){
+		LinkedHashSet<String> seen=new LinkedHashSet<>();
+		seen.add(head.getModifier().getName().toLowerCase(Locale.ROOT));
+		seen.add(binding.getModifier().getName().toLowerCase(Locale.ROOT));
+		seen.add(handle.getModifier().getName().toLowerCase(Locale.ROOT));
+		return new ArrayList<>(seen);
 	}
 	@Override
 	public <T extends LivingEntity> int damageItem(@NotNull ItemStack itemStack,int amount,@Nullable T entity,@NotNull Consumer<Item> onBroken){
@@ -629,10 +607,10 @@ public class ModularTool extends DiggerItem{
 	@Override
 	public @NotNull String getDescriptionId(@NotNull ItemStack itemStack){
 		String type=getProps(itemStack).toolType();
+		if(type.isEmpty()||type.equals("none")) return super.getDescriptionId(itemStack);
 		String reforge=getReforge(itemStack).getName();
-		if(!type.isEmpty()&&!type.equals("none")) if(!reforge.isEmpty()&&!reforge.equals("none")) return super.getDescriptionId(itemStack)+"."+type+"."+reforge;
-		else return super.getDescriptionId(itemStack)+"."+type;
-		return super.getDescriptionId(itemStack);
+		if(!reforge.isEmpty()&&!reforge.equals("none")) return super.getDescriptionId(itemStack)+"."+type+"."+reforge;
+		return super.getDescriptionId(itemStack)+"."+type;
 	}
 	/**
 	 * Apply color to component from tool tier.

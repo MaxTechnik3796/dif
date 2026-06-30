@@ -130,30 +130,20 @@ public class ModularModifierRecipe extends SmithingExtraRecipe{
 	@Override
 	public @NotNull ItemStack assemble(SmithingRecipeInput container,@NotNull HolderLookup.Provider provider){
 		ItemStack base=container.getItem(1).copy();
+		ItemStack template=container.getItem(0).copy();
 		ItemStack addition=container.getItem(2).copy();
-		if(addition.getItem().equals(REDSTONE)||addition.getItem().equals(REDSTONE_BLOCK)) upgradeModifier(provider,base,EFFICIENCY);
-		else if(addition.getItem().equals(LAPIS_LAZULI)||addition.getItem().equals(LAPIS_BLOCK)) upgradeModifier(provider,base,ModularModifier.LUCK);
-		else if(addition.getItem().equals(QUARTZ)||addition.getItem().equals(QUARTZ_BLOCK)) upgradeModifier(provider,base,ModularModifier.SHARPNESS);
-		else if(addition.getItem().equals(DIAMOND)) upgradeModifier(provider,base,ModularModifier.REINFORCED);
-		else if(addition.getItem().equals(IRON_INGOT)||addition.getItem().equals(IRON_BLOCK)) upgradeModifier(provider,base,SWEEPING_EDGE);
-		else if(addition.getItem().equals(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.parse("create:experience_block"))))) upgradeModifier(provider,base,MENDING);
-		else if(addition.getItem().equals(SILKY_STONE.get())) upgradeModifier(provider,base,SILK_TOUCH);
-		else if(addition.getItem().equals(LAVA_BUCKET)) upgradeModifier(provider,base,VOLCANIC);
+		ModularModifier modifier=getModifierForTemplate(template.getItem(),addition.getItem());
+		if(modifier!=null) upgradeModifier(provider,base,modifier);
 		return base;
 	}
 	@Override
 	public int getAdditionConsumeCount(SmithingRecipeInput container){
 		ItemStack base=container.getItem(1).copy();
+		ItemStack template=container.getItem(0).copy();
 		ItemStack addition=container.getItem(2).copy();
-		if(addition.getItem().equals(REDSTONE)||addition.getItem().equals(REDSTONE_BLOCK)) return getItemCount(base,EFFICIENCY);
-		else if(addition.getItem().equals(LAPIS_LAZULI)||addition.getItem().equals(LAPIS_BLOCK)) return getItemCount(base,ModularModifier.LUCK);
-		else if(addition.getItem().equals(QUARTZ)||addition.getItem().equals(QUARTZ_BLOCK)) return getItemCount(base,SHARPNESS);
-		else if(addition.getItem().equals(DIAMOND)) return getItemCount(base,REINFORCED);
-		else if(addition.getItem().equals(IRON_INGOT)||addition.getItem().equals(IRON_BLOCK)) return getItemCount(base,SWEEPING_EDGE);
-		else if(addition.getItem().equals(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.parse("create:experience_block"))))) return 1;
-		else if(addition.getItem().equals(SILKY_STONE.get())) return 1;
-		else if(addition.getItem().equals(LAVA_BUCKET)) return 1;
-		else return this.addition.count();
+		ModularModifier modifier=getModifierForTemplate(template.getItem(),addition.getItem());
+		if(modifier!=null) return getItemCount(base,modifier);
+		return this.addition.count();
 	}
 	public Ingredient getJsonTemplate(){
 		return this.template.ingredient();

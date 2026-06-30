@@ -5,25 +5,23 @@ import java.util.Locale;
 
 import static cz.maxtechnik.dif.item.modular.v2.ModularParts.*;
 public enum ModularTools{
-	NONE("none",0,ModularParts.NONE,ModularParts.NONE,ModularParts.NONE),
-	PICKAXE("pickaxe",1,PICKAXE_HEAD,BINDING,HANDLE),
-	AXE("axe",2,AXE_HEAD,BINDING,HANDLE),
-	SWORD("sword",3,SWORD_HEAD,SWORD_BINDING,HANDLE),
-	SHOVEL("shovel",4,SHOVEL_HEAD,BINDING,HANDLE),
-	HOE("hoe",5,HOE_HEAD,BINDING,HANDLE),
-	KATANA("katana",6,KATANA_HEAD,BINDING,HANDLE),
-	BATTLE_AXE("battle_axe",7,BATTLE_AXE_HEAD,BINDING,HANDLE),
-	HAMMER("hammer",8,HAMMER_HEAD,BINDING,HANDLE),
-	TIMBER_AXE("timber_axe",9,TIMBER_AXE_HEAD,BINDING,HANDLE),
-	EXCAVATOR("excavator",10,EXCAVATOR_HEAD,BINDING,HANDLE);
+	NONE("none",ModularParts.NONE,ModularParts.NONE,ModularParts.NONE),
+	PICKAXE("pickaxe",PICKAXE_HEAD,BINDING,HANDLE),
+	AXE("axe",AXE_HEAD,BINDING,HANDLE),
+	SWORD("sword",SWORD_HEAD,SWORD_BINDING,HANDLE),
+	SHOVEL("shovel",SHOVEL_HEAD,BINDING,HANDLE),
+	HOE("hoe",HOE_HEAD,BINDING,HANDLE),
+	KATANA("katana",KATANA_HEAD,BINDING,HANDLE),
+	BATTLE_AXE("battle_axe",BATTLE_AXE_HEAD,BINDING,HANDLE),
+	HAMMER("hammer",HAMMER_HEAD,BINDING,HANDLE),
+	TIMBER_AXE("timber_axe",TIMBER_AXE_HEAD,BINDING,HANDLE),
+	EXCAVATOR("excavator",EXCAVATOR_HEAD,BINDING,HANDLE);
 	private final String name;
-	private final int toolID;
 	private final ModularParts head;
 	private final ModularParts binding;
 	private final ModularParts handle;
-	ModularTools(String name,int toolID,ModularParts head,ModularParts binding,ModularParts handle){
+	ModularTools(String name,ModularParts head,ModularParts binding,ModularParts handle){
 		this.name=name;
-		this.toolID=toolID;
 		this.head=head;
 		this.binding=binding;
 		this.handle=handle;
@@ -46,17 +44,14 @@ public enum ModularTools{
 	public static boolean isHead(ModularTools tool,ModularParts head){
 		return tool.getHead().equals(head);
 	}
-	public static boolean isBinding(ModularTools tool,ModularParts head){
-		return tool.getBinding().equals(head);
+	public static boolean isBinding(ModularTools tool,ModularParts part){
+		return tool.getBinding().equals(part);
 	}
-	public static boolean isHandle(ModularTools tool,ModularParts head){
-		return tool.getHandle().equals(head);
+	public static boolean isHandle(ModularTools tool,ModularParts part){
+		return tool.getHandle().equals(part);
 	}
 	public String getName(){
 		return this.name;
-	}
-	public int getID(){
-		return this.toolID;
 	}
 	public static ModularTools byName(String name){
 		try{

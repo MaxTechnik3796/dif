@@ -10,7 +10,6 @@ import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
 public class ModularPart extends Item{
 	public ModularPart(){
 		super(new Properties().fireResistant());
@@ -32,7 +31,8 @@ public class ModularPart extends Item{
 		return ModularTier.byName(getMaterial(itemStack).getTier().name());
 	}
 	public static boolean isCast(ItemStack itemStack){
-		return Objects.requireNonNull(itemStack.get(DifModComponents.MODULAR_PART_PROPERTIES.get())).castMold();
+		ModularPartProperties props=itemStack.get(DifModComponents.MODULAR_PART_PROPERTIES.get());
+		return props!=null&&props.castMold();
 	}
 	@Override
 	public void appendHoverText(@NotNull ItemStack itemStack,@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
@@ -42,9 +42,9 @@ public class ModularPart extends Item{
 		ModularTier tier=material.getTier();
 		ModularModifier modifier=material.getModifier();
 		int durability=switch(ModularPartType.getPartType(getPart(itemStack))){
-			case HEAD -> ModularMaterial.getHeadDurability(material);
-			case BINDING -> ModularMaterial.getBindingDurability(material);
-			case HANDLE -> ModularMaterial.getHandleDurability(material);
+			case HEAD -> material.getHeadDurability();
+			case BINDING -> material.getBindingDurability();
+			case HANDLE -> material.getHandleDurability();
 			default -> 0;
 		};
 		list.add(Component.literal("───── Stats ─────").withStyle(Style.EMPTY.withColor(0x6644BB)));

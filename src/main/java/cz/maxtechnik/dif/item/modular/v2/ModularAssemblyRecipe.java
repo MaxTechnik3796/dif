@@ -52,14 +52,15 @@ public class ModularAssemblyRecipe implements SmithingRecipe{
 		return tool;
 	}
 	private ModularTier calculateTier(ItemStack head,ItemStack binding,ItemStack handle){
-		if((isTierAdd(MYTHIC,getTier(head)))+(isTierAdd(MYTHIC,getTier(binding)))+(isTierAdd(MYTHIC,getTier(handle)))>1) return MYTHIC;
-		else if((isTierAdd(LEGENDARY,getTier(head)))+(isTierAdd(LEGENDARY,getTier(binding)))+(isTierAdd(LEGENDARY,getTier(handle)))>1) return LEGENDARY;
-		else if((isTierAdd(EPIC,getTier(head)))+(isTierAdd(EPIC,getTier(binding)))+(isTierAdd(EPIC,getTier(handle)))>1) return EPIC;
-		else if((isTierAdd(RARE,getTier(head)))+(isTierAdd(RARE,getTier(binding)))+(isTierAdd(RARE,getTier(handle)))>1) return RARE;
-		else return COMMON;
+		ModularTier h=getTier(head),b=getTier(binding),ha=getTier(handle);
+		if(countOf(MYTHIC,h,b,ha)>1) return MYTHIC;
+		if(countOf(LEGENDARY,h,b,ha)>1) return LEGENDARY;
+		if(countOf(EPIC,h,b,ha)>1) return EPIC;
+		if(countOf(RARE,h,b,ha)>1) return RARE;
+		return COMMON;
 	}
-	private int isTierAdd(ModularTier tier,ModularTier partTier){
-		return tier.equals(partTier)?1:0;
+	private static int countOf(ModularTier tier,ModularTier a,ModularTier b,ModularTier c){
+		return (a==tier?1:0)+(b==tier?1:0)+(c==tier?1:0);
 	}
 	@Override
 	public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider provider){
