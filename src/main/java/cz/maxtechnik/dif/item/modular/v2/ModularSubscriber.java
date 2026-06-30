@@ -33,8 +33,7 @@ public class ModularSubscriber{
 		switch(reforge){
 			case VAMPIRIC,DRAIN -> {
 				if(attacker.getHealth()>=attacker.getMaxHealth()) return;
-				if(chances[tier]!=0&&DifMod.rouletteBoolean(chances[tier]))
-					attacker.heal(Math.clamp(dmg/2F,0.5F,target.getHealth()));
+				if(chances[tier]!=0&&DifMod.rouletteBoolean(chances[tier])) attacker.heal(Math.clamp(dmg/2F,0.5F,target.getHealth()));
 			}
 			case PHANTOM -> {
 				if(chances[tier]!=0&&DifMod.rouletteBoolean(chances[tier])){
@@ -43,29 +42,23 @@ public class ModularSubscriber{
 				}
 			}
 			case FROZEN -> {
-				if(tier==2||tier==3)
-					target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,160,0));
-				else if(tier==4)
-					target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,160,1));
-
+				if(tier==2||tier==3) target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,160,0));
+				else if(tier==4) target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,160,1));
 			}
 			case CURSE -> {
-				if(tier>=2)
-					target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS,100,0));
+				if(tier>=2) target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS,100,0));
 			}
 		}
 		// Material modifiers: parse materials once for this event
 		if(ModularTool.getMaterialModifiers(itemStack).contains(ModularModifier.TOXIC)){
-			if(attacker.level().getRandom().nextFloat()<0.3F)
-				target.addEffect(new MobEffectInstance(MobEffects.POISON,60,0));
+			if(attacker.level().getRandom().nextFloat()<0.3F) target.addEffect(new MobEffectInstance(MobEffects.POISON,60,0));
 		}
 	}
 	@SubscribeEvent
 	public static void onLivingExp(LivingExperienceDropEvent event){
 		if(event.getAttackingPlayer()!=null){
 			ItemStack tool=event.getAttackingPlayer().getMainHandItem();
-			if(ModularTool.hasMaterialModifier(tool,ModularModifier.LUCKY_MAT))
-				event.setDroppedExperience((int)Math.ceil(event.getDroppedExperience()*1.25));
+			if(ModularTool.hasMaterialModifier(tool,ModularModifier.LUCKY_MAT)) event.setDroppedExperience((int)Math.ceil(event.getDroppedExperience()*1.25));
 		}
 	}
 	@SubscribeEvent
@@ -77,8 +70,7 @@ public class ModularSubscriber{
 		// Parse materials once for all checks in this event
 		EnumSet<ModularModifier> mods=ModularTool.getMaterialModifiers(tool);
 		if(mods.contains(ModularModifier.MOMENTUM)){
-			if(level.getRandom().nextFloat()<0.1F)
-				player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED,100,0));
+			if(level.getRandom().nextFloat()<0.1F) player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED,100,0));
 		}
 		if(ModularTool.isModifier(tool,ModularModifier.VOLCANIC)){
 			RecipeManager recipeManager=level.getRecipeManager();

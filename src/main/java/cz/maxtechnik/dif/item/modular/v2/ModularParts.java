@@ -19,8 +19,7 @@ public enum ModularParts{
 	KATANA_HEAD("katana_head",10,CASTING_MOLD_KATANA_HEAD.get()),
 	TIMBER_AXE_HEAD("timber_axe_head",11,CASTING_MOLD_TIMBER_AXE_HEAD.get()),
 	HAMMER_HEAD("hammer_head",12,CASTING_MOLD_HAMMER_HEAD.get()),
-	EXCAVATOR_HEAD("excavator_head",13,CASTING_MOLD_EXCAVATOR_HEAD.get()),;
-
+	EXCAVATOR_HEAD("excavator_head",13,CASTING_MOLD_EXCAVATOR_HEAD.get());
 	private final String name;
 	private final int partID;
 	private final Item castingMold;

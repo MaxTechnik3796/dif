@@ -123,8 +123,7 @@ public class ModularTool extends DiggerItem{
 	 */
 	public void damageTool(ItemStack itemStack,int amount,LivingEntity entity){
 		java.util.EnumSet<ModularModifier> mods=getMaterialModifiers(itemStack);
-		if(mods.contains(ModularModifier.UNBREAKABLE_MAT))
-			if(entity.level().getRandom().nextBoolean()) return;
+		if(mods.contains(ModularModifier.UNBREAKABLE_MAT)) if(entity.level().getRandom().nextBoolean()) return;
 		int maxDmg=getMaxDamage(itemStack);
 		int currentDmg=itemStack.getDamageValue();
 		if(mods.contains(ModularModifier.STONEBOUND)){
@@ -134,8 +133,7 @@ public class ModularTool extends DiggerItem{
 		if(newDmg>=maxDmg) itemStack.setDamageValue(maxDmg-1);
 		else itemStack.setDamageValue(newDmg);
 		if(isBroken(itemStack)&&entity instanceof Player){
-			entity.level().playSound(null,entity.getX(),entity.getY(),entity.getZ(),
-					SoundEvents.ITEM_BREAK,SoundSource.PLAYERS,1F,1F);
+			entity.level().playSound(null,entity.getX(),entity.getY(),entity.getZ(),SoundEvents.ITEM_BREAK,SoundSource.PLAYERS,1F,1F);
 		}
 	}
 	/**
@@ -199,10 +197,10 @@ public class ModularTool extends DiggerItem{
 	 */
 	private float getBaseDamageForType(String type){
 		return switch(type.toLowerCase(Locale.ROOT)){
-			case "sword", "katana" -> 3F;
-			case "axe", "timber_axe" -> 5F;
+			case "sword","katana" -> 3F;
+			case "axe","timber_axe" -> 5F;
 			case "battle_axe" -> 6F;
-			case "shovel", "excavator" -> 1.5F;
+			case "shovel","excavator" -> 1.5F;
 			case "hoe" -> 0F;
 			default -> 1F;
 		};
@@ -214,8 +212,8 @@ public class ModularTool extends DiggerItem{
 	 */
 	private float getBaseSpeedForType(String type){
 		return switch(type.toLowerCase(Locale.ROOT)){
-			case "pickaxe", "hammer" -> -2.8F;
-			case "axe", "shovel", "timber_axe", "excavator", "battle_axe" -> -3F;
+			case "pickaxe","hammer" -> -2.8F;
+			case "axe","shovel","timber_axe","excavator","battle_axe" -> -3F;
 			case "hoe" -> -1F;
 			default -> -2.4F;
 		};
@@ -282,8 +280,7 @@ public class ModularTool extends DiggerItem{
 	 */
 	@Override
 	public boolean mineBlock(@NotNull ItemStack itemStack,@NotNull Level level,@NotNull BlockState blockState,@NotNull BlockPos blockPos,@NotNull LivingEntity miningEntity){
-		if(!level.isClientSide&&blockState.getDestroySpeed(level,blockPos)!=0F&&!isBroken(itemStack))
-			this.damageTool(itemStack,1,miningEntity);
+		if(!level.isClientSide&&blockState.getDestroySpeed(level,blockPos)!=0F&&!isBroken(itemStack)) this.damageTool(itemStack,1,miningEntity);
 		return true;
 	}
 	/**
@@ -314,12 +311,9 @@ public class ModularTool extends DiggerItem{
 		if(isBroken(itemStack)) return false;
 		String type=getProps(itemStack).toolType().toLowerCase();
 		if((type.equals("pickaxe")||type.equals("hammer"))&&itemAbility.equals(ItemAbilities.PICKAXE_DIG)) return true;
-		else if((type.equals("axe")||type.equals("timber_axe")||type.equals("battle_axe"))&&(itemAbility.equals(ItemAbilities.AXE_DIG)||itemAbility.equals(ItemAbilities.AXE_STRIP)||itemAbility.equals(ItemAbilities.AXE_SCRAPE)||itemAbility.equals(ItemAbilities.AXE_WAX_OFF)))
-			return true;
-		else if((type.equals("shovel")||type.equals("excavator"))&&(itemAbility.equals(ItemAbilities.SHOVEL_DIG)||itemAbility.equals(ItemAbilities.SHOVEL_FLATTEN)||itemAbility.equals(ItemAbilities.SHOVEL_DOUSE)))
-			return true;
-		else if(type.equals("hoe")&&(itemAbility.equals(ItemAbilities.HOE_DIG)||itemAbility.equals(ItemAbilities.HOE_TILL)))
-			return true;
+		else if((type.equals("axe")||type.equals("timber_axe")||type.equals("battle_axe"))&&(itemAbility.equals(ItemAbilities.AXE_DIG)||itemAbility.equals(ItemAbilities.AXE_STRIP)||itemAbility.equals(ItemAbilities.AXE_SCRAPE)||itemAbility.equals(ItemAbilities.AXE_WAX_OFF))) return true;
+		else if((type.equals("shovel")||type.equals("excavator"))&&(itemAbility.equals(ItemAbilities.SHOVEL_DIG)||itemAbility.equals(ItemAbilities.SHOVEL_FLATTEN)||itemAbility.equals(ItemAbilities.SHOVEL_DOUSE))) return true;
+		else if(type.equals("hoe")&&(itemAbility.equals(ItemAbilities.HOE_DIG)||itemAbility.equals(ItemAbilities.HOE_TILL))) return true;
 		else if((type.equals("sword")||type.equals("katana"))&&itemAbility.equals(ItemAbilities.SWORD_DIG)) return true;//DO NOT TOUCH
 		return false;
 	}
@@ -339,7 +333,7 @@ public class ModularTool extends DiggerItem{
 		BlockState modified=null;
 		SoundEvent sound=null;
 		switch(type){
-			case "axe", "timber_axe", "battle_axe" -> {
+			case "axe","timber_axe","battle_axe" -> {
 				modified=state.getToolModifiedState(context,ItemAbilities.AXE_STRIP,false);
 				if(modified!=null) sound=SoundEvents.AXE_STRIP;
 				else{
@@ -500,10 +494,10 @@ public class ModularTool extends DiggerItem{
 		if(gameTime%10==0&&entity instanceof Player player&&(player.getMainHandItem()==itemStack||player.getOffhandItem()==itemStack)){
 			if(getMaterialModifiers(itemStack).contains(ModularModifier.MAGNETIC)){
 				net.minecraft.world.phys.AABB box=player.getBoundingBox().inflate(5.0);
-				for(net.minecraft.world.entity.item.ItemEntity item:level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,box)){
+				for(net.minecraft.world.entity.item.ItemEntity item: level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,box)){
 					if(item.isAlive()&&!item.hasPickUpDelay()) item.teleportTo(player.getX(),player.getY()+0.5,player.getZ());
 				}
-				for(net.minecraft.world.entity.ExperienceOrb orb:level.getEntitiesOfClass(net.minecraft.world.entity.ExperienceOrb.class,box)){
+				for(net.minecraft.world.entity.ExperienceOrb orb: level.getEntitiesOfClass(net.minecraft.world.entity.ExperienceOrb.class,box)){
 					if(orb.isAlive()) orb.teleportTo(player.getX(),player.getY()+0.5,player.getZ());
 				}
 			}
@@ -534,92 +528,34 @@ public class ModularTool extends DiggerItem{
 		float ratio=maxDmg>0?(float)remaining/maxDmg:0;
 		int durColor=((int)(255*(1-ratio))<<16)|((int)(255*ratio)<<8);
 		if(isBroken(itemStack)){
-			list.add(Component.literal(" !! BROKEN !! ")
-					.withStyle(Style.EMPTY.withColor(0xFF3333).withBold(true)));
+			list.add(Component.literal(" !! BROKEN !! ").withStyle(Style.EMPTY.withColor(0xFF3333).withBold(true)));
 			list.add(CommonComponents.EMPTY);
 		}
-		list.add(
-				Component.literal("───── Stats ─────")
-						.withStyle(Style.EMPTY.withColor(0x6644BB))
-		);
-		list.add(
-				Component.literal("Tier: ").withStyle(ChatFormatting.GRAY)
-						.append(Component.translatable("dif.tier."+props.tier()).withColor(getTier(itemStack).getColor()))
-		);
-		list.add(
-				Component.literal("Mining: ").withStyle(ChatFormatting.GRAY)
-						.append(Component.translatable("dif.mining_level."+miningLvl)
-								.withStyle(Style.EMPTY.withColor(ModularMaterial.miningLevelColor[miningLvl])))
-		);
-		list.add(
-				Component.literal("Durability: ").withStyle(ChatFormatting.GRAY)
-						.append(Component.literal(String.valueOf(remaining))
-								.withStyle(Style.EMPTY.withColor(durColor)))
-						.append(Component.literal(" / "+maxDmg)
-								.withStyle(ChatFormatting.DARK_GRAY))
-		);
-		list.add(
-				Component.literal("Efficiency: ").withStyle(ChatFormatting.GRAY)
-						.append(Component.literal(String.format(Locale.ROOT,"%.1f",eff))
-								.withStyle(ChatFormatting.GREEN))
-		);
-		list.add(
-				Component.literal("Damage: ").withStyle(ChatFormatting.GRAY)
-						.append(Component.literal(String.format(Locale.ROOT,"%.1f",dmg))
-								.withStyle(ChatFormatting.RED))
-		);
-		list.add(
-				Component.literal("Speed: ").withStyle(ChatFormatting.GRAY)
-						.append(Component.literal(String.format(Locale.ROOT,"%.1f",spd))
-								.withStyle(ChatFormatting.YELLOW))
-		);
-		list.add(
-				Component.literal("───── Parts ─────")
-						.withStyle(Style.EMPTY.withColor(0x6644BB))
-		);
-		list.add(
-				Component.literal(" Head: ").withStyle(Style.EMPTY.withColor(0x888888))
-						.append(Component.translatable("dif.material."+head.getName())
-								.withStyle(Style.EMPTY.withColor(head.getColor())))
-						.append(Component.literal("  "+head.getHeadDurability())
-								.withStyle(Style.EMPTY.withColor(0xFFAA00)))
-		);
-		list.add(
-				Component.literal(" Binding: ").withStyle(Style.EMPTY.withColor(0x888888))
-						.append(Component.translatable("dif.material."+binding.getName())
-								.withStyle(Style.EMPTY.withColor(binding.getColor())))
-						.append(Component.literal("  "+binding.getBindingDurability())
-								.withStyle(Style.EMPTY.withColor(0xFFAA00)))
-		);
-		list.add(
-				Component.literal(" Handle: ").withStyle(Style.EMPTY.withColor(0x888888))
-						.append(Component.translatable("dif.material."+handle.getName())
-								.withStyle(Style.EMPTY.withColor(handle.getColor())))
-						.append(Component.literal("  "+
-										handle.getHandleDurability())
-								.withStyle(Style.EMPTY.withColor(0xFFAA00)))
-		);
-		list.add(
-				Component.literal("───── Modifiers ─────")
-						.withStyle(Style.EMPTY.withColor(0x6644BB))
-		);
+		list.add(Component.literal("───── Stats ─────").withStyle(Style.EMPTY.withColor(0x6644BB)));
+		list.add(Component.literal("Tier: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.tier."+props.tier()).withColor(getTier(itemStack).getColor())));
+		list.add(Component.literal("Mining: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.mining_level."+miningLvl).withStyle(Style.EMPTY.withColor(ModularMaterial.miningLevelColor[miningLvl]))));
+		list.add(Component.literal("Durability: ").withStyle(ChatFormatting.GRAY).append(Component.literal(String.valueOf(remaining)).withStyle(Style.EMPTY.withColor(durColor))).append(Component.literal(" / "+maxDmg).withStyle(ChatFormatting.DARK_GRAY)));
+		list.add(Component.literal("Efficiency: ").withStyle(ChatFormatting.GRAY).append(Component.literal(String.format(Locale.ROOT,"%.1f",eff)).withStyle(ChatFormatting.GREEN)));
+		list.add(Component.literal("Damage: ").withStyle(ChatFormatting.GRAY).append(Component.literal(String.format(Locale.ROOT,"%.1f",dmg)).withStyle(ChatFormatting.RED)));
+		list.add(Component.literal("Speed: ").withStyle(ChatFormatting.GRAY).append(Component.literal(String.format(Locale.ROOT,"%.1f",spd)).withStyle(ChatFormatting.YELLOW)));
+		list.add(Component.literal("───── Parts ─────").withStyle(Style.EMPTY.withColor(0x6644BB)));
+		list.add(Component.literal(" Head: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.material."+head.getName()).withStyle(Style.EMPTY.withColor(head.getColor()))).append(Component.literal("  "+head.getHeadDurability()).withStyle(Style.EMPTY.withColor(0xFFAA00))));
+		list.add(Component.literal(" Binding: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.material."+binding.getName()).withStyle(Style.EMPTY.withColor(binding.getColor()))).append(Component.literal("  "+binding.getBindingDurability()).withStyle(Style.EMPTY.withColor(0xFFAA00))));
+		list.add(Component.literal(" Handle: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.material."+handle.getName()).withStyle(Style.EMPTY.withColor(handle.getColor()))).append(Component.literal("  "+handle.getHandleDurability()).withStyle(Style.EMPTY.withColor(0xFFAA00))));
+		list.add(Component.literal("───── Modifiers ─────").withStyle(Style.EMPTY.withColor(0x6644BB)));
 		ArrayList<String> materialModifiers=getMaterialModifiers(head,binding,handle);
 		for(String materialModifier: materialModifiers){
-			list.add(
-					Component.translatable("dif.modifier."+materialModifier).withStyle(Style.EMPTY.withColor(ModularModifier.byName(materialModifier).getColor()))
-			);
+			list.add(Component.translatable("dif.modifier."+materialModifier).withStyle(Style.EMPTY.withColor(ModularModifier.byName(materialModifier).getColor())));
 		}
 		list.add(CommonComponents.EMPTY);
 		for(ModularToolModifiers.entry entry: getAllModifiers(itemStack)){
 			ModularModifier modifier=ModularModifier.byName(entry.id());
 			Component nameComp=Component.translatable("dif.modifier."+entry.id());
-			if(ModularModifier.byName(entry.id()).getMaxLvl()>1)
-				nameComp=nameComp.copy().append(Component.literal(" ")).append(Component.translatable("enchantment.level."+entry.lvl()).withStyle(ChatFormatting.WHITE));
+			if(ModularModifier.byName(entry.id()).getMaxLvl()>1) nameComp=nameComp.copy().append(Component.literal(" ")).append(Component.translatable("enchantment.level."+entry.lvl()).withStyle(ChatFormatting.WHITE));
 			list.add(nameComp.copy().withStyle(Style.EMPTY.withColor(modifier.getColor())));
 		}
 		list.add(CommonComponents.EMPTY);
-		if(getReforge(itemStack).hasDescription())
-			list.add(Component.literal("  ").append(Component.translatable("dif.reforge."+getReforge(itemStack).getName()+".desc").withStyle(Style.EMPTY.withColor(getTier(itemStack).getColor()).withItalic(true))));
+		if(getReforge(itemStack).hasDescription()) list.add(Component.literal("  ").append(Component.translatable("dif.reforge."+getReforge(itemStack).getName()+".desc").withStyle(Style.EMPTY.withColor(getTier(itemStack).getColor()).withItalic(true))));
 	}
 	/**
 	 * Get all MaterialModifiers in ArrayList.
@@ -634,13 +570,10 @@ public class ModularTool extends DiggerItem{
 		String bindingModifier=binding.getModifier().getName().toLowerCase(Locale.ROOT);
 		String handleModifier=handle.getModifier().getName().toLowerCase(Locale.ROOT);
 		materialModifiers.add(headModifier);
-		if(!materialModifiers.get(0).equals(bindingModifier))
-			materialModifiers.add(bindingModifier);
-		if(!materialModifiers.get(0).equals(handleModifier))
-			if(!(materialModifiers.size()==1)){
-				if(!materialModifiers.get(1).equals(handleModifier))
-					materialModifiers.add(handleModifier);
-			}else materialModifiers.add(handleModifier);
+		if(!materialModifiers.get(0).equals(bindingModifier)) materialModifiers.add(bindingModifier);
+		if(!materialModifiers.get(0).equals(handleModifier)) if(!(materialModifiers.size()==1)){
+			if(!materialModifiers.get(1).equals(handleModifier)) materialModifiers.add(handleModifier);
+		}else materialModifiers.add(handleModifier);
 		return materialModifiers;
 	}
 	@Override
@@ -676,10 +609,8 @@ public class ModularTool extends DiggerItem{
 	public @NotNull String getDescriptionId(@NotNull ItemStack itemStack){
 		String type=getProps(itemStack).toolType();
 		String reforge=getReforge(itemStack).getName();
-		if(!type.isEmpty()&&!type.equals("none"))
-			if(!reforge.isEmpty()&&!reforge.equals("none"))
-				return super.getDescriptionId(itemStack)+"."+type+"."+reforge;
-			else return super.getDescriptionId(itemStack)+"."+type;
+		if(!type.isEmpty()&&!type.equals("none")) if(!reforge.isEmpty()&&!reforge.equals("none")) return super.getDescriptionId(itemStack)+"."+type+"."+reforge;
+		else return super.getDescriptionId(itemStack)+"."+type;
 		return super.getDescriptionId(itemStack);
 	}
 	/**
@@ -724,18 +655,14 @@ public class ModularTool extends DiggerItem{
 		if(!found) newModifiers.add(new ModularToolModifiers.entry(modifier.getName(),lvl));
 		itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(newModifiers));
 		switch(modifier){
-			case SILK_TOUCH ->
-					addEnchantment(provider,itemStack,Enchantments.SILK_TOUCH,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.SILK_TOUCH));
+			case SILK_TOUCH -> addEnchantment(provider,itemStack,Enchantments.SILK_TOUCH,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.SILK_TOUCH));
 			case LUCK -> {
 				addEnchantment(provider,itemStack,Enchantments.FORTUNE,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.FORTUNE));
 				addEnchantment(provider,itemStack,Enchantments.LOOTING,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.LOOTING));
 			}
-			case SWEEPING_EDGE ->
-					addEnchantment(provider,itemStack,Enchantments.SWEEPING_EDGE,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.SWEEPING_EDGE));
-			case MENDING ->
-					addEnchantment(provider,itemStack,Enchantments.MENDING,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.MENDING));
-			case VOLCANIC ->
-					addEnchantment(provider,itemStack,Enchantments.FIRE_ASPECT,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.FIRE_ASPECT));
+			case SWEEPING_EDGE -> addEnchantment(provider,itemStack,Enchantments.SWEEPING_EDGE,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.SWEEPING_EDGE));
+			case MENDING -> addEnchantment(provider,itemStack,Enchantments.MENDING,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.MENDING));
+			case VOLCANIC -> addEnchantment(provider,itemStack,Enchantments.FIRE_ASPECT,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.FIRE_ASPECT));
 			default -> {
 			}
 		}
@@ -776,9 +703,7 @@ public class ModularTool extends DiggerItem{
 		int oldLvl=getModifierLevel(itemStack,modifier);
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
 		if(component==null) return;
-		List<ModularToolModifiers.entry> newModifiers=component.modifiers().stream()
-				.filter(entry->!entry.id().equals(modifier.getName()))
-				.collect(Collectors.toList());
+		List<ModularToolModifiers.entry> newModifiers=component.modifiers().stream().filter(entry->!entry.id().equals(modifier.getName())).collect(Collectors.toList());
 		if(newModifiers.size()!=component.modifiers().size()){
 			itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(newModifiers));
 			switch(modifier){
@@ -874,10 +799,8 @@ public class ModularTool extends DiggerItem{
 				switch(mode){
 					case 0 -> mutable.set(enchantmentHolder,itemStack.getEnchantmentLevel(enchantmentHolder)+lvl);
 					case 1 -> {
-						if(itemStack.getEnchantmentLevel(enchantmentHolder)-lvl<=0)
-							manipulateEnchantment(provider,itemStack,enchantment,-1,0);
-						else
-							mutable.set(enchantmentHolder,itemStack.getEnchantmentLevel(enchantmentHolder)-lvl);
+						if(itemStack.getEnchantmentLevel(enchantmentHolder)-lvl<=0) manipulateEnchantment(provider,itemStack,enchantment,-1,0);
+						else mutable.set(enchantmentHolder,itemStack.getEnchantmentLevel(enchantmentHolder)-lvl);
 					}
 					case 2 -> mutable.set(enchantmentHolder,lvl);
 					default -> {
@@ -889,8 +812,7 @@ public class ModularTool extends DiggerItem{
 	}
 	private static void hideEnchantments(ItemStack itemStack){
 		var enchants=itemStack.get(DataComponents.ENCHANTMENTS);
-		if(enchants!=null)
-			itemStack.set(DataComponents.ENCHANTMENTS,enchants.withTooltip(false));
+		if(enchants!=null) itemStack.set(DataComponents.ENCHANTMENTS,enchants.withTooltip(false));
 	}
 	/**
 	 * Get Holder<Enchantment> of enchantment.
@@ -916,10 +838,8 @@ public class ModularTool extends DiggerItem{
 		itemStack.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(props.toolType(),props.headMaterial(),props.bindingMaterial(),props.handleMaterial(),props.tier(),reforge.name()));
 		if(oldReforge.equals(GLEAMING)) subtractEnchantment(provider,itemStack,Enchantments.FORTUNE,Math.min(1,tier.getReforgeIndex()-2));
 		if(reforge.equals(GLEAMING)) addEnchantment(provider,itemStack,Enchantments.FORTUNE,Math.min(1,tier.getReforgeIndex()-2));
-
 		if(oldReforge.equals(HARVESTER)) subtractEnchantment(provider,itemStack,Enchantments.FORTUNE,Math.min(1,tier.getReforgeIndex()-1));
 		if(reforge.equals(HARVESTER)) addEnchantment(provider,itemStack,Enchantments.FORTUNE,Math.min(1,tier.getReforgeIndex()-1));
-
 		if(oldReforge.equals(REAPER)) subtractEnchantment(provider,itemStack,Enchantments.LOOTING,1);
 		if(reforge.equals(REAPER)) addEnchantment(provider,itemStack,Enchantments.LOOTING,1);
 	}

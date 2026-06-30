@@ -1,5 +1,5 @@
 {
-	"type":"dif:modular_recipe",
+	"type":"dif:modular_modifier",
 	"template":{
 		"tag":"dif:modular_templates"
 	},

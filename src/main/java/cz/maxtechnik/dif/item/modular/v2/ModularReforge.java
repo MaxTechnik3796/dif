@@ -21,8 +21,7 @@ public enum ModularReforge{
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F}),
 	RAZOR("razor",new ModularTools[]{SWORD,BATTLE_AXE,KATANA},false,
-			new Float[]{1F,1F,1.15F,1.15F,1.25F},
-			new Float[]{1F,1F,1.05F,1.06F,1.1F},
+			new Float[]{1F,1F,1.15F,1.15F,1.25F},new Float[]{1F,1F,1.05F,1.06F,1.1F},
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F}),
 	VAMPIRIC("vampiric",new ModularTools[]{SWORD,KATANA},false,
@@ -34,19 +33,16 @@ public enum ModularReforge{
 			new Float[]{1F,1F,1.05F,1.1F,1.15F},
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F}),
-	// (slow je special efekt)
+			new Float[]{1F,1F,1F,1F,1F}),// (slow je special efekt)
 	PHANTOM("phantom",new ModularTools[]{SWORD,BATTLE_AXE,KATANA},false,
 			new Float[]{1F,1F,1.05F,1.1F,1.15F},
 			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F}),
+			new Float[]{1F,1F,1F,1F,1F},new Float[]{1F,1F,1F,1F,1F}),
 	CURSE("curse",new ModularTools[]{KATANA},false,
 			new Float[]{1F,1F,1.15F,1.2F,1.25F},
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F}),
-	// (weakness je special efekt)
+			new Float[]{1F,1F,1F,1F,1F}),// (weakness je special efekt)
 	DRAIN("drain",new ModularTools[]{BATTLE_AXE},false,
 			new Float[]{1F,1F,1.1F,1.15F,1.2F},
 			new Float[]{1F,1F,1F,1F,1F},
@@ -56,8 +52,7 @@ public enum ModularReforge{
 			new Float[]{1F,1F,1.15F,1.2F,1.25F},
 			new Float[]{1F,1F,1F,1.05F,1.1F},
 			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F}),
-	// TĚŽEBNÍ
+			new Float[]{1F,1F,1F,1F,1F}),// TĚŽEBNÍ
 	REINFORCED("reinforced",new ModularTools[]{AXE,PICKAXE,SWORD,SHOVEL,HOE,BATTLE_AXE,HAMMER,EXCAVATOR,TIMBER_AXE},false,
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
@@ -82,8 +77,7 @@ public enum ModularReforge{
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F}),
-	//Gleaming tady je epic a legendary +1 fortune a mythic +2 fortune
+			new Float[]{1F,1F,1F,1F,1F}),//Gleaming tady je epic a legendary +1 fortune a mythic +2 fortune
 	CRUSHER("crusher",new ModularTools[]{HAMMER},false,
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
@@ -93,8 +87,7 @@ public enum ModularReforge{
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1.1F,1.15F,1.25F},
-			new Float[]{1F,1F,1F,1F,1F}),
-	//looting nebude potřeba
+			new Float[]{1F,1F,1F,1F,1F}),//looting nebude potřeba
 	LUMBERING("lumbering",new ModularTools[]{AXE,TIMBER_AXE},false,
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
@@ -104,14 +97,12 @@ public enum ModularReforge{
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F}),
-	//Harvester tady je epic +1 fortune, legendary +2 fortune a mythic +3 fortune
+			new Float[]{1F,1F,1F,1F,1F}),//Harvester tady je epic +1 fortune, legendary +2 fortune a mythic +3 fortune
 	CULTIVATOR("cultivator",new ModularTools[]{HOE},false,
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1.25F,1.25F}),
-	//Harvester tady je epic a legendary aoe 3x3 a mythic aoe 5x5
+			new Float[]{1F,1F,1F,1.25F,1.25F}),//Harvester tady je epic a legendary aoe 3x3 a mythic aoe 5x5
 	SWIFTDIG("swiftdig",new ModularTools[]{SHOVEL,EXCAVATOR},false,
 			new Float[]{1F,1F,1F,1F,1F},
 			new Float[]{1F,1F,1F,1F,1F},

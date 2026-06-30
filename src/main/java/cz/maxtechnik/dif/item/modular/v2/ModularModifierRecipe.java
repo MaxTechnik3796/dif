@@ -25,7 +25,7 @@ import static cz.maxtechnik.dif.item.modular.v2.ModularModifier.*;
 import static cz.maxtechnik.dif.item.modular.v2.ModularTool.getModifierLevel;
 import static cz.maxtechnik.dif.item.modular.v2.ModularTool.upgradeModifier;
 import static net.minecraft.world.item.Items.*;
-public class ModularRecipes extends SmithingExtraRecipe{
+public class ModularModifierRecipe extends SmithingExtraRecipe{
 	private int getItemCount(ItemStack itemStack,ModularModifier modifier){
 		return switch(modifier){
 			case EFFICIENCY -> switch(getModifierLevel(itemStack,EFFICIENCY)){
@@ -69,13 +69,8 @@ public class ModularRecipes extends SmithingExtraRecipe{
 			default -> 0;
 		};
 	}
-	public ModularRecipes(Ingredient template,Ingredient base,Ingredient addition,ItemStack result){
-		super(
-				new SizedIngredientExtra(template,1),
-				new SizedIngredientExtra(base,1),
-				new SizedIngredientExtra(addition,64),
-				result
-		);
+	public ModularModifierRecipe(Ingredient template,Ingredient base,Ingredient addition,ItemStack result){
+		super(new SizedIngredientExtra(template,1),new SizedIngredientExtra(base,1),new SizedIngredientExtra(addition,64),result);
 	}
 	@Override
 	public boolean isTemplateIngredient(@NotNull ItemStack itemStack){
@@ -101,8 +96,7 @@ public class ModularRecipes extends SmithingExtraRecipe{
 			if(additionItem.equals(QUARTZ)) return SHARPNESS;
 			if(additionItem.equals(DIAMOND)) return REINFORCED;
 			if(additionItem.equals(IRON_INGOT)) return SWEEPING_EDGE;
-			if(additionItem.equals(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.parse("create:experience_block")))))
-				return MENDING;
+			if(additionItem.equals(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.parse("create:experience_block"))))) return MENDING;
 			if(additionItem.equals(SILKY_STONE.get())) return SILK_TOUCH;
 			if(additionItem.equals(LAVA_BUCKET)) return VOLCANIC;
 		}else if(templateItem.equals(MODULAR_TEMPLATE_HYPER.get())){
@@ -137,39 +131,26 @@ public class ModularRecipes extends SmithingExtraRecipe{
 	public @NotNull ItemStack assemble(SmithingRecipeInput container,@NotNull HolderLookup.Provider provider){
 		ItemStack base=container.getItem(1).copy();
 		ItemStack addition=container.getItem(2).copy();
-		if(addition.getItem().equals(REDSTONE)||addition.getItem().equals(REDSTONE_BLOCK))
-			upgradeModifier(provider,base,EFFICIENCY);
-		else if(addition.getItem().equals(LAPIS_LAZULI)||addition.getItem().equals(LAPIS_BLOCK))
-			upgradeModifier(provider,base,ModularModifier.LUCK);
-		else if(addition.getItem().equals(QUARTZ)||addition.getItem().equals(QUARTZ_BLOCK))
-			upgradeModifier(provider,base,ModularModifier.SHARPNESS);
-		else if(addition.getItem().equals(DIAMOND))
-			upgradeModifier(provider,base,ModularModifier.REINFORCED);
-		else if(addition.getItem().equals(IRON_INGOT)||addition.getItem().equals(IRON_BLOCK))
-			upgradeModifier(provider,base,SWEEPING_EDGE);
-		else if(addition.getItem().equals(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.parse("create:experience_block")))))
-			upgradeModifier(provider,base,MENDING);
-		else if(addition.getItem().equals(SILKY_STONE.get()))
-			upgradeModifier(provider,base,SILK_TOUCH);
-		else if(addition.getItem().equals(LAVA_BUCKET))
-			upgradeModifier(provider,base,VOLCANIC);
+		if(addition.getItem().equals(REDSTONE)||addition.getItem().equals(REDSTONE_BLOCK)) upgradeModifier(provider,base,EFFICIENCY);
+		else if(addition.getItem().equals(LAPIS_LAZULI)||addition.getItem().equals(LAPIS_BLOCK)) upgradeModifier(provider,base,ModularModifier.LUCK);
+		else if(addition.getItem().equals(QUARTZ)||addition.getItem().equals(QUARTZ_BLOCK)) upgradeModifier(provider,base,ModularModifier.SHARPNESS);
+		else if(addition.getItem().equals(DIAMOND)) upgradeModifier(provider,base,ModularModifier.REINFORCED);
+		else if(addition.getItem().equals(IRON_INGOT)||addition.getItem().equals(IRON_BLOCK)) upgradeModifier(provider,base,SWEEPING_EDGE);
+		else if(addition.getItem().equals(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.parse("create:experience_block"))))) upgradeModifier(provider,base,MENDING);
+		else if(addition.getItem().equals(SILKY_STONE.get())) upgradeModifier(provider,base,SILK_TOUCH);
+		else if(addition.getItem().equals(LAVA_BUCKET)) upgradeModifier(provider,base,VOLCANIC);
 		return base;
 	}
 	@Override
 	public int getAdditionConsumeCount(SmithingRecipeInput container){
 		ItemStack base=container.getItem(1).copy();
 		ItemStack addition=container.getItem(2).copy();
-		if(addition.getItem().equals(REDSTONE)||addition.getItem().equals(REDSTONE_BLOCK))
-			return getItemCount(base,EFFICIENCY);
-		else if(addition.getItem().equals(LAPIS_LAZULI)||addition.getItem().equals(LAPIS_BLOCK))
-			return getItemCount(base,ModularModifier.LUCK);
-		else if(addition.getItem().equals(QUARTZ)||addition.getItem().equals(QUARTZ_BLOCK))
-			return getItemCount(base,SHARPNESS);
+		if(addition.getItem().equals(REDSTONE)||addition.getItem().equals(REDSTONE_BLOCK)) return getItemCount(base,EFFICIENCY);
+		else if(addition.getItem().equals(LAPIS_LAZULI)||addition.getItem().equals(LAPIS_BLOCK)) return getItemCount(base,ModularModifier.LUCK);
+		else if(addition.getItem().equals(QUARTZ)||addition.getItem().equals(QUARTZ_BLOCK)) return getItemCount(base,SHARPNESS);
 		else if(addition.getItem().equals(DIAMOND)) return getItemCount(base,REINFORCED);
-		else if(addition.getItem().equals(IRON_INGOT)||addition.getItem().equals(IRON_BLOCK))
-			return getItemCount(base,SWEEPING_EDGE);
-		else if(addition.getItem().equals(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.parse("create:experience_block")))))
-			return 1;
+		else if(addition.getItem().equals(IRON_INGOT)||addition.getItem().equals(IRON_BLOCK)) return getItemCount(base,SWEEPING_EDGE);
+		else if(addition.getItem().equals(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.parse("create:experience_block"))))) return 1;
 		else if(addition.getItem().equals(SILKY_STONE.get())) return 1;
 		else if(addition.getItem().equals(LAVA_BUCKET)) return 1;
 		else return this.addition.count();
@@ -190,34 +171,26 @@ public class ModularRecipes extends SmithingExtraRecipe{
 	public @NotNull RecipeSerializer<?> getSerializer(){
 		return DifModRecipes.MODULAR_REPAIR_SERIALIZER.get();
 	}
-	public static class Serializer implements RecipeSerializer<ModularRecipes>{
-		public static final MapCodec<ModularRecipes> CODEC=RecordCodecBuilder.mapCodec(inst->inst.group(
-				Ingredient.CODEC.fieldOf("template").forGetter(ModularRecipes::getJsonTemplate),
-				Ingredient.CODEC.fieldOf("base").forGetter(ModularRecipes::getJsonBase),
-				Ingredient.CODEC.fieldOf("addition").forGetter(ModularRecipes::getJsonAddition),
-				ItemStack.STRICT_CODEC.fieldOf("result").forGetter(ModularRecipes::getJsonResult)
-		).apply(inst,ModularRecipes::new));
-		public static final StreamCodec<RegistryFriendlyByteBuf,ModularRecipes> STREAM_CODEC=StreamCodec.of(
-				(buf,r)->{
-					Ingredient.CONTENTS_STREAM_CODEC.encode(buf,r.getJsonTemplate());
-					Ingredient.CONTENTS_STREAM_CODEC.encode(buf,r.getJsonBase());
-					Ingredient.CONTENTS_STREAM_CODEC.encode(buf,r.getJsonAddition());
-					ItemStack.STREAM_CODEC.encode(buf,r.getJsonResult());
-				},
-				buf->{
-					Ingredient template=Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
-					Ingredient base=Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
-					Ingredient addition=Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
-					ItemStack result=ItemStack.STREAM_CODEC.decode(buf);
-					return new ModularRecipes(template,base,addition,result);
-				}
-		);
+	public static class Serializer implements RecipeSerializer<ModularModifierRecipe>{
+		public static final MapCodec<ModularModifierRecipe> CODEC=RecordCodecBuilder.mapCodec(inst->inst.group(Ingredient.CODEC.fieldOf("template").forGetter(ModularModifierRecipe::getJsonTemplate),Ingredient.CODEC.fieldOf("base").forGetter(ModularModifierRecipe::getJsonBase),Ingredient.CODEC.fieldOf("addition").forGetter(ModularModifierRecipe::getJsonAddition),ItemStack.STRICT_CODEC.fieldOf("result").forGetter(ModularModifierRecipe::getJsonResult)).apply(inst,ModularModifierRecipe::new));
+		public static final StreamCodec<RegistryFriendlyByteBuf,ModularModifierRecipe> STREAM_CODEC=StreamCodec.of((buf,r)->{
+			Ingredient.CONTENTS_STREAM_CODEC.encode(buf,r.getJsonTemplate());
+			Ingredient.CONTENTS_STREAM_CODEC.encode(buf,r.getJsonBase());
+			Ingredient.CONTENTS_STREAM_CODEC.encode(buf,r.getJsonAddition());
+			ItemStack.STREAM_CODEC.encode(buf,r.getJsonResult());
+		},buf->{
+			Ingredient template=Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
+			Ingredient base=Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
+			Ingredient addition=Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
+			ItemStack result=ItemStack.STREAM_CODEC.decode(buf);
+			return new ModularModifierRecipe(template,base,addition,result);
+		});
 		@Override
-		public @NotNull MapCodec<ModularRecipes> codec(){
+		public @NotNull MapCodec<ModularModifierRecipe> codec(){
 			return CODEC;
 		}
 		@Override
-		public @NotNull StreamCodec<RegistryFriendlyByteBuf,ModularRecipes> streamCodec(){
+		public @NotNull StreamCodec<RegistryFriendlyByteBuf,ModularModifierRecipe> streamCodec(){
 			return STREAM_CODEC;
 		}
 	}

@@ -1,8 +1,8 @@
 package cz.maxtechnik.dif.item.modular.v2;
 
-import cz.maxtechnik.dif.DifMod;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import cz.maxtechnik.dif.DifMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -27,6 +27,7 @@ import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import org.joml.Matrix4f;
+
 import java.util.*;
 /**
  * AOE mining logic for {@link ModularTools#HAMMER}, {@link ModularTools#EXCAVATOR},
@@ -61,7 +62,6 @@ public final class ModularMiningHandler{
 	private static final int TIMBER_MAX_BLOCKS=64;
 	/** Prevents recursive {@code BlockEvent.BreakEvent} from re-triggering AOE. */
 	private static final ThreadLocal<Boolean> BREAKING=new ThreadLocal<>();
-
 	// -------------------------------------------------------------------------
 	// Server-side break event
 	// -------------------------------------------------------------------------
@@ -74,21 +74,18 @@ public final class ModularMiningHandler{
 		ItemStack tool=player.getMainHandItem();
 		if(!(tool.getItem() instanceof ModularTool modularTool)) return;
 		if(modularTool.isBroken(tool)) return;
-
 		String type=ModularTool.getProps(tool).toolType();
-		boolean isHammer   =type.equals(ModularTools.HAMMER.getName());
+		boolean isHammer=type.equals(ModularTools.HAMMER.getName());
 		boolean isExcavator=type.equals(ModularTools.EXCAVATOR.getName());
 		boolean isTimberAxe=type.equals(ModularTools.TIMBER_AXE.getName());
-		boolean isHoe      =type.equals(ModularTools.HOE.getName());
+		boolean isHoe=type.equals(ModularTools.HOE.getName());
 		if(!isHammer&&!isExcavator&&!isTimberAxe&&!isHoe) return;
-
 		// HOE: only with CULTIVATOR at EPIC+ and always 3×3 for block-breaking
 		if(isHoe){
 			if(ModularTool.getReforge(tool)!=ModularReforge.CULTIVATOR) return;
 			ModularTier tier=ModularTool.getTier(tool);
 			if(tier!=ModularTier.EPIC&&tier!=ModularTier.LEGENDARY&&tier!=ModularTier.MYTHIC) return;
 		}
-
 		BlockPos centre=event.getPos();
 		BlockState centreState=level.getBlockState(centre);
 		BREAKING.set(Boolean.TRUE);
@@ -99,23 +96,19 @@ public final class ModularMiningHandler{
 			BREAKING.remove();
 		}
 	}
-
 	// -------------------------------------------------------------------------
 	// Hammer / Excavator / Hoe (block-break) – 3×3 plane
 	// -------------------------------------------------------------------------
-	private static void handleAoeMining(Level level,ServerPlayer player,ItemStack tool,
-			ModularTool modularTool,BlockPos centre,BlockState centreState,boolean isExcavator){
+	private static void handleAoeMining(Level level,ServerPlayer player,ItemStack tool,ModularTool modularTool,BlockPos centre,BlockState centreState,boolean isExcavator){
 		Direction face=getPlayerFacingFace(player);
 		List<BlockPos> neighbours=get3x3Plane(centre,face);
 		float centreHardness=centreState.getDestroySpeed(level,centre);
-
 		int maxDmg=modularTool.getMaxDamage(tool);
 		int remaining=Math.max(0,(maxDmg-1)-tool.getDamageValue());
 		boolean bonusBlock=(remaining==AOE_SIZE); // 9th block free when exactly 8 dur left
 		int budget=remaining*2;                   // 2 blocks per 1 damage point
-
 		int minedCount=0;
-		for(BlockPos pos:neighbours){
+		for(BlockPos pos: neighbours){
 			if(minedCount>=AOE_SIZE) break;
 			BlockState state=level.getBlockState(pos);
 			if(state.isAir()) continue;
@@ -123,7 +116,6 @@ public final class ModularMiningHandler{
 			// Hardness protection: skip blocks more than 2× harder than center
 			float nHardness=state.getDestroySpeed(level,pos);
 			if(centreHardness>0f&&nHardness>centreHardness*HARDNESS_MULTIPLIER) continue;
-
 			boolean isBonusBlock=bonusBlock&&(minedCount==AOE_SIZE-1);
 			if(!isBonusBlock&&budget<=0) break;
 			level.destroyBlock(pos,true,player);
@@ -137,12 +129,10 @@ public final class ModularMiningHandler{
 			}
 		}
 	}
-
 	// -------------------------------------------------------------------------
 	// Timber Axe – tree felling
 	// -------------------------------------------------------------------------
-	private static void handleTimberAxe(Level level,ServerPlayer player,ItemStack tool,
-			ModularTool modularTool,BlockPos centre,BlockState centreState){
+	private static void handleTimberAxe(Level level,ServerPlayer player,ItemStack tool,ModularTool modularTool,BlockPos centre,BlockState centreState){
 		if(!centreState.is(BlockTags.LOGS)){
 			handleAoeMining(level,player,tool,modularTool,centre,centreState,false);
 			return;
@@ -171,7 +161,6 @@ public final class ModularMiningHandler{
 			}
 		}
 	}
-
 	// -------------------------------------------------------------------------
 	// Public API – called from ModularTool.useOn
 	// -------------------------------------------------------------------------
@@ -202,13 +191,10 @@ public final class ModularMiningHandler{
 		Level level=context.getLevel();
 		BlockPos centre=context.getClickedPos();
 		boolean anyModified=false;
-		for(BlockPos pos:getAoePlane(centre,Direction.UP,radius)){
+		for(BlockPos pos: getAoePlane(centre,Direction.UP,radius)){
 			BlockState state=level.getBlockState(pos);
 			assert context.getPlayer()!=null;
-			BlockState modified=state.getToolModifiedState(
-					new UseOnContext(context.getPlayer(),context.getHand(),
-							new BlockHitResult(Vec3.atCenterOf(pos),Direction.UP,pos,false)),
-					ability,false);
+			BlockState modified=state.getToolModifiedState(new UseOnContext(context.getPlayer(),context.getHand(),new BlockHitResult(Vec3.atCenterOf(pos),Direction.UP,pos,false)),ability,false);
 			if(modified==null) continue;
 			if(!level.isClientSide){
 				level.setBlock(pos,modified,11);
@@ -219,7 +205,6 @@ public final class ModularMiningHandler{
 		}
 		return anyModified;
 	}
-
 	// -------------------------------------------------------------------------
 	// Shared helpers
 	// -------------------------------------------------------------------------
@@ -237,7 +222,7 @@ public final class ModularMiningHandler{
 	 */
 	public static List<BlockPos> getAoePlane(BlockPos centre,Direction face,int radius){
 		Direction[] axes=perpendicularAxes(face);
-		Direction a=axes[0],b=axes[1];
+		Direction a=axes[0], b=axes[1];
 		int side=radius*2+1;
 		List<BlockPos> result=new ArrayList<>(side*side);
 		for(int da=-radius;da<=radius;da++)
@@ -247,9 +232,9 @@ public final class ModularMiningHandler{
 	}
 	private static Direction[] perpendicularAxes(Direction face){
 		return switch(face){
-			case UP,DOWN     ->new Direction[]{Direction.EAST,Direction.SOUTH};
-			case NORTH,SOUTH ->new Direction[]{Direction.EAST,Direction.UP};
-			case EAST,WEST   ->new Direction[]{Direction.SOUTH,Direction.UP};
+			case UP,DOWN -> new Direction[]{Direction.EAST,Direction.SOUTH};
+			case NORTH,SOUTH -> new Direction[]{Direction.EAST,Direction.UP};
+			case EAST,WEST -> new Direction[]{Direction.SOUTH,Direction.UP};
 		};
 	}
 	private static Direction getPlayerFacingFace(Player player){
@@ -277,7 +262,7 @@ public final class ModularMiningHandler{
 		while(!queue.isEmpty()&&result.size()<TIMBER_MAX_BLOCKS){
 			BlockPos cur=queue.poll();
 			result.add(cur);
-			for(Direction dir:Direction.values()){
+			for(Direction dir: Direction.values()){
 				BlockPos nb=cur.relative(dir);
 				if(!visited.contains(nb)&&level.getBlockState(nb).is(BlockTags.LOGS)){
 					visited.add(nb);
@@ -293,24 +278,22 @@ public final class ModularMiningHandler{
 	 * (placed by WorldWind, not by a player).
 	 */
 	private static boolean isNaturalTree(Level level,List<BlockPos> logs){
-		for(BlockPos logPos:logs)
-			for(Direction dir:Direction.values()){
+		for(BlockPos logPos: logs)
+			for(Direction dir: Direction.values()){
 				BlockState adj=level.getBlockState(logPos.relative(dir));
-				if(adj.is(BlockTags.LEAVES)
-						&&adj.hasProperty(LeavesBlock.PERSISTENT)
-						&&!adj.getValue(LeavesBlock.PERSISTENT)) return true;
+				if(adj.is(BlockTags.LEAVES)&&adj.hasProperty(LeavesBlock.PERSISTENT)&&!adj.getValue(LeavesBlock.PERSISTENT)) return true;
 			}
 		return false;
 	}
-
 	// =========================================================================
 	// Client – wireframe overlay
 	// =========================================================================
-	@EventBusSubscriber(modid=DifMod.MODID,value=Dist.CLIENT)
+	@EventBusSubscriber(modid=DifMod.MODID, value=Dist.CLIENT)
 	public static final class ClientOverlay{
-		private ClientOverlay(){}
+		private ClientOverlay(){
+		}
 		// Vanilla default block hover outline color
-		private static final float OR=0f,OG=0f,OB=0f,OA=0.4f;
+		private static final float OR=0f, OG=0f, OB=0f, OA=0.4f;
 		@SubscribeEvent
 		public static void onRenderLevel(RenderLevelStageEvent event){
 			if(event.getStage()!=RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) return;
@@ -320,22 +303,17 @@ public final class ModularMiningHandler{
 			ItemStack tool=player.getMainHandItem();
 			if(!(tool.getItem() instanceof ModularTool modularTool)) return;
 			if(modularTool.isBroken(tool)) return;
-
 			String type=ModularTool.getProps(tool).toolType();
-			boolean isHammer   =type.equals(ModularTools.HAMMER.getName());
+			boolean isHammer=type.equals(ModularTools.HAMMER.getName());
 			boolean isExcavator=type.equals(ModularTools.EXCAVATOR.getName());
 			boolean isTimberAxe=type.equals(ModularTools.TIMBER_AXE.getName());
-			boolean isHoe      =type.equals(ModularTools.HOE.getName());
+			boolean isHoe=type.equals(ModularTools.HOE.getName());
 			if(!isHammer&&!isExcavator&&!isTimberAxe&&!isHoe) return;
 			// HOE overlay only for CULTIVATOR at EPIC+
-			if(isHoe&&(ModularTool.getReforge(tool)!=ModularReforge.CULTIVATOR
-					||ModularTool.getTier(tool)==ModularTier.COMMON
-					||ModularTool.getTier(tool)==ModularTier.RARE)) return;
-
+			if(isHoe&&(ModularTool.getReforge(tool)!=ModularReforge.CULTIVATOR||ModularTool.getTier(tool)==ModularTier.COMMON||ModularTool.getTier(tool)==ModularTier.RARE)) return;
 			HitResult hit=player.pick(5.0,event.getPartialTick().getGameTimeDeltaPartialTick(false),false);
 			if(!(hit instanceof BlockHitResult blockHit)) return;
 			if(blockHit.getType()==HitResult.Type.MISS) return;
-
 			Level level=mc.level;
 			BlockPos centre=blockHit.getBlockPos();
 			Direction face=blockHit.getDirection();
@@ -345,13 +323,12 @@ public final class ModularMiningHandler{
 			ps.translate(-camPos.x,-camPos.y,-camPos.z);
 			MultiBufferSource.BufferSource buf=mc.renderBuffers().bufferSource();
 			VertexConsumer lines=buf.getBuffer(RenderType.lines());
-
 			if(isTimberAxe){
 				if(level.getBlockState(centre).is(BlockTags.LOGS)){
 					List<BlockPos> logs=collectLogs(level,centre,false);
 					if(isNaturalTree(level,logs)){
 						// Only highlight logs at or above the hit block – below will remain standing
-						for(BlockPos pos:logs)
+						for(BlockPos pos: logs)
 							if(pos.getY()>=centre.getY()) renderBlockOutline(ps,lines,pos);
 					}else{
 						renderPlane(ps,lines,level,get3x3Plane(centre,face),centre);
@@ -363,7 +340,7 @@ public final class ModularMiningHandler{
 				if(face==Direction.UP){
 					ModularTier tier=ModularTool.getTier(tool);
 					int radius=(tier==ModularTier.MYTHIC)?2:1;
-					for(BlockPos pos:getAoePlane(centre,Direction.UP,radius))
+					for(BlockPos pos: getAoePlane(centre,Direction.UP,radius))
 						if(!level.getBlockState(pos).isAir()) renderBlockOutline(ps,lines,pos);
 				}else{
 					renderPlane(ps,lines,level,get3x3Plane(centre,face),centre);
@@ -375,35 +352,35 @@ public final class ModularMiningHandler{
 			ps.popPose();
 		}
 		/** Renders center + all non-air blocks in {@code plane} with the shared gray color. */
-		private static void renderPlane(PoseStack ps,VertexConsumer lines,Level level,
-				List<BlockPos> plane,BlockPos centre){
+		private static void renderPlane(PoseStack ps,VertexConsumer lines,Level level,List<BlockPos> plane,BlockPos centre){
 			if(!level.getBlockState(centre).isAir()) renderBlockOutline(ps,lines,centre);
-			for(BlockPos pos:plane)
+			for(BlockPos pos: plane)
 				if(!level.getBlockState(pos).isAir()) renderBlockOutline(ps,lines,pos);
 		}
 		private static void renderBlockOutline(PoseStack ps,VertexConsumer lines,BlockPos pos){
 			Matrix4f mat=ps.last().pose();
-			float x=pos.getX(),y=pos.getY(),z=pos.getZ();
-			float x1=x+1f,y1=y+1f,z1=z+1f;
-			line(lines,mat,x,y,z,   x1,y,z);
-			line(lines,mat,x1,y,z,  x1,y,z1);
-			line(lines,mat,x1,y,z1, x,y,z1);
-			line(lines,mat,x,y,z1,  x,y,z);
-			line(lines,mat,x,y1,z,  x1,y1,z);
-			line(lines,mat,x1,y1,z, x1,y1,z1);
+			float x=pos.getX(), y=pos.getY(), z=pos.getZ();
+			float x1=x+1f, y1=y+1f, z1=z+1f;
+			line(lines,mat,x,y,z,x1,y,z);
+			line(lines,mat,x1,y,z,x1,y,z1);
+			line(lines,mat,x1,y,z1,x,y,z1);
+			line(lines,mat,x,y,z1,x,y,z);
+			line(lines,mat,x,y1,z,x1,y1,z);
+			line(lines,mat,x1,y1,z,x1,y1,z1);
 			line(lines,mat,x1,y1,z1,x,y1,z1);
-			line(lines,mat,x,y1,z1, x,y1,z);
-			line(lines,mat,x,y,z,   x,y1,z);
-			line(lines,mat,x1,y,z,  x1,y1,z);
-			line(lines,mat,x1,y,z1, x1,y1,z1);
-			line(lines,mat,x,y,z1,  x,y1,z1);
+			line(lines,mat,x,y1,z1,x,y1,z);
+			line(lines,mat,x,y,z,x,y1,z);
+			line(lines,mat,x1,y,z,x1,y1,z);
+			line(lines,mat,x1,y,z1,x1,y1,z1);
+			line(lines,mat,x,y,z1,x,y1,z1);
 		}
-		private static void line(VertexConsumer vc,Matrix4f mat,
-				float x0,float y0,float z0,float x1,float y1,float z1){
-			float nx=x1-x0,ny=y1-y0,nz=z1-z0;
+		private static void line(VertexConsumer vc,Matrix4f mat,float x0,float y0,float z0,float x1,float y1,float z1){
+			float nx=x1-x0, ny=y1-y0, nz=z1-z0;
 			float len=(float)Math.sqrt(nx*nx+ny*ny+nz*nz);
 			if(len==0f) return;
-			nx/=len;ny/=len;nz/=len;
+			nx/=len;
+			ny/=len;
+			nz/=len;
 			vc.addVertex(mat,x0,y0,z0).setColor(OR,OG,OB,OA).setNormal(nx,ny,nz);
 			vc.addVertex(mat,x1,y1,z1).setColor(OR,OG,OB,OA).setNormal(nx,ny,nz);
 		}

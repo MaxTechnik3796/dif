@@ -10,55 +10,48 @@ import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 public class ModularPart extends Item{
 	public ModularPart(){
 		super(new Properties());
 	}
-	private ModularPartProperties getProps(ItemStack itemStack){
+	public static ModularPartProperties getProps(ItemStack itemStack){
 		ModularPartProperties props=itemStack.get(DifModComponents.MODULAR_PART_PROPERTIES.get());
 		return props!=null?props:ModularPartProperties.DEFAULT;
 	}
-	public boolean isCast(ItemStack itemStack){
+	public static ModularParts getPart(ItemStack itemStack){
+		return ModularParts.byName(getProps(itemStack).partType());
+	}
+	public static ModularMaterial getMaterial(ItemStack itemStack){
+		return ModularMaterial.byName(getProps(itemStack).material());
+	}
+	public static ModularTier getTier(ItemStack itemStack){
+		return ModularTier.byName(getMaterial(itemStack).getTier().name());
+	}
+	public static boolean isCast(ItemStack itemStack){
 		return Objects.requireNonNull(itemStack.get(DifModComponents.MODULAR_PART_PROPERTIES.get())).castMold();
 	}
 	@Override
 	public void appendHoverText(@NotNull ItemStack itemStack,@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
 		ModularPartProperties props=getProps(itemStack);
 		if(props.partType().equals("none")) return;
-		ModularMaterial material=ModularMaterial.byName(props.material());
+		ModularMaterial material=getMaterial(itemStack);
 		ModularTier tier=material.getTier();
 		ModularModifier modifier=material.getModifier();
-		list.add(
-				Component.literal("───── Stats ─────")
-						.withStyle(Style.EMPTY.withColor(0x6644BB))
-		);
-		list.add(
-				Component.literal("Tier: ").withStyle(ChatFormatting.GRAY)
-						.append(Component.translatable("dif.tier."+tier.getName()).withColor(ModularTier.byName(tier.getName()).getColor()))
-		);
-		list.add(
-				Component.literal("Material: ").withStyle(Style.EMPTY.withColor(0x888888))
-						.append(Component.translatable("dif.material."+material.getName())
-								.withStyle(Style.EMPTY.withColor(material.getColor())))
-		);
-		list.add(
-				Component.literal("Modifier: ").withStyle(Style.EMPTY.withColor(0x888888))
-						.append(Component.translatable("dif.modifier."+modifier.getName())
-								.withStyle(Style.EMPTY.withColor(material.getColor())))
-		);
+		list.add(Component.literal("───── Stats ─────").withStyle(Style.EMPTY.withColor(0x6644BB)));
+		list.add(Component.literal("Tier: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.tier."+tier.getName()).withColor(ModularTier.byName(tier.getName()).getColor())));
+		list.add(Component.literal("Material: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.material."+material.getName()).withStyle(Style.EMPTY.withColor(material.getColor()))));
+		list.add(Component.literal("Modifier: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.modifier."+modifier.getName()).withStyle(Style.EMPTY.withColor(material.getColor()))));
 	}
 	@Override
 	public @NotNull String getDescriptionId(@NotNull ItemStack itemStack){
-		String type=getProps(itemStack).partType().toLowerCase(Locale.ROOT);
-		if(!type.isEmpty()&&!type.equals("none"))
-			return getProps(itemStack).castMold()?(super.getDescriptionId(itemStack)+"."+type+".cast_mold"):(super.getDescriptionId(itemStack)+"."+type);
+		String type=getProps(itemStack).partType();
+		if(!type.isEmpty()&&!type.equals("none")) return getProps(itemStack).castMold()?(super.getDescriptionId(itemStack)+"."+type+".cast_mold"):(super.getDescriptionId(itemStack)+"."+type);
 		return super.getDescriptionId(itemStack);
 	}
 	@Override
 	public @NotNull Component getName(@NotNull ItemStack itemStack){
-		int rarityColor=ModularMaterial.byName(getProps(itemStack).material()).getTier().getColor();
+		int rarityColor=getMaterial(itemStack).getTier().getColor();
 		return Component.translatable(getDescriptionId(itemStack)).withStyle(Style.EMPTY.withColor(rarityColor).withItalic(false));
 	}
 }
