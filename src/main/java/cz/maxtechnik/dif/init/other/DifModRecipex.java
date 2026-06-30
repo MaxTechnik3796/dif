@@ -8,6 +8,7 @@ import cz.maxtechnik.dif.item.modular.v2.ModularParts;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+
 import static cz.maxtechnik.dif.item.modular.v2.ModularMaterial.*;
 import static cz.maxtechnik.dif.item.modular.v2.ModularParts.*;
 import static cz.maxtechnik.mtrecipex.MTRecipexModRegistry.addCustom;
@@ -40,10 +41,8 @@ public class DifModRecipex{
 		addCustom(sMaterial+"_timber_axe_head",addCasting(TIMBER_AXE_HEAD,material,2));
 		addCustom(sMaterial+"_hammer_head",addCasting(HAMMER_HEAD,material,2));
 		addCustom(sMaterial+"_excavator_head",addCasting(EXCAVATOR_HEAD,material,2));
-
-		if(!material.getLiquid().isEmpty()&&material.getMinHeatTier()>0){
+		if(!material.getLiquid().isEmpty()&&material.getMinHeatTier()>0)
 			addCustom(sMaterial+"_parts_melting",addForgeMelting(material));
-		}
 	}
 	private static JsonObject addCasting(ModularParts partType,ModularMaterial material,int count){
 		Item casing_mold=partType.getCastingMold().get();

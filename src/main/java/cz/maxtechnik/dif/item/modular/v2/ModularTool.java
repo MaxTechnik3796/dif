@@ -42,11 +42,7 @@ import net.neoforged.neoforge.common.ItemAbility;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -282,14 +278,13 @@ public class ModularTool extends DiggerItem{
 		if((type.equals("shovel")||type.equals("excavator"))&&blockState.is(BlockTags.MINEABLE_WITH_SHOVEL)) return true;
 		return type.equals("hoe")&&blockState.is(BlockTags.MINEABLE_WITH_HOE);
 	}
-
 	private static boolean notMeetsMiningLevel(int miningLevel,BlockState blockState){
 		if(blockState.is(NEEDS_NETHERITE_TOOL)&&miningLevel<4) return true;
 		if(blockState.is(BlockTags.NEEDS_DIAMOND_TOOL)&&miningLevel<3) return true;
 		if(blockState.is(BlockTags.NEEDS_IRON_TOOL)&&miningLevel<2) return true;
 		return blockState.is(BlockTags.NEEDS_STONE_TOOL)&&miningLevel<1;
 	}
-	public static final TagKey<Block> NEEDS_NETHERITE_TOOL =TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("needs_netherite_tool"));
+	public static final TagKey<Block> NEEDS_NETHERITE_TOOL=TagKey.create(Registries.BLOCK,ResourceLocation.withDefaultNamespace("needs_netherite_tool"));
 	/**
 	 * On block is mined with tool.
 	 * @param itemStack tool

@@ -39,12 +39,12 @@ public class ModularColorHandler{
 					if(color!=-1) return color|0xFF000000;
 				}
 			}
-            return tintIndex;
-        },MODULAR_TOOL,MODULAR_PART);
+			return tintIndex;
+		},MODULAR_TOOL,MODULAR_PART);
 		event.register((itemStack,tintIndex)->{
 			if(tintIndex==1){
-				var contained = net.neoforged.neoforge.fluids.FluidUtil.getFluidContained(itemStack);
-				if(contained.isPresent() && !contained.get().isEmpty()){
+				var contained=net.neoforged.neoforge.fluids.FluidUtil.getFluidContained(itemStack);
+				if(contained.isPresent()&&!contained.get().isEmpty()){
 					return net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions.of(contained.get().getFluid()).getTintColor();
 				}
 			}

@@ -1,8 +1,6 @@
 package cz.maxtechnik.dif.item.modular.v2;
 
-
 import cz.maxtechnik.dif.DifMod;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,14 +14,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.event.level.BlockEvent;
-
 
 import java.util.*;
 /**
@@ -257,8 +252,8 @@ public final class ModularMiningHandler{
 		Deque<BlockPos> queue=new ArrayDeque<>();
 		queue.add(start);
 		visited.add(start.asLong());
-		boolean foundLeaves = false;
-		BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+		boolean foundLeaves=false;
+		BlockPos.MutableBlockPos mutable=new BlockPos.MutableBlockPos();
 		while(!queue.isEmpty()&&result.size()<TIMBER_MAX_BLOCKS){
 			BlockPos cur=queue.poll();
 			result.add(cur);
@@ -266,14 +261,14 @@ public final class ModularMiningHandler{
 				for(int dy=-1;dy<=1;dy++){
 					for(int dz=-1;dz<=1;dz++){
 						if(dx==0&&dy==0&&dz==0) continue;
-						mutable.setWithOffset(cur, dx, dy, dz);
-						long posLong = mutable.asLong();
+						mutable.setWithOffset(cur,dx,dy,dz);
+						long posLong=mutable.asLong();
 						if(visited.add(posLong)){
-							BlockState state = level.getBlockState(mutable);
-							if (state.is(BlockTags.LOGS)) {
+							BlockState state=level.getBlockState(mutable);
+							if(state.is(BlockTags.LOGS)){
 								queue.add(mutable.immutable());
-							} else if (!foundLeaves && state.is(BlockTags.LEAVES) && state.hasProperty(LeavesBlock.PERSISTENT) && !state.getValue(LeavesBlock.PERSISTENT)) {
-								foundLeaves = true;
+							}else if(!foundLeaves&&state.is(BlockTags.LEAVES)&&state.hasProperty(LeavesBlock.PERSISTENT)&&!state.getValue(LeavesBlock.PERSISTENT)){
+								foundLeaves=true;
 							}
 						}
 					}
@@ -284,5 +279,4 @@ public final class ModularMiningHandler{
 		result.sort(Comparator.comparingInt(BlockPos::getY));
 		return result;
 	}
-
 }

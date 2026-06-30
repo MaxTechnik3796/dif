@@ -52,7 +52,7 @@ public class ModularAssemblyRecipe implements SmithingRecipe{
 		return tool;
 	}
 	private ModularTier calculateTier(ItemStack head,ItemStack binding,ItemStack handle){
-		ModularTier h=getTier(head),b=getTier(binding),ha=getTier(handle);
+		ModularTier h=getTier(head), b=getTier(binding), ha=getTier(handle);
 		if(countOf(MYTHIC,h,b,ha)>1) return MYTHIC;
 		if(countOf(LEGENDARY,h,b,ha)>1) return LEGENDARY;
 		if(countOf(EPIC,h,b,ha)>1) return EPIC;

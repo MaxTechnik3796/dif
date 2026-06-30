@@ -21,18 +21,16 @@ public class ModularWikiBook extends Item{
 		if(level.isClientSide) execute(player);
 		return super.use(level,player,hand);
 	}
-
 	@Override
 	public @NotNull InteractionResult useOn(@NotNull UseOnContext context){
 		super.useOn(context);
 		if(context.getLevel().isClientSide) execute(context.getPlayer());
 		return InteractionResult.SUCCESS;
 	}
-
 	private void execute(Player player){
 		MutableComponent list=Component.empty();
 		list.append(Component.literal("Open ModularTools Wiki: ")
-				.append(Component.literal("HERE").withStyle(Style.EMPTY.withColor(ChatFormatting.GREEN).withUnderlined(true).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,Component.literal("Open Wiki"))) .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,"https://maxtechnik3796.github.io/dif/modular_tools_wiki.html"))))
+				.append(Component.literal("HERE").withStyle(Style.EMPTY.withColor(ChatFormatting.GREEN).withUnderlined(true).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,Component.literal("Open Wiki"))).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,"https://maxtechnik3796.github.io/dif/modular_tools_wiki.html"))))
 		);
 		DifMod.sendMessageToPlayer(player,list);
 	}
