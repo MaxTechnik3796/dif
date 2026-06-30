@@ -11,6 +11,7 @@
 		"dif:aluminum_block",
 		"#dif:supports",
 		"#dif:engines",
-		"#dif:engine_extenders"
+		"#dif:engine_extenders",
+		"dif:deepslate_mithril_ore"
 	]
 }

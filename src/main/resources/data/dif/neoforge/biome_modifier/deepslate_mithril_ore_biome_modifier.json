@@ -1,6 +1,6 @@
 {
 	"type":"neoforge:add_features",
-	"biomes":"stony_peaks",
+	"biomes":"#minecraft:is_mountain",
 	"features":"dif:deepslate_mithril_ore",
 	"step":"underground_ores"
 }

@@ -58,6 +58,7 @@
 		"dif:coke_oven",
 		"dif:coke_oven_controller",
 		"#dif:engines",
-		"#dif:engine_extenders"
+		"#dif:engine_extenders",
+		"dif:deepslate_mithril_ore"
 	]
 }
