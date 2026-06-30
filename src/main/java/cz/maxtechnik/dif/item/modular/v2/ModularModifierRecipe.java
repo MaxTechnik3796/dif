@@ -172,8 +172,9 @@ public class ModularModifierRecipe extends SmithingExtraRecipe{
 		return DifModRecipes.MODULAR_MODIFIER_SERIALIZER.get();
 	}
 	public static class Serializer implements RecipeSerializer<ModularModifierRecipe>{
-		public static final MapCodec<ModularModifierRecipe> CODEC=RecordCodecBuilder.mapCodec(inst->inst.group(Ingredient.CODEC.fieldOf("template")
-				.forGetter(ModularModifierRecipe::getJsonTemplate),Ingredient.CODEC.fieldOf("base").forGetter(ModularModifierRecipe::getJsonBase),
+		public static final MapCodec<ModularModifierRecipe> CODEC=RecordCodecBuilder.mapCodec(inst->inst.group(
+				Ingredient.CODEC.fieldOf("template").forGetter(ModularModifierRecipe::getJsonTemplate),
+				Ingredient.CODEC.fieldOf("base").forGetter(ModularModifierRecipe::getJsonBase),
 				Ingredient.CODEC.fieldOf("addition").forGetter(ModularModifierRecipe::getJsonAddition),
 				ItemStack.STRICT_CODEC.fieldOf("result").forGetter(ModularModifierRecipe::getJsonResult)).apply(inst,ModularModifierRecipe::new));
 		public static final StreamCodec<RegistryFriendlyByteBuf,ModularModifierRecipe> STREAM_CODEC=StreamCodec.of((buf,r)->{

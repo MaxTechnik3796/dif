@@ -63,17 +63,17 @@ public class ModularAssemblyRecipe implements SmithingRecipe{
 	public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider provider){
 		return this.result;
 	}
+	@Override
 	public boolean isTemplateIngredient(@NotNull ItemStack itemStack){
-		if(!(itemStack.getItem() instanceof ModularPart)) return false;
-		return ModularPartType.isBinding(getPart(itemStack));
+		return this.template.test(itemStack)&&ModularPartType.isBinding(getPart(itemStack));
 	}
+	@Override
 	public boolean isBaseIngredient(@NotNull ItemStack itemStack){
-		if(!(itemStack.getItem() instanceof ModularPart)) return false;
-		return ModularPartType.isHead(getPart(itemStack));
+		return this.base.test(itemStack)&&ModularPartType.isHead(getPart(itemStack));
 	}
+	@Override
 	public boolean isAdditionIngredient(@NotNull ItemStack itemStack){
-		if(!(itemStack.getItem() instanceof ModularPart)) return false;
-		return ModularPartType.isHandle(getPart(itemStack));
+		return this.addition.test(itemStack)&&ModularPartType.isHandle(getPart(itemStack));
 	}
 	public boolean isIncomplete(){
 		return this.template.isEmpty()||this.base.isEmpty()||this.addition.isEmpty();
