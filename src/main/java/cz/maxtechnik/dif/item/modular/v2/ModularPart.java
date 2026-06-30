@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 public class ModularPart extends Item{
 	public ModularPart(){
-		super(new Properties());
+		super(new Properties().fireResistant());
 	}
 	public static ModularPartProperties getProps(ItemStack itemStack){
 		ModularPartProperties props=itemStack.get(DifModComponents.MODULAR_PART_PROPERTIES.get());
