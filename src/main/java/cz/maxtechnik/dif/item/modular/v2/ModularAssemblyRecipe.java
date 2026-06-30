@@ -2,8 +2,6 @@ package cz.maxtechnik.dif.item.modular.v2;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import cz.maxtechnik.dif.init.basic.DifModItems;
-import cz.maxtechnik.dif.init.other.DifModComponents;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -16,8 +14,12 @@ import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import static cz.maxtechnik.dif.init.basic.DifModItems.MODULAR_TOOL;
+import static cz.maxtechnik.dif.init.other.DifModComponents.MODULAR_TOOL_PROPERTIES;
 import static cz.maxtechnik.dif.item.modular.v2.ModularPart.*;
+import static cz.maxtechnik.dif.item.modular.v2.ModularPartType.*;
 import static cz.maxtechnik.dif.item.modular.v2.ModularTier.*;
+import static cz.maxtechnik.dif.item.modular.v2.ModularTools.getToolFromParts;
 public class ModularAssemblyRecipe implements SmithingRecipe{
 	final Ingredient template;
 	final Ingredient base;
@@ -35,7 +37,7 @@ public class ModularAssemblyRecipe implements SmithingRecipe{
 		ItemStack head=container.getItem(1).copy();
 		ItemStack handle=container.getItem(2).copy();
 		if(this.template.test(binding)&&this.base.test(head)&&this.addition.test(handle))
-			return ModularTools.getToolFromParts(getPart(head),getPart(binding),getPart(handle))!=null;
+			return getToolFromParts(getPart(head),getPart(binding),getPart(handle))!=null;
 		return false;
 	}
 	@Override
@@ -43,10 +45,10 @@ public class ModularAssemblyRecipe implements SmithingRecipe{
 		ItemStack binding=container.getItem(0).copy();
 		ItemStack head=container.getItem(1).copy();
 		ItemStack handle=container.getItem(2).copy();
-		ItemStack tool=new ItemStack(DifModItems.MODULAR_TOOL.get());
-		ModularTools toolType=ModularTools.getToolFromParts(getPart(head),getPart(binding),getPart(handle));
+		ItemStack tool=new ItemStack(MODULAR_TOOL.get());
+		ModularTools toolType=getToolFromParts(getPart(head),getPart(binding),getPart(handle));
 		if(toolType==null) return head;
-		tool.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(toolType.getName(),getMaterial(head).getName(),getMaterial(binding).getName(),getMaterial(handle).getName(),calculateTier(head,binding,handle).getName(),ModularReforge.NONE.getName()));
+		tool.set(MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(toolType.getName(),getMaterial(head).getName(),getMaterial(binding).getName(),getMaterial(handle).getName(),calculateTier(head,binding,handle).getName(),ModularReforge.NONE.getName()));
 		return tool;
 	}
 	private ModularTier calculateTier(ItemStack head,ItemStack binding,ItemStack handle){
@@ -65,15 +67,15 @@ public class ModularAssemblyRecipe implements SmithingRecipe{
 	}
 	@Override
 	public boolean isTemplateIngredient(@NotNull ItemStack itemStack){
-		return this.template.test(itemStack)&&ModularPartType.isBinding(getPart(itemStack));
+		return this.template.test(itemStack)&&isBinding(getPart(itemStack));
 	}
 	@Override
 	public boolean isBaseIngredient(@NotNull ItemStack itemStack){
-		return this.base.test(itemStack)&&ModularPartType.isHead(getPart(itemStack));
+		return this.base.test(itemStack)&&isHead(getPart(itemStack));
 	}
 	@Override
 	public boolean isAdditionIngredient(@NotNull ItemStack itemStack){
-		return this.addition.test(itemStack)&&ModularPartType.isHandle(getPart(itemStack));
+		return this.addition.test(itemStack)&&isHandle(getPart(itemStack));
 	}
 	public boolean isIncomplete(){
 		return this.template.isEmpty()||this.base.isEmpty()||this.addition.isEmpty();

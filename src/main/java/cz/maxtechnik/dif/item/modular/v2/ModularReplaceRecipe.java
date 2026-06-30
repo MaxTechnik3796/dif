@@ -2,7 +2,6 @@ package cz.maxtechnik.dif.item.modular.v2;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import cz.maxtechnik.dif.init.other.DifModComponents;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -14,6 +13,9 @@ import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import static cz.maxtechnik.dif.init.other.DifModComponents.MODULAR_TOOL_PROPERTIES;
+import static cz.maxtechnik.dif.item.modular.v2.ModularPartType.*;
 public class ModularReplaceRecipe implements SmithingRecipe{
 	final Ingredient template;
 	final Ingredient base;
@@ -29,15 +31,16 @@ public class ModularReplaceRecipe implements SmithingRecipe{
 	public boolean matches(@NotNull SmithingRecipeInput container,@NotNull Level level){
 		ItemStack part=container.getItem(0).copy();
 		ItemStack tool=container.getItem(1).copy();
-		if(this.template.test(part)&&this.base.test(tool)){
+		ItemStack addition=container.getItem(2).copy();
+		if(this.template.test(part)&&this.base.test(tool)&&addition.isEmpty()){
 			ModularTools toolType=ModularTool.getToolType(tool);
 			ModularParts localPart=ModularPart.getPart(part);
 			if(ModularTools.isHead(toolType,localPart))
-				return !ModularTool.getMaterial(ModularPartType.HEAD,tool).equals(ModularPart.getMaterial(part));
+				return !ModularTool.getMaterial(HEAD,tool).equals(ModularPart.getMaterial(part));
 			if(ModularTools.isBinding(toolType,localPart))
-				return !ModularTool.getMaterial(ModularPartType.BINDING,tool).equals(ModularPart.getMaterial(part));
+				return !ModularTool.getMaterial(BINDING,tool).equals(ModularPart.getMaterial(part));
 			if(ModularTools.isHandle(toolType,localPart))
-				return !ModularTool.getMaterial(ModularPartType.HANDLE,tool).equals(ModularPart.getMaterial(part));
+				return !ModularTool.getMaterial(HANDLE,tool).equals(ModularPart.getMaterial(part));
 		}
 		return false;
 	}
@@ -45,9 +48,9 @@ public class ModularReplaceRecipe implements SmithingRecipe{
 	public @NotNull ItemStack assemble(SmithingRecipeInput container,@NotNull HolderLookup.Provider provider){
 		ItemStack part=container.getItem(0).copy();
 		ItemStack tool=container.getItem(1).copy();
-		ModularMaterial head=ModularTool.getMaterial(ModularPartType.HEAD,tool);
-		ModularMaterial binding=ModularTool.getMaterial(ModularPartType.HANDLE,tool);
-		ModularMaterial handle=ModularTool.getMaterial(ModularPartType.HEAD,tool);
+		ModularMaterial head=ModularTool.getMaterial(HEAD,tool);
+		ModularMaterial binding=ModularTool.getMaterial(BINDING,tool);
+		ModularMaterial handle=ModularTool.getMaterial(HANDLE,tool);
 		switch(ModularPartType.getPartType(ModularPart.getPart(part))){
 			case HEAD -> head=ModularPart.getMaterial(part);
 			case BINDING -> binding=ModularPart.getMaterial(part);
@@ -55,7 +58,7 @@ public class ModularReplaceRecipe implements SmithingRecipe{
 			default -> {
 			}
 		}
-		tool.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(ModularTool.getToolType(tool).getName(),head.getName(),binding.getName(),handle.getName(),ModularTool.getTier(tool).getName(),ModularTool.getReforge(tool).getName()));
+		tool.set(MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(ModularTool.getToolType(tool).getName(),head.getName(),binding.getName(),handle.getName(),ModularTool.getTier(tool).getName(),ModularTool.getReforge(tool).getName()));
 		return tool;
 	}
 	@Override
