@@ -25,6 +25,6 @@ public class DifModRecipes{
 	public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<ForgeMaterialRecipe>> FORGE_MATERIAL_SERIALIZER=REGISTRY.register("forge_material",ForgeMaterialRecipe.Serializer::new);
 	public static final DeferredHolder<RecipeType<?>, RecipeType<ForgeFluidMixingRecipe>> FORGE_FLUID_MIXING_TYPE = TYPE_REGISTRY.register("forge_fluid_mixing", () -> RecipeType.simple(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"forge_fluid_mixing")));
 	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ForgeFluidMixingRecipe>> FORGE_FLUID_MIXING_SERIALIZER = REGISTRY.register("forge_fluid_mixing",ForgeFluidMixingRecipe.Serializer::new);
-	public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<?>> MODULAR_REPAIR_SERIALIZER=REGISTRY.register("modular_modifier",ModularModifierRecipe.Serializer::new);
+	public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<?>> MODULAR_MODIFIER_SERIALIZER=REGISTRY.register("modular_modifier",ModularModifierRecipe.Serializer::new);
 	public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<?>> MODULAR_ASSEMBLY_SERIALIZER=REGISTRY.register("modular_assembly",ModularAssemblyRecipe.Serializer::new);
 }

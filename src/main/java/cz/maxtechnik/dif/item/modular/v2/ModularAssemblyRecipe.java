@@ -80,7 +80,7 @@ public class ModularAssemblyRecipe implements SmithingRecipe{
 	}
 	@Override
 	public @NotNull RecipeSerializer<?> getSerializer(){
-		return DifModRecipes.MODULAR_REPAIR_SERIALIZER.get();
+		return DifModRecipes.MODULAR_ASSEMBLY_SERIALIZER.get();
 	}
 	public static class Serializer implements RecipeSerializer<ModularAssemblyRecipe>{
 		public static final MapCodec<ModularAssemblyRecipe> CODEC=RecordCodecBuilder.mapCodec(inst->inst.group(Ingredient.CODEC.fieldOf("template").forGetter(r->r.template),Ingredient.CODEC.fieldOf("base").forGetter(r->r.base),Ingredient.CODEC.fieldOf("addition").forGetter(r->r.addition),ItemStack.STRICT_CODEC.fieldOf("result").forGetter(r->r.result)).apply(inst,ModularAssemblyRecipe::new));
