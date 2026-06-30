@@ -159,6 +159,8 @@ public class DifModTabs{
 		tabData.accept(Items.SMITHING_TABLE);
 		tabData.accept(MODULAR_REFORGE_TABLE);
 
+		tabData.accept(MODULAR_WIKI_BOOK);
+
 		tabData.accept(MODULAR_TEMPLATE_NORMAL);
 		tabData.accept(MODULAR_TEMPLATE_HYPER);
 

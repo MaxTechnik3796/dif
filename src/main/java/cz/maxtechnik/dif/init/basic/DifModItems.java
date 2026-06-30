@@ -8,6 +8,7 @@ import cz.maxtechnik.dif.item.food.*;
 import cz.maxtechnik.dif.item.modular.v2.ModularPart;
 import cz.maxtechnik.dif.item.modular.v2.ModularTemplate;
 import cz.maxtechnik.dif.item.modular.v2.ModularTool;
+import cz.maxtechnik.dif.item.modular.v2.ModularWikiBook;
 import cz.maxtechnik.dif.item.quarry.DrillHeadItem;
 import cz.maxtechnik.dif.item.tool.*;
 import cz.maxtechnik.dif.item.armor.*;
@@ -24,6 +25,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.util.Objects;
 @SuppressWarnings("unused")
 public class DifModItems{
@@ -95,6 +97,7 @@ public class DifModItems{
 	public static final DeferredItem<Item>CASTING_MOLD_HAMMER_HEAD=REGISTRY.register("casting_mold_hammer_head",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item>CASTING_MOLD_EXCAVATOR_HEAD=REGISTRY.register("casting_mold_excavator_head",()->new Item(new Item.Properties()));
 
+	public static final DeferredItem<Item>MODULAR_WIKI_BOOK=REGISTRY.register("modular_wiki_book",()->new ModularWikiBook(new Item.Properties()));
 
 	public static final DeferredItem<Item> PORTAL_GUN=REGISTRY.register("portal_gun",PortalGun::new);
 
