@@ -19,6 +19,9 @@ public class ModularPart extends Item{
 		ModularPartProperties props=itemStack.get(DifModComponents.MODULAR_PART_PROPERTIES.get());
 		return props!=null?props:ModularPartProperties.DEFAULT;
 	}
+	public static boolean isModularPart(ItemStack itemStack){
+		return itemStack.getItem() instanceof ModularPart;
+	}
 	public static ModularParts getPart(ItemStack itemStack){
 		return ModularParts.byName(getProps(itemStack).partType());
 	}

@@ -1,0 +1,15 @@
+{
+	"type":"dif:modular_replace",
+	"template":{
+		"item":"dif:modular_part"
+	},
+	"base":{
+		"item":"dif:modular_tool"
+	},
+	"addition":{
+		"item":"minecraft:barrier"
+	},
+	"result":{
+		"id":"dif:modular_tool"
+	}
+}

@@ -18,10 +18,13 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
@@ -33,12 +36,14 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -84,6 +89,20 @@ public class ModularTool extends DiggerItem{
 		ModularToolProperties props=itemStack.get(DifModComponents.MODULAR_TOOL_PROPERTIES.get());
 		return props!=null?props:ModularToolProperties.DEFAULT;
 	}
+	public static boolean isModularTool(ItemStack itemStack){
+		return itemStack.getItem() instanceof ModularTool;
+	}
+	public static ModularTools getToolType(ItemStack itemStack){
+		return ModularTools.byName(getProps(itemStack).toolType());
+	}
+	public static ModularMaterial getMaterial(ModularPartType partType,ItemStack itemStack){
+		return switch(partType){
+			case HEAD -> ModularMaterial.byName(getProps(itemStack).headMaterial());
+			case BINDING -> ModularMaterial.byName(getProps(itemStack).bindingMaterial());
+			case HANDLE -> ModularMaterial.byName(getProps(itemStack).handleMaterial());
+			default -> ModularMaterial.NONE;
+		};
+	}
 	/**
 	 * Is tool broken?
 	 * @param itemStack tool
@@ -98,12 +117,12 @@ public class ModularTool extends DiggerItem{
 	 * @param itemStack tool
 	 * @return EnumSet of active material modifiers
 	 */
-	public static java.util.EnumSet<ModularModifier> getMaterialModifiers(ItemStack itemStack){
+	public static EnumSet<ModularModifier> getMaterialModifiers(ItemStack itemStack){
 		ModularToolProperties props=getProps(itemStack);
 		ModularModifier head=ModularMaterial.byName(props.headMaterial()).getModifier();
 		ModularModifier binding=ModularMaterial.byName(props.bindingMaterial()).getModifier();
 		ModularModifier handle=ModularMaterial.byName(props.handleMaterial()).getModifier();
-		return java.util.EnumSet.of(head,binding,handle);
+		return EnumSet.of(head,binding,handle);
 	}
 	/**
 	 * Check if tool has a specific material modifier.
@@ -122,7 +141,7 @@ public class ModularTool extends DiggerItem{
 	 * @param entity player
 	 */
 	public void damageTool(ItemStack itemStack,int amount,LivingEntity entity){
-		java.util.EnumSet<ModularModifier> mods=getMaterialModifiers(itemStack);
+		EnumSet<ModularModifier> mods=getMaterialModifiers(itemStack);
 		if(mods.contains(ModularModifier.UNBREAKABLE_MAT)) if(entity.level().getRandom().nextBoolean()) return;
 		int maxDmg=getMaxDamage(itemStack);
 		int currentDmg=itemStack.getDamageValue();
@@ -347,7 +366,7 @@ public class ModularTool extends DiggerItem{
 			}
 			case "hoe" -> {
 				// CULTIVATOR reforge: AOE tilling (EPIC/LEGENDARY=3×3, MYTHIC=5×5)
-				if(getReforge(itemStack)==ModularReforge.CULTIVATOR){
+				if(getReforge(itemStack)==CULTIVATOR){
 					ModularTier tier=getTier(itemStack);
 					if(tier==ModularTier.EPIC||tier==ModularTier.LEGENDARY||tier==ModularTier.MYTHIC){
 						int radius=tier==ModularTier.MYTHIC?2:1; // 5×5 = radius 2, 3×3 = radius 1
@@ -477,13 +496,13 @@ public class ModularTool extends DiggerItem{
 		return builder.build();
 	}
 	@Override
-	public void inventoryTick(@NotNull ItemStack itemStack,@NotNull Level level,@NotNull net.minecraft.world.entity.Entity entity,int slot,boolean isSelected){
+	public void inventoryTick(@NotNull ItemStack itemStack,@NotNull Level level,@NotNull Entity entity,int slot,boolean isSelected){
 		super.inventoryTick(itemStack,level,entity,slot,isSelected);
 		if(level.isClientSide) return;
 		long gameTime=level.getGameTime();
 		// Self-repair: only evaluate when tick aligns and tool is damaged (cheap guard first)
 		if(itemStack.isDamaged()&&(gameTime%40==0||gameTime%80==0)){
-			java.util.EnumSet<ModularModifier> mods=getMaterialModifiers(itemStack);
+			EnumSet<ModularModifier> mods=getMaterialModifiers(itemStack);
 			if(gameTime%40==0&&mods.contains(ModularModifier.RENEWABLE)){
 				itemStack.setDamageValue(Math.max(0,itemStack.getDamageValue()-1));
 			}else if(gameTime%80==0&&mods.contains(ModularModifier.SELF_REPAIR)){
@@ -493,11 +512,11 @@ public class ModularTool extends DiggerItem{
 		// Magnetic: only when held in hand and every 10 ticks
 		if(gameTime%10==0&&entity instanceof Player player&&(player.getMainHandItem()==itemStack||player.getOffhandItem()==itemStack)){
 			if(getMaterialModifiers(itemStack).contains(ModularModifier.MAGNETIC)){
-				net.minecraft.world.phys.AABB box=player.getBoundingBox().inflate(5.0);
-				for(net.minecraft.world.entity.item.ItemEntity item: level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,box)){
+				AABB box=player.getBoundingBox().inflate(5.0);
+				for(ItemEntity item: level.getEntitiesOfClass(ItemEntity.class,box)){
 					if(item.isAlive()&&!item.hasPickUpDelay()) item.teleportTo(player.getX(),player.getY()+0.5,player.getZ());
 				}
-				for(net.minecraft.world.entity.ExperienceOrb orb: level.getEntitiesOfClass(net.minecraft.world.entity.ExperienceOrb.class,box)){
+				for(ExperienceOrb orb: level.getEntitiesOfClass(ExperienceOrb.class,box)){
 					if(orb.isAlive()) orb.teleportTo(player.getX(),player.getY()+0.5,player.getZ());
 				}
 			}
@@ -850,7 +869,7 @@ public class ModularTool extends DiggerItem{
 	 */
 	public static ModularReforge getReforge(ItemStack itemStack){
 		ModularToolProperties props=getProps(itemStack);
-		return ModularReforge.byName(props.reforge());
+		return byName(props.reforge());
 	}
 	/**
 	 * Set new ModularTier to tool.

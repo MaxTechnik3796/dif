@@ -43,6 +43,15 @@ public enum ModularTools{
 		}
 		return null;
 	}
+	public static boolean isHead(ModularTools tool,ModularParts head){
+		return tool.getHead().equals(head);
+	}
+	public static boolean isBinding(ModularTools tool,ModularParts head){
+		return tool.getBinding().equals(head);
+	}
+	public static boolean isHandle(ModularTools tool,ModularParts head){
+		return tool.getHandle().equals(head);
+	}
 	public String getName(){
 		return this.name;
 	}
