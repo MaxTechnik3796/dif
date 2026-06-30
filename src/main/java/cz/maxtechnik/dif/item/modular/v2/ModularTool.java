@@ -423,7 +423,15 @@ public class ModularTool extends DiggerItem{
 	 * @return efficiency modifier value.
 	 */
 	public float efficiencyLevel(ItemStack itemStack){
-		return (float)getModifierLevel(itemStack,ModularModifier.EFFICIENCY);
+		return switch(getModifierLevel(itemStack,ModularModifier.EFFICIENCY)){
+			case 1 -> 1F;
+			case 2 -> 2F;
+			case 3 -> 3F;
+			case 4 -> 4F;
+			case 5 -> 5F;
+			case 6 -> 6F;
+			default -> 0;
+		};
 	}
 	/**
 	 * Get knockback modifier value.
@@ -431,7 +439,12 @@ public class ModularTool extends DiggerItem{
 	 * @return knockback modifier value.
 	 */
 	public float knockbackLevel(ItemStack itemStack){
-		return getModifierLevel(itemStack,ModularModifier.KNOCKBACK)*0.2F;
+		return switch(getModifierLevel(itemStack,ModularModifier.KNOCKBACK)){
+			case 1 -> 0.2F;
+			case 2 -> 0.4F;
+			case 3 -> 0.6F;
+			default -> 0F;
+		};
 	}
 	/**
 	 * Get sharpness modifier value.
@@ -439,8 +452,15 @@ public class ModularTool extends DiggerItem{
 	 * @return sharpness modifier value.
 	 */
 	public float sharpnessDamage(ItemStack itemStack){
-		int lvl=getModifierLevel(itemStack,ModularModifier.SHARPNESS);
-		return lvl>0?lvl+1F:0F;
+		return switch(getModifierLevel(itemStack,ModularModifier.SHARPNESS)){
+			case 1 -> 2F;
+			case 2 -> 3F;
+			case 3 -> 4F;
+			case 4 -> 5F;
+			case 5 -> 6F;
+			case 6 -> 7F;
+			default -> 0F;
+		};
 	}
 	/**
 	 * Get reinforced modifier value.
@@ -448,8 +468,13 @@ public class ModularTool extends DiggerItem{
 	 * @return reinforced modifier value.
 	 */
 	public int reinforcedLevel(ItemStack itemStack){
-		int lvl=getModifierLevel(itemStack,ModularModifier.REINFORCED);
-		return lvl>0?lvl+1:0;
+		return switch(getModifierLevel(itemStack,ModularModifier.REINFORCED)){
+			case 1 -> 2;
+			case 2 -> 3;
+			case 3 -> 4;
+			case 4 -> 5;
+			default -> 0;
+		};
 	}
 	/**
 	 * Apply ItemAttributeModifiers.
