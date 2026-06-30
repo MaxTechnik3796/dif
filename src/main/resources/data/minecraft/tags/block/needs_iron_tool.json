@@ -12,6 +12,9 @@
 		"#dif:supports",
 		"#dif:engines",
 		"#dif:engine_extenders",
-		"dif:deepslate_mithril_ore"
+		"dif:nickel_block",
+		"dif:raw_nickel_block",
+		"dif:nickel_ore",
+		"dif:deepslate_nickel_ore"
 	]
 }

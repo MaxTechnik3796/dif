@@ -16,6 +16,7 @@ import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -221,4 +222,11 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>DEEPSLATE_MITHRIL_ORE=REGISTRY.register("deepslate_mithril_ore",()->new DropExperienceBlock(ConstantInt.of(0),BlockBehaviour.Properties.ofFullCopy(GOLD_ORE).mapColor(MapColor.DEEPSLATE).strength(4.5F,3F).sound(SoundType.DEEPSLATE)));
 
 	public static final DeferredBlock<Block>WOODEN_FRAME=REGISTRY.register("wooden_frame",()->new WoodenFrame(BlockBehaviour.Properties.of().strength(3F,3F).sound(SoundType.WOOD).noOcclusion().ignitedByLava()));
+
+	public static final DeferredBlock<Block>NICKEL_BLOCK=REGISTRY.register("nickel_block",()->new Block(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5F,6F).sound(SoundType.METAL)));
+	public static final DeferredBlock<Block>RAW_NICKEL_BLOCK=REGISTRY.register("raw_nickel_block",()->new Block(BlockBehaviour.Properties.of().mapColor(MapColor.RAW_IRON).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(5F,6F)));
+
+	public static final DeferredBlock<Block>NICKEL_ORE=REGISTRY.register("nickel_ore",()->new DropExperienceBlock(ConstantInt.of(0),BlockBehaviour.Properties.ofFullCopy(GOLD_ORE).mapColor(MapColor.STONE).strength(3F,3F).sound(SoundType.STONE)));
+	public static final DeferredBlock<Block>DEEPSLATE_NICKEL_ORE=REGISTRY.register("deepslate_nickel_ore",()->new DropExperienceBlock(ConstantInt.of(0),BlockBehaviour.Properties.ofFullCopy(GOLD_ORE).mapColor(MapColor.DEEPSLATE).strength(4.5F,3F).sound(SoundType.DEEPSLATE)));
+
 }

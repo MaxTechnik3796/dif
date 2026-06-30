@@ -1,8 +1,7 @@
 {
-	"parent":"block/cube_all",
-	"textures":{
-		"all":"dif:block/nickel_block",
-		"particle":"dif:block/nickel_block"
-	},
-	"render_type":"solid"
+	"variants":{
+		"":{
+			"model":"dif:block/nickel_block"
+		}
+	}
 }

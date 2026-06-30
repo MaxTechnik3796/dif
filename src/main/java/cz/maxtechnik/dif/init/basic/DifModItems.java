@@ -14,12 +14,18 @@ import cz.maxtechnik.dif.item.tool.*;
 import cz.maxtechnik.dif.item.armor.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import cz.maxtechnik.dif.init.events.QuarryStats;
 import cz.maxtechnik.dif.item.quarry.EngineItem;
+import net.minecraft.world.level.block.DropExperienceBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -27,6 +33,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.util.Objects;
+
+import static net.minecraft.world.level.block.Blocks.GOLD_ORE;
 @SuppressWarnings("unused")
 public class DifModItems{
 	public static final DeferredRegister.Items REGISTRY=DeferredRegister.createItems(DifMod.MODID);
@@ -374,4 +382,13 @@ public class DifModItems{
 
 	public static final DeferredItem<Item>WOODEN_FRAME=block(DifModBlocks.WOODEN_FRAME);
 	public static final DeferredItem<Item>DEEPSLATE_MITHRIL_ORE=block(DifModBlocks.DEEPSLATE_MITHRIL_ORE);
+
+	public static final DeferredItem<Item>NICKEL_NUGGET=REGISTRY.register("nickel_nugget",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item>NICKEL_INGOT=REGISTRY.register("nickel_ingot",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item>RAW_NICKEL=REGISTRY.register("raw_nickel",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item>NICKEL_BLOCK=block(DifModBlocks.NICKEL_BLOCK);
+	public static final DeferredItem<Item>RAW_NICKEL_BLOCK=block(DifModBlocks.RAW_NICKEL_BLOCK);
+	public static final DeferredItem<Item>NICKEL_ORE=block(DifModBlocks.NICKEL_ORE);
+	public static final DeferredItem<Item>DEEPSLATE_NICKEL_ORE=block(DifModBlocks.DEEPSLATE_NICKEL_ORE);
+
 }

@@ -533,11 +533,11 @@
 	"item.dif.casting_mold_sword_head":"Casting Mold: Sword Head",
 	"item.dif.casting_mold_sword_binding":"Casting Mold: Sword Binding",
 	"item.dif.casting_mold_hoe_head":"Casting Mold: Hoe Head",
-	"item.dif.casting_mold.battle_axe_head":"Casting Mold: Battle Axe Head",
-	"item.dif.casting_mold.katana_head":"Casting Mold: Katana Head",
-	"item.dif.casting_mold.timber_axe_head":"Casting Mold: Timber Axe Head",
-	"item.dif.casting_mold.hammer_head":"Casting Mold: Hammer Head",
-	"item.difcasting_mold.excavator_head":"Casting Mold: Excavator Head",
+	"item.dif.casting_mold_battle_axe_head":"Casting Mold: Battle Axe Head",
+	"item.dif.casting_mold_katana_head":"Casting Mold: Katana Head",
+	"item.dif.casting_mold_timber_axe_head":"Casting Mold: Timber Axe Head",
+	"item.dif.casting_mold_hammer_head":"Casting Mold: Hammer Head",
+	"item.dif.casting_mold_excavator_head":"Casting Mold: Excavator Head",
 
 
 	"dif.material.wood":"Wood",
@@ -710,10 +710,12 @@
 
 	"item.dif.nickel_ingot":"Nickel Ingot",
 	"item.dif.nickel_nugget":"Nickel Nugget",
+	"item.dif.raw_nickel":"Raw Nickel",
 
 	"block.dif.nickel_ore":"Nickel Ore",
 	"block.dif.deepslate_nickel_ore":"Deepslate Nickel Ore",
 	"block.dif.nickel_block":"Nickel Block",
+	"block.dif.raw_nickel_block":"Raw Nickel Block",
 
 	"block.dif.wooden_frame":"Wooden Frame",
 	"block.dif.deepslate_mithril_ore":"Deepslate Mithril Ore"

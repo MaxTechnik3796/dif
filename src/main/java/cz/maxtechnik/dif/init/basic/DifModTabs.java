@@ -63,6 +63,7 @@ public class DifModTabs{
 
 		tabData.accept(MITHRIL);
 		tabData.accept(MITHRIL_PLATE);
+		tabData.accept(DEEPSLATE_MITHRIL_ORE);
 		tabData.accept(BLUESTONE);
 		tabData.accept(BLUE_PLATE);
 
@@ -83,7 +84,13 @@ public class DifModTabs{
 		tabData.accept(QUARRY_ENGINE_GOLD);
 		tabData.accept(QUARRY_ENGINE_DIAMOND);
 
-
+		tabData.accept(NICKEL_NUGGET);
+		tabData.accept(NICKEL_INGOT);
+		tabData.accept(RAW_NICKEL);
+		tabData.accept(NICKEL_BLOCK);
+		tabData.accept(RAW_NICKEL_BLOCK);
+		tabData.accept(NICKEL_ORE);
+		tabData.accept(DEEPSLATE_NICKEL_ORE);
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>INDUSTRIAL=REGISTER.register("industrial",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.industrials")).icon(()->new ItemStack(ENGINE_EXTENDER_DIESEL.get())).displayItems(((parameters,tabData)->{
 
@@ -156,11 +163,11 @@ public class DifModTabs{
 		tabData.accept(JETPACK);
 
 		tabData.accept(ELECTRO_RUNNERS);
+
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>MODULAR_TOOLS=REGISTER.register("modular_tools",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.SPACE.getKey()).title(Component.translatable("creative_tab.dif.modular_tools")).icon(()->new ItemStack(Items.SMITHING_TABLE)).displayItems(((parameters, tabData)->{
 		tabData.accept(Items.SMITHING_TABLE);
 		tabData.accept(MODULAR_REFORGE_TABLE);
-		tabData.accept(DEEPSLATE_MITHRIL_ORE);
 
 		tabData.accept(MODULAR_WIKI_BOOK);
 
