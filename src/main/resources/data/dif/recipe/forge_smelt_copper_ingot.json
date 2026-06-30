@@ -1,28 +1,39 @@
 {
-  "type": "dif:forge_material",
-  "min_heat_tier": 1,
-  "processing_time": 80,
-  "conversions": [
-    {
-      "ingredient": { "item": "minecraft:copper_ingot" },
-      "ingot_value": 1.0,
-      "processing_time_multiplier": 1.0
-    },
-    {
-      "ingredient": { "item": "minecraft:copper_block" },
-      "ingot_value": 9.0,
-      "processing_time_multiplier": 9.0
-    },
-    {
-      "ingredient": { "item": "minecraft:raw_copper" },
-      "ingot_value": 1.5,
-      "processing_time_multiplier": 0.8
-    },
-    {
-      "ingredient": { "tag": "minecraft:copper_ores" },
-      "ingot_value": 2.0,
-      "processing_time_multiplier": 1.2
-    }
-  ],
-  "result_fluid": { "id": "dif:molten_copper_fluid", "amount": 144 }
+	"type":"dif:forge_material",
+	"min_heat_tier":1,
+	"processing_time":80,
+	"conversions":[
+		{
+			"ingredient":{
+				"item":"minecraft:copper_ingot"
+			},
+			"ingot_value":1.0,
+			"processing_time_multiplier":1.0
+		},
+		{
+			"ingredient":{
+				"item":"minecraft:copper_block"
+			},
+			"ingot_value":9.0,
+			"processing_time_multiplier":9.0
+		},
+		{
+			"ingredient":{
+				"item":"minecraft:raw_copper"
+			},
+			"ingot_value":1.5,
+			"processing_time_multiplier":0.8
+		},
+		{
+			"ingredient":{
+				"tag":"minecraft:copper_ores"
+			},
+			"ingot_value":2.0,
+			"processing_time_multiplier":1.2
+		}
+	],
+	"result_fluid":{
+		"id":"dif:molten_copper_fluid",
+		"amount":144
+	}
 }
