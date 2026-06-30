@@ -43,11 +43,11 @@ public record BlastSmelteryRecipe(
     ).apply(inst, BlastSmelteryRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BlastSmelteryRecipe> STREAM_CODEC = StreamCodec.composite(
-            FluidStack.STREAM_CODEC, BlastSmelteryRecipe::fluidInput,
+            FluidStack.OPTIONAL_STREAM_CODEC, BlastSmelteryRecipe::fluidInput,
             Ingredient.CONTENTS_STREAM_CODEC, BlastSmelteryRecipe::itemIngredient,
             ByteBufCodecs.INT, BlastSmelteryRecipe::itemIngredientCount,
-            FluidStack.STREAM_CODEC, BlastSmelteryRecipe::fluidOutput,
-            ItemStack.STREAM_CODEC, BlastSmelteryRecipe::itemResult,
+            FluidStack.OPTIONAL_STREAM_CODEC, BlastSmelteryRecipe::fluidOutput,
+            ItemStack.OPTIONAL_STREAM_CODEC, BlastSmelteryRecipe::itemResult,
             ByteBufCodecs.INT, BlastSmelteryRecipe::processingTime,
             BlastSmelteryRecipe::new
     );
