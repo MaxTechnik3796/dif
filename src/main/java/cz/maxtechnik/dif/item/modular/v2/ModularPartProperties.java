@@ -8,5 +8,5 @@ public record ModularPartProperties(String partType,String material,boolean cast
 			Codec.STRING.fieldOf("material").forGetter(ModularPartProperties::material),
 			Codec.BOOL.fieldOf("cast_mold").forGetter(ModularPartProperties::castMold)
 	).apply(instance,ModularPartProperties::new));
-	public static final ModularPartProperties DEFAULT=new ModularPartProperties("none","wood",false);
+	public static final ModularPartProperties DEFAULT=new ModularPartProperties(ModularParts.NONE.getName(),ModularMaterial.WOOD.getName(),false);
 }
