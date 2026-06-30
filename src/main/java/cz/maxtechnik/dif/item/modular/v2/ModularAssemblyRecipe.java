@@ -64,15 +64,15 @@ public class ModularAssemblyRecipe implements SmithingRecipe{
 		return this.result;
 	}
 	public boolean isTemplateIngredient(@NotNull ItemStack itemStack){
-		if(itemStack.getItem() instanceof ModularPart) return false;
+		if(!(itemStack.getItem() instanceof ModularPart)) return false;
 		return ModularPartType.isBinding(getPart(itemStack));
 	}
 	public boolean isBaseIngredient(@NotNull ItemStack itemStack){
-		if(itemStack.getItem() instanceof ModularPart) return false;
+		if(!(itemStack.getItem() instanceof ModularPart)) return false;
 		return ModularPartType.isHead(getPart(itemStack));
 	}
 	public boolean isAdditionIngredient(@NotNull ItemStack itemStack){
-		if(itemStack.getItem() instanceof ModularPart) return false;
+		if(!(itemStack.getItem() instanceof ModularPart)) return false;
 		return ModularPartType.isHandle(getPart(itemStack));
 	}
 	public boolean isIncomplete(){
