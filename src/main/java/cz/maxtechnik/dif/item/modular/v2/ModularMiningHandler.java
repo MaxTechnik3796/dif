@@ -1,11 +1,8 @@
 package cz.maxtechnik.dif.item.modular.v2;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import cz.maxtechnik.dif.DifMod;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,14 +16,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
+
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.event.level.BlockEvent;
-import org.joml.Matrix4f;
+
 
 import java.util.*;
 /**
@@ -59,7 +56,7 @@ import java.util.*;
 public final class ModularMiningHandler{
 	private static final float HARDNESS_MULTIPLIER=2.0f;
 	private static final int AOE_SIZE=8;
-	private static final int TIMBER_MAX_BLOCKS=64;
+	private static final int TIMBER_MAX_BLOCKS=128;
 	/** Prevents recursive {@code BlockEvent.BreakEvent} from re-triggering AOE. */
 	private static final ThreadLocal<Boolean> BREAKING=new ThreadLocal<>();
 	// -------------------------------------------------------------------------
@@ -137,8 +134,8 @@ public final class ModularMiningHandler{
 			handleAoeMining(level,player,tool,modularTool,centre,centreState,false);
 			return;
 		}
-		List<BlockPos> logs=collectLogs(level,centre,true);
-		if(!isNaturalTree(level,logs)){
+		List<BlockPos> logs=collectNaturalLogs(level,centre);
+		if(logs==null||logs.isEmpty()){
 			handleAoeMining(level,player,tool,modularTool,centre,centreState,false);
 			return;
 		}
@@ -251,138 +248,41 @@ public final class ModularMiningHandler{
 	}
 	/**
 	 * BFS collecting connected log blocks from {@code start}.
-	 * @param sortBottomUp sort result Y-ascending (for tree felling order)
+	 * Also checks for natural leaves during the scan to avoid a second pass.
+	 * Returns null if no natural leaves were found (meaning it's player-placed wood).
 	 */
-	private static List<BlockPos> collectLogs(Level level,BlockPos start,boolean sortBottomUp){
+	private static List<BlockPos> collectNaturalLogs(Level level,BlockPos start){
 		List<BlockPos> result=new ArrayList<>();
-		Set<BlockPos> visited=new HashSet<>();
+		it.unimi.dsi.fastutil.longs.LongSet visited=new it.unimi.dsi.fastutil.longs.LongOpenHashSet();
 		Deque<BlockPos> queue=new ArrayDeque<>();
 		queue.add(start);
-		visited.add(start);
+		visited.add(start.asLong());
+		boolean foundLeaves = false;
+		BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 		while(!queue.isEmpty()&&result.size()<TIMBER_MAX_BLOCKS){
 			BlockPos cur=queue.poll();
 			result.add(cur);
-			for(Direction dir: Direction.values()){
-				BlockPos nb=cur.relative(dir);
-				if(!visited.contains(nb)&&level.getBlockState(nb).is(BlockTags.LOGS)){
-					visited.add(nb);
-					queue.add(nb);
+			for(int dx=-1;dx<=1;dx++){
+				for(int dy=-1;dy<=1;dy++){
+					for(int dz=-1;dz<=1;dz++){
+						if(dx==0&&dy==0&&dz==0) continue;
+						mutable.setWithOffset(cur, dx, dy, dz);
+						long posLong = mutable.asLong();
+						if(visited.add(posLong)){
+							BlockState state = level.getBlockState(mutable);
+							if (state.is(BlockTags.LOGS)) {
+								queue.add(mutable.immutable());
+							} else if (!foundLeaves && state.is(BlockTags.LEAVES) && state.hasProperty(LeavesBlock.PERSISTENT) && !state.getValue(LeavesBlock.PERSISTENT)) {
+								foundLeaves = true;
+							}
+						}
+					}
 				}
 			}
 		}
-		if(sortBottomUp) result.sort(Comparator.comparingInt(BlockPos::getY));
+		if(!foundLeaves) return null;
+		result.sort(Comparator.comparingInt(BlockPos::getY));
 		return result;
 	}
-	/**
-	 * Tree is "natural" when at least one neighboring leaf block has {@code PERSISTENT=false}
-	 * (placed by WorldWind, not by a player).
-	 */
-	private static boolean isNaturalTree(Level level,List<BlockPos> logs){
-		for(BlockPos logPos: logs)
-			for(Direction dir: Direction.values()){
-				BlockState adj=level.getBlockState(logPos.relative(dir));
-				if(adj.is(BlockTags.LEAVES)&&adj.hasProperty(LeavesBlock.PERSISTENT)&&!adj.getValue(LeavesBlock.PERSISTENT)) return true;
-			}
-		return false;
-	}
-	// =========================================================================
-	// Client – wireframe overlay
-	// =========================================================================
-	@EventBusSubscriber(modid=DifMod.MODID, value=Dist.CLIENT)
-	public static final class ClientOverlay{
-		private ClientOverlay(){
-		}
-		// Vanilla default block hover outline color
-		private static final float OR=0f, OG=0f, OB=0f, OA=0.4f;
-		@SubscribeEvent
-		public static void onRenderLevel(RenderLevelStageEvent event){
-			if(event.getStage()!=RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) return;
-			Minecraft mc=Minecraft.getInstance();
-			Player player=mc.player;
-			if(player==null||mc.level==null) return;
-			ItemStack tool=player.getMainHandItem();
-			if(!(tool.getItem() instanceof ModularTool modularTool)) return;
-			if(modularTool.isBroken(tool)) return;
-			String type=ModularTool.getProps(tool).toolType();
-			boolean isHammer=type.equals(ModularTools.HAMMER.getName());
-			boolean isExcavator=type.equals(ModularTools.EXCAVATOR.getName());
-			boolean isTimberAxe=type.equals(ModularTools.TIMBER_AXE.getName());
-			boolean isHoe=type.equals(ModularTools.HOE.getName());
-			if(!isHammer&&!isExcavator&&!isTimberAxe&&!isHoe) return;
-			// HOE overlay only for CULTIVATOR at EPIC+
-			if(isHoe&&(ModularTool.getReforge(tool)!=ModularReforge.CULTIVATOR||ModularTool.getTier(tool)==ModularTier.COMMON||ModularTool.getTier(tool)==ModularTier.RARE)) return;
-			HitResult hit=player.pick(5.0,event.getPartialTick().getGameTimeDeltaPartialTick(false),false);
-			if(!(hit instanceof BlockHitResult blockHit)) return;
-			if(blockHit.getType()==HitResult.Type.MISS) return;
-			Level level=mc.level;
-			BlockPos centre=blockHit.getBlockPos();
-			Direction face=blockHit.getDirection();
-			Vec3 camPos=event.getCamera().getPosition();
-			PoseStack ps=event.getPoseStack();
-			ps.pushPose();
-			ps.translate(-camPos.x,-camPos.y,-camPos.z);
-			MultiBufferSource.BufferSource buf=mc.renderBuffers().bufferSource();
-			VertexConsumer lines=buf.getBuffer(RenderType.lines());
-			if(isTimberAxe){
-				if(level.getBlockState(centre).is(BlockTags.LOGS)){
-					List<BlockPos> logs=collectLogs(level,centre,false);
-					if(isNaturalTree(level,logs)){
-						// Only highlight logs at or above the hit block – below will remain standing
-						for(BlockPos pos: logs)
-							if(pos.getY()>=centre.getY()) renderBlockOutline(ps,lines,pos);
-					}else{
-						renderPlane(ps,lines,level,get3x3Plane(centre,face),centre);
-					}
-				}else{
-					renderPlane(ps,lines,level,get3x3Plane(centre,face),centre);
-				}
-			}else if(isHoe){
-				if(face==Direction.UP){
-					ModularTier tier=ModularTool.getTier(tool);
-					int radius=(tier==ModularTier.MYTHIC)?2:1;
-					for(BlockPos pos: getAoePlane(centre,Direction.UP,radius))
-						if(!level.getBlockState(pos).isAir()) renderBlockOutline(ps,lines,pos);
-				}else{
-					renderPlane(ps,lines,level,get3x3Plane(centre,face),centre);
-				}
-			}else{
-				renderPlane(ps,lines,level,get3x3Plane(centre,face),centre);
-			}
-			buf.endBatch(RenderType.lines());
-			ps.popPose();
-		}
-		/** Renders center + all non-air blocks in {@code plane} with the shared gray color. */
-		private static void renderPlane(PoseStack ps,VertexConsumer lines,Level level,List<BlockPos> plane,BlockPos centre){
-			if(!level.getBlockState(centre).isAir()) renderBlockOutline(ps,lines,centre);
-			for(BlockPos pos: plane)
-				if(!level.getBlockState(pos).isAir()) renderBlockOutline(ps,lines,pos);
-		}
-		private static void renderBlockOutline(PoseStack ps,VertexConsumer lines,BlockPos pos){
-			Matrix4f mat=ps.last().pose();
-			float x=pos.getX(), y=pos.getY(), z=pos.getZ();
-			float x1=x+1f, y1=y+1f, z1=z+1f;
-			line(lines,mat,x,y,z,x1,y,z);
-			line(lines,mat,x1,y,z,x1,y,z1);
-			line(lines,mat,x1,y,z1,x,y,z1);
-			line(lines,mat,x,y,z1,x,y,z);
-			line(lines,mat,x,y1,z,x1,y1,z);
-			line(lines,mat,x1,y1,z,x1,y1,z1);
-			line(lines,mat,x1,y1,z1,x,y1,z1);
-			line(lines,mat,x,y1,z1,x,y1,z);
-			line(lines,mat,x,y,z,x,y1,z);
-			line(lines,mat,x1,y,z,x1,y1,z);
-			line(lines,mat,x1,y,z1,x1,y1,z1);
-			line(lines,mat,x,y,z1,x,y1,z1);
-		}
-		private static void line(VertexConsumer vc,Matrix4f mat,float x0,float y0,float z0,float x1,float y1,float z1){
-			float nx=x1-x0, ny=y1-y0, nz=z1-z0;
-			float len=(float)Math.sqrt(nx*nx+ny*ny+nz*nz);
-			if(len==0f) return;
-			nx/=len;
-			ny/=len;
-			nz/=len;
-			vc.addVertex(mat,x0,y0,z0).setColor(OR,OG,OB,OA).setNormal(nx,ny,nz);
-			vc.addVertex(mat,x1,y1,z1).setColor(OR,OG,OB,OA).setNormal(nx,ny,nz);
-		}
-	}
+
 }
