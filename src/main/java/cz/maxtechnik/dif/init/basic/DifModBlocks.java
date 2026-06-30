@@ -13,12 +13,15 @@ import cz.maxtechnik.dif.block.space.*;
 import cz.maxtechnik.dif.block.template.*;
 import cz.maxtechnik.dif.fluid.template.MoltenBlock;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
+import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import static net.minecraft.world.level.block.Blocks.GOLD_ORE;
 @SuppressWarnings("unused")
 public class DifModBlocks{
 	public static final DeferredRegister.Blocks REGISTRY=DeferredRegister.createBlocks(DifMod.MODID);
@@ -215,6 +218,7 @@ public class DifModBlocks{
 
 
 	public static final DeferredBlock<Block>MODULAR_REFORGE_TABLE=REGISTRY.register("modular_reforge_table",()->new ModularReforgeTable(BlockBehaviour.Properties.of()));
+	public static final DeferredBlock<Block>DEEPSLATE_MITHRIL_ORE=REGISTRY.register("deepslate_mithril_ore",()->new DropExperienceBlock(ConstantInt.of(0),BlockBehaviour.Properties.ofFullCopy(GOLD_ORE).mapColor(MapColor.DEEPSLATE).strength(4.5F,3F).sound(SoundType.DEEPSLATE)));
 
 	public static final DeferredBlock<Block>WOODEN_FRAME=REGISTRY.register("wooden_frame",()->new WoodenFrame(BlockBehaviour.Properties.of().strength(3F,3F).sound(SoundType.WOOD).noOcclusion().ignitedByLava()));
 }

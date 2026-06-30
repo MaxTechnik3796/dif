@@ -160,6 +160,7 @@ public class DifModTabs{
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>MODULAR_TOOLS=REGISTER.register("modular_tools",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.SPACE.getKey()).title(Component.translatable("creative_tab.dif.modular_tools")).icon(()->new ItemStack(Items.SMITHING_TABLE)).displayItems(((parameters, tabData)->{
 		tabData.accept(Items.SMITHING_TABLE);
 		tabData.accept(MODULAR_REFORGE_TABLE);
+		tabData.accept(DEEPSLATE_MITHRIL_ORE);
 
 		tabData.accept(MODULAR_WIKI_BOOK);
 

@@ -373,4 +373,5 @@ public class DifModItems{
 	public static final DeferredItem<Item>ENGINE_EXTENDER_HEAVY_FUEL_OIL=block(DifModBlocks.ENGINE_EXTENDER_HEAVY_FUEL_OIL);
 
 	public static final DeferredItem<Item>WOODEN_FRAME=block(DifModBlocks.WOODEN_FRAME);
+	public static final DeferredItem<Item>DEEPSLATE_MITHRIL_ORE=block(DifModBlocks.DEEPSLATE_MITHRIL_ORE);
 }
