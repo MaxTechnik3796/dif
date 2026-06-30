@@ -215,4 +215,6 @@ public class DifModBlocks{
 
 
 	public static final DeferredBlock<Block>MODULAR_REFORGE_TABLE=REGISTRY.register("modular_reforge_table",()->new ModularReforgeTable(BlockBehaviour.Properties.of()));
+
+	public static final DeferredBlock<Block>WOODEN_FRAME=REGISTRY.register("wooden_frame",()->new WoodenFrame(BlockBehaviour.Properties.of().strength(3F,3F).sound(SoundType.WOOD).noOcclusion().ignitedByLava()));
 }

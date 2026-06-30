@@ -6,24 +6,42 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-public class AndesiteLattice extends Block implements SimpleWaterloggedBlock{
+public class WoodenFrame extends Block{
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
-	public AndesiteLattice(){
-		super(Properties.of().instrument(NoteBlockInstrument.BASEDRUM).sound(SoundType.METAL).strength(4.5F,5F).requiresCorrectToolForDrops().noOcclusion().isRedstoneConductor((bs,br,bp)->false));
+	public WoodenFrame(Properties properties){
+		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED,false));
+	}
+	@Override
+	public @NotNull VoxelShape getVisualShape(@NotNull BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
+		return Shapes.empty();
+	}
+	@Override
+	public @NotNull VoxelShape getShape(@NotNull BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
+		return Shapes.or(
+				box(0,14,0,2,16,16),
+				box(14,14,0,16,16,16),
+				box(2,14,0,14,16,2),
+				box(2,14,14,14,16,16),
+				box(0,2,0,2,14,2),
+				box(14,2,0,16,14,2),
+				box(0,2,14,2,14,16),
+				box(14,2,14,16,14,16),
+				box(0,0,0,2,2,16),
+				box(14,0,0,16,2,16),
+				box(2,0,0,14,2,2),
+				box(2,0,14,14,2,16)
+		);
 	}
 	@Override
 	public boolean skipRendering(@NotNull BlockState blockState,BlockState adjacentBlockState,@NotNull Direction side){
@@ -38,8 +56,8 @@ public class AndesiteLattice extends Block implements SimpleWaterloggedBlock{
 		return 0;
 	}
 	@Override
-	public @NotNull VoxelShape getVisualShape(@NotNull BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
-		return Shapes.empty();
+	public int getFlammability(@NotNull BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull Direction face){
+		return 20;
 	}
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){

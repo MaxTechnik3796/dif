@@ -713,5 +713,7 @@
 
 	"block.dif.nickel_ore":"Nickel Ore",
 	"block.dif.deepslate_nickel_ore":"Deepslate Nickel Ore",
-	"block.dif.nickel_block":"Nickel Block"
+	"block.dif.nickel_block":"Nickel Block",
+
+	"block.dif.wooden_frame":"Wooden Frame"
 }

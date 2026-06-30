@@ -371,4 +371,6 @@ public class DifModItems{
 	public static final DeferredItem<Item>ENGINE_EXTENDER_GASOLINE=block(DifModBlocks.ENGINE_EXTENDER_GASOLINE);
 	public static final DeferredItem<Item>ENGINE_EXTENDER_LPG=block(DifModBlocks.ENGINE_EXTENDER_LPG);
 	public static final DeferredItem<Item>ENGINE_EXTENDER_HEAVY_FUEL_OIL=block(DifModBlocks.ENGINE_EXTENDER_HEAVY_FUEL_OIL);
+
+	public static final DeferredItem<Item>WOODEN_FRAME=block(DifModBlocks.WOODEN_FRAME);
 }
