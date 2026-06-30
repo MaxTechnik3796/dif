@@ -56,51 +56,22 @@ public class ModularColorHandler{
 		event.enqueueWork(()->ItemProperties.register(MODULAR_TOOL.get(),
 				ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"tool_state"),
 				(itemStack,level,entity,seed)->{
-					if(!(itemStack.getItem() instanceof ModularTool tool)) return 0.0F;
+					if(!(itemStack.getItem() instanceof ModularTool tool)) return 0F;
 					ModularToolProperties props=itemStack.get(DifModComponents.MODULAR_TOOL_PROPERTIES.get());
-					if(props==null) return 0.0F;
-					String type=props.toolType().toLowerCase(Locale.ROOT);
-					float base=switch(type){
-						case "pickaxe" -> 1.0F;
-						case "axe" -> 2.0F;
-						case "sword" -> 3.0F;
-						case "shovel" -> 4.0F;
-						case "hoe" -> 5.0F;
-						case "katana"-> 6.0F;
-						case "battle_axe" -> 7.0F;
-						case "hammer"  -> 8.0F;
-						case "timber_axe" -> 9.0F;
-						case "excavator"  -> 10.0F;
-						default -> 0.0F;
-					};
-					if(base==0.0F) return 0.0F;
+					if(props==null) return 0F;
+					float base=ModularTools.byName(props.toolType().toLowerCase(Locale.ROOT)).getRenderIndex();
+					if(base==0F) return 0F;
 					return tool.isBroken(itemStack)?base+0.5F:base;
 				}
 		));
 		event.enqueueWork(()->ItemProperties.register(MODULAR_PART.get(),
 				ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"part_state"),
 				(itemStack,level,entity,seed)->{
-					if(!(itemStack.getItem() instanceof ModularPart)) return 0.0F;
+					if(!(itemStack.getItem() instanceof ModularPart)) return 0F;
 					ModularPartProperties props=itemStack.get(DifModComponents.MODULAR_PART_PROPERTIES.get());
-					if(props==null) return 0.0F;
-					String type=props.partType().toLowerCase(Locale.ROOT);
-					float base=switch(type){
-						case "handle" -> 1.0F;
-						case "binding" -> 2.0F;
-						case "axe_head" -> 3.0F;
-						case "pickaxe_head" -> 4.0F;
-						case "sword_head" -> 5.0F;
-						case "shovel_head" -> 6.0F;
-						case "sword_binding" -> 7.0F;
-						case "hoe_head" -> 8.0F;
-						case "battle_axe_head" -> 9.0F;
-						case "katana_head" -> 10.0F;
-						case "timber_axe_head" ->11.0F;
-						case "hammer_head" -> 12.0F;
-						case "excavator_head" -> 13.0F;
-						default -> 0.0F;
-					};
-					if(base==0.0F) return 0.0F;
+					if(props==null) return 0F;
+					float base=ModularParts.byName(props.partType().toLowerCase(Locale.ROOT)).getRenderIndex();
+					if(base==0F) return 0F;
 					return ModularPart.isCast(itemStack)?base+0.5F:base;
 				}
 		));

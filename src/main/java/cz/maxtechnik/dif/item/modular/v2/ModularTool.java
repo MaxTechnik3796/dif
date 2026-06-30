@@ -249,7 +249,7 @@ public class ModularTool extends DiggerItem{
 		float efficiency=getLiveEfficiency(itemStack);
 		if((type.equals("sword")||type.equals("katana"))&&blockState.is(BlockTags.SWORD_EFFICIENT)) return efficiency;
 		if(matchesToolType(type,blockState)){
-			if(!meetsMiningLevel(getLiveMiningLevel(itemStack),blockState)) return 1F;
+			if(notMeetsMiningLevel(getLiveMiningLevel(itemStack),blockState)) return 1F;
 			return efficiency;
 		}
 		return 1F;
@@ -265,8 +265,7 @@ public class ModularTool extends DiggerItem{
 		if(isBroken(itemStack)) return false;
 		String type=getProps(itemStack).toolType().toLowerCase();
 		if(matchesToolType(type,blockState)){
-			if(!meetsMiningLevel(getLiveMiningLevel(itemStack),blockState)) return false;
-			return true;
+			return !notMeetsMiningLevel(getLiveMiningLevel(itemStack),blockState);
 		}
 		return super.isCorrectToolForDrops(itemStack,blockState);
 	}
@@ -281,21 +280,16 @@ public class ModularTool extends DiggerItem{
 		if((type.equals("pickaxe")||type.equals("hammer"))&&blockState.is(BlockTags.MINEABLE_WITH_PICKAXE)) return true;
 		if((type.equals("axe")||type.equals("timber_axe")||type.equals("battle_axe"))&&blockState.is(BlockTags.MINEABLE_WITH_AXE)) return true;
 		if((type.equals("shovel")||type.equals("excavator"))&&blockState.is(BlockTags.MINEABLE_WITH_SHOVEL)) return true;
-		if(type.equals("hoe")&&blockState.is(BlockTags.MINEABLE_WITH_HOE)) return true;
-		return false;
+		return type.equals("hoe")&&blockState.is(BlockTags.MINEABLE_WITH_HOE);
 	}
-	/**
-	 * Check if the tool's mining level meets the block's tier requirement.
-	 * @param miningLevel tool mining level
-	 * @param blockState target block
-	 * @return true if the tool can harvest the block
-	 */
-	private static boolean meetsMiningLevel(int miningLevel,BlockState blockState){
-		if(blockState.is(BlockTags.NEEDS_DIAMOND_TOOL)&&miningLevel<3) return false;
-		if(blockState.is(BlockTags.NEEDS_IRON_TOOL)&&miningLevel<2) return false;
-		if(blockState.is(BlockTags.NEEDS_STONE_TOOL)&&miningLevel<1) return false;//DO NOT TOUCH
-		return true;
+
+	private static boolean notMeetsMiningLevel(int miningLevel,BlockState blockState){
+		if(blockState.is(NEEDS_NETHERITE_TOOL)&&miningLevel<4) return true;
+		if(blockState.is(BlockTags.NEEDS_DIAMOND_TOOL)&&miningLevel<3) return true;
+		if(blockState.is(BlockTags.NEEDS_IRON_TOOL)&&miningLevel<2) return true;
+		return blockState.is(BlockTags.NEEDS_STONE_TOOL)&&miningLevel<1;
 	}
+	public static final TagKey<Block> NEEDS_NETHERITE_TOOL =TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("needs_netherite_tool"));
 	/**
 	 * On block is mined with tool.
 	 * @param itemStack tool
@@ -337,12 +331,11 @@ public class ModularTool extends DiggerItem{
 	public boolean canPerformAction(@NotNull ItemStack itemStack,@NotNull ItemAbility itemAbility){
 		if(isBroken(itemStack)) return false;
 		String type=getProps(itemStack).toolType().toLowerCase();
-		if((type.equals("pickaxe")||type.equals("hammer"))&&itemAbility.equals(ItemAbilities.PICKAXE_DIG)) return true;
-		else if((type.equals("axe")||type.equals("timber_axe")||type.equals("battle_axe"))&&(itemAbility.equals(ItemAbilities.AXE_DIG)||itemAbility.equals(ItemAbilities.AXE_STRIP)||itemAbility.equals(ItemAbilities.AXE_SCRAPE)||itemAbility.equals(ItemAbilities.AXE_WAX_OFF))) return true;
-		else if((type.equals("shovel")||type.equals("excavator"))&&(itemAbility.equals(ItemAbilities.SHOVEL_DIG)||itemAbility.equals(ItemAbilities.SHOVEL_FLATTEN)||itemAbility.equals(ItemAbilities.SHOVEL_DOUSE))) return true;
-		else if(type.equals("hoe")&&(itemAbility.equals(ItemAbilities.HOE_DIG)||itemAbility.equals(ItemAbilities.HOE_TILL))) return true;
-		else if((type.equals("sword")||type.equals("katana"))&&itemAbility.equals(ItemAbilities.SWORD_DIG)) return true;//DO NOT TOUCH
-		return false;
+		if((type.equals(ModularTools.PICKAXE.getName())||type.equals(ModularTools.HAMMER.getName()))&&itemAbility.equals(ItemAbilities.PICKAXE_DIG)) return true;
+		else if((type.equals(ModularTools.AXE.getName())||type.equals(ModularTools.TIMBER_AXE.getName())||type.equals(ModularTools.BATTLE_AXE.getName()))&&(itemAbility.equals(ItemAbilities.AXE_DIG)||itemAbility.equals(ItemAbilities.AXE_STRIP)||itemAbility.equals(ItemAbilities.AXE_SCRAPE)||itemAbility.equals(ItemAbilities.AXE_WAX_OFF))) return true;
+		else if((type.equals(ModularTools.SHOVEL.getName())||type.equals(ModularTools.EXCAVATOR.getName()))&&(itemAbility.equals(ItemAbilities.SHOVEL_DIG)||itemAbility.equals(ItemAbilities.SHOVEL_FLATTEN)||itemAbility.equals(ItemAbilities.SHOVEL_DOUSE))) return true;
+		else if(type.equals(ModularTools.HOE.getName())&&(itemAbility.equals(ItemAbilities.HOE_DIG)||itemAbility.equals(ItemAbilities.HOE_TILL))) return true;
+		else return (type.equals(ModularTools.SWORD.getName())||type.equals(ModularTools.KATANA.getName()))&&itemAbility.equals(ItemAbilities.SWORD_DIG);
 	}
 	/**
 	 * On tool action. (RMB)
@@ -653,6 +646,7 @@ public class ModularTool extends DiggerItem{
 	 * @param itemStack tool
 	 * @param modifier modifier
 	 */
+	@SuppressWarnings("unused")
 	public static void setModifier(HolderLookup.Provider provider,ItemStack itemStack,ModularModifier modifier){
 		setModifier(provider,itemStack,modifier,1);
 	}
@@ -723,6 +717,7 @@ public class ModularTool extends DiggerItem{
 	 * @param itemStack tool
 	 * @param modifier modifier
 	 */
+	@SuppressWarnings("unused")
 	public static void removeModifier(HolderLookup.Provider provider,ItemStack itemStack,ModularModifier modifier){
 		int oldLvl=getModifierLevel(itemStack,modifier);
 		ModularToolModifiers component=itemStack.get(DifModComponents.MODULAR_TOOL_MODIFIERS);
@@ -804,6 +799,7 @@ public class ModularTool extends DiggerItem{
 	 * @param enchantment enchantment
 	 * @param lvl lvl
 	 */
+	@SuppressWarnings("unused")
 	public static void setEnchantment(HolderLookup.Provider provider,ItemStack itemStack,ResourceKey<Enchantment> enchantment,int lvl){
 		manipulateEnchantment(provider,itemStack,enchantment,lvl,2);
 	}
@@ -853,6 +849,7 @@ public class ModularTool extends DiggerItem{
 	 * @param itemStack tool
 	 * @param reforge reforge
 	 */
+	@SuppressWarnings("unused")
 	public static void setReforge(HolderLookup.Provider provider,ItemStack itemStack,ModularReforge reforge){
 		ModularToolProperties props=getProps(itemStack);
 		ModularReforge oldReforge=getReforge(itemStack);
@@ -881,6 +878,7 @@ public class ModularTool extends DiggerItem{
 	 * @param itemStack tool
 	 * @param tier tier
 	 */
+	@SuppressWarnings("unused")
 	public static void setTier(ItemStack itemStack,ModularTier tier){
 		ModularToolProperties props=getProps(itemStack);
 		ModularTier oldTier=ModularTier.byName(props.tier());
