@@ -558,9 +558,9 @@ public class ModularTool extends DiggerItem{
 		list.add(Component.literal("Damage: ").withStyle(ChatFormatting.GRAY).append(Component.literal(String.format(Locale.ROOT,"%.1f",dmg)).withStyle(ChatFormatting.RED)));
 		list.add(Component.literal("Speed: ").withStyle(ChatFormatting.GRAY).append(Component.literal(String.format(Locale.ROOT,"%.1f",spd)).withStyle(ChatFormatting.YELLOW)));
 		list.add(Component.literal("───── Parts ─────").withStyle(Style.EMPTY.withColor(0x6644BB)));
-		list.add(Component.literal(" Head: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.material."+head.getName()).withStyle(Style.EMPTY.withColor(head.getColor()))).append(Component.literal("  "+head.getHeadDurability()).withStyle(Style.EMPTY.withColor(0xFFAA00))));
-		list.add(Component.literal(" Binding: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.material."+binding.getName()).withStyle(Style.EMPTY.withColor(binding.getColor()))).append(Component.literal("  "+binding.getBindingDurability()).withStyle(Style.EMPTY.withColor(0xFFAA00))));
-		list.add(Component.literal(" Handle: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.material."+handle.getName()).withStyle(Style.EMPTY.withColor(handle.getColor()))).append(Component.literal("  "+handle.getHandleDurability()).withStyle(Style.EMPTY.withColor(0xFFAA00))));
+		list.add(Component.literal(" Head: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.material."+head.getName()).withStyle(Style.EMPTY.withColor(head.getColor()))).append(Component.literal("  "+head.getHeadDurability()).withColor(0xFFAA00)));
+		list.add(Component.literal(" Binding: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.material."+binding.getName()).withStyle(Style.EMPTY.withColor(binding.getColor()))).append(Component.literal("  "+binding.getBindingDurability()).withColor(0xFFAA00)));
+		list.add(Component.literal(" Handle: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.material."+handle.getName()).withStyle(Style.EMPTY.withColor(handle.getColor()))).append(Component.literal("  "+handle.getHandleDurability()).withColor(0xFFAA00)));
 		list.add(Component.literal("───── Modifiers ─────").withStyle(Style.EMPTY.withColor(0x6644BB)));
 		ArrayList<String> materialModifiers=getMaterialModifiers(head,binding,handle);
 		for(String materialModifier: materialModifiers){
@@ -573,8 +573,10 @@ public class ModularTool extends DiggerItem{
 			if(ModularModifier.byName(entry.id()).getMaxLvl()>1) nameComp=nameComp.copy().append(Component.literal(" ")).append(Component.translatable("enchantment.level."+entry.lvl()).withStyle(ChatFormatting.WHITE));
 			list.add(nameComp.copy().withStyle(Style.EMPTY.withColor(modifier.getColor())));
 		}
-		list.add(CommonComponents.EMPTY);
-		if(getReforge(itemStack).hasDescription()) list.add(Component.literal("  ").append(Component.translatable("dif.reforge."+getReforge(itemStack).getName()+".desc").withStyle(Style.EMPTY.withColor(getTier(itemStack).getColor()).withItalic(true))));
+		if(getReforge(itemStack).hasDescription()){
+			list.add(CommonComponents.EMPTY);
+			list.add(Component.literal(" ").append(Component.translatable("dif.reforge."+getReforge(itemStack).getName()+".desc").withStyle(Style.EMPTY.withColor(getTier(itemStack).getColor()).withItalic(true))));
+		}
 	}
 	/**
 	 * Get all MaterialModifiers in ArrayList.

@@ -41,10 +41,17 @@ public class ModularPart extends Item{
 		ModularMaterial material=getMaterial(itemStack);
 		ModularTier tier=material.getTier();
 		ModularModifier modifier=material.getModifier();
+		int durability=switch(ModularPartType.getPartType(getPart(itemStack))){
+			case HEAD -> ModularMaterial.getHeadDurability(material);
+			case BINDING -> ModularMaterial.getBindingDurability(material);
+			case HANDLE -> ModularMaterial.getHandleDurability(material);
+			default -> 0;
+		};
 		list.add(Component.literal("───── Stats ─────").withStyle(Style.EMPTY.withColor(0x6644BB)));
 		list.add(Component.literal("Tier: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.tier."+tier.getName()).withColor(ModularTier.byName(tier.getName()).getColor())));
 		list.add(Component.literal("Material: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.material."+material.getName()).withStyle(Style.EMPTY.withColor(material.getColor()))));
 		list.add(Component.literal("Modifier: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.modifier."+modifier.getName()).withStyle(Style.EMPTY.withColor(material.getColor()))));
+		list.add(Component.literal("Durability: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.literal(String.valueOf(durability)).withColor(0xFFAA00)));
 	}
 	@Override
 	public @NotNull String getDescriptionId(@NotNull ItemStack itemStack){
