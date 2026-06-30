@@ -42,7 +42,7 @@ public class DifModRecipex{
 		addCustom(sMaterial+"_excavator_head",addCasting(EXCAVATOR_HEAD,material,2));
 	}
 	private static JsonObject addCasting(ModularParts partType,ModularMaterial material,int count){
-		Item casing_mold=partType.getCastingMold();
+		Item casing_mold=partType.getCastingMold().get();
 		JsonObject recipeJson=new JsonObject();
 		recipeJson.addProperty("type","create:filling");
 		JsonArray ingredientsArray=new JsonArray();
