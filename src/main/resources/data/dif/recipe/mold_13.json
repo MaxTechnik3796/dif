@@ -1,0 +1,5 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": { "item": "dif:casting_mold" },
+  "result": { "id": "dif:casting_mold_excavator_head" }
+}

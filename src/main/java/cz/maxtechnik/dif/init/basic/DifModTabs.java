@@ -195,7 +195,7 @@ public class DifModTabs{
 		ItemStack hPart=new ItemStack(MODULAR_PART.get());hPart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties(ModularParts.HANDLE.getName(),ModularMaterial.COPPER.name(),true));
 		tabData.accept(hPart);
 
-
+		tabData.accept(CASTING_MOLD);
 		tabData.accept(CASTING_MOLD_HANDLE);
 		tabData.accept(CASTING_MOLD_BINDING);
 		tabData.accept(CASTING_MOLD_AXE_HEAD);
