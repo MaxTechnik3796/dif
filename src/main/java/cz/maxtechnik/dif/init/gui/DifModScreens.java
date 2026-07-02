@@ -21,7 +21,6 @@ public class DifModScreens {
 		event.register(DifModMenus.GENERATOR.get(), BurningGeneratorScreen::new);
 		event.register(DifModMenus.OLD_CHEST.get(), OldChestScreen::new);
 		event.register(DifModMenus.SPACESHIP.get(), SpaceshipScreen::new);
-		event.register(DifModMenus.MEGA_BACKPACK.get(), MegaBackpackScreen::new);
 		event.register(DifModMenus.QUARRY.get(), QuarryScreen::new);
 	}
 }

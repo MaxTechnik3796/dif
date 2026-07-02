@@ -335,9 +335,6 @@ public class PortalEntity extends Entity {
         if (this.getFacing().getAxis() != Direction.Axis.Y && other.getFacing().getAxis() == Direction.Axis.Y) {
             p.setPose(net.minecraft.world.entity.Pose.SWIMMING);
         }
-
-        this.level().playSound(null, this.blockPosition(), SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 1F, 1.2F);
-        this.level().playSound(null, target, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 1F, 1.2F);
         other.lastTeleportTime = this.lastTeleportTime = now;
         
         // Cooldown ONLY on the target portal so the player can get out of it, but can fall/port through others instantly
@@ -369,9 +366,7 @@ public class PortalEntity extends Entity {
         entity.setDeltaMovement(newMotion);
         entity.hurtMarked = true;
         
-        // Cooldown ONLY on the target portal
         other.entityCooldowns.put(entity.getUUID(), now);
-        this.level().playSound(null, target, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 0.5F, 1.4F);
     }
 
     private Vec3 getDestinationPosition(PortalEntity other, Entity entity) {

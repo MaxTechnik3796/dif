@@ -15,8 +15,6 @@ public class DifModNetworking{
 		// Server-bound packets (Client -> Server)
 		registrar.playToServer(JetpackFlyMessage.TYPE,JetpackFlyMessage.STREAM_CODEC,JetpackFlyMessage::handle);
 		registrar.playToServer(EnderOpenMessage.TYPE,EnderOpenMessage.STREAM_CODEC,EnderOpenMessage::handle);
-		registrar.playToServer(MegaBackpackOpenPacket.TYPE,MegaBackpackOpenPacket.STREAM_CODEC,MegaBackpackOpenPacket::handle);
-		registrar.playToServer(MegaBackpackPagePacket.TYPE,MegaBackpackPagePacket.STREAM_CODEC,MegaBackpackPagePacket::handle);
 		registrar.playToServer(SpaceshipScreenButtonMessage.TYPE,SpaceshipScreenButtonMessage.STREAM_CODEC,SpaceshipScreenButtonMessage::handle);
 		registrar.playToServer(ShiftGearPacket.TYPE,ShiftGearPacket.STREAM_CODEC,ShiftGearPacket::handle);
 		registrar.playToServer(CameraExitPacket.TYPE,CameraExitPacket.STREAM_CODEC,CameraExitPacket::handle);
