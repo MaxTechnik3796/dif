@@ -45,13 +45,32 @@ public class PortalRenderer extends EntityRenderer<PortalEntity> {
             poseStack.mulPose(Axis.YP.rotationDegrees(-facing.toYRot()));
         }
 
-        // We use RenderType.entityTranslucent because the portal might have transparency, or just entityCutout.
-        // Actually, portal textures usually don't have transparency, but just in case.
-        var vertexConsumer = buffer.getBuffer(this.model.renderType(getTextureLocation(entity)));
+        // Translate 0.01 blocks along the normal (local Z) to prevent z-fighting / flickering on floors and walls
+        poseStack.translate(0.0F, 0.0F, 0.01F);
+
+        ResourceLocation texture = getTextureLocation(entity);
+        RenderType renderType;
+        int finalPackedLight;
         
+        if (entity.isLinked()) {
+            // Emissive rendering for active linked portal: unshaded, fullbright
+            renderType = RenderType.entityTranslucentEmissive(texture);
+            finalPackedLight = net.minecraft.client.renderer.LightTexture.FULL_BRIGHT;
+        } else {
+            // Normal cutout rendering for unlinked portal: shaded, but with a slight block light minimum (6)
+            renderType = RenderType.entityCutoutNoCull(texture);
+            int incomingBlock = (packedLight & 0xFFFF) >> 4;
+            int incomingSky = ((packedLight >> 16) & 0xFFFF) >> 4;
+            int block = Math.max(incomingBlock, 6);
+            int sky = incomingSky;
+            finalPackedLight = net.minecraft.client.renderer.LightTexture.pack(block, sky);
+        }
+        
+        var vertexConsumer = buffer.getBuffer(renderType);
+
         // Setup anim and render
         this.model.setupAnim(entity, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-        this.model.renderToBuffer(poseStack, vertexConsumer, packedLight, net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
+        this.model.renderToBuffer(poseStack, vertexConsumer, finalPackedLight, net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
         
         poseStack.popPose();
         super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);

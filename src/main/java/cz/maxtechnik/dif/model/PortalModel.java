@@ -33,7 +33,7 @@ public class PortalModel<T extends PortalEntity> extends EntityModel<T> {
         // We set the texture size to 16x32.
         partdefinition.addOrReplaceChild("main", CubeListBuilder.create()
                         .texOffs(0, 0)
-                        .addBox(-8.0F, -16.0F, 0.0F, 16.0F, 32.0F, 0.0F, new CubeDeformation(0.0F)),
+                        .addBox(-8.0F, -16.0F, 0.0F, 16.0F, 32.0F, 0.01F, new CubeDeformation(0.0F)),
                 PartPose.ZERO);
 
         return LayerDefinition.create(meshdefinition, 16, 32);
