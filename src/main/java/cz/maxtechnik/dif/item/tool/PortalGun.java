@@ -1,9 +1,7 @@
 package cz.maxtechnik.dif.item.tool;
 
 import cz.maxtechnik.dif.DifModCommonConfig;
-import cz.maxtechnik.dif.block.PortalBlock;
-import cz.maxtechnik.dif.block.entity.PortalBlockEntity;
-import cz.maxtechnik.dif.init.basic.DifModBlocks;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -17,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 public class PortalGun extends Item{
@@ -90,33 +88,112 @@ public class PortalGun extends Item{
 		}
 		return InteractionResultHolder.success(gun);
 	}
+	private net.minecraft.world.phys.Vec3 alignPortal(ServerLevel world, BlockPos hitPos, Direction face, Direction extDir, net.minecraft.world.phys.Vec3 hitLoc) {
+		net.minecraft.world.phys.Vec3 C = net.minecraft.world.phys.Vec3.atCenterOf(hitPos);
+		net.minecraft.world.phys.Vec3 normal = net.minecraft.world.phys.Vec3.atLowerCornerOf(face.getNormal());
+		net.minecraft.world.phys.Vec3 up = net.minecraft.world.phys.Vec3.atLowerCornerOf(extDir.getNormal());
+		net.minecraft.world.phys.Vec3 right = normal.cross(up);
+		Direction rightDir = Direction.getNearest(right.x, right.y, right.z);
+
+		// 1. Align along UP axis (height/length)
+		double offsetUp = hitLoc.subtract(C).dot(up);
+		double alignedUpVal;
+		BlockPos adjPos;
+		
+		BlockPos tryPos1 = hitPos.relative(extDir);
+		BlockPos tryPos2 = hitPos.relative(extDir.getOpposite());
+		
+		boolean try1Sturdy = world.getBlockState(tryPos1).isFaceSturdy(world, tryPos1, face);
+		boolean try2Sturdy = world.getBlockState(tryPos2).isFaceSturdy(world, tryPos2, face);
+
+		if (offsetUp > 0) {
+			if (try1Sturdy) {
+				alignedUpVal = C.dot(up) + 0.5;
+				adjPos = tryPos1;
+			} else if (try2Sturdy) {
+				alignedUpVal = C.dot(up) - 0.5;
+				adjPos = tryPos2;
+			} else {
+				return null; // No support
+			}
+		} else {
+			if (try2Sturdy) {
+				alignedUpVal = C.dot(up) - 0.5;
+				adjPos = tryPos2;
+			} else if (try1Sturdy) {
+				alignedUpVal = C.dot(up) + 0.5;
+				adjPos = tryPos1;
+			} else {
+				return null; // No support
+			}
+		}
+
+		// 2. Align along RIGHT axis (width)
+		double valRight = hitLoc.dot(right);
+		double centerRight = C.dot(right);
+		double offsetRight = valRight - centerRight;
+
+		BlockPos sidePos1 = hitPos.relative(rightDir);
+		BlockPos sidePos2 = hitPos.relative(rightDir.getOpposite());
+		BlockPos adjSidePos1 = adjPos.relative(rightDir);
+		BlockPos adjSidePos2 = adjPos.relative(rightDir.getOpposite());
+
+		boolean rightSturdy = world.getBlockState(sidePos1).isFaceSturdy(world, sidePos1, face) &&
+		                      world.getBlockState(adjSidePos1).isFaceSturdy(world, adjSidePos1, face);
+		                      
+		boolean leftSturdy = world.getBlockState(sidePos2).isFaceSturdy(world, sidePos2, face) &&
+		                     world.getBlockState(adjSidePos2).isFaceSturdy(world, adjSidePos2, face);
+
+		double alignedRightVal = valRight;
+		if (offsetRight > 0 && !rightSturdy) {
+			alignedRightVal = centerRight;
+		} else if (offsetRight < 0 && !leftSturdy) {
+			alignedRightVal = centerRight;
+		}
+
+		double valNormal = hitLoc.dot(normal);
+		
+		return normal.scale(valNormal).add(up.scale(alignedUpVal)).add(right.scale(alignedRightVal));
+	}
+
 	private boolean firePortal(ServerLevel world,Player player,boolean isBlue){
 		var start=player.getEyePosition();
 		var hit=world.clip(new ClipContext(start,start.add(player.getLookAngle().scale(128.0)),
 				ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,player));
 		if(hit.getType()!=HitResult.Type.BLOCK) return false;
-		Direction face=hit.getDirection();
-		BlockPos pos=hit.getBlockPos().relative(face);
-		Direction extDir=(face.getAxis()==Direction.Axis.Y)?player.getDirection():Direction.UP;
-		BlockPos extPos=pos.relative(extDir);
-		boolean space=world.isEmptyBlock(pos)&&world.isEmptyBlock(extPos);
-		boolean support=world.getBlockState(pos.relative(face.getOpposite()))
-				.isFaceSturdy(world,pos.relative(face.getOpposite()),face)&&
-				world.getBlockState(extPos.relative(face.getOpposite()))
-						.isFaceSturdy(world,extPos.relative(face.getOpposite()),face);
-		if(!space||!support){
-			player.displayClientMessage(Component.literal("[!] Invalid placement"),true);
+		net.minecraft.world.phys.BlockHitResult blockHit = (net.minecraft.world.phys.BlockHitResult) hit;
+		Direction face=blockHit.getDirection();
+		BlockPos hitPos=blockHit.getBlockPos();
+		
+		Direction extDir = (face.getAxis() == Direction.Axis.Y) ? player.getDirection() : Direction.UP;
+		net.minecraft.world.phys.Vec3 extVec = net.minecraft.world.phys.Vec3.atLowerCornerOf(extDir.getNormal());
+		
+		net.minecraft.world.phys.Vec3 alignedLoc = alignPortal(world, hitPos, face, extDir, blockHit.getLocation());
+		if (alignedLoc == null) {
+			player.displayClientMessage(Component.literal("[!] Invalid placement (needs support)"), true);
 			return false;
 		}
-		PortalBlockEntity.removeOldPortal(world,player.getUUID(),isBlue);
-		PortalBlockEntity.savePortal(world,player.getUUID(),isBlue,pos);
-		var state=DifModBlocks.PORTAL_BLOCK.get().defaultBlockState()
-				.setValue(PortalBlock.FACING,face)
-				.setValue(PortalBlock.EXTENSION_DIR,extDir)
-				.setValue(PortalBlock.IS_BLUE,isBlue);
-		world.setBlock(pos,state.setValue(PortalBlock.HALF,DoubleBlockHalf.LOWER),3);
-		world.setBlock(extPos,state.setValue(PortalBlock.HALF,DoubleBlockHalf.UPPER),3);
-		if(world.getBlockEntity(pos) instanceof PortalBlockEntity be) be.setup(player.getUUID(),isBlue,face);
+		
+		// Shift 0.02 blocks away from the wall to prevent z-fighting / texture glitching
+		net.minecraft.world.phys.Vec3 spawnPos = alignedLoc.add(net.minecraft.world.phys.Vec3.atLowerCornerOf(face.getNormal()).scale(0.02));
+		
+		BlockPos pos1 = BlockPos.containing(spawnPos.subtract(extVec.scale(0.5)));
+		BlockPos pos2 = BlockPos.containing(spawnPos.add(extVec.scale(0.5)));
+		
+		boolean space = (world.isEmptyBlock(pos1) || world.getBlockState(pos1).canBeReplaced()) && 
+		                (world.isEmptyBlock(pos2) || world.getBlockState(pos2).canBeReplaced());
+		
+		if (!space) {
+			player.displayClientMessage(Component.literal("[!] Invalid placement (no space)"), true);
+			return false;
+		}
+		
+		cz.maxtechnik.dif.entity.portal.PortalEntity.removeOldPortal(world,player.getUUID(),isBlue);
+		
+		cz.maxtechnik.dif.entity.portal.PortalEntity portal = new cz.maxtechnik.dif.entity.portal.PortalEntity(world, player.getUUID(), isBlue, face, extDir, spawnPos);
+		
+		world.addFreshEntity(portal);
+		cz.maxtechnik.dif.entity.portal.PortalData.get(world).set(player.getUUID(), isBlue, portal.blockPosition());
 		return true;
 	}
 	@Override

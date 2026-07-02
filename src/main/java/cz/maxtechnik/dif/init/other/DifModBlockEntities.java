@@ -23,7 +23,7 @@ public class DifModBlockEntities{
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<BrassBarrelBlockEntity>> BRASS_BARREL=register("brass_barrel",DifModBlocks.BRASS_BARREL,BrassBarrelBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<OldChestBlockEntity>> OLD_CHEST=register("old_chest",DifModBlocks.OLD_CHEST,OldChestBlockEntity::new);
 
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<PortalBlockEntity>> PORTAL=REGISTRY.register("portal",()->BlockEntityType.Builder.of(PortalBlockEntity::new,DifModBlocks.PORTAL_BLOCK.get()).build(null));
+
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<SpaceshipBlockEntity>> SPACESHIP=register("spaceship",DifModBlocks.SPACESHIP,SpaceshipBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<ChunkLoaderBlockEntity>> CHUNK_LOADER_BE=REGISTRY.register("chunk_loader_be",()->BlockEntityType.Builder.of(ChunkLoaderBlockEntity::new,DifModBlocks.CHUNK_LOADER_1X1.get(),DifModBlocks.CHUNK_LOADER_3X3.get()).build(null));
 

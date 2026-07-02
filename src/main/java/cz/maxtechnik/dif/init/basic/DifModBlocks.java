@@ -145,7 +145,7 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>BRASS_BARREL=REGISTRY.register("brass_barrel",BrassBarrel::new);
 
 	//Random (3):
-	public static final DeferredBlock<Block>PORTAL_BLOCK=REGISTRY.register("portal_block",()->new PortalBlock(BlockBehaviour.Properties.of().noCollission().noOcclusion().pushReaction(PushReaction.BLOCK)));
+
 	public static final DeferredBlock<Block>FRYING_TABLE=REGISTRY.register("frying_table",FryingTable::new);
 
 	public static final DeferredBlock<Block> DISTILLATION_TANK=REGISTRY.register("distillation_tank", DistillationTank::new);

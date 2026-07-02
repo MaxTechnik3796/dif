@@ -19,11 +19,13 @@ public class DifModModels{
 		event.registerLayerDefinition(ModelJetpack.LAYER_LOCATION, ModelJetpack::createBodyLayer);
 		event.registerLayerDefinition(ModelElectroRunners.LAYER_LOCATION,ModelElectroRunners::createBodyLayer);
 		event.registerLayerDefinition(FormulaModel.LAYER_LOCATION, FormulaModel::createBodyLayer);
+		event.registerLayerDefinition(PortalModel.LAYER_LOCATION, PortalModel::createBodyLayer);
 	}
 
 	@SubscribeEvent
 	public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerBlockEntityRenderer(DifModBlockEntities.FORGE_FURNACE_CONTROLLER.get(), ForgeGlassRenderer::new);
 		event.registerBlockEntityRenderer(DifModBlockEntities.FORGE_GLASS.get(), ForgeGlassBlockEntityRenderer::new);
+		event.registerEntityRenderer(DifModEntities.PORTAL.get(), cz.maxtechnik.dif.renderer.PortalRenderer::new);
 	}
 }

@@ -44,4 +44,11 @@ public class DifModEntities{
 							.clientTrackingRange(512)
 							.updateInterval(20)
 							.build("nuclear_radiation"));
+	public static final DeferredHolder<EntityType<?>,EntityType<cz.maxtechnik.dif.entity.portal.PortalEntity>> PORTAL=
+			REGISTRY.register("portal",()->
+					EntityType.Builder.<cz.maxtechnik.dif.entity.portal.PortalEntity>of(cz.maxtechnik.dif.entity.portal.PortalEntity::new,MobCategory.MISC)
+							.sized(1.0F,2.0F)
+							.clientTrackingRange(10)
+							.updateInterval(1)
+							.build("portal"));
 }
