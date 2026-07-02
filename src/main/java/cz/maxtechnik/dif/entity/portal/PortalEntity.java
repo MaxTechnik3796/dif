@@ -40,7 +40,7 @@ public class PortalEntity extends Entity {
     private int linkedCheckTimer = 0;
     private static final int LINKED_CHECK_INTERVAL = 40;
     private static final Map<UUID, Long> waitingPlayers = new HashMap<>();
-    private static final Map<UUID, Long> entityCooldowns = new HashMap<>();
+    private final Map<UUID, Long> entityCooldowns = new HashMap<>();
 
     public PortalEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -206,8 +206,7 @@ public class PortalEntity extends Entity {
         List<Player> players = serverLevel.getEntitiesOfClass(Player.class, box);
         for (Player p : players) {
             UUID pid = p.getUUID();
-            if (now - this.lastTeleportTime <= DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get()) continue;
-            if (entityCooldowns.containsKey(pid) && now - entityCooldowns.get(pid) <= DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get())
+            if (this.entityCooldowns.containsKey(pid) && now - this.entityCooldowns.get(pid) <= 15)
                 continue;
             this.tryTeleportPlayer(p, serverLevel, now);
         }
@@ -219,7 +218,7 @@ public class PortalEntity extends Entity {
                 if (mob instanceof Player) continue;
                 if (count >= DifModCommonConfig.PORTAL_MAX_ENTITIES_PER_TICK.get()) break;
                 UUID mid = mob.getUUID();
-                if (entityCooldowns.containsKey(mid) && now - entityCooldowns.get(mid) <= DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get())
+                if (this.entityCooldowns.containsKey(mid) && now - this.entityCooldowns.get(mid) <= 15)
                     continue;
                 this.tryTeleportEntity(mob, serverLevel, now, false);
                 count++;
@@ -230,7 +229,7 @@ public class PortalEntity extends Entity {
                 if (e instanceof PortalEntity) continue;
                 if (count >= DifModCommonConfig.PORTAL_MAX_ENTITIES_PER_TICK.get()) break;
                 UUID eid = e.getUUID();
-                if (entityCooldowns.containsKey(eid) && now - entityCooldowns.get(eid) <= DifModCommonConfig.PORTAL_TELEPORT_COOLDOWN.get())
+                if (this.entityCooldowns.containsKey(eid) && now - this.entityCooldowns.get(eid) <= 15)
                     continue;
                 this.tryTeleportEntity(e, serverLevel, now, false);
                 count++;
@@ -243,13 +242,13 @@ public class PortalEntity extends Entity {
             for (ItemEntity e : items) {
                 if (count >= DifModCommonConfig.PORTAL_MAX_ENTITIES_PER_TICK.get()) break;
                 UUID eid = e.getUUID();
-                if (entityCooldowns.containsKey(eid) && now - entityCooldowns.get(eid) <= 10) continue;
+                if (this.entityCooldowns.containsKey(eid) && now - this.entityCooldowns.get(eid) <= 10) continue;
                 this.tryTeleportEntity(e, serverLevel, now, true);
                 count++;
             }
         }
 
-        entityCooldowns.entrySet().removeIf(e -> now - e.getValue() > 200);
+        this.entityCooldowns.entrySet().removeIf(e -> now - e.getValue() > 200);
     }
 
     private PortalEntity findLinkedPortal(ServerLevel sl, BlockPos targetPos) {
@@ -303,23 +302,56 @@ public class PortalEntity extends Entity {
             return;
         }
 
-        double tx = other.getX() + (other.getFacing().getStepX() * 0.5);
-        double ty;
-        if (other.getFacing() == Direction.UP) {
-            ty = other.getY() + 0.1;
-        } else if (other.getFacing() == Direction.DOWN) {
-            ty = other.getY() - 2.0;
-        } else {
-            ty = other.getY() - 1.0;
-        }
-        double tz = other.getZ() + (other.getFacing().getStepZ() * 0.5);
+        Vec3 newMotion = transformVelocity(p.getDeltaMovement(), this.getFacing(), other.getFacing());
 
-        p.teleportTo(tx, ty, tz);
-        p.setYRot(other.getFacing().toYRot());
+        double tx;
+        double ty;
+        double tz;
+        
+        Direction outFace = other.getFacing();
+        if (outFace.getAxis() == Direction.Axis.Y) {
+            tx = other.getX();
+            tz = other.getZ();
+            if (outFace == Direction.UP) {
+                ty = other.getY() + 0.0625; // 1 pixel above floor
+            } else {
+                ty = other.getY() - p.getBbHeight() - 0.0625; // 1 pixel below ceiling
+            }
+        } else {
+            ty = other.getY() - 1.0 + 0.01;
+            tx = other.getX() + outFace.getStepX() * (p.getBbWidth() * 0.5 + 0.0625);
+            tz = other.getZ() + outFace.getStepZ() * (p.getBbWidth() * 0.5 + 0.0625);
+        }
+
+        float newYaw = p.getYRot();
+        // Relative rotation for players only on wall-to-wall portal teleportation
+        if (this.getFacing().getAxis() != Direction.Axis.Y && other.getFacing().getAxis() != Direction.Axis.Y) {
+            float yawDiff = other.getFacing().toYRot() - (this.getFacing().toYRot() + 180.0F);
+            newYaw = p.getYRot() + yawDiff;
+        }
+
+        p.teleportTo((net.minecraft.server.level.ServerLevel)p.level(), tx, ty, tz, java.util.Set.of(), newYaw, p.getXRot());
+        p.setYBodyRot(newYaw);
+        p.setYHeadRot(newYaw);
+        p.yRotO = newYaw;
+
+        p.setDeltaMovement(newMotion);
+        p.hurtMarked = true;
+        if (p instanceof net.minecraft.server.level.ServerPlayer sp) {
+            sp.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(sp));
+        }
+
+        // Horizontal to vertical transition: set to swimming pose
+        if (this.getFacing().getAxis() != Direction.Axis.Y && other.getFacing().getAxis() == Direction.Axis.Y) {
+            p.setPose(net.minecraft.world.entity.Pose.SWIMMING);
+        }
+
         this.level().playSound(null, this.blockPosition(), SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 1F, 1.2F);
         this.level().playSound(null, target, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 1F, 1.2F);
         other.lastTeleportTime = this.lastTeleportTime = now;
-        entityCooldowns.put(pid, now);
+        
+        // Cooldown ONLY on the target portal so the player can get out of it, but can fall/port through others instantly
+        other.entityCooldowns.put(pid, now);
     }
 
     private void tryTeleportEntity(Entity entity, ServerLevel sl, long now, boolean isItem) {
@@ -338,32 +370,32 @@ public class PortalEntity extends Entity {
         }
 
         Vec3 newMotion = transformVelocity(entity.getDeltaMovement(), this.getFacing(), other.getFacing());
-        double offsetScale = isItem ? 0.3 : 0.6;
-        double tx = other.getX() + (other.getFacing().getStepX() * offsetScale);
+        
+        double tx;
         double ty;
-        if (other.getFacing() == Direction.UP) {
-            ty = other.getY() + 0.1;
-        } else if (other.getFacing() == Direction.DOWN) {
-            ty = other.getY() - 2.0;
-        } else {
-            ty = other.getY() - 1.0;
-        }
-        double tz = other.getZ() + (other.getFacing().getStepZ() * offsetScale);
-
-        if (!isItem && entity instanceof LivingEntity living) {
-            if (other.getFacing() == Direction.UP) {
-                ty = other.getY() + 0.5;
-            } else if (other.getFacing() == Direction.DOWN) {
-                ty = other.getY() - living.getBbHeight();
+        double tz;
+        
+        Direction outFace = other.getFacing();
+        if (outFace.getAxis() == Direction.Axis.Y) {
+            tx = other.getX();
+            tz = other.getZ();
+            if (outFace == Direction.UP) {
+                ty = other.getY() + 0.0625;
             } else {
-                ty = other.getY() - 1.0;
+                ty = other.getY() - entity.getBbHeight() - 0.0625;
             }
+        } else {
+            ty = other.getY() - 1.0 + 0.01;
+            tx = other.getX() + outFace.getStepX() * (entity.getBbWidth() * 0.5 + 0.0625);
+            tz = other.getZ() + outFace.getStepZ() * (entity.getBbWidth() * 0.5 + 0.0625);
         }
 
         entity.teleportTo(tx, ty, tz);
         entity.setDeltaMovement(newMotion);
         entity.hurtMarked = true;
-        entityCooldowns.put(entity.getUUID(), now);
+        
+        // Cooldown ONLY on the target portal
+        other.entityCooldowns.put(entity.getUUID(), now);
         this.level().playSound(null, target, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 0.5F, 1.4F);
     }
 
