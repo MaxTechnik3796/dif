@@ -176,14 +176,7 @@ public class PortalGun extends Item{
 		// Shift 0.02 blocks away from the wall to prevent z-fighting / texture glitching
 		net.minecraft.world.phys.Vec3 spawnPos = alignedLoc.add(net.minecraft.world.phys.Vec3.atLowerCornerOf(face.getNormal()).scale(0.02));
 		
-		java.util.Set<BlockPos> uniquePositions = new java.util.HashSet<>();
-		net.minecraft.world.phys.Vec3 extVec = net.minecraft.world.phys.Vec3.atLowerCornerOf(extDir.getNormal());
-		net.minecraft.world.phys.Vec3 rightVec = net.minecraft.world.phys.Vec3.atLowerCornerOf(face.getNormal().cross(extDir.getNormal()));
-		
-		uniquePositions.add(BlockPos.containing(spawnPos.add(extVec.scale(0.5)).add(rightVec.scale(0.25))));
-		uniquePositions.add(BlockPos.containing(spawnPos.add(extVec.scale(0.5)).subtract(rightVec.scale(0.25))));
-		uniquePositions.add(BlockPos.containing(spawnPos.subtract(extVec.scale(0.5)).add(rightVec.scale(0.25))));
-		uniquePositions.add(BlockPos.containing(spawnPos.subtract(extVec.scale(0.5)).subtract(rightVec.scale(0.25))));
+		java.util.Set<BlockPos> uniquePositions = cz.maxtechnik.dif.entity.portal.PortalEntity.getPortalSupportBlocks(spawnPos, extDir, face);
 
 		// 1. Check space in all unique block positions (up to 4, strictly on the air side)
 		boolean space = true;

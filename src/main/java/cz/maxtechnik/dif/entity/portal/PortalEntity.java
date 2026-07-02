@@ -152,6 +152,18 @@ public class PortalEntity extends Entity {
         return this.buildPortalAABB();
     }
 
+    public static java.util.Set<BlockPos> getPortalSupportBlocks(Vec3 pos, Direction upDir, Direction facing) {
+        Vec3 extVec = Vec3.atLowerCornerOf(upDir.getNormal());
+        Vec3 rightVec = Vec3.atLowerCornerOf(facing.getNormal().cross(upDir.getNormal()));
+        
+        java.util.Set<BlockPos> uniquePositions = new java.util.HashSet<>();
+        uniquePositions.add(BlockPos.containing(pos.add(extVec.scale(0.5)).add(rightVec.scale(0.25))));
+        uniquePositions.add(BlockPos.containing(pos.add(extVec.scale(0.5)).subtract(rightVec.scale(0.25))));
+        uniquePositions.add(BlockPos.containing(pos.subtract(extVec.scale(0.5)).add(rightVec.scale(0.25))));
+        uniquePositions.add(BlockPos.containing(pos.subtract(extVec.scale(0.5)).subtract(rightVec.scale(0.25))));
+        return uniquePositions;
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -173,14 +185,7 @@ public class PortalEntity extends Entity {
             Direction facing = this.getFacing();
             Direction up = this.getUpDir();
             
-            Vec3 extVec = Vec3.atLowerCornerOf(up.getNormal());
-            Vec3 rightVec = Vec3.atLowerCornerOf(facing.getNormal().cross(up.getNormal()));
-            
-            java.util.Set<BlockPos> uniquePositions = new java.util.HashSet<>();
-            uniquePositions.add(BlockPos.containing(this.position().add(extVec.scale(0.5)).add(rightVec.scale(0.25))));
-            uniquePositions.add(BlockPos.containing(this.position().add(extVec.scale(0.5)).subtract(rightVec.scale(0.25))));
-            uniquePositions.add(BlockPos.containing(this.position().subtract(extVec.scale(0.5)).add(rightVec.scale(0.25))));
-            uniquePositions.add(BlockPos.containing(this.position().subtract(extVec.scale(0.5)).subtract(rightVec.scale(0.25))));
+            java.util.Set<BlockPos> uniquePositions = getPortalSupportBlocks(this.position(), up, facing);
 
             boolean hasSupport = true;
             for (BlockPos p : uniquePositions) {
@@ -303,25 +308,10 @@ public class PortalEntity extends Entity {
         }
 
         Vec3 newMotion = transformVelocity(p.getDeltaMovement(), this.getFacing(), other.getFacing());
-
-        double tx;
-        double ty;
-        double tz;
-        
-        Direction outFace = other.getFacing();
-        if (outFace.getAxis() == Direction.Axis.Y) {
-            tx = other.getX();
-            tz = other.getZ();
-            if (outFace == Direction.UP) {
-                ty = other.getY() + 0.0625; // 1 pixel above floor
-            } else {
-                ty = other.getY() - p.getBbHeight() - 0.0625; // 1 pixel below ceiling
-            }
-        } else {
-            ty = other.getY() - 1.0 + 0.01;
-            tx = other.getX() + outFace.getStepX() * (p.getBbWidth() * 0.5 + 0.0625);
-            tz = other.getZ() + outFace.getStepZ() * (p.getBbWidth() * 0.5 + 0.0625);
-        }
+        Vec3 dest = getDestinationPosition(other, p);
+        double tx = dest.x;
+        double ty = dest.y;
+        double tz = dest.z;
 
         float newYaw = p.getYRot();
         // Relative rotation for players only on wall-to-wall portal teleportation
@@ -370,25 +360,10 @@ public class PortalEntity extends Entity {
         }
 
         Vec3 newMotion = transformVelocity(entity.getDeltaMovement(), this.getFacing(), other.getFacing());
-        
-        double tx;
-        double ty;
-        double tz;
-        
-        Direction outFace = other.getFacing();
-        if (outFace.getAxis() == Direction.Axis.Y) {
-            tx = other.getX();
-            tz = other.getZ();
-            if (outFace == Direction.UP) {
-                ty = other.getY() + 0.0625;
-            } else {
-                ty = other.getY() - entity.getBbHeight() - 0.0625;
-            }
-        } else {
-            ty = other.getY() - 1.0 + 0.01;
-            tx = other.getX() + outFace.getStepX() * (entity.getBbWidth() * 0.5 + 0.0625);
-            tz = other.getZ() + outFace.getStepZ() * (entity.getBbWidth() * 0.5 + 0.0625);
-        }
+        Vec3 dest = getDestinationPosition(other, entity);
+        double tx = dest.x;
+        double ty = dest.y;
+        double tz = dest.z;
 
         entity.teleportTo(tx, ty, tz);
         entity.setDeltaMovement(newMotion);
@@ -397,6 +372,21 @@ public class PortalEntity extends Entity {
         // Cooldown ONLY on the target portal
         other.entityCooldowns.put(entity.getUUID(), now);
         this.level().playSound(null, target, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 0.5F, 1.4F);
+    }
+
+    private Vec3 getDestinationPosition(PortalEntity other, Entity entity) {
+        double tx, ty, tz;
+        Direction outFace = other.getFacing();
+        if (outFace.getAxis() == Direction.Axis.Y) {
+            tx = other.getX();
+            tz = other.getZ();
+            ty = outFace == Direction.UP ? other.getY() + 0.0625 : other.getY() - entity.getBbHeight() - 0.0625;
+        } else {
+            ty = other.getY() - 1.0 + 0.01;
+            tx = other.getX() + outFace.getStepX() * (entity.getBbWidth() * 0.5 + 0.0625);
+            tz = other.getZ() + outFace.getStepZ() * (entity.getBbWidth() * 0.5 + 0.0625);
+        }
+        return new Vec3(tx, ty, tz);
     }
 
     private static Vec3 transformVelocity(Vec3 velocity, Direction inFacing, Direction outFacing) {
@@ -459,20 +449,18 @@ public class PortalEntity extends Entity {
         BlockPos targetPos = PortalData.get(serverLevel).getPos(owner, isBlue);
         if (targetPos != null) {
             PortalData.get(serverLevel).remove(owner, isBlue);
-            if (serverLevel.isLoaded(targetPos)) {
-                List<PortalEntity> portals = serverLevel.getEntitiesOfClass(PortalEntity.class, new AABB(targetPos).inflate(2.0),
-                        p -> owner.equals(p.getOwner()) && p.isBlue() == isBlue);
-                for (PortalEntity p : portals) {
-                    p.discard();
-                }
-            } else {
-                serverLevel.setChunkForced(targetPos.getX() >> 4, targetPos.getZ() >> 4, true);
-                List<PortalEntity> portals = serverLevel.getEntitiesOfClass(PortalEntity.class, new AABB(targetPos).inflate(2.0),
-                        p -> owner.equals(p.getOwner()) && p.isBlue() == isBlue);
-                for (PortalEntity p : portals) {
-                    p.discard();
-                }
+            boolean wasLoaded = serverLevel.isLoaded(targetPos);
+            if (!wasLoaded) serverLevel.setChunkForced(targetPos.getX() >> 4, targetPos.getZ() >> 4, true);
+
+            List<PortalEntity> portals = serverLevel.getEntitiesOfClass(PortalEntity.class, new AABB(targetPos).inflate(2.0),
+                    p -> owner.equals(p.getOwner()) && p.isBlue() == isBlue);
+            for (PortalEntity p : portals) {
+                p.discard();
             }
+            
+            // Leave it forced if it was forced, otherwise remove force if we just forced it temporarily
+            // Note: If you want to unforce, uncomment the next line:
+            // if (!wasLoaded) serverLevel.setChunkForced(targetPos.getX() >> 4, targetPos.getZ() >> 4, false);
         }
     }
     
