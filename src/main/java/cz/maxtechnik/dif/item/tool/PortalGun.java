@@ -214,9 +214,29 @@ public class PortalGun extends Item{
 			return false;
 		}
 		
-		cz.maxtechnik.dif.entity.portal.PortalEntity.removeOldPortal(world,player.getUUID(),isBlue);
-		
 		cz.maxtechnik.dif.entity.portal.PortalEntity portal = new cz.maxtechnik.dif.entity.portal.PortalEntity(world, player.getUUID(), isBlue, face, extDir, spawnPos);
+		
+		boolean overlaps = false;
+		java.util.List<cz.maxtechnik.dif.entity.portal.PortalEntity> existingPortals = world.getEntitiesOfClass(
+				cz.maxtechnik.dif.entity.portal.PortalEntity.class,
+				portal.getBoundingBox().inflate(0.01)
+		);
+		for (cz.maxtechnik.dif.entity.portal.PortalEntity other : existingPortals) {
+			if (other.getOwner() != null && other.getOwner().equals(player.getUUID()) && other.isBlue() == isBlue) {
+				continue;
+			}
+			if (portal.getBoundingBox().inflate(0.01).intersects(other.getBoundingBox())) {
+				overlaps = true;
+				break;
+			}
+		}
+		
+		if (overlaps) {
+			player.displayClientMessage(Component.literal("[!] Invalid position"), true);
+			return false;
+		}
+		
+		cz.maxtechnik.dif.entity.portal.PortalEntity.removeOldPortal(world,player.getUUID(),isBlue);
 		
 		// Save position in PortalData BEFORE spawning entity so that updateLinks during onAddedToLevel finds it!
 		cz.maxtechnik.dif.entity.portal.PortalData.get(world).set(player.getUUID(), isBlue, portal.blockPosition());
