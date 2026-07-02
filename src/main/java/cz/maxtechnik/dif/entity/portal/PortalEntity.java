@@ -10,8 +10,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -37,8 +35,6 @@ public class PortalEntity extends Entity {
     private static final EntityDataAccessor<String> DATA_UP_DIR = SynchedEntityData.defineId(PortalEntity.class, EntityDataSerializers.STRING);
 
     public long lastTeleportTime = 0;
-    private int linkedCheckTimer = 0;
-    private static final int LINKED_CHECK_INTERVAL = 40;
     private static final Map<UUID, Long> waitingPlayers = new HashMap<>();
     private final Map<UUID, Long> entityCooldowns = new HashMap<>();
 
@@ -225,7 +221,7 @@ public class PortalEntity extends Entity {
                 UUID mid = mob.getUUID();
                 if (this.entityCooldowns.containsKey(mid) && now - this.entityCooldowns.get(mid) <= 15)
                     continue;
-                this.tryTeleportEntity(mob, serverLevel, now, false);
+                this.tryTeleportEntity(mob, serverLevel, now);
                 count++;
             }
 
@@ -236,7 +232,7 @@ public class PortalEntity extends Entity {
                 UUID eid = e.getUUID();
                 if (this.entityCooldowns.containsKey(eid) && now - this.entityCooldowns.get(eid) <= 15)
                     continue;
-                this.tryTeleportEntity(e, serverLevel, now, false);
+                this.tryTeleportEntity(e, serverLevel, now);
                 count++;
             }
         }
@@ -248,7 +244,7 @@ public class PortalEntity extends Entity {
                 if (count >= DifModCommonConfig.PORTAL_MAX_ENTITIES_PER_TICK.get()) break;
                 UUID eid = e.getUUID();
                 if (this.entityCooldowns.containsKey(eid) && now - this.entityCooldowns.get(eid) <= 10) continue;
-                this.tryTeleportEntity(e, serverLevel, now, true);
+                this.tryTeleportEntity(e, serverLevel, now);
                 count++;
             }
         }
@@ -259,7 +255,7 @@ public class PortalEntity extends Entity {
     private PortalEntity findLinkedPortal(ServerLevel sl, BlockPos targetPos) {
         List<PortalEntity> portals = sl.getEntitiesOfClass(PortalEntity.class, new AABB(targetPos).inflate(2.0),
                 p -> this.getOwner().equals(p.getOwner()) && p.isBlue() == !this.isBlue());
-        return portals.isEmpty() ? null : portals.get(0);
+        return portals.isEmpty() ? null : portals.getFirst();
     }
 
     private void tryTeleportPlayer(Player p, ServerLevel sl, long now) {
@@ -341,7 +337,7 @@ public class PortalEntity extends Entity {
         other.entityCooldowns.put(pid, now);
     }
 
-    private void tryTeleportEntity(Entity entity, ServerLevel sl, long now, boolean isItem) {
+    private void tryTeleportEntity(Entity entity, ServerLevel sl, long now) {
         BlockPos target = PortalData.get(sl).getPos(this.getOwner(), !this.isBlue());
         if (target == null) return;
 
@@ -465,7 +461,7 @@ public class PortalEntity extends Entity {
         if (pos == null) return null;
         List<PortalEntity> list = sl.getEntitiesOfClass(PortalEntity.class, new AABB(pos).inflate(2.0),
                 p -> owner.equals(p.getOwner()) && p.isBlue() == isBlue);
-        return list.isEmpty() ? null : list.get(0);
+        return list.isEmpty() ? null : list.getFirst();
     }
 
     public static void updateLinks(ServerLevel sl, UUID owner) {

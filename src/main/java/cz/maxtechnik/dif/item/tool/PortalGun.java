@@ -161,13 +161,12 @@ public class PortalGun extends Item{
 		var hit=world.clip(new ClipContext(start,start.add(player.getLookAngle().scale(128.0)),
 				ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,player));
 		if(hit.getType()!=HitResult.Type.BLOCK) return false;
-		net.minecraft.world.phys.BlockHitResult blockHit = (net.minecraft.world.phys.BlockHitResult) hit;
-		Direction face=blockHit.getDirection();
-		BlockPos hitPos=blockHit.getBlockPos();
+        Direction face= hit.getDirection();
+		BlockPos hitPos= hit.getBlockPos();
 		
 		Direction extDir = (face.getAxis() == Direction.Axis.Y) ? player.getDirection() : Direction.UP;
 		
-		net.minecraft.world.phys.Vec3 alignedLoc = alignPortal(world, hitPos, face, extDir, blockHit.getLocation());
+		net.minecraft.world.phys.Vec3 alignedLoc = alignPortal(world, hitPos, face, extDir, hit.getLocation());
 		if (alignedLoc == null) {
 			player.displayClientMessage(Component.literal("[!] Invalid placement (needs support)"), true);
 			return false;
