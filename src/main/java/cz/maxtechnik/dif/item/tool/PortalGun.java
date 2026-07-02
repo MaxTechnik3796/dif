@@ -166,7 +166,6 @@ public class PortalGun extends Item{
 		BlockPos hitPos=blockHit.getBlockPos();
 		
 		Direction extDir = (face.getAxis() == Direction.Axis.Y) ? player.getDirection() : Direction.UP;
-		net.minecraft.world.phys.Vec3 extVec = net.minecraft.world.phys.Vec3.atLowerCornerOf(extDir.getNormal());
 		
 		net.minecraft.world.phys.Vec3 alignedLoc = alignPortal(world, hitPos, face, extDir, blockHit.getLocation());
 		if (alignedLoc == null) {
@@ -177,14 +176,41 @@ public class PortalGun extends Item{
 		// Shift 0.02 blocks away from the wall to prevent z-fighting / texture glitching
 		net.minecraft.world.phys.Vec3 spawnPos = alignedLoc.add(net.minecraft.world.phys.Vec3.atLowerCornerOf(face.getNormal()).scale(0.02));
 		
-		BlockPos pos1 = BlockPos.containing(spawnPos.subtract(extVec.scale(0.5)));
-		BlockPos pos2 = BlockPos.containing(spawnPos.add(extVec.scale(0.5)));
+		java.util.Set<BlockPos> uniquePositions = new java.util.HashSet<>();
+		net.minecraft.world.phys.Vec3 extVec = net.minecraft.world.phys.Vec3.atLowerCornerOf(extDir.getNormal());
+		net.minecraft.world.phys.Vec3 rightVec = net.minecraft.world.phys.Vec3.atLowerCornerOf(face.getNormal().cross(extDir.getNormal()));
 		
-		boolean space = (world.isEmptyBlock(pos1) || world.getBlockState(pos1).canBeReplaced()) && 
-		                (world.isEmptyBlock(pos2) || world.getBlockState(pos2).canBeReplaced());
+		uniquePositions.add(BlockPos.containing(spawnPos.add(extVec.scale(0.5)).add(rightVec.scale(0.25))));
+		uniquePositions.add(BlockPos.containing(spawnPos.add(extVec.scale(0.5)).subtract(rightVec.scale(0.25))));
+		uniquePositions.add(BlockPos.containing(spawnPos.subtract(extVec.scale(0.5)).add(rightVec.scale(0.25))));
+		uniquePositions.add(BlockPos.containing(spawnPos.subtract(extVec.scale(0.5)).subtract(rightVec.scale(0.25))));
+
+		// 1. Check space in all unique block positions (up to 4, strictly on the air side)
+		boolean space = true;
+		for (BlockPos p : uniquePositions) {
+			if (!world.isEmptyBlock(p) && !world.getBlockState(p).canBeReplaced()) {
+				space = false;
+				break;
+			}
+		}
 		
 		if (!space) {
 			player.displayClientMessage(Component.literal("[!] Invalid placement (no space)"), true);
+			return false;
+		}
+		
+		// 2. Check support behind all unique block positions
+		boolean support = true;
+		for (BlockPos p : uniquePositions) {
+			BlockPos supPos = p.relative(face.getOpposite());
+			if (!world.getBlockState(supPos).isFaceSturdy(world, supPos, face)) {
+				support = false;
+				break;
+			}
+		}
+		
+		if (!support) {
+			player.displayClientMessage(Component.literal("[!] Invalid placement (needs support)"), true);
 			return false;
 		}
 		
@@ -192,8 +218,9 @@ public class PortalGun extends Item{
 		
 		cz.maxtechnik.dif.entity.portal.PortalEntity portal = new cz.maxtechnik.dif.entity.portal.PortalEntity(world, player.getUUID(), isBlue, face, extDir, spawnPos);
 		
-		world.addFreshEntity(portal);
+		// Save position in PortalData BEFORE spawning entity so that updateLinks during onAddedToLevel finds it!
 		cz.maxtechnik.dif.entity.portal.PortalData.get(world).set(player.getUUID(), isBlue, portal.blockPosition());
+		world.addFreshEntity(portal);
 		return true;
 	}
 	@Override

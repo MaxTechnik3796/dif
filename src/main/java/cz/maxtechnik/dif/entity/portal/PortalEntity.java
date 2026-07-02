@@ -169,43 +169,32 @@ public class PortalEntity extends Entity {
 
         ServerLevel serverLevel = (ServerLevel) this.level();
 
-        // Check sturdy blocks behind the portal (both halves)
-        Direction facing = this.getFacing();
-        Direction up = this.getUpDir();
-        boolean hasSupport = true;
-        if (facing.getAxis() == Direction.Axis.Y) {
-            Vec3 dirVec = Vec3.atLowerCornerOf(up.getNormal());
-            BlockPos pos1 = BlockPos.containing(this.position().add(dirVec.scale(0.5)));
-            BlockPos pos2 = BlockPos.containing(this.position().subtract(dirVec.scale(0.5)));
-            BlockPos support1 = pos1.relative(facing.getOpposite());
-            BlockPos support2 = pos2.relative(facing.getOpposite());
-            if (!serverLevel.getBlockState(support1).isFaceSturdy(serverLevel, support1, facing) ||
-                !serverLevel.getBlockState(support2).isFaceSturdy(serverLevel, support2, facing)) {
-                hasSupport = false;
-            }
-        } else {
-            BlockPos bottomPos = BlockPos.containing(this.position().subtract(0, 0.5, 0));
-            BlockPos topPos = BlockPos.containing(this.position().add(0, 0.5, 0));
-            BlockPos support1 = bottomPos.relative(facing.getOpposite());
-            BlockPos support2 = topPos.relative(facing.getOpposite());
-            if (!serverLevel.getBlockState(support1).isFaceSturdy(serverLevel, support1, facing) ||
-                !serverLevel.getBlockState(support2).isFaceSturdy(serverLevel, support2, facing)) {
-                hasSupport = false;
-            }
-        }
+        if (this.tickCount % 5 == 0) {
+            Direction facing = this.getFacing();
+            Direction up = this.getUpDir();
+            
+            Vec3 extVec = Vec3.atLowerCornerOf(up.getNormal());
+            Vec3 rightVec = Vec3.atLowerCornerOf(facing.getNormal().cross(up.getNormal()));
+            
+            java.util.Set<BlockPos> uniquePositions = new java.util.HashSet<>();
+            uniquePositions.add(BlockPos.containing(this.position().add(extVec.scale(0.5)).add(rightVec.scale(0.25))));
+            uniquePositions.add(BlockPos.containing(this.position().add(extVec.scale(0.5)).subtract(rightVec.scale(0.25))));
+            uniquePositions.add(BlockPos.containing(this.position().subtract(extVec.scale(0.5)).add(rightVec.scale(0.25))));
+            uniquePositions.add(BlockPos.containing(this.position().subtract(extVec.scale(0.5)).subtract(rightVec.scale(0.25))));
 
-        if (!hasSupport) {
-            PortalData.get(serverLevel).remove(this.getOwner(), this.isBlue());
-            this.discard();
-            return;
-        }
-
-        if (++this.linkedCheckTimer >= LINKED_CHECK_INTERVAL) {
-            this.linkedCheckTimer = 0;
-            BlockPos linkedPos = PortalData.get(serverLevel).getPos(this.getOwner(), !this.isBlue());
-            boolean linked = linkedPos != null;
-            if (this.isLinked() != linked) {
-                this.setIsLinked(linked);
+            boolean hasSupport = true;
+            for (BlockPos p : uniquePositions) {
+                BlockPos supPos = p.relative(facing.getOpposite());
+                if (!serverLevel.getBlockState(supPos).isFaceSturdy(serverLevel, supPos, facing)) {
+                    hasSupport = false;
+                    break;
+                }
+            }
+            
+            if (!hasSupport) {
+                PortalData.get(serverLevel).remove(this.getOwner(), this.isBlue());
+                this.discard();
+                return;
             }
         }
 
@@ -455,6 +444,49 @@ public class PortalEntity extends Entity {
         }
     }
     
+    
+    public static PortalEntity findPortal(ServerLevel sl, UUID owner, boolean isBlue) {
+        BlockPos pos = PortalData.get(sl).getPos(owner, isBlue);
+        if (pos == null) return null;
+        List<PortalEntity> list = sl.getEntitiesOfClass(PortalEntity.class, new AABB(pos).inflate(2.0),
+                p -> owner.equals(p.getOwner()) && p.isBlue() == isBlue);
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    public static void updateLinks(ServerLevel sl, UUID owner) {
+        PortalEntity blue = findPortal(sl, owner, true);
+        PortalEntity orange = findPortal(sl, owner, false);
+        
+        boolean linked = (blue != null && orange != null);
+        
+        if (blue != null) {
+            blue.setIsLinked(linked);
+        }
+        if (orange != null) {
+            orange.setIsLinked(linked);
+        }
+    }
+
+    @Override
+    public void onAddedToLevel() {
+        super.onAddedToLevel();
+        if (!this.level().isClientSide()) {
+            ServerLevel sl = (ServerLevel) this.level();
+            sl.setChunkForced(this.chunkPosition().x, this.chunkPosition().z, true);
+            updateLinks(sl, this.getOwner());
+        }
+    }
+
+    @Override
+    public void onRemovedFromLevel() {
+        super.onRemovedFromLevel();
+        if (!this.level().isClientSide()) {
+            ServerLevel sl = (ServerLevel) this.level();
+            sl.setChunkForced(this.chunkPosition().x, this.chunkPosition().z, false);
+            updateLinks(sl, this.getOwner());
+        }
+    }
+
     @Override
     public boolean hurt(@NotNull net.minecraft.world.damagesource.DamageSource source, float amount) {
         if (!this.level().isClientSide() && !this.isRemoved()) {
