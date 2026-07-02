@@ -95,56 +95,52 @@ public class PortalGun extends Item{
 		net.minecraft.world.phys.Vec3 right = normal.cross(up);
 		Direction rightDir = Direction.getNearest(right.x, right.y, right.z);
 
-		// 1. Align along UP axis (height/length)
-		double offsetUp = hitLoc.subtract(C).dot(up);
-		double alignedUpVal;
-		BlockPos adjPos;
-		
-		BlockPos tryPos1 = hitPos.relative(extDir);
-		BlockPos tryPos2 = hitPos.relative(extDir.getOpposite());
-		
-		boolean try1Sturdy = world.getBlockState(tryPos1).isFaceSturdy(world, tryPos1, face);
-		boolean try2Sturdy = world.getBlockState(tryPos2).isFaceSturdy(world, tryPos2, face);
+		double valUp = hitLoc.dot(up);
+		double centerUp = C.dot(up);
 
-		if (offsetUp > 0) {
-			if (try1Sturdy) {
-				alignedUpVal = C.dot(up) + 0.5;
-				adjPos = tryPos1;
-			} else if (try2Sturdy) {
-				alignedUpVal = C.dot(up) - 0.5;
-				adjPos = tryPos2;
-			} else {
-				return null; // No support
-			}
+		BlockPos tryPos1 = hitPos.relative(extDir); // UP
+		BlockPos tryPos2 = hitPos.relative(extDir.getOpposite()); // DOWN
+		
+		boolean upSturdy = world.getBlockState(tryPos1).isFaceSturdy(world, tryPos1, face);
+		boolean downSturdy = world.getBlockState(tryPos2).isFaceSturdy(world, tryPos2, face);
+
+		double alignedUpVal;
+		if (upSturdy && downSturdy) {
+			alignedUpVal = valUp;
+		} else if (upSturdy) {
+			alignedUpVal = centerUp + 0.5;
+		} else if (downSturdy) {
+			alignedUpVal = centerUp - 0.5;
 		} else {
-			if (try2Sturdy) {
-				alignedUpVal = C.dot(up) - 0.5;
-				adjPos = tryPos2;
-			} else if (try1Sturdy) {
-				alignedUpVal = C.dot(up) + 0.5;
-				adjPos = tryPos1;
-			} else {
-				return null; // No support
-			}
+			return null;
 		}
 
-		// 2. Align along RIGHT axis (width)
 		double valRight = hitLoc.dot(right);
 		double centerRight = C.dot(right);
 		double offsetRight = valRight - centerRight;
-
-		BlockPos sidePos1 = hitPos.relative(rightDir);
-		BlockPos sidePos2 = hitPos.relative(rightDir.getOpposite());
-		BlockPos adjSidePos1 = adjPos.relative(rightDir);
-		BlockPos adjSidePos2 = adjPos.relative(rightDir.getOpposite());
-
-		boolean rightSturdy = world.getBlockState(sidePos1).isFaceSturdy(world, sidePos1, face) &&
-		                      world.getBlockState(adjSidePos1).isFaceSturdy(world, adjSidePos1, face);
-		                      
-		boolean leftSturdy = world.getBlockState(sidePos2).isFaceSturdy(world, sidePos2, face) &&
-		                     world.getBlockState(adjSidePos2).isFaceSturdy(world, adjSidePos2, face);
-
+		
 		double alignedRightVal = valRight;
+		
+		boolean rightSturdy = true;
+		boolean leftSturdy = true;
+		
+		net.minecraft.world.phys.Vec3 wallPos = normal.scale(hitLoc.dot(normal))
+			.add(up.scale(alignedUpVal)).add(right.scale(centerRight))
+			.subtract(normal.scale(0.1));
+			
+		for (double h : new double[]{-0.9, 0.0, 0.9}) {
+			BlockPos bPos = BlockPos.containing(wallPos.add(up.scale(h)));
+			BlockPos rPos = bPos.relative(rightDir);
+			BlockPos lPos = bPos.relative(rightDir.getOpposite());
+			
+			if (!world.getBlockState(rPos).isFaceSturdy(world, rPos, face)) {
+				rightSturdy = false;
+			}
+			if (!world.getBlockState(lPos).isFaceSturdy(world, lPos, face)) {
+				leftSturdy = false;
+			}
+		}
+
 		if (offsetRight > 0 && !rightSturdy) {
 			alignedRightVal = centerRight;
 		} else if (offsetRight < 0 && !leftSturdy) {

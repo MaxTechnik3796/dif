@@ -153,10 +153,14 @@ public class PortalEntity extends Entity {
         Vec3 rightVec = Vec3.atLowerCornerOf(facing.getNormal().cross(upDir.getNormal()));
         
         java.util.Set<BlockPos> uniquePositions = new java.util.HashSet<>();
-        uniquePositions.add(BlockPos.containing(pos.add(extVec.scale(0.5)).add(rightVec.scale(0.25))));
-        uniquePositions.add(BlockPos.containing(pos.add(extVec.scale(0.5)).subtract(rightVec.scale(0.25))));
-        uniquePositions.add(BlockPos.containing(pos.subtract(extVec.scale(0.5)).add(rightVec.scale(0.25))));
-        uniquePositions.add(BlockPos.containing(pos.subtract(extVec.scale(0.5)).subtract(rightVec.scale(0.25))));
+        double[] hOffsets = {-0.9, 0.0, 0.9};
+        double[] wOffsets = {-0.4, 0.4};
+        
+        for (double h : hOffsets) {
+            for (double w : wOffsets) {
+                uniquePositions.add(BlockPos.containing(pos.add(extVec.scale(h)).add(rightVec.scale(w))));
+            }
+        }
         return uniquePositions;
     }
 
