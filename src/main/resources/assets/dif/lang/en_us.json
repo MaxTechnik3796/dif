@@ -681,6 +681,7 @@
 	"block.dif.copper_support":"Copper Support",
 	"block.dif.steel_support":"Steel Support",
 	"jei.dif.frying_table": "Frying Table",
+	"jei.dif.coke_oven": "Coke Oven",
 	"block.dif.coke_oven":"Coke Oven",
 	"block.dif.coke_oven_controller":"Coke Oven Controller",
 	"item.dif.coke":"Coke",
@@ -697,6 +698,7 @@
 	"block.dif.engine_extender_lpg":"Engine Extender: LPG",
 	"block.dif.engine_extender_heavy_fuel_oil":"Engine Extender: Heavy Fuel Oil",
 
+	"jei.dif.blast_smeltery": "Blast Smeltery",
 	"block.dif.blast_smeltery":"Blast Smeltery",
 	"block.dif.blast_smeltery_controller":"Blast Smeltery Controller",
 	"container.dif.blast_smeltery":"Blast Smeltery",
