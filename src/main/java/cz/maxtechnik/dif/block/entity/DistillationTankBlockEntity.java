@@ -172,9 +172,10 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 		super.notifyMultiUpdated();
 		cacheTick=0;
 		progress=0;
-		updateTowerState();
+		updateTowerState(true);
+		sendData();
 	}
-	public void updateTowerState(){
+	public void updateTowerState(boolean notifyNeighbors){
 		if(level==null||level.isClientSide) return;
 		BlockState state=getBlockState();
 		if(!(state.getBlock() instanceof cz.maxtechnik.dif.block.DistillationTank)) return;
@@ -185,6 +186,16 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 		if(state!=newState){
 			level.setBlock(worldPosition,newState,net.minecraft.world.level.block.Block.UPDATE_CLIENTS|net.minecraft.world.level.block.Block.UPDATE_INVISIBLE);
 			level.sendBlockUpdated(worldPosition,state,newState,3);
+		} else {
+			level.sendBlockUpdated(worldPosition,state,state,3);
+		}
+		if(notifyNeighbors){
+			if(level.getBlockEntity(worldPosition.above()) instanceof DistillationTankBlockEntity above){
+				above.updateTowerState(false);
+			}
+			if(level.getBlockEntity(worldPosition.below()) instanceof DistillationTankBlockEntity below){
+				below.updateTowerState(false);
+			}
 		}
 	}
 	@Override

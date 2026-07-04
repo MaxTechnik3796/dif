@@ -9,7 +9,7 @@
 		"amount":1
 	},
 	"result_fluid":{
-		"id":"create:honey",
+		"id":"dif:molten_obsidian_fluid",
 		"amount":1
 	},
 	"max_per_tick":200,

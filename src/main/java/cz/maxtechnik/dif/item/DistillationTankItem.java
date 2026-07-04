@@ -51,17 +51,11 @@ public class DistillationTankItem extends BlockItem{
 		if(controllerBE==null) return;
 		int width=controllerBE.getWidth();
 		if(width==1) return;
-		BlockPos controllerPos=controllerBE.getBlockPos();
 		BlockPos startPos=face==Direction.DOWN
-				?controllerPos.below()
-				:controllerPos.above(controllerBE.getHeight());
+				?controllerBE.getBlockPos().below()
+				:controllerBE.getBlockPos().above(controllerBE.getHeight());
 		if(startPos.getY()!=pos.getY()) return;
-		int dx=pos.getX()-startPos.getX();
-		int dz=pos.getZ()-startPos.getZ();
-		if(dx<0||dx>=width||dz<0||dz>=width) return;
-		// Nejdřív zkontroluj všechny pozice
 		int tanksToPlace=0;
-		List<BlockPos> toPlace=new ArrayList<>();
 		for(int xOffset=0;xOffset<width;xOffset++){
 			for(int zOffset=0;zOffset<width;zOffset++){
 				BlockPos offsetPos=startPos.offset(xOffset,0,zOffset);
@@ -69,32 +63,19 @@ public class DistillationTankItem extends BlockItem{
 				if(blockState.getBlock() instanceof DistillationTank) continue;
 				if(!blockState.canBeReplaced()) return;
 				tanksToPlace++;
-				toPlace.add(offsetPos);
 			}
 		}
 		if(!player.isCreative()&&stack.getCount()<tanksToPlace) return;
-		// Polož všechny bloky BEZ formování
-		for(BlockPos offsetPos: toPlace){
-			// Přeskoč pozici kterou už place() položil
-			if(offsetPos.equals(pos)) continue;
-			BlockPlaceContext context=BlockPlaceContext.at(ctx,offsetPos,face);
-			player.getPersistentData().putBoolean("SilenceTankSound",true);
-			player.getPersistentData().putBoolean("SuppressConnectivity",true);
-			super.place(context);
-			player.getPersistentData().remove("SilenceTankSound");
-			player.getPersistentData().remove("SuppressConnectivity");
-		}
-		// Odložené formování — až jsou všechny bloky na místě
-		if(world instanceof ServerLevel serverLevel){
-			serverLevel.getServer().tell(new net.minecraft.server.TickTask(
-					serverLevel.getServer().getTickCount()+1,()->{
-				for(BlockPos offsetPos: toPlace){
-					if(serverLevel.getBlockState(offsetPos).getBlock() instanceof DistillationTank){
-						serverLevel.blockUpdated(offsetPos,serverLevel.getBlockState(offsetPos).getBlock());
-					}
-				}
+		for(int xOffset=0;xOffset<width;xOffset++){
+			for(int zOffset=0;zOffset<width;zOffset++){
+				BlockPos offsetPos=startPos.offset(xOffset,0,zOffset);
+				BlockState blockState=world.getBlockState(offsetPos);
+				if(blockState.getBlock() instanceof DistillationTank) continue;
+				BlockPlaceContext context=BlockPlaceContext.at(ctx,offsetPos,face);
+				player.getPersistentData().putBoolean("SilenceTankSound",true);
+				super.place(context);
+				player.getPersistentData().remove("SilenceTankSound");
 			}
-			));
 		}
 	}
 }

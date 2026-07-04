@@ -37,45 +37,51 @@ public class DistillationTankModel extends CTModel{
 	protected ModelData.Builder gatherModelData(Builder builder,BlockAndTintGetter world,
 	                                            BlockPos pos,BlockState state,ModelData blockEntityData){
 		super.gatherModelData(builder,world,pos,state,blockEntityData);
-		CullData cull=new CullData();
-		for(Direction d: Iterate.directions){
+		CullData cullData=new CullData();
+		for(Direction d: Iterate.horizontalDirections){
 			BlockPos neighbor=pos.relative(d);
 			boolean sameTank=world.getBlockState(neighbor).getBlock() instanceof DistillationTank;
-			if(d.getAxis().isVertical()){
-				// Use the TOP/BOTTOM properties computed by the block/blockentity
-				cull.set(d,d==Direction.UP?!state.getValue(DistillationTank.TOP):!state.getValue(DistillationTank.BOTTOM));
-			}else{
-				// Horizontálně schovej vnitřní stěnu mezi spojenými bloky
-				cull.set(d,sameTank&&ConnectivityHandler.isConnected(world,pos,neighbor));
-			}
+			cullData.setCulled(d,sameTank&&ConnectivityHandler.isConnected(world,pos,neighbor));
 		}
-		return builder.with(CULL_PROPERTY,cull);
+		return builder.with(CULL_PROPERTY,cullData);
 	}
 	@Override
 	public @NotNull List<BakedQuad> getQuads(BlockState state,Direction side,RandomSource rand,
 	                                         ModelData extraData,RenderType renderType){
-		CullData cull=extraData.has(CULL_PROPERTY)?extraData.get(CULL_PROPERTY):null;
-		// Pouze schovaný face vynech — všechno ostatní renderuj normálně
-		if(side!=null&&cull!=null&&cull.isCulled(side))
+		if(side!=null)
 			return Collections.emptyList();
-		return super.getQuads(state,side,rand,extraData,renderType);
-	}
-	// Cull data se správným equals/hashCode — kvůli cachování model dat (řeší flicker i mizení)
-	private static final class CullData{
-		private final boolean[] culled=new boolean[6];
-		void set(Direction d,boolean c){
-			culled[d.ordinal()]=c;
+		List<BakedQuad> quads=new java.util.ArrayList<>();
+		for(Direction d: Iterate.directions){
+			if(extraData.has(CULL_PROPERTY)&&extraData.get(CULL_PROPERTY).isCulled(d))
+				continue;
+			quads.addAll(super.getQuads(state,d,rand,extraData,renderType));
 		}
-		boolean isCulled(Direction d){
-			return culled[d.ordinal()];
+		quads.addAll(super.getQuads(state,null,rand,extraData,renderType));
+		return quads;
+	}
+	private static class CullData{
+		boolean[] culledFaces;
+		public CullData(){
+			culledFaces=new boolean[4];
+			Arrays.fill(culledFaces,false);
+		}
+		void setCulled(Direction face,boolean cull){
+			if(face.getAxis().isVertical())
+				return;
+			culledFaces[face.get2DDataValue()]=cull;
+		}
+		boolean isCulled(Direction face){
+			if(face.getAxis().isVertical())
+				return false;
+			return culledFaces[face.get2DDataValue()];
 		}
 		@Override
 		public boolean equals(Object o){
-			return o instanceof CullData other&&Arrays.equals(culled,other.culled);
+			return o instanceof CullData other&&Arrays.equals(culledFaces,other.culledFaces);
 		}
 		@Override
 		public int hashCode(){
-			return Arrays.hashCode(culled);
+			return Arrays.hashCode(culledFaces);
 		}
 	}
 }

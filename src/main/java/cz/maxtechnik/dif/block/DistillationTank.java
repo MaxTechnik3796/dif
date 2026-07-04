@@ -68,6 +68,15 @@ public class DistillationTank extends FluidTankBlock{
 		super.onPlace(state,level,pos,oldState,isMoving);
 		if(level.isClientSide) return;
 		if(state.getBlock()==oldState.getBlock()) return;
+
+		// Notify block above and below to update their tower states
+		if(level.getBlockEntity(pos.above()) instanceof DistillationTankBlockEntity above){
+			above.updateTowerState(false);
+		}
+		if(level.getBlockEntity(pos.below()) instanceof DistillationTankBlockEntity below){
+			below.updateTowerState(false);
+		}
+
 		forceConnectivityUpdateInArea(level,pos);
 	}
 	@Override
@@ -76,6 +85,15 @@ public class DistillationTank extends FluidTankBlock{
 		super.onRemove(state,level,pos,newState,isMoving);
 		if(level.isClientSide) return;
 		if(state.getBlock()==newState.getBlock()) return;
+
+		// Notify block above and below to update their tower states
+		if(level.getBlockEntity(pos.above()) instanceof DistillationTankBlockEntity above){
+			above.updateTowerState(false);
+		}
+		if(level.getBlockEntity(pos.below()) instanceof DistillationTankBlockEntity below){
+			below.updateTowerState(false);
+		}
+
 		forceConnectivityUpdateInArea(level,pos);
 	}
 	private void forceConnectivityUpdateInArea(Level level,BlockPos pos){
@@ -114,7 +132,7 @@ public class DistillationTank extends FluidTankBlock{
 		tanks.sort((a,b)->{
 			int cmpX=Integer.compare(a.getBlockPos().getX(),b.getBlockPos().getX());
 			if(cmpX!=0) return cmpX;
-			return Integer.compare(a.getBlockPos().getZ(),b.getBlockPos().getZ());
+			return java.lang.Integer.compare(a.getBlockPos().getZ(),b.getBlockPos().getZ());
 		});
 		// Form new multiblocks starting from the NW-most block of each group
 		for(DistillationTankBlockEntity tank: tanks){
@@ -122,9 +140,10 @@ public class DistillationTank extends FluidTankBlock{
 				com.simibubi.create.api.connectivity.ConnectivityHandler.formMulti(tank);
 			}
 		}
-		// Force vertical visual update on all tanks in the area
+		// Force vertical visual update on all tanks in the area and sync data to clients
 		for(DistillationTankBlockEntity tank: tanks){
-			tank.updateTowerState();
+			tank.updateTowerState(true);
+			tank.sendData();
 		}
 	}
 }
