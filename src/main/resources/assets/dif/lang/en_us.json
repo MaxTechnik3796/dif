@@ -720,5 +720,9 @@
 	"block.dif.raw_nickel_block":"Raw Nickel Block",
 
 	"block.dif.wooden_frame":"Wooden Frame",
-	"block.dif.deepslate_mithril_ore":"Deepslate Mithril Ore"
+	"block.dif.deepslate_mithril_ore":"Deepslate Mithril Ore",
+
+	"jei.dif.forge_melting": "Forge Melting",
+	"jei.dif.forge_mixing": "Forge Mixing",
+	"jei.dif.distillation": "Distillation Column"
 }

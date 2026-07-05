@@ -2,9 +2,8 @@ package cz.maxtechnik.dif.compat.jei;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
-import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
-import cz.maxtechnik.dif.recipe.FryingRecipe;
+import cz.maxtechnik.dif.recipe.DistillationRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -30,12 +29,11 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
 
 @JeiPlugin
-public class FryingJEI implements IModPlugin {
-	public static final ResourceLocation PLUGIN_ID = ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "frying_jei");
-	public static final RecipeType<FryingRecipe> TYPE = RecipeType.create(DifMod.MODID, "frying", FryingRecipe.class);
+public class DistillationJEI implements IModPlugin {
+	public static final ResourceLocation PLUGIN_ID = ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "distillation_jei");
+	public static final RecipeType<DistillationRecipe> TYPE = RecipeType.create(DifMod.MODID, "distillation", DistillationRecipe.class);
 
 	@Override
 	public @NotNull ResourceLocation getPluginUid() {
@@ -51,8 +49,8 @@ public class FryingJEI implements IModPlugin {
 	public void registerRecipes(@NotNull IRecipeRegistration registration) {
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.level == null) return;
-		List<FryingRecipe> recipes = mc.level.getRecipeManager()
-				.getAllRecipesFor(DifModRecipes.FRYING_TYPE.get())
+		List<DistillationRecipe> recipes = mc.level.getRecipeManager()
+				.getAllRecipesFor(DifModRecipes.DISTILLATION_TYPE.get())
 				.stream()
 				.map(RecipeHolder::value)
 				.toList();
@@ -61,26 +59,26 @@ public class FryingJEI implements IModPlugin {
 
 	@Override
 	public void registerRecipeCatalysts(@NotNull IRecipeCatalystRegistration registration) {
-		registration.addRecipeCatalyst(new ItemStack(DifModBlocks.FRYING_TABLE.get()), TYPE);
+		registration.addRecipeCatalyst(new ItemStack(DifModBlocks.DISTILLATION_TANK.get()), TYPE);
 	}
 
-	public static class Category implements IRecipeCategory<FryingRecipe> {
+	public static class Category implements IRecipeCategory<DistillationRecipe> {
 		private final IDrawable background;
 		private final IDrawable icon;
 
 		public Category(IGuiHelper guiHelper) {
-			this.background = guiHelper.createBlankDrawable(82, 56);
-			this.icon = guiHelper.createDrawableItemStack(new ItemStack(DifModBlocks.FRYING_TABLE.get()));
+			this.background = guiHelper.createBlankDrawable(162, 56);
+			this.icon = guiHelper.createDrawableItemStack(new ItemStack(DifModBlocks.DISTILLATION_TANK.get()));
 		}
 
 		@Override
-		public @NotNull RecipeType<FryingRecipe> getRecipeType() {
+		public @NotNull RecipeType<DistillationRecipe> getRecipeType() {
 			return TYPE;
 		}
 
 		@Override
 		public @NotNull Component getTitle() {
-			return Component.translatable("jei.dif.frying_table");
+			return Component.translatable("jei.dif.distillation");
 		}
 
 		@Override
@@ -94,30 +92,29 @@ public class FryingJEI implements IModPlugin {
 		}
 
 		@Override
-		public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull FryingRecipe recipe, @NotNull IFocusGroup focuses) {
-			builder.addInputSlot(1, 1).setStandardSlotBackground().addIngredients(recipe.getIngredient());
-			builder.addOutputSlot(61, 19).setOutputSlotBackground().addItemStack(recipe.getResultItem(Objects.requireNonNull(Minecraft.getInstance().level).registryAccess()));
-			if (recipe.getOilAmount() > 0) {
-				builder.addSlot(RecipeIngredientRole.INPUT, 1, 38)
+		public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull DistillationRecipe recipe, @NotNull IFocusGroup focuses) {
+			FluidStack[] matchingFluids = recipe.input().getFluids();
+			builder.addSlot(RecipeIngredientRole.INPUT, 1, 19)
+				.setStandardSlotBackground()
+				.setFluidRenderer(recipe.input().amount(), false, 16, 16)
+				.addIngredients(NeoForgeTypes.FLUID_STACK, java.util.Arrays.asList(matchingFluids));
+
+			int size = recipe.outputs().size();
+			for (int i = 0; i < size; i++) {
+				int col = i % 5;
+				int row = i / 5;
+				int slotX = 61 + col * 18;
+				int slotY = 19 + row * 18 - (size > 5 ? 9 : 0);
+				builder.addSlot(RecipeIngredientRole.OUTPUT, slotX, slotY)
 					.setStandardSlotBackground()
-					.setFluidRenderer(recipe.getOilAmount(), false, 16, 16)
-					.addIngredient(NeoForgeTypes.FLUID_STACK, new FluidStack(DifModFluids.SUNFLOWER_OIL.get(), recipe.getOilAmount()));
+					.setFluidRenderer(recipe.outputs().get(i).getAmount(), false, 16, 16)
+					.addIngredient(NeoForgeTypes.FLUID_STACK, recipe.outputs().get(i));
 			}
 		}
 
 		@Override
-		public void createRecipeExtras(@NotNull IRecipeExtrasBuilder builder, @NotNull FryingRecipe recipe, @NotNull IFocusGroup focuses) {
-			int cookTime = recipe.getProcessingTime();
-			if (cookTime <= 0) cookTime = 400;
-			builder.addAnimatedRecipeArrow(cookTime).setPosition(26, 19);
-			builder.addAnimatedRecipeFlame(300).setPosition(1, 20);
-			int cookTimeSeconds = cookTime / 20;
-			Component timeString = Component.translatable("gui.jei.category.smelting.time.seconds", cookTimeSeconds);
-			builder.addText(timeString, 82 - 20, 10)
-					.setPosition(0, 2, 82, 54, HorizontalAlignment.RIGHT, VerticalAlignment.BOTTOM)
-					.setTextAlignment(HorizontalAlignment.RIGHT)
-					.setTextAlignment(VerticalAlignment.BOTTOM)
-					.setColor(0xFF808080);
+		public void createRecipeExtras(@NotNull IRecipeExtrasBuilder builder, @NotNull DistillationRecipe recipe, @NotNull IFocusGroup focuses) {
+			builder.addAnimatedRecipeArrow(100).setPosition(26, 19);
 		}
 	}
 }

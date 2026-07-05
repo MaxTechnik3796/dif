@@ -1,13 +1,14 @@
 package cz.maxtechnik.dif.compat.jei;
 
-import com.simibubi.create.compat.jei.category.animations.AnimatedKinetics;
+import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
+import cz.maxtechnik.dif.init.other.DifModRecipes;
 import cz.maxtechnik.dif.recipe.BlastSmelteryRecipe;
-import cz.maxtechnik.dif.block.BlastSmelteryController;
+import mezz.jei.api.IModPlugin;
+import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.gui.placement.HorizontalAlignment;
 import mezz.jei.api.gui.placement.VerticalAlignment;
 import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
@@ -17,133 +18,127 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.neoforge.NeoForgeTypes;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.Direction;
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
+import mezz.jei.api.registration.IRecipeCategoryRegistration;
+import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class BlastSmelteryJEI implements IRecipeCategory<BlastSmelteryRecipe> {
-	private final IDrawable background;
-	private final IDrawable icon;
+@JeiPlugin
+public class BlastSmelteryJEI implements IModPlugin {
+	public static final ResourceLocation PLUGIN_ID = ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "blast_smeltery_jei");
+	public static final RecipeType<BlastSmelteryRecipe> TYPE = RecipeType.create(DifMod.MODID, "blast_smeltery", BlastSmelteryRecipe.class);
 
-	public BlastSmelteryJEI(IGuiHelper guiHelper) {
-		this.background = guiHelper.createBlankDrawable(177, 96);
-		this.icon = guiHelper.createDrawableItemStack(new ItemStack(DifModBlocks.BLAST_SMELTERY_CONTROLLER.get()));
+	@Override
+	public @NotNull ResourceLocation getPluginUid() {
+		return PLUGIN_ID;
 	}
 
 	@Override
-	public @NotNull RecipeType<BlastSmelteryRecipe> getRecipeType() {
-		return DifJEIPlugin.BLAST_SMELTERY_TYPE;
+	public void registerCategories(IRecipeCategoryRegistration registration) {
+		registration.addRecipeCategories(new Category(registration.getJeiHelpers().getGuiHelper()));
 	}
 
 	@Override
-	public @NotNull Component getTitle() {
-		return Component.translatable("jei.dif.blast_smeltery");
+	public void registerRecipes(@NotNull IRecipeRegistration registration) {
+		Minecraft mc = Minecraft.getInstance();
+		if (mc.level == null) return;
+		List<BlastSmelteryRecipe> recipes = mc.level.getRecipeManager()
+				.getAllRecipesFor(DifModRecipes.BLAST_SMELTERY_TYPE.get())
+				.stream()
+				.map(RecipeHolder::value)
+				.toList();
+		registration.addRecipes(TYPE, recipes);
 	}
 
 	@Override
-	public @NotNull IDrawable getBackground() {
-		return background;
+	public void registerRecipeCatalysts(@NotNull IRecipeCatalystRegistration registration) {
+		registration.addRecipeCatalyst(new ItemStack(DifModBlocks.BLAST_SMELTERY_CONTROLLER.get()), TYPE);
+		registration.addRecipeCatalyst(new ItemStack(DifModBlocks.BLAST_SMELTERY.get()), TYPE);
 	}
 
-	@Override
-	public @NotNull IDrawable getIcon() {
-		return icon;
-	}
+	public static class Category implements IRecipeCategory<BlastSmelteryRecipe> {
+		private final IDrawable background;
+		private final IDrawable icon;
 
-	@Override
-	public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull BlastSmelteryRecipe recipe, @NotNull IFocusGroup focuses) {
-		if (recipe.hasItemInput()) {
-			List<ItemStack> inputs = java.util.Arrays.stream(recipe.itemIngredient().getItems())
-				.map(stack -> {
-					ItemStack copy = stack.copy();
-					copy.setCount(recipe.itemIngredientCount());
-					return copy;
-				}).toList();
-			builder.addSlot(RecipeIngredientRole.INPUT, 70, 39)
-				.setStandardSlotBackground()
-				.addIngredients(VanillaTypes.ITEM_STACK, inputs);
+		public Category(IGuiHelper guiHelper) {
+			this.background = guiHelper.createBlankDrawable(116, 56);
+			this.icon = guiHelper.createDrawableItemStack(new ItemStack(DifModBlocks.BLAST_SMELTERY_CONTROLLER.get()));
 		}
 
-		if (recipe.hasFluidInput()) {
-			builder.addSlot(RecipeIngredientRole.INPUT, 88, 39)
-				.setStandardSlotBackground()
-				.setFluidRenderer(recipe.fluidInput().getAmount(), false, 16, 16)
-				.addIngredient(NeoForgeTypes.FLUID_STACK, recipe.fluidInput());
+		@Override
+		public @NotNull RecipeType<BlastSmelteryRecipe> getRecipeType() {
+			return TYPE;
 		}
 
-		if (recipe.hasItemOutput()) {
-			builder.addSlot(RecipeIngredientRole.OUTPUT, 138, 39)
-				.setStandardSlotBackground()
-				.addItemStack(recipe.itemResult());
+		@Override
+		public @NotNull Component getTitle() {
+			return Component.translatable("jei.dif.blast_smeltery");
 		}
 
-		if (recipe.hasFluidOutput()) {
-			builder.addSlot(RecipeIngredientRole.OUTPUT, 156, 39)
-				.setStandardSlotBackground()
-				.setFluidRenderer(recipe.fluidOutput().getAmount(), false, 16, 16)
-				.addIngredient(NeoForgeTypes.FLUID_STACK, recipe.fluidOutput());
+		@Override
+		public @NotNull IDrawable getBackground() {
+			return background;
 		}
-	}
 
-	@Override
-	public void draw(@NotNull BlastSmelteryRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics graphics, double mouseX, double mouseY) {
-		com.mojang.blaze3d.vertex.PoseStack matrixStack = graphics.pose();
-		matrixStack.pushPose();
+		@Override
+		public @NotNull IDrawable getIcon() {
+			return icon;
+		}
 
-		matrixStack.translate(38, 52, 200);
+		@Override
+		public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull BlastSmelteryRecipe recipe, @NotNull IFocusGroup focuses) {
+			if (recipe.hasItemInput()) {
+				List<ItemStack> inputs = java.util.Arrays.stream(recipe.itemIngredient().getItems())
+					.map(stack -> {
+						ItemStack copy = stack.copy();
+						copy.setCount(recipe.itemIngredientCount());
+						return copy;
+					}).toList();
+				builder.addSlot(RecipeIngredientRole.INPUT, 1, 19)
+					.setStandardSlotBackground()
+					.addIngredients(VanillaTypes.ITEM_STACK, inputs);
+			}
 
-		dev.engine_room.flywheel.lib.transform.TransformStack.of(matrixStack)
-				.rotateXDegrees(-15f)
-				.rotateYDegrees(-75f);
+			if (recipe.hasFluidInput()) {
+				builder.addSlot(RecipeIngredientRole.INPUT, 19, 19)
+					.setStandardSlotBackground()
+					.setFluidRenderer(recipe.fluidInput().getAmount(), false, 16, 16)
+					.addIngredient(NeoForgeTypes.FLUID_STACK, recipe.fluidInput());
+			}
 
-		int scale = 16;
-		
-		com.mojang.blaze3d.systems.RenderSystem.enableDepthTest();
-		
-		for (int x = -1; x <= 1; x++) {
-			for (int y = -1; y <= 1; y++) {
-				for (int z = -1; z <= 1; z++) {
-					// Render only outer blocks on top, front, and right faces
-					if (x != 1 && y != 1 && z != 1) continue;
-					
-					BlockState state = (x == 1 && y == 0 && z == 0)
-						? DifModBlocks.BLAST_SMELTERY_CONTROLLER.get().defaultBlockState()
-							.setValue(BlastSmelteryController.FACING, Direction.EAST)
-							.setValue(BlastSmelteryController.FORMED, true)
-							.setValue(BlastSmelteryController.ACTIVE, true)
-						: DifModBlocks.BLAST_SMELTERY.get().defaultBlockState();
-						
-					matrixStack.pushPose();
-					matrixStack.translate(x * scale, -y * scale, z * scale);
-					
-					AnimatedKinetics.defaultBlockElement(state)
-						.scale(scale)
-						.render(graphics);
-						
-					matrixStack.popPose();
-				}
+			if (recipe.hasItemOutput()) {
+				builder.addSlot(RecipeIngredientRole.OUTPUT, 77, 19)
+					.setStandardSlotBackground()
+					.addItemStack(recipe.itemResult());
+			}
+
+			if (recipe.hasFluidOutput()) {
+				builder.addSlot(RecipeIngredientRole.OUTPUT, 95, 19)
+					.setStandardSlotBackground()
+					.setFluidRenderer(recipe.fluidOutput().getAmount(), false, 16, 16)
+					.addIngredient(NeoForgeTypes.FLUID_STACK, recipe.fluidOutput());
 			}
 		}
-		
-		matrixStack.popPose();
-	}
 
-	@Override
-	public void createRecipeExtras(@NotNull IRecipeExtrasBuilder builder, @NotNull BlastSmelteryRecipe recipe, @NotNull IFocusGroup focuses) {
-		int cookTime = recipe.processingTime();
-		if (cookTime <= 0) cookTime = 600;
-		builder.addAnimatedRecipeArrow(cookTime).setPosition(110, 39);
-		int cookTimeSeconds = cookTime / 20;
-		Component timeString = Component.translatable("gui.jei.category.smelting.time.seconds", cookTimeSeconds);
-		builder.addText(timeString, 177 - 20, 10)
-				.setPosition(0, 2, 177, 96, HorizontalAlignment.RIGHT, VerticalAlignment.BOTTOM)
-				.setTextAlignment(HorizontalAlignment.RIGHT)
-				.setTextAlignment(VerticalAlignment.BOTTOM)
-				.setColor(0xFF808080);
+		@Override
+		public void createRecipeExtras(@NotNull IRecipeExtrasBuilder builder, @NotNull BlastSmelteryRecipe recipe, @NotNull IFocusGroup focuses) {
+			int cookTime = recipe.processingTime();
+			if (cookTime <= 0) cookTime = 600;
+			builder.addAnimatedRecipeArrow(cookTime).setPosition(42, 19);
+			int cookTimeSeconds = cookTime / 20;
+			Component timeString = Component.translatable("gui.jei.category.smelting.time.seconds", cookTimeSeconds);
+			builder.addText(timeString, 114, 10)
+					.setPosition(0, 2, 116, 56, HorizontalAlignment.RIGHT, VerticalAlignment.BOTTOM)
+					.setTextAlignment(HorizontalAlignment.RIGHT)
+					.setTextAlignment(VerticalAlignment.BOTTOM)
+					.setColor(0xFF808080);
+		}
 	}
 }
