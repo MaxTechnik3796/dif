@@ -4,11 +4,9 @@ import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
 import cz.maxtechnik.dif.recipe.CokeOvenRecipe;
-import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
-import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.placement.HorizontalAlignment;
 import mezz.jei.api.gui.placement.VerticalAlignment;
 import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
@@ -16,13 +14,11 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -31,13 +27,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @JeiPlugin
-public class CokeOvenJEI implements IModPlugin {
+public class CokeOvenJEI extends JeiCompact.Plugin {
 	public static final ResourceLocation PLUGIN_ID = ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "coke_oven_jei");
 	public static final RecipeType<CokeOvenRecipe> TYPE = RecipeType.create(DifMod.MODID, "coke_oven", CokeOvenRecipe.class);
 
-	@Override
-	public @NotNull ResourceLocation getPluginUid() {
-		return PLUGIN_ID;
+	public CokeOvenJEI() {
+		super("coke_oven_jei");
 	}
 
 	@Override
@@ -63,33 +58,9 @@ public class CokeOvenJEI implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(DifModBlocks.COKE_OVEN.get()), TYPE);
 	}
 
-	public static class Category implements IRecipeCategory<CokeOvenRecipe> {
-		private final IDrawable background;
-		private final IDrawable icon;
-
+	public static class Category extends JeiCompact.Category<CokeOvenRecipe> {
 		public Category(IGuiHelper guiHelper) {
-			this.background = guiHelper.createBlankDrawable(98, 56);
-			this.icon = guiHelper.createDrawableItemStack(new ItemStack(DifModBlocks.COKE_OVEN_CONTROLLER.get()));
-		}
-
-		@Override
-		public @NotNull RecipeType<CokeOvenRecipe> getRecipeType() {
-			return TYPE;
-		}
-
-		@Override
-		public @NotNull Component getTitle() {
-			return Component.translatable("jei.dif.coke_oven");
-		}
-
-		@Override
-		public @NotNull IDrawable getBackground() {
-			return background;
-		}
-
-		@Override
-		public @NotNull IDrawable getIcon() {
-			return icon;
+			super(guiHelper, 98, 56, new ItemStack(DifModBlocks.COKE_OVEN_CONTROLLER.get()), TYPE, "jei.dif.coke_oven");
 		}
 
 		@Override
@@ -122,7 +93,7 @@ public class CokeOvenJEI implements IModPlugin {
 			if (cookTime <= 0) cookTime = 900;
 			builder.addAnimatedRecipeArrow(cookTime).setPosition(26, 19);
 			int cookTimeSeconds = cookTime / 20;
-			Component timeString = Component.translatable("gui.jei.category.smelting.time.seconds", cookTimeSeconds);
+			net.minecraft.network.chat.Component timeString = net.minecraft.network.chat.Component.translatable("gui.jei.category.smelting.time.seconds", cookTimeSeconds);
 			builder.addText(timeString, 96, 10)
 					.setPosition(0, 2, 98, 56, HorizontalAlignment.RIGHT, VerticalAlignment.BOTTOM)
 					.setTextAlignment(HorizontalAlignment.RIGHT)

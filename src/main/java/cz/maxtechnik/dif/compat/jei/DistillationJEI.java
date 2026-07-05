@@ -4,24 +4,18 @@ import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
 import cz.maxtechnik.dif.recipe.DistillationRecipe;
-import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
-import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.placement.HorizontalAlignment;
-import mezz.jei.api.gui.placement.VerticalAlignment;
 import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -31,13 +25,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @JeiPlugin
-public class DistillationJEI implements IModPlugin {
+public class DistillationJEI extends JeiCompact.Plugin {
 	public static final ResourceLocation PLUGIN_ID = ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "distillation_jei");
 	public static final RecipeType<DistillationRecipe> TYPE = RecipeType.create(DifMod.MODID, "distillation", DistillationRecipe.class);
 
-	@Override
-	public @NotNull ResourceLocation getPluginUid() {
-		return PLUGIN_ID;
+	public DistillationJEI() {
+		super("distillation_jei");
 	}
 
 	@Override
@@ -62,33 +55,9 @@ public class DistillationJEI implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(DifModBlocks.DISTILLATION_TANK.get()), TYPE);
 	}
 
-	public static class Category implements IRecipeCategory<DistillationRecipe> {
-		private final IDrawable background;
-		private final IDrawable icon;
-
+	public static class Category extends JeiCompact.Category<DistillationRecipe> {
 		public Category(IGuiHelper guiHelper) {
-			this.background = guiHelper.createBlankDrawable(162, 56);
-			this.icon = guiHelper.createDrawableItemStack(new ItemStack(DifModBlocks.DISTILLATION_TANK.get()));
-		}
-
-		@Override
-		public @NotNull RecipeType<DistillationRecipe> getRecipeType() {
-			return TYPE;
-		}
-
-		@Override
-		public @NotNull Component getTitle() {
-			return Component.translatable("jei.dif.distillation");
-		}
-
-		@Override
-		public @NotNull IDrawable getBackground() {
-			return background;
-		}
-
-		@Override
-		public @NotNull IDrawable getIcon() {
-			return icon;
+			super(guiHelper, 162, 56, new ItemStack(DifModBlocks.DISTILLATION_TANK.get()), TYPE, "jei.dif.distillation");
 		}
 
 		@Override

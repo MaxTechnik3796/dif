@@ -4,11 +4,9 @@ import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
 import cz.maxtechnik.dif.recipe.BlastSmelteryRecipe;
-import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
-import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.placement.HorizontalAlignment;
 import mezz.jei.api.gui.placement.VerticalAlignment;
 import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
@@ -16,13 +14,11 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -31,13 +27,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @JeiPlugin
-public class BlastSmelteryJEI implements IModPlugin {
+public class BlastSmelteryJEI extends JeiCompact.Plugin {
 	public static final ResourceLocation PLUGIN_ID = ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "blast_smeltery_jei");
 	public static final RecipeType<BlastSmelteryRecipe> TYPE = RecipeType.create(DifMod.MODID, "blast_smeltery", BlastSmelteryRecipe.class);
 
-	@Override
-	public @NotNull ResourceLocation getPluginUid() {
-		return PLUGIN_ID;
+	public BlastSmelteryJEI() {
+		super("blast_smeltery_jei");
 	}
 
 	@Override
@@ -63,33 +58,9 @@ public class BlastSmelteryJEI implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(DifModBlocks.BLAST_SMELTERY.get()), TYPE);
 	}
 
-	public static class Category implements IRecipeCategory<BlastSmelteryRecipe> {
-		private final IDrawable background;
-		private final IDrawable icon;
-
+	public static class Category extends JeiCompact.Category<BlastSmelteryRecipe> {
 		public Category(IGuiHelper guiHelper) {
-			this.background = guiHelper.createBlankDrawable(116, 56);
-			this.icon = guiHelper.createDrawableItemStack(new ItemStack(DifModBlocks.BLAST_SMELTERY_CONTROLLER.get()));
-		}
-
-		@Override
-		public @NotNull RecipeType<BlastSmelteryRecipe> getRecipeType() {
-			return TYPE;
-		}
-
-		@Override
-		public @NotNull Component getTitle() {
-			return Component.translatable("jei.dif.blast_smeltery");
-		}
-
-		@Override
-		public @NotNull IDrawable getBackground() {
-			return background;
-		}
-
-		@Override
-		public @NotNull IDrawable getIcon() {
-			return icon;
+			super(guiHelper, 116, 56, new ItemStack(DifModBlocks.BLAST_SMELTERY_CONTROLLER.get()), TYPE, "jei.dif.blast_smeltery");
 		}
 
 		@Override
@@ -133,7 +104,7 @@ public class BlastSmelteryJEI implements IModPlugin {
 			if (cookTime <= 0) cookTime = 600;
 			builder.addAnimatedRecipeArrow(cookTime).setPosition(42, 19);
 			int cookTimeSeconds = cookTime / 20;
-			Component timeString = Component.translatable("gui.jei.category.smelting.time.seconds", cookTimeSeconds);
+			net.minecraft.network.chat.Component timeString = net.minecraft.network.chat.Component.translatable("gui.jei.category.smelting.time.seconds", cookTimeSeconds);
 			builder.addText(timeString, 114, 10)
 					.setPosition(0, 2, 116, 56, HorizontalAlignment.RIGHT, VerticalAlignment.BOTTOM)
 					.setTextAlignment(HorizontalAlignment.RIGHT)

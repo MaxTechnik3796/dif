@@ -5,10 +5,8 @@ import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
 import cz.maxtechnik.dif.recipe.FryingRecipe;
-import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
-import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.placement.HorizontalAlignment;
 import mezz.jei.api.gui.placement.VerticalAlignment;
 import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
@@ -16,7 +14,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
@@ -33,13 +30,12 @@ import java.util.List;
 import java.util.Objects;
 
 @JeiPlugin
-public class FryingJEI implements IModPlugin {
+public class FryingJEI extends JeiCompact.Plugin {
 	public static final ResourceLocation PLUGIN_ID = ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "frying_jei");
 	public static final RecipeType<FryingRecipe> TYPE = RecipeType.create(DifMod.MODID, "frying", FryingRecipe.class);
 
-	@Override
-	public @NotNull ResourceLocation getPluginUid() {
-		return PLUGIN_ID;
+	public FryingJEI() {
+		super("frying_jei");
 	}
 
 	@Override
@@ -64,33 +60,9 @@ public class FryingJEI implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(DifModBlocks.FRYING_TABLE.get()), TYPE);
 	}
 
-	public static class Category implements IRecipeCategory<FryingRecipe> {
-		private final IDrawable background;
-		private final IDrawable icon;
-
+	public static class Category extends JeiCompact.Category<FryingRecipe> {
 		public Category(IGuiHelper guiHelper) {
-			this.background = guiHelper.createBlankDrawable(82, 56);
-			this.icon = guiHelper.createDrawableItemStack(new ItemStack(DifModBlocks.FRYING_TABLE.get()));
-		}
-
-		@Override
-		public @NotNull RecipeType<FryingRecipe> getRecipeType() {
-			return TYPE;
-		}
-
-		@Override
-		public @NotNull Component getTitle() {
-			return Component.translatable("jei.dif.frying_table");
-		}
-
-		@Override
-		public @NotNull IDrawable getBackground() {
-			return background;
-		}
-
-		@Override
-		public @NotNull IDrawable getIcon() {
-			return icon;
+			super(guiHelper, 82, 56, new ItemStack(DifModBlocks.FRYING_TABLE.get()), TYPE, "jei.dif.frying_table");
 		}
 
 		@Override
