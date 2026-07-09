@@ -38,7 +38,6 @@ public class SpaceshipScreen extends AbstractContainerScreen<SpaceshipMenu>{
 			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"arrows/right"),
 			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"arrows/right_focused")
 	};
-
 	public SpaceshipScreen(SpaceshipMenu container,Inventory inventory,Component text){
 		super(container,inventory,text);
 		this.x=container.x;
@@ -71,15 +70,23 @@ public class SpaceshipScreen extends AbstractContainerScreen<SpaceshipMenu>{
 			int btnX=this.leftPos+16+(i*49);
 			int btnY=this.topPos+20;
 			int offset=i+SpaceshipControl.getNBT(world,x,y,z,"scroll");
-			if(offset>PLANETS_TEX.length) offset=PLANETS_TEX.length;
+			if(offset>=PLANETS_TEX.length) offset=PLANETS_TEX.length-1;
 			// Vlastní button který renderuje z textury atlas
 			int finalI=i;
 			this.addRenderableWidget(new SpecialButton(btnX,btnY,44,73,new WidgetSprites(PLANETS_TEX[offset],PLANETS_FOCUSED_TEX[offset]),btn->sendButtonPacket(finalI)));
 		}
 		// Šipka doleva
-		this.addRenderableWidget(new SpecialButton(this.leftPos+8,this.topPos+43,5,20,new WidgetSprites(ARROWS_TEX[0],ARROWS_TEX[1]),btn->sendButtonPacket(4)));
+		this.addRenderableWidget(new SpecialButton(this.leftPos+8,this.topPos+43,5,20,new WidgetSprites(ARROWS_TEX[0],ARROWS_TEX[1]),btn->{
+			SpaceshipControl.arrow(world,x,y,z,4);
+			sendButtonPacket(4);
+			this.rebuildWidgets();
+		}));
 		// Šipka doprava
-		this.addRenderableWidget(new SpecialButton(this.leftPos+210,this.topPos+43,5,20,new WidgetSprites(ARROWS_TEX[2],ARROWS_TEX[3]),btn->sendButtonPacket(5)));
+		this.addRenderableWidget(new SpecialButton(this.leftPos+210,this.topPos+43,5,20,new WidgetSprites(ARROWS_TEX[2],ARROWS_TEX[3]),btn->{
+			SpaceshipControl.arrow(world,x,y,z,5);
+			sendButtonPacket(5);
+			this.rebuildWidgets();
+		}));
 	}
 	private void sendButtonPacket(int id){
 		PacketDistributor.sendToServer(new SpaceshipScreenButtonMessage(id,x,y,z));
