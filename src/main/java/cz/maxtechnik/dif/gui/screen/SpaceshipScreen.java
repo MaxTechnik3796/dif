@@ -63,12 +63,13 @@ public class SpaceshipScreen extends AbstractContainerScreen<SpaceshipMenu>{
 		LevelAccessor world=entity.level();
 		// 4 tlačítka planet – použijeme vanilla Button s vlastním renderem přes GuiGraphics
 		for(int i=0;i<4;i++){
-			final int buttonId=i;
 			int btnX=this.leftPos+16+(i*49);
 			int btnY=this.topPos+20;
 			int offset=i+SpaceshipControl.getNBT(world,x,y,z,"scroll");
+			if(offset>PLANETS_TEX.length) offset=PLANETS_TEX.length;
 			// Vlastní button který renderuje z textury atlas
-			this.addRenderableWidget(new PlanetButton(btnX,btnY,44,73,new WidgetSprites(PLANETS_TEX[offset],PLANETS_FOCUSED_TEX[offset]),btn->sendButtonPacket(buttonId)));
+			int finalI=i;
+			this.addRenderableWidget(new PlanetButton(btnX,btnY,44,73,new WidgetSprites(PLANETS_TEX[offset],PLANETS_FOCUSED_TEX[offset]),btn->sendButtonPacket(finalI)));
 		}
 		// Šipka doleva
 		this.addRenderableWidget(new ArrowButton(this.leftPos+8,this.topPos+43,5,20,0,0,ARROWS_TEX,10,40,btn->sendButtonPacket(4)));
