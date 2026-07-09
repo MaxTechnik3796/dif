@@ -22,6 +22,7 @@ public class SpaceshipScreen extends AbstractContainerScreen<SpaceshipMenu>{
 	private final Player entity;
 	private static final ResourceLocation TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/rocketg_00.png");
 	private static final ResourceLocation PLANETS_TEX=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets.png");
+	private static final ResourceLocation PLANETS_FOCUSED_TEX=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets_focused.png");
 	private static final ResourceLocation ARROWS_TEX=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/arrows.png");
 	public SpaceshipScreen(SpaceshipMenu container,Inventory inventory,Component text){
 		super(container,inventory,text);
@@ -58,7 +59,7 @@ public class SpaceshipScreen extends AbstractContainerScreen<SpaceshipMenu>{
 			int u=getTextureUV(world,x,y,z,0,i);
 			int v=getTextureUV(world,x,y,z,1,i);
 			// Vlastní button který renderuje z textury atlas
-			this.addRenderableWidget(new PlanetButton(btnX,btnY,44,73,u,v,PLANETS_TEX,176,292,btn->sendButtonPacket(buttonId)));
+			this.addRenderableWidget(new PlanetButton(btnX,btnY,44,73,new WidgetSprites(PLANETS_TEX,PLANETS_FOCUSED_TEX),btn->sendButtonPacket(buttonId)));
 		}
 		// Šipka doleva
 		this.addRenderableWidget(new ArrowButton(this.leftPos+8,this.topPos+43,5,20,0,0,ARROWS_TEX,10,40,btn->sendButtonPacket(4)));
@@ -80,12 +81,8 @@ public class SpaceshipScreen extends AbstractContainerScreen<SpaceshipMenu>{
 	}
 	// Jednoduchý button který renderuje část textury
 	private static class PlanetButton extends ImageButton{
-		public PlanetButton(int x,int y,int w,int h,int,WidgetSprites sprites,OnPress onPress){
+		public PlanetButton(int x,int y,int w,int h,WidgetSprites sprites,OnPress onPress){
 			super(x,y,w,h,sprites,onPress);
-		}
-		@Override
-		public void renderWidget(@NotNull GuiGraphics guiGraphics,int mouseX,int mouseY,float partialTick){
-			guiGraphics.blit(tex,this.getX(),this.getY(),u,v,this.width,this.height,texW,texH);
 		}
 	}
 	private static class ArrowButton extends Button{
