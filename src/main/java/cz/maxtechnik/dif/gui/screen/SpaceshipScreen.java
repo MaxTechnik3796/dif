@@ -6,7 +6,6 @@ import cz.maxtechnik.dif.gui.menu.SpaceshipMenu;
 import cz.maxtechnik.dif.init.events.SpaceshipControl;
 import cz.maxtechnik.dif.network.SpaceshipScreenButtonMessage;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -33,7 +32,13 @@ public class SpaceshipScreen extends AbstractContainerScreen<SpaceshipMenu>{
 			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"planets/moon_focused"),
 			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"planets/unknown_focused")
 	};
-	private static final ResourceLocation ARROWS_TEX=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/arrows.png");
+	private static final ResourceLocation[] ARROWS_TEX={
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"arrows/left"),
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"arrows/left_focused"),
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"arrows/right"),
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"arrows/right_focused")
+	};
+
 	public SpaceshipScreen(SpaceshipMenu container,Inventory inventory,Component text){
 		super(container,inventory,text);
 		this.x=container.x;
@@ -69,12 +74,12 @@ public class SpaceshipScreen extends AbstractContainerScreen<SpaceshipMenu>{
 			if(offset>PLANETS_TEX.length) offset=PLANETS_TEX.length;
 			// Vlastní button který renderuje z textury atlas
 			int finalI=i;
-			this.addRenderableWidget(new PlanetButton(btnX,btnY,44,73,new WidgetSprites(PLANETS_TEX[offset],PLANETS_FOCUSED_TEX[offset]),btn->sendButtonPacket(finalI)));
+			this.addRenderableWidget(new SpecialButton(btnX,btnY,44,73,new WidgetSprites(PLANETS_TEX[offset],PLANETS_FOCUSED_TEX[offset]),btn->sendButtonPacket(finalI)));
 		}
 		// Šipka doleva
-		this.addRenderableWidget(new ArrowButton(this.leftPos+8,this.topPos+43,5,20,0,0,ARROWS_TEX,10,40,btn->sendButtonPacket(4)));
+		this.addRenderableWidget(new SpecialButton(this.leftPos+8,this.topPos+43,5,20,new WidgetSprites(ARROWS_TEX[0],ARROWS_TEX[1]),btn->sendButtonPacket(4)));
 		// Šipka doprava
-		this.addRenderableWidget(new ArrowButton(this.leftPos+210,this.topPos+43,5,20,5,0,ARROWS_TEX,10,40,btn->sendButtonPacket(5)));
+		this.addRenderableWidget(new SpecialButton(this.leftPos+210,this.topPos+43,5,20,new WidgetSprites(ARROWS_TEX[2],ARROWS_TEX[3]),btn->sendButtonPacket(5)));
 	}
 	private void sendButtonPacket(int id){
 		PacketDistributor.sendToServer(new SpaceshipScreenButtonMessage(id,x,y,z));
@@ -83,25 +88,9 @@ public class SpaceshipScreen extends AbstractContainerScreen<SpaceshipMenu>{
 	protected void renderLabels(@NotNull GuiGraphics g,int mouseX,int mouseY){
 	}
 	// Jednoduchý button který renderuje část textury
-	private static class PlanetButton extends ImageButton{
-		public PlanetButton(int x,int y,int w,int h,WidgetSprites sprites,OnPress onPress){
+	private static class SpecialButton extends ImageButton{
+		public SpecialButton(int x,int y,int w,int h,WidgetSprites sprites,OnPress onPress){
 			super(x,y,w,h,sprites,onPress);
-		}
-	}
-	private static class ArrowButton extends Button{
-		private final ResourceLocation tex;
-		private final int u, v, texW, texH;
-		public ArrowButton(int x,int y,int w,int h,int u,int v,ResourceLocation tex,int texW,int texH,OnPress onPress){
-			super(x,y,w,h,Component.empty(),onPress,DEFAULT_NARRATION);
-			this.u=u;
-			this.v=v;
-			this.tex=tex;
-			this.texW=texW;
-			this.texH=texH;
-		}
-		@Override
-		public void renderWidget(@NotNull GuiGraphics guiGraphics,int mouseX,int mouseY,float partialTick){
-			guiGraphics.blit(tex,this.getX(),this.getY(),u,v,this.width,this.height,texW,texH);
 		}
 	}
 }
