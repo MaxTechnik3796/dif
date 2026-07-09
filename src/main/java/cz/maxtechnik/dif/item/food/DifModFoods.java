@@ -16,7 +16,7 @@ public class DifModFoods{
 	public static final FoodProperties RIZEK=new FoodProperties.Builder().nutrition(5).saturationModifier(0.4F).alwaysEdible().build();
 	public static final FoodProperties HORSE_MEAT=new FoodProperties.Builder().nutrition(2).saturationModifier(0.1F).alwaysEdible().build();
 	public static final FoodProperties COOKED_HORSE_MEAT=new FoodProperties.Builder().nutrition(6).saturationModifier(0.8F).alwaysEdible().build();
-	public static final FoodProperties BURNED_TOAST=new FoodProperties.Builder().nutrition(3).saturationModifier(0.8F).alwaysEdible().build();
+	public static final FoodProperties BURNED_TOAST=new FoodProperties.Builder().nutrition(3).saturationModifier(0.8F).effect(new MobEffectInstance(MobEffects.WITHER,100),1F).alwaysEdible().build();
 	public static final FoodProperties BEER=new FoodProperties.Builder().nutrition(4).saturationModifier(1F).effect(new MobEffectInstance(DifModMobEffects.DRANK,600,0),0.25F).effect(new MobEffectInstance(MobEffects.REGENERATION,100,0),0.75F).alwaysEdible().build();
 	public static final FoodProperties FERNET=new FoodProperties.Builder().nutrition(5).saturationModifier(1.3F).effect(new MobEffectInstance(MobEffects.CONFUSION,200,0),1F).effect(new MobEffectInstance(MobEffects.REGENERATION,200,0),1F).alwaysEdible().build();
 	public static final FoodProperties WINE=new FoodProperties.Builder().nutrition(5).saturationModifier(1.3F).effect(new MobEffectInstance(MobEffects.REGENERATION,100,0),0.75F).effect(new MobEffectInstance(DifModMobEffects.DRANK,600,0),0.25F).alwaysEdible().build();
