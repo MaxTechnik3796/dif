@@ -1,19 +1,19 @@
 package cz.maxtechnik.dif.gui.screen;
 
-import cz.maxtechnik.dif.init.events.SpaceshipControl;
-import cz.maxtechnik.dif.gui.menu.SpaceshipMenu;
-import cz.maxtechnik.dif.network.SpaceshipScreenButtonMessage;
+import com.mojang.blaze3d.systems.RenderSystem;
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.gui.menu.SpaceshipMenu;
+import cz.maxtechnik.dif.init.events.SpaceshipControl;
+import cz.maxtechnik.dif.network.SpaceshipScreenButtonMessage;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.WidgetSprites;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.GuiGraphics;
-import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -21,8 +21,18 @@ public class SpaceshipScreen extends AbstractContainerScreen<SpaceshipMenu>{
 	private final int x, y, z;
 	private final Player entity;
 	private static final ResourceLocation TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/rocketg_00.png");
-	private static final ResourceLocation PLANETS_TEX=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets.png");
-	private static final ResourceLocation PLANETS_FOCUSED_TEX=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets_focused.png");
+	private static final ResourceLocation[] PLANETS_TEX={
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets/overworld.png"),
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets/orbit.png"),
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets/moon.png"),
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets/unknown.png")
+	};
+	private static final ResourceLocation[] PLANETS_FOCUSED_TEX={
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets/overworld_focused.png"),
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets/orbit_focused.png"),
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets/moon_focused.png"),
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets/unknown_focused.png")
+	};
 	private static final ResourceLocation ARROWS_TEX=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/arrows.png");
 	public SpaceshipScreen(SpaceshipMenu container,Inventory inventory,Component text){
 		super(container,inventory,text);
@@ -56,10 +66,9 @@ public class SpaceshipScreen extends AbstractContainerScreen<SpaceshipMenu>{
 			final int buttonId=i;
 			int btnX=this.leftPos+16+(i*49);
 			int btnY=this.topPos+20;
-			int u=getTextureUV(world,x,y,z,0,i);
-			int v=getTextureUV(world,x,y,z,1,i);
+			int offset=i+SpaceshipControl.getNBT(world,x,y,z,"scroll");
 			// Vlastní button který renderuje z textury atlas
-			this.addRenderableWidget(new PlanetButton(btnX,btnY,44,73,new WidgetSprites(PLANETS_TEX,PLANETS_FOCUSED_TEX),btn->sendButtonPacket(buttonId)));
+			this.addRenderableWidget(new PlanetButton(btnX,btnY,44,73,new WidgetSprites(PLANETS_TEX[offset],PLANETS_FOCUSED_TEX[offset]),btn->sendButtonPacket(buttonId)));
 		}
 		// Šipka doleva
 		this.addRenderableWidget(new ArrowButton(this.leftPos+8,this.topPos+43,5,20,0,0,ARROWS_TEX,10,40,btn->sendButtonPacket(4)));
@@ -68,13 +77,6 @@ public class SpaceshipScreen extends AbstractContainerScreen<SpaceshipMenu>{
 	}
 	private void sendButtonPacket(int id){
 		PacketDistributor.sendToServer(new SpaceshipScreenButtonMessage(id,x,y,z));
-	}
-	public static int getTextureUV(LevelAccessor world,double x,double y,double z,int mode,int slot){
-		int scroll=SpaceshipControl.getNBT(world,x,y,z,"scroll");
-		int index=scroll+slot;
-		if(mode==0) return (index%4)*44;
-		if(mode==1) return Math.min(index/4,3)*73;
-		return 0;
 	}
 	@Override
 	protected void renderLabels(@NotNull GuiGraphics g,int mouseX,int mouseY){
