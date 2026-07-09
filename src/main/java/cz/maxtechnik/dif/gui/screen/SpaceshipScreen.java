@@ -22,16 +22,16 @@ public class SpaceshipScreen extends AbstractContainerScreen<SpaceshipMenu>{
 	private final Player entity;
 	private static final ResourceLocation TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/rocketg_00.png");
 	private static final ResourceLocation[] PLANETS_TEX={
-			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets/overworld.png"),
-			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets/orbit.png"),
-			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets/moon.png"),
-			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets/unknown.png")
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"planets/overworld"),
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"planets/orbit"),
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"planets/moon"),
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"planets/unknown")
 	};
 	private static final ResourceLocation[] PLANETS_FOCUSED_TEX={
-			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets/overworld_focused.png"),
-			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets/orbit_focused.png"),
-			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets/moon_focused.png"),
-			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/planets/unknown_focused.png")
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"planets/overworld_focused"),
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"planets/orbit_focused"),
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"planets/moon_focused"),
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"planets/unknown_focused")
 	};
 	private static final ResourceLocation ARROWS_TEX=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/screens/arrows.png");
 	public SpaceshipScreen(SpaceshipMenu container,Inventory inventory,Component text){
