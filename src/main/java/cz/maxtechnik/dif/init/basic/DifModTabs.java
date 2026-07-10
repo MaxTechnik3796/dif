@@ -176,16 +176,6 @@ public class DifModTabs{
 
 		tabData.accept(SILKY_STONE);
 
-		ItemStack ePickaxe=new ItemStack(MODULAR_TOOL.get());
-		ItemStack e2Pickaxe=new ItemStack(MODULAR_TOOL.get());
-		ModularToolProperties pickaxe=new ModularToolProperties(ModularTools.PICKAXE.getName(),ModularMaterial.GOLD.getName(),ModularMaterial.IRON.getName(),ModularMaterial.WOOD.getName(),ModularTier.COMMON.getName(),ModularReforge.NONE.getName());
-		List<ModularToolModifiers.entry> neco=new ArrayList<>();
-		neco.add(new ModularToolModifiers.entry(ModularModifier.MENDING.getName(),1));
-		ePickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),pickaxe);
-		e2Pickaxe.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),pickaxe);
-		e2Pickaxe.set(DifModComponents.MODULAR_TOOL_MODIFIERS.get(),new ModularToolModifiers(neco));
-		tabData.accept(ePickaxe);
-		tabData.accept(e2Pickaxe);
 		ItemStack ePart=new ItemStack(MODULAR_PART.get());ePart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties(ModularParts.HANDLE.getName(),ModularMaterial.IRON.getName(),false));
 		tabData.accept(ePart);
 		ItemStack fPart=new ItemStack(MODULAR_PART.get());fPart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties(ModularParts.AXE_HEAD.getName(),ModularMaterial.STEEL.getName(),false));
@@ -208,6 +198,24 @@ public class DifModTabs{
 		tabData.accept(CASTING_MOLD_TIMBER_AXE_HEAD);
 		tabData.accept(CASTING_MOLD_HAMMER_HEAD);
 		tabData.accept(CASTING_MOLD_EXCAVATOR_HEAD);
+
+		for(ModularMaterial mat : ModularMaterial.values()){
+			if(mat == ModularMaterial.NONE) continue;
+			for(ModularTools toolType : ModularTools.values()){
+				if(toolType == ModularTools.NONE) continue;
+				ItemStack tool = new ItemStack(MODULAR_TOOL.get());
+				ModularToolProperties props = new ModularToolProperties(
+					toolType.getName(),
+					mat.getName(),
+					mat.getName(),
+					mat.getName(),
+					mat.getTier().getName(),
+					ModularReforge.NONE.getName()
+				);
+				tool.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(), props);
+				tabData.accept(tool);
+			}
+		}
 
 	})).build());
 
