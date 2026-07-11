@@ -1,7 +1,0 @@
-{
-	"parent":"minecraft:block/cross",
-	"textures":{
-		"cross":"dif:block/large_energy_bud"
-	},
-	"render_type":"cutout"
-}

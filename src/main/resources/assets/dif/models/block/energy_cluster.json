@@ -1,7 +1,0 @@
-{
-	"parent":"minecraft:block/cross",
-	"textures":{
-		"cross":"dif:block/energy_cluster"
-	},
-	"render_type":"cutout"
-}

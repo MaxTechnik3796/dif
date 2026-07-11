@@ -131,14 +131,6 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>RUBY_ORE=REGISTRY.register("ruby_ore",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(3F,3F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>RUBY_BLOCK=REGISTRY.register("ruby_block",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(5F,6F).requiresCorrectToolForDrops()));
 
-	//Energy:
-	public static final DeferredBlock<Block>ENERGY_BLOCK=REGISTRY.register("energy_block",()->new AmethystBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(1.5F).sound(SoundType.AMETHYST).requiresCorrectToolForDrops()));
-	public static final DeferredBlock<Block>BUDDING_ENERGY=REGISTRY.register("budding_energy",()->new BuddingEnergyBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).randomTicks().strength(1.5F).sound(SoundType.AMETHYST).requiresCorrectToolForDrops().pushReaction(PushReaction.DESTROY)));
-	public static final DeferredBlock<Block>ENERGY_CLUSTER=REGISTRY.register("energy_cluster",()->new AmethystClusterBlock(7,3,BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).forceSolidOn().noOcclusion().randomTicks().sound(SoundType.AMETHYST_CLUSTER).strength(1.5F).lightLevel((p_152632_)->5).pushReaction(PushReaction.DESTROY)));
-	public static final DeferredBlock<Block>LARGE_ENERGY_BUD=REGISTRY.register("large_energy_bud",()->new AmethystClusterBlock(5,3,BlockBehaviour.Properties.ofFullCopy(ENERGY_CLUSTER.get()).sound(SoundType.MEDIUM_AMETHYST_BUD).forceSolidOn().lightLevel((p_152629_)->4).pushReaction(PushReaction.DESTROY)));
-	public static final DeferredBlock<Block>MEDIUM_ENERGY_BUD=REGISTRY.register("medium_energy_bud",()->new AmethystClusterBlock(4,3,BlockBehaviour.Properties.ofFullCopy(ENERGY_CLUSTER.get()).sound(SoundType.LARGE_AMETHYST_BUD).forceSolidOn().lightLevel((p_152617_)->2).pushReaction(PushReaction.DESTROY)));
-	public static final DeferredBlock<Block>SMALL_ENERGY_BUD=REGISTRY.register("small_energy_bud",()->new AmethystClusterBlock(3,4,BlockBehaviour.Properties.ofFullCopy(ENERGY_CLUSTER.get()).sound(SoundType.SMALL_AMETHYST_BUD).forceSolidOn().lightLevel((p_187409_)->1).pushReaction(PushReaction.DESTROY)));
-
 	//Barrels:
 	public static final DeferredBlock<Block>ANDESITE_BARREL=REGISTRY.register("andesite_barrel",AndesiteBarrel::new);
 	public static final DeferredBlock<Block>COPPER_BARREL=REGISTRY.register("copper_barrel",CopperBarrel::new);
