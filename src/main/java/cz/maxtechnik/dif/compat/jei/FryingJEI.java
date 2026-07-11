@@ -3,9 +3,7 @@ package cz.maxtechnik.dif.compat.jei;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
-import cz.maxtechnik.dif.init.other.DifModRecipes;
 import cz.maxtechnik.dif.recipe.FryingRecipe;
-import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.placement.HorizontalAlignment;
 import mezz.jei.api.gui.placement.VerticalAlignment;
@@ -15,53 +13,29 @@ import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import mezz.jei.api.registration.IRecipeCategoryRegistration;
-import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Objects;
-@JeiPlugin
-public class FryingJEI extends JeiCompact.Plugin{
-	public static final ResourceLocation PLUGIN_ID=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"frying_jei");
+
+public class FryingJEI {
 	public static final RecipeType<FryingRecipe> TYPE=RecipeType.create(DifMod.MODID,"frying",FryingRecipe.class);
-	public FryingJEI(){
-		super("frying_jei");
-	}
-	@Override
-	public void registerCategories(IRecipeCategoryRegistration registration){
-		registration.addRecipeCategories(new Category(registration.getJeiHelpers().getGuiHelper()));
-	}
-	@Override
-	public void registerRecipes(@NotNull IRecipeRegistration registration){
-		Minecraft mc=Minecraft.getInstance();
-		if(mc.level==null) return;
-		List<FryingRecipe> recipes=mc.level.getRecipeManager()
-				.getAllRecipesFor(DifModRecipes.FRYING_TYPE.get())
-				.stream()
-				.map(RecipeHolder::value)
-				.toList();
-		registration.addRecipes(TYPE,recipes);
-	}
-	@Override
-	public void registerRecipeCatalysts(@NotNull IRecipeCatalystRegistration registration){
-		registration.addRecipeCatalyst(new ItemStack(DifModBlocks.FRYING_TABLE.get()),TYPE);
-	}
+
 	public static class Category extends JeiCompact.Category<FryingRecipe>{
 		public Category(IGuiHelper guiHelper){
 			super(guiHelper,82,56,new ItemStack(DifModBlocks.FRYING_TABLE.get()),TYPE,"jei.dif.frying_table");
 		}
 		@Override
 		public void setRecipe(@NotNull IRecipeLayoutBuilder builder,@NotNull FryingRecipe recipe,@NotNull IFocusGroup focuses){
-			builder.addInputSlot(1,1).setStandardSlotBackground().addIngredients(recipe.getIngredient());
-			builder.addOutputSlot(61,19).setOutputSlotBackground().addItemStack(recipe.getResultItem(Objects.requireNonNull(Minecraft.getInstance().level).registryAccess()));
+			builder.addSlot(RecipeIngredientRole.INPUT, 1, 1)
+					.setStandardSlotBackground()
+					.addIngredients(recipe.getIngredient());
+			builder.addSlot(RecipeIngredientRole.OUTPUT, 61, 19)
+					.setStandardSlotBackground()
+					.addItemStack(recipe.getResultItem(Objects.requireNonNull(Minecraft.getInstance().level).registryAccess()));
 			if(recipe.getOilAmount()>0){
 				builder.addSlot(RecipeIngredientRole.INPUT,1,38)
 						.setStandardSlotBackground()

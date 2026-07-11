@@ -2,10 +2,7 @@ package cz.maxtechnik.dif.compat.jei;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
-import cz.maxtechnik.dif.init.other.DifModRecipes;
 import cz.maxtechnik.dif.recipe.BlastSmelteryRecipe;
-import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.placement.HorizontalAlignment;
 import mezz.jei.api.gui.placement.VerticalAlignment;
@@ -15,43 +12,15 @@ import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import mezz.jei.api.registration.IRecipeCategoryRegistration;
-import mezz.jei.api.registration.IRecipeRegistration;
-import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import mezz.jei.api.constants.VanillaTypes;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-@JeiPlugin
-public class BlastSmelteryJEI extends JeiCompact.Plugin{
-	public static final ResourceLocation PLUGIN_ID=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"blast_smeltery_jei");
+
+public class BlastSmelteryJEI {
 	public static final RecipeType<BlastSmelteryRecipe> TYPE=RecipeType.create(DifMod.MODID,"blast_smeltery",BlastSmelteryRecipe.class);
-	public BlastSmelteryJEI(){
-		super("blast_smeltery_jei");
-	}
-	@Override
-	public void registerCategories(IRecipeCategoryRegistration registration){
-		registration.addRecipeCategories(new Category(registration.getJeiHelpers().getGuiHelper()));
-	}
-	@Override
-	public void registerRecipes(@NotNull IRecipeRegistration registration){
-		Minecraft mc=Minecraft.getInstance();
-		if(mc.level==null) return;
-		List<BlastSmelteryRecipe> recipes=mc.level.getRecipeManager()
-				.getAllRecipesFor(DifModRecipes.BLAST_SMELTERY_TYPE.get())
-				.stream()
-				.map(RecipeHolder::value)
-				.toList();
-		registration.addRecipes(TYPE,recipes);
-	}
-	@Override
-	public void registerRecipeCatalysts(@NotNull IRecipeCatalystRegistration registration){
-		registration.addRecipeCatalyst(new ItemStack(DifModBlocks.BLAST_SMELTERY_CONTROLLER.get()),TYPE);
-		registration.addRecipeCatalyst(new ItemStack(DifModBlocks.BLAST_SMELTERY.get()),TYPE);
-	}
+
 	public static class Category extends JeiCompact.Category<BlastSmelteryRecipe>{
 		public Category(IGuiHelper guiHelper){
 			super(guiHelper,116,56,new ItemStack(DifModBlocks.BLAST_SMELTERY_CONTROLLER.get()),TYPE,"jei.dif.blast_smeltery");

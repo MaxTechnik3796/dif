@@ -2,9 +2,7 @@ package cz.maxtechnik.dif.compat.jei;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
-import cz.maxtechnik.dif.init.other.DifModRecipes;
 import cz.maxtechnik.dif.recipe.ForgeFluidMixingRecipe;
-import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.placement.HorizontalAlignment;
 import mezz.jei.api.gui.placement.VerticalAlignment;
@@ -14,43 +12,12 @@ import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import mezz.jei.api.registration.IRecipeCategoryRegistration;
-import mezz.jei.api.registration.IRecipeRegistration;
-import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-@JeiPlugin
-public class ForgeMixingJEI extends JeiCompact.Plugin{
-	public static final ResourceLocation PLUGIN_ID=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"forge_mixing_jei");
+public class ForgeMixingJEI {
 	public static final RecipeType<ForgeFluidMixingRecipe> TYPE=RecipeType.create(DifMod.MODID,"forge_mixing",ForgeFluidMixingRecipe.class);
-	public ForgeMixingJEI(){
-		super("forge_mixing_jei");
-	}
-	@Override
-	public void registerCategories(IRecipeCategoryRegistration registration){
-		registration.addRecipeCategories(new Category(registration.getJeiHelpers().getGuiHelper()));
-	}
-	@Override
-	public void registerRecipes(@NotNull IRecipeRegistration registration){
-		Minecraft mc=Minecraft.getInstance();
-		if(mc.level==null) return;
-		List<ForgeFluidMixingRecipe> mixingRecipes=mc.level.getRecipeManager()
-				.getAllRecipesFor(DifModRecipes.FORGE_FLUID_MIXING_TYPE.get())
-				.stream()
-				.map(RecipeHolder::value)
-				.toList();
-		registration.addRecipes(TYPE,mixingRecipes);
-	}
-	@Override
-	public void registerRecipeCatalysts(@NotNull IRecipeCatalystRegistration registration){
-		registration.addRecipeCatalyst(new ItemStack(DifModBlocks.FORGE_FURNACE_CONTROLLER.get()),TYPE);
-		registration.addRecipeCatalyst(new ItemStack(DifModBlocks.FORGE_BRICK.get()),TYPE);
-	}
+
 	public static class Category extends JeiCompact.Category<ForgeFluidMixingRecipe>{
 		public Category(IGuiHelper guiHelper){
 			super(guiHelper,98,56,new ItemStack(DifModBlocks.FORGE_FURNACE_CONTROLLER.get()),TYPE,"jei.dif.forge_mixing");
