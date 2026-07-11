@@ -584,10 +584,10 @@ public class ModularTool extends DiggerItem{
 			list.add(CommonComponents.EMPTY);
 			for(ModularToolModifiers.entry entry: appliedMods){
 				ModularModifier modifier=ModularModifier.byName(entry.id());
-				boolean isLegendary=modifier==ModularModifier.MENDING||modifier==ModularModifier.VOLCANIC||modifier==ModularModifier.SILK_TOUCH||entry.lvl()>modifier.getMaxLvl();
+				boolean isLegendary=modifier==ModularModifier.MENDING||entry.lvl()>modifier.getMaxLvl();
 				int modColor=isLegendary?ModularTier.LEGENDARY.getColor():ModularTier.RARE.getColor();
 				MutableComponent nameComp=Component.translatable("dif.modifier."+entry.id());
-				if(modifier.getMaxLvl()>1) nameComp=nameComp.copy().append(Component.literal(" ")).append(Component.translatable("enchantment.level."+entry.lvl()).withStyle(isLegendary?Style.EMPTY.withColor(ModularTier.LEGENDARY.getColor()):Style.EMPTY.withColor(ChatFormatting.WHITE)));
+				if(modifier.getMaxLvl()>1) nameComp=nameComp.copy().append(Component.literal(" ")).append(Component.translatable("enchantment.level."+entry.lvl()).withStyle(Style.EMPTY.withColor(modColor)));
 				list.add(nameComp.withStyle(Style.EMPTY.withColor(modColor)));
 			}
 		}
