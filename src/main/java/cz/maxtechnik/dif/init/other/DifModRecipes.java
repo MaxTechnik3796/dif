@@ -4,6 +4,8 @@ import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.item.modular.v2.ModularAssemblyRecipe;
 import cz.maxtechnik.dif.item.modular.v2.ModularModifierRecipe;
 import cz.maxtechnik.dif.item.modular.v2.ModularReplaceRecipe;
+import cz.maxtechnik.dif.item.modular.v2.ModularPressingRecipe;
+import com.simibubi.create.content.processing.recipe.StandardProcessingRecipe;
 import cz.maxtechnik.dif.recipe.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -29,4 +31,5 @@ public class DifModRecipes{
 	public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<?>> MODULAR_MODIFIER_SERIALIZER=REGISTRY.register("modular_modifier",ModularModifierRecipe.Serializer::new);
 	public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<?>> MODULAR_ASSEMBLY_SERIALIZER=REGISTRY.register("modular_assembly",ModularAssemblyRecipe.Serializer::new);
 	public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<?>> MODULAR_REPLACE_SERIALIZER=REGISTRY.register("modular_replace",ModularReplaceRecipe.Serializer::new);
+	public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<ModularPressingRecipe>> MODULAR_PRESSING_SERIALIZER=REGISTRY.register("modular_pressing",()->new StandardProcessingRecipe.Serializer<>(ModularPressingRecipe::new));
 }
