@@ -9,6 +9,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -411,15 +412,8 @@ public class ModularTool extends DiggerItem{
 	 * @return efficiency modifier value.
 	 */
 	public float efficiencyLevel(ItemStack itemStack){
-		return switch(getModifierLevel(itemStack,ModularModifier.EFFICIENCY)){
-			case 1 -> 1F;
-			case 2 -> 2F;
-			case 3 -> 3F;
-			case 4 -> 4F;
-			case 5 -> 5F;
-			case 6 -> 6F;
-			default -> 0;
-		};
+		int lvl=getModifierLevel(itemStack,ModularModifier.EFFICIENCY);
+		return lvl>0?lvl*lvl+1F:0F;
 	}
 	/**
 	 * Get knockback modifier value.
@@ -518,61 +512,108 @@ public class ModularTool extends DiggerItem{
 			}
 		}
 	}
-	/**
-	 * Create list for hover text.
-	 * @param itemStack tool
-	 * @param context context
-	 * @param list list
-	 * @param flag flag
-	 */
 	@Override
 	public void appendHoverText(@NotNull ItemStack itemStack,@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
 		ModularToolProperties props=getProps(itemStack);
 		if(props.toolType().equals("none")) return;
+		String type=props.toolType().toLowerCase(Locale.ROOT);
+		boolean isWeapon=type.equals("sword")||type.equals("katana")||type.equals("battle_axe");
 		ModularMaterial head=ModularMaterial.byName(props.headMaterial());
 		ModularMaterial binding=ModularMaterial.byName(props.bindingMaterial());
 		ModularMaterial handle=ModularMaterial.byName(props.handleMaterial());
-		int maxDmg=getMaxDamage(itemStack);
-		int miningLvl=getLiveMiningLevel(itemStack);
-		float eff=getLiveEfficiency(itemStack);
-		float baseDmg=getBaseDamageForType(props.toolType())+head.getAttackDamage();
-		float baseSpd=getBaseSpeedForType(props.toolType())+handle.getAttackSpeedBonus();
-		float dmg=1F+baseDmg;
-		float spd=4F+baseSpd;
+		ModularReforge reforge=getReforge(itemStack);
+		ModularTier tier=getTier(itemStack);
+		int tierIndex=tier.getReforgeIndex();
+		int tierColor=tier.getColor();
+		// ─── pre-compute raw (no-reforge) values ───
+		float rawEff=head.getHeadEfficiency()+efficiencyLevel(itemStack);
+		if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)) rawEff*=1.1F;
+		float effMultiplier=reforge.getEfficiency()[tierIndex];
+		float finalEff=rawEff*effMultiplier;
+		float effBonus=rawEff*(effMultiplier-1F);
+		float rawDmg=getBaseDamageForType(type)+head.getAttackDamage()+sharpnessDamage(itemStack);
+		float dmgMultiplier=reforge.getAttackDamage()[tierIndex];
+		float finalDmg=1F+rawDmg*dmgMultiplier;
+		float dmgBonus=rawDmg*(dmgMultiplier-1F);
+		float rawSpd=getBaseSpeedForType(type)+handle.getAttackSpeedBonus();
+		if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)) rawSpd*=1.1F;
+		float spdMultiplier=reforge.getAttackSpeed()[tierIndex];
+		float finalSpd=4F+rawSpd*spdMultiplier;
+		float spdBonus=rawSpd*(spdMultiplier-1F);
+		int rawDur=head.getHeadDurability()+binding.getBindingDurability()+handle.getHandleDurability()+reinforcedLevel(itemStack);
+		if(hasMaterialModifier(itemStack,ModularModifier.PRECISE)) rawDur=(int)(rawDur*1.1F);
+		float durMultiplier=reforge.getDurability()[tierIndex];
+		int maxDmg=Math.round(rawDur*durMultiplier);
+		int durBonus=maxDmg-rawDur;
 		int remaining=Math.max(0,maxDmg-itemStack.getDamageValue());
 		float ratio=maxDmg>0?(float)remaining/maxDmg:0;
 		int durColor=((int)(255*(1-ratio))<<16)|((int)(255*ratio)<<8);
+		int miningLvl=getLiveMiningLevel(itemStack);
+		// Fortune/Looting from LUCK modifier
+		int luckLevel=getModifierLevel(itemStack,ModularModifier.LUCK);
+		// Broken warning
 		if(isBroken(itemStack)){
-			list.add(Component.literal(" !! BROKEN !! ").withStyle(Style.EMPTY.withColor(0xFF3333).withBold(true)));
+			list.add(Component.literal("!! BROKEN !!").withStyle(Style.EMPTY.withColor(0xFF3333).withBold(true)));
 			list.add(CommonComponents.EMPTY);
 		}
-		list.add(Component.literal("───── Stats ─────").withStyle(Style.EMPTY.withColor(0x6644BB)));
-		list.add(Component.literal("Tier: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.tier."+props.tier()).withColor(getTier(itemStack).getColor())));
-		list.add(Component.literal("Mining: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.mining_level."+miningLvl).withStyle(Style.EMPTY.withColor(ModularMaterial.miningLevelColor[miningLvl]))));
-		list.add(Component.literal("Durability: ").withStyle(ChatFormatting.GRAY).append(Component.literal(String.valueOf(remaining)).withStyle(Style.EMPTY.withColor(durColor))).append(Component.literal(" / "+maxDmg).withStyle(ChatFormatting.DARK_GRAY)));
-		list.add(Component.literal("Efficiency: ").withStyle(ChatFormatting.GRAY).append(Component.literal(String.format(Locale.ROOT,"%.1f",eff)).withStyle(ChatFormatting.GREEN)));
-		list.add(Component.literal("Damage: ").withStyle(ChatFormatting.GRAY).append(Component.literal(String.format(Locale.ROOT,"%.1f",dmg)).withStyle(ChatFormatting.RED)));
-		list.add(Component.literal("Speed: ").withStyle(ChatFormatting.GRAY).append(Component.literal(String.format(Locale.ROOT,"%.1f",spd)).withStyle(ChatFormatting.YELLOW)));
-		list.add(Component.literal("───── Parts ─────").withStyle(Style.EMPTY.withColor(0x6644BB)));
-		list.add(Component.literal(" Head: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.material."+head.getName()).withStyle(Style.EMPTY.withColor(head.getColor()))).append(Component.literal("  "+head.getHeadDurability()).withColor(0xFFAA00)));
-		list.add(Component.literal(" Binding: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.material."+binding.getName()).withStyle(Style.EMPTY.withColor(binding.getColor()))).append(Component.literal("  "+binding.getBindingDurability()).withColor(0xFFAA00)));
-		list.add(Component.literal(" Handle: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.material."+handle.getName()).withStyle(Style.EMPTY.withColor(handle.getColor()))).append(Component.literal("  "+handle.getHandleDurability()).withColor(0xFFAA00)));
-		list.add(Component.literal("───── Modifiers ─────").withStyle(Style.EMPTY.withColor(0x6644BB)));
+		// Level, Tier, Damage, Efficiency, Fortune/Looting, Attack Speed, Durability
+		list.add(Component.literal("Level: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.mining_level."+miningLvl).withStyle(Style.EMPTY.withColor(ModularMaterial.miningLevelColor[miningLvl]))));
+		list.add(Component.literal("Tier: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.tier."+props.tier()).withStyle(Style.EMPTY.withColor(tierColor))));
+		appendStatLine(list,"Damage: ",String.format(Locale.ROOT,"+%.1f",finalDmg),ChatFormatting.RED,dmgBonus);
+		appendStatLine(list,"Efficiency: ",String.format(Locale.ROOT,"%.1f",finalEff),ChatFormatting.GREEN,effBonus);
+		if(luckLevel>0){
+			String luckLabel=isWeapon?"Looting: ":"Fortune: ";
+			appendStatLine(list,luckLabel,String.valueOf(luckLevel),ChatFormatting.GREEN,0F);
+		}
+		appendStatLine(list,"Speed: ",String.format(Locale.ROOT,"+%.1f",finalSpd),ChatFormatting.YELLOW,spdBonus);
+		appendStatLine(list,"Durability: ",remaining+"/"+maxDmg,ChatFormatting.WHITE,durBonus,durColor);
+		list.add(CommonComponents.EMPTY);
+		// Parts
+		list.add(Component.literal("Head: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.material."+head.getName()).withStyle(Style.EMPTY.withColor(head.getColor()))));
+		list.add(Component.literal("Binding: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.material."+binding.getName()).withStyle(Style.EMPTY.withColor(binding.getColor()))));
+		list.add(Component.literal("Handle: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.material."+handle.getName()).withStyle(Style.EMPTY.withColor(handle.getColor()))));
+		list.add(CommonComponents.EMPTY);
+		// Material modifiers
 		List<String> materialModifiers=getMaterialModifierNames(head,binding,handle);
 		for(String materialModifier: materialModifiers){
 			list.add(Component.translatable("dif.modifier."+materialModifier).withStyle(Style.EMPTY.withColor(ModularModifier.byName(materialModifier).getColor())));
 		}
-		list.add(CommonComponents.EMPTY);
-		for(ModularToolModifiers.entry entry: getAllModifiers(itemStack)){
-			ModularModifier modifier=ModularModifier.byName(entry.id());
-			Component nameComp=Component.translatable("dif.modifier."+entry.id());
-			if(ModularModifier.byName(entry.id()).getMaxLvl()>1) nameComp=nameComp.copy().append(Component.literal(" ")).append(Component.translatable("enchantment.level."+entry.lvl()).withStyle(ChatFormatting.WHITE));
-			list.add(nameComp.copy().withStyle(Style.EMPTY.withColor(modifier.getColor())));
-		}
-		if(getReforge(itemStack).hasDescription()){
+		// Applied modifiers / enchants
+		List<ModularToolModifiers.entry> appliedMods=getAllModifiers(itemStack);
+		if(!appliedMods.isEmpty()){
 			list.add(CommonComponents.EMPTY);
-			list.add(Component.literal(" ").append(Component.translatable("dif.reforge."+getReforge(itemStack).getName()+".desc").withStyle(Style.EMPTY.withColor(getTier(itemStack).getColor()).withItalic(true))));
+			for(ModularToolModifiers.entry entry: appliedMods){
+				ModularModifier modifier=ModularModifier.byName(entry.id());
+				Component nameComp=Component.translatable("dif.modifier."+entry.id());
+				if(modifier.getMaxLvl()>1) nameComp=nameComp.copy().append(Component.literal(" ")).append(Component.translatable("enchantment.level."+entry.lvl()).withStyle(ChatFormatting.WHITE));
+				list.add(nameComp.copy().withStyle(Style.EMPTY.withColor(modifier.getColor())));
+			}
 		}
+		// Reforge
+		if(!reforge.getName().isEmpty()&&!reforge.getName().equals("none")){
+			list.add(CommonComponents.EMPTY);
+			list.add(Component.translatable("dif.reforge."+reforge.getName()).withStyle(Style.EMPTY.withColor(tierColor).withBold(true)));
+			if(reforge.hasDescription()){
+				list.add(Component.translatable("dif.reforge."+reforge.getName()+".desc").withStyle(Style.EMPTY.withColor(0x9999AA).withItalic(true)));
+			}
+		}
+	}
+	/**
+	 * Helper: add a stat line with optional reforge bonus in parentheses.
+	 * Uses value's own color for the value part, bonus in green.
+	 */
+	private static void appendStatLine(List<Component> list,String label,String value,ChatFormatting valueColor,float bonus){
+		appendStatLine(list,label,value,valueColor,bonus,-1);
+	}
+	private static void appendStatLine(List<Component> list,String label,String value,ChatFormatting valueColor,float bonus,int valueColorOverride){
+		Component valComp=valueColorOverride>=0
+			?Component.literal(value).withStyle(Style.EMPTY.withColor(valueColorOverride))
+			:Component.literal(value).withStyle(valueColor);
+		MutableComponent line=Component.literal(label).withStyle(ChatFormatting.GRAY).append(valComp);
+		if(Math.abs(bonus)>=0.05F){
+			line=line.append(Component.literal(String.format(Locale.ROOT," (%.1f)",bonus)).withStyle(ChatFormatting.GREEN));
+		}
+		list.add(line);
 	}
 	/**
 	 * Get unique material modifier names for tooltip (deduplicates, preserves insertion order).

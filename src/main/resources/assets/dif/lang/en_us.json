@@ -572,12 +572,34 @@
 	"dif.modifier.lucky_mat":"Lucky",
 	"dif.modifier.momentum":"Momentum",
 	"dif.modifier.unbreakable_mat":"Unbreakable",
-	"dif.modifier.self_repair":"Precise",
+	"dif.modifier.self_repair":"Self-Repair",
 	"dif.modifier.toxic":"Toxic",
 	"dif.modifier.precise":"Precise",
 	"dif.modifier.lightweight":"Lightweight",
 
+	"dif.reforge.none":"None",
+	"dif.reforge.swift":"Swift",
+	"dif.reforge.heavy":"Heavy",
+	"dif.reforge.razor":"Razor",
+	"dif.reforge.vampiric":"Vampiric",
+	"dif.reforge.frozen":"Frozen",
+	"dif.reforge.phantom":"Phantom",
+	"dif.reforge.curse":"Curse",
+	"dif.reforge.drain":"Drain",
+	"dif.reforge.savage":"Savage",
+	"dif.reforge.reinforced":"Reinforced",
+	"dif.reforge.prospector":"Prospector",
+	"dif.reforge.sturdy":"Sturdy",
 	"dif.reforge.sturdy.desc":"Sturdy Reforge desc :]",
+	"dif.reforge.arcane":"Arcane",
+	"dif.reforge.gleaming":"Gleaming",
+	"dif.reforge.crusher":"Crusher",
+	"dif.reforge.reaper":"Reaper",
+	"dif.reforge.lumbering":"Lumbering",
+	"dif.reforge.harvester":"Harvester",
+	"dif.reforge.cultivator":"Cultivator",
+	"dif.reforge.swiftdig":"Swiftdig",
+	"dif.reforge.grounbreaker":"Groundbreaker",
 
 
 
@@ -728,5 +750,16 @@
 
 	"jei.dif.forge_melting": "Forge Melting",
 	"jei.dif.forge_mixing": "Forge Mixing",
-	"jei.dif.distillation": "Distillation Column"
+	"jei.dif.distillation": "Distillation Column",
+
+	"dif.tool.pickaxe": "Pickaxe",
+	"dif.tool.axe": "Axe",
+	"dif.tool.shovel": "Shovel",
+	"dif.tool.sword": "Sword",
+	"dif.tool.hoe": "Hoe",
+	"dif.tool.katana": "Katana",
+	"dif.tool.battle_axe": "Battle Axe",
+	"dif.tool.hammer": "Hammer",
+	"dif.tool.timber_axe": "Timber Axe",
+	"dif.tool.excavator": "Excavator"
 }
