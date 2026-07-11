@@ -584,9 +584,11 @@ public class ModularTool extends DiggerItem{
 			list.add(CommonComponents.EMPTY);
 			for(ModularToolModifiers.entry entry: appliedMods){
 				ModularModifier modifier=ModularModifier.byName(entry.id());
-				Component nameComp=Component.translatable("dif.modifier."+entry.id());
-				if(modifier.getMaxLvl()>1) nameComp=nameComp.copy().append(Component.literal(" ")).append(Component.translatable("enchantment.level."+entry.lvl()).withStyle(ChatFormatting.WHITE));
-				list.add(nameComp.copy().withStyle(Style.EMPTY.withColor(modifier.getColor())));
+				boolean isLegendary=modifier==ModularModifier.MENDING||modifier==ModularModifier.VOLCANIC||modifier==ModularModifier.SILK_TOUCH||entry.lvl()>modifier.getMaxLvl();
+				int modColor=isLegendary?ModularTier.LEGENDARY.getColor():ModularTier.RARE.getColor();
+				MutableComponent nameComp=Component.translatable("dif.modifier."+entry.id());
+				if(modifier.getMaxLvl()>1) nameComp=nameComp.copy().append(Component.literal(" ")).append(Component.translatable("enchantment.level."+entry.lvl()).withStyle(isLegendary?Style.EMPTY.withColor(ModularTier.LEGENDARY.getColor()):Style.EMPTY.withColor(ChatFormatting.WHITE)));
+				list.add(nameComp.withStyle(Style.EMPTY.withColor(modColor)));
 			}
 		}
 		// Reforge
@@ -611,7 +613,7 @@ public class ModularTool extends DiggerItem{
 			:Component.literal(value).withStyle(valueColor);
 		MutableComponent line=Component.literal(label).withStyle(ChatFormatting.GRAY).append(valComp);
 		if(Math.abs(bonus)>=0.05F){
-			line=line.append(Component.literal(String.format(Locale.ROOT," (%.1f)",bonus)).withStyle(ChatFormatting.GREEN));
+			line=line.append(Component.literal(String.format(Locale.ROOT," (%.1f)",bonus)).withStyle(Style.EMPTY.withColor(ModularTier.RARE.getColor())));
 		}
 		list.add(line);
 	}

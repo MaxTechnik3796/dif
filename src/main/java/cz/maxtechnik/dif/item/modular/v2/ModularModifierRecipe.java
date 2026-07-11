@@ -66,6 +66,7 @@ public class ModularModifierRecipe extends SmithingExtraRecipe{
 				default -> 0;
 			};
 			case VOLCANIC -> 1;
+			case MENDING -> 1;
 			default -> 0;
 		};
 	}
@@ -96,7 +97,6 @@ public class ModularModifierRecipe extends SmithingExtraRecipe{
 			if(additionItem.equals(QUARTZ)) return SHARPNESS;
 			if(additionItem.equals(DIAMOND)) return REINFORCED;
 			if(additionItem.equals(IRON_INGOT)) return SWEEPING_EDGE;
-			if(additionItem.equals(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.parse("create:experience_block"))))) return MENDING;
 			if(additionItem.equals(SILKY_STONE.get())) return SILK_TOUCH;
 			if(additionItem.equals(LAVA_BUCKET)) return VOLCANIC;
 		}else if(templateItem.equals(MODULAR_TEMPLATE_HYPER.get())){
@@ -105,6 +105,7 @@ public class ModularModifierRecipe extends SmithingExtraRecipe{
 			if(additionItem.equals(QUARTZ_BLOCK)) return SHARPNESS;
 			if(additionItem.equals(DIAMOND)) return REINFORCED;
 			if(additionItem.equals(IRON_BLOCK)) return SWEEPING_EDGE;
+			if(additionItem.equals(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.parse("create:experience_block"))))) return MENDING;
 		}
 		return null;
 	}
@@ -123,7 +124,12 @@ public class ModularModifierRecipe extends SmithingExtraRecipe{
 			int currentLvl=getModifierLevel(base,modifier);
 			int maxLvl=modifier.getMaxLvl();
 			if(template.getItem().equals(MODULAR_TEMPLATE_NORMAL.get())) return currentLvl<maxLvl;
-			if(template.getItem().equals(MODULAR_TEMPLATE_HYPER.get())) return currentLvl==maxLvl;
+			if(template.getItem().equals(MODULAR_TEMPLATE_HYPER.get())){
+				ModularTier tier=ModularTool.getTier(base);
+				if(tier!=ModularTier.LEGENDARY&&tier!=ModularTier.MYTHIC) return false;
+				if(modifier==MENDING) return currentLvl==0;
+				return currentLvl==maxLvl;
+			}
 		}
 		return false;
 	}
