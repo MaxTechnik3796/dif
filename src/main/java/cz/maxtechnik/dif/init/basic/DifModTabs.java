@@ -235,15 +235,6 @@ public class DifModTabs{
 			tabData.insertAfter(new ItemStack(Items.SNOW),new ItemStack(MATY_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertAfter(new ItemStack(Items.CRYING_OBSIDIAN),new ItemStack(CINDER_FLOUR_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertAfter(new ItemStack(Items.WARPED_FUNGUS),new ItemStack(SUGAR_MUSHROOM.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			addItemStacksBehind(tabData,new ItemStack(Items.AMETHYST_CLUSTER),
-					new ItemStack[]{
-							new ItemStack(ENERGY_BLOCK.get()),
-							new ItemStack(BUDDING_ENERGY.get()),
-							new ItemStack(SMALL_ENERGY_BUD.get()),
-							new ItemStack(MEDIUM_ENERGY_BUD.get()),
-							new ItemStack(LARGE_ENERGY_BUD.get()),
-							new ItemStack(ENERGY_CLUSTER.get())
-					});
 			addItemStacksBehind(tabData,new ItemStack(Items.SUGAR_CANE),
 					new ItemStack[]{
 							new ItemStack(MATA_PLANT.get()),
@@ -364,7 +355,6 @@ public class DifModTabs{
 			tabData.accept(BOTTLE_OF_URANOVEJ_KOKTEJL);
 			tabData.accept(FLAT_DOUGH);
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.INGREDIENTS)){
-			tabData.insertAfter(new ItemStack(Items.AMETHYST_SHARD),new ItemStack(ENERGY_SHARD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.OP_BLOCKS)){
 			tabData.accept(END_PORTAL);
 			tabData.accept(END_GATEWAY);

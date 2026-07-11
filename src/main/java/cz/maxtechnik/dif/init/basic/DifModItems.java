@@ -261,17 +261,6 @@ public class DifModItems{
 	public static final DeferredItem<Item> TREE_BARK_BLOCK=block(DifModBlocks.TREE_BARK_BLOCK);
 	public static final DeferredItem<Item> FRYING_TABLE=block(DifModBlocks.FRYING_TABLE);
 
-	//Energy:
-	public static final DeferredItem<Item> ENERGY_BLOCK=block(DifModBlocks.ENERGY_BLOCK);
-	public static final DeferredItem<Item> BUDDING_ENERGY=block(DifModBlocks.BUDDING_ENERGY);
-	public static final DeferredItem<Item> ENERGY_CLUSTER=block(DifModBlocks.ENERGY_CLUSTER);
-	public static final DeferredItem<Item> LARGE_ENERGY_BUD=block(DifModBlocks.LARGE_ENERGY_BUD);
-	public static final DeferredItem<Item> MEDIUM_ENERGY_BUD=block(DifModBlocks.MEDIUM_ENERGY_BUD);
-	public static final DeferredItem<Item> SMALL_ENERGY_BUD=block(DifModBlocks.SMALL_ENERGY_BUD);
-	public static final DeferredItem<Item> ENERGY_SHARD=REGISTRY.register("energy_shard",()->new Item(new Item.Properties()));
-
-
-
 	public static final DeferredItem<Item>FORMULA_ITEM=REGISTRY.register("formula",()->new FormulaItem(new Item.Properties().stacksTo(1)));
 
 
