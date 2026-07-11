@@ -5,9 +5,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.BlockEvent;
-
 @SuppressWarnings("removal")
-@EventBusSubscriber(modid = DifMod.MODID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid=DifMod.MODID, bus=EventBusSubscriber.Bus.GAME)
 public class CobblestoneGenerator{
 	@SubscribeEvent
 	public static void cobbleGeneratorEvent(BlockEvent.FluidPlaceBlockEvent event){

@@ -11,10 +11,9 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import org.jetbrains.annotations.NotNull;
-
 @SuppressWarnings("removal")
 public class ClientSkyHandler{
-	@EventBusSubscriber(modid=DifMod.MODID,bus=EventBusSubscriber.Bus.MOD,value=Dist.CLIENT)
+	@EventBusSubscriber(modid=DifMod.MODID, bus=EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
 	public static class ModBusEvents{
 		@SubscribeEvent
 		public static void onRegisterEffects(RegisterDimensionSpecialEffectsEvent event){
@@ -33,8 +32,7 @@ public class ClientSkyHandler{
 			event.register(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"moon"),spaceEffects);
 		}
 	}
-
-	@EventBusSubscriber(modid=DifMod.MODID,bus=EventBusSubscriber.Bus.GAME,value=Dist.CLIENT)
+	@EventBusSubscriber(modid=DifMod.MODID, bus=EventBusSubscriber.Bus.GAME, value=Dist.CLIENT)
 	public static class ForgeBusEvents{
 		@SubscribeEvent
 		public static void onRenderSky(RenderLevelStageEvent event){
@@ -44,9 +42,9 @@ public class ClientSkyHandler{
 			if(mc.level==null) return;
 			String dim=mc.level.dimension().location().toString();
 			if(dim.equals("dif:orbit")){
-				SkyRenderer.renderCustomSky(mc.level,event.getPartialTick(),event.getPoseStack(),"orbit");
+				SkyRenderer.renderCustomSky(mc.level,event.getPartialTick(),"orbit");
 			}else if(dim.equals("dif:moon")){
-				SkyRenderer.renderCustomSky(mc.level,event.getPartialTick(),event.getPoseStack(),"moon");
+				SkyRenderer.renderCustomSky(mc.level,event.getPartialTick(),"moon");
 			}
 		}
 	}

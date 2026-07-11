@@ -17,6 +17,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Comparator;
 /**
  * Destilační tank — multiblok věž.
  * Stavění: stejné jako Create Fluid Tank — postav základnu (1×1, 2×2 nebo 3×3),
@@ -68,7 +70,6 @@ public class DistillationTank extends FluidTankBlock{
 		super.onPlace(state,level,pos,oldState,isMoving);
 		if(level.isClientSide) return;
 		if(state.getBlock()==oldState.getBlock()) return;
-
 		// Notify block above and below to update their tower states
 		if(level.getBlockEntity(pos.above()) instanceof DistillationTankBlockEntity above){
 			above.updateTowerState(false);
@@ -76,7 +77,6 @@ public class DistillationTank extends FluidTankBlock{
 		if(level.getBlockEntity(pos.below()) instanceof DistillationTankBlockEntity below){
 			below.updateTowerState(false);
 		}
-
 		forceConnectivityUpdateInArea(level,pos);
 	}
 	@Override
@@ -85,7 +85,6 @@ public class DistillationTank extends FluidTankBlock{
 		super.onRemove(state,level,pos,newState,isMoving);
 		if(level.isClientSide) return;
 		if(state.getBlock()==newState.getBlock()) return;
-
 		// Notify block above and below to update their tower states
 		if(level.getBlockEntity(pos.above()) instanceof DistillationTankBlockEntity above){
 			above.updateTowerState(false);
@@ -93,7 +92,6 @@ public class DistillationTank extends FluidTankBlock{
 		if(level.getBlockEntity(pos.below()) instanceof DistillationTankBlockEntity below){
 			below.updateTowerState(false);
 		}
-
 		forceConnectivityUpdateInArea(level,pos);
 	}
 	private void forceConnectivityUpdateInArea(Level level,BlockPos pos){
@@ -129,11 +127,7 @@ public class DistillationTank extends FluidTankBlock{
 			}
 		}
 		// Sort tanks Northwest-to-Southeast (smallest X and Z first)
-		tanks.sort((a,b)->{
-			int cmpX=Integer.compare(a.getBlockPos().getX(),b.getBlockPos().getX());
-			if(cmpX!=0) return cmpX;
-			return java.lang.Integer.compare(a.getBlockPos().getZ(),b.getBlockPos().getZ());
-		});
+		tanks.sort(Comparator.comparingInt((DistillationTankBlockEntity a)->a.getBlockPos().getX()).thenComparingInt(a->a.getBlockPos().getZ()));
 		// Form new multiblocks starting from the NW-most block of each group
 		for(DistillationTankBlockEntity tank: tanks){
 			if(tank.isController()){

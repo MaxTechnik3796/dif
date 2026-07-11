@@ -2,24 +2,23 @@ package cz.maxtechnik.dif.gui.menu;
 
 import cz.maxtechnik.dif.block.entity.BurningGeneratorBlockEntity;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
-import net.minecraft.world.inventory.*;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-
-import java.util.function.Supplier;
-import java.util.Map;
-import java.util.HashMap;
-
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
 public class BurningGeneratorMenu extends AbstractContainerMenu implements Supplier<Map<Integer,Slot>>{
 	public final Level world;
 	public final Player entity;

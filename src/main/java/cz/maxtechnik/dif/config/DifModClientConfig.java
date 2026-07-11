@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif;
+package cz.maxtechnik.dif.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 

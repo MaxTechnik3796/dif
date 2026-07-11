@@ -21,7 +21,7 @@ public class PhantomRingHandler{
 				// KONTROLA CURIOS SLOTU:
 				// Zkontrolujeme, zda má hráč v Curios slotu náš prsten
 				AtomicBoolean hasRing=new AtomicBoolean(false);
-				CuriosApi.getCuriosInventory(player).flatMap(handler -> handler.findFirstCurio(stack -> stack.getItem().equals(DifModItems.PHANTOM_RING.get()))).ifPresent(slotResult -> hasRing.set(true));
+				CuriosApi.getCuriosInventory(player).flatMap(handler->handler.findFirstCurio(stack->stack.getItem().equals(DifModItems.PHANTOM_RING.get()))).ifPresent(slotResult->hasRing.set(true));
 				if(hasRing.get()){
 					// Zrušíme přidání entity do světa
 					event.setCanceled(true);

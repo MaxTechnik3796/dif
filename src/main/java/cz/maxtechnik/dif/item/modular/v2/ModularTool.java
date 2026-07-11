@@ -1,8 +1,8 @@
 package cz.maxtechnik.dif.item.modular.v2;
 
-import cz.maxtechnik.dif.DifModClientConfig;
-import cz.maxtechnik.dif.util.ClientTooltipHelper;
+import cz.maxtechnik.dif.config.DifModClientConfig;
 import cz.maxtechnik.dif.init.other.DifModComponents;
+import cz.maxtechnik.dif.util.ClientTooltipHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -571,13 +571,12 @@ public class ModularTool extends DiggerItem{
 		appendStatLine(list,"Durability: ",remaining+"/"+maxDmg,ChatFormatting.WHITE,durBonus,durColor);
 		list.add(CommonComponents.EMPTY);
 		// Check config & shift key
-		boolean compactMode = DifModClientConfig.COMPACT_TOOLTIPS.get();
-		boolean showAll = !compactMode;
-		if(compactMode && net.neoforged.fml.loading.FMLEnvironment.dist.isClient()){
-			showAll = ClientTooltipHelper.isShiftDown();
+		boolean compactMode=DifModClientConfig.COMPACT_TOOLTIPS.get();
+		boolean showAll=!compactMode;
+		if(compactMode&&net.neoforged.fml.loading.FMLEnvironment.dist.isClient()){
+			showAll=ClientTooltipHelper.isShiftDown();
 		}
-
-		if(showAll) {
+		if(showAll){
 			// Parts
 			list.add(Component.literal("Head: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.material."+head.getName()).withStyle(Style.EMPTY.withColor(head.getColor()))));
 			list.add(Component.literal("Binding: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.material."+binding.getName()).withStyle(Style.EMPTY.withColor(binding.getColor()))));
@@ -609,7 +608,7 @@ public class ModularTool extends DiggerItem{
 					list.add(Component.translatable("dif.reforge."+reforge.getName()+".desc").withStyle(Style.EMPTY.withColor(0x9999AA).withItalic(true)));
 				}
 			}
-		} else {
+		}else{
 			list.add(Component.literal("Hold ").withStyle(ChatFormatting.GRAY)
 					.append(Component.literal("SHIFT").withStyle(ChatFormatting.YELLOW))
 					.append(Component.literal(" for details").withStyle(ChatFormatting.GRAY)));
@@ -624,8 +623,8 @@ public class ModularTool extends DiggerItem{
 	}
 	private static void appendStatLine(List<Component> list,String label,String value,ChatFormatting valueColor,float bonus,int valueColorOverride){
 		Component valComp=valueColorOverride>=0
-			?Component.literal(value).withStyle(Style.EMPTY.withColor(valueColorOverride))
-			:Component.literal(value).withStyle(valueColor);
+				?Component.literal(value).withStyle(Style.EMPTY.withColor(valueColorOverride))
+				:Component.literal(value).withStyle(valueColor);
 		MutableComponent line=Component.literal(label).withStyle(ChatFormatting.GRAY).append(valComp);
 		if(Math.abs(bonus)>=0.05F){
 			line=line.append(Component.literal(String.format(Locale.ROOT," (%.1f)",bonus)).withStyle(Style.EMPTY.withColor(ModularTier.RARE.getColor())));

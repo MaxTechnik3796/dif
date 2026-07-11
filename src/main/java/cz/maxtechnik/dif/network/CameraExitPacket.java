@@ -1,8 +1,8 @@
 package cz.maxtechnik.dif.network;
 
+import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.block.entity.CameraMonitorBlockEntity;
 import net.minecraft.core.BlockPos;
-import cz.maxtechnik.dif.DifMod;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;

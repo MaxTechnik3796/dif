@@ -1,8 +1,8 @@
 package cz.maxtechnik.dif.block.entity;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.DifModCommonConfig;
 import cz.maxtechnik.dif.block.BurningGenerator;
+import cz.maxtechnik.dif.config.DifModCommonConfig;
 import cz.maxtechnik.dif.gui.menu.BurningGeneratorMenu;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import io.netty.buffer.Unpooled;

@@ -1,12 +1,12 @@
 package cz.maxtechnik.dif.block;
 
 import com.mojang.serialization.MapCodec;
-import cz.maxtechnik.dif.util.quarry.QuarryArea;
-import cz.maxtechnik.dif.util.quarry.QuarryAreaManager;
 import cz.maxtechnik.dif.block.entity.QuarryBlockEntity;
 import cz.maxtechnik.dif.block.entity.QuarryLandmarkBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
+import cz.maxtechnik.dif.util.quarry.QuarryArea;
+import cz.maxtechnik.dif.util.quarry.QuarryAreaManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;

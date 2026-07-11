@@ -1,10 +1,10 @@
 package cz.maxtechnik.dif.block.entity;
 
-import cz.maxtechnik.dif.util.quarry.QuarryArea;
-import cz.maxtechnik.dif.util.quarry.QuarryAreaManager;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.renderer.QuarryRenderer;
+import cz.maxtechnik.dif.util.quarry.QuarryArea;
+import cz.maxtechnik.dif.util.quarry.QuarryAreaManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -88,7 +88,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 	@Nullable
 	public static QuarryArea tryForm(BlockPos a,BlockPos b,BlockPos c){
 		// Musí tvořit L-tvar: přesně jeden bod musí sdílet X s jedním a Z s druhým
-		if(!isLCorner(a,b,c)&&!isLCorner(b,a,c)&&!isLCorner(c,a,b)) return null;
+		if(isLCorner(a,b,c)&&isLCorner(b,a,c)&&isLCorner(c,a,b)) return null;
 		int minX=Math.min(a.getX(),Math.min(b.getX(),c.getX()));
 		int maxX=Math.max(a.getX(),Math.max(b.getX(),c.getX()));
 		int minZ=Math.min(a.getZ(),Math.min(b.getZ(),c.getZ()));
@@ -99,8 +99,8 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 		return new QuarryArea(minX,maxX,minZ,maxZ);
 	}
 	private static boolean isLCorner(BlockPos corner,BlockPos p1,BlockPos p2){
-		return (corner.getX()==p1.getX()&&corner.getZ()==p2.getZ())
-				||(corner.getX()==p2.getX()&&corner.getZ()==p1.getZ());
+		return (corner.getX()!=p1.getX()||corner.getZ()!=p2.getZ())
+				&&(corner.getX()!=p2.getX()||corner.getZ()!=p1.getZ());
 	}
 	// ── Aplikuj formaci ─────────────────────────────────────────────────
 	private void applyFormation(List<BlockPos> landmarks,QuarryArea area,Player player){

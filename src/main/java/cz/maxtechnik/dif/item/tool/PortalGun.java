@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.item.tool;
 
-import cz.maxtechnik.dif.DifModCommonConfig;
-
+import cz.maxtechnik.dif.config.DifModCommonConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -15,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 public class PortalGun extends Item{
@@ -88,146 +86,119 @@ public class PortalGun extends Item{
 		}
 		return InteractionResultHolder.success(gun);
 	}
-	private net.minecraft.world.phys.Vec3 alignPortal(ServerLevel world, BlockPos hitPos, Direction face, Direction extDir, net.minecraft.world.phys.Vec3 hitLoc) {
-		net.minecraft.world.phys.Vec3 C = net.minecraft.world.phys.Vec3.atCenterOf(hitPos);
-		net.minecraft.world.phys.Vec3 normal = net.minecraft.world.phys.Vec3.atLowerCornerOf(face.getNormal());
-		net.minecraft.world.phys.Vec3 up = net.minecraft.world.phys.Vec3.atLowerCornerOf(extDir.getNormal());
-		net.minecraft.world.phys.Vec3 right = normal.cross(up);
-		Direction rightDir = Direction.getNearest(right.x, right.y, right.z);
-
-		double valUp = hitLoc.dot(up);
-		double centerUp = C.dot(up);
-
-		BlockPos tryPos1 = hitPos.relative(extDir); // UP
-		BlockPos tryPos2 = hitPos.relative(extDir.getOpposite()); // DOWN
-		
-		boolean upSturdy = world.getBlockState(tryPos1).isFaceSturdy(world, tryPos1, face);
-		boolean downSturdy = world.getBlockState(tryPos2).isFaceSturdy(world, tryPos2, face);
-
+	private net.minecraft.world.phys.Vec3 alignPortal(ServerLevel world,BlockPos hitPos,Direction face,Direction extDir,net.minecraft.world.phys.Vec3 hitLoc){
+		net.minecraft.world.phys.Vec3 C=net.minecraft.world.phys.Vec3.atCenterOf(hitPos);
+		net.minecraft.world.phys.Vec3 normal=net.minecraft.world.phys.Vec3.atLowerCornerOf(face.getNormal());
+		net.minecraft.world.phys.Vec3 up=net.minecraft.world.phys.Vec3.atLowerCornerOf(extDir.getNormal());
+		net.minecraft.world.phys.Vec3 right=normal.cross(up);
+		Direction rightDir=Direction.getNearest(right.x,right.y,right.z);
+		double valUp=hitLoc.dot(up);
+		double centerUp=C.dot(up);
+		BlockPos tryPos1=hitPos.relative(extDir); // UP
+		BlockPos tryPos2=hitPos.relative(extDir.getOpposite()); // DOWN
+		boolean upSturdy=world.getBlockState(tryPos1).isFaceSturdy(world,tryPos1,face);
+		boolean downSturdy=world.getBlockState(tryPos2).isFaceSturdy(world,tryPos2,face);
 		double alignedUpVal;
-		if (upSturdy && downSturdy) {
-			alignedUpVal = valUp;
-		} else if (upSturdy) {
-			alignedUpVal = centerUp + 0.5;
-		} else if (downSturdy) {
-			alignedUpVal = centerUp - 0.5;
-		} else {
+		if(upSturdy&&downSturdy){
+			alignedUpVal=valUp;
+		}else if(upSturdy){
+			alignedUpVal=centerUp+0.5;
+		}else if(downSturdy){
+			alignedUpVal=centerUp-0.5;
+		}else{
 			return null;
 		}
-
-		double valRight = hitLoc.dot(right);
-		double centerRight = C.dot(right);
-		double offsetRight = valRight - centerRight;
-		
-		double alignedRightVal = valRight;
-		
-		boolean rightSturdy = true;
-		boolean leftSturdy = true;
-		
-		net.minecraft.world.phys.Vec3 wallPos = normal.scale(hitLoc.dot(normal))
-			.add(up.scale(alignedUpVal)).add(right.scale(centerRight))
-			.subtract(normal.scale(0.1));
-			
-		for (double h : new double[]{-0.9, 0.0, 0.9}) {
-			BlockPos bPos = BlockPos.containing(wallPos.add(up.scale(h)));
-			BlockPos rPos = bPos.relative(rightDir);
-			BlockPos lPos = bPos.relative(rightDir.getOpposite());
-			
-			if (!world.getBlockState(rPos).isFaceSturdy(world, rPos, face)) {
-				rightSturdy = false;
+		double valRight=hitLoc.dot(right);
+		double centerRight=C.dot(right);
+		double offsetRight=valRight-centerRight;
+		double alignedRightVal=valRight;
+		boolean rightSturdy=true;
+		boolean leftSturdy=true;
+		net.minecraft.world.phys.Vec3 wallPos=normal.scale(hitLoc.dot(normal))
+				.add(up.scale(alignedUpVal)).add(right.scale(centerRight))
+				.subtract(normal.scale(0.1));
+		for(double h: new double[]{-0.9,0.0,0.9}){
+			BlockPos bPos=BlockPos.containing(wallPos.add(up.scale(h)));
+			BlockPos rPos=bPos.relative(rightDir);
+			BlockPos lPos=bPos.relative(rightDir.getOpposite());
+			if(!world.getBlockState(rPos).isFaceSturdy(world,rPos,face)){
+				rightSturdy=false;
 			}
-			if (!world.getBlockState(lPos).isFaceSturdy(world, lPos, face)) {
-				leftSturdy = false;
+			if(!world.getBlockState(lPos).isFaceSturdy(world,lPos,face)){
+				leftSturdy=false;
 			}
 		}
-
-		if (offsetRight > 0 && !rightSturdy) {
-			alignedRightVal = centerRight;
-		} else if (offsetRight < 0 && !leftSturdy) {
-			alignedRightVal = centerRight;
+		if(offsetRight>0&&!rightSturdy){
+			alignedRightVal=centerRight;
+		}else if(offsetRight<0&&!leftSturdy){
+			alignedRightVal=centerRight;
 		}
-
-		double valNormal = hitLoc.dot(normal);
-		
+		double valNormal=hitLoc.dot(normal);
 		return normal.scale(valNormal).add(up.scale(alignedUpVal)).add(right.scale(alignedRightVal));
 	}
-
 	private boolean firePortal(ServerLevel world,Player player,boolean isBlue){
 		var start=player.getEyePosition();
 		var hit=world.clip(new ClipContext(start,start.add(player.getLookAngle().scale(128.0)),
 				ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,player));
 		if(hit.getType()!=HitResult.Type.BLOCK) return false;
-        Direction face= hit.getDirection();
-		BlockPos hitPos= hit.getBlockPos();
-		
-		Direction extDir = (face.getAxis() == Direction.Axis.Y) ? player.getDirection() : Direction.UP;
-		
-		net.minecraft.world.phys.Vec3 alignedLoc = alignPortal(world, hitPos, face, extDir, hit.getLocation());
-		if (alignedLoc == null) {
-			player.displayClientMessage(Component.literal("[!] Invalid placement (needs support)"), true);
+		Direction face=hit.getDirection();
+		BlockPos hitPos=hit.getBlockPos();
+		Direction extDir=(face.getAxis()==Direction.Axis.Y)?player.getDirection():Direction.UP;
+		net.minecraft.world.phys.Vec3 alignedLoc=alignPortal(world,hitPos,face,extDir,hit.getLocation());
+		if(alignedLoc==null){
+			player.displayClientMessage(Component.literal("[!] Invalid placement (needs support)"),true);
 			return false;
 		}
-		
 		// Shift 0.02 blocks away from the wall to prevent z-fighting / texture glitching
-		net.minecraft.world.phys.Vec3 spawnPos = alignedLoc.add(net.minecraft.world.phys.Vec3.atLowerCornerOf(face.getNormal()).scale(0.02));
-		
-		java.util.Set<BlockPos> uniquePositions = cz.maxtechnik.dif.entity.portal.PortalEntity.getPortalSupportBlocks(spawnPos, extDir, face);
-
+		net.minecraft.world.phys.Vec3 spawnPos=alignedLoc.add(net.minecraft.world.phys.Vec3.atLowerCornerOf(face.getNormal()).scale(0.02));
+		java.util.Set<BlockPos> uniquePositions=cz.maxtechnik.dif.entity.portal.PortalEntity.getPortalSupportBlocks(spawnPos,extDir,face);
 		// 1. Check space in all unique block positions (up to 4, strictly on the air side)
-		boolean space = true;
-		for (BlockPos p : uniquePositions) {
-			if (!world.isEmptyBlock(p) && !world.getBlockState(p).canBeReplaced()) {
-				space = false;
+		boolean space=true;
+		for(BlockPos p: uniquePositions){
+			if(!world.isEmptyBlock(p)&&!world.getBlockState(p).canBeReplaced()){
+				space=false;
 				break;
 			}
 		}
-		
-		if (!space) {
-			player.displayClientMessage(Component.literal("[!] Invalid placement (no space)"), true);
+		if(!space){
+			player.displayClientMessage(Component.literal("[!] Invalid placement (no space)"),true);
 			return false;
 		}
-		
 		// 2. Check support behind all unique block positions
-		boolean support = true;
-		for (BlockPos p : uniquePositions) {
-			BlockPos supPos = p.relative(face.getOpposite());
-			if (!world.getBlockState(supPos).isFaceSturdy(world, supPos, face)) {
-				support = false;
+		boolean support=true;
+		for(BlockPos p: uniquePositions){
+			BlockPos supPos=p.relative(face.getOpposite());
+			if(!world.getBlockState(supPos).isFaceSturdy(world,supPos,face)){
+				support=false;
 				break;
 			}
 		}
-		
-		if (!support) {
-			player.displayClientMessage(Component.literal("[!] Invalid placement (needs support)"), true);
+		if(!support){
+			player.displayClientMessage(Component.literal("[!] Invalid placement (needs support)"),true);
 			return false;
 		}
-		
-		cz.maxtechnik.dif.entity.portal.PortalEntity portal = new cz.maxtechnik.dif.entity.portal.PortalEntity(world, player.getUUID(), isBlue, face, extDir, spawnPos);
-		
-		boolean overlaps = false;
-		java.util.List<cz.maxtechnik.dif.entity.portal.PortalEntity> existingPortals = world.getEntitiesOfClass(
+		cz.maxtechnik.dif.entity.portal.PortalEntity portal=new cz.maxtechnik.dif.entity.portal.PortalEntity(world,player.getUUID(),isBlue,face,extDir,spawnPos);
+		boolean overlaps=false;
+		java.util.List<cz.maxtechnik.dif.entity.portal.PortalEntity> existingPortals=world.getEntitiesOfClass(
 				cz.maxtechnik.dif.entity.portal.PortalEntity.class,
 				portal.getBoundingBox().inflate(0.01)
 		);
-		for (cz.maxtechnik.dif.entity.portal.PortalEntity other : existingPortals) {
-			if (other.getOwner() != null && other.getOwner().equals(player.getUUID()) && other.isBlue() == isBlue) {
+		for(cz.maxtechnik.dif.entity.portal.PortalEntity other: existingPortals){
+			if(other.getOwner()!=null&&other.getOwner().equals(player.getUUID())&&other.isBlue()==isBlue){
 				continue;
 			}
-			if (portal.getBoundingBox().inflate(0.01).intersects(other.getBoundingBox())) {
-				overlaps = true;
+			if(portal.getBoundingBox().inflate(0.01).intersects(other.getBoundingBox())){
+				overlaps=true;
 				break;
 			}
 		}
-		
-		if (overlaps) {
-			player.displayClientMessage(Component.literal("[!] Invalid position"), true);
+		if(overlaps){
+			player.displayClientMessage(Component.literal("[!] Invalid position"),true);
 			return false;
 		}
-		
 		cz.maxtechnik.dif.entity.portal.PortalEntity.removeOldPortal(world,player.getUUID(),isBlue);
-		
 		// Save position in PortalData BEFORE spawning entity so that updateLinks during onAddedToLevel finds it!
-		cz.maxtechnik.dif.entity.portal.PortalData.get(world).set(player.getUUID(), isBlue, portal.blockPosition());
+		cz.maxtechnik.dif.entity.portal.PortalData.get(world).set(player.getUUID(),isBlue,portal.blockPosition());
 		world.addFreshEntity(portal);
 		return true;
 	}

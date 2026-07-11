@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.block.space;
 
-import cz.maxtechnik.dif.DifModCommonConfig;
 import cz.maxtechnik.dif.block.entity.SpaceScaffoldingBlockEntity;
+import cz.maxtechnik.dif.config.DifModCommonConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;

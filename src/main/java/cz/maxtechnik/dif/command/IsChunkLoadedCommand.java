@@ -4,10 +4,10 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.core.BlockPos;
 public class IsChunkLoadedCommand{
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher){
 		dispatcher.register(Commands.literal("ischunkloaded")

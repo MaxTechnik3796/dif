@@ -1,13 +1,13 @@
 package cz.maxtechnik.dif.block.entity;
 
-import cz.maxtechnik.dif.util.quarry.QuarryArea;
-import cz.maxtechnik.dif.util.quarry.QuarryAreaManager;
 import cz.maxtechnik.dif.block.Quarry;
 import cz.maxtechnik.dif.gui.menu.QuarryMenu;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.events.QuarryStats;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.item.quarry.EngineItem;
+import cz.maxtechnik.dif.util.quarry.QuarryArea;
+import cz.maxtechnik.dif.util.quarry.QuarryAreaManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;

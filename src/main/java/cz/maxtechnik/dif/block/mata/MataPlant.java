@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.block.mata;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.DifModCommonConfig;
+import cz.maxtechnik.dif.config.DifModCommonConfig;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;

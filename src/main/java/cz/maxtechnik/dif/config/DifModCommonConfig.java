@@ -1,22 +1,12 @@
-package cz.maxtechnik.dif;
+package cz.maxtechnik.dif.config;
 
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class DifModCommonConfig{
 	private static final ModConfigSpec.Builder BUILDER=new ModConfigSpec.Builder();
-	static final ModConfigSpec SPEC;
+	public static final ModConfigSpec SPEC;
 	public static final int MAX=Integer.MAX_VALUE;
-	public static String restart(String defaultValue){
-		return "Restart required!\nDefault value: "+defaultValue;
-	}
-	public static String restart(int defaultValue){
-		return restart(String.valueOf(defaultValue));
-	}
-	public static String restart(double defaultValue){
-		return restart(String.valueOf(defaultValue));
-	}
-
 	public static final ModConfigSpec.IntValue SOLAR_PANEL_00;
 	public static final ModConfigSpec.IntValue SOLAR_PANEL_01;
 	public static final ModConfigSpec.IntValue SOLAR_PANEL_02;

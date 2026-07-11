@@ -3,7 +3,6 @@ package cz.maxtechnik.dif.init.events.client;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.entity.vehicle.BaseCarEntity;
 import cz.maxtechnik.dif.init.other.DifModKeys;
-import cz.maxtechnik.dif.init.other.DifModNetworking;
 import cz.maxtechnik.dif.network.ShiftGearPacket;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
@@ -12,9 +11,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
-
 @SuppressWarnings("removal")
-@EventBusSubscriber(modid=DifMod.MODID,value=Dist.CLIENT,bus=EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid=DifMod.MODID, value=Dist.CLIENT, bus=EventBusSubscriber.Bus.GAME)
 public class CarInputHandler{
 	@SubscribeEvent
 	public static void onClientTick(ClientTickEvent.Post event){

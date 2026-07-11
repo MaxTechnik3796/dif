@@ -13,28 +13,26 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
 import java.util.HashSet;
-
-@EventBusSubscriber(modid = DifMod.MODID)
-public class OrbitVoidTeleport {
-
+@EventBusSubscriber(modid=DifMod.MODID)
+public class OrbitVoidTeleport{
 	@SubscribeEvent
-	public static void onEntityTick(net.neoforged.neoforge.event.tick.EntityTickEvent.Post event) {
-		if (!(event.getEntity() instanceof LivingEntity entity)) return;
-		ResourceLocation currentDim = entity.level().dimension().location();
-		ResourceLocation orbitDim = ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "orbit");
-		if (currentDim.equals(orbitDim)) {
-			if (entity.getY() <= -90) {
-				if (!entity.level().isClientSide() && entity.getServer() != null) {
-					ServerLevel overworld = entity.getServer().getLevel(Level.OVERWORLD);
-					if (overworld != null) {
-						entity.fallDistance = 0;
+	public static void onEntityTick(net.neoforged.neoforge.event.tick.EntityTickEvent.Post event){
+		if(!(event.getEntity() instanceof LivingEntity entity)) return;
+		ResourceLocation currentDim=entity.level().dimension().location();
+		ResourceLocation orbitDim=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"orbit");
+		if(currentDim.equals(orbitDim)){
+			if(entity.getY()<=-90){
+				if(!entity.level().isClientSide()&&entity.getServer()!=null){
+					ServerLevel overworld=entity.getServer().getLevel(Level.OVERWORLD);
+					if(overworld!=null){
+						entity.fallDistance=0;
 						// Teleportace
-						entity.teleportTo(overworld, entity.getX(), 500, entity.getZ(), new HashSet<>(), entity.getYRot(), entity.getXRot());
+						entity.teleportTo(overworld,entity.getX(),500,entity.getZ(),new HashSet<>(),entity.getYRot(),entity.getXRot());
 						// Efekty
-						entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100, 0, true, false));
+						entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS,100,0,true,false));
 						entity.setRemainingFireTicks(200); // 10 sekund = 200 ticků
-						if (entity instanceof ServerPlayer serverPlayer) {
-							serverPlayer.displayClientMessage(Component.literal("§6You are falling back to Overworld!"), true);
+						if(entity instanceof ServerPlayer serverPlayer){
+							serverPlayer.displayClientMessage(Component.literal("§6You are falling back to Overworld!"),true);
 						}
 					}
 				}

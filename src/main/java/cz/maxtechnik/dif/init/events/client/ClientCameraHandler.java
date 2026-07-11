@@ -18,8 +18,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderHandEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
-
-@EventBusSubscriber(value= Dist.CLIENT)
+@EventBusSubscriber(value=Dist.CLIENT)
 public class ClientCameraHandler{
 	private static boolean isViewing=false;
 	private static BlockPos cameraPos=null;
@@ -72,41 +71,33 @@ public class ClientCameraHandler{
 		}
 	}
 	@SubscribeEvent
-	public static void onClientTick(ClientTickEvent.Post event) { // Registrujeme přímo Post verzi (místo Phase.END)
+	public static void onClientTick(ClientTickEvent.Post event){ // Registrujeme přímo Post verzi (místo Phase.END)
 		// Už nepotřebujeme kontrolovat event.phase!
-
-		if (!isViewing || cameraPos == null) return;
-
-		Minecraft mc = Minecraft.getInstance();
-		if (mc.player == null) return;
-
+		if(!isViewing||cameraPos==null) return;
+		Minecraft mc=Minecraft.getInstance();
+		if(mc.player==null) return;
 		// Kontrola zničení bloku
-		if (mc.level != null && !(mc.level.getBlockState(cameraPos).getBlock() instanceof Camera)) {
+		if(mc.level!=null&&!(mc.level.getBlockState(cameraPos).getBlock() instanceof Camera)){
 			timeOut++;
 		}
-
-		if (timeOut >= 3) {
+		if(timeOut>=3){
 			exitCamera();
-			mc.player.displayClientMessage(Component.literal("Camera is too far away or has been destroyed!"), true);
+			mc.player.displayClientMessage(Component.literal("Camera is too far away or has been destroyed!"),true);
 			return;
 		}
-
 		// Vynucení pozice dummy entity
-		if (dummyEntity != null) {
+		if(dummyEntity!=null){
 			dummyEntity.setOldPosAndRot();
 		}
-
-		if (mc.player.isShiftKeyDown()) {
+		if(mc.player.isShiftKeyDown()){
 			exitCamera();
 			return;
 		}
-
 		// Zamezení pohybu hráče
-		mc.player.xxa = 0;
-		mc.player.yya = 0;
-		mc.player.zza = 0;
-
-		if (inputDelay < 2) {
+		mc.player.xxa=0;
+		mc.player.yya=0;
+		mc.player.zza=0;
+		if(inputDelay<2){
 			inputDelay++;
 			mc.options.keyLeft.consumeClick();
 			mc.options.keyRight.consumeClick();
@@ -114,16 +105,15 @@ public class ClientCameraHandler{
 			mc.options.keyDown.consumeClick();
 			return;
 		}
-
 		// Ovládání
-		if (mc.options.keyLeft.consumeClick()) {
-			switchMonitor(mc, Direction.WEST);
-		} else if (mc.options.keyRight.consumeClick()) {
-			switchMonitor(mc, Direction.EAST);
-		} else if (mc.options.keyUp.consumeClick()) {
-			switchMonitor(mc, Direction.UP);
-		} else if (mc.options.keyDown.consumeClick()) {
-			switchMonitor(mc, Direction.DOWN);
+		if(mc.options.keyLeft.consumeClick()){
+			switchMonitor(mc,Direction.WEST);
+		}else if(mc.options.keyRight.consumeClick()){
+			switchMonitor(mc,Direction.EAST);
+		}else if(mc.options.keyUp.consumeClick()){
+			switchMonitor(mc,Direction.UP);
+		}else if(mc.options.keyDown.consumeClick()){
+			switchMonitor(mc,Direction.DOWN);
 		}
 	}
 	private static void switchMonitor(Minecraft mc,Direction relativeDir){
@@ -151,52 +141,50 @@ public class ClientCameraHandler{
 			mc.gameMode.useItemOn(mc.player,InteractionHand.MAIN_HAND,new BlockHitResult(new Vec3(neighborPos.getX()+0.5,neighborPos.getY()+0.5,neighborPos.getZ()+0.5),Direction.UP,neighborPos,false));
 		}
 	}
-	public static void exitCamera() {
-		Minecraft mc = Minecraft.getInstance();
-		if (mc.player != null) {
+	public static void exitCamera(){
+		Minecraft mc=Minecraft.getInstance();
+		if(mc.player!=null){
 			mc.setCameraEntity(mc.player);
 			mc.levelRenderer.allChanged();
 		}
-		if (currentMonitorPos != null) {
+		if(currentMonitorPos!=null){
 			// NOVÝ ZPŮSOB ODESÍLÁNÍ V NEOFORGE 1.21.1
 			net.neoforged.neoforge.network.PacketDistributor.sendToServer(new CameraExitPacket(currentMonitorPos));
-			currentMonitorPos = null;
+			currentMonitorPos=null;
 		}
-		isViewing = false;
-		cameraPos = null;
-		if (dummyEntity != null) {
+		isViewing=false;
+		cameraPos=null;
+		if(dummyEntity!=null){
 			dummyEntity.discard();
-			dummyEntity = null;
+			dummyEntity=null;
 		}
 	}
 	@SubscribeEvent
-	public static void onInput(net.neoforged.neoforge.client.event.InputEvent.InteractionKeyMappingTriggered event) {
-		if (isViewing) {
+	public static void onInput(net.neoforged.neoforge.client.event.InputEvent.InteractionKeyMappingTriggered event){
+		if(isViewing){
 			// Zrušíme jakýkoliv pokus o útok nebo bourání (levé tlačítko)
-			if (event.isAttack()) {
+			if(event.isAttack()){
 				event.setCanceled(true);
 				event.setSwingHand(false);
 			}
 			// Zrušíme pokus o interakci (pravé tlačítko)
-			if (event.isUseItem()) {
+			if(event.isUseItem()){
 				event.setCanceled(true);
 				event.setSwingHand(false);
 			}
 		}
 	}
 	@SubscribeEvent
-	public static void onPlayerInteractRightClickBlock(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickBlock event) {
-		if (event.getLevel().isClientSide() && isViewing) event.setCanceled(true);
+	public static void onPlayerInteractRightClickBlock(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickBlock event){
+		if(event.getLevel().isClientSide()&&isViewing) event.setCanceled(true);
 	}
-
 	@SubscribeEvent
-	public static void onPlayerInteractRightClickItem(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickItem event) {
-		if (event.getLevel().isClientSide() && isViewing) event.setCanceled(true);
+	public static void onPlayerInteractRightClickItem(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickItem event){
+		if(event.getLevel().isClientSide()&&isViewing) event.setCanceled(true);
 	}
-
 	@SubscribeEvent
-	public static void onPlayerInteractLeftClickBlock(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.LeftClickBlock event) {
-		if (event.getLevel().isClientSide() && isViewing) event.setCanceled(true);
+	public static void onPlayerInteractLeftClickBlock(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.LeftClickBlock event){
+		if(event.getLevel().isClientSide()&&isViewing) event.setCanceled(true);
 	}
 	@SubscribeEvent
 	public static void onRenderHand(RenderHandEvent event){
@@ -205,10 +193,10 @@ public class ClientCameraHandler{
 		}
 	}
 	@SubscribeEvent
-	public static void onRenderGui(net.neoforged.neoforge.client.event.RenderGuiLayerEvent.Pre event) {
-		if (isViewing) {
+	public static void onRenderGui(net.neoforged.neoforge.client.event.RenderGuiLayerEvent.Pre event){
+		if(isViewing){
 			// Crosshair necháme vykreslit, vše ostatní zrušíme
-			if (event.getName().equals(net.neoforged.neoforge.client.gui.VanillaGuiLayers.CROSSHAIR)) {
+			if(event.getName().equals(net.neoforged.neoforge.client.gui.VanillaGuiLayers.CROSSHAIR)){
 				return;
 			}
 			event.setCanceled(true);

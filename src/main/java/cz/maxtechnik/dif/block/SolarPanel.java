@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.block;
 
-import cz.maxtechnik.dif.DifModCommonConfig;
+import cz.maxtechnik.dif.config.DifModCommonConfig;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModDimensions;
 import net.minecraft.core.BlockPos;

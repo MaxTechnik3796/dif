@@ -4,6 +4,8 @@ import com.mojang.logging.LogUtils;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
 import cz.maxtechnik.dif.command.IsChunkLoadedCommand;
+import cz.maxtechnik.dif.config.DifModClientConfig;
+import cz.maxtechnik.dif.config.DifModCommonConfig;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.basic.DifModSounds;

@@ -1,4 +1,3 @@
-
 package cz.maxtechnik.dif.effect;
 
 import net.minecraft.world.effect.MobEffect;

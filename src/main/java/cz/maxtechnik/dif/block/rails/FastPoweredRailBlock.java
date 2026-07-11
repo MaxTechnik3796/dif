@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.block.rails;
 
-import cz.maxtechnik.dif.DifModCommonConfig;
+import cz.maxtechnik.dif.config.DifModCommonConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.Level;

@@ -20,8 +20,8 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import java.util.stream.Stream;
 
-import static cz.maxtechnik.dif.DifModCommonConfig.*;
 import static cz.maxtechnik.dif.block.Engine.*;
+import static cz.maxtechnik.dif.config.DifModCommonConfig.*;
 import static cz.maxtechnik.dif.init.basic.DifModBlocks.*;
 public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	boolean generating=false;

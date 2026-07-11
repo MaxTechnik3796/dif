@@ -10,7 +10,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-
 @EventBusSubscriber(modid=DifMod.MODID)
 public class ElectroRunnersHandler{
 	@SubscribeEvent
@@ -37,11 +36,11 @@ public class ElectroRunnersHandler{
 		}
 	}
 	@SubscribeEvent
-	public static void onLivingDamage(LivingIncomingDamageEvent event) {
-		if (event.getEntity() instanceof Player player) {
-			ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-			if (boots.getItem() instanceof ElectroRunners) {
-				ElectroRunners.Boots.extract(boots, 10);
+	public static void onLivingDamage(LivingIncomingDamageEvent event){
+		if(event.getEntity() instanceof Player player){
+			ItemStack boots=player.getItemBySlot(EquipmentSlot.FEET);
+			if(boots.getItem() instanceof ElectroRunners){
+				ElectroRunners.Boots.extract(boots,10);
 			}
 		}
 	}

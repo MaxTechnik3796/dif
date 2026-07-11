@@ -186,7 +186,7 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 		if(state!=newState){
 			level.setBlock(worldPosition,newState,net.minecraft.world.level.block.Block.UPDATE_CLIENTS|net.minecraft.world.level.block.Block.UPDATE_INVISIBLE);
 			level.sendBlockUpdated(worldPosition,state,newState,3);
-		} else {
+		}else{
 			level.sendBlockUpdated(worldPosition,state,state,3);
 		}
 		if(notifyNeighbors){
