@@ -1,6 +1,5 @@
-package cz.maxtechnik.dif.item.food;
+package cz.maxtechnik.dif.init.other;
 
-import cz.maxtechnik.dif.init.other.DifModMobEffects;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
@@ -8,7 +7,6 @@ import net.minecraft.world.food.FoodProperties;
 public class DifModFoods{
 	public static final FoodProperties MATA=new FoodProperties.Builder().nutrition(1).saturationModifier(0.2F).alwaysEdible().build();
 	public static final FoodProperties MATY_DRINK=new FoodProperties.Builder().nutrition(13).saturationModifier(2f).effect(new MobEffectInstance(DifModMobEffects.REDSTONE_IQ,1200,0),1F).effect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,200,0),1F).effect(new MobEffectInstance(MobEffects.DIG_SPEED,100,2),1F).alwaysEdible().build();
-	public static final FoodProperties SUGAR_MUSHROOM=new FoodProperties.Builder().nutrition(3).saturationModifier(0.5F).alwaysEdible().build();
 	public static final FoodProperties CHERRY=new FoodProperties.Builder().nutrition(1).saturationModifier(0.1F).alwaysEdible().build();
 	public static final FoodProperties CANOLA_SEEDS=new FoodProperties.Builder().nutrition(1).saturationModifier(0.1F).alwaysEdible().fast().build();
 	public static final FoodProperties FRIES=new FoodProperties.Builder().nutrition(3).saturationModifier(0.45F).alwaysEdible().build();

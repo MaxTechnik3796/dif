@@ -2,6 +2,7 @@ package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
+import cz.maxtechnik.dif.init.other.DifModFoods;
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
@@ -25,7 +26,6 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
@@ -150,7 +150,6 @@ public class DifModItems{
 	public static final DeferredItem<Item> NETHER_WART_BOTTLE=REGISTRY.register("nether_wart_bottle",()->new RetvalFoods(new Item.Properties().rarity(Rarity.UNCOMMON).food(DifModFoods.NETHER_WART_BOTTLE),Items.GLASS_BOTTLE,UseAnim.DRINK));
 	public static final DeferredItem<Item> WINE=REGISTRY.register("wine",()->new RetvalFoods(new Item.Properties().food(DifModFoods.WINE).rarity(Rarity.UNCOMMON),Items.GLASS_BOTTLE,UseAnim.DRINK));
 	public static final DeferredItem<Item> FERNET=REGISTRY.register("fernet",()->new RetvalFoods(new Item.Properties().food(DifModFoods.FERNET).rarity(Rarity.UNCOMMON).food(DifModFoods.FERNET),Items.GLASS_BOTTLE,UseAnim.DRINK));
-	public static final DeferredItem<Item> SUGAR_MUSHROOM=REGISTRY.register("sugar_mushroom",()->new Item(new Item.Properties().food(DifModFoods.SUGAR_MUSHROOM)));
 	public static final DeferredItem<Item> CHERRY=REGISTRY.register("cherry",()->new Item(new Item.Properties().food(DifModFoods.CHERRY)));
 
 	public static final DeferredItem<Item>FLAT_DOUGH=REGISTRY.register("flat_dough",()->new Item((new Item.Properties()).food(DifModFoods.FLAT_DOUGH)));

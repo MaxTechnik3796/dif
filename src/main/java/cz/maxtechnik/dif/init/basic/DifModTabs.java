@@ -25,7 +25,6 @@ public class DifModTabs{
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab> MAIN=REGISTER.register("main",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.main")).icon(()->new ItemStack(THE_DIFFERENTIAL.get())).displayItems(((parameters,tabData)->{
 		tabData.accept(THE_DIFFERENTIAL);
 		tabData.accept(MEGA_TORCH);
-		tabData.accept(BAN_HAMMER);
 		tabData.accept(PORTAL_GUN);
 		tabData.accept(CHUNK_LOADER_1X1);
 		tabData.accept(CHUNK_LOADER_3X3);
@@ -37,7 +36,6 @@ public class DifModTabs{
 		tabData.accept(ANDESITE_LATTICE);
 		tabData.accept(ANDESITE_WINDOW);
 		tabData.accept(SUPER_BOX);
-		tabData.accept(SINGULARITATOR);
 		tabData.accept(FRYING_TABLE);
 
 		tabData.accept(LAP_TIMER);
@@ -59,20 +57,11 @@ public class DifModTabs{
 		tabData.accept(SOLAR_PANEL_03_W);
 		tabData.accept(SOLAR_PANEL_04_W);
 
-
-
 		tabData.accept(MITHRIL);
 		tabData.accept(MITHRIL_PLATE);
 		tabData.accept(DEEPSLATE_MITHRIL_ORE);
 		tabData.accept(BLUESTONE);
 		tabData.accept(BLUE_PLATE);
-
-
-
-		tabData.accept(INCOMPLETE_MITHRIL_PLATE);
-		tabData.accept(SOLAR_PANEL_INC);
-
-		tabData.accept(INCOMPLETE_UNIVERSAL);
 
 		tabData.accept(QUARRY);
 		tabData.accept(QUARRY_FRAME);
@@ -83,14 +72,6 @@ public class DifModTabs{
 		tabData.accept(QUARRY_ENGINE_IRON);
 		tabData.accept(QUARRY_ENGINE_GOLD);
 		tabData.accept(QUARRY_ENGINE_DIAMOND);
-
-		tabData.accept(NICKEL_NUGGET);
-		tabData.accept(NICKEL_INGOT);
-		tabData.accept(RAW_NICKEL);
-		tabData.accept(NICKEL_BLOCK);
-		tabData.accept(RAW_NICKEL_BLOCK);
-		tabData.accept(NICKEL_ORE);
-		tabData.accept(DEEPSLATE_NICKEL_ORE);
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>INDUSTRIAL=REGISTER.register("industrial",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.industrials")).icon(()->new ItemStack(ENGINE_EXTENDER_DIESEL.get())).displayItems(((parameters,tabData)->{
 
@@ -224,6 +205,7 @@ public class DifModTabs{
 		if(tabData.getTabKey().equals(CreativeModeTabs.BUILDING_BLOCKS)){
 			tabData.insertAfter(new ItemStack(Items.SMOOTH_STONE),new ItemStack(SMOOTH_STONE_DOUBLE_SLAB.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertAfter(new ItemStack(Items.IRON_BARS),new ItemStack(IRON_BARS_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertAfter(new ItemStack(Items.IRON_BLOCK),new ItemStack(NICKEL_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.accept(DEEPSLATED_ARROW);
 			tabData.accept(STONED_ARROW);
 			tabData.accept(WOODED_ARROW);
@@ -234,7 +216,12 @@ public class DifModTabs{
 			tabData.insertAfter(new ItemStack(Items.BEDROCK),new ItemStack(PEDROCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertAfter(new ItemStack(Items.SNOW),new ItemStack(MATY_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertAfter(new ItemStack(Items.CRYING_OBSIDIAN),new ItemStack(CINDER_FLOUR_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			tabData.insertAfter(new ItemStack(Items.WARPED_FUNGUS),new ItemStack(SUGAR_MUSHROOM.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertAfter(new ItemStack(Items.RAW_IRON_BLOCK),new ItemStack(RAW_NICKEL_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			addItemStacksBehind(tabData,new ItemStack(Items.DEEPSLATE_IRON_ORE),
+					new ItemStack[]{
+							new ItemStack(NICKEL_ORE.get()),
+							new ItemStack(DEEPSLATE_NICKEL_ORE.get())
+					});
 			addItemStacksBehind(tabData,new ItemStack(Items.SUGAR_CANE),
 					new ItemStack[]{
 							new ItemStack(MATA_PLANT.get()),
@@ -355,7 +342,11 @@ public class DifModTabs{
 			tabData.accept(BOTTLE_OF_URANOVEJ_KOKTEJL);
 			tabData.accept(FLAT_DOUGH);
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.INGREDIENTS)){
+			tabData.insertAfter(new ItemStack(Items.RAW_IRON),new ItemStack(RAW_NICKEL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertAfter(new ItemStack(Items.IRON_NUGGET),new ItemStack(NICKEL_NUGGET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertAfter(new ItemStack(Items.IRON_INGOT),new ItemStack(NICKEL_INGOT.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.OP_BLOCKS)){
+			tabData.accept(BAN_HAMMER);
 			tabData.accept(END_PORTAL);
 			tabData.accept(END_GATEWAY);
 			tabData.accept(NETHER_PORTAL);
@@ -368,6 +359,7 @@ public class DifModTabs{
 
 			tabData.accept(NUKE);
 			tabData.accept(NUKE_SAFE);
+			tabData.accept(INCOMPLETE_UNIVERSAL);
 
 		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
 			tabData.insertAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);

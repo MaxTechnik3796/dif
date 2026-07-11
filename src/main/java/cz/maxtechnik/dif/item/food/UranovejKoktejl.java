@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.item.food;
 
+import cz.maxtechnik.dif.init.other.DifModFoods;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
