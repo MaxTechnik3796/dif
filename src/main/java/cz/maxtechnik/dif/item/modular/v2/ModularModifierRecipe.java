@@ -65,9 +65,8 @@ public class ModularModifierRecipe extends SmithingExtraRecipe{
 				case 3 -> 24;
 				default -> 0;
 			};
-			case VOLCANIC -> 1;
-			case MENDING -> 1;
-			default -> 0;
+			case VOLCANIC, MENDING -> 1;
+            default -> 0;
 		};
 	}
 	public ModularModifierRecipe(Ingredient template,Ingredient base,Ingredient addition,ItemStack result){

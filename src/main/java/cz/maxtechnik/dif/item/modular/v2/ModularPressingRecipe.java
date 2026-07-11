@@ -18,7 +18,6 @@ import java.util.List;
  * Custom pressing recipe for filled casting molds.
  * Pressing any filled modular mold (cast_mold=true) in the Create Mechanical Press
  * outputs the finished part (cast_mold=false) and returns the empty casting mold.
- *
  * Extends PressingRecipe so its getType() returns create:pressing, meaning the
  * Mechanical Press will find and use this recipe automatically without any mixin.
  */

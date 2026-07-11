@@ -230,8 +230,10 @@ public class ModularTool extends DiggerItem{
 	private float getBaseSpeedForType(String type){
 		return switch(type.toLowerCase(Locale.ROOT)){
 			case "pickaxe","hammer" -> -2.8F;
-			case "axe","shovel","timber_axe","excavator","battle_axe" -> -3F;
-			case "hoe" -> -1F;
+			case "axe","shovel","timber_axe","excavator" -> -3F;
+			case "battle_axe" -> -3.2F;
+			case "katana" -> -1F;
+			case "hoe" -> -0F;
 			default -> -2.4F;
 		};
 	}
@@ -461,6 +463,19 @@ public class ModularTool extends DiggerItem{
 		};
 	}
 	/**
+	 * Get live attack damage value for the current tool state.
+	 * @param itemStack tool
+	 * @return attack damage value.
+	 */
+	private float getLiveAttackDamage(ItemStack itemStack){
+		if(isBroken(itemStack)) return 0F;
+		ModularToolProperties props=getProps(itemStack);
+		ModularMaterial head=ModularMaterial.byName(props.headMaterial());
+		float baseDamage=getBaseDamageForType(props.toolType())+head.getAttackDamage();
+		float multiplier=getReforge(itemStack).getAttackDamage()[getTier(itemStack).getReforgeIndex()];
+		return 1F+baseDamage*multiplier+sharpnessDamage(itemStack);
+	}
+	/**
 	 * Apply ItemAttributeModifiers.
 	 * @param itemStack tool
 	 * @return new ItemAttributeModifiers.
@@ -473,10 +488,8 @@ public class ModularTool extends DiggerItem{
 		float finalSpeed=getBaseSpeedForType(props.toolType());
 		float finalKnockback=0F;
 		if(!isBroken(itemStack)){
-			ModularMaterial head=ModularMaterial.byName(props.headMaterial());
-			ModularMaterial handle=ModularMaterial.byName(props.handleMaterial());
-			finalDamage=(getBaseDamageForType(props.toolType())+head.getAttackDamage()+sharpnessDamage(itemStack))*getReforge(itemStack).getAttackDamage()[getTier(itemStack).getReforgeIndex()];
-			finalSpeed=(getBaseSpeedForType(props.toolType())+handle.getAttackSpeedBonus())*getReforge(itemStack).getAttackSpeed()[getTier(itemStack).getReforgeIndex()];
+			finalDamage=getLiveAttackDamage(itemStack);
+			finalSpeed=(getBaseSpeedForType(props.toolType()))*getReforge(itemStack).getAttackSpeed()[getTier(itemStack).getReforgeIndex()];
 			if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)){
 				finalSpeed*=1.10F;
 			}
@@ -533,11 +546,11 @@ public class ModularTool extends DiggerItem{
 		float effMultiplier=reforge.getEfficiency()[tierIndex];
 		float finalEff=rawEff*effMultiplier;
 		float effBonus=rawEff*(effMultiplier-1F);
-		float rawDmg=getBaseDamageForType(type)+head.getAttackDamage()+sharpnessDamage(itemStack);
+		float rawDmg=getBaseDamageForType(type)+head.getAttackDamage();
 		float dmgMultiplier=reforge.getAttackDamage()[tierIndex];
-		float finalDmg=1F+rawDmg*dmgMultiplier;
-		float dmgBonus=rawDmg*(dmgMultiplier-1F);
-		float rawSpd=getBaseSpeedForType(type)+handle.getAttackSpeedBonus();
+		float finalDmg=1F+rawDmg*dmgMultiplier+sharpnessDamage(itemStack);
+		float dmgBonus=finalDmg-(1F+rawDmg);
+		float rawSpd=getBaseSpeedForType(type);
 		if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)) rawSpd*=1.1F;
 		float spdMultiplier=reforge.getAttackSpeed()[tierIndex];
 		float finalSpd=4F+rawSpd*spdMultiplier;
