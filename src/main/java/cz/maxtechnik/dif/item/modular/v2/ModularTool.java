@@ -1,5 +1,7 @@
 package cz.maxtechnik.dif.item.modular.v2;
 
+import cz.maxtechnik.dif.DifModClientConfig;
+import cz.maxtechnik.dif.util.ClientTooltipHelper;
 import cz.maxtechnik.dif.init.other.DifModComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -568,36 +570,49 @@ public class ModularTool extends DiggerItem{
 		appendStatLine(list,"Speed: ",String.format(Locale.ROOT,"+%.1f",finalSpd),ChatFormatting.YELLOW,spdBonus);
 		appendStatLine(list,"Durability: ",remaining+"/"+maxDmg,ChatFormatting.WHITE,durBonus,durColor);
 		list.add(CommonComponents.EMPTY);
-		// Parts
-		list.add(Component.literal("Head: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.material."+head.getName()).withStyle(Style.EMPTY.withColor(head.getColor()))));
-		list.add(Component.literal("Binding: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.material."+binding.getName()).withStyle(Style.EMPTY.withColor(binding.getColor()))));
-		list.add(Component.literal("Handle: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.material."+handle.getName()).withStyle(Style.EMPTY.withColor(handle.getColor()))));
-		list.add(CommonComponents.EMPTY);
-		// Material modifiers
-		List<String> materialModifiers=getMaterialModifierNames(head,binding,handle);
-		for(String materialModifier: materialModifiers){
-			list.add(Component.translatable("dif.modifier."+materialModifier).withStyle(Style.EMPTY.withColor(ModularModifier.byName(materialModifier).getColor())));
+		// Check config & shift key
+		boolean compactMode = DifModClientConfig.COMPACT_TOOLTIPS.get();
+		boolean showAll = !compactMode;
+		if(compactMode && net.neoforged.fml.loading.FMLEnvironment.dist.isClient()){
+			showAll = ClientTooltipHelper.isShiftDown();
 		}
-		// Applied modifiers / enchants
-		List<ModularToolModifiers.entry> appliedMods=getAllModifiers(itemStack);
-		if(!appliedMods.isEmpty()){
+
+		if(showAll) {
+			// Parts
+			list.add(Component.literal("Head: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.material."+head.getName()).withStyle(Style.EMPTY.withColor(head.getColor()))));
+			list.add(Component.literal("Binding: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.material."+binding.getName()).withStyle(Style.EMPTY.withColor(binding.getColor()))));
+			list.add(Component.literal("Handle: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.material."+handle.getName()).withStyle(Style.EMPTY.withColor(handle.getColor()))));
 			list.add(CommonComponents.EMPTY);
-			for(ModularToolModifiers.entry entry: appliedMods){
-				ModularModifier modifier=ModularModifier.byName(entry.id());
-				boolean isLegendary=modifier==ModularModifier.MENDING||entry.lvl()>modifier.getMaxLvl();
-				int modColor=isLegendary?ModularTier.LEGENDARY.getColor():ModularTier.RARE.getColor();
-				MutableComponent nameComp=Component.translatable("dif.modifier."+entry.id());
-				if(modifier.getMaxLvl()>1) nameComp=nameComp.copy().append(Component.literal(" ")).append(Component.translatable("enchantment.level."+entry.lvl()).withStyle(Style.EMPTY.withColor(modColor)));
-				list.add(nameComp.withStyle(Style.EMPTY.withColor(modColor)));
+			// Material modifiers
+			List<String> materialModifiers=getMaterialModifierNames(head,binding,handle);
+			for(String materialModifier: materialModifiers){
+				list.add(Component.translatable("dif.modifier."+materialModifier).withStyle(Style.EMPTY.withColor(ModularModifier.byName(materialModifier).getColor())));
 			}
-		}
-		// Reforge
-		if(!reforge.getName().isEmpty()&&!reforge.getName().equals("none")){
-			list.add(CommonComponents.EMPTY);
-			list.add(Component.translatable("dif.reforge."+reforge.getName()).withStyle(Style.EMPTY.withColor(tierColor).withBold(true)));
-			if(reforge.hasDescription()){
-				list.add(Component.translatable("dif.reforge."+reforge.getName()+".desc").withStyle(Style.EMPTY.withColor(0x9999AA).withItalic(true)));
+			// Applied modifiers / enchants
+			List<ModularToolModifiers.entry> appliedMods=getAllModifiers(itemStack);
+			if(!appliedMods.isEmpty()){
+				list.add(CommonComponents.EMPTY);
+				for(ModularToolModifiers.entry entry: appliedMods){
+					ModularModifier modifier=ModularModifier.byName(entry.id());
+					boolean isLegendary=modifier==ModularModifier.MENDING||entry.lvl()>modifier.getMaxLvl();
+					int modColor=isLegendary?ModularTier.LEGENDARY.getColor():ModularTier.RARE.getColor();
+					MutableComponent nameComp=Component.translatable("dif.modifier."+entry.id());
+					if(modifier.getMaxLvl()>1) nameComp=nameComp.copy().append(Component.literal(" ")).append(Component.translatable("enchantment.level."+entry.lvl()).withStyle(Style.EMPTY.withColor(modColor)));
+					list.add(nameComp.withStyle(Style.EMPTY.withColor(modColor)));
+				}
 			}
+			// Reforge
+			if(!reforge.getName().isEmpty()&&!reforge.getName().equals("none")){
+				list.add(CommonComponents.EMPTY);
+				list.add(Component.translatable("dif.reforge."+reforge.getName()).withStyle(Style.EMPTY.withColor(tierColor).withBold(true)));
+				if(reforge.hasDescription()){
+					list.add(Component.translatable("dif.reforge."+reforge.getName()+".desc").withStyle(Style.EMPTY.withColor(0x9999AA).withItalic(true)));
+				}
+			}
+		} else {
+			list.add(Component.literal("Hold ").withStyle(ChatFormatting.GRAY)
+					.append(Component.literal("SHIFT").withStyle(ChatFormatting.YELLOW))
+					.append(Component.literal(" for details").withStyle(ChatFormatting.GRAY)));
 		}
 	}
 	/**

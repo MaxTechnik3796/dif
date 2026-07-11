@@ -75,6 +75,7 @@ public class DifMod{
 		NeoForge.EVENT_BUS.addListener(DifMod::onRenderGui);
 		bus.addListener(DifModTabs::addCreative);
 		modContainer.registerConfig(ModConfig.Type.COMMON,DifModCommonConfig.SPEC);
+		modContainer.registerConfig(ModConfig.Type.CLIENT,DifModClientConfig.SPEC);
 		bus.addListener(DifModCapabilities::registerCapabilities);
 		bus.addListener(DifModRecipex::onCommonSetup);
 	}
