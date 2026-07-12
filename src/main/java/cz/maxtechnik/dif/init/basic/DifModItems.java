@@ -146,7 +146,7 @@ public class DifModItems{
 	//Food:
 	public static final DeferredItem<Item> BEER=REGISTRY.register("beer",()->new Beer(DifModBlocks.BEER.get(),new Item.Properties().food(DifModFoods.BEER)));
 
-	public static final DeferredItem<Item> BERRY_BOTTLE=REGISTRY.register("berry_bottle",()->new RetvalFoods(new Item.Properties().rarity(Rarity.UNCOMMON).food(DifModFoods.BERRY_BATTLE),Items.GLASS_BOTTLE,UseAnim.DRINK));
+	public static final DeferredItem<Item> BERRY_BOTTLE=REGISTRY.register("berry_bottle",()->new RetvalFoods(new Item.Properties().rarity(Rarity.UNCOMMON).food(DifModFoods.BERRY_BOTTLE),Items.GLASS_BOTTLE,UseAnim.DRINK));
 
 	public static final DeferredItem<Item>FLAT_DOUGH=REGISTRY.register("flat_dough",()->new Item((new Item.Properties()).food(DifModFoods.FLAT_DOUGH)));
 	public static final DeferredItem<Item>BAGUETTE=REGISTRY.register("baguette",()->new Item(new Item.Properties().food(Foods.BREAD)));
@@ -256,7 +256,7 @@ public class DifModItems{
 	public static final DeferredItem<Item> TREE_BARK_BLOCK=block(DifModBlocks.TREE_BARK_BLOCK);
 	public static final DeferredItem<Item> FRYING_TABLE=block(DifModBlocks.FRYING_TABLE);
 
-	public static final DeferredItem<Item>FORMULA_ITEM=REGISTRY.register("formula",()->new FormulaItem(new Item.Properties().stacksTo(1)));
+	public static final DeferredItem<Item> FORMULA=REGISTRY.register("formula",()->new FormulaItem(new Item.Properties().stacksTo(1)));
 
 
 	//Weapons:

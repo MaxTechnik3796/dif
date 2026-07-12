@@ -106,7 +106,7 @@ public class FormulaEntity extends BaseCarEntity{
 	}
 	@Override
 	public Item getDropItem(){
-		return DifModItems.FORMULA_ITEM.get();
+		return DifModItems.FORMULA.get();
 	}
 	@Override
 	public float getCustomStepHeight(){

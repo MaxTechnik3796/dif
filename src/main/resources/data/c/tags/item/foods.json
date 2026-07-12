@@ -1,6 +1,19 @@
 {
 	"replace":false,
 	"values":[
-		"dif:flat_dough"
+		"dif:flat_dough",
+		"dif:baguette",
+		"dif:bucket_of_chicken",
+		"dif:fries",
+		"dif:rizek",
+		"dif:horse_meat",
+		"dif:cooked_horse_meat",
+		"dif:burned_toast",
+		"dif:create_can",
+		"dif:create_bowl",
+		"dif:super_heated_create_bowl",
+		"dif:mata",
+		"dif:canola_seeds"
+
 	]
 }
