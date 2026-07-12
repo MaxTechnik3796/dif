@@ -125,7 +125,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 						fuelAccumulator=0.0D;
 					}
 				}
-				generating=fuelAccumulator>0.0D?fluidTank.getFluidAmount()>=Math.max(1,(int)Math.round(fuelAccumulator)):false;
+				generating=fuelAccumulator>0D&&fluidTank.getFluidAmount()>=Math.max(1,(int)Math.round(fuelAccumulator));
 			}
 		}else{
 			generating=false;
