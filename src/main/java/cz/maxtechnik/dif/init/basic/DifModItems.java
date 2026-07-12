@@ -146,11 +146,7 @@ public class DifModItems{
 	//Food:
 	public static final DeferredItem<Item> BEER=REGISTRY.register("beer",()->new Beer(DifModBlocks.BEER.get(),new Item.Properties().food(DifModFoods.BEER)));
 
-	public static final DeferredItem<Item> CHERRY_BOTTLE=REGISTRY.register("cherry_bottle",()->new RetvalFoods(new Item.Properties().rarity(Rarity.UNCOMMON).food(DifModFoods.CHERRY_BOTTLE),Items.GLASS_BOTTLE,UseAnim.DRINK));
-	public static final DeferredItem<Item> NETHER_WART_BOTTLE=REGISTRY.register("nether_wart_bottle",()->new RetvalFoods(new Item.Properties().rarity(Rarity.UNCOMMON).food(DifModFoods.NETHER_WART_BOTTLE),Items.GLASS_BOTTLE,UseAnim.DRINK));
-	public static final DeferredItem<Item> WINE=REGISTRY.register("wine",()->new RetvalFoods(new Item.Properties().food(DifModFoods.WINE).rarity(Rarity.UNCOMMON),Items.GLASS_BOTTLE,UseAnim.DRINK));
-	public static final DeferredItem<Item> FERNET=REGISTRY.register("fernet",()->new RetvalFoods(new Item.Properties().food(DifModFoods.FERNET).rarity(Rarity.UNCOMMON).food(DifModFoods.FERNET),Items.GLASS_BOTTLE,UseAnim.DRINK));
-	public static final DeferredItem<Item> CHERRY=REGISTRY.register("cherry",()->new Item(new Item.Properties().food(DifModFoods.CHERRY)));
+	public static final DeferredItem<Item> BERRY_BATTLE=REGISTRY.register("berry_battle",()->new RetvalFoods(new Item.Properties().rarity(Rarity.UNCOMMON).food(DifModFoods.BERRY_BATTLE),Items.GLASS_BOTTLE,UseAnim.DRINK));
 
 	public static final DeferredItem<Item>FLAT_DOUGH=REGISTRY.register("flat_dough",()->new Item((new Item.Properties()).food(DifModFoods.FLAT_DOUGH)));
 	public static final DeferredItem<Item>BAGUETTE=REGISTRY.register("baguette",()->new Item(new Item.Properties().food(Foods.BREAD)));

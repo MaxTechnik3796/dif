@@ -17,9 +17,6 @@
 		},
 		"dif:canola_seeds":{
 			"chance":1.0
-		},
-		"dif:cherry":{
-			"chance":0.6
 		}
 	}
 }

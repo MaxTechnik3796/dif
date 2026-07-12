@@ -314,9 +314,7 @@ public class DifModTabs{
 					});
 			addItemStacksBehind(tabData,new ItemStack(Items.SWEET_BERRIES),
 					new ItemStack[]{
-							new ItemStack(MATA.get()),
-							new ItemStack(CHERRY.get()),
-							new ItemStack(NETHER_WART_BOTTLE.get())
+							new ItemStack(MATA.get())
 					});
 			addItemStacksBehind(tabData,new ItemStack(Items.COOKED_RABBIT),
 					new ItemStack[]{
@@ -330,12 +328,10 @@ public class DifModTabs{
 							new ItemStack(SUPER_HEATED_CREATE_BOWL.get())
 					});
 			addItemStacksBehind(tabData,new ItemStack(Items.MILK_BUCKET),
-					new ItemStack[]{
+					new ItemStack[]{   
 							new ItemStack(BEER.get()),
 							new ItemStack(MATY_DRINK.get()),
-							new ItemStack(FERNET.get()),
-							new ItemStack(WINE.get()),
-							new ItemStack(CHERRY_BOTTLE.get()),
+							new ItemStack(BERRY_BATTLE.get()),
 							new ItemStack(CIDER_BOTTLE.get())
 					});
 			tabData.accept(BOTTLE_OF_MOLOTOVUV_KOKTEJL);
