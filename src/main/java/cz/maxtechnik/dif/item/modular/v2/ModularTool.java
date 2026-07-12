@@ -440,12 +440,12 @@ public class ModularTool extends DiggerItem{
 	 */
 	public float sharpnessDamage(ItemStack itemStack){
 		return switch(getModifierLevel(itemStack,ModularModifier.SHARPNESS)){
-			case 1 -> 2F;
-			case 2 -> 3F;
-			case 3 -> 4F;
-			case 4 -> 5F;
-			case 5 -> 6F;
-			case 6 -> 7F;
+			case 1 -> 0.5F;
+			case 2 -> 1F;
+			case 3 -> 1.5F;
+			case 4 -> 2F;
+			case 5 -> 2.5F;
+			case 6 -> 3F;
 			default -> 0F;
 		};
 	}
@@ -456,10 +456,10 @@ public class ModularTool extends DiggerItem{
 	 */
 	public int reinforcedLevel(ItemStack itemStack){
 		return switch(getModifierLevel(itemStack,ModularModifier.REINFORCED)){
-			case 1 -> 2;
-			case 2 -> 3;
-			case 3 -> 4;
-			case 4 -> 5;
+			case 1 -> 256;
+			case 2 -> 512;
+			case 3 -> 768;
+			case 4 -> 1024;
 			default -> 0;
 		};
 	}
