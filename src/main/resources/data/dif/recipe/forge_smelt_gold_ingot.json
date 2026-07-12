@@ -5,56 +5,56 @@
 	"conversions":[
 		{
 			"ingredient":{
-				"tag":"c:ingots/coppper"
+				"tag":"c:ingots/gold"
 			},
 			"ingot_value":1.0,
 			"processing_time_multiplier":1.0
 		},
 		{
 			"ingredient":{
-				"tag":"c:storage_blocks/copper"
+				"tag":"c:storage_blocks/gold"
 			},
 			"ingot_value":9.0,
 			"processing_time_multiplier":9.0
 		},
 		{
 			"ingredient":{
-				"tag":"c:plates/copper"
+				"tag":"c:plates/gold"
 			},
 			"ingot_value":1.0,
 			"processing_time_multiplier":1.0
 		},
 		{
 			"ingredient":{
-				"item":"create:crushed_raw_copper"
+				"item":"create:crushed_raw_gold"
 			},
 			"ingot_value":1.0,
 			"processing_time_multiplier":1.0
 		},
 		{
 			"ingredient":{
-				"tag":"c:raw_materials/copper"
+				"tag":"c:raw_materials/gold"
 			},
 			"ingot_value":1.5,
 			"processing_time_multiplier":0.8
 		},
 		{
 			"ingredient":{
-				"tag":"c:storage_blocks/raw_copper"
+				"tag":"c:storage_blocks/raw_gold"
 			},
 			"ingot_value":13.5,
 			"processing_time_multiplier":7.2
 		},
 		{
 			"ingredient":{
-				"tag":"c:ores/copper"
+				"tag":"c:ores/gold"
 			},
 			"ingot_value":2.0,
 			"processing_time_multiplier":1.2
 		}
 	],
 	"result_fluid":{
-		"id":"dif:molten_copper_fluid",
+		"id":"dif:molten_gold_fluid",
 		"amount":144
 	}
 }
