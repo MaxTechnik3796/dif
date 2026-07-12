@@ -11,6 +11,6 @@
 	"fluid_output":{
 		"id":"dif:molten_steel_fluid",
 		"amount":144
-	}
+	},
 	"processing_time":800
 }
