@@ -335,7 +335,7 @@ public class DifModTabs{
 					new ItemStack[]{   
 							new ItemStack(BEER.get()),
 							new ItemStack(MATY_DRINK.get()),
-							new ItemStack(BERRY_BATTLE.get()),
+							new ItemStack(BERRY_BOTTLE.get()),
 							new ItemStack(CIDER_BOTTLE.get())
 					});
 			tabData.accept(BOTTLE_OF_MOLOTOVUV_KOKTEJL);
