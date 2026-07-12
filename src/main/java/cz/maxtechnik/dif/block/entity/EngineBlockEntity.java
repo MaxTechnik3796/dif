@@ -113,19 +113,24 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 					baseConsumption=ENGINE_LPG_CONSUMPTION.get();
 					smallEngineConsumption=ENGINE_LPG_SMALL_ENGINE_CONSUMPTION.get();
 				}
-				speed=(float)baseRpm;
-				su=(float)(baseSu*multiplier);
-				double consumptionPerTick=extenders>0?baseConsumption*multiplier:smallEngineConsumption;
+				speed=(float)(baseRpm*extenders);
+				su=(float)baseSu;
+				double consumptionPerTick=extenders>0?(baseConsumption*multiplier)/FUEL_TICK_INTERVAL:smallEngineConsumption/FUEL_TICK_INTERVAL;
 				fuelAccumulator+=consumptionPerTick;
 				if(fuelTickCounter++>=FUEL_TICK_INTERVAL){
 					fuelTickCounter=0;
-					int fuelToDrain=(int)Math.round(fuelAccumulator);
-					if(fuelToDrain>0&&fluidTank.getFluidAmount()>=fuelToDrain){
-						fluidTank.drain(fuelToDrain,IFluidHandler.FluidAction.EXECUTE);
-						fuelAccumulator=0.0D;
+					int fuelToDrain=(int)Math.floor(fuelAccumulator);
+					int availableFuel=fluidTank.getFluidAmount();
+					if(fuelToDrain>0){
+						int drainAmount=Math.min(fuelToDrain,availableFuel);
+						if(drainAmount>0){
+							fluidTank.drain(drainAmount,IFluidHandler.FluidAction.EXECUTE);
+							fuelAccumulator-=drainAmount;
+							if(fuelAccumulator<0D) fuelAccumulator=0D;
+						}
 					}
 				}
-				generating=fuelAccumulator>0D&&fluidTank.getFluidAmount()>=Math.max(1,(int)Math.round(fuelAccumulator));
+				generating=fluidTank.getFluidAmount()>0;
 			}
 		}else{
 			generating=false;
