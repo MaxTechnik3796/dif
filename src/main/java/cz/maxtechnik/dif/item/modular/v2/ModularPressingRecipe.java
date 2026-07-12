@@ -27,24 +27,20 @@ public class ModularPressingRecipe extends PressingRecipe{
 		super(params);
 	}
 	@Override
-	public boolean matches(@NotNull SingleRecipeInput inv,@NotNull Level worldIn){
-		if(inv.isEmpty()) return false;
-		ItemStack stack=inv.getItem(0);
-		if(ModularPart.isModularPart(stack)&&ModularPart.isCast(stack)){
-			CURRENT_INPUT.set(stack.copy());
+	public boolean matches(@NotNull SingleRecipeInput inventory,@NotNull Level level){
+		if(inventory.isEmpty()) return false;
+		ItemStack itemStack=inventory.getItem(0);
+		if(ModularPart.isModularPart(itemStack)&&ModularPart.isCast(itemStack)){
+			CURRENT_INPUT.set(itemStack.copy());
 			return true;
 		}
 		return false;
 	}
 	@Override
-	public @NotNull List<ItemStack> rollResults(
-			@NotNull List<ProcessingOutput> rollableResults,
-			@NotNull RandomSource randomSource){
+	public @NotNull List<ItemStack> rollResults(@NotNull List<ProcessingOutput> rollableResults,@NotNull RandomSource randomSource){
 		ItemStack input=CURRENT_INPUT.get();
-		CURRENT_INPUT.remove();
-		if(input==null||input.isEmpty()){
+		if(input==null||input.isEmpty())
 			return super.rollResults(rollableResults,randomSource);
-		}
 		ModularParts partType=ModularPart.getPart(input);
 		ModularMaterial material=ModularPart.getMaterial(input);
 		// 1. Finished part without the mold marker
@@ -56,6 +52,7 @@ public class ModularPressingRecipe extends PressingRecipe{
 		List<ItemStack> results=new ArrayList<>();
 		results.add(finishedPart);
 		results.add(emptyMold);
+		CURRENT_INPUT.remove();
 		return results;
 	}
 }
