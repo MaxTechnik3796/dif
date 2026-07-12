@@ -1,0 +1,9 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    { "type": "neoforge:single", "fluid": "dif:molten_gold_fluid", "amount": 144 }
+  ],
+  "results": [
+    { "id": "minecraft:gold_ingot" }
+  ]
+}
