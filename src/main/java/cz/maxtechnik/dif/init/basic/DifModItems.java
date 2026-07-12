@@ -345,8 +345,7 @@ public class DifModItems{
 	public static final DeferredItem<Item>BLAST_SMELTERY=block(DifModBlocks.BLAST_SMELTERY);
 	public static final DeferredItem<Item>BLAST_SMELTERY_CONTROLLER=block(DifModBlocks.BLAST_SMELTERY_CONTROLLER);
 
-	public static final DeferredItem<Item>ENGINE2=block(DifModBlocks.ENGINE2);
-	public static final DeferredItem<Item>ENGINE4=block(DifModBlocks.ENGINE4);
+	public static final DeferredItem<Item>ENGINE_BASE=block(DifModBlocks.ENGINE_BASE);
 
 	public static final DeferredItem<Item>ENGINE_PORTABLE_DIESEL=block(DifModBlocks.ENGINE_PORTABLE_DIESEL);
 	public static final DeferredItem<Item>ENGINE_PORTABLE_GASOLINE=block(DifModBlocks.ENGINE_PORTABLE_GASOLINE);

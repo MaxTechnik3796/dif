@@ -193,8 +193,7 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>BLAST_SMELTERY_CONTROLLER=REGISTRY.register("blast_smeltery_controller",()->new BlastSmelteryController(BlockBehaviour.Properties.of().strength(4F,5F).requiresCorrectToolForDrops().sound(SoundType.NETHER_BRICKS)));
 
 	public static final BlockBehaviour.Properties ENGINE_PROPERTIES=BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops();
-	public static final DeferredBlock<Block>ENGINE2=REGISTRY.register("engine2",()->new Engine(ENGINE_PROPERTIES));
-	public static final DeferredBlock<Block>ENGINE4=REGISTRY.register("engine4",()->new Engine(ENGINE_PROPERTIES));
+	public static final DeferredBlock<Block>ENGINE_BASE=REGISTRY.register("engine_base",()->new Engine(ENGINE_PROPERTIES));
 	public static final DeferredBlock<Block>ENGINE_PORTABLE_DIESEL=REGISTRY.register("engine_portable_diesel",()->new Engine(ENGINE_PROPERTIES));
 	public static final DeferredBlock<Block>ENGINE_PORTABLE_GASOLINE=REGISTRY.register("engine_portable_gasoline",()->new Engine(ENGINE_PROPERTIES));
 	public static final DeferredBlock<Block>ENGINE_PORTABLE_LPG=REGISTRY.register("engine_portable_lpg",()->new Engine(ENGINE_PROPERTIES));

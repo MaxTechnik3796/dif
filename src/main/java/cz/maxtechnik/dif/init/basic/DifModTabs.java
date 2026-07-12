@@ -86,8 +86,7 @@ public class DifModTabs{
 		tabData.accept(FORGE_GLASS);
 		tabData.accept(FORGE_FURNACE_CONTROLLER);
 
-		tabData.accept(ENGINE2);
-		tabData.accept(ENGINE4);
+		tabData.accept(ENGINE_BASE);
 
 		tabData.accept(ENGINE_PORTABLE_DIESEL);
 		tabData.accept(ENGINE_PORTABLE_GASOLINE);

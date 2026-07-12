@@ -82,26 +82,28 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 				generating=false;
 				speed=0F;
 				su=0F;
-			}else if(fuel.equals(FuelType.DIESEL)){
-				speed=countExtenders()*ENGINE_DIESEL_SPEED.get();
-				su=countExtenders()*ENGINE_DIESEL_SU.get();
-				generating=fluidTank.getFluidAmount()>countExtenders()*ENGINE_DIESEL_CONSUMPTION.get()-1;
-				fluidTank.drain(countExtenders()*ENGINE_DIESEL_CONSUMPTION.get(),IFluidHandler.FluidAction.EXECUTE);
-			}else if(fuel.equals(FuelType.HEAVY_FUEL_OIL)){
-				speed=countExtenders()*ENGINE_HEAVY_FUEL_OIL_SPEED.get();
-				su=countExtenders()*ENGINE_HEAVY_FUEL_OIL_SU.get();
-				generating=fluidTank.getFluidAmount()>countExtenders()*ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get()-1;
-				fluidTank.drain(countExtenders()*ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get(),IFluidHandler.FluidAction.EXECUTE);
-			}else if(fuel.equals(FuelType.GASOLINE)){
-				speed=countExtenders()*ENGINE_GASOLINE_SPEED.get();
-				su=countExtenders()*ENGINE_GASOLINE_SU.get();
-				generating=fluidTank.getFluidAmount()>countExtenders()*ENGINE_GASOLINE_CONSUMPTION.get()-1;
-				fluidTank.drain(countExtenders()*ENGINE_GASOLINE_CONSUMPTION.get(),IFluidHandler.FluidAction.EXECUTE);
-			}else if(fuel.equals(FuelType.LPG)){
-				speed=countExtenders()*ENGINE_LPG_SPEED.get();
-				su=countExtenders()*ENGINE_LPG_SU.get();
-				generating=fluidTank.getFluidAmount()>countExtenders()*ENGINE_LPG_CONSUMPTION.get()-1;
-				fluidTank.drain(countExtenders()*ENGINE_LPG_CONSUMPTION.get(),IFluidHandler.FluidAction.EXECUTE);
+			}else{
+				int extenders=countExtenders();
+				int fuelPerTick=0;
+				if(fuel.equals(FuelType.DIESEL)){
+					speed=extenders*ENGINE_DIESEL_SPEED.get();
+					su=extenders*ENGINE_DIESEL_SU.get();
+					fuelPerTick=extenders*ENGINE_DIESEL_CONSUMPTION.get();
+				}else if(fuel.equals(FuelType.HEAVY_FUEL_OIL)){
+					speed=extenders*ENGINE_HEAVY_FUEL_OIL_SPEED.get();
+					su=extenders*ENGINE_HEAVY_FUEL_OIL_SU.get();
+					fuelPerTick=extenders*ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get();
+				}else if(fuel.equals(FuelType.GASOLINE)){
+					speed=extenders*ENGINE_GASOLINE_SPEED.get();
+					su=extenders*ENGINE_GASOLINE_SU.get();
+					fuelPerTick=extenders*ENGINE_GASOLINE_CONSUMPTION.get();
+				}else if(fuel.equals(FuelType.LPG)){
+					speed=extenders*ENGINE_LPG_SPEED.get();
+					su=extenders*ENGINE_LPG_SU.get();
+					fuelPerTick=extenders*ENGINE_LPG_CONSUMPTION.get();
+				}
+				generating=fluidTank.getFluidAmount()>=fuelPerTick;
+				if(generating) fluidTank.drain(fuelPerTick,IFluidHandler.FluidAction.EXECUTE);
 			}
 		}else{
 			generating=false;
@@ -126,7 +128,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		double vel=0.007;
 		Block ownBlock=getBlockState().getBlock();
 		if(axis.equals(Direction.Axis.Z)){
-			if(ownBlock.equals(ENGINE2.get())||ownBlock.equals(ENGINE4.get())){
+			if(isEngineBlock(ownBlock)){
 				ext1=isEngineExtender(worldPosition.east());
 				ext2=isEngineExtender(worldPosition.west());
 				if(ext0){
@@ -148,7 +150,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 				particle(new Vec3(worldPosition.getX(),worldPosition.getY(),worldPosition.getZ()),new Vec3(0,vel,0));//OFFSET
 			}
 		}else if(axis.equals(Direction.Axis.X)){
-			if(ownBlock.equals(ENGINE2.get())||ownBlock.equals(ENGINE4.get())){
+			if(isEngineBlock(ownBlock)){
 				ext1=isEngineExtender(worldPosition.north());
 				ext2=isEngineExtender(worldPosition.south());
 				if(ext0){
@@ -176,7 +178,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		BlockState ownState=getBlockState();
 		if(!(ownState.getBlock() instanceof Engine)) return FuelType.INVALID;
 		Block ownBlock=ownState.getBlock();
-		if(ownBlock.equals(ENGINE2.get())||ownBlock.equals(ENGINE4.get())){
+		if(isEngineBlock(ownBlock)){
 			Direction.Axis axis=ownState.getValue(FACING).getAxis();
 			FuelType ext0=getExtenderFuel(worldPosition.above());
 			FuelType ext1=FuelType.INVALID;
@@ -214,7 +216,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		if(level==null) return 0;
 		BlockState ownState=getBlockState();
 		if(!(ownState.getBlock() instanceof Engine)) return 0;
-		if(ownState.getBlock().equals(ENGINE2.get())||ownState.getBlock().equals(ENGINE4.get())){
+		if(isEngineBlock(ownState.getBlock())){
 			Direction.Axis axis=ownState.getValue(FACING).getAxis();
 			int count=0;
 			if(isEngineExtender(worldPosition.above())) count++;
@@ -232,8 +234,8 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		if(level==null) return false;
 		return level.getBlockState(pos).getBlock() instanceof EngineExtender;
 	}
-	private boolean isEngine4(){
-		return getBlockState().getBlock().equals(ENGINE4.get());
+	private boolean isEngineBlock(Block block){
+		return block.equals(ENGINE_BASE.get());
 	}
 	public void particle(Vec3 pos,Vec3 velocity){
 		if(level==null) return;

@@ -700,8 +700,7 @@
 	"block.dif.coke_oven_controller":"Coke Oven Controller",
 	"item.dif.coke":"Coke",
 
-	"block.dif.engine2":"Engine 2",
-	"block.dif.engine4":"Engine 4",
+	"block.dif.engine_base":"Engine Base",
 
 	"block.dif.engine_portable_diesel":"Portable Diesel Engine",
 	"block.dif.engine_portable_gasoline":"Portable Gasoline Engine",
