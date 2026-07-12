@@ -129,14 +129,11 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 	}
 	public static void clientTick(Level level,BlockPos pos,BlockState blockState){
 		if(blockState.getValue(BurningGenerator.LIT)){
-			final double Y_OFFSET=0.999;
-			final double Y_VELOCITY=0.007;
-			Direction direction=blockState.getValue(BurningGenerator.FACING);
-			switch(direction){
-				case NORTH -> level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.1,pos.getY()+Y_OFFSET,pos.getZ()+0.5,0,Y_VELOCITY,0);
-				case SOUTH -> level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.9,pos.getY()+Y_OFFSET,pos.getZ()+0.5,0,Y_VELOCITY,0);
-				case EAST -> level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.5,pos.getY()+Y_OFFSET,pos.getZ()+0.1,0,Y_VELOCITY,0);
-				case WEST -> level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.5,pos.getY()+Y_OFFSET,pos.getZ()+0.9,0,Y_VELOCITY,0);
+			switch(blockState.getValue(BurningGenerator.FACING)){
+				case NORTH -> level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.1,pos.getY()+0.999,pos.getZ()+0.5,0,0.007,0);
+				case SOUTH -> level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.9,pos.getY()+0.999,pos.getZ()+0.5,0,0.007,0);
+				case EAST -> level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.5,pos.getY()+0.999,pos.getZ()+0.1,0,0.007,0);
+				case WEST -> level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.5,pos.getY()+0.999,pos.getZ()+0.9,0,0.007,0);
 				default -> {
 				}
 			}
