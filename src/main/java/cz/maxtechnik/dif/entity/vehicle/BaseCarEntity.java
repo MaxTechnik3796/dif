@@ -83,7 +83,7 @@ public abstract class BaseCarEntity extends Entity{
 			if(!level().isClientSide){
 				if(itemStack.is(Items.LAVA_BUCKET)){
 					if(getFuelMb()>=getMaxFuelMb())
-						player.displayClientMessage(Component.literal("Nádrž je plná!"),true);
+						player.displayClientMessage(Component.literal("Tank is full!"),true);
 					else{
 						setFuelMb(getFuelMb()+1000F);
 						if(!player.getAbilities().instabuild){
@@ -94,7 +94,7 @@ public abstract class BaseCarEntity extends Entity{
 					}
 				}else if(itemStack.is(Items.BUCKET)){
 					if(getFuelMb()<1000F)
-						player.displayClientMessage(Component.literal("Nestačí palivo na odebrání celého bucketu!"),true);
+						player.displayClientMessage(Component.literal("Not enough fuel to remove a full bucket!"),true);
 					else{
 						setFuelMb(getFuelMb()-1000F);
 						if(!player.getAbilities().instabuild){

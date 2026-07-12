@@ -27,7 +27,7 @@ public class MolotovuvKoktejl extends Item{
 	public void appendHoverText(@NotNull ItemStack itemStack,Item.@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
 		super.appendHoverText(itemStack,context,list,flag);
 		list.add(Component.literal("§l§6!!!POZOR!!!"));
-		list.add(Component.literal("§8- §cPijte na vlastní nebezpečí!"));
+		list.add(Component.literal("§8- §cDrink at your own risk!"));
 	}
 	@Override
 	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemstack,@NotNull Level world,@NotNull LivingEntity entity){
