@@ -1,10 +1,11 @@
 {
 	"format_version": "1.9.0",
-	"credit": "Made with Blockbench",
+	"credit": "Made by: Hozom in: Blockbench",
 	"texture_size": [64, 32],
+	"render_type":"cutout",
 	"textures": {
-		"0": "Pictures/engine_portable_gasoline",
-		"particle": "Pictures/engine_portable_gasoline"
+		"0": "dif:block/engine_portable_gasoline",
+		"particle": "create:block/industrial_iron_block_top"
 	},
 	"elements": [
 		{
