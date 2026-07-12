@@ -133,11 +133,12 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 			final double Y_VELOCITY=0.007;
 			Direction direction=blockState.getValue(BurningGenerator.FACING);
 			switch(direction){
-				case NORTH-> level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.1,pos.getY()+Y_OFFSET,pos.getZ()+0.5,0,Y_VELOCITY,0);
+				case NORTH -> level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.1,pos.getY()+Y_OFFSET,pos.getZ()+0.5,0,Y_VELOCITY,0);
 				case SOUTH -> level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.9,pos.getY()+Y_OFFSET,pos.getZ()+0.5,0,Y_VELOCITY,0);
 				case EAST -> level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.5,pos.getY()+Y_OFFSET,pos.getZ()+0.1,0,Y_VELOCITY,0);
 				case WEST -> level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.5,pos.getY()+Y_OFFSET,pos.getZ()+0.9,0,Y_VELOCITY,0);
-				default -> {}
+				default -> {
+				}
 			}
 		}
 	}
