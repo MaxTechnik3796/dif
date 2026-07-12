@@ -1,9 +1,13 @@
 {
-  "type": "dif:modular_pressing",
-  "ingredients": [
-    { "item": "dif:modular_part" }
-  ],
-  "results": [
-    { "item": "dif:modular_part" }
-  ]
+	"type":"dif:modular_pressing",
+	"ingredients":[
+		{
+			"item":"dif:modular_part"
+		}
+	],
+	"results":[
+		{
+			"id":"dif:modular_part"
+		}
+	]
 }
