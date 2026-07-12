@@ -261,10 +261,8 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	}
 	private double getExtenderMultiplier(int extenders){
 		return switch(extenders){
-			case 0 -> 1.0D;
-			case 1 -> 1.0D;
+			case 0,1 -> 1D;
 			case 2 -> 1.9D;
-			case 3 -> 2.8D;
 			default -> 2.8D;
 		};
 	}
