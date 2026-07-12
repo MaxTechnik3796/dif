@@ -1,6 +1,5 @@
 package cz.maxtechnik.dif.block.entity;
 
-import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.block.BurningGenerator;
 import cz.maxtechnik.dif.config.DifModCommonConfig;
 import cz.maxtechnik.dif.gui.menu.BurningGeneratorMenu;
@@ -130,17 +129,16 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 	}
 	public static void clientTick(Level level,BlockPos pos,BlockState blockState){
 		if(blockState.getValue(BurningGenerator.LIT)){
-			final double Y_OFFSET=0.28;
+			final double Y_OFFSET=0.999;
 			final double Y_VELOCITY=0.007;
-			double[][] offsets;
-			Direction.Axis axis=blockState.getValue(BurningGenerator.FACING).getAxis();
-			if(axis.equals(Direction.Axis.X)) offsets=new double[][]{{0.42,0.15},{0.58,0.15},{0.42,0.85},{0.58,0.85}};
-			else if(axis.equals(Direction.Axis.Z))
-				offsets=new double[][]{{0.15,0.42},{0.15,0.58},{0.85,0.42},{0.85,0.58}};
-			else return;
-			for(double[] offset: offsets)
-				if(DifMod.rouletteBoolean(8))
-					level.addParticle(ParticleTypes.SMOKE,pos.getX()+offset[0],pos.getY()+Y_OFFSET,pos.getZ()+offset[1],0,Y_VELOCITY,0);
+			Direction direction=blockState.getValue(BurningGenerator.FACING);
+			switch(direction){
+				case NORTH-> level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.1,pos.getY()+Y_OFFSET,pos.getZ()+0.5,0,Y_VELOCITY,0);
+				case SOUTH -> level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.9,pos.getY()+Y_OFFSET,pos.getZ()+0.5,0,Y_VELOCITY,0);
+				case EAST -> level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.5,pos.getY()+Y_OFFSET,pos.getZ()+0.1,0,Y_VELOCITY,0);
+				case WEST -> level.addParticle(ParticleTypes.SMOKE,pos.getX()+0.5,pos.getY()+Y_OFFSET,pos.getZ()+0.9,0,Y_VELOCITY,0);
+				default -> {}
+			}
 		}
 	}
 	public static void serverTick(Level level,BlockPos pos,BlockState blockState,BurningGeneratorBlockEntity entity){
