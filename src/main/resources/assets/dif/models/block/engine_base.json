@@ -4,7 +4,7 @@
 	"textures": {
 		"particle": "create:block/dark_metal_block",
 		"metal": "create:block/dark_metal_block",
-		"engine": "dif:block/engine"
+		"engine": "dif:block/engine_base"
 	},
 	"elements": [
 		{
