@@ -16,7 +16,7 @@ public enum ModularMaterial{
 	ZINC("zinc","c:molten_zinc",240,6F,2,2F,60,120,RARE,SELF_REPAIR,0xB5D1BA,1),
 	BRASS("brass","c:molten_brass",512,7F,3,3F,128,256,RARE,PRECISE,0xE4B763,1),
 	NICKEL("nickel","c:molten_nickel",140,6F,2,2F,35,70,RARE,TOXIC,0xBFC6CB,1),
-	MITHRIL("mithril","c:molten_mithril",1040,9F,4,5F,260,640,EPIC,LIGHTWEIGHT,0x80CDB4,1);
+	MITHRIL("mithril","c:molten_mithril",1040,9F,4,4F,260,640,EPIC,LIGHTWEIGHT,0x80CDB4,1);
 	private final String name;
 	private final String liquid;
 	private final int headDurability;
