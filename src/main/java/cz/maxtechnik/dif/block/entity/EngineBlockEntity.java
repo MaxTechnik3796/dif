@@ -168,8 +168,11 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 					particle(new Vec3(worldPosition.getX()-1,worldPosition.getY()+0.5,worldPosition.getZ()+0.5),new Vec3(-vel*2,vel,0));
 					particle(new Vec3(worldPosition.getX()-1,worldPosition.getY()+0.5,worldPosition.getZ()+0.7),new Vec3(-vel*2,vel,0));
 				}
-			}else{
-				particle(new Vec3(worldPosition.getX(),worldPosition.getY(),worldPosition.getZ()),new Vec3(0,vel,0));//OFFSET
+			}else if(isEngineBlockPortable(ownBlock)){
+				particle(new Vec3(worldPosition.getX()+0.15,worldPosition.getY()+0.99,worldPosition.getZ()+0.22),new Vec3(-vel*2,vel,0));
+				particle(new Vec3(worldPosition.getX()+0.15,worldPosition.getY()+0.99,worldPosition.getZ()+0.78),new Vec3(-vel*2,vel,0));
+				particle(new Vec3(worldPosition.getX()+0.85,worldPosition.getY()+0.99,worldPosition.getZ()+0.22),new Vec3(vel*2,vel,0));
+				particle(new Vec3(worldPosition.getX()+0.85,worldPosition.getY()+0.99,worldPosition.getZ()+0.78),new Vec3(vel*2,vel,0));
 			}
 		}else if(axis.equals(Direction.Axis.X)){
 			if(isEngineBlock(ownBlock)){
@@ -190,8 +193,11 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+0.5,worldPosition.getZ()+2),new Vec3(0,vel,vel*2));
 					particle(new Vec3(worldPosition.getX()+0.7,worldPosition.getY()+0.5,worldPosition.getZ()+2),new Vec3(0,vel,vel*2));
 				}
-			}else{
-				particle(new Vec3(worldPosition.getX(),worldPosition.getY(),worldPosition.getZ()),new Vec3(0,vel,0));//OFFSET
+			}else if(isEngineBlockPortable(ownBlock)){
+				particle(new Vec3(worldPosition.getX()+0.22,worldPosition.getY()+0.99,worldPosition.getZ()+0.15),new Vec3(0,vel,-vel*2));
+				particle(new Vec3(worldPosition.getX()+0.75,worldPosition.getY()+0.99,worldPosition.getZ()+0.15),new Vec3(0,vel,-vel*2));
+				particle(new Vec3(worldPosition.getX()+0.22,worldPosition.getY()+0.99,worldPosition.getZ()+0.85),new Vec3(0,vel,vel*2));
+				particle(new Vec3(worldPosition.getX()+0.78,worldPosition.getY()+0.99,worldPosition.getZ()+0.85),new Vec3(0,vel,vel*2));
 			}
 		}
 	}
@@ -258,6 +264,9 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	}
 	private boolean isEngineBlock(Block block){
 		return block.equals(ENGINE_BASE.get());
+	}
+	private boolean isEngineBlockPortable(Block block){
+		return block.equals(ENGINE_PORTABLE_DIESEL.get())||block.equals(ENGINE_PORTABLE_GASOLINE.get())||block.equals(ENGINE_PORTABLE_LPG.get());
 	}
 	private double getExtenderMultiplier(int extenders){
 		return switch(extenders){
