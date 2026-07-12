@@ -727,6 +727,7 @@
 	"item.dif.nickel_ingot":"Nickel Ingot",
 	"item.dif.nickel_nugget":"Nickel Nugget",
 	"item.dif.raw_nickel":"Raw Nickel",
+	"item.dif.nickel_sheet":"Nickel Sheet",
 
 	"block.dif.nickel_ore":"Nickel Ore",
 	"block.dif.deepslate_nickel_ore":"Deepslate Nickel Ore",
@@ -751,5 +752,6 @@
 	"dif.tool.timber_axe": "Timber Axe",
 	"dif.tool.excavator": "Excavator",
 
-	"item.dif.steel_ingot":"Steel Ingot"
+	"item.dif.steel_ingot":"Steel Ingot",
+	"item.dif.steel_sheet":"Steel Sheet"
 }
