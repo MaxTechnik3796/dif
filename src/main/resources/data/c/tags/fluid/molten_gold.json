@@ -1,4 +1,5 @@
 {
+	"replace":false,
 	"values":[
 		"dif:flowing_molten_gold_fluid",
 		"dif:molten_gold_fluid"

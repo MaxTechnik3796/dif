@@ -749,5 +749,7 @@
 	"dif.tool.battle_axe": "Battle Axe",
 	"dif.tool.hammer": "Hammer",
 	"dif.tool.timber_axe": "Timber Axe",
-	"dif.tool.excavator": "Excavator"
+	"dif.tool.excavator": "Excavator",
+
+	"item.dif.steel_ingot":"Steel Ingot"
 }

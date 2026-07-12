@@ -109,6 +109,10 @@ public class DifModTabs{
 
 		tabData.accept(WOODEN_FRAME);
 
+		tabData.accept(STEEL_INGOT);
+		tabData.accept(STEEL_SHEET);
+		tabData.accept(NICKEL_SHEET);
+
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>SPACE=REGISTER.register("space",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.INDUSTRIAL.getKey()).title(Component.translatable("creative_tab.dif.space")).icon(()->new ItemStack(SPACESHIP.get())).displayItems(((parameters,tabData)->{
 		tabData.accept(SPACESHIP);

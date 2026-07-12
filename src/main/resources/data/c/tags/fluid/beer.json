@@ -1,4 +1,5 @@
 {
+	"replace":false,
 	"values":[
 		"dif:flowing_beer_fluid",
 		"dif:beer_fluid"

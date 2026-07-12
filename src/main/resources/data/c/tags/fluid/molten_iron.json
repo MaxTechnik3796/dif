@@ -1,4 +1,5 @@
 {
+	"replace":false,
 	"values":[
 		"dif:flowing_molten_iron_fluid",
 		"dif:molten_iron_fluid"

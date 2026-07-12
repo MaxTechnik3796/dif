@@ -1,4 +1,5 @@
 {
+	"replace":false,
 	"values":[
 		"dif:flowing_jetpack_fuel_fluid",
 		"dif:jetpack_fuel_fluid"

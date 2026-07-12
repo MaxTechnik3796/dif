@@ -1,4 +1,5 @@
 {
+	"replace":false,
 	"values":[
 		"dif:flowing_xp_fluid",
 		"dif:xp_fluid"

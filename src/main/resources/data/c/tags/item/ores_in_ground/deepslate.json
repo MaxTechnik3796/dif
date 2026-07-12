@@ -1,4 +1,5 @@
 {
+	"replace":false,
 	"values":[
 		"dif:deepslate_nickel_ore",
 		"dif:deepslate_mithril_ore"

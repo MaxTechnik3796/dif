@@ -367,5 +367,8 @@ public class DifModItems{
 	public static final DeferredItem<Item>RAW_NICKEL_BLOCK=block(DifModBlocks.RAW_NICKEL_BLOCK);
 	public static final DeferredItem<Item>NICKEL_ORE=block(DifModBlocks.NICKEL_ORE);
 	public static final DeferredItem<Item>DEEPSLATE_NICKEL_ORE=block(DifModBlocks.DEEPSLATE_NICKEL_ORE);
+	public static final DeferredItem<Item>NICKEL_SHEET=REGISTRY.register("nickel_sheet",()->new Item(new Item.Properties()));
 
+	public static final DeferredItem<Item>STEEL_SHEET=REGISTRY.register("steel_sheet",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item>STEEL_INGOT=REGISTRY.register("steel_ingot",()->new Item(new Item.Properties()));
 }

@@ -1,4 +1,5 @@
 {
+	"replace":false,
 	"values":[
 		"dif:flowing_molten_obsidian_fluid",
 		"dif:molten_obsidian_fluid"

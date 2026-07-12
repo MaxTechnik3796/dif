@@ -1,4 +1,5 @@
 {
+	"replace":false,
 	"values":[
 		"dif:flowing_molten_mithril_fluid",
 		"dif:molten_mithril_fluid"

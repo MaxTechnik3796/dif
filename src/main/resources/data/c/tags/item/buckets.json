@@ -1,4 +1,5 @@
 {
+	"replace":false,
 	"values":[
 		"dif:beer_bucket",
 		"dif:xp_bucket",
