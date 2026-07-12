@@ -40,6 +40,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import org.jetbrains.annotations.NotNull;
@@ -478,17 +479,14 @@ public class ModularTool extends DiggerItem{
 			ModularMaterial head=ModularMaterial.byName(props.headMaterial());
 			ModularMaterial.byName(props.handleMaterial());
 			finalDamage=(getBaseDamageForType(props.toolType())+head.getAttackDamage()+sharpnessDamage(itemStack))*getReforge(itemStack).getAttackDamage()[getTier(itemStack).getReforgeIndex()];
-
-			// Opravená logika Attack Speedu přes absolutní hodnotu postihu
-			float basePenalty = Math.abs(getBaseSpeedForType(props.toolType()));
-			if(hasMaterialModifier(itemStack, ModularModifier.LIGHTWEIGHT)){
-				basePenalty *= 0.90F; // Odlehčení zmenší postih o 10 %
+			float basePenalty=Math.abs(getBaseSpeedForType(props.toolType()));
+			if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)){
+				basePenalty*=0.9F;
 			}
-			float speedBeforeReforge = 4.0F - basePenalty;
-			float reforgeMultiplier = getReforge(itemStack).getAttackSpeed()[getTier(itemStack).getReforgeIndex()];
-			float totalSpeed = speedBeforeReforge * reforgeMultiplier;
-			finalSpeed = totalSpeed - 4.0F; // Předáváme pouze rozdíl oproti Minecraft základu 4.0
-
+			float speedBeforeReforge=4F-basePenalty;
+			float reforgeMultiplier=getReforge(itemStack).getAttackSpeed()[getTier(itemStack).getReforgeIndex()];
+			float totalSpeed=speedBeforeReforge*reforgeMultiplier;
+			finalSpeed=totalSpeed-4F;
 			finalKnockback=knockbackLevel(itemStack);
 		}
 		builder.add(Attributes.ATTACK_DAMAGE,new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID,finalDamage,AttributeModifier.Operation.ADD_VALUE),EquipmentSlotGroup.MAINHAND);
@@ -513,7 +511,7 @@ public class ModularTool extends DiggerItem{
 		// Magnetic: only when held in hand and every 10 ticks
 		if(gameTime%10==0&&entity instanceof Player player&&(player.getMainHandItem()==itemStack||player.getOffhandItem()==itemStack)){
 			if(getMaterialModifiers(itemStack).contains(ModularModifier.MAGNETIC)){
-				AABB box=player.getBoundingBox().inflate(5.0);
+				AABB box=player.getBoundingBox().inflate(5D);
 				for(ItemEntity item: level.getEntitiesOfClass(ItemEntity.class,box)){
 					if(item.isAlive()&&!item.hasPickUpDelay()) item.teleportTo(player.getX(),player.getY()+0.5,player.getZ());
 				}
@@ -546,17 +544,14 @@ public class ModularTool extends DiggerItem{
 		float dmgMultiplier=reforge.getAttackDamage()[tierIndex];
 		float finalDmg=1F+rawDmg*dmgMultiplier;
 		float dmgBonus=rawDmg*(dmgMultiplier-1F);
-		// Opravená matematika rychlosti pro správné zobrazení v tooltipu
-		float rawSpdPenalty = Math.abs(getBaseSpeedForType(type));
-		if(hasMaterialModifier(itemStack, ModularModifier.LIGHTWEIGHT)){
-			rawSpdPenalty *= 0.90F;
+		float rawSpdPenalty=Math.abs(getBaseSpeedForType(type));
+		if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)){
+			rawSpdPenalty*=0.9F;
 		}
-		float spdBeforeReforge = 4.0F - rawSpdPenalty;
-		float spdMultiplier = reforge.getAttackSpeed()[tierIndex];
-		float finalSpd = spdBeforeReforge * spdMultiplier;
-		float spdBonus = finalSpd - spdBeforeReforge;
-
-
+		float spdBeforeReforge=4F-rawSpdPenalty;
+		float spdMultiplier=reforge.getAttackSpeed()[tierIndex];
+		float finalSpd=spdBeforeReforge*spdMultiplier;
+		float spdBonus=finalSpd-spdBeforeReforge;
 		int rawDur=head.getHeadDurability()+binding.getBindingDurability()+handle.getHandleDurability()+reinforcedLevel(itemStack);
 		if(hasMaterialModifier(itemStack,ModularModifier.PRECISE)) rawDur=(int)(rawDur*1.1F);
 		float durMultiplier=reforge.getDurability()[tierIndex];
@@ -588,9 +583,8 @@ public class ModularTool extends DiggerItem{
 		// Check config & shift key
 		boolean compactMode=DifModClientConfig.COMPACT_TOOLTIPS.get();
 		boolean showAll=!compactMode;
-		if(compactMode&&net.neoforged.fml.loading.FMLEnvironment.dist.isClient()){
+		if(compactMode&&FMLEnvironment.dist.isClient())
 			showAll=ClientTooltipHelper.isShiftDown();
-		}
 		if(showAll){
 			// Parts
 			list.add(Component.literal("Head: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.material."+head.getName()).withStyle(Style.EMPTY.withColor(head.getColor()))));
