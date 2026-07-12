@@ -476,12 +476,19 @@ public class ModularTool extends DiggerItem{
 		float finalKnockback=0F;
 		if(!isBroken(itemStack)){
 			ModularMaterial head=ModularMaterial.byName(props.headMaterial());
-            ModularMaterial.byName(props.handleMaterial());
-            finalDamage=(getBaseDamageForType(props.toolType())+head.getAttackDamage()+sharpnessDamage(itemStack))*getReforge(itemStack).getAttackDamage()[getTier(itemStack).getReforgeIndex()];
-			finalSpeed=(getBaseSpeedForType(props.toolType()))*getReforge(itemStack).getAttackSpeed()[getTier(itemStack).getReforgeIndex()];
-			if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)){
-				finalSpeed*=1.10F;
+			ModularMaterial.byName(props.handleMaterial());
+			finalDamage=(getBaseDamageForType(props.toolType())+head.getAttackDamage()+sharpnessDamage(itemStack))*getReforge(itemStack).getAttackDamage()[getTier(itemStack).getReforgeIndex()];
+
+			// Opravená logika Attack Speedu přes absolutní hodnotu postihu
+			float basePenalty = Math.abs(getBaseSpeedForType(props.toolType()));
+			if(hasMaterialModifier(itemStack, ModularModifier.LIGHTWEIGHT)){
+				basePenalty *= 0.90F; // Odlehčení zmenší postih o 10 %
 			}
+			float speedBeforeReforge = 4.0F - basePenalty;
+			float reforgeMultiplier = getReforge(itemStack).getAttackSpeed()[getTier(itemStack).getReforgeIndex()];
+			float totalSpeed = speedBeforeReforge * reforgeMultiplier;
+			finalSpeed = totalSpeed - 4.0F; // Předáváme pouze rozdíl oproti Minecraft základu 4.0
+
 			finalKnockback=knockbackLevel(itemStack);
 		}
 		builder.add(Attributes.ATTACK_DAMAGE,new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID,finalDamage,AttributeModifier.Operation.ADD_VALUE),EquipmentSlotGroup.MAINHAND);
@@ -539,11 +546,17 @@ public class ModularTool extends DiggerItem{
 		float dmgMultiplier=reforge.getAttackDamage()[tierIndex];
 		float finalDmg=1F+rawDmg*dmgMultiplier;
 		float dmgBonus=rawDmg*(dmgMultiplier-1F);
-		float rawSpd=getBaseSpeedForType(type);
-		if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)) rawSpd*=1.1F;
-		float spdMultiplier=reforge.getAttackSpeed()[tierIndex];
-		float finalSpd=4F+rawSpd*spdMultiplier;
-		float spdBonus=rawSpd*(spdMultiplier-1F);
+		// Opravená matematika rychlosti pro správné zobrazení v tooltipu
+		float rawSpdPenalty = Math.abs(getBaseSpeedForType(type));
+		if(hasMaterialModifier(itemStack, ModularModifier.LIGHTWEIGHT)){
+			rawSpdPenalty *= 0.90F;
+		}
+		float spdBeforeReforge = 4.0F - rawSpdPenalty;
+		float spdMultiplier = reforge.getAttackSpeed()[tierIndex];
+		float finalSpd = spdBeforeReforge * spdMultiplier;
+		float spdBonus = finalSpd - spdBeforeReforge;
+
+
 		int rawDur=head.getHeadDurability()+binding.getBindingDurability()+handle.getHandleDurability()+reinforcedLevel(itemStack);
 		if(hasMaterialModifier(itemStack,ModularModifier.PRECISE)) rawDur=(int)(rawDur*1.1F);
 		float durMultiplier=reforge.getDurability()[tierIndex];
