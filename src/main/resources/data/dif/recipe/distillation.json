@@ -1,0 +1,29 @@
+{
+	"type":"dif:distillation",
+	"input":{
+		"fluid":"dif:crude_oil_fluid",
+		"amount":10
+	},
+	"outputs":[
+		{
+			"id":"dif:heavy_fuel_oil_fluid",
+			"amount":4
+		},
+		{
+			"id":"dif:lubricating_oil_fluid",
+			"amount":1
+		},
+		{
+			"id":"dif:diesel_fluid",
+			"amount":2
+		},
+		{
+			"id":"dif:gasoline_fluid",
+			"amount":2
+		},
+		{
+			"id":"dif:lpg_fluid",
+			"amount":1
+		}
+	]
+}

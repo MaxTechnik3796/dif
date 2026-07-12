@@ -1,0 +1,16 @@
+{
+	"type":"dif:blast_smeltery",
+	"fluid_input":{
+		"id":"dif:molten_iron_fluid",
+		"amount":288
+	},
+	"ingredient":{
+		"item":"dif:coke"
+	},
+	"ingredient_count":1,
+	"fluid_output":{
+		"id":"dif:molten_steel_fluid",
+		"amount":144
+	}
+	"processing_time":800
+}

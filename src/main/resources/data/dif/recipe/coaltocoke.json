@@ -5,12 +5,12 @@
 	},
 	"ingredient_count":1,
 	"result":{
-		"id":"minecraft:coal_block",
+		"id":"dif:coke",
 		"count":1
 	},
 	"fluid_output":{
-		"id":"minecraft:water",
-		"amount":250
+		"id":"dif:creosote_oil_fluid",
+		"amount":50
 	},
-	"processing_time":200
+	"processing_time":500
 }
