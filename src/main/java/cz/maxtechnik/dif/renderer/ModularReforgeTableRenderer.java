@@ -47,8 +47,7 @@ public class ModularReforgeTableRenderer implements BlockEntityRenderer<ModularR
 		if(count==0) return;
 
 		float progress=blockEntity.isMerging()?Mth.clamp((blockEntity.getMergeProgress()+partialTick)/ModularReforgeTableBlockEntity.ANIMATION_DURATION,0F,1F):0F;
-		float linearProgress=progress;
-		float radialProgress=1F-(1F-linearProgress)*(1F-linearProgress);
+		float radialProgress=1F-(1F-progress)*(1F-progress);
 
 		// Celková doba od začátku renderu (world time + partialTick) - používá se pro klidovou rotaci,
 		// orbit a bobbing, aby to plynule běželo i bez ohledu na merge.
@@ -56,7 +55,7 @@ public class ModularReforgeTableRenderer implements BlockEntityRenderer<ModularR
 
 		// Společný orbitální úhel - všechny itemy krouží kolem středu stolu jako "kolo".
 		// Při merge se orbitální rychlost zvyšuje od začátku a itemy se už od prvních ticků stáčejí ke středu.
-		float orbitSpeed=IDLE_ORBIT_SPEED + IDLE_ORBIT_SPEED*2F*linearProgress;
+		float orbitSpeed=IDLE_ORBIT_SPEED + IDLE_ORBIT_SPEED*2F*progress;
 		float orbitAngle=(time*orbitSpeed)%360F;
 
 		for(int index=0;index<count;index++){
@@ -84,8 +83,7 @@ public class ModularReforgeTableRenderer implements BlockEntityRenderer<ModularR
 			poseStack.translate(0.5D+idleX,1.0D+y,0.5D+idleZ);
 
 			// Rotace kolem vlastní osy: zůstává konstantní a neovlivněná mergem.
-			float spinSpeed=IDLE_SPIN_SPEED;
-			float spinAngle=(time*spinSpeed)%360F;
+			float spinAngle=(time*IDLE_SPIN_SPEED)%360F;
 			poseStack.mulPose(Axis.YP.rotationDegrees(spinAngle));
 			// Náklon - místo plných 90° (item naplocho) použijeme ITEM_TILT_DEGREES, aby item spíš "stál" nakloněný.
 			poseStack.mulPose(Axis.XP.rotationDegrees(ITEM_TILT_DEGREES));
