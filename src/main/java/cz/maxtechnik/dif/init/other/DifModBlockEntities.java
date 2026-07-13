@@ -36,6 +36,7 @@ public class DifModBlockEntities{
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<QuarryBlockEntity>> QUARRY=REGISTRY.register("quarry",()->BlockEntityType.Builder.of(QuarryBlockEntity::new,DifModBlocks.QUARRY.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<QuarryFrameBlockEntity>> QUARRY_FRAME=REGISTRY.register("quarry_frame",()->BlockEntityType.Builder.of(QuarryFrameBlockEntity::new,DifModBlocks.QUARRY_FRAME.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<QuarryLandmarkBlockEntity>> QUARRY_LANDMARK=REGISTRY.register("quarry_landmark",()->BlockEntityType.Builder.of(QuarryLandmarkBlockEntity::new,DifModBlocks.QUARRY_LANDMARK.get()).build(null));
+	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<ModularReforgeTableBlockEntity>> MODULAR_REFORGE_TABLE=REGISTRY.register("modular_reforge_table",()->BlockEntityType.Builder.of(ModularReforgeTableBlockEntity::new,DifModBlocks.MODULAR_REFORGE_TABLE.get()).build(null));
 
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<SleepingBagBlockEntity>> SLEEPING_BAG=REGISTRY.register("sleeping_bag",()->BlockEntityType.Builder.of(SleepingBagBlockEntity::new,DifModBlocks.SLEEPING_BAG.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<SpaceCrateBlockEntity>> SPACE_CRATE=REGISTRY.register("space_crate",()->BlockEntityType.Builder.of(SpaceCrateBlockEntity::new,DifModBlocks.SPACE_CRATE.get()).build(null));
