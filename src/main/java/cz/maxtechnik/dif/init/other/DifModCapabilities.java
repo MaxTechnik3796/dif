@@ -40,6 +40,7 @@ public class DifModCapabilities{
 		event.registerBlockEntity(bITEM,BURNING_GENERATOR.get(),(be,side)->be.getInventory());
 		event.registerBlockEntity(bITEM,SPACE_CRATE.get(),(be,side)->be.getInventory());
 		event.registerBlockEntity(bITEM,SPACESHIP.get(),(be,side)->be.getInventory());
+		event.registerBlockEntity(bITEM,MODULAR_REFORGE_TABLE.get(),(be,side)->be.getInventory());
 		event.registerBlockEntity(bITEM,COKE_OVEN_CONTROLLER.get(),(be,side)->{if(side!=null) return new SidedInvWrapper(be,side);return be.getInventory();});
 		event.registerBlockEntity(bITEM,COKE_OVEN_CONTROLLER.get(),(be,side)->{if(side!=null) return new SidedInvWrapper(be,side);return be.getInventory();});
 		event.registerBlockEntity(bITEM,BLAST_SMELTERY_CONTROLLER.get(),(be,side)->{if(side!=null) return new SidedInvWrapper(be,side);return be.getInventory();});
