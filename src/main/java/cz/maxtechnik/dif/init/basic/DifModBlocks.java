@@ -13,9 +13,12 @@ import cz.maxtechnik.dif.block.space.*;
 import cz.maxtechnik.dif.block.template.*;
 import cz.maxtechnik.dif.fluid.template.MoltenBlock;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
@@ -26,7 +29,6 @@ import static net.minecraft.world.level.block.Blocks.GOLD_ORE;
 @SuppressWarnings("unused")
 public class DifModBlocks{
 	public static final DeferredRegister.Blocks REGISTRY=DeferredRegister.createBlocks(DifMod.MODID);
-
 	//Random:
 	public static final DeferredBlock<Block>CHUNK_LOADER_1X1=REGISTRY.register("chunk_loader_1x1",ChunkLoader::new);
 	public static final DeferredBlock<Block>CHUNK_LOADER_3X3=REGISTRY.register("chunk_loader_3x3",ChunkLoader::new);
@@ -220,4 +222,5 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>NICKEL_ORE=REGISTRY.register("nickel_ore",()->new DropExperienceBlock(ConstantInt.of(0),BlockBehaviour.Properties.ofFullCopy(GOLD_ORE).mapColor(MapColor.STONE).strength(3F,3F).sound(SoundType.STONE)));
 	public static final DeferredBlock<Block>DEEPSLATE_NICKEL_ORE=REGISTRY.register("deepslate_nickel_ore",()->new DropExperienceBlock(ConstantInt.of(0),BlockBehaviour.Properties.ofFullCopy(GOLD_ORE).mapColor(MapColor.DEEPSLATE).strength(4.5F,3F).sound(SoundType.DEEPSLATE)));
 
+	public static final DeferredBlock<Block>NANO_GLASS=REGISTRY.register("nano_glass",()->new NanoGlass(BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.HAT).strength(0.3F).sound(SoundType.GLASS).noOcclusion().isValidSpawn(Blocks::never).isRedstoneConductor((bs,br,bp)->false).isSuffocating((blockState,blockGetter,pos)->false).isViewBlocking((blockState,blockGetter,pos)->false)));
 }

@@ -752,5 +752,7 @@
 	"dif.tool.excavator": "Excavator",
 
 	"item.dif.steel_ingot":"Steel Ingot",
-	"item.dif.steel_sheet":"Steel Sheet"
+	"item.dif.steel_sheet":"Steel Sheet",
+
+	"block.dif.nano_glass":"Nano Glass"
 }

@@ -28,6 +28,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -40,6 +41,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.util.thread.SidedThreadGroups;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
@@ -47,7 +49,13 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.slf4j.Logger;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 @SuppressWarnings({"removal","deprecation","unused"})
 @Mod(DifMod.MODID)
 public class DifMod{
@@ -89,6 +97,22 @@ public class DifMod{
 	public void onCommandsRegister(RegisterCommandsEvent event){
 		ChunkLoaderCommand.register(event.getDispatcher());
 		IsChunkLoadedCommand.register(event.getDispatcher());
+	}
+	private static final Collection<Tuple<Runnable,Integer>> workQueue=new ConcurrentLinkedQueue<>();
+	public static void queueServerWork(int tick,Runnable action){
+		if(Thread.currentThread().getThreadGroup()==SidedThreadGroups.SERVER)
+			workQueue.add(new Tuple<>(action,tick));
+	}
+	@SubscribeEvent
+	public void tick(ServerTickEvent.Post event){
+		List<Tuple<Runnable,Integer>> actions=new ArrayList<>();
+		workQueue.forEach(work->{
+			work.setB(work.getB()-1);
+			if(work.getB()==0)
+				actions.add(work);
+		});
+		actions.forEach(e->e.getA().run());
+		workQueue.removeAll(actions);
 	}
 	public static void onRenderGui(RenderGuiLayerEvent.Post event){
 		if(event.getName().equals(net.neoforged.neoforge.client.gui.VanillaGuiLayers.HOTBAR)){

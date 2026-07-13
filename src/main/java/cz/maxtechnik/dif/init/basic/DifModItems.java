@@ -370,4 +370,6 @@ public class DifModItems{
 
 	public static final DeferredItem<Item>STEEL_SHEET=REGISTRY.register("steel_sheet",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item>STEEL_INGOT=REGISTRY.register("steel_ingot",()->new Item(new Item.Properties()));
+
+	public static final DeferredItem<Item>NANO_GLASS=block(DifModBlocks.NANO_GLASS);
 }

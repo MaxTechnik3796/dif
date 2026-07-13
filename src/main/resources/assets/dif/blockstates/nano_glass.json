@@ -1,0 +1,10 @@
+{
+	"variants":{
+		"dark=false":{
+			"model":"dif:block/nano_glass"
+		},
+		"dark=true":{
+			"model":"dif:block/nano_glass_dark"
+		}
+	}
+}
