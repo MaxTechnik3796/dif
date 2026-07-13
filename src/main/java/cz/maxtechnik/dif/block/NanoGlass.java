@@ -28,16 +28,23 @@ public class NanoGlass extends TransparentBlock{
 	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
 		super.useWithoutItem(blockState,level,pos,player,hit);
 		if(level.isClientSide) return InteractionResult.SUCCESS;
-		updateGlass(blockState,level,pos,!level.getBlockState(pos).getValue(DARK));
+		boolean nextDarkValue=!blockState.getValue(DARK);
+		updateGlass(level,pos,nextDarkValue);
 		return InteractionResult.SUCCESS;
 	}
-	public void updateGlass(BlockState blockState,Level level,BlockPos pos,boolean dark){
-		level.setBlockAndUpdate(pos,blockState.setValue(DARK,dark));
+	public void updateGlass(Level level,BlockPos pos,boolean dark){
+		BlockState currentState=level.getBlockState(pos);
+		if(!(currentState.getBlock() instanceof NanoGlass)||currentState.getValue(DARK).equals(dark))
+			return;
+		level.setBlockAndUpdate(pos,currentState.setValue(DARK,dark));
 		DifMod.queueServerWork(2,()->{
 			for(Direction direction: Direction.values()){
-				BlockState block=level.getBlockState(pos.relative(direction));
-				if(block.getBlock() instanceof NanoGlass glass)
-					glass.updateGlass(blockState,level,pos.relative(direction),dark);
+				BlockPos neighborPos=pos.relative(direction);
+				BlockState neighborState=level.getBlockState(neighborPos);
+				if(neighborState.getBlock() instanceof NanoGlass){
+					if(neighborState.getValue(DARK)!=dark)
+						updateGlass(level,neighborPos,dark);
+				}
 			}
 		});
 	}

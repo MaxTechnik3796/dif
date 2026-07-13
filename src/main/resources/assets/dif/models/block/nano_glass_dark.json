@@ -4,5 +4,5 @@
 		"all":"dif:block/nano_glass_dark",
 		"particle":"dif:block/nano_glass_dark"
 	},
-	"render_type":"translucent"
+	"render_type":"solid"
 }
