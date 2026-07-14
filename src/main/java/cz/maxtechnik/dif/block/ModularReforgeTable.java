@@ -28,6 +28,9 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -74,20 +77,30 @@ public class ModularReforgeTable extends BaseEntityBlock implements SimpleWaterl
 	@Override
 	public void attack(@NotNull BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player){
 		super.attack(blockState,level,pos,player);
-		if(player.isShiftKeyDown()||!isHammer(level,pos,player.getItemInHand(player.getUsedItemHand()))) return;
+		if(player.isShiftKeyDown()) return;
 		if(level.getBlockEntity(pos) instanceof ModularReforgeTableBlockEntity table){
-			table.finishMerge();
+			ItemStack held=player.getItemInHand(player.getUsedItemHand());
+			if(held.getItem() instanceof ModularTool && ModularTool.getProps(held).toolType().equals(ModularTools.HAMMER.getName())){
+				if(table.finishMerge()){
+					playMergeEffects(level,pos);
+				}
+				return;
+			}
+			if(held.getItem().equals(DifModItems.BAN_HAMMER.get())){
+				if(table.finishMerge()){
+					Nuke.spawnSafeNuclearEffects(level,pos);
+				}
+				return;
+			}
 		}
 	}
-	private boolean isHammer(Level level,BlockPos pos,ItemStack itemStack){
-		if(itemStack.getItem() instanceof ModularTool){
-			return ModularTool.getProps(itemStack).toolType().equals(ModularTools.HAMMER.getName());
-		}
-		if(itemStack.getItem().equals(DifModItems.BAN_HAMMER.get())){
-			Nuke.spawnNuclearExplosion(level,pos);
-			return true;
-		}
-		return false;
+
+	private void playMergeEffects(Level level,BlockPos pos){
+		level.playSound(null,pos,SoundEvents.DRAGON_FIREBALL_EXPLODE,SoundSource.BLOCKS,1F,1F);
+		level.addParticle(ParticleTypes.EXPLOSION,pos.getX()+0.1,pos.getY()+1,pos.getZ()+0.5,0,0,0);
+		level.addParticle(ParticleTypes.EXPLOSION,pos.getX()+0.8,pos.getY()+1,pos.getZ()+0.5,0,0,0);
+		level.addParticle(ParticleTypes.EXPLOSION,pos.getX()+0.5,pos.getY()+1,pos.getZ()+0.1,0,0,0);
+		level.addParticle(ParticleTypes.EXPLOSION,pos.getX()+0.5,pos.getY()+1,pos.getZ()+0.8,0,0,0);
 	}
 	@Override
 	protected void onRemove(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState newState,boolean movedByPiston){

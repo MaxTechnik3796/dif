@@ -44,4 +44,17 @@ public class Nuke extends Block{
 		level.addFreshEntity(radiation);
 		if(level instanceof ServerLevel serverLevel) NukeSoundEffect.play(serverLevel,x,y,z);
 	}
+
+	public static void spawnSafeNuclearEffects(Level level,BlockPos pos){
+		double x=pos.getX()+0.5;
+		double y=pos.getY();
+		double z=pos.getZ()+0.5;
+		NuclearMushroomEntity mushroom=new NuclearMushroomEntity(DifModEntities.NUCLEAR_MUSHROOM.get(),level);
+		mushroom.setPos(x,y,z);
+		level.addFreshEntity(mushroom);
+		NuclearWaveEntity wave=new NuclearWaveEntity(DifModEntities.NUCLEAR_WAVE.get(),level);
+		wave.setPos(x,y,z);
+		level.addFreshEntity(wave);
+		if(level instanceof ServerLevel serverLevel) NukeSoundEffect.play(serverLevel,x,y,z);
+	}
 }

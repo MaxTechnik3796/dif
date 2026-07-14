@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 public class ModularReforgeTableBlockEntity extends BlockEntity{
+	private long lastMergeTime=-20L;
 	private final ItemStackHandler inventory=new ItemStackHandler(3){
 		@Override
 		public boolean isItemValid(int slot,@NotNull ItemStack itemStack){
@@ -99,24 +100,26 @@ public class ModularReforgeTableBlockEntity extends BlockEntity{
 			return this.inventory.getStackInSlot(2).isEmpty()?2:-1;
 		return -1;
 	}
-	public void finishMerge(){
-		if(this.level==null) return;
+	public boolean canMerge(){
+		return !this.inventory.getStackInSlot(0).isEmpty() && !this.inventory.getStackInSlot(1).isEmpty() && !this.inventory.getStackInSlot(2).isEmpty();
+	}
+
+	public boolean finishMerge(){
+		if(this.level==null) return false;
+		long gameTime=this.level.getGameTime();
+		if(gameTime-this.lastMergeTime<20L) return false;
+		if(!canMerge()) return false;
 		ItemStack toolStack=this.inventory.getStackInSlot(0);
-		if(!toolStack.isEmpty()&&toolStack.getItem() instanceof ModularTool){
-			ModularReforge reforge=pickRandomReforge(toolStack);
-			if(reforge!=ModularReforge.NONE){
-				ModularTool.setReforge(this.level.registryAccess(),toolStack,reforge);
-				this.level.playSound(null,this.worldPosition,SoundEvents.DRAGON_FIREBALL_EXPLODE,SoundSource.BLOCKS,1F,1F);
-				this.level.addParticle(ParticleTypes.EXPLOSION,worldPosition.getX()+0.1,worldPosition.getY()+1,worldPosition.getZ()+0.5,0,0,0);
-				this.level.addParticle(ParticleTypes.EXPLOSION,worldPosition.getX()+0.8,worldPosition.getY()+1,worldPosition.getZ()+0.5,0,0,0);
-				this.level.addParticle(ParticleTypes.EXPLOSION,worldPosition.getX()+0.5,worldPosition.getY()+1,worldPosition.getZ()+0.1,0,0,0);
-				this.level.addParticle(ParticleTypes.EXPLOSION,worldPosition.getX()+0.5,worldPosition.getY()+1,worldPosition.getZ()+0.8,0,0,0);
-			}
-		}
+		if(toolStack.isEmpty()||!(toolStack.getItem() instanceof ModularTool)) return false;
+		ModularReforge reforge=pickRandomReforge(toolStack);
+		if(reforge==ModularReforge.NONE) return false;
+		ModularTool.setReforge(this.level.registryAccess(),toolStack,reforge);
 		this.inventory.extractItem(1,1,false);
 		this.inventory.extractItem(2,1,false);
+		this.lastMergeTime=gameTime;
 		setChanged();
 		this.level.sendBlockUpdated(this.worldPosition,this.getBlockState(),this.getBlockState(),3);
+		return true;
 	}
 	private ModularReforge pickRandomReforge(ItemStack toolStack){
 		ModularTools toolType=ModularTool.getToolType(toolStack);
