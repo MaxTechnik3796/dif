@@ -17,11 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModularReforgeTableRenderer implements BlockEntityRenderer<ModularReforgeTableBlockEntity>{
-	/**
-	 * Poloměr klidové orbity kolem středu stolu (na XZ rovině) a výška nad blokem.
-	 * Skutečné pozice jednotlivých itemů se dopočítávají podle počtu aktivních slotů,
-	 * takže 1 item = střed, 2 = naproti sobě, 3 = trojúhelník po 120°.
-	 */
 	private static final float IDLE_RADIUS=0.3F;
 	private static final float IDLE_Y=0.3F;
 	private static final float CENTER_Y_LIFT=0.30F;
@@ -39,7 +34,15 @@ public class ModularReforgeTableRenderer implements BlockEntityRenderer<ModularR
 	public void render(@NotNull ModularReforgeTableBlockEntity blockEntity, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, int combinedLight, int combinedOverlay){
 		ItemRenderer itemRenderer=Minecraft.getInstance().getItemRenderer();
 
-		List<Integer> activeSlots=new ArrayList<>();
+
+
+
+
+
+
+
+
+		/*List<Integer> activeSlots=new ArrayList<>();
 		for(int i=0;i<ModularReforgeTableBlockEntity.SLOT_COUNT;i++){
 			if(!blockEntity.getInventory().getStackInSlot(i).isEmpty()) activeSlots.add(i);
 		}
@@ -94,10 +97,6 @@ public class ModularReforgeTableRenderer implements BlockEntityRenderer<ModularR
 			// Vynucené jasné nasvícení, aby item nebyl tmavý bez ohledu na okolní světlo bloku.
 			itemRenderer.renderStatic(stack,ItemDisplayContext.FIXED,FORCED_LIGHT,combinedOverlay,poseStack,buffer,null,0);
 			poseStack.popPose();
-		}
-	}
-
-	private static float easeInCubic(float t){
-		return t*t*t;
+		}*/
 	}
 }
