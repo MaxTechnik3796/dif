@@ -481,7 +481,7 @@ public class ModularTool extends DiggerItem{
 			finalDamage=(getBaseDamageForType(props.toolType())+head.getAttackDamage()+sharpnessDamage(itemStack))*getReforge(itemStack).getAttackDamage()[getTier(itemStack).getReforgeIndex()];
 			float basePenalty=Math.abs(getBaseSpeedForType(props.toolType()));
 			if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)){
-				basePenalty*=0.9F;
+				basePenalty*=0.95F;
 			}
 			float speedBeforeReforge=4F-basePenalty;
 			float reforgeMultiplier=getReforge(itemStack).getAttackSpeed()[getTier(itemStack).getReforgeIndex()];
@@ -536,7 +536,7 @@ public class ModularTool extends DiggerItem{
 		int tierColor=tier.getColor();
 		// ─── pre-compute raw (no-reforge) values ───
 		float rawEff=head.getHeadEfficiency()+efficiencyLevel(itemStack);
-		if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)) rawEff*=1.1F;
+		if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)) rawEff*=1.05F;
 		float effMultiplier=reforge.getEfficiency()[tierIndex];
 		float finalEff=rawEff*effMultiplier;
 		float effBonus=rawEff*(effMultiplier-1F);
@@ -546,7 +546,7 @@ public class ModularTool extends DiggerItem{
 		float dmgBonus=rawDmg*(dmgMultiplier-1F);
 		float rawSpdPenalty=Math.abs(getBaseSpeedForType(type));
 		if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)){
-			rawSpdPenalty*=0.9F;
+			rawSpdPenalty*=0.95F;
 		}
 		float spdBeforeReforge=4F-rawSpdPenalty;
 		float spdMultiplier=reforge.getAttackSpeed()[tierIndex];
