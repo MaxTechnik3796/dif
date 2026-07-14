@@ -8,7 +8,6 @@ import cz.maxtechnik.dif.item.modular.v2.ModularTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -20,31 +19,21 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.particles.ParticleTypes;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
-
 public class ModularReforgeTableBlockEntity extends BlockEntity{
-	public static final int SLOT_TOOL=0;
-	public static final int SLOT_TEMPLATE=1;
-	public static final int SLOT_CATALYST=2;
-	public static final int SLOT_COUNT=3;
-	public static final int ANIMATION_DURATION=40;
-	private final ItemStackHandler inventory=new ItemStackHandler(SLOT_COUNT){
+	private final ItemStackHandler inventory=new ItemStackHandler(3){
 		@Override
-		public boolean isItemValid(int slot,ItemStack stack){
+		public boolean isItemValid(int slot,@NotNull ItemStack itemStack){
 			return switch(slot){
-				case SLOT_TOOL -> stack.getItem() instanceof ModularTool;
-				case SLOT_TEMPLATE -> stack.is(DifModItems.MODULAR_TEMPLATE_HYPER.get());
-				case SLOT_CATALYST -> stack.is(Items.IRON_INGOT);
+				case 0 -> itemStack.getItem() instanceof ModularTool;
+				case 1 -> itemStack.is(DifModItems.MODULAR_TEMPLATE_HYPER.get());
+				case 2 -> itemStack.is(Items.IRON_INGOT);
 				default -> false;
 			};
-		}
-		@Override
-		public int getSlotLimit(int slot){
-			return 1;
 		}
 		@Override
 		protected void onContentsChanged(int slot){
@@ -85,7 +74,7 @@ public class ModularReforgeTableBlockEntity extends BlockEntity{
 	 * při pravém kliku prázdnou rukou. Pokud právě běží merge (rituál), přeruší ho.
 	 */
 	public boolean tryExtractItem(Player player){
-		for(int slot=0;slot<SLOT_COUNT;slot++){
+		for(int slot=0;slot<3;slot++){
 			ItemStack stack=this.inventory.getStackInSlot(slot);
 			if(!stack.isEmpty()){
 				ItemStack extracted=this.inventory.extractItem(slot,stack.getCount(),false);
@@ -109,7 +98,7 @@ public class ModularReforgeTableBlockEntity extends BlockEntity{
 	}
 	/** Vysype všechny itemy do světa - volat při rozbití bloku (Block#onRemove). */
 	public void dropAllItems(Level level,BlockPos pos){
-		for(int slot=0;slot<SLOT_COUNT;slot++){
+		for(int slot=0;slot<3;slot++){
 			ItemStack stack=this.inventory.getStackInSlot(slot);
 			if(!stack.isEmpty()){
 				ItemEntity itemEntity=new ItemEntity(level,pos.getX()+0.5D,pos.getY()+0.5D,pos.getZ()+0.5D,stack.copy());
@@ -120,16 +109,16 @@ public class ModularReforgeTableBlockEntity extends BlockEntity{
 	}
 	private int getPreferredSlot(ItemStack stack){
 		if(stack.getItem() instanceof ModularTool)
-			return this.inventory.getStackInSlot(SLOT_TOOL).isEmpty()?SLOT_TOOL:-1;
+			return this.inventory.getStackInSlot(0).isEmpty()?0:-1;
 		if(stack.is(DifModItems.MODULAR_TEMPLATE_HYPER.get()))
-			return this.inventory.getStackInSlot(SLOT_TEMPLATE).isEmpty()?SLOT_TEMPLATE:-1;
+			return this.inventory.getStackInSlot(1).isEmpty()?1:-1;
 		if(stack.is(Items.IRON_INGOT))
-			return this.inventory.getStackInSlot(SLOT_CATALYST).isEmpty()?SLOT_CATALYST:-1;
+			return this.inventory.getStackInSlot(2).isEmpty()?2:-1;
 		return -1;
 	}
 	private void maybeStartMerge(){
 		if(this.mergeActive) return;
-		if(this.inventory.getStackInSlot(SLOT_TOOL).isEmpty()||this.inventory.getStackInSlot(SLOT_TEMPLATE).isEmpty()||this.inventory.getStackInSlot(SLOT_CATALYST).isEmpty()) return;
+		if(this.inventory.getStackInSlot(0).isEmpty()||this.inventory.getStackInSlot(1).isEmpty()||this.inventory.getStackInSlot(2).isEmpty()) return;
 		this.mergeActive=true;
 		this.mergeProgress=0;
 		setChanged();
@@ -139,28 +128,24 @@ public class ModularReforgeTableBlockEntity extends BlockEntity{
 	public void serverTick(){
 		if(!this.mergeActive) return;
 		this.mergeProgress++;
-		if(this.mergeProgress>=ANIMATION_DURATION){
+		if(this.mergeProgress>=40){
 			finishMerge();
 			return;
 		}
-		if(this.level!=null&&this.level.getGameTime()%4L==0L)
-			spawnParticles(0.03D,0.2D,0.02D,4);
 		setChanged();
 	}
 	private void finishMerge(){
 		if(this.level==null) return;
-		ItemStack toolStack=this.inventory.getStackInSlot(SLOT_TOOL);
+		ItemStack toolStack=this.inventory.getStackInSlot(0);
 		if(!toolStack.isEmpty()&&toolStack.getItem() instanceof ModularTool){
 			ModularReforge reforge=pickRandomReforge(toolStack);
 			if(reforge!=ModularReforge.NONE){
 				ModularTool.setReforge(this.level.registryAccess(),toolStack,reforge);
-				this.level.playSound(null,this.worldPosition,SoundEvents.ENCHANTMENT_TABLE_USE,SoundSource.BLOCKS,1.0F,1.0F);
-				spawnParticles(0.08D,0.25D,0.05D,24);
-				spawnEndRodSplash(8);
+				this.level.playSound(null,this.worldPosition,SoundEvents.ENCHANTMENT_TABLE_USE,SoundSource.BLOCKS,1F,1F);
 			}
 		}
-		this.inventory.setStackInSlot(SLOT_TEMPLATE,ItemStack.EMPTY);
-		this.inventory.setStackInSlot(SLOT_CATALYST,ItemStack.EMPTY);
+		this.inventory.setStackInSlot(1,ItemStack.EMPTY);
+		this.inventory.setStackInSlot(2,ItemStack.EMPTY);
 		this.mergeActive=false;
 		this.mergeProgress=0;
 		setChanged();
@@ -174,45 +159,22 @@ public class ModularReforgeTableBlockEntity extends BlockEntity{
 		if(valid.isEmpty()) return ModularReforge.NONE;
 		return valid.get(this.level!=null?this.level.getRandom().nextInt(valid.size()):0);
 	}
-	/** Výraznější "splash" pop efekt v okamžiku dokončení - END_ROD částice létající do všech stran. */
-	private void spawnEndRodSplash(int count){
-		if(this.level==null) return;
-		for(int i=0;i<count;i++)
-			this.level.addParticle(ParticleTypes.END_ROD,
-					this.worldPosition.getX()+0.5D,
-					this.worldPosition.getY()+1.1D,
-					this.worldPosition.getZ()+0.5D,
-					(this.level.random.nextDouble()-0.5D)*0.3D,
-					this.level.random.nextDouble()*0.3D+0.05D,
-					(this.level.random.nextDouble()-0.5D)*0.3D);
-	}
-	private void spawnParticles(double spreadX,double spreadY,double spreadZ,int count){
-		if(this.level==null) return;
-		for(int i=0;i<count;i++)
-			this.level.addParticle(ParticleTypes.ENCHANT,
-					this.worldPosition.getX()+0.5D,
-					this.worldPosition.getY()+1.0D,
-					this.worldPosition.getZ()+0.5D,
-					(this.level.random.nextDouble()-0.5D)*spreadX,
-					this.level.random.nextDouble()*spreadY,
-					(this.level.random.nextDouble()-0.5D)*spreadZ);
-	}
 	@Override
-	public void loadAdditional(CompoundTag tag,HolderLookup.Provider provider){
+	public void loadAdditional(@NotNull CompoundTag tag,HolderLookup.@NotNull Provider provider){
 		super.loadAdditional(tag,provider);
 		this.inventory.deserializeNBT(provider,tag.getCompound("inventory"));
 		this.mergeActive=tag.getBoolean("mergeActive");
 		this.mergeProgress=tag.getInt("mergeProgress");
 	}
 	@Override
-	public void saveAdditional(CompoundTag tag,HolderLookup.Provider provider){
+	public void saveAdditional(@NotNull CompoundTag tag,HolderLookup.@NotNull Provider provider){
 		super.saveAdditional(tag,provider);
 		tag.put("inventory",this.inventory.serializeNBT(provider));
 		tag.putBoolean("mergeActive",this.mergeActive);
 		tag.putInt("mergeProgress",this.mergeProgress);
 	}
 	@Override
-	public CompoundTag getUpdateTag(HolderLookup.Provider provider){
+	public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider provider){
 		CompoundTag tag=new CompoundTag();
 		saveAdditional(tag,provider);
 		return tag;
