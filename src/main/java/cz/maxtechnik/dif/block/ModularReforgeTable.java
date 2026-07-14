@@ -2,7 +2,10 @@ package cz.maxtechnik.dif.block;
 
 import com.mojang.serialization.MapCodec;
 import cz.maxtechnik.dif.block.entity.ModularReforgeTableBlockEntity;
+import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
+import cz.maxtechnik.dif.item.modular.v2.ModularTool;
+import cz.maxtechnik.dif.item.modular.v2.ModularTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -54,10 +57,6 @@ public class ModularReforgeTable extends BaseEntityBlock implements SimpleWaterl
 		return new ModularReforgeTableBlockEntity(pos,state);
 	}
 	@Override
-	public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState state,@NotNull BlockEntityType<T> type){
-		return level.isClientSide?null:createTickerHelper(type,DifModBlockEntities.MODULAR_REFORGE_TABLE.get(),(world,pos,blockState,be)->be.serverTick());
-	}
-	@Override
 	protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack heldItem,@NotNull BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
 		if(level.isClientSide) return ItemInteractionResult.sidedSuccess(true);
 		BlockEntity be=level.getBlockEntity(pos);
@@ -71,6 +70,24 @@ public class ModularReforgeTable extends BaseEntityBlock implements SimpleWaterl
 		BlockEntity be=level.getBlockEntity(pos);
 		if(!(be instanceof ModularReforgeTableBlockEntity table)) return InteractionResult.PASS;
 		return table.tryExtractItem(player)?InteractionResult.SUCCESS:InteractionResult.PASS;
+	}
+	@Override
+	public void attack(@NotNull BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player){
+		super.attack(blockState,level,pos,player);
+		if(player.isShiftKeyDown()||!isHammer(level,pos,player.getItemInHand(player.getUsedItemHand()))) return;
+		if(level.getBlockEntity(pos) instanceof ModularReforgeTableBlockEntity table){
+			table.finishMerge();
+		}
+	}
+	private boolean isHammer(Level level,BlockPos pos,ItemStack itemStack){
+		if(itemStack.getItem() instanceof ModularTool){
+			return ModularTool.getProps(itemStack).toolType().equals(ModularTools.HAMMER.getName());
+		}
+		if(itemStack.getItem().equals(DifModItems.BAN_HAMMER.get())){
+			Nuke.spawnNuclearExplosion(level,pos);
+			return true;
+		}
+		return false;
 	}
 	@Override
 	protected void onRemove(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState newState,boolean movedByPiston){

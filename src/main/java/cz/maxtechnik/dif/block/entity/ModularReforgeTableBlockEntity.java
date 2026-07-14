@@ -7,6 +7,7 @@ import cz.maxtechnik.dif.item.modular.v2.ModularTool;
 import cz.maxtechnik.dif.item.modular.v2.ModularTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
@@ -43,19 +44,11 @@ public class ModularReforgeTableBlockEntity extends BlockEntity{
 				level.sendBlockUpdated(worldPosition,getBlockState(),getBlockState(),3);
 		}
 	};
-	private boolean mergeActive=false;
-	private int mergeProgress=0;
 	public ModularReforgeTableBlockEntity(BlockPos pos,BlockState state){
 		super(DifModBlockEntities.MODULAR_REFORGE_TABLE.get(),pos,state);
 	}
 	public ItemStackHandler getInventory(){
 		return this.inventory;
-	}
-	public boolean isMerging(){
-		return this.mergeActive;
-	}
-	public int getMergeProgress(){
-		return this.mergeProgress;
 	}
 	public boolean tryInsertItem(ItemStack stack,Player player,InteractionHand hand){
 		if(stack.isEmpty()) return false;
@@ -66,7 +59,6 @@ public class ModularReforgeTableBlockEntity extends BlockEntity{
 		if(remaining.getCount()==before) return false;
 		if(player!=null&&hand!=null)
 			player.setItemInHand(hand,remaining);
-		maybeStartMerge();
 		return true;
 	}
 	/**
@@ -78,7 +70,6 @@ public class ModularReforgeTableBlockEntity extends BlockEntity{
 			ItemStack stack=this.inventory.getStackInSlot(slot);
 			if(!stack.isEmpty()){
 				ItemStack extracted=this.inventory.extractItem(slot,stack.getCount(),false);
-				cancelMerge();
 				if(player!=null){
 					if(!player.getInventory().add(extracted))
 						player.drop(extracted,false);
@@ -87,14 +78,6 @@ public class ModularReforgeTableBlockEntity extends BlockEntity{
 			}
 		}
 		return false;
-	}
-	private void cancelMerge(){
-		if(!this.mergeActive) return;
-		this.mergeActive=false;
-		this.mergeProgress=0;
-		setChanged();
-		if(this.level!=null)
-			this.level.sendBlockUpdated(this.worldPosition,this.getBlockState(),this.getBlockState(),3);
 	}
 	/** Vysype všechny itemy do světa - volat při rozbití bloku (Block#onRemove). */
 	public void dropAllItems(Level level,BlockPos pos){
@@ -116,38 +99,22 @@ public class ModularReforgeTableBlockEntity extends BlockEntity{
 			return this.inventory.getStackInSlot(2).isEmpty()?2:-1;
 		return -1;
 	}
-	private void maybeStartMerge(){
-		if(this.mergeActive) return;
-		if(this.inventory.getStackInSlot(0).isEmpty()||this.inventory.getStackInSlot(1).isEmpty()||this.inventory.getStackInSlot(2).isEmpty()) return;
-		this.mergeActive=true;
-		this.mergeProgress=0;
-		setChanged();
-		if(this.level!=null)
-			this.level.sendBlockUpdated(this.worldPosition,this.getBlockState(),this.getBlockState(),3);
-	}
-	public void serverTick(){
-		if(!this.mergeActive) return;
-		this.mergeProgress++;
-		if(this.mergeProgress>=40){
-			finishMerge();
-			return;
-		}
-		setChanged();
-	}
-	private void finishMerge(){
+	public void finishMerge(){
 		if(this.level==null) return;
 		ItemStack toolStack=this.inventory.getStackInSlot(0);
 		if(!toolStack.isEmpty()&&toolStack.getItem() instanceof ModularTool){
 			ModularReforge reforge=pickRandomReforge(toolStack);
 			if(reforge!=ModularReforge.NONE){
 				ModularTool.setReforge(this.level.registryAccess(),toolStack,reforge);
-				this.level.playSound(null,this.worldPosition,SoundEvents.ENCHANTMENT_TABLE_USE,SoundSource.BLOCKS,1F,1F);
+				this.level.playSound(null,this.worldPosition,SoundEvents.DRAGON_FIREBALL_EXPLODE,SoundSource.BLOCKS,1F,1F);
+				this.level.addParticle(ParticleTypes.EXPLOSION,worldPosition.getX()+0.1,worldPosition.getY()+1,worldPosition.getZ()+0.5,0,0,0);
+				this.level.addParticle(ParticleTypes.EXPLOSION,worldPosition.getX()+0.8,worldPosition.getY()+1,worldPosition.getZ()+0.5,0,0,0);
+				this.level.addParticle(ParticleTypes.EXPLOSION,worldPosition.getX()+0.5,worldPosition.getY()+1,worldPosition.getZ()+0.1,0,0,0);
+				this.level.addParticle(ParticleTypes.EXPLOSION,worldPosition.getX()+0.5,worldPosition.getY()+1,worldPosition.getZ()+0.8,0,0,0);
 			}
 		}
-		this.inventory.setStackInSlot(1,ItemStack.EMPTY);
-		this.inventory.setStackInSlot(2,ItemStack.EMPTY);
-		this.mergeActive=false;
-		this.mergeProgress=0;
+		this.inventory.extractItem(1,1,false);
+		this.inventory.extractItem(2,1,false);
 		setChanged();
 		this.level.sendBlockUpdated(this.worldPosition,this.getBlockState(),this.getBlockState(),3);
 	}
@@ -163,15 +130,11 @@ public class ModularReforgeTableBlockEntity extends BlockEntity{
 	public void loadAdditional(@NotNull CompoundTag tag,HolderLookup.@NotNull Provider provider){
 		super.loadAdditional(tag,provider);
 		this.inventory.deserializeNBT(provider,tag.getCompound("inventory"));
-		this.mergeActive=tag.getBoolean("mergeActive");
-		this.mergeProgress=tag.getInt("mergeProgress");
 	}
 	@Override
 	public void saveAdditional(@NotNull CompoundTag tag,HolderLookup.@NotNull Provider provider){
 		super.saveAdditional(tag,provider);
 		tag.put("inventory",this.inventory.serializeNBT(provider));
-		tag.putBoolean("mergeActive",this.mergeActive);
-		tag.putInt("mergeProgress",this.mergeProgress);
 	}
 	@Override
 	public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider provider){
