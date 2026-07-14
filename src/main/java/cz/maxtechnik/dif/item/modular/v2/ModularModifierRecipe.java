@@ -45,10 +45,10 @@ public class ModularModifierRecipe extends SmithingExtraRecipe{
 				default -> 0;
 			};
 			case LUCK -> switch(getModifierLevel(itemStack,ModularModifier.LUCK)){
-				case 0 -> 16;
-				case 1 -> 24;
-				case 2 -> 32;
-				case 3 -> 8;
+				case 0 -> 32;
+				case 1 -> 48;
+				case 2 -> 64;
+				case 3 -> 16;
 				default -> 0;
 			};
 			case SWEEPING_EDGE -> switch(getModifierLevel(itemStack,ModularModifier.SWEEPING_EDGE)){
