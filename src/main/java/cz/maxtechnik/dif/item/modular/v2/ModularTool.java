@@ -185,7 +185,7 @@ public class ModularTool extends DiggerItem{
 		float reforge=getReforge(itemStack).getEfficiency()[getTier(itemStack).getReforgeIndex()];
 		float eff=(head+modifier)*reforge;
 		if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)){
-			eff*=1.1F;
+			eff*=1.05F;
 		}
 		return eff;
 	}
