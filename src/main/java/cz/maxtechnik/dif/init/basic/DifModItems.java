@@ -80,6 +80,7 @@ public class DifModItems{
 	public static final DeferredItem<Item>MODULAR_PART=REGISTRY.register("modular_part",ModularPart::new);
 	public static final DeferredItem<Item>SILKY_STONE=REGISTRY.register("silky_stone",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item>MODULAR_REFORGE_TABLE=block(DifModBlocks.MODULAR_REFORGE_TABLE);
+	public static final DeferredItem<Item>MODULAR_REFORGE_STONE=REGISTRY.register("modular_reforge_stone",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item>MODULAR_TEMPLATE_NORMAL=REGISTRY.register("modular_template_normal",()->new ModularTemplate(new Item.Properties()));
 	public static final DeferredItem<Item>MODULAR_TEMPLATE_HYPER=REGISTRY.register("modular_template_hyper",()->new ModularTemplate(new Item.Properties().rarity(Rarity.EPIC)));
 

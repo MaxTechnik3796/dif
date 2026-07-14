@@ -160,6 +160,7 @@ public class DifModTabs{
 		tabData.accept(MODULAR_TEMPLATE_NORMAL);
 		tabData.accept(MODULAR_TEMPLATE_HYPER);
 
+		tabData.accept(MODULAR_REFORGE_STONE);
 		tabData.accept(SILKY_STONE);
 
 		ItemStack ePart=new ItemStack(MODULAR_PART.get());ePart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties(ModularParts.HANDLE.getName(),ModularMaterial.IRON.getName(),false));

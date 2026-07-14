@@ -605,6 +605,7 @@
 	"item.dif.silky_stone":"Silky Stone",
 
 	"block.dif.modular_reforge_table":"Reforge Table",
+	"item.dif.modular_reforge_stone":"Reforge Stone",
 
 	"item.dif.modular_wiki_book":"ModularTools Wiki Book",
 
@@ -637,7 +638,6 @@
 	"item.dif.space_suit_helmet":"Space Suit Helmet",
 	"item.dif.space_suit_leggings":"Space Suit Leggings",
 	"item.dif.space_suit_chestplate":"Space Suit Chestplate",
-	"item.dif.tier_upgrade":"Tier Upgrade",
 	"item.dif.electro_runners":"Electro Runners",
 	"item.dif.jetpack":"Jetpack",
 	"block.dif.mega_torch":"MEGA Torch",
