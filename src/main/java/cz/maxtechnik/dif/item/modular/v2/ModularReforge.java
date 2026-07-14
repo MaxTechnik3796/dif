@@ -5,125 +5,125 @@ import java.util.Locale;
 import static cz.maxtechnik.dif.item.modular.v2.ModularTools.*;
 public enum ModularReforge{
 	NONE("none",new ModularTools[]{AXE,PICKAXE,SWORD,SHOVEL,HOE,KATANA,BATTLE_AXE,HAMMER,TIMBER_AXE,EXCAVATOR},false,
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F}),
+			1F,
+			1F,
+			1F,
+			1F),
 	// BOJOVÉ
 	SWIFT("swift",new ModularTools[]{SWORD,AXE,KATANA},false,
-			new Float[]{1F,1F,0.95F,0.95F,0.95F},
-			new Float[]{1F,1F,1.1F,1.15F,1.2F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F}),
+			0.95F,
+			1.1F,
+			1F,
+			1F),
 	HEAVY("heavy",new ModularTools[]{SWORD,BATTLE_AXE},false,
-			new Float[]{1F,1F,1.2F,1.25F,1.30F},
-			new Float[]{1F,1F,0.9F,0.85F,0.8F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F}),
+			1.2F,
+			0.9F,
+			1F,
+			1F),
 	RAZOR("razor",new ModularTools[]{SWORD,BATTLE_AXE,KATANA},false,
-			new Float[]{1F,1F,1.1F,1.15F,1.2F},
-			new Float[]{1F,1F,1.05F,1.05F,1.1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F}),
+			1.1F,
+			1.05F,
+			1F,
+			1F),
 	VAMPIRIC("vampiric",new ModularTools[]{SWORD,KATANA},false,
-			new Float[]{1F,1F,1.05F,1.05F,1.05F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F}),
+			1.05F,
+			1F,
+			1F,
+			1F),
 	FROZEN("frozen",new ModularTools[]{SWORD,KATANA},false,
-			new Float[]{1F,1F,1.05F,1.1F,1.1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F}),// (slow je special efekt)
+			1.05F,
+			1F,
+			1F,
+			1F),// (slow je special efekt)
 	PHANTOM("phantom",new ModularTools[]{SWORD,BATTLE_AXE,KATANA},false,
-			new Float[]{1F,1F,1.05F,1.05F,1.10F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F}),
+			1.05F,
+			1F,
+			1F,
+			1F),
 	CURSE("curse",new ModularTools[]{KATANA},false,
-			new Float[]{1F,1F,1.1F,1.15F,1.2F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F}),// (weakness je special efekt)
+			1.1F,
+			1F,
+			1F,
+			1F),// (weakness je special efekt)
 	DRAIN("drain",new ModularTools[]{BATTLE_AXE},false,
-			new Float[]{1F,1F,1.05F,1.05F,1.1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F}),
+			1.05F,
+			1F,
+			1F,
+			1F),
 	SAVAGE("savage",new ModularTools[]{AXE,BATTLE_AXE},false,
-			new Float[]{1F,1F,1.1F,1.15F,1.2F},
-			new Float[]{1F,1F,1F,0.95F,0.9F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F}),
+			1.1F,
+			1F,
+			1F,
+			1F),
 
 	REINFORCED("reinforced",new ModularTools[]{AXE,PICKAXE,SWORD,SHOVEL,HOE,BATTLE_AXE,HAMMER,EXCAVATOR,TIMBER_AXE},false,
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1.05F,1.05F,1.1F},
-			new Float[]{1F,1F,1.1F,1.15F,1.2F}),
+			1F,
+			1F,
+			1.05F,
+			1.1F),
 	PROSPECTOR("prospector",new ModularTools[]{PICKAXE,HAMMER},false,
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1.2F,1.2F,1.3F},
-			new Float[]{1F,1F,1.05F,1.1F,1.2F}),
+			1F,
+			1F,
+			1.2F,
+			1.05F),
 	STURDY("sturdy",new ModularTools[]{AXE,PICKAXE,SWORD,SHOVEL,HOE,HAMMER,EXCAVATOR,TIMBER_AXE},true,//TEST
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,0.95F,0.95F,0.95F},
-			new Float[]{1F,1F,1.2F,1.25F,1.3F}),
+			1F,
+			1F,
+			0.95F,
+			1.2F),
 	ARCANE("arcane",new ModularTools[]{PICKAXE,HAMMER},false,
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1.25F,1.3F,1.35F},
-			new Float[]{1F,1F,0.9F,0.85F,0.8F}),
+			1F,
+			1F,
+			1.25F,
+			0.9F),
 	GLEAMING("gleaming",new ModularTools[]{PICKAXE,HAMMER,SHOVEL,EXCAVATOR},false,
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F}),//Gleaming tady je epic a legendary +1 fortune a mythic +2 fortune
+			1F,
+			1F,
+			1F,
+			1F),//Gleaming tady je epic a legendary +1 fortune a mythic +2 fortune
 	CRUSHER("crusher",new ModularTools[]{HAMMER},false,
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1.1F,1.15F,1.2F},
-			new Float[]{1F,1F,1F,1F,1F}),
+			1F,
+			1F,
+			1.1F,
+			1F),
 	REAPER("reaper",new ModularTools[]{AXE,TIMBER_AXE},false,
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1.1F,1.15F,1.2F},
-			new Float[]{1F,1F,1F,1F,1F}),//looting nebude potřeba
+			1F,
+			1F,
+			1.1F,
+			1F),//looting nebude potřeba
 	LUMBERING("lumbering",new ModularTools[]{AXE,TIMBER_AXE},false,
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1.2F,1.25F,1.3F},
-			new Float[]{1F,1F,1F,1F,1F}),
+			1F,
+			1F,
+			1.2F,
+			1F),
 	HARVESTER("harvester",new ModularTools[]{HOE},false,
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F}),//Harvester tady je epic +1 fortune, legendary +2 fortune a mythic +3 fortune
+			1F,
+			1F,
+			1F,
+			1F),//Harvester tady je epic +1 fortune, legendary +2 fortune a mythic +3 fortune
 	CULTIVATOR("cultivator",new ModularTools[]{HOE},false,
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1.25F,1.25F}),//Harvester tady je epic a legendary aoe 3x3 a mythic aoe 5x5
+			1F,
+			1F,
+			1F,
+			1F),//Harvester tady je epic a legendary aoe 3x3 a mythic aoe 5x5
 	SWIFTDIG("swiftdig",new ModularTools[]{SHOVEL,EXCAVATOR},false,
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1.15F,1.2F,1.3F},
-			new Float[]{1F,1F,0.9F,0.9F,0.85F}),
+			1F,
+			1F,
+			1.15F,
+			0.9F),
 	GROUNDBREAKER("grounbreaker",new ModularTools[]{SHOVEL,EXCAVATOR},false,
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1F,1F,1F},
-			new Float[]{1F,1F,1.15F,1.20F,1.25F});
+			1F,
+			1F,
+			1F,
+			1.15F);
 	private final String name;
 	private final ModularTools[] tools;
 	private final boolean hasDescription;
-	private final Float[] attackDamage;
-	private final Float[] attackSpeed;
-	private final Float[] efficiency;
-	private final Float[] durability;
-	ModularReforge(String name,ModularTools[] tool,boolean hasDescription,Float[] attackDamage,Float[] attackSpeed,Float[] efficiency,Float[] durability){
+	private final float attackDamage;
+	private final float attackSpeed;
+	private final float efficiency;
+	private final float durability;
+	ModularReforge(String name,ModularTools[] tool,boolean hasDescription,float attackDamage,float attackSpeed,float efficiency,float durability){
 		this.name=name;
 		this.tools=tool;
 		this.hasDescription=hasDescription;
@@ -141,16 +141,16 @@ public enum ModularReforge{
 	public boolean hasDescription(){
 		return hasDescription;
 	}
-	public Float[] getAttackDamage(){
+	public float getAttackDamage(){
 		return attackDamage;
 	}
-	public Float[] getAttackSpeed(){
+	public float getAttackSpeed(){
 		return attackSpeed;
 	}
-	public Float[] getEfficiency(){
+	public float getEfficiency(){
 		return efficiency;
 	}
-	public Float[] getDurability(){
+	public float getDurability(){
 		return durability;
 	}
 	public static ModularReforge byName(String name){

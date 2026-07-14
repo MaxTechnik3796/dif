@@ -27,9 +27,6 @@ public class ModularPart extends Item{
 	public static ModularMaterial getMaterial(ItemStack itemStack){
 		return ModularMaterial.byName(getProps(itemStack).material());
 	}
-	public static ModularTier getTier(ItemStack itemStack){
-		return ModularTier.byName(getMaterial(itemStack).getTier().name());
-	}
 	public static boolean isCast(ItemStack itemStack){
 		ModularPartProperties props=itemStack.get(DifModComponents.MODULAR_PART_PROPERTIES.get());
 		return props!=null&&props.castMold();
@@ -39,7 +36,6 @@ public class ModularPart extends Item{
 		ModularPartProperties props=getProps(itemStack);
 		if(props.partType().equals("none")) return;
 		ModularMaterial material=getMaterial(itemStack);
-		ModularTier tier=material.getTier();
 		ModularModifier modifier=material.getModifier();
 		int durability=switch(ModularPartType.getPartType(getPart(itemStack))){
 			case HEAD -> material.getHeadDurability();
@@ -48,7 +44,6 @@ public class ModularPart extends Item{
 			default -> 0;
 		};
 		list.add(Component.literal("───── Stats ─────").withStyle(Style.EMPTY.withColor(0x6644BB)));
-		list.add(Component.literal("Tier: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.tier."+tier.getName()).withColor(ModularTier.byName(tier.getName()).getColor())));
 		list.add(Component.literal("Material: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.material."+material.getName()).withStyle(Style.EMPTY.withColor(material.getColor()))));
 		list.add(Component.literal("Modifier: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.translatable("dif.modifier."+modifier.getName()).withStyle(Style.EMPTY.withColor(material.getColor()))));
 		list.add(Component.literal("Durability: ").withStyle(Style.EMPTY.withColor(0x888888)).append(Component.literal(String.valueOf(durability)).withColor(0xFFAA00)));
@@ -61,7 +56,7 @@ public class ModularPart extends Item{
 	}
 	@Override
 	public @NotNull Component getName(@NotNull ItemStack itemStack){
-		int rarityColor=getMaterial(itemStack).getTier().getColor();
+		int rarityColor=getMaterial(itemStack).getColor();
 		return Component.translatable(getDescriptionId(itemStack)).withStyle(Style.EMPTY.withColor(rarityColor).withItalic(false));
 	}
 }

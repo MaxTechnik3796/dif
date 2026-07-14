@@ -124,8 +124,6 @@ public class ModularModifierRecipe extends SmithingExtraRecipe{
 			int maxLvl=modifier.getMaxLvl();
 			if(template.getItem().equals(MODULAR_TEMPLATE_NORMAL.get())) return currentLvl<maxLvl;
 			if(template.getItem().equals(MODULAR_TEMPLATE_HYPER.get())){
-				ModularTier tier=ModularTool.getTier(base);
-				if(tier!=ModularTier.LEGENDARY&&tier!=ModularTier.MYTHIC) return false;
 				if(modifier==MENDING) return currentLvl==0;
 				return currentLvl==maxLvl;
 			}

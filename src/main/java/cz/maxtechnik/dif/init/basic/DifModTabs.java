@@ -195,7 +195,6 @@ public class DifModTabs{
 					mat.getName(),
 					mat.getName(),
 					mat.getName(),
-					mat.getTier().getName(),
 					ModularReforge.NONE.getName()
 				);
 				tool.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(), props);

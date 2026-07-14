@@ -28,26 +28,21 @@ public class ModularSubscriber{
 		ModularToolProperties props=ModularTool.getProps(itemStack);
 		if(props==null) return;
 		ModularReforge reforge=ModularTool.getReforge(itemStack);
-		int tier=ModularTool.getTier(itemStack).getReforgeIndex();
 		int[] chances={0,0,8,5,3};
+		int epicChance=chances[2];
 		switch(reforge){
 			case VAMPIRIC,DRAIN -> {
 				if(attacker.getHealth()>=attacker.getMaxHealth()) return;
-				if(chances[tier]!=0&&DifMod.rouletteBoolean(chances[tier])) attacker.heal(Math.clamp(dmg/2F,0.5F,target.getHealth()));
+				if(DifMod.rouletteBoolean(epicChance)) attacker.heal(Math.clamp(dmg/2F,0.5F,target.getHealth()));
 			}
 			case PHANTOM -> {
-				if(chances[tier]!=0&&DifMod.rouletteBoolean(chances[tier])){
+				if(DifMod.rouletteBoolean(epicChance)){
 					float newDmg=dmg+Math.max(0.5F,dmg/2F);
 					event.setNewDamage(newDmg);
 				}
 			}
-			case FROZEN -> {
-				if(tier==2||tier==3) target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,160,0));
-				else if(tier==4) target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,160,1));
-			}
-			case CURSE -> {
-				if(tier>=2) target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS,100,0));
-			}
+			case FROZEN -> target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,160,0));
+			case CURSE -> target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS,100,0));
 		}
 		// Material modifiers: parse materials once for this event
 		if(ModularTool.getMaterialModifiers(itemStack).contains(ModularModifier.TOXIC)){

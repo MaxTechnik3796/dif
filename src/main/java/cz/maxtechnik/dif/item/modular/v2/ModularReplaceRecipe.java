@@ -58,7 +58,7 @@ public class ModularReplaceRecipe implements SmithingRecipe{
 			default -> {
 			}
 		}
-		tool.set(MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(ModularTool.getToolType(tool).getName(),head.getName(),binding.getName(),handle.getName(),ModularTool.getTier(tool).getName(),ModularTool.getReforge(tool).getName()));
+		tool.set(MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(ModularTool.getToolType(tool).getName(),head.getName(),binding.getName(),handle.getName(),ModularTool.getReforge(tool).getName()));
 		return tool;
 	}
 	@Override

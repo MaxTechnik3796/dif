@@ -72,11 +72,9 @@ public final class ModularMiningHandler{
 		boolean isTimberAxe=type.equals(ModularTools.TIMBER_AXE.getName());
 		boolean isHoe=type.equals(ModularTools.HOE.getName());
 		if(!isHammer&&!isExcavator&&!isTimberAxe&&!isHoe) return;
-		// HOE: only with CULTIVATOR at EPIC+ and always 3×3 for block-breaking
+		// HOE: only with CULTIVATOR; reforges use EPIC-level power
 		if(isHoe){
 			if(ModularTool.getReforge(tool)!=ModularReforge.CULTIVATOR) return;
-			ModularTier tier=ModularTool.getTier(tool);
-			if(tier!=ModularTier.EPIC&&tier!=ModularTier.LEGENDARY&&tier!=ModularTier.MYTHIC) return;
 		}
 		BlockPos centre=event.getPos();
 		BlockState centreState=level.getBlockState(centre);

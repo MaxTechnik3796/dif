@@ -18,7 +18,6 @@ import static cz.maxtechnik.dif.init.basic.DifModItems.MODULAR_TOOL;
 import static cz.maxtechnik.dif.init.other.DifModComponents.MODULAR_TOOL_PROPERTIES;
 import static cz.maxtechnik.dif.item.modular.v2.ModularPart.*;
 import static cz.maxtechnik.dif.item.modular.v2.ModularPartType.*;
-import static cz.maxtechnik.dif.item.modular.v2.ModularTier.*;
 import static cz.maxtechnik.dif.item.modular.v2.ModularTools.getToolFromParts;
 public class ModularAssemblyRecipe implements SmithingRecipe{
 	final Ingredient template;
@@ -48,19 +47,8 @@ public class ModularAssemblyRecipe implements SmithingRecipe{
 		ItemStack tool=new ItemStack(MODULAR_TOOL.get());
 		ModularTools toolType=getToolFromParts(getPart(head),getPart(binding),getPart(handle));
 		if(toolType==null) return head;
-		tool.set(MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(toolType.getName(),getMaterial(head).getName(),getMaterial(binding).getName(),getMaterial(handle).getName(),calculateTier(head,binding,handle).getName(),ModularReforge.NONE.getName()));
+		tool.set(MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(toolType.getName(),getMaterial(head).getName(),getMaterial(binding).getName(),getMaterial(handle).getName(),ModularReforge.NONE.getName()));
 		return tool;
-	}
-	private ModularTier calculateTier(ItemStack head,ItemStack binding,ItemStack handle){
-		ModularTier h=getTier(head), b=getTier(binding), ha=getTier(handle);
-		if(countOf(MYTHIC,h,b,ha)>1) return MYTHIC;
-		if(countOf(LEGENDARY,h,b,ha)>1) return LEGENDARY;
-		if(countOf(EPIC,h,b,ha)>1) return EPIC;
-		if(countOf(RARE,h,b,ha)>1) return RARE;
-		return COMMON;
-	}
-	private static int countOf(ModularTier tier,ModularTier a,ModularTier b,ModularTier c){
-		return (a==tier?1:0)+(b==tier?1:0)+(c==tier?1:0);
 	}
 	@Override
 	public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider provider){

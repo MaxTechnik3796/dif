@@ -166,7 +166,7 @@ public class ModularTool extends DiggerItem{
 		int binding=ModularMaterial.byName(props.bindingMaterial()).getBindingDurability();
 		int handle=ModularMaterial.byName(props.handleMaterial()).getHandleDurability();
 		int modifier=reinforcedLevel(itemStack);
-		float reforge=getReforge(itemStack).getDurability()[getTier(itemStack).getReforgeIndex()];
+		float reforge=getReforge(itemStack).getDurability();
 		float baseMax=(head+binding+handle+modifier)*reforge;
 		if(hasMaterialModifier(itemStack,ModularModifier.PRECISE)){
 			baseMax*=1.1F;
@@ -182,7 +182,7 @@ public class ModularTool extends DiggerItem{
 		if(isBroken(itemStack)) return 1F;
 		float head=ModularMaterial.byName(getProps(itemStack).headMaterial()).getHeadEfficiency();
 		float modifier=efficiencyLevel(itemStack);
-		float reforge=getReforge(itemStack).getEfficiency()[getTier(itemStack).getReforgeIndex()];
+		float reforge=getReforge(itemStack).getEfficiency();
 		float eff=(head+modifier)*reforge;
 		if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)){
 			eff*=1.05F;
@@ -367,16 +367,12 @@ public class ModularTool extends DiggerItem{
 				}
 			}
 			case "hoe" -> {
-				// CULTIVATOR reforge: AOE tilling (EPIC/LEGENDARY=3×3, MYTHIC=5×5)
+				// CULTIVATOR reforge: AOE tilling at EPIC power (3×3)
 				if(getReforge(itemStack)==CULTIVATOR){
-					ModularTier tier=getTier(itemStack);
-					if(tier==ModularTier.EPIC||tier==ModularTier.LEGENDARY||tier==ModularTier.MYTHIC){
-						int radius=tier==ModularTier.MYTHIC?2:1; // 5×5 = radius 2, 3×3 = radius 1
-						if(ModularMiningHandler.hoeCultivatorTill(context,this,radius)){
-							Player player=context.getPlayer();
-							level.playSound(player,pos,SoundEvents.HOE_TILL,SoundSource.BLOCKS,1F,1F);
-							return InteractionResult.sidedSuccess(level.isClientSide);
-						}
+					if(ModularMiningHandler.hoeCultivatorTill(context,this,1)){
+						Player player=context.getPlayer();
+						level.playSound(player,pos,SoundEvents.HOE_TILL,SoundSource.BLOCKS,1F,1F);
+						return InteractionResult.sidedSuccess(level.isClientSide);
 					}
 				}
 				// Default: single-block till
@@ -478,13 +474,13 @@ public class ModularTool extends DiggerItem{
 		if(!isBroken(itemStack)){
 			ModularMaterial head=ModularMaterial.byName(props.headMaterial());
 			ModularMaterial.byName(props.handleMaterial());
-			finalDamage=(getBaseDamageForType(props.toolType())+head.getAttackDamage()+sharpnessDamage(itemStack))*getReforge(itemStack).getAttackDamage()[getTier(itemStack).getReforgeIndex()];
+			finalDamage=(getBaseDamageForType(props.toolType())+head.getAttackDamage()+sharpnessDamage(itemStack))*getReforge(itemStack).getAttackDamage();
 			float basePenalty=Math.abs(getBaseSpeedForType(props.toolType()));
 			if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)){
 				basePenalty*=0.95F;
 			}
 			float speedBeforeReforge=4F-basePenalty;
-			float reforgeMultiplier=getReforge(itemStack).getAttackSpeed()[getTier(itemStack).getReforgeIndex()];
+			float reforgeMultiplier=getReforge(itemStack).getAttackSpeed();
 			float totalSpeed=speedBeforeReforge*reforgeMultiplier;
 			finalSpeed=totalSpeed-4F;
 			finalKnockback=knockbackLevel(itemStack);
@@ -531,17 +527,15 @@ public class ModularTool extends DiggerItem{
 		ModularMaterial binding=ModularMaterial.byName(props.bindingMaterial());
 		ModularMaterial handle=ModularMaterial.byName(props.handleMaterial());
 		ModularReforge reforge=getReforge(itemStack);
-		ModularTier tier=getTier(itemStack);
-		int tierIndex=tier.getReforgeIndex();
-		int tierColor=tier.getColor();
+		int reforgeColor=0xAA00AA;
 		// ─── pre-compute raw (no-reforge) values ───
 		float rawEff=head.getHeadEfficiency()+efficiencyLevel(itemStack);
 		if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)) rawEff*=1.05F;
-		float effMultiplier=reforge.getEfficiency()[tierIndex];
+		float effMultiplier=reforge.getEfficiency();
 		float finalEff=rawEff*effMultiplier;
 		float effBonus=rawEff*(effMultiplier-1F);
 		float rawDmg=getBaseDamageForType(type)+head.getAttackDamage()+sharpnessDamage(itemStack);
-		float dmgMultiplier=reforge.getAttackDamage()[tierIndex];
+		float dmgMultiplier=reforge.getAttackDamage();
 		float finalDmg=1F+rawDmg*dmgMultiplier;
 		float dmgBonus=rawDmg*(dmgMultiplier-1F);
 		float rawSpdPenalty=Math.abs(getBaseSpeedForType(type));
@@ -549,12 +543,12 @@ public class ModularTool extends DiggerItem{
 			rawSpdPenalty*=0.95F;
 		}
 		float spdBeforeReforge=4F-rawSpdPenalty;
-		float spdMultiplier=reforge.getAttackSpeed()[tierIndex];
+		float spdMultiplier=reforge.getAttackSpeed();
 		float finalSpd=spdBeforeReforge*spdMultiplier;
 		float spdBonus=finalSpd-spdBeforeReforge;
 		int rawDur=head.getHeadDurability()+binding.getBindingDurability()+handle.getHandleDurability()+reinforcedLevel(itemStack);
 		if(hasMaterialModifier(itemStack,ModularModifier.PRECISE)) rawDur=(int)(rawDur*1.1F);
-		float durMultiplier=reforge.getDurability()[tierIndex];
+		float durMultiplier=reforge.getDurability();
 		int maxDmg=Math.round(rawDur*durMultiplier);
 		int durBonus=maxDmg-rawDur;
 		int remaining=Math.max(0,maxDmg-itemStack.getDamageValue());
@@ -570,7 +564,6 @@ public class ModularTool extends DiggerItem{
 		}
 		// Level, Tier, Damage, Efficiency, Fortune/Looting, Attack Speed, Durability
 		list.add(Component.literal("Level: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.mining_level."+miningLvl).withStyle(Style.EMPTY.withColor(ModularMaterial.miningLevelColor[miningLvl]))));
-		list.add(Component.literal("Tier: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.tier."+props.tier()).withStyle(Style.EMPTY.withColor(tierColor))));
 		appendStatLine(list,"Damage: ",String.format(Locale.ROOT,"+%.1f",finalDmg),ChatFormatting.RED,dmgBonus);
 		appendStatLine(list,"Efficiency: ",String.format(Locale.ROOT,"%.1f",finalEff),ChatFormatting.GREEN,effBonus);
 		if(luckLevel>0){
@@ -603,7 +596,7 @@ public class ModularTool extends DiggerItem{
 				for(ModularToolModifiers.entry entry: appliedMods){
 					ModularModifier modifier=ModularModifier.byName(entry.id());
 					boolean isLegendary=modifier==ModularModifier.MENDING||entry.lvl()>modifier.getMaxLvl();
-					int modColor=isLegendary?ModularTier.LEGENDARY.getColor():ModularTier.RARE.getColor();
+					int modColor=isLegendary?0xFFAA00:0x5555FF;
 					MutableComponent nameComp=Component.translatable("dif.modifier."+entry.id());
 					if(modifier.getMaxLvl()>1) nameComp=nameComp.copy().append(Component.literal(" ")).append(Component.translatable("enchantment.level."+entry.lvl()).withStyle(Style.EMPTY.withColor(modColor)));
 					list.add(nameComp.withStyle(Style.EMPTY.withColor(modColor)));
@@ -612,7 +605,7 @@ public class ModularTool extends DiggerItem{
 			// Reforge
 			if(!reforge.getName().isEmpty()&&!reforge.getName().equals("none")){
 				list.add(CommonComponents.EMPTY);
-				list.add(Component.translatable("dif.reforge."+reforge.getName()).withStyle(Style.EMPTY.withColor(tierColor).withBold(true)));
+				list.add(Component.translatable("dif.reforge."+reforge.getName()).withStyle(Style.EMPTY.withColor(reforgeColor).withBold(true)));
 				if(reforge.hasDescription()){
 					list.add(Component.translatable("dif.reforge."+reforge.getName()+".desc").withStyle(Style.EMPTY.withColor(0x9999AA).withItalic(true)));
 				}
@@ -636,7 +629,7 @@ public class ModularTool extends DiggerItem{
 				:Component.literal(value).withStyle(valueColor);
 		MutableComponent line=Component.literal(label).withStyle(ChatFormatting.GRAY).append(valComp);
 		if(Math.abs(bonus)>=0.05F){
-			line=line.append(Component.literal(String.format(Locale.ROOT," (%.1f)",bonus)).withStyle(Style.EMPTY.withColor(ModularTier.RARE.getColor())));
+			line=line.append(Component.literal(String.format(Locale.ROOT," (%.1f)",bonus)).withStyle(Style.EMPTY.withColor(0x5555FF)));
 		}
 		list.add(line);
 	}
@@ -698,8 +691,7 @@ public class ModularTool extends DiggerItem{
 	 */
 	@Override
 	public @NotNull Component getName(@NotNull ItemStack itemStack){
-		int rarityColor=getTier(itemStack).getColor();
-		return Component.translatable(getDescriptionId(itemStack)).withStyle(Style.EMPTY.withColor(rarityColor).withItalic(false));
+		return Component.translatable(getDescriptionId(itemStack)).withStyle(Style.EMPTY.withItalic(false));
 	}
 	/**
 	 * Add modifier to tool.
@@ -914,14 +906,13 @@ public class ModularTool extends DiggerItem{
 	public static void setReforge(HolderLookup.Provider provider,ItemStack itemStack,ModularReforge reforge){
 		ModularToolProperties props=getProps(itemStack);
 		ModularReforge oldReforge=getReforge(itemStack);
-		ModularTier tier=getTier(itemStack);
 		if(oldReforge==null) return;
 		if(oldReforge.equals(reforge)) return;
-		itemStack.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(props.toolType(),props.headMaterial(),props.bindingMaterial(),props.handleMaterial(),props.tier(),reforge.name()));
-		if(oldReforge.equals(GLEAMING)) subtractEnchantment(provider,itemStack,Enchantments.FORTUNE,Math.min(1,tier.getReforgeIndex()-2));
-		if(reforge.equals(GLEAMING)) addEnchantment(provider,itemStack,Enchantments.FORTUNE,Math.min(1,tier.getReforgeIndex()-2));
-		if(oldReforge.equals(HARVESTER)) subtractEnchantment(provider,itemStack,Enchantments.FORTUNE,Math.min(1,tier.getReforgeIndex()-1));
-		if(reforge.equals(HARVESTER)) addEnchantment(provider,itemStack,Enchantments.FORTUNE,Math.min(1,tier.getReforgeIndex()-1));
+		itemStack.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(props.toolType(),props.headMaterial(),props.bindingMaterial(),props.handleMaterial(),reforge.name()));
+		if(oldReforge.equals(GLEAMING)) subtractEnchantment(provider,itemStack,Enchantments.FORTUNE,1);
+		if(reforge.equals(GLEAMING)) addEnchantment(provider,itemStack,Enchantments.FORTUNE,1);
+		if(oldReforge.equals(HARVESTER)) subtractEnchantment(provider,itemStack,Enchantments.FORTUNE,1);
+		if(reforge.equals(HARVESTER)) addEnchantment(provider,itemStack,Enchantments.FORTUNE,1);
 		if(oldReforge.equals(REAPER)) subtractEnchantment(provider,itemStack,Enchantments.LOOTING,1);
 		if(reforge.equals(REAPER)) addEnchantment(provider,itemStack,Enchantments.LOOTING,1);
 	}
@@ -933,27 +924,5 @@ public class ModularTool extends DiggerItem{
 	public static ModularReforge getReforge(ItemStack itemStack){
 		ModularToolProperties props=getProps(itemStack);
 		return byName(props.reforge());
-	}
-	/**
-	 * Set new ModularTier to tool.
-	 * @param itemStack tool
-	 * @param tier tier
-	 */
-	@SuppressWarnings("unused")
-	public static void setTier(ItemStack itemStack,ModularTier tier){
-		ModularToolProperties props=getProps(itemStack);
-		ModularTier oldTier=ModularTier.byName(props.tier());
-		if(oldTier==null) return;
-		if(oldTier.equals(tier)) return;
-		itemStack.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(props.toolType(),props.headMaterial(),props.bindingMaterial(),props.handleMaterial(),tier.getName(),props.reforge()));
-	}
-	/**
-	 * Get ModularTier from tool.
-	 * @param itemStack tool
-	 * @return ModularTier.
-	 */
-	public static ModularTier getTier(ItemStack itemStack){
-		ModularToolProperties props=getProps(itemStack);
-		return ModularTier.byName(props.tier());
 	}
 }
