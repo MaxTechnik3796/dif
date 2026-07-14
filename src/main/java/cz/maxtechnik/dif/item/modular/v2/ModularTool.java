@@ -554,8 +554,10 @@ public class ModularTool extends DiggerItem{
 		float ratio=maxDmg>0?(float)remaining/maxDmg:0;
 		int durColor=((int)(255*(1-ratio))<<16)|((int)(255*ratio)<<8);
 		int miningLvl=getLiveMiningLevel(itemStack);
-		// Fortune/Looting from LUCK modifier
+		// Fortune/Looting from LUCK modifier plus reforge bonus
 		int luckLevel=getModifierLevel(itemStack,ModularModifier.LUCK);
+		int fortuneLevel=getEffectiveFortuneLevel(itemStack);
+		int lootingLevel=getEffectiveLootingLevel(itemStack);
 		// Broken warning
 		if(isBroken(itemStack)){
 			list.add(Component.literal("!! BROKEN !!").withStyle(Style.EMPTY.withColor(0xFF3333).withBold(true)));
@@ -565,9 +567,10 @@ public class ModularTool extends DiggerItem{
 		list.add(Component.literal("Level: ").withStyle(ChatFormatting.GRAY).append(Component.translatable("dif.mining_level."+miningLvl).withStyle(Style.EMPTY.withColor(ModularMaterial.miningLevelColor[miningLvl]))));
 		appendStatLine(list,"Damage: ",String.format(Locale.ROOT,"+%.1f",finalDmg),ChatFormatting.RED,dmgBonus);
 		appendStatLine(list,"Efficiency: ",String.format(Locale.ROOT,"%.1f",finalEff),ChatFormatting.GREEN,effBonus);
-		if(luckLevel>0){
-			String luckLabel=isWeapon?"Looting: ":"Fortune: ";
-			appendStatLine(list,luckLabel,String.valueOf(luckLevel),ChatFormatting.GREEN,0F);
+		if(isWeapon&&lootingLevel>0){
+			appendStatLine(list,"Looting: ",String.valueOf(lootingLevel),ChatFormatting.GREEN,0F);
+		}else if(!isWeapon&&fortuneLevel>0){
+			appendStatLine(list,"Fortune: ",String.valueOf(fortuneLevel),ChatFormatting.GREEN,0F);
 		}
 		appendStatLine(list,"Speed: ",String.format(Locale.ROOT,"+%.1f",finalSpd),ChatFormatting.YELLOW,spdBonus);
 		appendStatLine(list,"Durability: ",remaining+"/"+maxDmg,ChatFormatting.WHITE,durBonus,durColor);
@@ -726,10 +729,7 @@ public class ModularTool extends DiggerItem{
 		itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(newModifiers));
 		switch(modifier){
 			case SILK_TOUCH -> addEnchantment(provider,itemStack,Enchantments.SILK_TOUCH,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.SILK_TOUCH));
-			case LUCK -> {
-				addEnchantment(provider,itemStack,Enchantments.FORTUNE,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.FORTUNE));
-				addEnchantment(provider,itemStack,Enchantments.LOOTING,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.LOOTING));
-			}
+			case LUCK -> syncLuckEnchantments(provider,itemStack);
 			case SWEEPING_EDGE -> addEnchantment(provider,itemStack,Enchantments.SWEEPING_EDGE,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.SWEEPING_EDGE));
 			case MENDING -> addEnchantment(provider,itemStack,Enchantments.MENDING,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.MENDING));
 			case VOLCANIC -> addEnchantment(provider,itemStack,Enchantments.FIRE_ASPECT,lvl-getEnchantmentLevel(provider,itemStack,Enchantments.FIRE_ASPECT));
@@ -779,10 +779,7 @@ public class ModularTool extends DiggerItem{
 			itemStack.set(DifModComponents.MODULAR_TOOL_MODIFIERS,new ModularToolModifiers(newModifiers));
 			switch(modifier){
 				case SILK_TOUCH -> subtractEnchantment(provider,itemStack,Enchantments.SILK_TOUCH,oldLvl);
-				case LUCK -> {
-					subtractEnchantment(provider,itemStack,Enchantments.FORTUNE,oldLvl);
-					subtractEnchantment(provider,itemStack,Enchantments.LOOTING,oldLvl);
-				}
+				case LUCK -> syncLuckEnchantments(provider,itemStack);
 				case SWEEPING_EDGE -> subtractEnchantment(provider,itemStack,Enchantments.SWEEPING_EDGE,oldLvl);
 				case MENDING -> subtractEnchantment(provider,itemStack,Enchantments.MENDING,oldLvl);
 				case VOLCANIC -> subtractEnchantment(provider,itemStack,Enchantments.FIRE_ASPECT,oldLvl);
@@ -822,7 +819,7 @@ public class ModularTool extends DiggerItem{
 	 */
 	public static int getEnchantmentLevel(HolderLookup.Provider provider,ItemStack itemStack,ResourceKey<Enchantment> enchantment){
 		Holder<Enchantment> holder=getEnchantmentHolder(provider,enchantment);
-		return itemStack.getEnchantmentLevel(holder);
+		return holder!=null?itemStack.getEnchantmentLevel(holder):0;
 	}
 	/**
 	 * Add/Create enchantment on tool.
@@ -865,14 +862,18 @@ public class ModularTool extends DiggerItem{
 	 */
 	private static void manipulateEnchantment(HolderLookup.Provider provider,ItemStack itemStack,ResourceKey<Enchantment> enchantment,int lvl,int mode){
 		Holder<Enchantment> enchantmentHolder=getEnchantmentHolder(provider,enchantment);
+		if(enchantmentHolder==null) return;
 		EnchantmentHelper.updateEnchantments(itemStack,mutable->{
-			if(lvl<=0) mutable.removeIf(holder->holder.is(enchantment));
-			else{
+			if(lvl<=0){
+				mutable.removeIf(holder->holder.is(enchantment));
+			}else{
+				int currentLevel=itemStack.getEnchantmentLevel(enchantmentHolder);
 				switch(mode){
-					case 0 -> mutable.set(enchantmentHolder,itemStack.getEnchantmentLevel(enchantmentHolder)+lvl);
+					case 0 -> mutable.set(enchantmentHolder,currentLevel+lvl);
 					case 1 -> {
-						if(itemStack.getEnchantmentLevel(enchantmentHolder)-lvl<=0) manipulateEnchantment(provider,itemStack,enchantment,-1,0);
-						else mutable.set(enchantmentHolder,itemStack.getEnchantmentLevel(enchantmentHolder)-lvl);
+						int newLevel=currentLevel-lvl;
+						if(newLevel<=0) mutable.removeIf(holder->holder.is(enchantment));
+						else mutable.set(enchantmentHolder,newLevel);
 					}
 					case 2 -> mutable.set(enchantmentHolder,lvl);
 					default -> {
@@ -886,6 +887,27 @@ public class ModularTool extends DiggerItem{
 		var enchants=itemStack.get(DataComponents.ENCHANTMENTS);
 		if(enchants!=null) itemStack.set(DataComponents.ENCHANTMENTS,enchants.withTooltip(false));
 	}
+
+	private static void syncLuckEnchantments(HolderLookup.Provider provider,ItemStack itemStack){
+		if(provider==null) return;
+		try{
+			int fortuneLevel=getEffectiveFortuneLevel(itemStack);
+			int lootingLevel=getEffectiveLootingLevel(itemStack);
+			setEnchantment(provider,itemStack,Enchantments.FORTUNE,fortuneLevel);
+			setEnchantment(provider,itemStack,Enchantments.LOOTING,lootingLevel);
+		}catch(Exception ignored){
+		}
+	}
+
+	private static int getEffectiveFortuneLevel(ItemStack itemStack){
+		int luckLevel=getModifierLevel(itemStack,ModularModifier.LUCK);
+		boolean hasFortuneBonus=getReforge(itemStack)==GLEAMING||getReforge(itemStack)==HARVESTER;
+		return Math.min(5,luckLevel+(hasFortuneBonus?1:0));
+	}
+
+	private static int getEffectiveLootingLevel(ItemStack itemStack){
+		return getModifierLevel(itemStack,ModularModifier.LUCK);
+	}
 	/**
 	 * Get Holder<Enchantment> of enchantment.
 	 * @param provider provider
@@ -893,7 +915,10 @@ public class ModularTool extends DiggerItem{
 	 * @return Holder<Enchantment>
 	 */
 	private static Holder<Enchantment> getEnchantmentHolder(HolderLookup.Provider provider,ResourceKey<Enchantment> enchantment){
-		return provider.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(enchantment);
+		if(provider==null) return null;
+		return provider.lookup(Registries.ENCHANTMENT)
+				.flatMap(holderLookup->holderLookup.get(enchantment))
+				.orElse(null);
 	}
 	/**
 	 * Set new ModularReforge to tool.
@@ -908,12 +933,7 @@ public class ModularTool extends DiggerItem{
 		if(oldReforge==null) return;
 		if(oldReforge.equals(reforge)) return;
 		itemStack.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(),new ModularToolProperties(props.toolType(),props.headMaterial(),props.bindingMaterial(),props.handleMaterial(),reforge.name()));
-		if(oldReforge.equals(GLEAMING)) subtractEnchantment(provider,itemStack,Enchantments.FORTUNE,1);
-		if(reforge.equals(GLEAMING)) addEnchantment(provider,itemStack,Enchantments.FORTUNE,1);
-		if(oldReforge.equals(HARVESTER)) subtractEnchantment(provider,itemStack,Enchantments.FORTUNE,1);
-		if(reforge.equals(HARVESTER)) addEnchantment(provider,itemStack,Enchantments.FORTUNE,1);
-		if(oldReforge.equals(REAPER)) subtractEnchantment(provider,itemStack,Enchantments.LOOTING,1);
-		if(reforge.equals(REAPER)) addEnchantment(provider,itemStack,Enchantments.LOOTING,1);
+		syncLuckEnchantments(provider,itemStack);
 	}
 	/**
 	 * Get ModularReforge from tool.
