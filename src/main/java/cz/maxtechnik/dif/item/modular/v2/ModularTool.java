@@ -527,8 +527,7 @@ public class ModularTool extends DiggerItem{
 		ModularMaterial binding=ModularMaterial.byName(props.bindingMaterial());
 		ModularMaterial handle=ModularMaterial.byName(props.handleMaterial());
 		ModularReforge reforge=getReforge(itemStack);
-		int reforgeColor=0xAA00AA;
-		// ─── pre-compute raw (no-reforge) values ───
+        // ─── pre-compute raw (no-reforge) values ───
 		float rawEff=head.getHeadEfficiency()+efficiencyLevel(itemStack);
 		if(hasMaterialModifier(itemStack,ModularModifier.LIGHTWEIGHT)) rawEff*=1.05F;
 		float effMultiplier=reforge.getEfficiency();
@@ -605,7 +604,7 @@ public class ModularTool extends DiggerItem{
 			// Reforge
 			if(!reforge.getName().isEmpty()&&!reforge.getName().equals("none")){
 				list.add(CommonComponents.EMPTY);
-				list.add(Component.translatable("dif.reforge."+reforge.getName()).withStyle(Style.EMPTY.withColor(reforgeColor).withBold(true)));
+				list.add(Component.translatable("dif.reforge."+reforge.getName()).withStyle(Style.EMPTY.withColor(0xFFFFFF).withBold(true)));
 				if(reforge.hasDescription()){
 					list.add(Component.translatable("dif.reforge."+reforge.getName()+".desc").withStyle(Style.EMPTY.withColor(0x9999AA).withItalic(true)));
 				}

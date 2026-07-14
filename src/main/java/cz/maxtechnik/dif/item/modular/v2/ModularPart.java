@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.item.modular.v2;
 
 import cz.maxtechnik.dif.init.other.DifModComponents;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.Item;
