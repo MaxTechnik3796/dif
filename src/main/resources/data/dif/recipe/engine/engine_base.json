@@ -1,13 +1,19 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " A ",
-    "ABA",
-    " A "
-  ],
-  "key": {
-    "A": { "item": "dif:steel_sheet" },
-    "B": { "item": "create:shaft" }
-  },
-  "result": { "id": "dif:engine_base" }
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		" A ",
+		"ABA",
+		" A "
+	],
+	"key":{
+		"A":{
+			"item":"dif:steel_sheet"
+		},
+		"B":{
+			"item":"create:shaft"
+		}
+	},
+	"result":{
+		"id":"dif:engine_base"
+	}
 }

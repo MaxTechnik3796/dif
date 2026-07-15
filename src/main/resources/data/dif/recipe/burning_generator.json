@@ -1,30 +1,30 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "show_notification": false,
-    "pattern": [
-        "#&#",
-        "<_<",
-        "#>#"
-    ],
-    "key": {
-        "#": {
-            "item": "createaddition:iron_rod"
-        },
-        "<": {
-            "item": "minecraft:redstone"
-        },
-        ">": {
-            "item": "create:iron_sheet"
-        },
-        "_": {
-            "item": "minecraft:furnace"
-        },
-        "&": {
-            "item": "createaddition:capacitor"
-        }
-    },
-    "result": {
-        "count": 1,
-        "id": "dif:burning_generator"
-    }
+	"type":"minecraft:crafting_shaped",
+	"show_notification":false,
+	"pattern":[
+		"#&#",
+		"<_<",
+		"#>#"
+	],
+	"key":{
+		"#":{
+			"item":"createaddition:iron_rod"
+		},
+		"<":{
+			"item":"minecraft:redstone"
+		},
+		">":{
+			"item":"create:iron_sheet"
+		},
+		"_":{
+			"item":"minecraft:furnace"
+		},
+		"&":{
+			"item":"createaddition:capacitor"
+		}
+	},
+	"result":{
+		"count":1,
+		"id":"dif:burning_generator"
+	}
 }

@@ -1,32 +1,32 @@
 {
-    "type": "farmersdelight:cooking",
-    "cookingtime": 200,
-    "experience": 0.35,
-    "ingredients": [
-        {
-            "item": "dif:mata"
-        },
-        {
-            "item": "dif:mata"
-        },
-        {
-            "item": "dif:mata"
-        },
-        {
-            "item": "dif:mata"
-        },
-        {
-            "item": "dif:mata"
-        },
-        {
-            "item": "dif:mata"
-        }
-    ],
-    "result": {
-        "count": 1,
-        "id": "dif:maty_drink"
-    },
-    "container": {
-        "item": "minecraft:glass_bottle"
-    }
+	"type":"farmersdelight:cooking",
+	"cookingtime":200,
+	"experience":0.35,
+	"ingredients":[
+		{
+			"item":"dif:mata"
+		},
+		{
+			"item":"dif:mata"
+		},
+		{
+			"item":"dif:mata"
+		},
+		{
+			"item":"dif:mata"
+		},
+		{
+			"item":"dif:mata"
+		},
+		{
+			"item":"dif:mata"
+		}
+	],
+	"result":{
+		"count":1,
+		"id":"dif:maty_drink"
+	},
+	"container":{
+		"item":"minecraft:glass_bottle"
+	}
 }

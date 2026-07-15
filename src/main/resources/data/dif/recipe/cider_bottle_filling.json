@@ -1,18 +1,18 @@
 {
-    "type": "create:filling",
-    "ingredients": [
-        {
-            "item": "minecraft:glass_bottle"
-        },
-        {
-        "type": "neoforge:single",
-        "amount": 250,
-        "fluid": "dif:cider_fluid"
-        }
-    ],
-    "results": [
-        {
-            "id": "dif:cider_bottle"
-        }
-    ]
+	"type":"create:filling",
+	"ingredients":[
+		{
+			"item":"minecraft:glass_bottle"
+		},
+		{
+			"type":"neoforge:single",
+			"amount":250,
+			"fluid":"dif:cider_fluid"
+		}
+	],
+	"results":[
+		{
+			"id":"dif:cider_bottle"
+		}
+	]
 }

@@ -1,14 +1,26 @@
 {
-  "type": "create:mixing",
-  "ingredients": [
-    { "item": "create:wrench" },
-    { "item": "create:andesite_casing" },
-    { "item": "create:goggles" },
-    { "item": "minecraft:bowl" },
-    { "item": "create:andesite_alloy" }
-  ],
-  "results": [
-    { "id": "dif:super_heated_create_bowl" }
-  ],
-  "heat_requirement": "superheated"
+	"type":"create:mixing",
+	"ingredients":[
+		{
+			"item":"create:wrench"
+		},
+		{
+			"item":"create:andesite_casing"
+		},
+		{
+			"item":"create:goggles"
+		},
+		{
+			"item":"minecraft:bowl"
+		},
+		{
+			"item":"create:andesite_alloy"
+		}
+	],
+	"results":[
+		{
+			"id":"dif:super_heated_create_bowl"
+		}
+	],
+	"heat_requirement":"superheated"
 }

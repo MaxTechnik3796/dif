@@ -1,14 +1,22 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " A ",
-    "BCB",
-    " A "
-  ],
-  "key": {
-    "A": { "item": "create:iron_sheet" },
-    "B": { "item": "minecraft:iron_bars" },
-    "C": { "item": "farmersdelight:skillet" }
-  },
-  "result": { "id": "dif:frying_table" }
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		" A ",
+		"BCB",
+		" A "
+	],
+	"key":{
+		"A":{
+			"item":"create:iron_sheet"
+		},
+		"B":{
+			"item":"minecraft:iron_bars"
+		},
+		"C":{
+			"item":"farmersdelight:skillet"
+		}
+	},
+	"result":{
+		"id":"dif:frying_table"
+	}
 }

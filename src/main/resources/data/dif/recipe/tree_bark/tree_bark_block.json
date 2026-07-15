@@ -1,17 +1,17 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "show_notification": false,
-    "pattern": [
-        "###",
-        "###",
-        "###"
-    ],
-    "key": {
-        "#": {
-            "item": "farmersdelight:tree_bark"
-        }
-    },
-    "result": {
-        "id": "dif:tree_bark_block"
-    }
+	"type":"minecraft:crafting_shaped",
+	"show_notification":false,
+	"pattern":[
+		"###",
+		"###",
+		"###"
+	],
+	"key":{
+		"#":{
+			"item":"farmersdelight:tree_bark"
+		}
+	},
+	"result":{
+		"id":"dif:tree_bark_block"
+	}
 }

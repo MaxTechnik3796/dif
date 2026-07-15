@@ -1,5 +1,9 @@
 {
-  "type": "minecraft:stonecutting",
-  "ingredient": { "item": "dif:casting_mold" },
-  "result": { "id": "dif:casting_mold_katana_head" }
+	"type":"minecraft:stonecutting",
+	"ingredient":{
+		"item":"dif:casting_mold"
+	},
+	"result":{
+		"id":"dif:casting_mold_katana_head"
+	}
 }

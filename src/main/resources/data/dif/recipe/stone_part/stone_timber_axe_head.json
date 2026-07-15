@@ -1,17 +1,17 @@
 {
-  "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "minecraft:cobblestone"
-  },
-  "result": {
-    "id": "dif:modular_part",
-    "count": 1,
-    "components": {
-      "dif:modular_part_properties": {
-        "part_type": "timber_axe_head",
-        "material": "stone",
-        "cast_mold": false
-      }
-    }
-  }
+	"type":"minecraft:stonecutting",
+	"ingredient":{
+		"item":"minecraft:cobblestone"
+	},
+	"result":{
+		"id":"dif:modular_part",
+		"count":1,
+		"components":{
+			"dif:modular_part_properties":{
+				"part_type":"timber_axe_head",
+				"material":"stone",
+				"cast_mold":false
+			}
+		}
+	}
 }

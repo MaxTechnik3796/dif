@@ -1,12 +1,12 @@
 {
-    "type": "dif:frying",
-    "ingredient": {
-        "item": "minecraft:porkchop"
-    },
-    "result": {
-        "count": 1,
-        "id": "dif:rizek"
-    },
-    "processingTime": 120,
-    "oilAmount": 10
+	"type":"dif:frying",
+	"ingredient":{
+		"item":"minecraft:porkchop"
+	},
+	"result":{
+		"count":1,
+		"id":"dif:rizek"
+	},
+	"processingTime":120,
+	"oilAmount":10
 }

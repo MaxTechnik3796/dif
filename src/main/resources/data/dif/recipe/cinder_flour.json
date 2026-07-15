@@ -1,16 +1,16 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "show_notification": false,
-    "pattern": [
-        "#"
-    ],
-    "key": {
-        "#": {
-            "item": "dif:cinder_flour_block"
-        }
-    },
-    "result": {
-        "count": 9,
-        "id": "create:cinder_flour"
-    }
+	"type":"minecraft:crafting_shaped",
+	"show_notification":false,
+	"pattern":[
+		"#"
+	],
+	"key":{
+		"#":{
+			"item":"dif:cinder_flour_block"
+		}
+	},
+	"result":{
+		"count":9,
+		"id":"create:cinder_flour"
+	}
 }

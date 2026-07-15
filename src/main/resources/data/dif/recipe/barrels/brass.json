@@ -1,21 +1,21 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "show_notification": false,
-    "pattern": [
-        "# #",
-        "#<#",
-        "# #"
-    ],
-    "key": {
-        "#": {
-            "item": "create:brass_ingot"
-        },
-        "<": {
-            "item": "dif:copper_barrel"
-        }
-    },
-    "result": {
-        "count": 1,
-        "id": "dif:brass_barrel"
-    }
+	"type":"minecraft:crafting_shaped",
+	"show_notification":false,
+	"pattern":[
+		"# #",
+		"#<#",
+		"# #"
+	],
+	"key":{
+		"#":{
+			"item":"create:brass_ingot"
+		},
+		"<":{
+			"item":"dif:copper_barrel"
+		}
+	},
+	"result":{
+		"count":1,
+		"id":"dif:brass_barrel"
+	}
 }

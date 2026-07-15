@@ -1,27 +1,27 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "show_notification": false,
-    "acceptMirrored": true,
-    "pattern": [
-        "&&&",
-        "<#<",
-        ">>>"
-    ],
-    "key": {
-        "#": {
-            "item": "minecraft:iron_block"
-        },
-        "<": {
-            "item": "minecraft:redstone"
-        },
-        ">": {
-            "item": "minecraft:flint"
-        },
-        "&": {
-            "item": "minecraft:black_dye"
-        }
-    },
-    "result": {
-        "id": "dif:camera_monitor"
-    }
+	"type":"minecraft:crafting_shaped",
+	"show_notification":false,
+	"acceptMirrored":true,
+	"pattern":[
+		"&&&",
+		"<#<",
+		">>>"
+	],
+	"key":{
+		"#":{
+			"item":"minecraft:iron_block"
+		},
+		"<":{
+			"item":"minecraft:redstone"
+		},
+		">":{
+			"item":"minecraft:flint"
+		},
+		"&":{
+			"item":"minecraft:black_dye"
+		}
+	},
+	"result":{
+		"id":"dif:camera_monitor"
+	}
 }
