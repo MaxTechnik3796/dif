@@ -2,7 +2,7 @@
 	"type":"create:filling",
 	"ingredients":[
 		{
-			"item":"create:framed_glass"
+			"tag":"c:glass_blocks"
 		},
 		{
 			"type":"neoforge:single",

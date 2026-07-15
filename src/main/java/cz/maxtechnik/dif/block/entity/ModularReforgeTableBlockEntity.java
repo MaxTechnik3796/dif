@@ -7,11 +7,8 @@ import cz.maxtechnik.dif.item.modular.v2.ModularTool;
 import cz.maxtechnik.dif.item.modular.v2.ModularTools;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -32,8 +29,8 @@ public class ModularReforgeTableBlockEntity extends BlockEntity{
 		public boolean isItemValid(int slot,@NotNull ItemStack itemStack){
 			return switch(slot){
 				case 0 -> itemStack.getItem() instanceof ModularTool;
-				case 1 -> itemStack.is(DifModItems.MODULAR_TEMPLATE_HYPER.get());
-				case 2 -> itemStack.is(Items.IRON_INGOT);
+				case 1 -> itemStack.is(DifModItems.MODULAR_TEMPLATE_NORMAL.get());
+				case 2 -> itemStack.is(DifModItems.MODULAR_REFORGE_STONE.get());
 				default -> false;
 			};
 		}
