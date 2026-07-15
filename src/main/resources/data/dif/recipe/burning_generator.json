@@ -1,30 +1,16 @@
 {
-	"type":"minecraft:crafting_shaped",
-	"show_notification":false,
-	"pattern":[
-		"#&#",
-		"<_<",
-		"#>#"
-	],
-	"key":{
-		"#":{
-			"item":"createaddition:iron_rod"
-		},
-		"<":{
-			"item":"minecraft:redstone"
-		},
-		">":{
-			"item":"create:iron_sheet"
-		},
-		"_":{
-			"item":"minecraft:furnace"
-		},
-		"&":{
-			"item":"createaddition:capacitor"
-		}
-	},
-	"result":{
-		"count":1,
-		"id":"dif:burning_generator"
-	}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "AEA"
+  ],
+  "key": {
+    "A": { "item": "dif:nickel_sheet" },
+    "B": { "item": "minecraft:flint_and_steel" },
+    "C": { "item": "minecraft:redstone" },
+    "D": { "item": "minecraft:furnace" },
+    "E": { "item": "create:industrial_iron_block" }
+  },
+  "result": { "id": "dif:burning_generator" }
 }

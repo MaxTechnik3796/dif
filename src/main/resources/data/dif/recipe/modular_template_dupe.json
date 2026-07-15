@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "ACA"
+  ],
+  "key": {
+    "A": { "item": "minecraft:diamond" },
+    "B": { "item": "dif:modular_template_normal" },
+    "C": { "item": "minecraft:deepslate" },
+    "D": { "item": "minecraft:gold_ingot" }
+  },
+  "result": { "id": "dif:modular_template_normal", "count": 2 }
+}

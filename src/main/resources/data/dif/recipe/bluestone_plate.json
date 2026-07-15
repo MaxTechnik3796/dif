@@ -1,0 +1,13 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    { "item": "dif:bluestone" },
+    { "item": "dif:bluestone" },
+    { "item": "dif:bluestone" },
+    { "item": "dif:bluestone" }
+  ],
+  "results": [
+    { "id": "dif:blue_plate" }
+  ],
+  "heat_requirement": "heated"
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "BCB",
+    "DED"
+  ],
+  "key": {
+    "A": { "item": "minecraft:glass" },
+    "B": { "item": "dif:nickel_sheet" },
+    "C": { "item": "dif:blue_plate" },
+    "D": { "item": "create:industrial_iron_block" },
+    "E": { "item": "minecraft:daylight_detector" }
+  },
+  "result": { "id": "dif:solar_panel_00" }
+}

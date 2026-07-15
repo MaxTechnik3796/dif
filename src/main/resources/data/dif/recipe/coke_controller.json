@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "key": {
+    "A": { "item": "create:iron_sheet" },
+    "B": { "item": "dif:coke_oven" }
+  },
+  "result": { "id": "dif:coke_oven_controller" }
+}

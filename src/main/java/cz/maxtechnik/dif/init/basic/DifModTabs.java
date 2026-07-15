@@ -80,8 +80,6 @@ public class DifModTabs{
 		tabData.accept(COKE_OVEN);
 		tabData.accept(COKE_OVEN_CONTROLLER);
 		tabData.accept(COKE);
-		tabData.accept(BLAST_SMELTERY);
-		tabData.accept(BLAST_SMELTERY_CONTROLLER);
 		tabData.accept(FORGE_BRICK);
 		tabData.accept(FORGE_GLASS);
 		tabData.accept(FORGE_FURNACE_CONTROLLER);

@@ -1,19 +1,14 @@
 {
-	"type":"minecraft:crafting_shaped",
-	"pattern":[
-		"AA ",
-		"B A",
-		"AA "
-	],
-	"key":{
-		"A":{
-			"item":"minecraft:diamond"
-		},
-		"B":{
-			"item":"create:precision_mechanism"
-		}
-	},
-	"result":{
-		"id":"dif:quarry_engine_diamond"
-	}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AA ",
+    "BCA",
+    "AA "
+  ],
+  "key": {
+    "A": { "item": "minecraft:diamond" },
+    "B": { "item": "create:precision_mechanism" },
+    "C": { "item": "dif:quarry_engine_gold" }
+  },
+  "result": { "id": "dif:quarry_engine_diamond" }
 }

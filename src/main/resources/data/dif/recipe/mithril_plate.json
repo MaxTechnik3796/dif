@@ -1,0 +1,18 @@
+{
+	"type":"create:filling",
+	"ingredients":[
+		{
+			"item":"create:sturdy_sheet"
+		},
+		{
+			"type":"neoforge:single",
+			"amount":288,
+			"fluid":"dif:molten_mithril_fluid"
+		}
+	],
+	"results":[
+		{
+			"id":"dif:mithril_plate"
+		}
+	]
+}

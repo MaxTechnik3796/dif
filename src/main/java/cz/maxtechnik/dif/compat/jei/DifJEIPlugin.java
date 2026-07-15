@@ -32,7 +32,6 @@ public class DifJEIPlugin implements IModPlugin {
 	public void registerCategories(IRecipeCategoryRegistration registration) {
 		IGuiHelper guiHelper = registration.getJeiHelpers().getGuiHelper();
 		registration.addRecipeCategories(
-				new BlastSmelteryJEI.Category(guiHelper),
 				new CokeOvenJEI.Category(guiHelper),
 				new DistillationJEI.Category(guiHelper),
 				new ForgeMeltingJEI.Category(guiHelper),
@@ -45,13 +44,6 @@ public class DifJEIPlugin implements IModPlugin {
 	public void registerRecipes(@NotNull IRecipeRegistration registration) {
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.level == null) return;
-
-		// Blast Smeltery
-		registration.addRecipes(BlastSmelteryJEI.TYPE, mc.level.getRecipeManager()
-				.getAllRecipesFor(DifModRecipes.BLAST_SMELTERY_TYPE.get())
-				.stream()
-				.map(RecipeHolder::value)
-				.toList());
 
 		// Coke Oven
 		registration.addRecipes(CokeOvenJEI.TYPE, mc.level.getRecipeManager()
@@ -101,9 +93,6 @@ public class DifJEIPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipeCatalysts(@NotNull IRecipeCatalystRegistration registration) {
-		registration.addRecipeCatalyst(new ItemStack(DifModBlocks.BLAST_SMELTERY_CONTROLLER.get()), BlastSmelteryJEI.TYPE);
-		registration.addRecipeCatalyst(new ItemStack(DifModBlocks.BLAST_SMELTERY.get()), BlastSmelteryJEI.TYPE);
-
 		registration.addRecipeCatalyst(new ItemStack(DifModBlocks.COKE_OVEN_CONTROLLER.get()), CokeOvenJEI.TYPE);
 		registration.addRecipeCatalyst(new ItemStack(DifModBlocks.COKE_OVEN.get()), CokeOvenJEI.TYPE);
 

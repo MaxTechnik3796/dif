@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "A A",
+    " B ",
+    "A A"
+  ],
+  "key": {
+    "A": { "item": "minecraft:iron_nugget" },
+    "B": { "item": "dif:zinc_casing" }
+  },
+  "result": { "id": "dif:zinc_support", "count": 4 }
+}

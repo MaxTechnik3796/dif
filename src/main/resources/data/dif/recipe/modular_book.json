@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AB"
+  ],
+  "key": {
+    "A": { "item": "minecraft:book" },
+    "B": { "item": "dif:modular_template_normal" }
+  },
+  "result": { "id": "dif:modular_wiki_book" }
+}
