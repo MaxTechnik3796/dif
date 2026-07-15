@@ -15,6 +15,7 @@
 		"dif:nickel_block",
 		"dif:raw_nickel_block",
 		"dif:nickel_ore",
-		"dif:deepslate_nickel_ore"
+		"dif:deepslate_nickel_ore",
+		"dif:modular_reforge_table"
 	]
 }

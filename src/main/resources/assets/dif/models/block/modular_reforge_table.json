@@ -1,10 +1,11 @@
 {
 	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
+	"render_type":"cutout",
 	"texture_size": [64, 32],
 	"textures": {
-		"0": "Pictures/reforge_table",
-		"particle": "Pictures/reforge_table"
+		"0": "dif:block/modular_reforge_table",
+		"particle": "block/stripped_mangrove_log"
 	},
 	"elements": [
 		{
