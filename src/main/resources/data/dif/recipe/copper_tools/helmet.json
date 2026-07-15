@@ -1,17 +1,17 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "show_notification": false,
-    "acceptMirrored": true,
-    "pattern": [
-        "###",
-        "# #"
-    ],
-    "key": {
-        "#": {
-            "item": "minecraft:copper_ingot"
-        }
-    },
-    "result": {
-        "id": "dif:copper_helmet"
-    }
+	"type":"minecraft:crafting_shaped",
+	"show_notification":false,
+	"acceptMirrored":true,
+	"pattern":[
+		"###",
+		"# #"
+	],
+	"key":{
+		"#":{
+			"item":"minecraft:copper_ingot"
+		}
+	},
+	"result":{
+		"id":"dif:copper_helmet"
+	}
 }

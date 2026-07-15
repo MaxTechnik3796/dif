@@ -1,9 +1,15 @@
 {
-  "type": "create:compacting",
-  "ingredients": [
-    { "type": "neoforge:single", "fluid": "dif:molten_obsidian_fluid", "amount": 144 }
-  ],
-  "results": [
-    { "id": "minecraft:obsidian" }
-  ]
+	"type":"create:compacting",
+	"ingredients":[
+		{
+			"type":"neoforge:single",
+			"fluid":"dif:molten_obsidian_fluid",
+			"amount":144
+		}
+	],
+	"results":[
+		{
+			"id":"minecraft:obsidian"
+		}
+	]
 }

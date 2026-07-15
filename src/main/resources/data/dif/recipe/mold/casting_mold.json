@@ -1,12 +1,18 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "AB",
-    "BA"
-  ],
-  "key": {
-    "A": { "item": "create:brass_sheet" },
-    "B": { "item": "create:brass_ingot" }
-  },
-  "result": { "id": "dif:casting_mold" }
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		"AB",
+		"BA"
+	],
+	"key":{
+		"A":{
+			"item":"create:brass_sheet"
+		},
+		"B":{
+			"item":"create:brass_ingot"
+		}
+	},
+	"result":{
+		"id":"dif:casting_mold"
+	}
 }

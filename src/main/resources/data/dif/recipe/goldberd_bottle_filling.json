@@ -6,13 +6,13 @@
 		},
 		{
 			"type":"neoforge:single",
-			"amount":250,
-			"fluid":"dif:cider_fluid"
+			"amount":500,
+			"fluid":"dif:beer_fluid"
 		}
 	],
 	"results":[
 		{
-			"id":"dif:cider_bottle"
+			"id":"dif:beer"
 		}
 	]
 }

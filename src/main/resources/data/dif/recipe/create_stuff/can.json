@@ -1,23 +1,23 @@
 {
-    "type": "farmersdelight:cooking",
-    "cookingtime": 150,
-    "experience": 0.35,
-    "ingredients": [
-        {
-            "item": "create:wrench"
-        },
-        {
-            "item": "create:andesite_alloy"
-        },
-        {
-            "item": "create:goggles"
-        }
-    ],
-    "result": {
-        "count": 1,
-        "id": "dif:create_can"
-    },
-    "container": {
-        "id": "create:andesite_alloy"
-    }
+	"type":"farmersdelight:cooking",
+	"cookingtime":150,
+	"experience":0.35,
+	"ingredients":[
+		{
+			"item":"create:wrench"
+		},
+		{
+			"item":"create:andesite_alloy"
+		},
+		{
+			"item":"create:goggles"
+		}
+	],
+	"result":{
+		"count":1,
+		"id":"dif:create_can"
+	},
+	"container":{
+		"id":"create:andesite_alloy"
+	}
 }

@@ -1,16 +1,28 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ABA",
-    "CDC",
-    "AEA"
-  ],
-  "key": {
-    "A": { "item": "dif:nickel_sheet" },
-    "B": { "item": "minecraft:redstone" },
-    "C": { "item": "create:golden_sheet" },
-    "D": { "item": "dif:mithril_plate" },
-    "E": { "item": "dif:quarry_drill_diamond" }
-  },
-  "result": { "id": "dif:quarry" }
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		"ABA",
+		"CDC",
+		"AEA"
+	],
+	"key":{
+		"A":{
+			"item":"dif:nickel_sheet"
+		},
+		"B":{
+			"item":"minecraft:redstone"
+		},
+		"C":{
+			"item":"create:golden_sheet"
+		},
+		"D":{
+			"item":"dif:mithril_plate"
+		},
+		"E":{
+			"item":"dif:quarry_drill_diamond"
+		}
+	},
+	"result":{
+		"id":"dif:quarry"
+	}
 }

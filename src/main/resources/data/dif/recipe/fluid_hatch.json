@@ -1,19 +1,19 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "show_notification": false,
-    "acceptMirrored": true,
-    "pattern": [
-        "#<"
-    ],
-    "key": {
-        "#": {
-            "item": "create:item_drain"
-        },
-        "<": {
-            "item": "minecraft:iron_trapdoor"
-        }
-    },
-    "result": {
-        "id": "dif:fluid_hatch"
-    }
+	"type":"minecraft:crafting_shaped",
+	"show_notification":false,
+	"acceptMirrored":true,
+	"pattern":[
+		"#<"
+	],
+	"key":{
+		"#":{
+			"item":"create:item_drain"
+		},
+		"<":{
+			"item":"minecraft:iron_trapdoor"
+		}
+	},
+	"result":{
+		"id":"dif:fluid_hatch"
+	}
 }

@@ -1,17 +1,17 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        " C ",
-        "C C",
-        " C "
-    ],
-    "key": {
-        "C": {
-            "item": "minecraft:copper_block"
-        }
-    },
-    "result": {
-        "count": 16,
-        "id": "dif:empty_rocket_fuel"
-    }
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		" C ",
+		"C C",
+		" C "
+	],
+	"key":{
+		"C":{
+			"item":"minecraft:copper_block"
+		}
+	},
+	"result":{
+		"count":16,
+		"id":"dif:empty_rocket_fuel"
+	}
 }

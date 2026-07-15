@@ -1,12 +1,16 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "AAA",
-    "AAA",
-    "AAA"
-  ],
-  "key": {
-    "A": { "item": "dif:raw_nickel" }
-  },
-  "result": { "id": "dif:raw_nickel_block" }
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		"AAA",
+		"AAA",
+		"AAA"
+	],
+	"key":{
+		"A":{
+			"item":"dif:raw_nickel"
+		}
+	},
+	"result":{
+		"id":"dif:raw_nickel_block"
+	}
 }

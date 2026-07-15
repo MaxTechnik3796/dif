@@ -1,16 +1,16 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "show_notification": false,
-    "pattern": [
-        "#"
-    ],
-    "key": {
-        "#": {
-            "item": "dif:aluminum_block"
-        }
-    },
-    "result": {
-        "count": 9,
-        "id": "dif:aluminum_ingot"
-    }
+	"type":"minecraft:crafting_shaped",
+	"show_notification":false,
+	"pattern":[
+		"#"
+	],
+	"key":{
+		"#":{
+			"item":"dif:aluminum_block"
+		}
+	},
+	"result":{
+		"count":9,
+		"id":"dif:aluminum_ingot"
+	}
 }
