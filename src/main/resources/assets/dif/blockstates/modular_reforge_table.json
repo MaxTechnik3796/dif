@@ -1,19 +1,19 @@
 {
 	"variants":{
 		"facing=north":{
-			"model":"dif:block/modular_reforge_table"
-		},
-		"facing=east":{
 			"model":"dif:block/modular_reforge_table",
 			"y":90
 		},
-		"facing=south":{
+		"facing=east":{
 			"model":"dif:block/modular_reforge_table",
 			"y":180
 		},
-		"facing=west":{
+		"facing=south":{
 			"model":"dif:block/modular_reforge_table",
-			"y":270
+			"y":290
+		},
+		"facing=west":{
+			"model":"dif:block/modular_reforge_table"
 		}
 	}
 }
