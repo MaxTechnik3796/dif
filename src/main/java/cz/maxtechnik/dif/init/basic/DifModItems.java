@@ -169,14 +169,6 @@ public class DifModItems{
 	public static final DeferredItem<Item> CREATE_BOWL=REGISTRY.register("create_bowl",()->new RetvalFoods(new Item.Properties().food(DifModFoods.CREATE_BOWL),Items.BOWL,UseAnim.EAT));
 	public static final DeferredItem<Item> SUPER_HEATED_CREATE_BOWL=REGISTRY.register("super_heated_create_bowl",()->new RetvalFoods(new  Item.Properties().food(DifModFoods.CREATE_SUPER),Items.BOWL,UseAnim.EAT));
 
-	public static final DeferredItem<Item> MATY_DRINK=REGISTRY.register("maty_drink",()->new RetvalFoods(new Item.Properties().rarity(Rarity.UNCOMMON).food(DifModFoods.MATY_DRINK),Items.GLASS_BOTTLE,UseAnim.DRINK));
-	public static final DeferredItem<Item> MATA=REGISTRY.register("mata",()->new Item(new Item.Properties().food(DifModFoods.MATA)));
-	public static final DeferredItem<Item> MATA_PLANT=block(DifModBlocks.MATA_PLANT);
-	public static final DeferredItem<Item> MATY_BLOCK=block(DifModBlocks.MATY_BLOCK);
-
-	public static final DeferredItem<Item> CANOLA_SEEDS=REGISTRY.register("canola_seeds",Canola::new);
-	public static final DeferredItem<Item> CANOLA_PLANT=block(DifModBlocks.CANOLA_PLANT);
-
 	//Tech & Stuff:
 	public static final DeferredItem<Item> INCOMPLETE_UNIVERSAL=REGISTRY.register("incomplete_universal",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item> ELECTRUM_DESTROYER=REGISTRY.register("electrum_destroyer",ElectrumDestroyer::new);

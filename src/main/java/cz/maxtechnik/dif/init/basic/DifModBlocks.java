@@ -5,20 +5,15 @@ import cz.maxtechnik.dif.block.*;
 import cz.maxtechnik.dif.block.barrel.AndesiteBarrel;
 import cz.maxtechnik.dif.block.barrel.BrassBarrel;
 import cz.maxtechnik.dif.block.barrel.CopperBarrel;
-import cz.maxtechnik.dif.block.mata.MataPlant;
-import cz.maxtechnik.dif.block.mata.MatyBlock;
 import cz.maxtechnik.dif.block.rails.FastPoweredRailBlock;
 import cz.maxtechnik.dif.block.rails.FastRailBlock;
 import cz.maxtechnik.dif.block.space.*;
 import cz.maxtechnik.dif.block.template.*;
 import cz.maxtechnik.dif.fluid.template.MoltenBlock;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
-import net.minecraft.core.BlockPos;
 import net.minecraft.util.valueproviders.ConstantInt;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
@@ -123,11 +118,6 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>DEEPSLATE_BAUXITE_ORE=REGISTRY.register("deepslate_bauxite_ore",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.DEEPSLATE).strength(4.5F,3F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>ALUMINUM_BLOCK=REGISTRY.register("aluminum_block",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>ALUMINUM_PROFILE=REGISTRY.register("aluminum_profile",AluminumProfile::new);
-
-	//Canola:
-	public static final DeferredBlock<Block>CANOLA_PLANT=REGISTRY.register("canola_plant",CanolaPlant::new);
-	public static final DeferredBlock<Block>MATA_PLANT=REGISTRY.register("mata_plant",MataPlant::new);
-	public static final DeferredBlock<Block>MATY_BLOCK=REGISTRY.register("maty_block",MatyBlock::new);
 
 	//Ruby:
 	public static final DeferredBlock<Block>RUBY_ORE=REGISTRY.register("ruby_ore",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(3F,3F).requiresCorrectToolForDrops()));

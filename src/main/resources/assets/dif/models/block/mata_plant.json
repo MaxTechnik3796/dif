@@ -1,8 +1,0 @@
-{
-	"parent":"block/cross",
-	"textures":{
-		"cross":"dif:block/mata_plant",
-		"particle":"dif:block/mata_plant"
-	},
-	"render_type":"cutout"
-}

@@ -219,19 +219,12 @@ public class DifModTabs{
 
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.NATURAL_BLOCKS)){
 			tabData.insertAfter(new ItemStack(Items.BEDROCK),new ItemStack(PEDROCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			tabData.insertAfter(new ItemStack(Items.SNOW),new ItemStack(MATY_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertAfter(new ItemStack(Items.CRYING_OBSIDIAN),new ItemStack(CINDER_FLOUR_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertAfter(new ItemStack(Items.RAW_IRON_BLOCK),new ItemStack(RAW_NICKEL_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			addItemStacksBehind(tabData,new ItemStack(Items.DEEPSLATE_IRON_ORE),
 					new ItemStack[]{
 							new ItemStack(NICKEL_ORE.get()),
 							new ItemStack(DEEPSLATE_NICKEL_ORE.get())
-					});
-			addItemStacksBehind(tabData,new ItemStack(Items.SUGAR_CANE),
-					new ItemStack[]{
-							new ItemStack(MATA_PLANT.get()),
-							new ItemStack(CANOLA_PLANT.get()),
-							new ItemStack(CANOLA_SEEDS.get())
 					});
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS)){
 			tabData.insertAfter(new ItemStack(Items.CHEST),new ItemStack(OLD_CHEST.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
@@ -335,7 +328,6 @@ public class DifModTabs{
 			addItemStacksBehind(tabData,new ItemStack(Items.MILK_BUCKET),
 					new ItemStack[]{   
 							new ItemStack(BEER.get()),
-							new ItemStack(MATY_DRINK.get()),
 							new ItemStack(BERRY_BOTTLE.get()),
 							new ItemStack(CIDER_BOTTLE.get())
 					});

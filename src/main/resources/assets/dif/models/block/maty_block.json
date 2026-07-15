@@ -1,8 +1,0 @@
-{
-	"parent":"block/cube_all",
-	"textures":{
-		"all":"dif:block/maty_block",
-		"particle":"dif:block/maty_block"
-	},
-	"render_type":"solid"
-}

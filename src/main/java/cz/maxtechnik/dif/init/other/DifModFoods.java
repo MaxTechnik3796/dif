@@ -5,9 +5,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 @SuppressWarnings("deprecation")
 public class DifModFoods{
-	public static final FoodProperties MATA=new FoodProperties.Builder().nutrition(1).saturationModifier(0.2F).alwaysEdible().build();
-	public static final FoodProperties MATY_DRINK=new FoodProperties.Builder().nutrition(13).saturationModifier(2f).effect(new MobEffectInstance(DifModMobEffects.REDSTONE_IQ,1200,0),1F).effect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,200,0),1F).effect(new MobEffectInstance(MobEffects.DIG_SPEED,100,2),1F).alwaysEdible().build();
-	public static final FoodProperties CANOLA_SEEDS=new FoodProperties.Builder().nutrition(1).saturationModifier(0.1F).alwaysEdible().fast().build();
 	public static final FoodProperties FRIES=new FoodProperties.Builder().nutrition(3).saturationModifier(0.45F).alwaysEdible().build();
 	public static final FoodProperties BUCKET_OF_CHICKEN=new FoodProperties.Builder().nutrition(9).saturationModifier(1.25F).alwaysEdible().build();
 	public static final FoodProperties RIZEK=new FoodProperties.Builder().nutrition(5).saturationModifier(0.4F).alwaysEdible().build();
