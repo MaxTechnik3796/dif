@@ -30,22 +30,22 @@ public class ModularReforgeTableRenderer implements BlockEntityRenderer<ModularR
 			poseStack.pushPose();
 			switch(facing){
 				case NORTH -> {
-					poseStack.translate(0.5F,1.0201F,0.5F);//edit
+					poseStack.translate(0.42F,1.0201F,0.52F);
 					poseStack.mulPose(Axis.XP.rotationDegrees(90F));
 					poseStack.mulPose(Axis.ZP.rotationDegrees(90F));
 				}
 				case SOUTH -> {
-					poseStack.translate(0.5F,1.0201F,0.5F);//edit
+					poseStack.translate(0.58F,1.0201F,0.48F);
 					poseStack.mulPose(Axis.XP.rotationDegrees(90F));
 					poseStack.mulPose(Axis.ZP.rotationDegrees(-90F));
 				}
 				case EAST -> {
-					poseStack.translate(0.5F,1.0201F,0.5F);//edit
+					poseStack.translate(0.48F,1.0201F,0.42F);
 					poseStack.mulPose(Axis.XP.rotationDegrees(90F));
 					poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 				}
 				case WEST -> {
-					poseStack.translate(0.5F,1.0201F,0.5F);//edit
+					poseStack.translate(0.52F,1.0201F,0.58F);
 					poseStack.mulPose(Axis.XP.rotationDegrees(90F));
 				}
 				default -> {
@@ -59,22 +59,22 @@ public class ModularReforgeTableRenderer implements BlockEntityRenderer<ModularR
 			poseStack.pushPose();
 			switch(facing){
 				case NORTH -> {
-					poseStack.translate(0.5F,1.02F,0.17F);//edit
+					poseStack.translate(0.42F,1.02F,0.17F);
 					poseStack.mulPose(Axis.XP.rotationDegrees(90F));
 					poseStack.mulPose(Axis.ZP.rotationDegrees(90F));
 				}
 				case SOUTH -> {
-					poseStack.translate(0.5F,1.02F,0.83F);//edit
+					poseStack.translate(0.58F,1.02F,0.83F);
 					poseStack.mulPose(Axis.XP.rotationDegrees(90F));
 					poseStack.mulPose(Axis.ZP.rotationDegrees(-90F));
 				}
 				case EAST -> {
-					poseStack.translate(0.83F,1.02F,0.5F);//edit
+					poseStack.translate(0.83F,1.02F,0.42F);
 					poseStack.mulPose(Axis.XP.rotationDegrees(90F));
 					poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 				}
 				case WEST -> {
-					poseStack.translate(0.17F,1.02F,0.5F);//edit
+					poseStack.translate(0.17F,1.02F,0.58F);
 					poseStack.mulPose(Axis.XP.rotationDegrees(90F));
 				}
 				default -> {
@@ -88,22 +88,22 @@ public class ModularReforgeTableRenderer implements BlockEntityRenderer<ModularR
 			poseStack.pushPose();
 			switch(facing){
 				case NORTH -> {
-					poseStack.translate(0.5F,1.02F,0.83F);//edit
+					poseStack.translate(0.42F,1.02F,0.85F);
 					poseStack.mulPose(Axis.XP.rotationDegrees(90F));
 					poseStack.mulPose(Axis.ZP.rotationDegrees(90F));
 				}
 				case SOUTH -> {
-					poseStack.translate(0.5F,1.02F,0.17F);//edit
+					poseStack.translate(0.58F,1.02F,0.15F);
 					poseStack.mulPose(Axis.XP.rotationDegrees(90F));
 					poseStack.mulPose(Axis.ZP.rotationDegrees(-90F));
 				}
 				case EAST -> {
-					poseStack.translate(0.17F,1.02F,0.5F);//edit
+					poseStack.translate(0.15F,1.02F,0.42F);
 					poseStack.mulPose(Axis.XP.rotationDegrees(90F));
 					poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 				}
 				case WEST -> {
-					poseStack.translate(0.83F,1.02F,0.5F);//edit
+					poseStack.translate(0.85F,1.02F,0.58F);
 					poseStack.mulPose(Axis.XP.rotationDegrees(90F));
 				}
 				default -> {
