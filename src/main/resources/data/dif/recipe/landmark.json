@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "A",
+    "B"
+  ],
+  "key": {
+    "A": { "item": "minecraft:lapis_lazuli" },
+    "B": { "item": "minecraft:redstone_torch" }
+  },
+  "result": { "id": "dif:quarry_landmark" }
+}

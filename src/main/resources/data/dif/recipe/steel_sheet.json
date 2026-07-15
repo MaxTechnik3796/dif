@@ -1,0 +1,9 @@
+{
+  "type": "create:pressing",
+  "ingredients": [
+    { "item": "create:iron_sheet" }
+  ],
+  "results": [
+    { "id": "dif:steel_sheet" }
+  ]
+}

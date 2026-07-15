@@ -1,0 +1,17 @@
+{
+    "type": "create:filling",
+    "ingredients": [
+        {
+            "item": "minecraft:glass_bottle"
+        },
+        {
+        "type": "neoforge:single",
+        "amount": 250,
+        "fluid": "dif:xp_fluid"
+        }
+    ],
+    "results":
+        {
+            "id": "dif:bottle_of_uranovej_koktejl"
+        }
+}

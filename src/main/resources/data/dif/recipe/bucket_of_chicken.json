@@ -1,0 +1,18 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "show_notification": false,
+    "ingredients": [
+        {
+            "item": "minecraft:bucket"
+        },
+        {
+            "item": "minecraft:cooked_chicken"
+        },
+        {
+            "item": "dif:fries"
+        }
+    ],
+    "result": {
+        "id": "dif:bucket_of_chicken"
+    }
+}

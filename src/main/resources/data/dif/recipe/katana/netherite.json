@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:smithing_transform",
+    "show_notification": false,
+    "addition": {
+        "item": "minecraft:netherite_ingot"
+    },
+    "base": {
+        "item": "dif:diamond_katana"
+    },
+    "result": {
+        "id": "dif:netherite_katana"
+    },
+    "template": {
+        "item": "minecraft:netherite_upgrade_smithing_template"
+    }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "key": {
+    "A": { "item": "minecraft:redstone" },
+    "B": { "item": "minecraft:tinted_glass" }
+  },
+  "result": { "id": "dif:nano_glass" }
+}

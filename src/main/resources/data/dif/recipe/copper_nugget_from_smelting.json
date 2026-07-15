@@ -1,0 +1,15 @@
+{
+	"type":"minecraft:smelting",
+	"show_notification":false,
+	"category":"misc",
+	"cookingtime":200,
+	"experience":0.1,
+	"ingredient":[
+		{
+			"tag":"dif:copper_stuff"
+		}
+	],
+	"result":{
+            "id": "create:copper_nugget"
+        }
+}

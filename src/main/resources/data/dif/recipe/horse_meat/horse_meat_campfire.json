@@ -1,0 +1,12 @@
+{
+	"type":"minecraft:campfire_cooking",
+	"show_notification":false,
+	"cookingtime":600,
+	"experience":0.35,
+	"ingredient":{
+		"item":"dif:horse_meat"
+	},
+	"result":{
+		"id":"dif:cooked_horse_meat"
+	}
+}

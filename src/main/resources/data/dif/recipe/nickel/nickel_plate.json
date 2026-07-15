@@ -1,0 +1,9 @@
+{
+  "type": "create:pressing",
+  "ingredients": [
+    { "item": "dif:nickel_ingot" }
+  ],
+  "results": [
+    { "id": "dif:nickel_sheet" }
+  ]
+}

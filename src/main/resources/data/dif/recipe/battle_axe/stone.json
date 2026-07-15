@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "show_notification": false,
+    "acceptMirrored": true,
+    "pattern": [
+        "###",
+        "#< ",
+        " < "
+    ],
+    "key": {
+        "#": {
+            "tag": "minecraft:stone_tool_materials"
+        },
+        "<": {
+            "item": "minecraft:stick"
+        }
+    },
+    "result": {
+        "id": "dif:stone_battle_axe"
+    }
+}

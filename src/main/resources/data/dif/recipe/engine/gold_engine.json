@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AA ",
+    "B A",
+    "AA "
+  ],
+  "key": {
+    "A": { "item": "minecraft:gold_ingot" },
+    "B": { "item": "create:precision_mechanism" }
+  },
+  "result": { "id": "dif:quarry_engine_gold" }
+}

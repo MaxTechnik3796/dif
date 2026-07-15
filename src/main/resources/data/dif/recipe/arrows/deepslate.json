@@ -1,0 +1,11 @@
+{
+	"type":"minecraft:stonecutting",
+	"show_notification":false,
+	"ingredient":{
+		"item":"minecraft:polished_deepslate"
+	},
+	"result":{
+		"id": "dif:deepslated_arrow"
+	},
+	"count":1
+}

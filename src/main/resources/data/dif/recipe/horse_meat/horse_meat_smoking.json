@@ -1,0 +1,12 @@
+{
+	"type":"minecraft:smoking",
+	"show_notification":false,
+	"ingredient":{
+		"item":"dif:horse_meat"
+	},
+	"result":{
+		"id":"dif:cooked_horse_meat"
+	},
+	"experience":0.35,
+	"cookingtime":100
+}

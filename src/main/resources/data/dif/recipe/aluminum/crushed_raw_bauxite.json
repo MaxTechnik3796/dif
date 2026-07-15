@@ -1,0 +1,23 @@
+{
+    "type": "create:crushing",
+    "processingTime": 400,
+    "ingredients": [
+        {
+            "tag": "dif:bauxite_ore"
+        }
+    ],
+    "results": [
+        {
+            "count": 3,
+            "id": "dif:crushed_raw_bauxite"
+        },
+        {
+            "chance": 0.75,
+            "id": "dif:crushed_raw_bauxite"
+        },
+        {
+            "chance": 0.75,
+            "id": "create:experience_nugget"
+        }
+    ]
+}

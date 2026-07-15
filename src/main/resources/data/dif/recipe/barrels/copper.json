@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "show_notification": false,
+    "pattern": [
+        "# #",
+        "#<#",
+        "# #"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:copper_ingot"
+        },
+        "<": {
+            "item": "dif:andesite_barrel"
+        }
+    },
+    "result": {
+        "count": 1,
+        "id": "dif:copper_barrel"
+    }
+}

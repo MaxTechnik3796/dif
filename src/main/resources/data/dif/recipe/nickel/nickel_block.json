@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "AAA",
+    "AAA"
+  ],
+  "key": {
+    "A": { "item": "dif:nickel_ingot" }
+  },
+  "result": { "id": "dif:nickel_block" }
+}

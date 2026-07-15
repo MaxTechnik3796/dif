@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "show_notification": false,
+    "acceptMirrored": true,
+    "pattern": [
+        "###",
+        "#< ",
+        " < "
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:iron_ingot"
+        },
+        "<": {
+            "item": "minecraft:stick"
+        }
+    },
+    "result": {
+        "id": "dif:iron_battle_axe"
+    }
+}

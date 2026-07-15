@@ -1,0 +1,17 @@
+{
+    "type": "create:emptying",
+    "ingredients": [
+        {
+            "item": "dif:cider_bottle"
+        }
+    ],
+    "results": [
+        {
+            "id": "minecraft:glass_bottle"
+        },
+        {
+            "amount": 250,
+            "id": "dif:cider_fluid"
+        }
+    ]
+}

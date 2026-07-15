@@ -1,0 +1,18 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "show_notification": false,
+    "pattern": [
+        "###",
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": {
+            "item": "dif:mata"
+        }
+    },
+    "result": {
+        "count": 1,
+        "id": "dif:maty_block"
+    }
+}

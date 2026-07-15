@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "ABA"
+  ],
+  "key": {
+    "A": { "item": "minecraft:redstone" },
+    "B": { "item": "create:iron_sheet" },
+    "C": { "item": "minecraft:iron_ingot" },
+    "D": { "item": "minecraft:tinted_glass" }
+  },
+  "result": { "id": "dif:camera" }
+}

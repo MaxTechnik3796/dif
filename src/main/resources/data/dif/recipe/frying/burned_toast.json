@@ -1,0 +1,7 @@
+{
+  "type": "dif:frying",
+  "ingredient": { "item": "minecraft:bread" },
+  "result": { "id": "dif:burned_toast" },
+  "processingTime": 100,
+  "oilAmount": 10
+}

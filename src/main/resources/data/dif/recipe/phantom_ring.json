@@ -1,0 +1,15 @@
+{
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": true,
+  "key": {
+    "A": { "item": "minecraft:phantom_membrane" },
+    "B": { "item": "create:iron_sheet" },
+    "C": { "item": "minecraft:diamond" }
+  },
+  "pattern": [
+    "ABA",
+    "BCB",
+    " B "
+  ],
+  "result": { "id": "dif:phantom_ring" }
+}

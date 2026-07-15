@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "show_notification": false,
+    "acceptMirrored": true,
+    "pattern": [
+        "###",
+        "#< ",
+        " < "
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:copper_ingot"
+        },
+        "<": {
+            "item": "minecraft:stick"
+        }
+    },
+    "result": {
+        "id": "dif:copper_battle_axe"
+    }
+}

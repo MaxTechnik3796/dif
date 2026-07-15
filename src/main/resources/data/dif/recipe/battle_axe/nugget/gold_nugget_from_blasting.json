@@ -1,0 +1,13 @@
+{
+	"type":"minecraft:blasting",
+	"show_notification":false,
+	"category":"misc",
+	"cookingtime":100,
+	"experience":0.1,
+	"ingredient":[
+		{
+			"item":"dif:golden_battle_axe"
+		}
+	],
+	"result":"minecraft:gold_nugget"
+}

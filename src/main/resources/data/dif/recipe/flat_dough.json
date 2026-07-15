@@ -1,0 +1,13 @@
+{
+    "type": "create:pressing",
+    "ingredients": [
+        {
+            "tag": "c:foods/dough/wheat"
+        }
+    ],
+    "results": [
+        {
+            "id": "dif:flat_dough"
+        }
+    ]
+}

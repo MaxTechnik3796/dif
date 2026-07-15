@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "show_notification": false,
+    "acceptMirrored": true,
+    "pattern": [
+        "###",
+        "#>#",
+        "###"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:smooth_stone"
+        },
+        ">": {
+            "item": "dif:moon_stone"
+        }
+    },
+    "result": {
+        "count": 8,
+        "id": "dif:space_casing"
+    }
+}

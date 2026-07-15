@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "show_notification": false,
+    "pattern": [
+        "#"
+    ],
+    "key": {
+        "#": {
+            "item": "dif:smooth_stone_double_slab"
+        }
+    },
+    "result": {
+        "count": 2,
+        "id": "minecraft:smooth_stone_slab"
+    }
+}

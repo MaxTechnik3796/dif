@@ -1,0 +1,11 @@
+{
+	"type":"minecraft:stonecutting",
+	"show_notification":false,
+	"ingredient":{
+		"item":"minecraft:oak_planks"
+	},
+	"result":{
+		"id": "dif:wooded_arrow"
+	},
+	"count":1
+}

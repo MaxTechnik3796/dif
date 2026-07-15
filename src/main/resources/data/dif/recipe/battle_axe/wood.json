@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "show_notification": false,
+    "acceptMirrored": true,
+    "pattern": [
+        "###",
+        "#< ",
+        " < "
+    ],
+    "key": {
+        "#": {
+            "tag": "minecraft:planks"
+        },
+        "<": {
+            "item": "minecraft:stick"
+        }
+    },
+    "result": {
+        "id": "dif:wooden_battle_axe"
+    }
+}

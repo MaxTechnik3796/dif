@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "N N",
+        "QPQ",
+        " Q "
+    ],
+    "key": {
+        "N": {
+            "item": "minecraft:netherite_scrap"
+        },
+        "Q": {
+            "item": "minecraft:quartz_block"
+        },
+        "P": {
+            "item": "create:precision_mechanism"
+        }
+    },
+    "result": {
+        "id": "dif:portal_gun"
+    }
+}

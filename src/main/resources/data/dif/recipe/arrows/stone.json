@@ -1,0 +1,11 @@
+{
+	"type":"minecraft:stonecutting",
+	"show_notification":false,
+	"ingredient":{
+		"item":"minecraft:stone"
+	},
+	"result":{
+		"id": "dif:stoned_arrow"
+	},
+	"count":1
+}

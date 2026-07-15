@@ -1,0 +1,9 @@
+{
+	"type":"minecraft:stonecutting",
+	"show_notification":false,
+	"ingredient":{
+		"tag":"dif:space_casings"
+	},
+	"result":"dif:space_casing",
+	"count":1
+}

@@ -1,0 +1,13 @@
+{
+	"type":"minecraft:smelting",
+	"show_notification":false,
+	"category":"misc",
+	"cookingtime":200,
+	"experience":0.1,
+	"ingredient":[
+		{
+			"item":"dif:golden_katana"
+		}
+	],
+	"result":"minecraft:gold_nugget"
+}

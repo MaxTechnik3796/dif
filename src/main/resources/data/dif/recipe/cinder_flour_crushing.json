@@ -1,0 +1,19 @@
+{
+    "type": "create:crushing",
+    "processingTime": 350,
+    "ingredients": [
+        {
+            "item": "dif:cinder_flour_block"
+        }
+    ],
+    "results": [
+        {
+            "chance": 0.4,
+            "id": "create:cinder_flour"
+        },
+        {
+            "chance": 0.15,
+            "id": "minecraft:gold_nugget"
+        }
+    ]
+}

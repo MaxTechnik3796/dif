@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "A A",
+    "BCB",
+    "DED"
+  ],
+  "key": {
+    "A": { "item": "create:zinc_nugget" },
+    "B": { "item": "dif:steel_sheet" },
+    "C": { "item": "dif:mithril_plate" },
+    "D": { "item": "create:iron_sheet" },
+    "E": { "item": "dif:steel_casing" }
+  },
+  "result": { "id": "dif:engine_portable_gasoline" }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "A"
+  ],
+  "key": {
+    "A": { "item": "dif:nickel_block" }
+  },
+  "result": { "id": "dif:nickel_ingot", "count": 9 }
+}

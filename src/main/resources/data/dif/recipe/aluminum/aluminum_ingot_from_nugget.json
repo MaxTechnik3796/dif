@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "show_notification": false,
+    "pattern": [
+        "###",
+        "###",
+        "###"
+    ],
+    "key": {
+        "#": {
+            "item": "dif:aluminum_nugget"
+        }
+    },
+    "result": {
+        "id": "dif:aluminum_ingot"
+    }
+}

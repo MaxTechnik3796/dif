@@ -1,0 +1,17 @@
+{
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": true,
+  "key": {
+    "A": { "item": "minecraft:coal_block" },
+    "B": { "item": "minecraft:diamond" },
+    "C": { "item": "minecraft:gold_block" },
+    "D": { "tag": "minecraft:logs" }
+  },
+  "pattern": [
+    "A",
+    "B",
+    "C",
+    "D"
+  ],
+  "result": { "id": "dif:mega_torch" }
+}
