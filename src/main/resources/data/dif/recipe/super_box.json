@@ -1,0 +1,17 @@
+{
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": true,
+  "key": {
+    "A": { "item": "dif:steel_sheet" },
+    "B": { "item": "dif:mithril_plate" },
+    "C": { "item": "minecraft:iron_ingot" },
+    "D": { "item": "minecraft:warped_planks" },
+    "E": { "item": "minecraft:chest" }
+  },
+  "pattern": [
+    " ABA ",
+    "CDEDC",
+    " ABA "
+  ],
+  "result": { "id": "dif:super_box" }
+}
