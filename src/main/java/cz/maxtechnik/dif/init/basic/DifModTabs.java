@@ -161,15 +161,6 @@ public class DifModTabs{
 		tabData.accept(MODULAR_REFORGE_STONE);
 		tabData.accept(SILKY_STONE);
 
-		ItemStack ePart=new ItemStack(MODULAR_PART.get());ePart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties(ModularParts.HANDLE.getName(),ModularMaterial.IRON.getName(),false));
-		tabData.accept(ePart);
-		ItemStack fPart=new ItemStack(MODULAR_PART.get());fPart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties(ModularParts.AXE_HEAD.getName(),ModularMaterial.STEEL.getName(),false));
-		tabData.accept(fPart);
-		ItemStack gPart=new ItemStack(MODULAR_PART.get());gPart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties(ModularParts.SWORD_HEAD.getName(),ModularMaterial.STEEL.getName(),true));
-		tabData.accept(gPart);
-		ItemStack hPart=new ItemStack(MODULAR_PART.get());hPart.set(DifModComponents.MODULAR_PART_PROPERTIES.get(),new ModularPartProperties(ModularParts.HANDLE.getName(),ModularMaterial.COPPER.name(),true));
-		tabData.accept(hPart);
-
 		tabData.accept(CASTING_MOLD);
 		tabData.accept(CASTING_MOLD_HANDLE);
 		tabData.accept(CASTING_MOLD_BINDING);
