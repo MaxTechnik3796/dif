@@ -13,7 +13,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -91,9 +90,9 @@ public class ModularReforgeTableBlockEntity extends BlockEntity{
 	private int getPreferredSlot(ItemStack stack){
 		if(stack.getItem() instanceof ModularTool)
 			return this.inventory.getStackInSlot(0).isEmpty()?0:-1;
-		if(stack.is(DifModItems.MODULAR_TEMPLATE_HYPER.get()))
+		if(stack.is(DifModItems.MODULAR_TEMPLATE_NORMAL.get()))
 			return this.inventory.getStackInSlot(1).isEmpty()?1:-1;
-		if(stack.is(Items.IRON_INGOT))
+		if(stack.is(DifModItems.MODULAR_REFORGE_STONE.get()))
 			return this.inventory.getStackInSlot(2).isEmpty()?2:-1;
 		return -1;
 	}
