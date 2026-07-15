@@ -18,6 +18,6 @@
         "id": "dif:create_can"
     },
     "container": {
-        "item": "create:andesite_alloy"
+        "id": "create:andesite_alloy"
     }
 }
