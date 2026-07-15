@@ -21,6 +21,6 @@
         "id": "dif:create_bowl"
     },
     "container": {
-        "item": "minecraft:bowl"
+        "id": "minecraft:bowl"
     }
 }
