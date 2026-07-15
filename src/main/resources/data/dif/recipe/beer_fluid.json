@@ -1,29 +1,14 @@
 {
-	"type":"create:mixing",
-	"ingredients":[
-		{
-			"item":"minecraft:brown_mushroom"
-		},
-		{
-			"item":"minecraft:wheat"
-		},
-		{
-			"item":"minecraft:sugar"
-		},
-		{
-			"item":"minecraft:beetroot_seeds"
-		},
-		{
-			"type":"neoforge:single",
-			"fluid":"minecraft:water",
-			"amount":500
-		}
-	],
-	"results":[
-		{
-			"id":"dif:beer",
-			"amount":500
-		}
-	],
-	"heat_requirement":"heated"
+  "type": "create:mixing",
+  "ingredients": [
+    { "item": "minecraft:brown_mushroom" },
+    { "item": "minecraft:wheat" },
+    { "item": "minecraft:sugar" },
+    { "item": "minecraft:beetroot_seeds" },
+    { "type": "neoforge:single", "fluid": "minecraft:water", "amount": 500 }
+  ],
+  "results": [
+    { "id": "dif:beer_fluid", "amount": 500 }
+  ],
+  "heat_requirement": "heated"
 }
