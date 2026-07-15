@@ -310,10 +310,6 @@ public class DifModTabs{
 							new ItemStack(BUCKET_OF_CHICKEN.get()),
 							new ItemStack(RIZEK.get())
 					});
-			addItemStacksBehind(tabData,new ItemStack(Items.SWEET_BERRIES),
-					new ItemStack[]{
-							new ItemStack(MATA.get())
-					});
 			addItemStacksBehind(tabData,new ItemStack(Items.COOKED_RABBIT),
 					new ItemStack[]{
 							new ItemStack(HORSE_MEAT.get()),
