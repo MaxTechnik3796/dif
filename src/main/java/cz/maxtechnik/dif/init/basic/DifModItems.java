@@ -335,9 +335,6 @@ public class DifModItems{
 	public static final DeferredItem<Item>FORGE_GLASS=block(DifModBlocks.FORGE_GLASS);
 	public static final DeferredItem<Item>FORGE_FURNACE_CONTROLLER=block(DifModBlocks.FORGE_FURNACE_CONTROLLER);
 
-	public static final DeferredItem<Item>BLAST_SMELTERY=block(DifModBlocks.BLAST_SMELTERY);
-	public static final DeferredItem<Item>BLAST_SMELTERY_CONTROLLER=block(DifModBlocks.BLAST_SMELTERY_CONTROLLER);
-
 	public static final DeferredItem<Item>ENGINE_BASE=block(DifModBlocks.ENGINE_BASE);
 
 	public static final DeferredItem<Item>ENGINE_PORTABLE_DIESEL=block(DifModBlocks.ENGINE_PORTABLE_DIESEL);

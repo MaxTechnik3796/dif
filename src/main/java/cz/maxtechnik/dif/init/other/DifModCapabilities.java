@@ -1,6 +1,5 @@
 package cz.maxtechnik.dif.init.other;
 
-import cz.maxtechnik.dif.block.entity.BlastSmelteryControllerBlockEntity;
 import cz.maxtechnik.dif.block.entity.CokeOvenControllerBlockEntity;
 import cz.maxtechnik.dif.block.entity.ForgeControllerBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModItems;
@@ -43,8 +42,6 @@ public class DifModCapabilities{
 		event.registerBlockEntity(bITEM,MODULAR_REFORGE_TABLE.get(),(be,side)->be.getInventory());
 		event.registerBlockEntity(bITEM,COKE_OVEN_CONTROLLER.get(),(be,side)->{if(side!=null) return new SidedInvWrapper(be,side);return be.getInventory();});
 		event.registerBlockEntity(bITEM,COKE_OVEN_CONTROLLER.get(),(be,side)->{if(side!=null) return new SidedInvWrapper(be,side);return be.getInventory();});
-		event.registerBlockEntity(bITEM,BLAST_SMELTERY_CONTROLLER.get(),(be,side)->{if(side!=null) return new SidedInvWrapper(be,side);return be.getInventory();});
-		event.registerBlockEntity(bITEM,BLAST_SMELTERY.get(),(be,side)->{var ctrl=be.getController();if(ctrl==null) return null;return side!=null?new SidedInvWrapper(ctrl,side):ctrl.getInventory();});
 		event.registerBlockEntity(bITEM,FORGE_FURNACE_CONTROLLER.get(),(be,side)->{if(side!=null)return new SidedInvWrapper(be,side);return be.getInventory();});
 		event.registerBlockEntity(bITEM,FORGE_BRICK.get(),(be,side)->{var ctrl=be.getController();if(ctrl==null)return null;return side!=null?new SidedInvWrapper(ctrl,side):ctrl.getInventory();});
 	}
@@ -54,8 +51,6 @@ public class DifModCapabilities{
 		event.registerBlockEntity(bFLUID,ENGINE.get(),(be,side)->be.fluidTank);
 		event.registerBlockEntity(bFLUID,COKE_OVEN_CONTROLLER.get(),CokeOvenControllerBlockEntity::getFluidCapability);
 		event.registerBlockEntity(bFLUID,COKE_OVEN.get(),(be,side)->{var ctrl=be.getController();return ctrl!=null?ctrl.getFluidCapability(side):null;});
-		event.registerBlockEntity(bFLUID,BLAST_SMELTERY_CONTROLLER.get(),BlastSmelteryControllerBlockEntity::getFluidCapability);
-		event.registerBlockEntity(bFLUID,BLAST_SMELTERY.get(),(be,side)->{var ctrl=be.getController();return ctrl!=null?ctrl.getFluidCapability(side):null;});
 		event.registerBlockEntity(bFLUID,FORGE_FURNACE_CONTROLLER.get(), ForgeControllerBlockEntity::getFluidCapability);
 		event.registerBlockEntity(bFLUID,FORGE_BRICK.get(),(be,side)->{var ctrl=be.getController();return ctrl!=null?ctrl.getFluidCapability(side):null;});
 	}

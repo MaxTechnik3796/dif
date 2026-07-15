@@ -1,0 +1,11 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    { "item": "minecraft:redstone" },
+    { "item": "minecraft:lapis_lazuli" },
+    { "item": "minecraft:glowstone_dust" }
+  ],
+  "results": [
+    { "id": "dif:bluestone" }
+  ]
+}

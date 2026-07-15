@@ -7,10 +7,10 @@
   ],
   "key": {
     "A": { "item": "dif:mithril_plate" },
-    "B": { "item": "dif:nickel_nugget" },
+    "B": { "item": "create:zinc_nugget" },
     "C": { "item": "create:fluid_tank" },
     "D": { "item": "dif:nickel_sheet" },
-    "E": { "item": "dif:engine_base" }
+    "E": { "item": "dif:steel_casing" }
   },
-  "result": { "id": "dif:engine_portable_lpg" }
+  "result": { "id": "dif:engine_extender_gasoline" }
 }

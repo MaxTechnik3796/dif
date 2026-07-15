@@ -1,0 +1,18 @@
+{
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": true,
+  "key": {
+    "A": { "item": "create:encased_fan" },
+    "B": { "item": "minecraft:copper_block" },
+    "C": { "item": "create:fluid_tank" },
+    "D": { "item": "create:copper_sheet" },
+    "E": { "item": "create:precision_mechanism" },
+    "F": { "item": "minecraft:copper_ingot" }
+  },
+  "pattern": [
+    "ABCBA",
+    " DED ",
+    " F F "
+  ],
+  "result": { "id": "dif:jetpack" }
+}

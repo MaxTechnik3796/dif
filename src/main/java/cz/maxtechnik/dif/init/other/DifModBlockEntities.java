@@ -50,9 +50,6 @@ public class DifModBlockEntities{
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<CokeOvenControllerBlockEntity>> COKE_OVEN_CONTROLLER=register("coke_oven_controller",DifModBlocks.COKE_OVEN_CONTROLLER,CokeOvenControllerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<CokeOvenBlockEntity>> COKE_OVEN=register("coke_oven",DifModBlocks.COKE_OVEN,CokeOvenBlockEntity::new);
 
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<BlastSmelteryControllerBlockEntity>> BLAST_SMELTERY_CONTROLLER=register("blast_smeltery_controller",DifModBlocks.BLAST_SMELTERY_CONTROLLER,BlastSmelteryControllerBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<BlastSmelteryBlockEntity>> BLAST_SMELTERY=register("blast_smeltery",DifModBlocks.BLAST_SMELTERY,BlastSmelteryBlockEntity::new);
-
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<ForgeBrickBlockEntity>> FORGE_BRICK=register("forge_brick",DifModBlocks.FORGE_BRICK,ForgeBrickBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<ForgeControllerBlockEntity>> FORGE_FURNACE_CONTROLLER=register("forge_furnace_controller",DifModBlocks.FORGE_FURNACE_CONTROLLER,ForgeControllerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<ForgeGlassBlockEntity>> FORGE_GLASS=register("forge_glass",DifModBlocks.FORGE_GLASS,ForgeGlassBlockEntity::new);

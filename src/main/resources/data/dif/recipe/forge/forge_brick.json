@@ -1,0 +1,18 @@
+{
+	"type":"create:filling",
+	"ingredients":[
+		{
+			"item":"minecraft:deepslate_bricks"
+		},
+		{
+			"type":"neoforge:single",
+			"amount":250,
+			"fluid":"minecraft:lava"
+		}
+	],
+	"results":[
+		{
+			"id":"dif:forge_brick"
+		}
+	]
+}
