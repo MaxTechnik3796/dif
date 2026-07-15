@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "key": {
+    "A": { "item": "minecraft:nether_brick" },
+    "B": { "item": "minecraft:blaze_powder" }
+  },
+  "result": { "id": "dif:blast_smeltery" }
+}
