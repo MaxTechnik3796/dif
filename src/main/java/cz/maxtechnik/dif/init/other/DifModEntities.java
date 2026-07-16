@@ -52,10 +52,10 @@ public class DifModEntities{
 							.clientTrackingRange(10)
 							.updateInterval(1)
 							.build("portal"));
-	public static final DeferredHolder<EntityType<?>,EntityType<SilkwormMothEntity>> BOROUS_MORUSOVY=
-			REGISTRY.register("borous_morusovy",()->
+	public static final DeferredHolder<EntityType<?>,EntityType<SilkwormMothEntity>> SILKWORM_MOTH=
+			REGISTRY.register("silkworm_moth",()->
 					EntityType.Builder.of(SilkwormMothEntity::new,MobCategory.CREATURE)
 							.sized(0.6F,0.5F)
 							.clientTrackingRange(8)
-							.build("borous_morusovy"));
+							.build("silkworm_moth"));
 }
