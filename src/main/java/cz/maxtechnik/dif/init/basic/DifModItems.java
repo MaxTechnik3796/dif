@@ -2,6 +2,7 @@ package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
+import cz.maxtechnik.dif.init.other.DifModEntities;
 import cz.maxtechnik.dif.init.other.DifModFoods;
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.*;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import cz.maxtechnik.dif.init.events.QuarryStats;
 import cz.maxtechnik.dif.item.quarry.EngineItem;
+import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -62,23 +64,23 @@ public class DifModItems{
 	public static final DeferredItem<Item>CAMERA=block(DifModBlocks.CAMERA);
 	public static final DeferredItem<Item>CAMERA_LINK=REGISTRY.register("camera_link",()->new CameraLink(new Item.Properties().stacksTo(1)));
 
-	public static final DeferredItem<Item> MEGA_TORCH = block(DifModBlocks.MEGA_TORCH);
+	public static final DeferredItem<Item>MEGA_TORCH=block(DifModBlocks.MEGA_TORCH);
 
 	public static final DeferredItem<Item>PHANTOM_RING=REGISTRY.register("phantom_ring",PhantomRing::new);
 
-	public static final DeferredItem<Item> GOD_TOTEM = REGISTRY.register("god_totem", () -> new GodTotemItem(new Item.Properties()));
-	public static final DeferredItem<Item> BAN_HAMMER = REGISTRY.register("ban_hammer", BanHammer::new);
+	public static final DeferredItem<Item>GOD_TOTEM=REGISTRY.register("god_totem",()->new GodTotemItem(new Item.Properties()));
+	public static final DeferredItem<Item>BAN_HAMMER=REGISTRY.register("ban_hammer",BanHammer::new);
 
 	public static final DeferredItem<Item>FAST_POWERED_RAIL=block(DifModBlocks.FAST_POWERED_RAIL);
 	public static final DeferredItem<Item>FAST_RAIL=block(DifModBlocks.FAST_RAIL);
 
-	public static final DeferredItem<Item> CHUNK_LOADER_1X1 = REGISTRY.register("chunk_loader_1x1",()->new BlockItem(DifModBlocks.CHUNK_LOADER_1X1.get(),new Item.Properties()){@Override public boolean isFoil(@NotNull ItemStack stack){return true;}});
-	public static final DeferredItem<Item> CHUNK_LOADER_3X3 = REGISTRY.register("chunk_loader_3x3",()->new BlockItem(DifModBlocks.CHUNK_LOADER_3X3.get(),new Item.Properties()){@Override public boolean isFoil(@NotNull ItemStack stack){return true;}});
+	public static final DeferredItem<Item>CHUNK_LOADER_1X1=REGISTRY.register("chunk_loader_1x1",()->new BlockItem(DifModBlocks.CHUNK_LOADER_1X1.get(),new Item.Properties()){@Override public boolean isFoil(@NotNull ItemStack stack){return true;}});
+	public static final DeferredItem<Item>CHUNK_LOADER_3X3=REGISTRY.register("chunk_loader_3x3",()->new BlockItem(DifModBlocks.CHUNK_LOADER_3X3.get(),new Item.Properties()){@Override public boolean isFoil(@NotNull ItemStack stack){return true;}});
 
 	//Modular Stuff:
 	public static final DeferredItem<Item>MODULAR_TOOL=REGISTRY.register("modular_tool",ModularTool::new);
 	public static final DeferredItem<Item>MODULAR_PART=REGISTRY.register("modular_part",ModularPart::new);
-	public static final DeferredItem<Item>SILKY_STONE=REGISTRY.register("silky_stone",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item>SILK=REGISTRY.register("silk",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item>MODULAR_REFORGE_TABLE=block(DifModBlocks.MODULAR_REFORGE_TABLE);
 	public static final DeferredItem<Item>MODULAR_REFORGE_STONE=REGISTRY.register("modular_reforge_stone",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item>MODULAR_TEMPLATE_NORMAL=REGISTRY.register("modular_template_normal",()->new ModularTemplate(new Item.Properties()));
@@ -362,4 +364,8 @@ public class DifModItems{
 	public static final DeferredItem<Item>STEEL_INGOT=REGISTRY.register("steel_ingot",()->new Item(new Item.Properties()));
 
 	public static final DeferredItem<Item>NANO_GLASS=block(DifModBlocks.NANO_GLASS);
+
+
+	public static final DeferredItem<Item>SILKWORM_MOTH_SPAWN_EGG=REGISTRY.register("silkworm_moth_spawn_egg",()->new DeferredSpawnEggItem(DifModEntities.SILKWORM_MOTH,0xFFFFFF,0xFFFFFF,new Item.Properties()));
+
 }

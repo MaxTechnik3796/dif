@@ -596,7 +596,9 @@
 	"item.dif.modular_template_normal":"Modular Template",
 	"item.dif.modular_template_hyper":"Hyper Modular Template",
 
-	"item.dif.silky_stone":"Silky Stone",
+	"item.dif.silk":"Silk",
+	"item.dif.silkworm_moth_spawn_egg":"Silkworm Moth Spawn Egg",
+	"entity.dif.silkworm_moth":"Silkworm Moth",
 
 	"block.dif.modular_reforge_table":"Reforge Table",
 	"item.dif.modular_reforge_stone":"Reforge Stone",

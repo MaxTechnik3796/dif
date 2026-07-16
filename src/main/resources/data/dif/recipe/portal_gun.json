@@ -1,16 +1,28 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "AB ",
-    "BCD",
-    " DE"
-  ],
-  "key": {
-    "A": { "item": "create:iron_sheet" },
-    "B": { "item": "minecraft:netherite_scrap" },
-    "C": { "item": "minecraft:crossbow" },
-    "D": { "item": "dif:blue_plate" },
-    "E": { "item": "create:precision_mechanism" }
-  },
-  "result": { "id": "dif:portal_gun" }
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		"AB ",
+		"BCD",
+		" DE"
+	],
+	"key":{
+		"A":{
+			"item":"create:iron_sheet"
+		},
+		"B":{
+			"item":"minecraft:netherite_scrap"
+		},
+		"C":{
+			"item":"minecraft:crossbow"
+		},
+		"D":{
+			"item":"dif:blue_plate"
+		},
+		"E":{
+			"item":"create:precision_mechanism"
+		}
+	},
+	"result":{
+		"id":"dif:portal_gun"
+	}
 }

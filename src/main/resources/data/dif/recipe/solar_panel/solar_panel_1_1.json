@@ -1,5 +1,9 @@
 {
-  "type": "minecraft:stonecutting",
-  "ingredient": { "item": "dif:solar_panel_01_w" },
-  "result": { "id": "dif:solar_panel_01" }
+	"type":"minecraft:stonecutting",
+	"ingredient":{
+		"item":"dif:solar_panel_01_w"
+	},
+	"result":{
+		"id":"dif:solar_panel_01"
+	}
 }

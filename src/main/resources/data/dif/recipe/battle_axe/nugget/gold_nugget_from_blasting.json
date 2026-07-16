@@ -9,5 +9,7 @@
 			"item":"dif:golden_battle_axe"
 		}
 	],
-	"result":"minecraft:gold_nugget"
+	"result":{
+		"id":"minecraft:gold_nugget"
+	}
 }

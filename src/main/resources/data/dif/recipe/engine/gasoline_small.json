@@ -1,16 +1,28 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " A ",
-    "BCB",
-    "DED"
-  ],
-  "key": {
-    "A": { "item": "dif:mithril_plate" },
-    "B": { "item": "create:zinc_nugget" },
-    "C": { "item": "create:fluid_tank" },
-    "D": { "item": "dif:nickel_sheet" },
-    "E": { "item": "dif:engine_base" }
-  },
-  "result": { "id": "dif:engine_portable_gasoline" }
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		" A ",
+		"BCB",
+		"DED"
+	],
+	"key":{
+		"A":{
+			"item":"dif:mithril_plate"
+		},
+		"B":{
+			"item":"create:zinc_nugget"
+		},
+		"C":{
+			"item":"create:fluid_tank"
+		},
+		"D":{
+			"item":"dif:nickel_sheet"
+		},
+		"E":{
+			"item":"dif:engine_base"
+		}
+	},
+	"result":{
+		"id":"dif:engine_portable_gasoline"
+	}
 }

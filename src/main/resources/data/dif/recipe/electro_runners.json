@@ -1,16 +1,26 @@
 {
-  "type": "create:mechanical_crafting",
-  "accept_mirrored": true,
-  "key": {
-    "A": { "item": "dif:steel_ingot" },
-    "B": { "item": "dif:steel_sheet" },
-    "C": { "item": "create:precision_mechanism" },
-    "D": { "item": "create:brass_ingot" }
-  },
-  "pattern": [
-    "A A",
-    "BCB",
-    "D D"
-  ],
-  "result": { "id": "dif:electro_runners" }
+	"type":"create:mechanical_crafting",
+	"accept_mirrored":true,
+	"key":{
+		"A":{
+			"item":"dif:steel_ingot"
+		},
+		"B":{
+			"item":"dif:steel_sheet"
+		},
+		"C":{
+			"item":"create:precision_mechanism"
+		},
+		"D":{
+			"item":"create:brass_ingot"
+		}
+	},
+	"pattern":[
+		"A A",
+		"BCB",
+		"D D"
+	],
+	"result":{
+		"id":"dif:electro_runners"
+	}
 }

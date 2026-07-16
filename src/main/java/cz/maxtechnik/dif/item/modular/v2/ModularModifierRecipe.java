@@ -96,7 +96,7 @@ public class ModularModifierRecipe extends SmithingExtraRecipe{
 			if(additionItem.equals(QUARTZ)) return SHARPNESS;
 			if(additionItem.equals(DIAMOND)) return REINFORCED;
 			if(additionItem.equals(IRON_INGOT)) return SWEEPING_EDGE;
-			if(additionItem.equals(SILKY_STONE.get())) return SILK_TOUCH;
+			if(additionItem.equals(SILK.get())) return SILK_TOUCH;
 			if(additionItem.equals(LAVA_BUCKET)) return VOLCANIC;
 		}else if(templateItem.equals(MODULAR_TEMPLATE_HYPER.get())){
 			if(additionItem.equals(REDSTONE_BLOCK)) return EFFICIENCY;

@@ -1,5 +1,9 @@
 {
-  "type": "minecraft:stonecutting",
-  "ingredient": { "item": "create:industrial_iron_block" },
-  "result": { "id": "dif:vent" }
+	"type":"minecraft:stonecutting",
+	"ingredient":{
+		"item":"create:industrial_iron_block"
+	},
+	"result":{
+		"id":"dif:vent"
+	}
 }

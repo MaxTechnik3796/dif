@@ -6,5 +6,7 @@
 	"ingredient":{
 		"item":"dif:flat_dough"
 	},
-	"result":"dif:baguette"
+	"result":{
+		"id":"dif:baguette"
+	}
 }

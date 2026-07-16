@@ -1,7 +1,8 @@
 {
 	"type":"dif:blast_smeltery",
 	"fluid_input":{
-		"id":"dif:molten_iron_fluid",
+		"type":"neoforge:single",
+		"fluid":"dif:molten_iron_fluid",
 		"amount":288
 	},
 	"ingredient":{

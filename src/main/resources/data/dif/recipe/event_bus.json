@@ -1,5 +1,9 @@
 {
-  "type": "minecraft:stonecutting",
-  "ingredient": { "item": "create:industrial_iron_block" },
-  "result": { "id": "dif:event_bus" }
+	"type":"minecraft:stonecutting",
+	"ingredient":{
+		"item":"create:industrial_iron_block"
+	},
+	"result":{
+		"id":"dif:event_bus"
+	}
 }

@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -199,5 +200,9 @@ public class NanoGlass extends TransparentBlock implements EntityBlock{
 		boolean powered=level.hasNeighborSignal(pos);
 		if(state.getValue(DARK)==powered) return;
 		startWave(serverLevel,pos,powered);
+	}
+	@Override
+	public int getLightBlock(@NotNull BlockState blockState,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
+		return blockState.getValue(DARK)?15:0;
 	}
 }

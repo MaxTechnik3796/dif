@@ -1,16 +1,16 @@
 {
-  "type": "create:item_application",
-  "ingredients": [
-    {
-      "item": "minecraft:lodestone"
-    },
-    {
-      "item": "minecraft:nether_star"
-    }
-  ],
-  "results": [
-    {
-      "id": "dif:chunk_loader_3x3"
-    }
-  ]
+	"type":"create:item_application",
+	"ingredients":[
+		{
+			"item":"minecraft:lodestone"
+		},
+		{
+			"item":"minecraft:nether_star"
+		}
+	],
+	"results":[
+		{
+			"id":"dif:chunk_loader_3x3"
+		}
+	]
 }

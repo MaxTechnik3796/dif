@@ -9,5 +9,7 @@
 			"item":"dif:iron_battle_axe"
 		}
 	],
-	"result":"minecraft:iron_nugget"
+	"result":{
+		"id":"minecraft:iron_nugget"
+	}
 }

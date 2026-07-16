@@ -9,5 +9,7 @@
 			"item":"dif:golden_katana"
 		}
 	],
-	"result":"minecraft:gold_nugget"
+	"result":{
+		"id":"minecraft:gold_nugget"
+	}
 }

@@ -4,6 +4,8 @@
 	"ingredient":{
 		"tag":"dif:space_casings"
 	},
-	"result":"dif:space_casing_reinforced",
-	"count":1
+	"result":{
+		"id":"dif:space_casing_reinforced",
+		"count":1
+	}
 }

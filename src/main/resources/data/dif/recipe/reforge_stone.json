@@ -1,14 +1,22 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ABA",
-    "BCB",
-    "ABA"
-  ],
-  "key": {
-    "A": { "item": "minecraft:amethyst_shard" },
-    "B": { "item": "minecraft:stone" },
-    "C": { "item": "dif:bluestone" }
-  },
-  "result": { "id": "dif:modular_reforge_stone" }
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		"ABA",
+		"BCB",
+		"ABA"
+	],
+	"key":{
+		"A":{
+			"item":"minecraft:amethyst_shard"
+		},
+		"B":{
+			"item":"minecraft:stone"
+		},
+		"C":{
+			"item":"dif:bluestone"
+		}
+	},
+	"result":{
+		"id":"dif:modular_reforge_stone"
+	}
 }

@@ -14,8 +14,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import vectorwing.farmersdelight.common.registry.ModCreativeTabs;
 import vectorwing.farmersdelight.common.registry.ModItems;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import static cz.maxtechnik.dif.DifMod.addItemStacksBehind;
 import static cz.maxtechnik.dif.init.basic.DifModItems.*;
@@ -159,7 +157,7 @@ public class DifModTabs{
 		tabData.accept(MODULAR_TEMPLATE_HYPER);
 
 		tabData.accept(MODULAR_REFORGE_STONE);
-		tabData.accept(SILKY_STONE);
+		tabData.accept(SILK);
 
 		tabData.accept(CASTING_MOLD);
 		tabData.accept(CASTING_MOLD_HANDLE);
@@ -324,6 +322,8 @@ public class DifModTabs{
 			tabData.insertAfter(new ItemStack(Items.RAW_IRON),new ItemStack(RAW_NICKEL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertAfter(new ItemStack(Items.IRON_NUGGET),new ItemStack(NICKEL_NUGGET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertAfter(new ItemStack(Items.IRON_INGOT),new ItemStack(NICKEL_INGOT.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		}else if(tabData.getTabKey().equals(CreativeModeTabs.SPAWN_EGGS)){
+			tabData.accept(SILKWORM_MOTH_SPAWN_EGG);
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.OP_BLOCKS)){
 			tabData.accept(BAN_HAMMER);
 			tabData.accept(END_PORTAL);

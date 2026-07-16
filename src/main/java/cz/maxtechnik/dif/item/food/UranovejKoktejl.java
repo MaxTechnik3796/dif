@@ -23,7 +23,7 @@ public class UranovejKoktejl extends Item{
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(@NotNull ItemStack itemStack,Item.@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
 		super.appendHoverText(itemStack,context,list,flag);
-		list.add(Component.literal("§l§6!!!POZOR!!!"));
+		list.add(Component.literal("§l§6!!!WARNING!!!"));
 		list.add(Component.literal("§8- §aIncreased radiation!"));
 	}
 	@Override

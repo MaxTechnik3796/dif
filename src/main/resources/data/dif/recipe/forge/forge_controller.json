@@ -1,13 +1,19 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " A ",
-    "ABA",
-    " A "
-  ],
-  "key": {
-    "A": { "item": "create:iron_sheet" },
-    "B": { "item": "dif:forge_brick" }
-  },
-  "result": { "id": "dif:forge_furnace_controller" }
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		" A ",
+		"ABA",
+		" A "
+	],
+	"key":{
+		"A":{
+			"item":"create:iron_sheet"
+		},
+		"B":{
+			"item":"dif:forge_brick"
+		}
+	},
+	"result":{
+		"id":"dif:forge_furnace_controller"
+	}
 }

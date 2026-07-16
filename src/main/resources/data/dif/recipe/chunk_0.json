@@ -1,12 +1,16 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "AAA",
-    "AAA",
-    "AAA"
-  ],
-  "key": {
-    "A": { "item": "dif:chunk_loader_1x1" }
-  },
-  "result": { "id": "dif:chunk_loader_3x3" }
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		"AAA",
+		"AAA",
+		"AAA"
+	],
+	"key":{
+		"A":{
+			"item":"dif:chunk_loader_1x1"
+		}
+	},
+	"result":{
+		"id":"dif:chunk_loader_3x3"
+	}
 }

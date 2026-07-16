@@ -2,21 +2,6 @@
 	"values":{
 		"minecraft:bamboo":{
 			"chance":0.4
-		},
-		"dif:mata":{
-			"chance":0.9
-		},
-		"dif:mata_plant":{
-			"chance":0.8
-		},
-		"dif:maty_block":{
-			"chance":1.0
-		},
-		"dif:canola_plant":{
-			"chance":1.0
-		},
-		"dif:canola_seeds":{
-			"chance":1.0
 		}
 	}
 }

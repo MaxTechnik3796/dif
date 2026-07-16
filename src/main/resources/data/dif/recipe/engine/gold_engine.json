@@ -1,14 +1,22 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "AA ",
-    "BCA",
-    "AA "
-  ],
-  "key": {
-    "A": { "item": "minecraft:gold_ingot" },
-    "B": { "item": "create:precision_mechanism" },
-    "C": { "item": "dif:quarry_engine_iron" }
-  },
-  "result": { "id": "dif:quarry_engine_gold" }
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		"AA ",
+		"BCA",
+		"AA "
+	],
+	"key":{
+		"A":{
+			"item":"minecraft:gold_ingot"
+		},
+		"B":{
+			"item":"create:precision_mechanism"
+		},
+		"C":{
+			"item":"dif:quarry_engine_iron"
+		}
+	},
+	"result":{
+		"id":"dif:quarry_engine_gold"
+	}
 }
