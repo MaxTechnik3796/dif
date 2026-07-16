@@ -13,8 +13,8 @@
 							"function":"set_count",
 							"count":{
 								"type":"uniform",
-								"max":4,
-								"min":2
+								"max":2,
+								"min":0
 							}
 						}
 					]
