@@ -1,0 +1,33 @@
+{
+	"type":"dif:add_meat",
+	"conditions":[
+		{
+			"condition":"minecraft:any_of",
+			"terms":[
+				{
+					"condition":"minecraft:entity_properties",
+					"entity":"this",
+					"predicate":{
+						"type":"minecraft:horse"
+					}
+				},
+				{
+					"condition":"minecraft:entity_properties",
+					"entity":"this",
+					"predicate":{
+						"type":"minecraft:donkey"
+					}
+				},
+				{
+					"condition":"minecraft:entity_properties",
+					"entity":"this",
+					"predicate":{
+						"type":"minecraft:mule"
+					}
+				}
+			]
+		}
+	],
+	"rawItem":"dif:horse_meat",
+	"cookedItem":"dif:cooked_horse_meat"
+}

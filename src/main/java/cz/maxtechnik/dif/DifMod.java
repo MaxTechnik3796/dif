@@ -79,6 +79,7 @@ public class DifMod{
 		DifModFeatures.REGISTRY.register(bus);
 		DifModParticles.REGISTRY.register(bus);
 		DifModComponents.REGISTRY.register(bus);
+		DifModLootModifiers.REGISTRY.register(bus);
 		// REGISTRACE EVENTŮ
 		NeoForge.EVENT_BUS.register(this);
 		NeoForge.EVENT_BUS.register(JetpackHandler.class);
