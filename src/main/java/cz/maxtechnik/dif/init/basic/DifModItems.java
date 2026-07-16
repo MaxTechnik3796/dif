@@ -366,6 +366,6 @@ public class DifModItems{
 	public static final DeferredItem<Item>NANO_GLASS=block(DifModBlocks.NANO_GLASS);
 
 
-	public static final DeferredItem<Item>SILKWORM_MOTH_SPAWN_EGG=REGISTRY.register("silkworm_moth_spawn_egg",()->new DeferredSpawnEggItem(DifModEntities.SILKWORM_MOTH,0xFFFFFF,0xFFFFFF,new Item.Properties()));
+	public static final DeferredItem<Item>SILKWORM_MOTH_SPAWN_EGG=REGISTRY.register("silkworm_moth_spawn_egg",()->new DeferredSpawnEggItem(DifModEntities.SILKWORM_MOTH,0xFFFFFF,0x898989,new Item.Properties()));
 
 }
