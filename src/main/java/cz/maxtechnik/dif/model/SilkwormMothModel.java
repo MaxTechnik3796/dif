@@ -13,7 +13,7 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
-public class silkworm_moth<T extends Entity> extends EntityModel<T> {
+public class SilkwormMothModel<T extends Entity> extends EntityModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("modid", "silkworm_moth"), "main");
 	private final ModelPart all;
@@ -34,7 +34,7 @@ public class silkworm_moth<T extends Entity> extends EntityModel<T> {
 	private final ModelPart leg6;
 	private final ModelPart bone2;
 
-	public silkworm_moth(ModelPart root) {
+	public SilkwormMothModel(ModelPart root) {
 		this.all = root.getChild("all");
 		this.body1 = this.all.getChild("body1");
 		this.bodycube1 = this.body1.getChild("bodycube1");
@@ -105,17 +105,19 @@ public class silkworm_moth<T extends Entity> extends EntityModel<T> {
 	}
 
 	@Override
-	public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		// Animace křídel
+		float wingFlap = net.minecraft.util.Mth.cos(ageInTicks * 2.0F) * 0.6F;
+		this.wing1.zRot = wingFlap;
+		this.wing2.zRot = -wingFlap;
 
+		// Animace nohou při chůzi
+		this.leg1.xRot = net.minecraft.util.Mth.cos(limbSwing * 0.6662F) * 1.0F * limbSwingAmount;
+		this.leg2.xRot = net.minecraft.util.Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.0F * limbSwingAmount;
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		all.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-	}
-
-	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int i, int i1, int i2) {
-
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+		all.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 }

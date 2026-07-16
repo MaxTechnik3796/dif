@@ -2,9 +2,11 @@ package cz.maxtechnik.dif.renderer;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.entity.creature.SilkwormMothEntity;
+import cz.maxtechnik.dif.model.SilkwormMothModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class SilkwormMothRenderer extends MobRenderer<SilkwormMothEntity, SilkwormMothModel<SilkwormMothEntity>> {
 
@@ -16,7 +18,7 @@ public class SilkwormMothRenderer extends MobRenderer<SilkwormMothEntity, Silkwo
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SilkwormMothEntity entity) {
+    public @NotNull ResourceLocation getTextureLocation(@NotNull SilkwormMothEntity entity) {
         return TEXTURE;
     }
 }
