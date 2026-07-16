@@ -6,6 +6,7 @@ import cz.maxtechnik.dif.entity.bomb.NuclearMushroomEntity;
 import cz.maxtechnik.dif.entity.bomb.NuclearRadiationEntity;
 import cz.maxtechnik.dif.entity.bomb.NuclearWaveEntity;
 import cz.maxtechnik.dif.entity.vehicle.FormulaEntity;
+import cz.maxtechnik.dif.entity.creature.SilkwormMothEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -51,4 +52,10 @@ public class DifModEntities{
 							.clientTrackingRange(10)
 							.updateInterval(1)
 							.build("portal"));
+	public static final DeferredHolder<EntityType<?>,EntityType<SilkwormMothEntity>> BOROUS_MORUSOVY=
+			REGISTRY.register("borous_morusovy",()->
+					EntityType.Builder.of(SilkwormMothEntity::new,MobCategory.CREATURE)
+							.sized(0.6F,0.5F)
+							.clientTrackingRange(8)
+							.build("borous_morusovy"));
 }

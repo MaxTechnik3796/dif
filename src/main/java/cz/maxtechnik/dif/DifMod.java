@@ -144,6 +144,7 @@ public class DifMod{
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_MUSHROOM.get(),NoopRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_WAVE.get(),NoopRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_RADIATION.get(),NoopRenderer::new);
+			event.registerEntityRenderer(DifModEntities.BOROUS_MORUSOVY.get(), SilkwormMothRenderer::new);
 			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.ENGINE.get()).factory(SingleAxisRotatingVisual::shaft).neverSkipVanillaRender().apply();
 		}
 		@SubscribeEvent

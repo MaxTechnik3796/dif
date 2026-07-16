@@ -20,6 +20,7 @@ public class DifModModels{
 		event.registerLayerDefinition(ModelElectroRunners.LAYER_LOCATION,ModelElectroRunners::createBodyLayer);
 		event.registerLayerDefinition(FormulaModel.LAYER_LOCATION, FormulaModel::createBodyLayer);
 		event.registerLayerDefinition(PortalModel.LAYER_LOCATION, PortalModel::createBodyLayer);
+		event.registerLayerDefinition(SilkwormMothModel.LAYER_LOCATION, SilkwormMothModel::createBodyLayer);
 	}
 
 	@SubscribeEvent
