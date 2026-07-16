@@ -171,6 +171,7 @@ public class DifModTabs{
 		tabData.accept(CASTING_MOLD_SWORD_BINDING);
 		tabData.accept(CASTING_MOLD_HOE_HEAD);
 		tabData.accept(CASTING_MOLD_BATTLE_AXE_HEAD);
+		tabData.accept(CASTING_MOLD_KATANA_HEAD);
 		tabData.accept(CASTING_MOLD_TIMBER_AXE_HEAD);
 		tabData.accept(CASTING_MOLD_HAMMER_HEAD);
 		tabData.accept(CASTING_MOLD_EXCAVATOR_HEAD);
