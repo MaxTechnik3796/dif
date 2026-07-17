@@ -121,6 +121,7 @@ dependencies{
     runtimeOnly fileTree(dir: 'libs', include: ['*.jar'])
     //implementation fileTree(dir: 'sourceLibs', include: ['*.jar'])
 
+    runtimeOnly "curse.maven:sable-1312371:8263584"
     implementation "curse.maven:mt-recipex-1554878:8335682"
 }
 
