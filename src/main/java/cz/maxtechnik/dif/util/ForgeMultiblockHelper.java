@@ -159,10 +159,7 @@ public final class ForgeMultiblockHelper{
 	 */
 	public static float heatPointsToSpeed(int points){
 		if(points<=0) return 0f;
-		if(points<=3) return 0.5f;
-		if(points<=9) return 1.0f;
-		if(points<=15) return 1.5f;
-		return 2.0f;
+		return 1.0f;  // Vždy konstanta 1.0x
 	}
 	/**
 	 * Vrátí minimální heat body potřebné pro daný materiál tier.
@@ -173,12 +170,7 @@ public final class ForgeMultiblockHelper{
 	 * Tier 3 = endgame kovy
 	 */
 	public static int minHeatForTier(int tier){
-		return switch(tier){
-			case 1 -> 4;
-			case 2 -> 10;
-			case 3 -> 16;
-			default -> 1;
-		};
+		return tier;
 	}
 	// =========================================================
 	//  ITERACE BLOKŮ

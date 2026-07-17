@@ -1,7 +1,7 @@
 {
 	"type":"dif:forge_material",
-	"min_heat_tier":1,
-	"processing_time":80,
+	"min_heat_tier":5,
+	"processing_time":120,
 	"conversions":[
 		{
 			"ingredient":{
@@ -61,6 +61,7 @@
 		}
 	],
 	"result_fluid":{
-		"id":"dif:molten_iron_fluid"
+		"id":"dif:molten_iron_fluid",
+		"amount": 1
 	}
 }
