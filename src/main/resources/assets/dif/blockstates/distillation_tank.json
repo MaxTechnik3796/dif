@@ -1,33 +1,76 @@
 {
-  "variants": {
-    "bottom=false,shape=plain,top=false": { "model": "dif:block/distillation_tank/block_middle" },
-    "bottom=false,shape=plain,top=true":  { "model": "dif:block/distillation_tank/block_top" },
-    "bottom=true,shape=plain,top=false":  { "model": "dif:block/distillation_tank/block_bottom" },
-    "bottom=true,shape=plain,top=true":   { "model": "dif:block/distillation_tank/block_single" },
-
-    "bottom=false,shape=window,top=false":    { "model": "dif:block/distillation_tank/block_middle" },
-    "bottom=false,shape=window,top=true":     { "model": "dif:block/distillation_tank/block_top" },
-    "bottom=true,shape=window,top=false":     { "model": "dif:block/distillation_tank/block_bottom" },
-    "bottom=true,shape=window,top=true":      { "model": "dif:block/distillation_tank/block_single" },
-
-    "bottom=false,shape=window_ne,top=false": { "model": "dif:block/distillation_tank/block_middle" },
-    "bottom=false,shape=window_ne,top=true":  { "model": "dif:block/distillation_tank/block_top" },
-    "bottom=true,shape=window_ne,top=false":  { "model": "dif:block/distillation_tank/block_bottom" },
-    "bottom=true,shape=window_ne,top=true":   { "model": "dif:block/distillation_tank/block_single" },
-
-    "bottom=false,shape=window_nw,top=false": { "model": "dif:block/distillation_tank/block_middle" },
-    "bottom=false,shape=window_nw,top=true":  { "model": "dif:block/distillation_tank/block_top" },
-    "bottom=true,shape=window_nw,top=false":  { "model": "dif:block/distillation_tank/block_bottom" },
-    "bottom=true,shape=window_nw,top=true":   { "model": "dif:block/distillation_tank/block_single" },
-
-    "bottom=false,shape=window_se,top=false": { "model": "dif:block/distillation_tank/block_middle" },
-    "bottom=false,shape=window_se,top=true":  { "model": "dif:block/distillation_tank/block_top" },
-    "bottom=true,shape=window_se,top=false":  { "model": "dif:block/distillation_tank/block_bottom" },
-    "bottom=true,shape=window_se,top=true":   { "model": "dif:block/distillation_tank/block_single" },
-
-    "bottom=false,shape=window_sw,top=false": { "model": "dif:block/distillation_tank/block_middle" },
-    "bottom=false,shape=window_sw,top=true":  { "model": "dif:block/distillation_tank/block_top" },
-    "bottom=true,shape=window_sw,top=false":  { "model": "dif:block/distillation_tank/block_bottom" },
-    "bottom=true,shape=window_sw,top=true":   { "model": "dif:block/distillation_tank/block_single" }
-  }
+	"variants":{
+		"bottom=false,shape=plain,top=false":{
+			"model":"dif:block/distillation_tank/block_middle"
+		},
+		"bottom=false,shape=plain,top=true":{
+			"model":"dif:block/distillation_tank/block_top"
+		},
+		"bottom=true,shape=plain,top=false":{
+			"model":"dif:block/distillation_tank/block_bottom"
+		},
+		"bottom=true,shape=plain,top=true":{
+			"model":"dif:block/distillation_tank/block_single"
+		},
+		"bottom=false,shape=window,top=false":{
+			"model":"dif:block/distillation_tank/block_middle"
+		},
+		"bottom=false,shape=window,top=true":{
+			"model":"dif:block/distillation_tank/block_top"
+		},
+		"bottom=true,shape=window,top=false":{
+			"model":"dif:block/distillation_tank/block_bottom"
+		},
+		"bottom=true,shape=window,top=true":{
+			"model":"dif:block/distillation_tank/block_single"
+		},
+		"bottom=false,shape=window_ne,top=false":{
+			"model":"dif:block/distillation_tank/block_middle"
+		},
+		"bottom=false,shape=window_ne,top=true":{
+			"model":"dif:block/distillation_tank/block_top"
+		},
+		"bottom=true,shape=window_ne,top=false":{
+			"model":"dif:block/distillation_tank/block_bottom"
+		},
+		"bottom=true,shape=window_ne,top=true":{
+			"model":"dif:block/distillation_tank/block_single"
+		},
+		"bottom=false,shape=window_nw,top=false":{
+			"model":"dif:block/distillation_tank/block_middle"
+		},
+		"bottom=false,shape=window_nw,top=true":{
+			"model":"dif:block/distillation_tank/block_top"
+		},
+		"bottom=true,shape=window_nw,top=false":{
+			"model":"dif:block/distillation_tank/block_bottom"
+		},
+		"bottom=true,shape=window_nw,top=true":{
+			"model":"dif:block/distillation_tank/block_single"
+		},
+		"bottom=false,shape=window_se,top=false":{
+			"model":"dif:block/distillation_tank/block_middle"
+		},
+		"bottom=false,shape=window_se,top=true":{
+			"model":"dif:block/distillation_tank/block_top"
+		},
+		"bottom=true,shape=window_se,top=false":{
+			"model":"dif:block/distillation_tank/block_bottom"
+		},
+		"bottom=true,shape=window_se,top=true":{
+			"model":"dif:block/distillation_tank/block_single"
+		},
+		"bottom=false,shape=window_sw,top=false":{
+			"model":"dif:block/distillation_tank/block_middle"
+		},
+		"bottom=false,shape=window_sw,top=true":{
+			"model":"dif:block/distillation_tank/block_top"
+		},
+		"bottom=true,shape=window_sw,top=false":{
+			"model":"dif:block/distillation_tank/block_bottom"
+		},
+		"bottom=true,shape=window_sw,top=true":{
+			"model":"dif:block/distillation_tank/block_single"
+		}
+	}
 }
