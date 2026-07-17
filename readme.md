@@ -1,6 +1,6 @@
 # TheDifferential
 
-**TheDifferential** is an expansive technical addon for **Create**, designed to bridge the gap between classic industrial automation and modern mechanical engineering. It introduces powerful machinery, new resources, and utility items to enhance your factory layouts.
+**TheDifferential** is technical addon for **Create**, designed to bridge the gap between classic industrial automation and modern mechanical engineering..
 
 ## 🚀 Features
 * **Industrial Quarry:** A massive excavation machine inspired by classic automation, capable of clearing large areas with integrated frame-building logic.
@@ -13,7 +13,7 @@
 
 ## 📜 Credits & Licensing
 
-This project respects the work of the original modders who paved the way for technical Minecraft. Below are the specific attributions for the assets and concepts used in this mod:
+This project respects the work of the original technical modders Minecraft. Below are the specific attributions for the assets and concepts used in this mod:
 
 ### 🏗️ BuildCraft Content
 * **Original Author:** BuildCraft Team
@@ -35,12 +35,13 @@ This project respects the work of the original modders who paved the way for tec
 ---
 
 ## 🛠️ Installation & Dependencies
-* **Minecraft Version:** 1.20.1
-* **Loader:** Forge
+* **Minecraft Version:** 1.21.1
+* **Loader:** NeoForge
 * **Required Mods:** * [Create](https://www.curseforge.com/minecraft/mc-mods/create)
     * [Catnip](https://www.curseforge.com/minecraft/mc-mods/catnip) (Required for Create 0.6+)
-* **Optional (Recommended):**
     * [Farmer's Delight](https://www.curseforge.com/minecraft/mc-mods/farmers-delight)
+    * [Curios API](https://www.curseforge.com/minecraft/mc-mods/curios)
+* **Optional (Recommended):**
     * [JEI (Just Enough Items)](https://www.curseforge.com/minecraft/mc-mods/jei)
 
 ---
