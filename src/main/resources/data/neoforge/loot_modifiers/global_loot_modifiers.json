@@ -1,6 +1,7 @@
 {
 	"replace":false,
 	"entries":[
-		"dif:add_horse_meat"
+		"dif:add_horse_meat",
+		"dif:add_modular_template"
 	]
 }
