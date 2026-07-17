@@ -30,27 +30,26 @@ import java.util.Optional;
  *   "min_heat_tier": 1,
  *   "processing_time": 80,
  *   "conversions": [
- *     { "ingredient": { "item": "minecraft:iron_ingot" }, "ingot_value": 1.0, "processing_time_multiplier": 1.0 },
- *     { "ingredient": { "item": "minecraft:iron_block" }, "ingot_value": 9.0, "processing_time_multiplier": 2.0 },
- *     { "ingredient": { "item": "minecraft:raw_iron"   }, "ingot_value": 1.5, "processing_time_multiplier": 0.8 }
- *   ],
- *   "result_fluid": { "id": "dif:molten_iron", "amount": 144 }
+ *     { "ingredient": { "item": "minecraft:iron_ingot" }, "mb_value": 144, "processing_time_multiplier": 1.0 },
+ *     { "ingredient": { "item": "minecraft:iron_block" }, "mb_value": 1296, "processing_time_multiplier": 2.0 },
+ *     { "ingredient": { "item": "minecraft:raw_iron"   }, "mb_value": 216, "processing_time_multiplier": 0.8 }
+ *   ]
  * }
- * result_fluid.amount = mB za 1 ingot (ingot_value=1.0).
- * Výstup = result_fluid.amount * ingot_value, zaokrouhleno.
+ * mb_value = přímé množství výstupního fluidu v mB pro daný ingredient.
+ * Výstup = mb_value.
  * Čas = base * processing_time_multiplier.
  */
 public record ForgeMaterialRecipe(
 		int minHeatTier,
 		int baseTime,
 		List<MaterialConversion> conversions,
-		FluidStack resultFluidPerIngot
+		FluidStack resultFluid
 ) implements Recipe<SingleRecipeInput>{
 	// ── Nested record ─────────────────────────────────────────────────────────
-	public record MaterialConversion(Ingredient ingredient,float ingotValue,float processingTimeMultiplier,Optional<String> partType,Optional<String> partMaterial){
+	public record MaterialConversion(Ingredient ingredient,int mbValue,float processingTimeMultiplier,Optional<String> partType,Optional<String> partMaterial){
 		public static final Codec<MaterialConversion> CODEC=RecordCodecBuilder.create(i->i.group(
 				Ingredient.CODEC.fieldOf("ingredient").forGetter(MaterialConversion::ingredient),
-				Codec.FLOAT.optionalFieldOf("ingot_value",1.0f).forGetter(MaterialConversion::ingotValue),
+				ExtraCodecs.POSITIVE_INT.optionalFieldOf("mb_value",1).forGetter(MaterialConversion::mbValue),
 				Codec.FLOAT.optionalFieldOf("processing_time_multiplier",1.0f).forGetter(MaterialConversion::processingTimeMultiplier),
 				Codec.STRING.optionalFieldOf("part_type").forGetter(MaterialConversion::partType),
 				Codec.STRING.optionalFieldOf("part_material").forGetter(MaterialConversion::partMaterial)
@@ -58,7 +57,7 @@ public record ForgeMaterialRecipe(
 		public static final StreamCodec<RegistryFriendlyByteBuf,MaterialConversion> STREAM_CODEC=
 				StreamCodec.composite(
 						Ingredient.CONTENTS_STREAM_CODEC,MaterialConversion::ingredient,
-						ByteBufCodecs.FLOAT,MaterialConversion::ingotValue,
+						ByteBufCodecs.INT,MaterialConversion::mbValue,
 						ByteBufCodecs.FLOAT,MaterialConversion::processingTimeMultiplier,
 						ByteBufCodecs.optional(ByteBufCodecs.STRING_UTF8),MaterialConversion::partType,
 						ByteBufCodecs.optional(ByteBufCodecs.STRING_UTF8),MaterialConversion::partMaterial,
@@ -69,14 +68,14 @@ public record ForgeMaterialRecipe(
 			ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("min_heat_tier",0).forGetter(ForgeMaterialRecipe::minHeatTier),
 			ExtraCodecs.POSITIVE_INT.optionalFieldOf("processing_time",80).forGetter(ForgeMaterialRecipe::baseTime),
 			MaterialConversion.CODEC.listOf().fieldOf("conversions").forGetter(ForgeMaterialRecipe::conversions),
-			FluidStack.CODEC.fieldOf("result_fluid").forGetter(ForgeMaterialRecipe::resultFluidPerIngot)
+			FluidStack.CODEC.optionalFieldOf("result_fluid",FluidStack.EMPTY).forGetter(ForgeMaterialRecipe::resultFluid)
 	).apply(i,ForgeMaterialRecipe::new));
 	public static final StreamCodec<RegistryFriendlyByteBuf,ForgeMaterialRecipe> STREAM_CODEC=
 			StreamCodec.composite(
 					ByteBufCodecs.INT,ForgeMaterialRecipe::minHeatTier,
 					ByteBufCodecs.INT,ForgeMaterialRecipe::baseTime,
 					MaterialConversion.STREAM_CODEC.apply(ByteBufCodecs.list()),ForgeMaterialRecipe::conversions,
-					FluidStack.STREAM_CODEC,ForgeMaterialRecipe::resultFluidPerIngot,
+					FluidStack.STREAM_CODEC,ForgeMaterialRecipe::resultFluid,
 					ForgeMaterialRecipe::new);
 	// ── API ───────────────────────────────────────────────────────────────────
 	/** Najde konverzi pro daný item, nebo null. */
@@ -101,12 +100,14 @@ public record ForgeMaterialRecipe(
 		return findConversion(item)!=null
 				&&heatPoints>=ForgeMultiblockHelper.minHeatForTier(minHeatTier);
 	}
-	/** Vrátí výstupní fluid pro daný item (amount = base * ingotValue), nebo EMPTY. */
+	/** Vrátí výstupní fluid pro daný item (amount = mb_value z konverze), nebo EMPTY. */
 	public FluidStack getOutputFor(ItemStack item){
 		var conv=findConversion(item);
 		if(conv==null) return FluidStack.EMPTY;
-		int amount=Math.round(resultFluidPerIngot.getAmount()*conv.ingotValue());
-		return amount>0?new FluidStack(resultFluidPerIngot.getFluid(),amount):FluidStack.EMPTY;
+		int amount=conv.mbValue();
+		if(amount<=0) return FluidStack.EMPTY;
+		if(!resultFluid.isEmpty()) return new FluidStack(resultFluid.getFluid(),amount);
+		return FluidStack.EMPTY;
 	}
 	/** Vrátí čas zpracování pro daný item (base * multiplier), nebo baseTime. */
 	public int getProcessingTimeFor(ItemStack item){

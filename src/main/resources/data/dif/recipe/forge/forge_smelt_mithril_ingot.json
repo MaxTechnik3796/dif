@@ -7,26 +7,25 @@
 			"ingredient":{
 				"item":"dif:mithril"
 			},
-			"ingot_value":1.0,
+			"mb_value":144,
 			"processing_time_multiplier":1.0
 		},
 		{
 			"ingredient":{
 				"tag":"c:plates/mithril"
 			},
-			"ingot_value":1.0,
+			"mb_value":144,
 			"processing_time_multiplier":1.0
 		},
 		{
 			"ingredient":{
 				"tag":"c:ores/mithril"
 			},
-			"ingot_value":2.0,
+			"mb_value":288,
 			"processing_time_multiplier":1.2
 		}
 	],
 	"result_fluid":{
-		"id":"dif:molten_mithril_fluid",
-		"amount":144
+		"id":"dif:molten_mithril_fluid"
 	}
 }

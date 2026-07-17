@@ -7,54 +7,60 @@
 			"ingredient":{
 				"tag":"c:ingots/nickel"
 			},
-			"ingot_value":1.0,
+			"mb_value":144,
+			"processing_time_multiplier":1.0
+		},
+		{
+			"ingredient":{
+				"tag":"c:nuggets/nickel"
+			},
+			"mb_value":16,
 			"processing_time_multiplier":1.0
 		},
 		{
 			"ingredient":{
 				"tag":"c:storage_blocks/nickel"
 			},
-			"ingot_value":9.0,
+			"mb_value":1296,
 			"processing_time_multiplier":9.0
 		},
 		{
 			"ingredient":{
 				"tag":"c:plates/nickel"
 			},
-			"ingot_value":1.0,
+			"mb_value":144,
 			"processing_time_multiplier":1.0
 		},
 		{
 			"ingredient":{
 				"item":"create:crushed_raw_nickel"
 			},
-			"ingot_value":1.0,
+			"mb_value":144,
 			"processing_time_multiplier":1.0
 		},
 		{
 			"ingredient":{
 				"tag":"c:raw_materials/nickel"
 			},
-			"ingot_value":1.5,
+			"mb_value":144,
 			"processing_time_multiplier":0.8
 		},
 		{
 			"ingredient":{
 				"tag":"c:storage_blocks/raw_nickel"
 			},
-			"ingot_value":13.5,
+			"mb_value":1296,
 			"processing_time_multiplier":7.2
 		},
 		{
 			"ingredient":{
 				"tag":"c:ores/nickel"
 			},
-			"ingot_value":2.0,
+			"mb_value":288,
 			"processing_time_multiplier":1.2
 		}
 	],
 	"result_fluid":{
-		"id":"dif:molten_nickel_fluid",
-		"amount":144
+		"id":"dif:molten_nickel_fluid"
 	}
 }

@@ -30,9 +30,9 @@ public class ForgeMeltingJEI {
 			builder.addSlot(RecipeIngredientRole.INPUT,1,19)
 					.setStandardSlotBackground()
 					.addIngredients(wrapper.conversion().ingredient());
-			int amount=Math.round(wrapper.recipe().resultFluidPerIngot().getAmount()*wrapper.conversion().ingotValue());
+			int amount=wrapper.conversion().mbValue();
 			if(amount<=0) amount=1000;
-			FluidStack outputFluid=new FluidStack(wrapper.recipe().resultFluidPerIngot().getFluid(),amount);
+			FluidStack outputFluid=new FluidStack(wrapper.recipe().resultFluid().getFluid(),amount);
 			builder.addSlot(RecipeIngredientRole.OUTPUT,61,19)
 					.setStandardSlotBackground()
 					.setFluidRenderer(outputFluid.getAmount(),false,16,16)
