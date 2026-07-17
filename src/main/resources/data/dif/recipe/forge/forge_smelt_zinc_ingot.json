@@ -7,54 +7,53 @@
 			"ingredient":{
 				"tag":"c:ingots/zinc"
 			},
-			"ingot_value":1.0,
+			"mb_value":144,
+			"processing_time_multiplier":1.0
+		},
+		{
+			"ingredient":{
+				"tag":"c:nuggets/zinc"
+			},
+			"mb_value":16,
 			"processing_time_multiplier":1.0
 		},
 		{
 			"ingredient":{
 				"tag":"c:storage_blocks/zinc"
 			},
-			"ingot_value":9.0,
+			"mb_value":1296,
 			"processing_time_multiplier":9.0
-		},
-		{
-			"ingredient":{
-				"tag":"c:plates/zinc"
-			},
-			"ingot_value":1.0,
-			"processing_time_multiplier":1.0
 		},
 		{
 			"ingredient":{
 				"item":"create:crushed_raw_zinc"
 			},
-			"ingot_value":1.0,
+			"mb_value":144,
 			"processing_time_multiplier":1.0
 		},
 		{
 			"ingredient":{
 				"tag":"c:raw_materials/zinc"
 			},
-			"ingot_value":1.5,
+			"mb_value":144,
 			"processing_time_multiplier":0.8
 		},
 		{
 			"ingredient":{
 				"tag":"c:storage_blocks/raw_zinc"
 			},
-			"ingot_value":13.5,
+			"mb_value":1296,
 			"processing_time_multiplier":7.2
 		},
 		{
 			"ingredient":{
 				"tag":"c:ores/zinc"
 			},
-			"ingot_value":2.0,
+			"mb_value":288,
 			"processing_time_multiplier":1.2
 		}
 	],
 	"result_fluid":{
-		"id":"dif:molten_zinc_fluid",
-		"amount":144
+		"id":"dif:molten_zinc_fluid"
 	}
 }
