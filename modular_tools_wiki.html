@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,453 +7,279 @@
     <style>
         :root {
             --bg-main: #141419;
-            --bg-sidebar: #1a1a24;
-            --bg-card: #222230;
+            --bg-card: #1c1c28;
             --bg-accent: #00d0ff;
-            --bg-accent-hover: #00b4dc;
             --text-main: #e2e8f0;
             --text-muted: #94a3b8;
             --border-color: #334155;
             --table-header: #2d2d3d;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
+        * { box-sizing: border-box; margin:0; padding:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body {
             background-color: var(--bg-main);
             color: var(--text-main);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
+            padding: 40px 60px 80px;
         }
-
-        /* Skrytí radio buttonů pro taby */
-        input[type="radio"] {
-            display: none;
+        h1 {
+            font-size: 2.4rem;
+            color: #fff;
+            margin-bottom: 6px;
         }
-
-        /* Sidebar Layout */
-        .sidebar {
-            width: 280px;
-            background-color: var(--bg-sidebar);
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
+        .subtitle {
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            font-size: 1.05rem;
         }
-
-        .sidebar h2 {
-            font-size: 1.4rem;
-            margin-bottom: 25px;
-            color: var(--bg-accent);
+        .category-block {
+            margin-bottom: 60px;
+        }
+        .category-header {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .category-header .bar {
+            width: 6px;
+            height: 30px;
+            background: var(--bg-accent);
+            border-radius: 3px;
+        }
+        .category-header h2 {
+            font-size: 1.7rem;
+            color: var(--bg-accent);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-
-        .sidebar h2 span {
-            font-size: 0.8rem;
-            background: #334155;
-            color: #fff;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        .nav-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .nav-item {
-            display: block;
-            padding: 12px 16px;
-            background-color: transparent;
-            border-radius: 6px;
-            cursor: pointer;
-            color: var(--text-muted);
-            font-weight: 500;
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-        }
-
-        .nav-item:hover {
-            background-color: rgba(255, 255, 255, 0.03);
-            color: var(--text-main);
-        }
-
-        /* Kontajnery pro obsah */
-        .main-content {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-            background-color: var(--bg-main);
-        }
-
-        .page-section {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Logika přepínání stránek (Pure CSS Tabs) */
-        #tab-overview:checked ~ .sidebar .nav-list label[for="tab-overview"],
-        #tab-assembly:checked ~ .sidebar .nav-list label[for="tab-assembly"],
-        #tab-modifiers:checked ~ .sidebar .nav-list label[for="tab-modifiers"],
-        #tab-parts:checked ~ .sidebar .nav-list label[for="tab-parts"] {
-            background-color: rgba(0, 208, 255, 0.1);
-            color: var(--bg-accent);
-            border-left-color: var(--bg-accent);
-        }
-
-        #tab-overview:checked ~ .main-content #sect-overview,
-        #tab-assembly:checked ~ .main-content #sect-assembly,
-        #tab-modifiers:checked ~ .main-content #sect-modifiers,
-        #tab-parts:checked ~ .main-content #sect-parts {
-            display: block;
-        }
-
-        /* Typografie & Karty */
-        h1 {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-            color: #fff;
-        }
-
-        .subtitle {
-            color: var(--text-muted);
-            margin-bottom: 30px;
-            font-size: 1.1rem;
-        }
-
-        h2.section-title {
-            font-size: 1.5rem;
-            margin: 25px 0 15px 0;
-            color: var(--bg-accent);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
-        }
-
-        p {
-            line-height: 1.6;
-            margin-bottom: 15px;
-            color: var(--text-main);
-        }
-
         .card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
+            border-radius: 10px;
+            padding: 10px;
+            overflow: hidden;
         }
-
-        /* Stylování tabulek */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-            border-radius: 6px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
         }
-
         th, td {
-            padding: 12px 15px;
+            padding: 12px 16px;
             text-align: left;
+            vertical-align: top;
         }
-
         th {
             background-color: var(--table-header);
             color: #fff;
             font-weight: 600;
             text-transform: uppercase;
-            font-size: 0.85rem;
+            font-size: 0.78rem;
             letter-spacing: 0.5px;
         }
-
-        tr {
-            border-bottom: 1px solid var(--border-color);
+        tr { border-bottom: 1px solid var(--border-color); }
+        tr:last-child { border-bottom: none; }
+        tbody tr:hover { background-color: rgba(255,255,255,0.03); }
+        .group-header td {
+            background-color: rgba(0, 208, 255, 0.08);
+            color: var(--bg-accent);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            padding-top: 14px;
+            padding-bottom: 14px;
         }
-
-        tr:last-child {
-            border-bottom: none;
+        .tool-tag {
+            color: #5eead4;
+            font-weight: 500;
         }
-
-        tr:nth-child(even) {
-            background-color: rgba(255, 255, 255, 0.01);
+        .effect-text {
+            color: #c4b5fd;
         }
-
-        /* Odznáčky a itemy */
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-
-        .badge-item { background-color: #3b82f6; color: #fff; }
-        .badge-cost { background-color: #eab308; color: #000; }
-        .badge-exclusive { background-color: #ef4444; color: #fff; }
-
-        .tier-common { color: #94a3b8; font-weight: bold; }
-        .tier-rare { color: #3b82f6; font-weight: bold; }
-        .tier-epic { color: #a855f7; font-weight: bold; }
-        .tier-legendary { color: #f97316; font-weight: bold; }
-        .tier-mythic { color: #ef4444; font-weight: bold; }
-
-        /* Smithing Table vizualizace */
-        .smithing-grid {
-            display: inline-flex;
-            gap: 15px;
-            background: #1a1a24;
-            padding: 15px;
-            border-radius: 8px;
-            border: 2px solid #2d2d3d;
-            margin: 15px 0;
-            align-items: center;
-        }
-
-        .slot {
-            width: 60px;
-            height: 60px;
-            background: #2d2d3d;
-            border: 2px solid #475569;
-            border-radius: 6px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: 0.75rem;
+        .placeholder {
+            background-color: var(--bg-card);
+            border: 1px dashed var(--border-color);
+            border-radius: 10px;
+            padding: 40px;
             text-align: center;
             color: var(--text-muted);
-            font-weight: bold;
+            font-size: 1.05rem;
         }
+        .placeholder strong { color: var(--text-main); }
 
-        .slot.result-slot {
-            border-color: var(--bg-accent);
-            background: #22323d;
-            color: #fff;
+        .subcategory {
+            margin-bottom: 36px;
         }
-
-        .arrow {
-            font-size: 1.5rem;
-            color: var(--text-muted);
+        .subcategory:last-child {
+            margin-bottom: 0;
+        }
+        .subcategory-title {
+            font-size: 1.1rem;
+            color: var(--bg-accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .cost-table td, .single-table td {
+            text-align: center;
+        }
+        .cost-table td:first-child, .single-table td:first-child {
+            text-align: left;
         }
     </style>
 </head>
 <body>
 
-    <!-- Inicializace stavu záložek -->
-    <input type="radio" id="tab-overview" name="wiki-tabs" checked>
-    <input type="radio" id="tab-assembly" name="wiki-tabs">
-    <input type="radio" id="tab-modifiers" name="wiki-tabs">
-    <input type="radio" id="tab-parts" name="wiki-tabs">
+<h1>Modular Tools Wiki</h1>
+<div class="subtitle">English documentation of TheDifferential (dif) modular tools system</div>
 
-    <!-- Postranní navigace (Sidebar) -->
-    <div class="sidebar">
-        <h2>DIF Wiki <span>V2</span></h2>
-        <div class="nav-list">
-            <label for="tab-overview" class="nav-item">Úvodní přehled</label>
-            <label for="tab-assembly" class="nav-item">Skládání v kovářském stole</label>
-            <label for="tab-modifiers" class="nav-item">Modifikátory & Ceny</label>
-            <label for="tab-parts" class="nav-item">Materiály & Části</label>
+<!-- CATEGORY 1: REFORGE TABLE -->
+<div class="category-block">
+    <div class="category-header">
+        <div class="bar"></div>
+        <h2>Reforge Effects</h2>
+    </div>
+
+    <div class="subcategory">
+        <div class="subcategory-title">Combat</div>
+        <div class="card">
+            <table>
+                <thead><tr><th>Reforge</th><th>Tools</th><th>Epic Effect</th></tr></thead>
+                <tbody>
+                <tr><td><strong>Swift</strong></td><td class="tool-tag">Sword, Axe, Katana</td><td class="effect-text">+15% Atk Speed, -5% Atk Dmg</td></tr>
+                <tr><td><strong>Heavy</strong></td><td class="tool-tag">Sword, Battle Axe, Katana</td><td class="effect-text">+25% Atk Dmg, -10% Atk Speed</td></tr>
+                <tr><td><strong>Razor</strong></td><td class="tool-tag">Sword, Battle Axe, Katana</td><td class="effect-text">+10% Atk Dmg, +5% Atk Speed</td></tr>
+                <tr><td><strong>Vampiric</strong></td><td class="tool-tag">Sword, Katana</td><td class="effect-text">+15% Lifesteal</td></tr>
+                <tr><td><strong>Frozen</strong></td><td class="tool-tag">Sword, Katana</td><td class="effect-text">+5% Atk Dmg, Slow I on hit</td></tr>
+                <tr><td><strong>Phantom</strong></td><td class="tool-tag">Sword, Battle Axe, Katana</td><td class="effect-text">+15% Strike Chance</td></tr>
+                <tr><td><strong>Cursed Blade</strong></td><td class="tool-tag">Katana</td><td class="effect-text">+10% Atk Dmg, Weakness I on hit</td></tr>
+                <tr><td><strong>Draining</strong></td><td class="tool-tag">Battle Axe</td><td class="effect-text">+15% Lifesteal</td></tr>
+                <tr><td><strong>Savage</strong></td><td class="tool-tag">Axe, Battle Axe</td><td class="effect-text">+10% Atk Dmg</td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <!-- Hlavní obsahová část -->
-    <div class="main-content">
-
-        <!-- STRÁNKA 1: ÚVOD -->
-        <div class="page-section" id="sect-overview">
-            <h1>Modular Tools V2</h1>
-            <div class="subtitle">Dokumentace modulárního systému nástrojů pro modifikaci TheDifferential (dif)</div>
-            
-            <div class="card">
-                <p>Vítejte v interní dokumentaci systému <strong>Modular Tools V2</strong>. Tento systém kompletně nahrazuje tradiční vanila nástroje a přináší možnost sestavit si plně přizpůsobené krumpáče, meče, sekery, katanu, bojové sekery či kladiva na míru z různých materiálů.</p>
-                <p>Nástroje se neskládají v klasickém crafting tablu, nýbrž procházejí procesem kování a následného vylepšování pomocí specifických šablon (Templates) v kovářském stole (Smithing Table). Každý nástroj se skládá ze tří částí, jejichž kvalita určuje výslednou třídu (Tier) nástroje.</p>
-            </div>
-
-            <h2 class="section-title">Hlavní vlastnosti systému</h2>
-            <p>• <strong>Žádné recepty v mřížce:</strong> Vše probíhá data-driven cestou skrze kovářský stůl.</p>
-            <p>• <strong>Stupňující se ekonomika surovin:</strong> Vyšší úrovně modifikátorů vyžadují větší množství surovin (např. celý stack 64 kusů pro nejvyšší úroveň Efficiency).</p>
-            <p>• <strong>100% Client-Side kompatibilní renderování:</strong> Veškerá vizuální vodítka fungují plynule na klientovi bez zbytečného zatěžování serveru.</p>
-        </div>
-
-        <!-- STRÁNKA 2: SKLÁDÁNÍ -->
-        <div class="page-section" id="sect-assembly">
-            <h1>Skládání nástrojů</h1>
-            <div class="subtitle">Jak správně zkombinovat modulární části v kovářském stole</div>
-
-            <div class="card">
-                <p>Sestavení nového modulárního nástroje vyžaduje tři specifické komponenty vložené do slotů kovářského stolu (Smithing Table). Systém automaticky rozpozná typ nástroje podle kombinace vložených hlav.</p>
-                
-                <div class="smithing-grid">
-                    <div class="slot">Slot 0<br><span style="color:#a855f7">Vazba<br>(Binding)</span></div>
-                    <div class="slot">Slot 1<br><span style="color:#ef4444">Hlava<br>(Head)</span></div>
-                    <div class="slot">Slot 2<br><span style="color:#eab308">Rukojeť<br>(Handle)</span></div>
-                    <div class="arrow">➜</div>
-                    <div class="slot result-slot">Výsledek<br><span style="color:#00d0ff">Modulární<br>nástroj</span></div>
-                </div>
-            </div>
-
-            <h2 class="section-title">Výpočet Výsledné Třídy (Tieru)</h2>
-            <p>Výsledná vzácnost a statistiky nástroje (Common až Mythic) se odvíjejí od materiálů použitých na jednotlivé části. Výpočet probíhá podle většinového pravidla:</p>
-            <div class="card" style="background: rgba(255,255,255,0.02)">
-                <p>• Pokud jsou <strong>alespoň 2 části ze 3</strong> určité třídy (nebo vyšší), nástroj získá tuto výslednou třídu.</p>
-                <p>• <em>Příklad:</em> Mythic Hlava + Common Vazba + Mythic Rukojeť = Výsledný nástroj bude <span class="tier-mythic">MYTHIC</span>.</p>
-                <p>• <em>Příklad:</em> Epic Hlava + Rare Vazba + Common Rukojeť = Výsledný nástroj bude <span class="tier-common">COMMON</span> (nedošlo k většině u vyšších tříd).</p>
-            </div>
-
-            <h2 class="section-title">Podporované typy nástrojů</h2>
+    <div class="subcategory">
+        <div class="subcategory-title">Mining</div>
+        <div class="card">
             <table>
-                <thead>
-                    <tr>
-                        <th>Typ nástroje</th>
-                        <th>Požadovaná hlava (Head)</th>
-                        <th>Požadovaná vazba (Binding)</th>
-                        <th>Požadovaná rukojeť (Handle)</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Reforge</th><th>Tools</th><th>Epic Effect</th></tr></thead>
                 <tbody>
-                    <tr><td><strong>Pickaxe</strong> (Krumpáč)</td><td>PICKAXE_HEAD</td><td>BINDING</td><td>HANDLE</td></tr>
-                    <tr><td><strong>Axe</strong> (Sekera)</td><td>AXE_HEAD</td><td>BINDING</td><td>HANDLE</td></tr>
-                    <tr><td><strong>Sword</strong> (Meč)</td><td>SWORD_HEAD</td><td>SWORD_BINDING</td><td>HANDLE</td></tr>
-                    <tr><td><strong>Shovel</strong> (Lopat)</td><td>SHOVEL_HEAD</td><td>BINDING</td><td>HANDLE</td></tr>
-                    <tr><td><strong>Hoe</strong> (Motyka)</td><td>HOE_HEAD</td><td>BINDING</td><td>HANDLE</td></tr>
-                    <tr><td><strong>Katana</strong></td><td>KATANA_HEAD</td><td>BINDING</td><td>HANDLE</td></tr>
-                    <tr><td><strong>Battle Axe</strong> (Bojová sekera)</td><td>BATTLE_AXE_HEAD</td><td>BINDING</td><td>HANDLE</td></tr>
-                    <tr><td><strong>Hammer</strong> (Kladivo)</td><td>HAMMER_HEAD</td><td>BINDING</td><td>HANDLE</td></tr>
-                    <tr><td><strong>Timber Axe</strong></td><td>TIMBER_AXE_HEAD</td><td>BINDING</td><td>HANDLE</td></tr>
-                    <tr><td><strong>Excavator</strong></td><td>EXCAVATOR_HEAD</td><td>BINDING</td><td>HANDLE</td></tr>
+                <tr><td><strong>Reinforced</strong></td><td class="tool-tag">Axe, Pickaxe, Sword, Shovel, Hoe, Battle Axe, Hammer, Excavator, Timber Axe</td><td class="effect-text">+10% Durability</td></tr>
+                <tr><td><strong>Prospector</strong></td><td class="tool-tag">Pickaxe, Hammer</td><td class="effect-text">+5% Durability, +5% Efficiency</td></tr>
+                <tr><td><strong>Sturdy</strong></td><td class="tool-tag">Axe, Pickaxe, Sword, Shovel, Hoe, Hammer, Excavator, Timber Axe</td><td class="effect-text">-10% Efficiency, +20% Durability</td></tr>
+                <tr><td><strong>Arcane</strong></td><td class="tool-tag">Pickaxe, Hammer, Shovel, Excavator</td><td class="effect-text">+20% Efficiency, -10% Durability</td></tr>
+                <tr><td><strong>Gleaming</strong></td><td class="tool-tag">Pickaxe, Hammer, Shovel, Excavator</td><td class="effect-text">Fortune +1</td></tr>
+                <tr><td><strong>Crusher</strong></td><td class="tool-tag">Hammer</td><td class="effect-text">+10% Efficiency</td></tr>
+                <tr><td><strong>Reaper</strong></td><td class="tool-tag">Axe, Treecap Axe</td><td class="effect-text">+10% Efficiency</td></tr>
+                <tr><td><strong>Lumbering</strong></td><td class="tool-tag">Axe, Treecap Axe</td><td class="effect-text">+5% Durability, +5% Efficiency</td></tr>
+                <tr><td><strong>Harwester</strong></td><td class="tool-tag">Hoe</td><td class="effect-text">Fortune +1</td></tr>
+                <tr><td><strong>Cultivator</strong></td><td class="tool-tag">Hoe</td><td class="effect-text">3x3 tilling</td></tr>
                 </tbody>
             </table>
         </div>
-
-        <!-- STRÁNKA 3: MODIFIKÁTORY -->
-        <div class="page-section" id="sect-modifiers">
-            <h1>Modifikátory a vylepšení</h1>
-            <div class="subtitle">Přehled vylepšení, požadovaných surovin a progresivních cen</div>
-
-            <p>Modifikátory se na hotový modulární nástroj aplikují opět v kovářském stole za použití příslušné šablony: <strong>Modular Template (Normal)</strong> nebo <strong>Modular Template (Hyper)</strong>.</p>
-            
-            <div class="card" style="border-left: 4px solid #ef4444;">
-                <strong><span class="badge badge-exclusive">Exkluzivita / Konflikt modifikátorů:</span></strong> Modifikátory <strong>LUCK</strong> (Fortune) a <strong>SILK TOUCH</strong> (Hedvábný dotek) jsou vzájemně exkluzivní. Pokud nástroj obsahuje jeden z nich, stůl vám nedovolí aplikovat druhý.
-            </div>
-
-            <h2 class="section-title">Tabulka spotřeby materiálu podle úrovní</h2>
-            <p>Množství surovin potřebné pro upgrade roste s aktuální úrovní modifikátoru zapsanou na nástroji:</p>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Modifikátor</th>
-                        <th>Surovina (Normal šablona)</th>
-                        <th>Surovina (Hyper šablona)</th>
-                        <th>Úroveň 0 ➜ 1</th>
-                        <th>Úroveň 1 ➜ 2</th>
-                        <th>Úroveň 2 ➜ 3</th>
-                        <th>Úroveň 3 ➜ 4</th>
-                        <th>Úroveň 4 ➜ 5</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>EFFICIENCY</strong> (Efektivita)</td>
-                        <td><span class="badge badge-item">Redstone</span></td>
-                        <td><span class="badge badge-item">Redstone Block</span></td>
-                        <td>16 ks</td><td>24 ks</td><td>32 ks</td><td>48 ks</td><td>64 ks</td>
-                    </tr>
-                    <tr>
-                        <td><strong>SHARPNESS</strong> (Ostrost)</td>
-                        <td><span class="badge badge-item">Quartz</span></td>
-                        <td><span class="badge badge-item">Quartz Block</span></td>
-                        <td>16 ks</td><td>24 ks</td><td>32 ks</td><td>48 ks</td><td>64 ks</td>
-                    </tr>
-                    <tr>
-                        <td><strong>LUCK</strong> (Fortune / Kořist)</td>
-                        <td><span class="badge badge-item">Lapis Lazuli</span></td>
-                        <td><span class="badge badge-item">Lapis Block</span></td>
-                        <td>16 ks</td><td>24 ks</td><td>32 ks</td><td>8 ks</td><td>-</td>
-                    </tr>
-                    <tr>
-                        <td><strong>SWEEPING_EDGE</strong> (Plošný útok)</td>
-                        <td><span class="badge badge-item">Iron Ingot</span></td>
-                        <td><span class="badge badge-item">Iron Block</span></td>
-                        <td>16 ks</td><td>24 ks</td><td>32 ks</td><td>8 ks</td><td>-</td>
-                    </tr>
-                    <tr>
-                        <td><strong>REINFORCED</strong> (Pevnost)</td>
-                        <td><span class="badge badge-item">Diamond</span></td>
-                        <td><span class="badge badge-item">Diamond</span></td>
-                        <td>2 ks</td><td>4 ks</td><td>8 ks</td><td>24 ks</td><td>-</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h2 class="section-title">Speciální jednorázové modifikátory</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Modifikátor</th>
-                        <th>Požadovaná surovina</th>
-                        <th>Spotřeba kusů</th>
-                        <th>Maximální úroveň</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td><strong>MENDING</strong> (Oprava)</td><td>create:experience_block</td><td>1 ks</td><td>Mmax. Lv 1</td></tr>
-                    <tr><td><strong>SILK_TOUCH</strong> (Hedvábný dotek)</td><td>dif:silky_stone</td><td>1 ks</td><td>Max. Lv 1</td></tr>
-                    <tr><td><strong>VOLCANIC</strong> (Automatické tavení)</td><td>minecraft:lava_bucket</td><td>1 ks</td><td>Max. Lv 1</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- STRÁNKA 4: MATERIÁLY -->
-        <div class="page-section" id="sect-parts">
-            <h1>Materiály a formy</h1>
-            <div class="subtitle">Přehled odlévacích forem a dostupných materiálů komponentů</div>
-
-            <div class="card">
-                <p>Před vytvořením samotné modulární části (Modular Part) musíte nejprve získat příslušnou odlévací formu (Casting Mold). Formy se využívají při metalurgických procesech modifikace.</p>
-            </div>
-
-            <h2 class="section-title">Dostupné formy (Casting Molds)</h2>
-            <p>V registru <code>DifModItems</code> se nacházejí následující dedikované odlévací formy:</p>
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 15px;">
-                <div style="background:#1a1a24; padding: 10px; border-radius:4px; border:1px solid var(--border-color)">• CASTING_MOLD (Základní)</div>
-                <div style="background:#1a1a24; padding: 10px; border-radius:4px; border:1px solid var(--border-color)">• CASTING_MOLD_HANDLE</div>
-                <div style="background:#1a1a24; padding: 10px; border-radius:4px; border:1px solid var(--border-color)">• CASTING_MOLD_BINDING</div>
-                <div style="background:#1a1a24; padding: 10px; border-radius:4px; border:1px solid var(--border-color)">• CASTING_MOLD_PICKAXE_HEAD</div>
-                <div style="background:#1a1a24; padding: 10px; border-radius:4px; border:1px solid var(--border-color)">• CASTING_MOLD_SWORD_HEAD</div>
-                <div style="background:#1a1a24; padding: 10px; border-radius:4px; border:1px solid var(--border-color)">• CASTING_MOLD_AXE_HEAD</div>
-                <div style="background:#1a1a24; padding: 10px; border-radius:4px; border:1px solid var(--border-color)">• CASTING_MOLD_KATANA_HEAD</div>
-                <div style="background:#1a1a24; padding: 10px; border-radius:4px; border:1px solid var(--border-color)">• CASTING_MOLD_HAMMER_HEAD</div>
-            </div>
-
-            <h2 class="section-title">Základní kovy a slitiny</h2>
-            <p>Modulární součásti lze odlévat z široké škály kovů registrovaných v tekutých registrech (Fluids), mezi které patří zejména:</p>
-            <p>• <strong>MOLTEN_COPPER</strong> (Měď - základní ekonomická třída)</p>
-            <p>• <strong>MOLTEN_IRON / MOLTEN_STEEL</strong> (Železo a Ocel - střední vyvážená třída)</p>
-            <p>• <strong>MOLTEN_GOLD</strong> (Zlato - vysoká rychlost, nízká výdrž)</p>
-            <p>• <strong>MOLTEN_BRASS / MOLTEN_ZINC</strong> (Mosaz a Zinek - Create integrace)</p>
-            <p>• <strong>MOLTEN_MITHRIL</strong> (Mithril - nejvyšší vzácná třída pro Mythic nástroje)</p>
-        </div>
-
     </div>
+
+    <div class="subcategory">
+        <div class="subcategory-title">Material Traits</div>
+        <div class="card">
+            <table>
+                <thead><tr><th>Material</th><th>Trait</th><th>Effect</th></tr></thead>
+                <tbody>
+                <tr><td><strong>Wood</strong></td><td class="tool-tag">Renewable</td><td class="effect-text">Chance to drop an apple when mining or killing</td></tr>
+                <tr><td><strong>Stone</strong></td><td class="tool-tag">Stonebound</td><td class="effect-text">Below 50% durability, takes 2x less durability damage</td></tr>
+                <tr><td><strong>Iron</strong></td><td class="tool-tag">Magnetic</td><td class="effect-text">Attracts items and XP orbs to the player, max 5 blocks</td></tr>
+                <tr><td><strong>Copper</strong></td><td class="tool-tag">Verdant</td><td class="effect-text">+20% efficiency and attack speed in rain</td></tr>
+                <tr><td><strong>Gold</strong></td><td class="tool-tag">Lucky</td><td class="effect-text">About 25% more XP drop</td></tr>
+                <tr><td><strong>Steel</strong></td><td class="tool-tag">Momentum</td><td class="effect-text">Chance on block break to get Haste for 2s (~10% chance)</td></tr>
+                <tr><td><strong>Obsidian</strong></td><td class="tool-tag">Unbreakable</td><td class="effect-text">50% chance to not take durability damage</td></tr>
+                <tr><td><strong>Zinc</strong></td><td class="tool-tag">Precise</td><td class="effect-text">Tool repairs itself over time</td></tr>
+                <tr><td><strong>Nickel</strong></td><td class="tool-tag">Toxic</td><td class="effect-text">Hits have a chance to apply Poison I for 3 seconds</td></tr>
+                <tr><td><strong>Brass</strong></td><td class="tool-tag">Precise</td><td class="effect-text">+10% durability</td></tr>
+                <tr><td><strong>Mithril</strong></td><td class="tool-tag">Lightweight</td><td class="effect-text">+5% efficiency and attack speed</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="subcategory">
+        <div class="subcategory-title">Upgrade Material Costs</div>
+        <div class="card">
+            <table class="cost-table">
+                <thead>
+                <tr>
+                    <th>Modifier</th>
+                    <th>Lv 0 ➜ 1</th>
+                    <th>Lv 1 ➜ 2</th>
+                    <th>Lv 2 ➜ 3</th>
+                    <th>Lv 3 ➜ 4 (extra)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><strong>Luck</strong></td>
+                    <td class="effect-text">32 Lapis</td>
+                    <td class="effect-text">48 Lapis</td>
+                    <td class="effect-text">64 Lapis</td>
+                    <td class="effect-text">16 Lapis Block</td>
+                </tr>
+                <tr>
+                    <td><strong>Sharpness</strong></td>
+                    <td class="effect-text">16 Quartz</td>
+                    <td class="effect-text">24 Quartz</td>
+                    <td class="effect-text">32 Quartz</td>
+                    <td class="effect-text">32 Quartz Block</td>
+                </tr>
+                <tr>
+                    <td><strong>Efficiency</strong></td>
+                    <td class="effect-text">16 Redstone</td>
+                    <td class="effect-text">24 Redstone</td>
+                    <td class="effect-text">32 Redstone</td>
+                    <td class="effect-text">32 Redstone Block</td>
+                </tr>
+                <tr>
+                    <td><strong>Reinforced</strong></td>
+                    <td class="effect-text">2 Diamond</td>
+                    <td class="effect-text">4 Diamond</td>
+                    <td class="effect-text">8 Diamond</td>
+                    <td class="effect-text">24 Diamond (not Block)</td>
+                </tr>
+                <tr>
+                    <td><strong>Sweeping Edge</strong></td>
+                    <td class="effect-text">16 Iron</td>
+                    <td class="effect-text">24 Iron</td>
+                    <td class="effect-text">32 Iron</td>
+                    <td class="effect-text">8 Iron Block</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="subcategory">
+        <div class="subcategory-title">Single-Use Modifiers</div>
+        <div class="card">
+            <table class="single-table">
+                <thead><tr><th>Modifier</th><th>Required Item</th><th>Max Level</th></tr></thead>
+                <tbody>
+                <tr><td><strong>Silk Touch</strong></td><td class="effect-text">Silky Stone</td><td class="effect-text">Lv 1</td></tr>
+                <tr><td><strong>Mending</strong></td><td class="effect-text">XP Block (from Create)</td><td class="effect-text">Lv 1</td></tr>
+                <tr><td><strong>Volcanic</strong></td><td class="effect-text">Lava Bucket</td><td class="effect-text">Lv 1</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- CATEGORY 2: PLACEHOLDER -->
+<div class="category-block">
+    <div class="category-header">
+        <div class="bar" style="background:#475569;"></div>
+        <h2 style="color:#475569;">Coming soon</h2>
+    </div>
+</div>
 
 </body>
 </html>
