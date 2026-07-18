@@ -4,10 +4,9 @@ import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.content.equipment.wrench.WrenchItem;
 import cz.maxtechnik.dif.block.entity.ForgeBrickBlockEntity;
 import cz.maxtechnik.dif.block.entity.ForgeControllerBlockEntity;
-import cz.maxtechnik.dif.gui.screen.ForgeRadialScreen;
+import cz.maxtechnik.dif.client.ForgeFurnaceControllerClient;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.util.ForgeMultiblockHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Containers;
@@ -92,7 +91,7 @@ public class ForgeFurnaceController extends Block implements EntityBlock, IWrenc
 		boolean isWrench=heldItem.getItem() instanceof WrenchItem;
 		if(isWrench){
 			if(level.isClientSide)
-				Minecraft.getInstance().setScreen(new ForgeRadialScreen(be));
+				ForgeFurnaceControllerClient.openForgeRadialScreen(be);
 			return ItemInteractionResult.sidedSuccess(level.isClientSide);
 		}
 		if(be.handleInteraction(player,hand)) return ItemInteractionResult.sidedSuccess(level.isClientSide);
