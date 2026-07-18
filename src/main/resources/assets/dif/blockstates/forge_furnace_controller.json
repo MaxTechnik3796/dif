@@ -29,12 +29,12 @@
 			"y":90
 		},
 		"facing=south,active=true":{
-			"model":"dif:block/forge_furnace_controller_active",
+			"model":"dif:block/coke_oven_controller_active",
 			"uvlock":true,
 			"y":180
 		},
 		"facing=west,active=true":{
-			"model":"dif:block/forge_furnace_controller_active",
+			"model":"dif:block/coke_oven_controller_active",
 			"uvlock":true,
 			"y":270
 		}
