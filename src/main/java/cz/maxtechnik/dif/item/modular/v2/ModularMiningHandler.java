@@ -265,4 +265,44 @@ public final class ModularMiningHandler{
 		result.sort(Comparator.comparingInt(BlockPos::getY));
 		return result;
 	}
+	@SubscribeEvent
+	public static void onAnvilUpdate(net.neoforged.neoforge.event.AnvilUpdateEvent event){
+		ItemStack left=event.getLeft();
+		if(!(left.getItem() instanceof ModularTool tool)) return;
+		ItemStack right=event.getRight();
+		if(right.isEmpty()) return;
+		if(tool.isValidRepairItem(left,right)){
+			int missing=left.getDamageValue();
+			if(missing<=0) return;
+			int max=tool.getMaxDamage(left);
+			int repairPerItem=Math.max(1,max/4);
+			int itemsNeeded=0;
+			int repairedDamage=missing;
+			while(repairedDamage>0&&itemsNeeded<right.getCount()){
+				repairedDamage-=repairPerItem;
+				itemsNeeded++;
+			}
+			if(repairedDamage<0) repairedDamage=0;
+			ItemStack output=left.copy();
+			output.setDamageValue(repairedDamage);
+			// Do NOT increase the repair cost penalty on the output item!
+			int currentRepairCost=left.getOrDefault(net.minecraft.core.component.DataComponents.REPAIR_COST,0);
+			output.set(net.minecraft.core.component.DataComponents.REPAIR_COST,currentRepairCost);
+			int cost=itemsNeeded+currentRepairCost;
+			if(event.getName()!=null){
+				if(event.getName().isEmpty()){
+					if(left.has(net.minecraft.core.component.DataComponents.CUSTOM_NAME)){
+						output.remove(net.minecraft.core.component.DataComponents.CUSTOM_NAME);
+						cost+=1;
+					}
+				}else if(!event.getName().equals(left.getHoverName().getString())){
+					output.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME,net.minecraft.network.chat.Component.literal(event.getName()));
+					cost+=1;
+				}
+			}
+			event.setOutput(output);
+			event.setCost(cost);
+			event.setMaterialCost(itemsNeeded);
+		}
+	}
 }
