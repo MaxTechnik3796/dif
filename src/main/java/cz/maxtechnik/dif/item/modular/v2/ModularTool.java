@@ -608,9 +608,6 @@ public class ModularTool extends DiggerItem{
 			if(!reforge.getName().isEmpty()&&!reforge.getName().equals("none")){
 				list.add(CommonComponents.EMPTY);
 				list.add(Component.translatable("dif.reforge."+reforge.getName()).withStyle(Style.EMPTY.withColor(0xFFFFFF).withBold(true)));
-				if(reforge.hasDescription()){
-					list.add(Component.translatable("dif.reforge."+reforge.getName()+".desc").withStyle(Style.EMPTY.withColor(0x9999AA).withItalic(true)));
-				}
 			}
 		}else{
 			list.add(Component.literal("Hold ").withStyle(ChatFormatting.GRAY)
