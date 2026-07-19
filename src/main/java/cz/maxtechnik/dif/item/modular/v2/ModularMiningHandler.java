@@ -28,7 +28,7 @@ import java.util.*;
  * <h3>Hammer / Excavator / Hoe – plane mining</h3>
  * <ul>
  *   <li>3×3 plane perpendicular to hit face (Hoe always 3×3, even at MYTHIC).</li>
- *   <li>2 blocks = 1 durability (rounded up). Bonus: if remaining == 8, 9th block is free.</li>
+ *   <li>1 block = 1 durability. Centre is handled by vanilla; handler charges 1 per neighbour.</li>
  *   <li>Hardness protection: neighbor skipped when hardness {@code > centre × 2}.</li>
  * </ul>
  *
@@ -37,7 +37,7 @@ import java.util.*;
  *   <li>BFS through connected {@code LOGS} (6-directional), max {@value TIMBER_MAX_BLOCKS}.</li>
  *   <li>Natural tree (adjacent {@code PERSISTENT=false} leaves) → fell whole tree.</li>
  *   <li>Player-placed wood → 3×3 axe-plane fallback.</li>
- *   <li>2 logs = 1 durability (rounded up). Budget-capped: remaining logs stay.</li>
+ *   <li>1 log = 1 durability. Budget-capped: remaining logs stay.</li>
  * </ul>
  *
  * <h3>Hoe – CULTIVATOR reforge (RMB tilling)</h3>
@@ -50,7 +50,6 @@ import java.util.*;
 @EventBusSubscriber(modid=DifMod.MODID)
 public final class ModularMiningHandler{
 	private static final float HARDNESS_MULTIPLIER=2.0f;
-	private static final int AOE_SIZE=8;
 	private static final int TIMBER_MAX_BLOCKS=128;
 	/** Prevents recursive {@code BlockEvent.BreakEvent} from re-triggering AOE. */
 	private static final ThreadLocal<Boolean> BREAKING=new ThreadLocal<>();
@@ -94,28 +93,21 @@ public final class ModularMiningHandler{
 		List<BlockPos> neighbours=get3x3Plane(centre,face);
 		float centreHardness=centreState.getDestroySpeed(level,centre);
 		int maxDmg=modularTool.getMaxDamage(tool);
+		// Centre is already charged 1 durability by vanilla; budget for the 8 neighbours
 		int remaining=Math.max(0,(maxDmg-1)-tool.getDamageValue());
-		boolean bonusBlock=(remaining==AOE_SIZE); // 9th block free when exactly 8 dur left
-		int budget=remaining*2;                   // 2 blocks per 1 damage point
-		int minedCount=0;
 		for(BlockPos pos: neighbours){
-			if(minedCount>=AOE_SIZE) break;
+			if(remaining<=0) break;
 			BlockState state=level.getBlockState(pos);
 			if(state.isAir()) continue;
 			if(!canToolMine(modularTool,tool,state,isExcavator)) continue;
 			// Hardness protection: skip blocks more than 2× harder than center
 			float nHardness=state.getDestroySpeed(level,pos);
 			if(centreHardness>0f&&nHardness>centreHardness*HARDNESS_MULTIPLIER) continue;
-			boolean isBonusBlock=bonusBlock&&(minedCount==AOE_SIZE-1);
-			if(!isBonusBlock&&budget<=0) break;
 			level.destroyBlock(pos,true,player);
-			if(!isBonusBlock&&!player.isCreative()){
-				minedCount++;
-				if(minedCount%2==0) modularTool.damageTool(tool,1,player);
-				budget--;
+			if(!player.isCreative()){
+				modularTool.damageTool(tool,1,player);
+				remaining--;
 				if(modularTool.isBroken(tool)) break;
-			}else{
-				minedCount++;
 			}
 		}
 	}
@@ -133,20 +125,16 @@ public final class ModularMiningHandler{
 			return;
 		}
 		int maxDmg=modularTool.getMaxDamage(tool);
+		// Centre log is already charged 1 durability by vanilla; charge 1 per additional log
 		int remaining=Math.max(0,(maxDmg-1)-tool.getDamageValue());
-		int toBreak=Math.min(logs.size(),Math.min(TIMBER_MAX_BLOCKS,remaining*2));
-		int damageApplied=0;
+		int toBreak=Math.min(logs.size(),Math.min(TIMBER_MAX_BLOCKS,remaining+1));
 		for(int i=1;i<toBreak;i++){
 			BlockState state=level.getBlockState(logs.get(i));
 			if(state.isAir()) continue;
 			level.destroyBlock(logs.get(i),true,player);
 			if(!player.isCreative()){
-				int expectedDmg=(i+2)/2; // cell((i+1)/2) – i+1 total including center
-				int dmgNow=expectedDmg-damageApplied;
-				if(dmgNow>0){
-					modularTool.damageTool(tool,dmgNow,player);
-					damageApplied+=dmgNow;
-				}
+				modularTool.damageTool(tool,1,player);
+				remaining--;
 				if(modularTool.isBroken(tool)) break;
 			}
 		}

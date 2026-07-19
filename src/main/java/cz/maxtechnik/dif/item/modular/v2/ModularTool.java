@@ -496,12 +496,18 @@ public class ModularTool extends DiggerItem{
 		if(level.isClientSide) return;
 		long gameTime=level.getGameTime();
 		// Self-repair: only evaluate when tick aligns and tool is damaged (cheap guard first)
-		if(itemStack.isDamaged()&&(gameTime%40==0||gameTime%80==0)){
-			EnumSet<ModularModifier> mods=getMaterialModifiers(itemStack);
-			if(gameTime%40==0&&mods.contains(ModularModifier.RENEWABLE)){
-				itemStack.setDamageValue(Math.max(0,itemStack.getDamageValue()-1));
-			}else if(gameTime%80==0&&mods.contains(ModularModifier.SELF_REPAIR)){
-				itemStack.setDamageValue(Math.max(0,itemStack.getDamageValue()-1));
+		int renewableTicks=cz.maxtechnik.dif.config.DifModCommonConfig.MODULAR_TOOLS_RENEWABLE_REPAIR_TICK_RATE.get();
+		int selfRepairTicks=cz.maxtechnik.dif.config.DifModCommonConfig.MODULAR_TOOLS_SELF_REPAIR_TICK_RATE.get();
+		boolean checkRenewable=gameTime%renewableTicks==0;
+		boolean checkSelfRepair=gameTime%selfRepairTicks==0;
+		if((checkRenewable||checkSelfRepair)&&itemStack.isDamaged()){
+			if(!(entity instanceof Player player&&(player.getMainHandItem()==itemStack||player.getOffhandItem()==itemStack))){
+				EnumSet<ModularModifier> mods=getMaterialModifiers(itemStack);
+				if(checkRenewable&&mods.contains(ModularModifier.RENEWABLE)){
+					itemStack.setDamageValue(itemStack.getDamageValue()-1);
+				}else if(checkSelfRepair&&mods.contains(ModularModifier.SELF_REPAIR)){
+					itemStack.setDamageValue(itemStack.getDamageValue()-1);
+				}
 			}
 		}
 		// Magnetic: only when held in hand and every 10 ticks

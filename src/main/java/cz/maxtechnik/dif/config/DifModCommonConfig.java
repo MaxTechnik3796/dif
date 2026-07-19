@@ -29,6 +29,8 @@ public class DifModCommonConfig{
 	public static final ModConfigSpec.IntValue MODULAR_TOOLS_DEFAULT_MAX_MODIFIERS;
 	public static final ModConfigSpec.IntValue MODULAR_TOOLS_REPAIR_AMOUNT;
 	public static final ModConfigSpec.IntValue MODULAR_TOOLS_CHEEP_REPAIR_AMOUNT;
+	public static final ModConfigSpec.IntValue MODULAR_TOOLS_RENEWABLE_REPAIR_TICK_RATE;
+	public static final ModConfigSpec.IntValue MODULAR_TOOLS_SELF_REPAIR_TICK_RATE;
 
 	public static final ModConfigSpec.DoubleValue FAST_RAIL_TOP_SPEED;
 	public static final ModConfigSpec.DoubleValue FAST_POWERED_RAIL_ACCELERATION;
@@ -103,6 +105,8 @@ public class DifModCommonConfig{
 		MODULAR_TOOLS_DEFAULT_MAX_MODIFIERS=BUILDER.defineInRange("modular_tools_default_max_modifiers",3,0,MAX);
 		MODULAR_TOOLS_REPAIR_AMOUNT=BUILDER.defineInRange("modular_tools_repair_amount",5,1,MAX);
 		MODULAR_TOOLS_CHEEP_REPAIR_AMOUNT=BUILDER.defineInRange("modular_tools_cheep_repair_amount",15,1,MAX);
+		MODULAR_TOOLS_RENEWABLE_REPAIR_TICK_RATE=BUILDER.comment("Tick rate for Renewable modifier repair. Default: 120 (6 seconds)").defineInRange("modular_tools_renewable_repair_tick_rate",120,1,MAX);
+		MODULAR_TOOLS_SELF_REPAIR_TICK_RATE=BUILDER.comment("Tick rate for Self Repair modifier repair. Default: 200 (10 seconds)").defineInRange("modular_tools_self_repair_tick_rate",200,1,MAX);
 		BUILDER.push("EfficiencyModifier");
 		BUILDER.push("Stages");
 		MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_0=BUILDER.defineInRange("modular_tools_efficiency_modifier_stage_0",3,1,MAX);
