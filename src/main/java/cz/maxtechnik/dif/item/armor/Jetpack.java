@@ -32,8 +32,11 @@ import java.util.Map;
 import java.util.function.Consumer;
 @SuppressWarnings("removal")
 public abstract class Jetpack extends ArmorItem{
-	// Kapacita nádrže v mB
+	// Fallback kapacita nádrže v mB (skutečná hodnota se bere z configu)
 	public static final int CAPACITY=16000;
+	public static int getCapacity(){
+		return cz.maxtechnik.dif.config.DifModCommonConfig.JETPACK_CAPACITY.get();
+	}
 	public Jetpack(ArmorItem.Type type,Item.Properties properties){
 		super(DifModTiers.ARMOR_MATERIAL_JETPACK,type,properties.stacksTo(1));
 	}
@@ -75,10 +78,10 @@ public abstract class Jetpack extends ArmorItem{
 		}
 		public static void setThrust(ItemStack stack,int value){
 			stack.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,
-					data->data.update(tag->tag.putInt("Thrust",Mth.clamp(value,0,CAPACITY))));
+					data->data.update(tag->tag.putInt("Thrust",Mth.clamp(value,0,getCapacity()))));
 		}
 		public static int getMax(){
-			return CAPACITY;
+			return getCapacity();
 		}
 		// === Stav jetpacku: 0=let, 1=hover, 2=vypnuto ===
 		public static int getMode(ItemStack stack){
@@ -121,7 +124,7 @@ public abstract class Jetpack extends ArmorItem{
 			}
 			@Override
 			public int getTankCapacity(int tank){
-				return CAPACITY;
+				return getCapacity();
 			}
 			@Override
 			public boolean isFluidValid(int tank,@NotNull FluidStack stack){
@@ -131,7 +134,7 @@ public abstract class Jetpack extends ArmorItem{
 			public int fill(FluidStack resource,IFluidHandler.@NotNull FluidAction action){
 				if(resource.isEmpty()||!isFluidValid(0,resource)) return 0;
 				int current=getThrust(container);
-				int accepted=Math.min(CAPACITY-current,resource.getAmount());
+				int accepted=Math.min(getCapacity()-current,resource.getAmount());
 				if(accepted<=0) return 0;
 				if(action.execute()) setThrust(container,current+accepted);
 				return accepted;
@@ -153,16 +156,16 @@ public abstract class Jetpack extends ArmorItem{
 		// Bar ukazuje naplnění
 		@Override
 		public int getBarWidth(@NotNull ItemStack stack){
-			return Math.round(13F*(float)getThrust(stack)/(float)CAPACITY);
+			return Math.round(13F*(float)getThrust(stack)/(float)getCapacity());
 		}
 		@Override
 		public int getBarColor(@NotNull ItemStack stack){
-			float f=Math.max(0,(float)getThrust(stack)/(float)CAPACITY);
+			float f=Math.max(0,(float)getThrust(stack)/(float)getCapacity());
 			return Mth.hsvToRgb(f*0.33F,1F,1F);
 		}
 		@Override
 		public void appendHoverText(@NotNull ItemStack stack,@Nullable TooltipContext ctx,@NotNull List<Component> list,@NotNull TooltipFlag flag){
-			list.add(Component.literal("Fuel: "+getThrust(stack)+" / "+CAPACITY+" mB").withStyle(ChatFormatting.AQUA));
+			list.add(Component.literal("Fuel: "+getThrust(stack)+" / "+getCapacity()+" mB").withStyle(ChatFormatting.AQUA));
 			if(isHovering(stack)){
 				list.add(Component.literal("⭐ HOVER").withStyle(ChatFormatting.GREEN));
 			}

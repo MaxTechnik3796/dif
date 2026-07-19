@@ -22,6 +22,7 @@ public class DifModCommonConfig{
 	public static final ModConfigSpec.IntValue SPACE_SCAFFOLDING_LIFE_TIME;
 	public static final ModConfigSpec.IntValue MEGA_TORCH_RADIUS;
 	public static final ModConfigSpec.IntValue NANO_GLASS_MAX_SPREAD;
+	public static final ModConfigSpec.IntValue JETPACK_CAPACITY;
 
 
 
@@ -78,6 +79,7 @@ public class DifModCommonConfig{
 		MEGA_TORCH_RADIUS=BUILDER.defineInRange("mega_torch_radius",128,32,8192);
 		// Maximum number of blocks NanoGlass will spread to when triggered (BFS limit)
 		NANO_GLASS_MAX_SPREAD=BUILDER.defineInRange("nano_glass_max_spread",128,1,MAX);
+		JETPACK_CAPACITY=BUILDER.defineInRange("jetpack_capacity",16000,1000,MAX);
 		BUILDER.pop();
 		BUILDER.push("SolarPanelSettings");
 		SOLAR_PANEL_00=BUILDER.defineInRange("solar_panel_00",1,0,MAX);
