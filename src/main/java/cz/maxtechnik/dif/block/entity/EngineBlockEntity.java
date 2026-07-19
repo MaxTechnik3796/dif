@@ -87,35 +87,31 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 				su=0F;
 			}else{
 				int extenders=countExtenders();
-				double multiplier=getExtenderMultiplier(extenders);
 				double baseRpm=0.0D;
 				double baseSu=0.0D;
 				double baseConsumption=0.0D;
-				double smallEngineConsumption=0.0D;
 				if(fuel.equals(FuelType.DIESEL)){
 					baseRpm=ENGINE_DIESEL_RPM.get();
 					baseSu=ENGINE_DIESEL_SU.get();
 					baseConsumption=ENGINE_DIESEL_CONSUMPTION.get();
-					smallEngineConsumption=ENGINE_DIESEL_SMALL_ENGINE_CONSUMPTION.get();
 				}else if(fuel.equals(FuelType.HEAVY_FUEL_OIL)){
 					baseRpm=ENGINE_HEAVY_FUEL_OIL_RPM.get();
 					baseSu=ENGINE_HEAVY_FUEL_OIL_SU.get();
 					baseConsumption=ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get();
-					smallEngineConsumption=ENGINE_HEAVY_FUEL_OIL_SMALL_ENGINE_CONSUMPTION.get();
 				}else if(fuel.equals(FuelType.GASOLINE)){
 					baseRpm=ENGINE_GASOLINE_RPM.get();
 					baseSu=ENGINE_GASOLINE_SU.get();
 					baseConsumption=ENGINE_GASOLINE_CONSUMPTION.get();
-					smallEngineConsumption=ENGINE_GASOLINE_SMALL_ENGINE_CONSUMPTION.get();
 				}else if(fuel.equals(FuelType.LPG)){
 					baseRpm=ENGINE_LPG_RPM.get();
 					baseSu=ENGINE_LPG_SU.get();
 					baseConsumption=ENGINE_LPG_CONSUMPTION.get();
-					smallEngineConsumption=ENGINE_LPG_SMALL_ENGINE_CONSUMPTION.get();
 				}
-				speed=(float)(baseRpm*extenders);
-				su=(float)baseSu;
-				double consumptionPerTick=extenders>0?(baseConsumption*multiplier)/FUEL_TICK_INTERVAL:smallEngineConsumption/FUEL_TICK_INTERVAL;
+				// Speed stays constant regardless of extender count; SU and consumption scale linearly
+				speed=(float)baseRpm;
+				su=(float)(baseSu*extenders);
+				double consumptionMultiplier = 1.0 + (extenders - 1) * 0.5;
+				double consumptionPerTick=(baseConsumption*consumptionMultiplier)/FUEL_TICK_INTERVAL;
 				fuelAccumulator+=consumptionPerTick;
 				if(fuelTickCounter++>=FUEL_TICK_INTERVAL){
 					fuelTickCounter=0;
@@ -273,13 +269,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	private boolean isEngineBlockPortable(Block block){
 		return block.equals(ENGINE_PORTABLE_DIESEL.get())||block.equals(ENGINE_PORTABLE_GASOLINE.get())||block.equals(ENGINE_PORTABLE_LPG.get());
 	}
-	private double getExtenderMultiplier(int extenders){
-		return switch(extenders){
-			case 0,1 -> 1D;
-			case 2 -> 1.9D;
-			default -> 2.8D;
-		};
-	}
+
 	public void particle(Vec3 pos,Vec3 velocity){
 		if(level==null) return;
 		if(DifMod.rouletteBoolean(4))
