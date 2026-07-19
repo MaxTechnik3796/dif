@@ -107,11 +107,13 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 					baseSu=ENGINE_LPG_SU.get();
 					baseConsumption=ENGINE_LPG_CONSUMPTION.get();
 				}
+				// Apply portable engine multiplier if applicable
+				double portableMultiplier=isEngineBlockPortable(getBlockState().getBlock())?ENGINE_PORTABLE_MULTIPLIER.get():1.0D;
 				// Speed stays constant regardless of extender count; SU and consumption scale linearly
 				speed=(float)baseRpm;
-				su=(float)(baseSu*extenders);
+				su=(float)(baseSu*extenders*portableMultiplier);
 				double consumptionMultiplier = 1.0 + (extenders - 1) * 0.5;
-				double consumptionPerTick=(baseConsumption*consumptionMultiplier)/FUEL_TICK_INTERVAL;
+				double consumptionPerTick=(baseConsumption*consumptionMultiplier*portableMultiplier)/FUEL_TICK_INTERVAL;
 				fuelAccumulator+=consumptionPerTick;
 				if(fuelTickCounter++>=FUEL_TICK_INTERVAL){
 					fuelTickCounter=0;

@@ -71,6 +71,7 @@ public class DifModCommonConfig{
 	public static final ModConfigSpec.DoubleValue ENGINE_LPG_RPM;
 	public static final ModConfigSpec.DoubleValue ENGINE_LPG_SU;
 	public static final ModConfigSpec.DoubleValue ENGINE_LPG_CONSUMPTION;
+	public static final ModConfigSpec.DoubleValue ENGINE_PORTABLE_MULTIPLIER;
 
 	static{
 		BUILDER.comment("Dif common config.");
@@ -150,24 +151,26 @@ public class DifModCommonConfig{
 		BUILDER.push("Engines");
 		BUILDER.push("Diesel");
 		ENGINE_DIESEL_RPM=BUILDER.defineInRange("engine_diesel_rpm",120.0D,0.0D,DOUBLE_MAX);
-		ENGINE_DIESEL_SU=BUILDER.defineInRange("engine_diesel_su",88.0D,0.0D,DOUBLE_MAX);
+		ENGINE_DIESEL_SU=BUILDER.defineInRange("engine_diesel_su",96.0D,0.0D,DOUBLE_MAX);
 		ENGINE_DIESEL_CONSUMPTION=BUILDER.defineInRange("engine_diesel_consumption",1.25D,0.0D,DOUBLE_MAX);
 		BUILDER.pop();
 		BUILDER.push("HeavyFuelOil");
 		ENGINE_HEAVY_FUEL_OIL_RPM=BUILDER.defineInRange("engine_heavy_fuel_oil_rpm",80.0D,0.0D,DOUBLE_MAX);
-		ENGINE_HEAVY_FUEL_OIL_SU=BUILDER.defineInRange("engine_heavy_fuel_oil_su",200.0D,0.0D,DOUBLE_MAX);
+		ENGINE_HEAVY_FUEL_OIL_SU=BUILDER.defineInRange("engine_heavy_fuel_oil_su",220.0D,0.0D,DOUBLE_MAX);
 		ENGINE_HEAVY_FUEL_OIL_CONSUMPTION=BUILDER.defineInRange("engine_heavy_fuel_oil_consumption",1.75D,0.0D,DOUBLE_MAX);
 		BUILDER.pop();
 		BUILDER.push("Gasoline");
 		ENGINE_GASOLINE_RPM=BUILDER.defineInRange("engine_gasoline_rpm",210.0D,0.0D,DOUBLE_MAX);
-		ENGINE_GASOLINE_SU=BUILDER.defineInRange("engine_gasoline_su",40.0D,0.0D,DOUBLE_MAX);
+		ENGINE_GASOLINE_SU=BUILDER.defineInRange("engine_gasoline_su",44.0D,0.0D,DOUBLE_MAX);
 		ENGINE_GASOLINE_CONSUMPTION=BUILDER.defineInRange("engine_gasoline_consumption",1.0D,0.0D,DOUBLE_MAX);
 		BUILDER.pop();
 		BUILDER.push("LPG");
 		ENGINE_LPG_RPM=BUILDER.defineInRange("engine_lpg_rpm",160.0D,0.0D,DOUBLE_MAX);
-		ENGINE_LPG_SU=BUILDER.defineInRange("engine_lpg_su",40.0D,0.0D,DOUBLE_MAX);
+		ENGINE_LPG_SU=BUILDER.defineInRange("engine_lpg_su",44.0D,0.0D,DOUBLE_MAX);
 		ENGINE_LPG_CONSUMPTION=BUILDER.defineInRange("engine_lpg_consumption",0.75D,0.0D,DOUBLE_MAX);
 		BUILDER.pop();
+		BUILDER.push("Portable");
+		ENGINE_PORTABLE_MULTIPLIER=BUILDER.comment("Multiplier applied to both SU and consumption of portable engines (relative to base engine with 1 extender). Default: 0.75, Min: 0.5, Max: 1.0").defineInRange("engine_portable_multiplier",0.75D,0.5D,1.0D);
 		BUILDER.pop();
 		SPEC=BUILDER.build();
 	}
