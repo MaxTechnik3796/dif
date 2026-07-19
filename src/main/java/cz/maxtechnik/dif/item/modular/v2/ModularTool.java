@@ -666,11 +666,26 @@ public class ModularTool extends DiggerItem{
 	}
 	@Override
 	public boolean isRepairable(@NotNull ItemStack itemStack){
-		return false;
+		return true;
 	}
 	@Override
 	public boolean isValidRepairItem(@NotNull ItemStack itemStack,@NotNull ItemStack repair){
-		return false;
+		ModularMaterial headMat=getMaterial(ModularPartType.HEAD,itemStack);
+		if(headMat==ModularMaterial.NONE) return false;
+		return switch(headMat){
+			case WOOD -> repair.is(net.minecraft.tags.ItemTags.PLANKS);
+			case STONE -> repair.is(Items.COBBLESTONE);
+			case OBSIDIAN -> repair.is(Items.OBSIDIAN);
+			case MITHRIL -> repair.is(cz.maxtechnik.dif.init.basic.DifModItems.MITHRIL.get());
+			case IRON -> repair.is(Items.IRON_INGOT) || repair.is(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "ingots/iron")));
+			case COPPER -> repair.is(Items.COPPER_INGOT) || repair.is(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "ingots/copper")));
+			case GOLD -> repair.is(Items.GOLD_INGOT) || repair.is(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "ingots/gold")));
+			case STEEL -> repair.is(cz.maxtechnik.dif.init.basic.DifModItems.STEEL_INGOT.get()) || repair.is(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "ingots/steel")));
+			case NICKEL -> repair.is(cz.maxtechnik.dif.init.basic.DifModItems.NICKEL_INGOT.get()) || repair.is(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "ingots/nickel")));
+			case ZINC -> repair.is(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "ingots/zinc")));
+			case BRASS -> repair.is(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "ingots/brass")));
+			default -> false;
+		};
 	}
 	@Override
 	public boolean isFoil(@NotNull ItemStack itemStack){
