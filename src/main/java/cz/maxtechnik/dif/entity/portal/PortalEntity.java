@@ -29,7 +29,7 @@ public class PortalEntity extends Entity{
 	private static final EntityDataAccessor<String> DATA_FACING=SynchedEntityData.defineId(PortalEntity.class,EntityDataSerializers.STRING);
 	private static final EntityDataAccessor<String> DATA_UP_DIR=SynchedEntityData.defineId(PortalEntity.class,EntityDataSerializers.STRING);
 	public long lastTeleportTime=0;
-	private static final Map<UUID,Long> waitingPlayers=new HashMap<>();
+	private static final int MAX_ENTITIES_PER_TICK=5;
 	private final Map<UUID,Long> entityCooldowns=new HashMap<>();
 	public PortalEntity(EntityType<?> entityType,Level level){
 		super(entityType,level);
@@ -183,7 +183,7 @@ public class PortalEntity extends Entity{
 			int count=0;
 			for(LivingEntity mob: mobs){
 				if(mob instanceof Player) continue;
-				if(count>=DifModCommonConfig.PORTAL_MAX_ENTITIES_PER_TICK.get()) break;
+				if(count>=MAX_ENTITIES_PER_TICK) break;
 				UUID mid=mob.getUUID();
 				if(this.entityCooldowns.containsKey(mid)&&now-this.entityCooldowns.get(mid)<=15)
 					continue;
@@ -193,7 +193,7 @@ public class PortalEntity extends Entity{
 			List<Entity> misc=serverLevel.getEntitiesOfClass(Entity.class,box,e->!(e instanceof LivingEntity)&&!(e instanceof Projectile)&&!(e instanceof ItemEntity));
 			for(Entity e: misc){
 				if(e instanceof PortalEntity) continue;
-				if(count>=DifModCommonConfig.PORTAL_MAX_ENTITIES_PER_TICK.get()) break;
+				if(count>=MAX_ENTITIES_PER_TICK) break;
 				UUID eid=e.getUUID();
 				if(this.entityCooldowns.containsKey(eid)&&now-this.entityCooldowns.get(eid)<=15)
 					continue;
@@ -201,11 +201,12 @@ public class PortalEntity extends Entity{
 				count++;
 			}
 		}
-		if(DifModCommonConfig.PORTAL_ALLOW_ITEMS.get()){
+		// Items always pass through portals
+		{
 			List<ItemEntity> items=serverLevel.getEntitiesOfClass(ItemEntity.class,box);
 			int count=0;
 			for(ItemEntity e: items){
-				if(count>=DifModCommonConfig.PORTAL_MAX_ENTITIES_PER_TICK.get()) break;
+				if(count>=MAX_ENTITIES_PER_TICK) break;
 				UUID eid=e.getUUID();
 				if(this.entityCooldowns.containsKey(eid)&&now-this.entityCooldowns.get(eid)<=10) continue;
 				this.tryTeleportEntity(e,serverLevel,now);
@@ -224,35 +225,12 @@ public class PortalEntity extends Entity{
 		BlockPos target=PortalData.get(sl).getPos(this.getOwner(),!this.isBlue());
 		if(target==null){
 			p.displayClientMessage(Component.literal("[!] Linked portal not found"),true);
-			waitingPlayers.remove(pid);
 			return;
-		}
-		if(waitingPlayers.containsKey(pid)){
-			AABB box=this.getBoundingBox().inflate(1.5);
-			if(!box.contains(p.position())){
-				waitingPlayers.remove(pid);
-				return;
-			}
 		}
 		if(this.blockPosition().distSqr(target)>(long)DifModCommonConfig.PORTAL_MAX_DISTANCE.get()*DifModCommonConfig.PORTAL_MAX_DISTANCE.get()){
 			p.displayClientMessage(Component.literal("[!] Portal too far away"),true);
-			waitingPlayers.remove(pid);
 			return;
 		}
-		if(!sl.isLoaded(target)){
-			long startTick=waitingPlayers.getOrDefault(pid,now);
-			if(!waitingPlayers.containsKey(pid)) waitingPlayers.put(pid,now);
-			p.displayClientMessage(Component.literal("Please wait..."),true);
-			sl.setChunkForced(target.getX()>>4,target.getZ()>>4,true);
-			if(now-startTick>DifModCommonConfig.PORTAL_CHUNK_LOAD_TIMEOUT.get()){
-				p.displayClientMessage(Component.literal("[!] Portal unreachable"),true);
-				sl.setChunkForced(target.getX()>>4,target.getZ()>>4,false);
-				waitingPlayers.remove(pid);
-			}
-			return;
-		}
-		sl.setChunkForced(target.getX()>>4,target.getZ()>>4,false);
-		waitingPlayers.remove(pid);
 		PortalEntity other=findLinkedPortal(sl,target);
 		if(other==null){
 			PortalData.get(sl).remove(this.getOwner(),!this.isBlue());
@@ -284,7 +262,7 @@ public class PortalEntity extends Entity{
 			p.setPose(net.minecraft.world.entity.Pose.SWIMMING);
 		}
 		other.lastTeleportTime=this.lastTeleportTime=now;
-		// Cooldown ONLY on the target portal so the player can get out of it, but can fall/port through others instantly
+		// Cooldown only on the target portal so player can exit immediately
 		other.entityCooldowns.put(pid,now);
 	}
 	private void tryTeleportEntity(Entity entity,ServerLevel sl,long now){
@@ -412,7 +390,13 @@ public class PortalEntity extends Entity{
 		super.onAddedToLevel();
 		if(!this.level().isClientSide()){
 			ServerLevel sl=(ServerLevel)this.level();
+			// Force own chunk permanently
 			sl.setChunkForced(this.chunkPosition().x,this.chunkPosition().z,true);
+			// Also force partner's chunk if already placed
+			BlockPos partnerPos=PortalData.get(sl).getPos(this.getOwner(),!this.isBlue());
+			if(partnerPos!=null){
+				sl.setChunkForced(partnerPos.getX()>>4,partnerPos.getZ()>>4,true);
+			}
 			updateLinks(sl,this.getOwner());
 		}
 	}
@@ -421,7 +405,13 @@ public class PortalEntity extends Entity{
 		super.onRemovedFromLevel();
 		if(!this.level().isClientSide()){
 			ServerLevel sl=(ServerLevel)this.level();
+			// Unforce own chunk
 			sl.setChunkForced(this.chunkPosition().x,this.chunkPosition().z,false);
+			// Unforce partner's chunk that we were responsible for forcing
+			BlockPos partnerPos=PortalData.get(sl).getPos(this.getOwner(),!this.isBlue());
+			if(partnerPos!=null){
+				sl.setChunkForced(partnerPos.getX()>>4,partnerPos.getZ()>>4,false);
+			}
 			updateLinks(sl,this.getOwner());
 		}
 	}

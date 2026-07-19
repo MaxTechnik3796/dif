@@ -23,8 +23,7 @@ public class DifModCommonConfig{
 	public static final ModConfigSpec.IntValue MEGA_TORCH_RADIUS;
 	public static final ModConfigSpec.IntValue NANO_GLASS_MAX_SPREAD;
 
-	public static final ModConfigSpec.IntValue JETPACK_MAX_BASIC;
-	public static final ModConfigSpec.IntValue JETPACK_MAX_TURBO;
+
 
 	public static final ModConfigSpec.IntValue MODULAR_TOOLS_DEFAULT_MAX_MODIFIERS;
 	public static final ModConfigSpec.IntValue MODULAR_TOOLS_REPAIR_AMOUNT;
@@ -48,15 +47,9 @@ public class DifModCommonConfig{
 	public static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_2;
 
 	public static final ModConfigSpec.IntValue PORTAL_GUN_MAX_DURABILITY;
-	public static final ModConfigSpec.IntValue PORTAL_GUN_ENERGY_PER_SHOT;
 	public static final ModConfigSpec.IntValue PORTAL_GUN_ENERGY_PER_PEARL;
-	public static final ModConfigSpec.IntValue PORTAL_GUN_SHOT_COOLDOWN;
-	public static final ModConfigSpec.IntValue PORTAL_TELEPORT_COOLDOWN;
 	public static final ModConfigSpec.IntValue PORTAL_MAX_DISTANCE;
-	public static final ModConfigSpec.IntValue PORTAL_CHUNK_LOAD_TIMEOUT;
-	public static final ModConfigSpec.IntValue PORTAL_MAX_ENTITIES_PER_TICK;
 	public static final ModConfigSpec.BooleanValue PORTAL_ALLOW_ENTITIES;
-	public static final ModConfigSpec.BooleanValue PORTAL_ALLOW_ITEMS;
 
 	public static final double DOUBLE_MAX=1_000_000.0D;
 	public static final ModConfigSpec.DoubleValue ENGINE_DIESEL_RPM;
@@ -99,10 +92,7 @@ public class DifModCommonConfig{
 		BURNING_GENERATOR_MAX_ENERGY=BUILDER.defineInRange("burning_generator_max_energy",32000,0,MAX);
 		BURNING_GENERATOR_MAX_EXTRACT=BUILDER.defineInRange("burning_generator_max_extract",200,0,MAX);
 		BUILDER.pop();
-		BUILDER.push("Jetpack");
-		JETPACK_MAX_BASIC=BUILDER.defineInRange("jetpack_max_basic",200,1,MAX);
-		JETPACK_MAX_TURBO=BUILDER.defineInRange("jetpack_max_turbo",300,1,MAX);
-		BUILDER.pop();
+
 		BUILDER.push("FastRails");
 		FAST_RAIL_TOP_SPEED=BUILDER.defineInRange("fast_rail_top_speed",1.2D,0.1D,MAX);
 		FAST_POWERED_RAIL_ACCELERATION=BUILDER.defineInRange("fast_powered_rail_acceleration",0.5D,0.1D,MAX);
@@ -138,15 +128,9 @@ public class DifModCommonConfig{
 		BUILDER.pop();
 		BUILDER.push("PortalGun");
 		PORTAL_GUN_MAX_DURABILITY=BUILDER.defineInRange("portal_gun_max_durability",24,1,MAX);
-		PORTAL_GUN_ENERGY_PER_SHOT=BUILDER.defineInRange("portal_gun_energy_per_shot",1,1,MAX);
 		PORTAL_GUN_ENERGY_PER_PEARL=BUILDER.defineInRange("portal_gun_energy_per_pearl",4,1,MAX);
-		PORTAL_GUN_SHOT_COOLDOWN=BUILDER.defineInRange("portal_gun_shot_cooldown",10,1,MAX);
-		PORTAL_TELEPORT_COOLDOWN=BUILDER.defineInRange("portal_teleport_cooldown",20,1,MAX);
 		PORTAL_MAX_DISTANCE=BUILDER.defineInRange("portal_max_distance",256,16,MAX);
-		PORTAL_CHUNK_LOAD_TIMEOUT=BUILDER.defineInRange("portal_chunk_load_timeout",100,20,MAX);
-		PORTAL_MAX_ENTITIES_PER_TICK=BUILDER.defineInRange("portal_max_entities_per_tick",5,1,MAX);
 		PORTAL_ALLOW_ENTITIES=BUILDER.define("portal_allow_entities",true);
-		PORTAL_ALLOW_ITEMS=BUILDER.define("portal_allow_items",true);
 		BUILDER.pop();
 		BUILDER.push("Engines");
 		BUILDER.push("Diesel");

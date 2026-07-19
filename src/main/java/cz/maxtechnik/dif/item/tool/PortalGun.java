@@ -75,10 +75,10 @@ public class PortalGun extends Item{
 		}
 		// Výstřel
 		if(!world.isClientSide){
-			if(energy>=DifModCommonConfig.PORTAL_GUN_ENERGY_PER_SHOT.get()){
+			if(energy>=1){
 				if(firePortal((ServerLevel)world,player,isBlue)){
-					setEnergy(gun,energy-DifModCommonConfig.PORTAL_GUN_ENERGY_PER_SHOT.get());
-					player.getCooldowns().addCooldown(this,DifModCommonConfig.PORTAL_GUN_SHOT_COOLDOWN.get());
+					setEnergy(gun,energy-1);
+					player.getCooldowns().addCooldown(this,10);
 				}
 			}else{
 				player.displayClientMessage(Component.literal("[!] Out of energy"),true);
