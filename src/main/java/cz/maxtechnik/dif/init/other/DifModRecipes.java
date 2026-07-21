@@ -1,11 +1,6 @@
 package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.item.modular.v2.ModularAssemblyRecipe;
-import cz.maxtechnik.dif.item.modular.v2.ModularModifierRecipe;
-import cz.maxtechnik.dif.item.modular.v2.ModularReplaceRecipe;
-import cz.maxtechnik.dif.item.modular.v2.ModularPressingRecipe;
-import com.simibubi.create.content.processing.recipe.StandardProcessingRecipe;
 import cz.maxtechnik.dif.recipe.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -20,14 +15,4 @@ public class DifModRecipes{
 	public static final DeferredHolder<RecipeType<?>,RecipeType<FryingRecipe>> FRYING_TYPE=TYPE_REGISTRY.register("frying",()->RecipeType.simple(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"frying")));
 	public static final DeferredHolder<RecipeSerializer<?>,DistillationRecipe.Serializer> DISTILLATION_SERIALIZER=REGISTRY.register("distillation",DistillationRecipe.Serializer::new);
 	public static final DeferredHolder<RecipeType<?>,RecipeType<DistillationRecipe>> DISTILLATION_TYPE=TYPE_REGISTRY.register("distillation",()->RecipeType.simple(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"distillation")));
-	public static final DeferredHolder<RecipeType<?>, RecipeType<CokeOvenRecipe>> COKE_OVEN_TYPE = TYPE_REGISTRY.register("coke_oven", () -> RecipeType.simple(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"coke_oven")));
-	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<CokeOvenRecipe>> COKE_OVEN_SERIALIZER = REGISTRY.register("coke_oven", CokeOvenRecipe.Serializer::new);
-	public static final DeferredHolder<RecipeType<?>,RecipeType<ForgeMaterialRecipe>> FORGE_MATERIAL_TYPE=TYPE_REGISTRY.register("forge_material",()->RecipeType.simple(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"forge_material")));
-	public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<ForgeMaterialRecipe>> FORGE_MATERIAL_SERIALIZER=REGISTRY.register("forge_material",ForgeMaterialRecipe.Serializer::new);
-	public static final DeferredHolder<RecipeType<?>, RecipeType<ForgeFluidMixingRecipe>> FORGE_FLUID_MIXING_TYPE = TYPE_REGISTRY.register("forge_fluid_mixing", () -> RecipeType.simple(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"forge_fluid_mixing")));
-	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ForgeFluidMixingRecipe>> FORGE_FLUID_MIXING_SERIALIZER = REGISTRY.register("forge_fluid_mixing",ForgeFluidMixingRecipe.Serializer::new);
-	public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<?>> MODULAR_MODIFIER_SERIALIZER=REGISTRY.register("modular_modifier",ModularModifierRecipe.Serializer::new);
-	public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<?>> MODULAR_ASSEMBLY_SERIALIZER=REGISTRY.register("modular_assembly",ModularAssemblyRecipe.Serializer::new);
-	public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<?>> MODULAR_REPLACE_SERIALIZER=REGISTRY.register("modular_replace",ModularReplaceRecipe.Serializer::new);
-	public static final DeferredHolder<RecipeSerializer<?>,RecipeSerializer<ModularPressingRecipe>> MODULAR_PRESSING_SERIALIZER=REGISTRY.register("modular_pressing",()->new StandardProcessingRecipe.Serializer<>(ModularPressingRecipe::new));
-}
+	}

@@ -9,7 +9,6 @@ import cz.maxtechnik.dif.block.rails.FastPoweredRailBlock;
 import cz.maxtechnik.dif.block.rails.FastRailBlock;
 import cz.maxtechnik.dif.block.space.*;
 import cz.maxtechnik.dif.block.template.*;
-import cz.maxtechnik.dif.fluid.template.MoltenBlock;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.block.*;
@@ -37,11 +36,6 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>QUARRY_FRAME=REGISTRY.register("quarry_frame",QuarryFrame::new);
 	public static final DeferredBlock<Block>QUARRY_LANDMARK=REGISTRY.register("quarry_landmark",QuarryLandmark::new);
 
-	//Camera Stuff:
-	public static final DeferredBlock<Block>CAMERA_MONITOR=REGISTRY.register("camera_monitor",()->new CameraMonitor(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops()));
-	public static final DeferredBlock<Block>CAMERA=REGISTRY.register("camera",()->new Camera(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(3F,3F).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops()));
-
-
 	//Fluids:
 	public static final BlockBehaviour.Properties FLUID_PROPERTIES=BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable();
 	public static final DeferredBlock<Block>FUEL_FLUID=REGISTRY.register("fuel_fluid",()->new LiquidBlock(DifModFluids.FUEL.get(),FLUID_PROPERTIES));
@@ -57,19 +51,6 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>DIESEL_FLUID=REGISTRY.register("diesel_fluid",()->new LiquidBlock(DifModFluids.DIESEL.get(),FLUID_PROPERTIES));
 	public static final DeferredBlock<Block>LUBRICATING_OIL_FLUID=REGISTRY.register("lubricating_oil_fluid",()->new LiquidBlock(DifModFluids.LUBRICATING_OIL.get(),FLUID_PROPERTIES));
 	public static final DeferredBlock<Block>HEAVY_FUEL_OIL_FLUID=REGISTRY.register("heavy_fuel_oil_fluid",()->new LiquidBlock(DifModFluids.HEAVY_FUEL_OIL.get(),FLUID_PROPERTIES));
-
-	public static final DeferredBlock<Block>CREOSOTE_OIL_FLUID=REGISTRY.register("creosote_oil_fluid",()->new LiquidBlock(DifModFluids.CREOSOTE_OIL.get(),FLUID_PROPERTIES));
-
-
-	public static final DeferredBlock<Block>MOLTEN_IRON_FLUID=REGISTRY.register("molten_iron_fluid",()->new MoltenBlock(DifModFluids.MOLTEN_IRON.get(),FLUID_PROPERTIES));
-	public static final DeferredBlock<Block>MOLTEN_COPPER_FLUID=REGISTRY.register("molten_copper_fluid",()->new MoltenBlock(DifModFluids.MOLTEN_COPPER.get(),FLUID_PROPERTIES));
-	public static final DeferredBlock<Block>MOLTEN_GOLD_FLUID=REGISTRY.register("molten_gold_fluid",()->new MoltenBlock(DifModFluids.MOLTEN_GOLD.get(),FLUID_PROPERTIES));
-	public static final DeferredBlock<Block>MOLTEN_STEEL_FLUID=REGISTRY.register("molten_steel_fluid",()->new MoltenBlock(DifModFluids.MOLTEN_STEEL.get(),FLUID_PROPERTIES));
-	public static final DeferredBlock<Block>MOLTEN_OBSIDIAN_FLUID=REGISTRY.register("molten_obsidian_fluid",()->new MoltenBlock(DifModFluids.MOLTEN_OBSIDIAN.get(),FLUID_PROPERTIES));
-	public static final DeferredBlock<Block>MOLTEN_ZINC_FLUID=REGISTRY.register("molten_zinc_fluid",()->new MoltenBlock(DifModFluids.MOLTEN_ZINC.get(),FLUID_PROPERTIES));
-	public static final DeferredBlock<Block>MOLTEN_BRASS_FLUID=REGISTRY.register("molten_brass_fluid",()->new MoltenBlock(DifModFluids.MOLTEN_BRASS.get(),FLUID_PROPERTIES));
-	public static final DeferredBlock<Block>MOLTEN_NICKEL_FLUID=REGISTRY.register("molten_nickel_fluid",()->new MoltenBlock(DifModFluids.MOLTEN_NICKEL.get(),FLUID_PROPERTIES));
-	public static final DeferredBlock<Block>MOLTEN_MITHRIL_FLUID=REGISTRY.register("molten_mithril_fluid",()->new MoltenBlock(DifModFluids.MOLTEN_MITHRIL.get(),FLUID_PROPERTIES));
 
 	//Random (0):
 	public static final DeferredBlock<Block> MEGA_TORCH = REGISTRY.register("mega_torch",()->new MegaTorch(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(2F,3F).sound(SoundType.WOOD).pushReaction(PushReaction.BLOCK).lightLevel(state->15)));
@@ -170,16 +151,10 @@ public class DifModBlocks{
 
 
 	public static final DeferredBlock<Block>ZINC_CASING=REGISTRY.register("zinc_casing",()->new Block(BlockBehaviour.Properties.of().strength(1.5F,6F).sound(SoundType.WOOD).requiresCorrectToolForDrops()));
-	public static final DeferredBlock<Block>STEEL_CASING=REGISTRY.register("steel_casing",()->new Block(BlockBehaviour.Properties.of().strength(5F,6F).sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops()));
-
 
 	public static final DeferredBlock<Block>ZINC_SUPPORT=REGISTRY.register("zinc_support",()->new SupportBase(BlockBehaviour.Properties.of().strength(4F,5F).sound(SoundType.METAL).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>BRASS_SUPPORT=REGISTRY.register("brass_support",()->new SupportBase(BlockBehaviour.Properties.of().strength(4F,5F).sound(SoundType.METAL).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>COPPER_SUPPORT=REGISTRY.register("copper_support",()->new SupportBase(BlockBehaviour.Properties.of().strength(4F,5F).sound(SoundType.COPPER).requiresCorrectToolForDrops()));
-	public static final DeferredBlock<Block>STEEL_SUPPORT=REGISTRY.register("steel_support",()->new SupportBase(BlockBehaviour.Properties.of().strength(4F,5F).sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops()));
-
-	public static final DeferredBlock<Block>COKE_OVEN=REGISTRY.register("coke_oven",()->new CokeOven(BlockBehaviour.Properties.of().strength(3F,4F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
-	public static final DeferredBlock<Block>COKE_OVEN_CONTROLLER=REGISTRY.register("coke_oven_controller",()->new CokeOvenController(BlockBehaviour.Properties.of().strength(3F,4F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
 
 	public static final BlockBehaviour.Properties ENGINE_PROPERTIES=BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops();
 	public static final DeferredBlock<Block>ENGINE_BASE=REGISTRY.register("engine_base",()->new Engine(ENGINE_PROPERTIES));
@@ -193,12 +168,6 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>ENGINE_EXTENDER_LPG=REGISTRY.register("engine_extender_lpg",()->new EngineExtender(ENGINE_EXTENDER_PROPERTIES));
 	public static final DeferredBlock<Block>ENGINE_EXTENDER_HEAVY_FUEL_OIL=REGISTRY.register("engine_extender_heavy_fuel_oil",()->new EngineExtender(ENGINE_EXTENDER_PROPERTIES));
 
-	public static final DeferredBlock<Block>FORGE_BRICK=REGISTRY.register("forge_brick",()->new ForgeBrick(BlockBehaviour.Properties.of().strength(3.5F,6F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
-	public static final DeferredBlock<Block>FORGE_GLASS=REGISTRY.register("forge_glass",()->new ForgeGlass(BlockBehaviour.Properties.of().strength(2F,4F).requiresCorrectToolForDrops().sound(SoundType.GLASS).noOcclusion()));
-	public static final DeferredBlock<Block>FORGE_FURNACE_CONTROLLER=REGISTRY.register("forge_furnace_controller",()->new ForgeFurnaceController(BlockBehaviour.Properties.of().strength(4F,8F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
-
-
-	public static final DeferredBlock<Block>MODULAR_REFORGE_TABLE=REGISTRY.register("modular_reforge_table",()->new ModularReforgeTable(BlockBehaviour.Properties.ofFullCopy(Blocks.ANVIL).noOcclusion()));
 	public static final DeferredBlock<Block>DEEPSLATE_MITHRIL_ORE=REGISTRY.register("deepslate_mithril_ore",()->new DropExperienceBlock(ConstantInt.of(0),BlockBehaviour.Properties.ofFullCopy(GOLD_ORE).mapColor(MapColor.DEEPSLATE).strength(4.5F,3F).sound(SoundType.DEEPSLATE)));
 
 	public static final DeferredBlock<Block>WOODEN_FRAME=REGISTRY.register("wooden_frame",()->new WoodenFrame(BlockBehaviour.Properties.of().strength(3F,3F).sound(SoundType.WOOD).noOcclusion().ignitedByLava()));

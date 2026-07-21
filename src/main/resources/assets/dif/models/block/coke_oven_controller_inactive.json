@@ -1,9 +1,0 @@
-{
-	"parent":"block/orientable",
-	"textures":{
-		"front":"dif:block/coke_oven_controller_inactive",
-		"side":"dif:block/coke_oven",
-		"top":"dif:block/coke_oven",
-		"particle":"dif:block/coke_oven"
-	}
-}

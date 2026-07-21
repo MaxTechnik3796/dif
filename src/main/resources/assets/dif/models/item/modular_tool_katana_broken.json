@@ -1,8 +1,0 @@
-{
-	"parent":"item/handheld",
-	"textures":{
-		"layer0":"dif:item/modular_tool_katana_handle",
-		"layer1":"dif:item/modular_tool_katana_binding",
-		"layer2":"dif:item/modular_tool_katana_head_broken"
-	}
-}

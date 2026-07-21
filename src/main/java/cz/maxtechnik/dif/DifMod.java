@@ -4,7 +4,6 @@ import com.mojang.logging.LogUtils;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
 import cz.maxtechnik.dif.command.IsChunkLoadedCommand;
-import cz.maxtechnik.dif.config.DifModClientConfig;
 import cz.maxtechnik.dif.config.DifModCommonConfig;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.basic.DifModItems;
@@ -78,7 +77,6 @@ public class DifMod{
 		DifModEntities.REGISTRY.register(bus);
 		DifModFeatures.REGISTRY.register(bus);
 		DifModParticles.REGISTRY.register(bus);
-		DifModComponents.REGISTRY.register(bus);
 		DifModLootModifiers.REGISTRY.register(bus);
 		// REGISTRACE EVENTŮ
 		NeoForge.EVENT_BUS.register(this);
@@ -86,9 +84,7 @@ public class DifMod{
 		NeoForge.EVENT_BUS.addListener(DifMod::onRenderGui);
 		bus.addListener(DifModTabs::addCreative);
 		modContainer.registerConfig(ModConfig.Type.COMMON,DifModCommonConfig.SPEC);
-		modContainer.registerConfig(ModConfig.Type.CLIENT,DifModClientConfig.SPEC);
 		bus.addListener(DifModCapabilities::registerCapabilities);
-		bus.addListener(DifModRecipex::onCommonSetup);
 	}
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event){
@@ -137,7 +133,6 @@ public class DifMod{
 		@SubscribeEvent
 		public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event){
 			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(),context->new FryingTableRenderer());
-			event.registerBlockEntityRenderer(DifModBlockEntities.MODULAR_REFORGE_TABLE.get(),context->new ModularReforgeTableRenderer());
 			event.registerBlockEntityRenderer(DifModBlockEntities.QUARRY.get(),context->new QuarryRenderer());
 			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(),context->new ChunkLoaderRenderer());
 			event.registerEntityRenderer(DifModEntities.FORMULA.get(),CarRenderer::new);

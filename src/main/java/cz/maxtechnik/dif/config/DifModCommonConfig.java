@@ -24,30 +24,8 @@ public class DifModCommonConfig{
 	public static final ModConfigSpec.IntValue NANO_GLASS_MAX_SPREAD;
 	public static final ModConfigSpec.IntValue JETPACK_CAPACITY;
 
-
-
-	public static final ModConfigSpec.IntValue MODULAR_TOOLS_DEFAULT_MAX_MODIFIERS;
-	public static final ModConfigSpec.IntValue MODULAR_TOOLS_REPAIR_AMOUNT;
-	public static final ModConfigSpec.IntValue MODULAR_TOOLS_CHEEP_REPAIR_AMOUNT;
-	public static final ModConfigSpec.IntValue MODULAR_TOOLS_RENEWABLE_REPAIR_TICK_RATE;
-	public static final ModConfigSpec.IntValue MODULAR_TOOLS_SELF_REPAIR_TICK_RATE;
-
 	public static final ModConfigSpec.DoubleValue FAST_RAIL_TOP_SPEED;
 	public static final ModConfigSpec.DoubleValue FAST_POWERED_RAIL_ACCELERATION;
-
-	public static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_0;
-	public static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_1;
-	public static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_2;
-	public static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_0;
-	public static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_1;
-	public static final ModConfigSpec.IntValue MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_2;
-
-	public static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_0;
-	public static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_1;
-	public static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_2;
-	public static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_0;
-	public static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_1;
-	public static final ModConfigSpec.IntValue MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_2;
 
 	public static final ModConfigSpec.IntValue PORTAL_GUN_MAX_DURABILITY;
 	public static final ModConfigSpec.IntValue PORTAL_GUN_ENERGY_PER_PEARL;
@@ -100,37 +78,6 @@ public class DifModCommonConfig{
 		BUILDER.push("FastRails");
 		FAST_RAIL_TOP_SPEED=BUILDER.defineInRange("fast_rail_top_speed",1.2D,0.1D,MAX);
 		FAST_POWERED_RAIL_ACCELERATION=BUILDER.defineInRange("fast_powered_rail_acceleration",0.5D,0.1D,MAX);
-		BUILDER.pop();
-		BUILDER.push("ModularTools");
-		MODULAR_TOOLS_DEFAULT_MAX_MODIFIERS=BUILDER.defineInRange("modular_tools_default_max_modifiers",3,0,MAX);
-		MODULAR_TOOLS_REPAIR_AMOUNT=BUILDER.defineInRange("modular_tools_repair_amount",5,1,MAX);
-		MODULAR_TOOLS_CHEEP_REPAIR_AMOUNT=BUILDER.defineInRange("modular_tools_cheep_repair_amount",15,1,MAX);
-		MODULAR_TOOLS_RENEWABLE_REPAIR_TICK_RATE=BUILDER.comment("Tick rate for Renewable modifier repair. Default: 120 (6 seconds)").defineInRange("modular_tools_renewable_repair_tick_rate",120,1,MAX);
-		MODULAR_TOOLS_SELF_REPAIR_TICK_RATE=BUILDER.comment("Tick rate for Self Repair modifier repair. Default: 200 (10 seconds)").defineInRange("modular_tools_self_repair_tick_rate",200,1,MAX);
-		BUILDER.push("EfficiencyModifier");
-		BUILDER.push("Stages");
-		MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_0=BUILDER.defineInRange("modular_tools_efficiency_modifier_stage_0",3,1,MAX);
-		MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_1=BUILDER.defineInRange("modular_tools_efficiency_modifier_stage_1",5,1,MAX);
-		MODULAR_TOOLS_EFFICIENCY_MODIFIER_STAGE_2=BUILDER.defineInRange("modular_tools_efficiency_modifier_stage_2",7,1,MAX);
-		BUILDER.pop();
-		BUILDER.push("Levels");
-		MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_0=BUILDER.defineInRange("modular_tools_efficiency_modifier_level_0",2,1,MAX);
-		MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_1=BUILDER.defineInRange("modular_tools_efficiency_modifier_level_1",4,1,MAX);
-		MODULAR_TOOLS_EFFICIENCY_MODIFIER_LEVEL_2=BUILDER.defineInRange("modular_tools_efficiency_modifier_level:2",6,1,MAX);
-		BUILDER.pop();
-		BUILDER.pop();
-		BUILDER.push("FortuneModifier");
-		BUILDER.push("Stages");
-		MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_0=BUILDER.defineInRange("modular_tools_fortune_modifier_stage_0",3,1,MAX);
-		MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_1=BUILDER.defineInRange("modular_tools_fortune_modifier_stage_1",5,1,MAX);
-		MODULAR_TOOLS_FORTUNE_MODIFIER_STAGE_2=BUILDER.defineInRange("modular_tools_fortune_modifier_stage_2",7,1,MAX);
-		BUILDER.pop();
-		BUILDER.push("Levels");
-		MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_0=BUILDER.defineInRange("modular_tools_fortune_modifier_level_0",2,1,MAX);
-		MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_1=BUILDER.defineInRange("modular_tools_fortune_modifier_level_1",4,1,MAX);
-		MODULAR_TOOLS_FORTUNE_MODIFIER_LEVEL_2=BUILDER.defineInRange("modular_tools_fortune_modifier_level_2",6,1,MAX);
-		BUILDER.pop();
-		BUILDER.pop();
 		BUILDER.pop();
 		BUILDER.push("PortalGun");
 		PORTAL_GUN_MAX_DURABILITY=BUILDER.defineInRange("portal_gun_max_durability",24,1,MAX);
