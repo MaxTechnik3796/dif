@@ -84,7 +84,7 @@ public class DifModCommonConfig{
 		BUILDER.push("PortalGun");
 		PORTAL_GUN_MAX_DURABILITY=BUILDER.defineInRange("portal_gun_max_durability",24,1,MAX);
 		PORTAL_GUN_ENERGY_PER_PEARL=BUILDER.defineInRange("portal_gun_energy_per_pearl",4,1,MAX);
-		PORTAL_MAX_DISTANCE=BUILDER.defineInRange("portal_max_distance",256,16,MAX);
+		PORTAL_MAX_DISTANCE=BUILDER.defineInRange("portal_max_distance",512,16,MAX);
 		PORTAL_ALLOW_ENTITIES=BUILDER.define("portal_allow_entities",true);
 		BUILDER.pop();
 

@@ -39,9 +39,18 @@ public class DifModTabs{
 
 		tabData.accept(MITHRIL);
 		tabData.accept(MITHRIL_PLATE);
-		tabData.accept(DEEPSLATE_MITHRIL_ORE);
+		tabData.accept(MITHRIL_TEMPLATE);
 		tabData.accept(BLUESTONE);
 		tabData.accept(BLUE_PLATE);
+		tabData.accept(NICKEL_SHEET);
+
+		tabData.accept(QUARRY);
+		tabData.accept(QUARRY_FRAME);
+		tabData.accept(QUARRY_LANDMARK);
+
+		tabData.accept(QUARRY_ENGINE_IRON);
+		tabData.accept(QUARRY_ENGINE_GOLD);
+		tabData.accept(QUARRY_ENGINE_DIAMOND);
 
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>INDUSTRIAL=REGISTER.register("industrial",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.industrials")).icon(()->new ItemStack(ENGINE_EXTENDER_DIESEL.get())).displayItems(((parameters,tabData)->{
@@ -70,8 +79,6 @@ public class DifModTabs{
 
 		tabData.accept(WOODEN_FRAME);
 
-		tabData.accept(NICKEL_SHEET);
-
 		tabData.accept(NANO_GLASS);
 
 		tabData.accept(SOLAR_PANEL_00);
@@ -85,16 +92,6 @@ public class DifModTabs{
 		tabData.accept(SOLAR_PANEL_02_W);
 		tabData.accept(SOLAR_PANEL_03_W);
 		tabData.accept(SOLAR_PANEL_04_W);
-
-		tabData.accept(QUARRY);
-		tabData.accept(QUARRY_FRAME);
-		tabData.accept(QUARRY_LANDMARK);
-
-		tabData.accept(QUARRY_DRILL_IRON);
-		tabData.accept(QUARRY_DRILL_DIAMOND);
-		tabData.accept(QUARRY_ENGINE_IRON);
-		tabData.accept(QUARRY_ENGINE_GOLD);
-		tabData.accept(QUARRY_ENGINE_DIAMOND);
 
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>SPACE=REGISTER.register("space",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.INDUSTRIAL.getKey()).title(Component.translatable("creative_tab.dif.space")).icon(()->new ItemStack(SPACESHIP.get())).displayItems(((parameters,tabData)->{
@@ -154,6 +151,7 @@ public class DifModTabs{
 							new ItemStack(NICKEL_ORE.get()),
 							new ItemStack(DEEPSLATE_NICKEL_ORE.get())
 					});
+			tabData.insertAfter(new ItemStack(Items.DEEPSLATE_DIAMOND_ORE),new ItemStack(DEEPSLATE_MITHRIL_ORE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.FUNCTIONAL_BLOCKS)){
 			tabData.insertAfter(new ItemStack(Items.CHEST),new ItemStack(OLD_CHEST.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			addItemStacksBehind(tabData,new ItemStack(Items.BARREL),

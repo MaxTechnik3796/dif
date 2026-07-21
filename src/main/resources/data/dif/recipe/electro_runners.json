@@ -3,10 +3,10 @@
 	"accept_mirrored":true,
 	"key":{
 		"A":{
-			"item":"dif:steel_ingot"
+			"item":"dif:nickel_ingot"
 		},
 		"B":{
-			"item":"dif:steel_sheet"
+			"item":"dif:nickel_sheet"
 		},
 		"C":{
 			"item":"create:precision_mechanism"

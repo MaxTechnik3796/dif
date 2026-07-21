@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " A ",
+    "BCB",
+    " B "
+  ],
+  "key": {
+    "A": { "item": "dif:mithril_plate" },
+    "B": { "item": "dif:mithril" },
+    "C": { "item": "minecraft:netherite_upgrade_smithing_template" }
+  },
+  "result": { "id": "dif:mithril_template" }
+}

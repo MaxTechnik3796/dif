@@ -118,6 +118,7 @@
 	"block.dif.ruby_block":"Block of Ruby",
 	"item.dif.mithril_plate":"Mithril Plate",
 	"item.dif.mithril":"Mithril",
+	"item.dif.mithril_template":"Mithril Template",
 	"item.dif.incomplete_mithril_plate":"Incomplete Mithril Plate",
 	"block.dif.chunk_loader_3x3":"ChunkLoader 3x3",
 	"block.dif.chunk_loader_1x1":"ChunkLoader 1x1",

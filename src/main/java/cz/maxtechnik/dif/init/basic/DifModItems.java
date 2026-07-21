@@ -7,7 +7,6 @@ import cz.maxtechnik.dif.init.other.DifModFoods;
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
-import cz.maxtechnik.dif.item.quarry.DrillHeadItem;
 import cz.maxtechnik.dif.item.tool.*;
 import cz.maxtechnik.dif.item.armor.*;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -48,8 +47,6 @@ public class DifModItems{
 	
 
 	// Quarry Upgrades & Components:
-	public static final DeferredItem<Item>QUARRY_DRILL_IRON=REGISTRY.register("quarry_drill_iron",()->new DrillHeadItem(new Item.Properties().stacksTo(1)));
-	public static final DeferredItem<Item>QUARRY_DRILL_DIAMOND=REGISTRY.register("quarry_drill_diamond",()->new DrillHeadItem(new Item.Properties().stacksTo(1)));
 	public static final DeferredItem<Item>QUARRY_ENGINE_IRON=REGISTRY.register("quarry_engine_iron",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.IRON_ENGINE_QP_GEN,QuarryStats.IRON_ENGINE_FE_COST));
 	public static final DeferredItem<Item>QUARRY_ENGINE_GOLD=REGISTRY.register("quarry_engine_gold",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.GOLD_ENGINE_QP_GEN,QuarryStats.GOLD_ENGINE_FE_COST));
 	public static final DeferredItem<Item>QUARRY_ENGINE_DIAMOND=REGISTRY.register("quarry_engine_diamond",()->new EngineItem(new Item.Properties().stacksTo(1),QuarryStats.DIAMOND_ENGINE_QP_GEN,QuarryStats.DIAMOND_ENGINE_FE_COST));
@@ -131,6 +128,7 @@ public class DifModItems{
 
 
 	public static final DeferredItem<Item> MITHRIL=REGISTRY.register("mithril",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item> MITHRIL_TEMPLATE=REGISTRY.register("mithril_template",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item> MITHRIL_PLATE=REGISTRY.register("mithril_plate",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item> INCOMPLETE_MITHRIL_PLATE=REGISTRY.register("incomplete_mithril_plate",()->new Item(new Item.Properties()));
 

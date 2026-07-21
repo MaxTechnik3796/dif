@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": { "item": "dif:mithril_template" },
+  "base":     { "item": "minecraft:netherite_axe" },
+  "addition": { "item": "createaddition:electrum_ingot" },
+  "result": { "id": "dif:electrum_deforestrator" }
+}

@@ -1,18 +1,83 @@
 {
-	"type":"create:filling",
-	"ingredients":[
+	"type": "create:sequenced_assembly",
+	"ingredient": {
+		"item": "create:sturdy_sheet"
+	},
+	"results": [
 		{
-			"item":"create:sturdy_sheet"
-		},
-		{
-			"type":"neoforge:single",
-			"amount":288,
-			"fluid":"dif:molten_mithril_fluid"
+			"id": "dif:mithril_plate"
 		}
 	],
-	"results":[
+	"sequence": [
 		{
-			"id":"dif:mithril_plate"
+			"type": "create:deploying",
+			"ingredients": [
+				{
+					"item": "dif:incomplete_mithril_plate"
+				},
+				[
+					{
+						"item": "dif:mithril"
+					}
+				]
+			],
+			"results": [
+				{
+					"id": "dif:incomplete_mithril_plate"
+				}
+			]
+		},
+		{
+			"type": "create:deploying",
+			"ingredients": [
+				{
+					"item": "dif:incomplete_mithril_plate"
+				},
+				[
+					{
+						"item": "dif:mithril"
+					}
+				]
+			],
+			"results": [
+				{
+					"id": "dif:incomplete_mithril_plate"
+				}
+			]
+		},
+		{
+			"type": "create:deploying",
+			"ingredients": [
+				{
+					"item": "dif:incomplete_mithril_plate"
+				},
+				[
+					{
+						"item": "dif:mithril"
+					}
+				]
+			],
+			"results": [
+				{
+					"id": "dif:incomplete_mithril_plate"
+				}
+			]
+		},
+		{
+			"type": "create:pressing",
+			"ingredients": [
+				{
+					"item": "dif:incomplete_mithril_plate"
+				}
+			],
+			"results": [
+				{
+					"id": "dif:incomplete_mithril_plate"
+				}
+			]
 		}
-	]
+	],
+	"transitional_item": {
+		"id": "dif:incomplete_mithril_plate"
+	}
 }
