@@ -30,13 +30,9 @@ public class DifModBlockEntities{
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<SpaceScaffoldingBlockEntity>> SPACE_SCAFFOLDING=REGISTRY.register("space_scaffolding",()->BlockEntityType.Builder.of(SpaceScaffoldingBlockEntity::new,DifModBlocks.SPACE_SCAFFOLDING.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<FryingTableBlockEntity>> FRYING_TABLE=REGISTRY.register("frying_table",()->BlockEntityType.Builder.of(FryingTableBlockEntity::new,DifModBlocks.FRYING_TABLE.get()).build(null));
 
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<CameraMonitorBlockEntity>> CAMERA_MONITOR=REGISTRY.register("monitor",()->BlockEntityType.Builder.of(CameraMonitorBlockEntity::new,DifModBlocks.CAMERA_MONITOR.get()).build(null));
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<CameraBlockEntity>> CAMERA=REGISTRY.register("camera",()->BlockEntityType.Builder.of(CameraBlockEntity::new,DifModBlocks.CAMERA.get()).build(null));
-
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<QuarryBlockEntity>> QUARRY=REGISTRY.register("quarry",()->BlockEntityType.Builder.of(QuarryBlockEntity::new,DifModBlocks.QUARRY.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<QuarryFrameBlockEntity>> QUARRY_FRAME=REGISTRY.register("quarry_frame",()->BlockEntityType.Builder.of(QuarryFrameBlockEntity::new,DifModBlocks.QUARRY_FRAME.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<QuarryLandmarkBlockEntity>> QUARRY_LANDMARK=REGISTRY.register("quarry_landmark",()->BlockEntityType.Builder.of(QuarryLandmarkBlockEntity::new,DifModBlocks.QUARRY_LANDMARK.get()).build(null));
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<ModularReforgeTableBlockEntity>> MODULAR_REFORGE_TABLE=REGISTRY.register("modular_reforge_table",()->BlockEntityType.Builder.of(ModularReforgeTableBlockEntity::new,DifModBlocks.MODULAR_REFORGE_TABLE.get()).build(null));
 
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<SleepingBagBlockEntity>> SLEEPING_BAG=REGISTRY.register("sleeping_bag",()->BlockEntityType.Builder.of(SleepingBagBlockEntity::new,DifModBlocks.SLEEPING_BAG.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<SpaceCrateBlockEntity>> SPACE_CRATE=REGISTRY.register("space_crate",()->BlockEntityType.Builder.of(SpaceCrateBlockEntity::new,DifModBlocks.SPACE_CRATE.get()).build(null));
@@ -46,13 +42,6 @@ public class DifModBlockEntities{
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<DistillationTankBlockEntity>> DISTILLATION_TANK=REGISTRY.register("distillation_tank",()->BlockEntityType.Builder.of((pos,state)->new DistillationTankBlockEntity(DifModBlockEntities.DISTILLATION_TANK.get(),pos,state), DifModBlocks.DISTILLATION_TANK.get()).build(null));
 
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<EngineBlockEntity>>ENGINE=REGISTRY.register("engine",()->BlockEntityType.Builder.of(EngineBlockEntity::new,DifModBlocks.ENGINE_BASE.get(),DifModBlocks.ENGINE_PORTABLE_DIESEL.get(),DifModBlocks.ENGINE_PORTABLE_GASOLINE.get(),DifModBlocks.ENGINE_PORTABLE_LPG.get()).build(null));
-
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<CokeOvenControllerBlockEntity>> COKE_OVEN_CONTROLLER=register("coke_oven_controller",DifModBlocks.COKE_OVEN_CONTROLLER,CokeOvenControllerBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<CokeOvenBlockEntity>> COKE_OVEN=register("coke_oven",DifModBlocks.COKE_OVEN,CokeOvenBlockEntity::new);
-
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<ForgeBrickBlockEntity>> FORGE_BRICK=register("forge_brick",DifModBlocks.FORGE_BRICK,ForgeBrickBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<ForgeControllerBlockEntity>> FORGE_FURNACE_CONTROLLER=register("forge_furnace_controller",DifModBlocks.FORGE_FURNACE_CONTROLLER,ForgeControllerBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<ForgeGlassBlockEntity>> FORGE_GLASS=register("forge_glass",DifModBlocks.FORGE_GLASS,ForgeGlassBlockEntity::new);
 
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<NanoGlassBlockEntity>> NANO_GLASS=REGISTRY.register("nano_glass",()->BlockEntityType.Builder.of((pos,state)->new NanoGlassBlockEntity(DifModBlockEntities.NANO_GLASS.get(),pos,state),DifModBlocks.NANO_GLASS.get()).build(null));
 

@@ -15,7 +15,6 @@ public class DifModFuels{
 	@SubscribeEvent
 	public static void furnaceFuelBurnTimeEvent(FurnaceFuelBurnTimeEvent e){
 		add(e,Items.PAPER,0.4F);
-		add(e,COKE,16F);
 	}
 
 

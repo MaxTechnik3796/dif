@@ -2,8 +2,6 @@ package cz.maxtechnik.dif.init.basic;
 
 import com.simibubi.create.AllCreativeModeTabs;
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.init.other.DifModComponents;
-import cz.maxtechnik.dif.item.modular.v2.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +28,6 @@ public class DifModTabs{
 		tabData.accept(EVENT_BUS);
 		tabData.accept(VENT);
 
-		tabData.accept(BURNING_GENERATOR);
 		tabData.accept(ANDESITE_LATTICE);
 		tabData.accept(ANDESITE_WINDOW);
 		tabData.accept(SUPER_BOX);
@@ -38,22 +35,7 @@ public class DifModTabs{
 
 		tabData.accept(LAP_TIMER);
 
-		tabData.accept(CAMERA_MONITOR);
-		tabData.accept(CAMERA);
-		tabData.accept(CAMERA_LINK);
 		tabData.accept(SLEEPING_BAG);
-
-		tabData.accept(SOLAR_PANEL_00);
-		tabData.accept(SOLAR_PANEL_01);
-		tabData.accept(SOLAR_PANEL_02);
-		tabData.accept(SOLAR_PANEL_03);
-		tabData.accept(SOLAR_PANEL_04);
-
-		tabData.accept(SOLAR_PANEL_00_W);
-		tabData.accept(SOLAR_PANEL_01_W);
-		tabData.accept(SOLAR_PANEL_02_W);
-		tabData.accept(SOLAR_PANEL_03_W);
-		tabData.accept(SOLAR_PANEL_04_W);
 
 		tabData.accept(MITHRIL);
 		tabData.accept(MITHRIL_PLATE);
@@ -61,26 +43,10 @@ public class DifModTabs{
 		tabData.accept(BLUESTONE);
 		tabData.accept(BLUE_PLATE);
 
-		tabData.accept(QUARRY);
-		tabData.accept(QUARRY_FRAME);
-		tabData.accept(QUARRY_LANDMARK);
-
-		tabData.accept(QUARRY_DRILL_IRON);
-		tabData.accept(QUARRY_DRILL_DIAMOND);
-		tabData.accept(QUARRY_ENGINE_IRON);
-		tabData.accept(QUARRY_ENGINE_GOLD);
-		tabData.accept(QUARRY_ENGINE_DIAMOND);
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>INDUSTRIAL=REGISTER.register("industrial",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.industrials")).icon(()->new ItemStack(ENGINE_EXTENDER_DIESEL.get())).displayItems(((parameters,tabData)->{
 
 		tabData.accept(DISTILLATION_TANK);
-
-		tabData.accept(COKE_OVEN);
-		tabData.accept(COKE_OVEN_CONTROLLER);
-		tabData.accept(COKE);
-		tabData.accept(FORGE_BRICK);
-		tabData.accept(FORGE_GLASS);
-		tabData.accept(FORGE_FURNACE_CONTROLLER);
 
 		tabData.accept(ENGINE_BASE);
 
@@ -94,21 +60,41 @@ public class DifModTabs{
 		tabData.accept(ENGINE_EXTENDER_HEAVY_FUEL_OIL);
 
 		tabData.accept(ZINC_CASING);
-		tabData.accept(STEEL_CASING);
 		tabData.accept(BIG_GIRDER);
+
+		tabData.accept(BURNING_GENERATOR);
 
 		tabData.accept(COPPER_SUPPORT);
 		tabData.accept(ZINC_SUPPORT);
 		tabData.accept(BRASS_SUPPORT);
-		tabData.accept(STEEL_SUPPORT);
 
 		tabData.accept(WOODEN_FRAME);
 
-		tabData.accept(STEEL_INGOT);
-		tabData.accept(STEEL_SHEET);
 		tabData.accept(NICKEL_SHEET);
 
 		tabData.accept(NANO_GLASS);
+
+		tabData.accept(SOLAR_PANEL_00);
+		tabData.accept(SOLAR_PANEL_01);
+		tabData.accept(SOLAR_PANEL_02);
+		tabData.accept(SOLAR_PANEL_03);
+		tabData.accept(SOLAR_PANEL_04);
+
+		tabData.accept(SOLAR_PANEL_00_W);
+		tabData.accept(SOLAR_PANEL_01_W);
+		tabData.accept(SOLAR_PANEL_02_W);
+		tabData.accept(SOLAR_PANEL_03_W);
+		tabData.accept(SOLAR_PANEL_04_W);
+
+		tabData.accept(QUARRY);
+		tabData.accept(QUARRY_FRAME);
+		tabData.accept(QUARRY_LANDMARK);
+
+		tabData.accept(QUARRY_DRILL_IRON);
+		tabData.accept(QUARRY_DRILL_DIAMOND);
+		tabData.accept(QUARRY_ENGINE_IRON);
+		tabData.accept(QUARRY_ENGINE_GOLD);
+		tabData.accept(QUARRY_ENGINE_DIAMOND);
 
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>SPACE=REGISTER.register("space",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.INDUSTRIAL.getKey()).title(Component.translatable("creative_tab.dif.space")).icon(()->new ItemStack(SPACESHIP.get())).displayItems(((parameters,tabData)->{
@@ -147,52 +133,6 @@ public class DifModTabs{
 		tabData.accept(ELECTRO_RUNNERS);
 
 	})).build());
-	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>MODULAR_TOOLS=REGISTER.register("modular_tools",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.SPACE.getKey()).title(Component.translatable("creative_tab.dif.modular_tools")).icon(()->new ItemStack(Items.SMITHING_TABLE)).displayItems(((parameters, tabData)->{
-		tabData.accept(Items.SMITHING_TABLE);
-		tabData.accept(MODULAR_REFORGE_TABLE);
-
-		tabData.accept(MODULAR_WIKI_BOOK);
-
-		tabData.accept(MODULAR_TEMPLATE_NORMAL);
-		tabData.accept(MODULAR_TEMPLATE_HYPER);
-
-		tabData.accept(MODULAR_REFORGE_STONE);
-		tabData.accept(SILK);
-
-		tabData.accept(CASTING_MOLD);
-		tabData.accept(CASTING_MOLD_HANDLE);
-		tabData.accept(CASTING_MOLD_BINDING);
-		tabData.accept(CASTING_MOLD_AXE_HEAD);
-		tabData.accept(CASTING_MOLD_PICKAXE_HEAD);
-		tabData.accept(CASTING_MOLD_SWORD_HEAD);
-		tabData.accept(CASTING_MOLD_SHOVEL_HEAD);
-		tabData.accept(CASTING_MOLD_SWORD_BINDING);
-		tabData.accept(CASTING_MOLD_HOE_HEAD);
-		tabData.accept(CASTING_MOLD_BATTLE_AXE_HEAD);
-		tabData.accept(CASTING_MOLD_KATANA_HEAD);
-		tabData.accept(CASTING_MOLD_TIMBER_AXE_HEAD);
-		tabData.accept(CASTING_MOLD_HAMMER_HEAD);
-		tabData.accept(CASTING_MOLD_EXCAVATOR_HEAD);
-
-		for(ModularMaterial mat : ModularMaterial.values()){
-			if(mat == ModularMaterial.NONE) continue;
-			for(ModularTools toolType : ModularTools.values()){
-				if(toolType == ModularTools.NONE) continue;
-				ItemStack tool = new ItemStack(MODULAR_TOOL.get());
-				ModularToolProperties props = new ModularToolProperties(
-					toolType.getName(),
-					mat.getName(),
-					mat.getName(),
-					mat.getName(),
-					ModularReforge.NONE.getName()
-				);
-				tool.set(DifModComponents.MODULAR_TOOL_PROPERTIES.get(), props);
-				tabData.accept(tool);
-			}
-		}
-
-	})).build());
-
 
 	public static void addCreative(BuildCreativeModeTabContentsEvent tabData){
 		if(tabData.getTabKey().equals(CreativeModeTabs.BUILDING_BLOCKS)){
@@ -247,17 +187,6 @@ public class DifModTabs{
 							new ItemStack(DIESEL_BUCKET.get()),
 							new ItemStack(LUBRICATING_OIL_BUCKET.get()),
 							new ItemStack(HEAVY_FUEL_OIL_BUCKET.get()),
-							new ItemStack(CREOSOTE_OIL_BUCKET.get()),
-
-							new ItemStack(MOLTEN_IRON_BUCKET.get()),
-							new ItemStack(MOLTEN_COPPER_BUCKET.get()),
-							new ItemStack(MOLTEN_GOLD_BUCKET.get()),
-							new ItemStack(MOLTEN_STEEL_BUCKET.get()),
-							new ItemStack(MOLTEN_OBSIDIAN_BUCKET.get()),
-							new ItemStack(MOLTEN_ZINC_BUCKET.get()),
-							new ItemStack(MOLTEN_BRASS_BUCKET.get()),
-							new ItemStack(MOLTEN_NICKEL_BUCKET.get()),
-							new ItemStack(MOLTEN_MITHRIL_BUCKET.get()),
 					});
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.COMBAT)){
 			tabData.insertAfter(new ItemStack(Items.STONE_SWORD),new ItemStack(COPPER_SWORD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);

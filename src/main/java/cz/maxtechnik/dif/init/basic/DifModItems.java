@@ -7,10 +7,6 @@ import cz.maxtechnik.dif.init.other.DifModFoods;
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.*;
 import cz.maxtechnik.dif.item.food.*;
-import cz.maxtechnik.dif.item.modular.v2.ModularPart;
-import cz.maxtechnik.dif.item.modular.v2.ModularTemplate;
-import cz.maxtechnik.dif.item.modular.v2.ModularTool;
-import cz.maxtechnik.dif.item.modular.v2.ModularWikiBook;
 import cz.maxtechnik.dif.item.quarry.DrillHeadItem;
 import cz.maxtechnik.dif.item.tool.*;
 import cz.maxtechnik.dif.item.armor.*;
@@ -60,10 +56,6 @@ public class DifModItems{
 
 	public static final DeferredItem<Item> DISTILLATION_TANK = REGISTRY.register("distillation_tank", () -> new cz.maxtechnik.dif.item.DistillationTankItem(DifModBlocks.DISTILLATION_TANK.get(), new Item.Properties()));
 
-	public static final DeferredItem<Item>CAMERA_MONITOR=block(DifModBlocks.CAMERA_MONITOR);
-	public static final DeferredItem<Item>CAMERA=block(DifModBlocks.CAMERA);
-	public static final DeferredItem<Item>CAMERA_LINK=REGISTRY.register("camera_link",()->new CameraLink(new Item.Properties().stacksTo(1)));
-
 	public static final DeferredItem<Item>MEGA_TORCH=block(DifModBlocks.MEGA_TORCH);
 
 	public static final DeferredItem<Item>PHANTOM_RING=REGISTRY.register("phantom_ring",PhantomRing::new);
@@ -77,31 +69,7 @@ public class DifModItems{
 	public static final DeferredItem<Item>CHUNK_LOADER_1X1=REGISTRY.register("chunk_loader_1x1",()->new BlockItem(DifModBlocks.CHUNK_LOADER_1X1.get(),new Item.Properties()){@Override public boolean isFoil(@NotNull ItemStack stack){return true;}});
 	public static final DeferredItem<Item>CHUNK_LOADER_3X3=REGISTRY.register("chunk_loader_3x3",()->new BlockItem(DifModBlocks.CHUNK_LOADER_3X3.get(),new Item.Properties()){@Override public boolean isFoil(@NotNull ItemStack stack){return true;}});
 
-	//Modular Stuff:
-	public static final DeferredItem<Item>MODULAR_TOOL=REGISTRY.register("modular_tool",ModularTool::new);
-	public static final DeferredItem<Item>MODULAR_PART=REGISTRY.register("modular_part",ModularPart::new);
 	public static final DeferredItem<Item>SILK=REGISTRY.register("silk",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item>MODULAR_REFORGE_TABLE=block(DifModBlocks.MODULAR_REFORGE_TABLE);
-	public static final DeferredItem<Item>MODULAR_REFORGE_STONE=REGISTRY.register("modular_reforge_stone",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item>MODULAR_TEMPLATE_NORMAL=REGISTRY.register("modular_template_normal",()->new ModularTemplate(new Item.Properties()));
-	public static final DeferredItem<Item>MODULAR_TEMPLATE_HYPER=REGISTRY.register("modular_template_hyper",()->new ModularTemplate(new Item.Properties().rarity(Rarity.EPIC)));
-
-	public static final DeferredItem<Item>CASTING_MOLD=REGISTRY.register("casting_mold",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item>CASTING_MOLD_HANDLE=REGISTRY.register("casting_mold_handle",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item>CASTING_MOLD_BINDING=REGISTRY.register("casting_mold_binding",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item>CASTING_MOLD_AXE_HEAD=REGISTRY.register("casting_mold_axe_head",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item>CASTING_MOLD_PICKAXE_HEAD=REGISTRY.register("casting_mold_pickaxe_head",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item>CASTING_MOLD_SHOVEL_HEAD=REGISTRY.register("casting_mold_shovel_head",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item>CASTING_MOLD_SWORD_HEAD=REGISTRY.register("casting_mold_sword_head",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item>CASTING_MOLD_SWORD_BINDING=REGISTRY.register("casting_mold_sword_binding",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item>CASTING_MOLD_HOE_HEAD=REGISTRY.register("casting_mold_hoe_head",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item>CASTING_MOLD_BATTLE_AXE_HEAD=REGISTRY.register("casting_mold_battle_axe_head",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item>CASTING_MOLD_KATANA_HEAD=REGISTRY.register("casting_mold_katana_head",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item>CASTING_MOLD_TIMBER_AXE_HEAD=REGISTRY.register("casting_mold_timber_axe_head",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item>CASTING_MOLD_HAMMER_HEAD=REGISTRY.register("casting_mold_hammer_head",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item>CASTING_MOLD_EXCAVATOR_HEAD=REGISTRY.register("casting_mold_excavator_head",()->new Item(new Item.Properties()));
-
-	public static final DeferredItem<Item>MODULAR_WIKI_BOOK=REGISTRY.register("modular_wiki_book",()->new ModularWikiBook(new Item.Properties()));
 
 	public static final DeferredItem<Item> PORTAL_GUN=REGISTRY.register("portal_gun",PortalGun::new);
 
@@ -119,24 +87,12 @@ public class DifModItems{
 	public static final DeferredItem<Item>CRUDE_OIL_BUCKET=REGISTRY.register("crude_oil_bucket",()->new BucketItem(DifModFluids.CRUDE_OIL.get(),BUCKET_PROPERTIES));
 	public static final DeferredItem<Item>JETPACK_FUEL_BUCKET=REGISTRY.register("jetpack_fuel_bucket",()->new BucketItem(DifModFluids.JETPACK_FUEL.get(),BUCKET_PROPERTIES));
 	public static final DeferredItem<Item>SUNFLOWER_OIL_BUCKET=REGISTRY.register("sunflower_oil_bucket",()->new BucketItem(DifModFluids.SUNFLOWER_OIL.get(),BUCKET_PROPERTIES));
-	public static final DeferredItem<Item>CREOSOTE_OIL_BUCKET=REGISTRY.register("creosote_oil_bucket",()->new BucketItem(DifModFluids.CREOSOTE_OIL.get(),BUCKET_PROPERTIES));
-
 
 	public static final DeferredItem<Item>LPG_BUCKET=REGISTRY.register("lpg_bucket",()->new BucketItem(DifModFluids.LPG.get(),BUCKET_PROPERTIES));
 	public static final DeferredItem<Item>GASOLINE_BUCKET=REGISTRY.register("gasoline_bucket",()->new BucketItem(DifModFluids.GASOLINE.get(),BUCKET_PROPERTIES));
 	public static final DeferredItem<Item>DIESEL_BUCKET=REGISTRY.register("diesel_bucket",()->new BucketItem(DifModFluids.DIESEL.get(),BUCKET_PROPERTIES));
 	public static final DeferredItem<Item>LUBRICATING_OIL_BUCKET=REGISTRY.register("lubricating_oil_bucket",()->new BucketItem(DifModFluids.LUBRICATING_OIL.get(),BUCKET_PROPERTIES));
 	public static final DeferredItem<Item>HEAVY_FUEL_OIL_BUCKET=REGISTRY.register("heavy_fuel_oil_bucket",()->new BucketItem(DifModFluids.HEAVY_FUEL_OIL.get(),BUCKET_PROPERTIES));
-
-	public static final DeferredItem<Item>MOLTEN_IRON_BUCKET=REGISTRY.register("molten_iron_bucket",()->new BucketItem(DifModFluids.MOLTEN_IRON.get(),BUCKET_PROPERTIES));
-	public static final DeferredItem<Item>MOLTEN_COPPER_BUCKET=REGISTRY.register("molten_copper_bucket",()->new BucketItem(DifModFluids.MOLTEN_COPPER.get(),BUCKET_PROPERTIES));
-	public static final DeferredItem<Item>MOLTEN_GOLD_BUCKET=REGISTRY.register("molten_gold_bucket",()->new BucketItem(DifModFluids.MOLTEN_GOLD.get(),BUCKET_PROPERTIES));
-	public static final DeferredItem<Item>MOLTEN_STEEL_BUCKET=REGISTRY.register("molten_steel_bucket",()->new BucketItem(DifModFluids.MOLTEN_STEEL.get(),BUCKET_PROPERTIES));
-	public static final DeferredItem<Item>MOLTEN_OBSIDIAN_BUCKET=REGISTRY.register("molten_obsidian_bucket",()->new BucketItem(DifModFluids.MOLTEN_OBSIDIAN.get(),BUCKET_PROPERTIES));
-	public static final DeferredItem<Item>MOLTEN_ZINC_BUCKET=REGISTRY.register("molten_zinc_bucket",()->new BucketItem(DifModFluids.MOLTEN_ZINC.get(),BUCKET_PROPERTIES));
-	public static final DeferredItem<Item>MOLTEN_BRASS_BUCKET=REGISTRY.register("molten_brass_bucket",()->new BucketItem(DifModFluids.MOLTEN_BRASS.get(),BUCKET_PROPERTIES));
-	public static final DeferredItem<Item>MOLTEN_NICKEL_BUCKET=REGISTRY.register("molten_nickel_bucket",()->new BucketItem(DifModFluids.MOLTEN_NICKEL.get(),BUCKET_PROPERTIES));
-	public static final DeferredItem<Item>MOLTEN_MITHRIL_BUCKET=REGISTRY.register("molten_mithril_bucket",()->new BucketItem(DifModFluids.MOLTEN_MITHRIL.get(),BUCKET_PROPERTIES));
 
 	//Vanilla + :
 	public static final DeferredItem<Item> END_PORTAL=V_REGISTRY.register("end_portal",()->new BlockItem(Blocks.END_PORTAL,new Item.Properties()));
@@ -317,25 +273,15 @@ public class DifModItems{
 
 
 	public static final DeferredItem<Item>ZINC_CASING=block(DifModBlocks.ZINC_CASING);
-	public static final DeferredItem<Item>STEEL_CASING=block(DifModBlocks.STEEL_CASING);
 
 	public static final DeferredItem<Item>ZINC_SUPPORT=block(DifModBlocks.ZINC_SUPPORT);
 	public static final DeferredItem<Item>BRASS_SUPPORT=block(DifModBlocks.BRASS_SUPPORT);
 	public static final DeferredItem<Item>COPPER_SUPPORT=block(DifModBlocks.COPPER_SUPPORT);
-	public static final DeferredItem<Item>STEEL_SUPPORT=block(DifModBlocks.STEEL_SUPPORT);
 
 	public static final DeferredItem<Item>BIG_GIRDER=block(DifModBlocks.BIG_GIRDER);
 
 	public static final DeferredItem<Item>NUKE=block(DifModBlocks.NUKE,new Item.Properties().stacksTo(16));
 	public static final DeferredItem<Item>NUKE_SAFE=block(DifModBlocks.NUKE_SAFE,new Item.Properties().stacksTo(16));
-
-	public static final DeferredItem<Item>COKE_OVEN=block(DifModBlocks.COKE_OVEN);
-	public static final DeferredItem<Item>COKE_OVEN_CONTROLLER=block(DifModBlocks.COKE_OVEN_CONTROLLER);
-	public static final DeferredItem<Item>COKE=REGISTRY.register("coke",()->new Item(new Item.Properties()));
-
-	public static final DeferredItem<Item>FORGE_BRICK=block(DifModBlocks.FORGE_BRICK);
-	public static final DeferredItem<Item>FORGE_GLASS=block(DifModBlocks.FORGE_GLASS);
-	public static final DeferredItem<Item>FORGE_FURNACE_CONTROLLER=block(DifModBlocks.FORGE_FURNACE_CONTROLLER);
 
 	public static final DeferredItem<Item>ENGINE_BASE=block(DifModBlocks.ENGINE_BASE);
 
@@ -360,8 +306,6 @@ public class DifModItems{
 	public static final DeferredItem<Item>DEEPSLATE_NICKEL_ORE=block(DifModBlocks.DEEPSLATE_NICKEL_ORE);
 	public static final DeferredItem<Item>NICKEL_SHEET=REGISTRY.register("nickel_sheet",()->new Item(new Item.Properties()));
 
-	public static final DeferredItem<Item>STEEL_SHEET=REGISTRY.register("steel_sheet",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item>STEEL_INGOT=REGISTRY.register("steel_ingot",()->new Item(new Item.Properties()));
 
 	public static final DeferredItem<Item>NANO_GLASS=block(DifModBlocks.NANO_GLASS);
 

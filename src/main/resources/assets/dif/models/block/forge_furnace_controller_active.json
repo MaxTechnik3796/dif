@@ -1,9 +1,0 @@
-{
-	"parent":"block/orientable",
-	"textures":{
-		"front":"dif:block/forge_furnace_controller_active",
-		"side":"dif:block/forge_brick",
-		"top":"dif:block/forge_brick",
-		"particle":"dif:block/forge_brick"
-	}
-}

@@ -1,8 +1,0 @@
-{
-	"parent":"item/handheld",
-	"textures":{
-		"layer0":"dif:item/modular_tool_axe_handle",
-		"layer1":"dif:item/modular_tool_axe_binding",
-		"layer2":"dif:item/modular_tool_axe_head"
-	}
-}
