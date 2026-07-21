@@ -21,34 +21,8 @@ import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
 import java.util.*;
-/**
- * AOE mining logic for {@link ModularTools#HAMMER}, {@link ModularTools#EXCAVATOR},
- * {@link ModularTools#TIMBER_AXE} and {@link ModularTools#HOE} (CULTIVATOR reforge).
- *
- * <h3>Hammer / Excavator / Hoe – plane mining</h3>
- * <ul>
- *   <li>3×3 plane perpendicular to hit face (Hoe always 3×3, even at MYTHIC).</li>
- *   <li>1 block = 1 durability. Centre is handled by vanilla; handler charges 1 per neighbour.</li>
- *   <li>Hardness protection: neighbor skipped when hardness {@code > centre × 2}.</li>
- * </ul>
- *
- * <h3>Timber Axe</h3>
- * <ul>
- *   <li>BFS through connected {@code LOGS} (6-directional), max {@value TIMBER_MAX_BLOCKS}.</li>
- *   <li>Natural tree (adjacent {@code PERSISTENT=false} leaves) → fell whole tree.</li>
- *   <li>Player-placed wood → 3×3 axe-plane fallback.</li>
- *   <li>1 log = 1 durability. Budget-capped: remaining logs stay.</li>
- * </ul>
- *
- * <h3>Hoe – CULTIVATOR reforge (RMB tilling)</h3>
- * <ul>
- *   <li>EPIC / LEGENDARY → till 3×3.</li>
- *   <li>MYTHIC → till 5×5.</li>
- *   <li>Block-breaking (haybale etc.) always 3×3 regardless of tier.</li>
- * </ul>
- */
 @EventBusSubscriber(modid=DifMod.MODID)
-public final class ModularMiningHandler{
+public final class MiningHandler{
 	private static final float HARDNESS_MULTIPLIER=2.0f;
 	private static final int TIMBER_MAX_BLOCKS=128;
 	/** Prevents recursive {@code BlockEvent.BreakEvent} from re-triggering AOE. */
@@ -64,17 +38,12 @@ public final class ModularMiningHandler{
 		if(!(event.getPlayer() instanceof ServerPlayer player)) return;
 		ItemStack tool=player.getMainHandItem();
 		if(!(tool.getItem() instanceof ModularTool modularTool)) return;
-		if(modularTool.isBroken(tool)) return;
+		//tool-type
 		String type=ModularTool.getProps(tool).toolType();
 		boolean isHammer=type.equals(ModularTools.HAMMER.getName());
 		boolean isExcavator=type.equals(ModularTools.EXCAVATOR.getName());
 		boolean isTimberAxe=type.equals(ModularTools.TIMBER_AXE.getName());
-		boolean isHoe=type.equals(ModularTools.HOE.getName());
-		if(!isHammer&&!isExcavator&&!isTimberAxe&&!isHoe) return;
-		// HOE: only with CULTIVATOR; reforges use EPIC-level power
-		if(isHoe){
-			if(ModularTool.getReforge(tool)!=ModularReforge.CULTIVATOR) return;
-		}
+		if(!isHammer&&!isExcavator&&!isTimberAxe) return;
 		BlockPos centre=event.getPos();
 		BlockState centreState=level.getBlockState(centre);
 		BREAKING.set(Boolean.TRUE);
@@ -148,14 +117,6 @@ public final class ModularMiningHandler{
 	 */
 	public static boolean excavatorFlatten(UseOnContext context,ModularTool modularTool){
 		return applyToolModifiedState(context,modularTool,1,ItemAbilities.SHOVEL_FLATTEN);
-	}
-	/**
-	 * Hoe CULTIVATOR RMB: till a NxN area via {@code HOE_TILL}.
-	 * @param radius 1 = 3×3, 2 = 5×5
-	 * @return {@code true} if at least one block was modified
-	 */
-	public static boolean hoeCultivatorTill(UseOnContext context,ModularTool modularTool,int radius){
-		return applyToolModifiedState(context,modularTool,radius,ItemAbilities.HOE_TILL);
 	}
 	/**
 	 * Generic AOE {@code getToolModifiedState} applicator used by both
@@ -264,45 +225,5 @@ public final class ModularMiningHandler{
 		if(!foundLeaves) return null;
 		result.sort(Comparator.comparingInt(BlockPos::getY));
 		return result;
-	}
-	@SubscribeEvent
-	public static void onAnvilUpdate(net.neoforged.neoforge.event.AnvilUpdateEvent event){
-		ItemStack left=event.getLeft();
-		if(!(left.getItem() instanceof ModularTool tool)) return;
-		ItemStack right=event.getRight();
-		if(right.isEmpty()) return;
-		if(tool.isValidRepairItem(left,right)){
-			int missing=left.getDamageValue();
-			if(missing<=0) return;
-			int max=tool.getMaxDamage(left);
-			int repairPerItem=Math.max(1,max/4);
-			int itemsNeeded=0;
-			int repairedDamage=missing;
-			while(repairedDamage>0&&itemsNeeded<right.getCount()){
-				repairedDamage-=repairPerItem;
-				itemsNeeded++;
-			}
-			if(repairedDamage<0) repairedDamage=0;
-			ItemStack output=left.copy();
-			output.setDamageValue(repairedDamage);
-			// Do NOT increase the repair cost penalty on the output item!
-			int currentRepairCost=left.getOrDefault(net.minecraft.core.component.DataComponents.REPAIR_COST,0);
-			output.set(net.minecraft.core.component.DataComponents.REPAIR_COST,currentRepairCost);
-			int cost=itemsNeeded+currentRepairCost;
-			if(event.getName()!=null){
-				if(event.getName().isEmpty()){
-					if(left.has(net.minecraft.core.component.DataComponents.CUSTOM_NAME)){
-						output.remove(net.minecraft.core.component.DataComponents.CUSTOM_NAME);
-						cost+=1;
-					}
-				}else if(!event.getName().equals(left.getHoverName().getString())){
-					output.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME,net.minecraft.network.chat.Component.literal(event.getName()));
-					cost+=1;
-				}
-			}
-			event.setOutput(output);
-			event.setCost(cost);
-			event.setMaterialCost(itemsNeeded);
-		}
 	}
 }
