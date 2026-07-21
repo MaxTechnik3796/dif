@@ -87,25 +87,27 @@ public class DifModCommonConfig{
 		PORTAL_MAX_DISTANCE=BUILDER.defineInRange("portal_max_distance",256,16,MAX);
 		PORTAL_ALLOW_ENTITIES=BUILDER.define("portal_allow_entities",true);
 		BUILDER.pop();
+
+
 		BUILDER.push("Engines");
 		BUILDER.push("Diesel");
 		ENGINE_DIESEL_RPM=BUILDER.defineInRange("engine_diesel_rpm",120.0D,0.0D,DOUBLE_MAX);
-		ENGINE_DIESEL_SU=BUILDER.defineInRange("engine_diesel_su",96.0D,0.0D,DOUBLE_MAX);
+		ENGINE_DIESEL_SU=BUILDER.defineInRange("engine_diesel_su",120.0D,0.0D,DOUBLE_MAX);
 		ENGINE_DIESEL_CONSUMPTION=BUILDER.defineInRange("engine_diesel_consumption",1.25D,0.0D,DOUBLE_MAX);
 		BUILDER.pop();
 		BUILDER.push("HeavyFuelOil");
 		ENGINE_HEAVY_FUEL_OIL_RPM=BUILDER.defineInRange("engine_heavy_fuel_oil_rpm",80.0D,0.0D,DOUBLE_MAX);
-		ENGINE_HEAVY_FUEL_OIL_SU=BUILDER.defineInRange("engine_heavy_fuel_oil_su",220.0D,0.0D,DOUBLE_MAX);
+		ENGINE_HEAVY_FUEL_OIL_SU=BUILDER.defineInRange("engine_heavy_fuel_oil_su",264.0D,0.0D,DOUBLE_MAX);
 		ENGINE_HEAVY_FUEL_OIL_CONSUMPTION=BUILDER.defineInRange("engine_heavy_fuel_oil_consumption",1.75D,0.0D,DOUBLE_MAX);
 		BUILDER.pop();
 		BUILDER.push("Gasoline");
 		ENGINE_GASOLINE_RPM=BUILDER.defineInRange("engine_gasoline_rpm",210.0D,0.0D,DOUBLE_MAX);
-		ENGINE_GASOLINE_SU=BUILDER.defineInRange("engine_gasoline_su",44.0D,0.0D,DOUBLE_MAX);
+		ENGINE_GASOLINE_SU=BUILDER.defineInRange("engine_gasoline_su",52.0D,0.0D,DOUBLE_MAX);
 		ENGINE_GASOLINE_CONSUMPTION=BUILDER.defineInRange("engine_gasoline_consumption",1.0D,0.0D,DOUBLE_MAX);
 		BUILDER.pop();
 		BUILDER.push("LPG");
 		ENGINE_LPG_RPM=BUILDER.defineInRange("engine_lpg_rpm",160.0D,0.0D,DOUBLE_MAX);
-		ENGINE_LPG_SU=BUILDER.defineInRange("engine_lpg_su",44.0D,0.0D,DOUBLE_MAX);
+		ENGINE_LPG_SU=BUILDER.defineInRange("engine_lpg_su",52.0D,0.0D,DOUBLE_MAX);
 		ENGINE_LPG_CONSUMPTION=BUILDER.defineInRange("engine_lpg_consumption",0.75D,0.0D,DOUBLE_MAX);
 		BUILDER.pop();
 		BUILDER.push("Portable");
