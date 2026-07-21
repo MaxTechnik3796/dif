@@ -2,7 +2,6 @@
 	"replace":false,
 	"values":[
 		"dif:zinc_casing",
-		"dif:steel_casing",
 		"dif:aurora_casing"
 	]
 }

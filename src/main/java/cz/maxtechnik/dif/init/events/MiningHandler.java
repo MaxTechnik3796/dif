@@ -66,7 +66,7 @@ public final class MiningHandler {
 			if (state.isAir()) continue;
 			if (state.getDestroySpeed(level, pos) < 0) continue;
 
-			if (state.is(BlockTags.MINEABLE_WITH_PICKAXE) || tool.isCorrectToolForDrops(state)) {
+			if (state.is(BlockTags.MINEABLE_WITH_PICKAXE) || state.is(BlockTags.MINEABLE_WITH_SHOVEL) || tool.isCorrectToolForDrops(state)) {
 				level.destroyBlock(pos, true, player);
 				if (!player.isCreative()) {
 					tool.hurtAndBreak(1, player, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));

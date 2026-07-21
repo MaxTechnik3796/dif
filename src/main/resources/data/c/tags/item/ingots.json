@@ -1,7 +1,6 @@
 {
 	"replace":false,
 	"values":[
-		"dif:nickel_ingot",
-		"dif:steel_ingot"
+		"dif:nickel_ingot"
 	]
 }

@@ -1,42 +1,38 @@
 package cz.maxtechnik.dif.item.tool;
 
-import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PickaxeItem;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.Tiers;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-public class ElectrumDestroyer extends PickaxeItem{
-	private static final Tier ELECTRUM_TIER=new Tier(){
-		@Override
-		public int getUses(){
-			return 3060;
+
+public class ElectrumDestroyer extends PickaxeItem {
+	public ElectrumDestroyer() {
+		super(Tiers.NETHERITE, new Properties().fireResistant().attributes(PickaxeItem.createAttributes(Tiers.NETHERITE, 1.0F, -2.8F)));
+	}
+
+	@Override
+	public boolean isCorrectToolForDrops(@NotNull ItemStack stack, BlockState state) {
+		if (state.is(BlockTags.MINEABLE_WITH_SHOVEL)) {
+			return true;
 		}
-		@Override
-		public float getSpeed(){
-			return 10f;
+		if (state.is(BlockTags.MINEABLE_WITH_PICKAXE)) {
+			return !state.is(Tiers.NETHERITE.getIncorrectBlocksForDrops());
 		}
-		@Override
-		public float getAttackDamageBonus(){
-			return 5f;
+		return super.isCorrectToolForDrops(stack, state);
+	}
+
+	@Override
+	public float getDestroySpeed(@NotNull ItemStack stack, BlockState state) {
+		if (state.is(BlockTags.MINEABLE_WITH_PICKAXE) || state.is(BlockTags.MINEABLE_WITH_SHOVEL)) {
+			return this.getTier().getSpeed();
 		}
-		@Override
-		public @NotNull TagKey<Block> getIncorrectBlocksForDrops(){
-			return BlockTags.INCORRECT_FOR_DIAMOND_TOOL;
-		}
-		@Override
-		public int getEnchantmentValue(){
-			return 14;
-		}
-		@Override
-		public @NotNull Ingredient getRepairIngredient(){
-			return Ingredient.of(new ItemStack(DifModItems.MITHRIL_PLATE.get()));
-		}
-	};
-	public ElectrumDestroyer(){
-		super(ELECTRUM_TIER,new Properties().attributes(PickaxeItem.createAttributes(ELECTRUM_TIER,1,-2.8f)));
+		return super.getDestroySpeed(stack, state);
+	}
+
+	@Override
+	public boolean isEnchantable(@NotNull ItemStack stack) {
+		return true;
 	}
 }

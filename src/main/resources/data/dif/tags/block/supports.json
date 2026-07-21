@@ -3,7 +3,6 @@
 	"values":[
 		"dif:zinc_support",
 		"dif:brass_support",
-		"dif:copper_support",
-		"dif:steel_support"
+		"dif:copper_support"
 	]
 }

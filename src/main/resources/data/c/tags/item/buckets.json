@@ -4,24 +4,13 @@
 		"dif:beer_bucket",
 		"dif:xp_bucket",
 		"dif:fuel_bucket",
-		"dif:cider_bucket",
 		"dif:crude_oil_bucket",
 		"dif:jetpack_fuel_bucket",
 		"dif:sunflower_oil_bucket",
-		"dif:creosote_oil_bucket",
 		"dif:lpg_bucket",
 		"dif:gasoline_bucket",
 		"dif:diesel_bucket",
 		"dif:lubricating_oil_bucket",
-		"dif:heavy_fuel_oil_bucket",
-		"dif:molten_iron_bucket",
-		"dif:molten_copper_bucket",
-		"dif:molten_gold_bucket",
-		"dif:molten_steel_bucket",
-		"dif:molten_obsidian_bucket",
-		"dif:molten_zinc_bucket",
-		"dif:molten_brass_bucket",
-		"dif:molten_nickel_bucket",
-		"dif:molten_mithril_bucket"
+		"dif:heavy_fuel_oil_bucket"
 	]
 }

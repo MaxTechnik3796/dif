@@ -1,6 +1,7 @@
 {
-	"replace":false,
-	"values":[
-		"dif:copper_shovel"
+	"replace": false,
+	"values": [
+		"dif:copper_shovel",
+		"dif:electrum_destroyer"
 	]
 }
