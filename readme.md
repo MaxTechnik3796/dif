@@ -38,7 +38,6 @@ This project respects the work of the original technical modders Minecraft. Belo
 * **Minecraft Version:** 1.21.1
 * **Loader:** NeoForge
 * **Required Mods:** * [Create](https://www.curseforge.com/minecraft/mc-mods/create)
-    * [Catnip](https://www.curseforge.com/minecraft/mc-mods/catnip) (Required for Create 0.6+)
     * [Farmer's Delight](https://www.curseforge.com/minecraft/mc-mods/farmers-delight)
     * [Curios API](https://www.curseforge.com/minecraft/mc-mods/curios)
 * **Optional (Recommended):**
