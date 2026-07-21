@@ -117,7 +117,6 @@ public class DifModItems{
 	public static final DeferredItem<Item> HORSE_MEAT=REGISTRY.register("horse_meat",()->new Item(new Item.Properties().food(DifModFoods.HORSE_MEAT)));
 	public static final DeferredItem<Item> COOKED_HORSE_MEAT=REGISTRY.register("cooked_horse_meat",()->new Item(new Item.Properties().food(DifModFoods.COOKED_HORSE_MEAT)));
 
-	public static final DeferredItem<Item> CIDER_BOTTLE=REGISTRY.register("cider_bottle",()->new RetvalFoods(new Item.Properties().food(DifModFoods.CIDER_BOTTLE),Items.GLASS_BOTTLE,UseAnim.DRINK));
 	public static final DeferredItem<Item> BURNED_TOAST=REGISTRY.register("burned_toast",()->new Item(new Item.Properties().food(DifModFoods.BURNED_TOAST)));
 
 	public static final DeferredItem<Item> CREATE_CAN=REGISTRY.register("create_can",()->new RetvalFoods(new Item.Properties().food(DifModFoods.CRETE_CAN),Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.parse("create:andesite_alloy"))),UseAnim.EAT));

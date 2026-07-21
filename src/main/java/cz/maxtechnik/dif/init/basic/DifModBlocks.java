@@ -41,7 +41,6 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>FUEL_FLUID=REGISTRY.register("fuel_fluid",()->new LiquidBlock(DifModFluids.FUEL.get(),FLUID_PROPERTIES));
 	public static final DeferredBlock<Block>BEER_FLUID=REGISTRY.register("beer_fluid",()->new LiquidBlock(DifModFluids.BEER.get(),FLUID_PROPERTIES));
 	public static final DeferredBlock<Block>XP_FLUID=REGISTRY.register("xp_fluid",()->new LiquidBlock(DifModFluids.XP.get(),BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable().lightLevel(s->15)));
-	public static final DeferredBlock<Block>CIDER_FLUID=REGISTRY.register("cider_fluid",()->new LiquidBlock(DifModFluids.CIDER.get(),FLUID_PROPERTIES));
 	public static final DeferredBlock<Block>CRUDE_OIL_FLUID=REGISTRY.register("crude_oil_fluid",()->new LiquidBlock(DifModFluids.CRUDE_OIL.get(),FLUID_PROPERTIES));
 	public static final DeferredBlock<Block>JETPACK_FUEL_FLUID=REGISTRY.register("jetpack_fuel_fluid",()->new LiquidBlock(DifModFluids.JETPACK_FUEL.get(),FLUID_PROPERTIES));
 	public static final DeferredBlock<Block>SUNFLOWER_OIL_FLUID=REGISTRY.register("sunflower_oil_fluid",()->new LiquidBlock(DifModFluids.SUNFLOWER_OIL.get(),FLUID_PROPERTIES));

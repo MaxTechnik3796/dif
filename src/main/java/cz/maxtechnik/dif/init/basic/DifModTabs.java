@@ -176,7 +176,6 @@ public class DifModTabs{
 					new ItemStack[]{
 							new ItemStack(BEER_BUCKET.get()),
 							new ItemStack(XP_BUCKET.get()),
-							new ItemStack(CIDER_BUCKET.get()),
 							new ItemStack(FUEL_BUCKET.get()),
 							new ItemStack(JETPACK_FUEL_BUCKET.get()),
 							new ItemStack(SUNFLOWER_OIL_BUCKET.get()),
@@ -241,8 +240,6 @@ public class DifModTabs{
 			addItemStacksBehind(tabData,new ItemStack(Items.MILK_BUCKET),
 					new ItemStack[]{   
 							new ItemStack(BEER.get()),
-							new ItemStack(BERRY_BOTTLE.get()),
-							new ItemStack(CIDER_BOTTLE.get())
 					});
 			tabData.accept(BOTTLE_OF_MOLOTOVUV_KOKTEJL);
 			tabData.accept(BOTTLE_OF_URANOVEJ_KOKTEJL);

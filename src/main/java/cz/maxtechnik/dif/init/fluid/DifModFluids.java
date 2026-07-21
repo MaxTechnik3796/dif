@@ -36,9 +36,6 @@ public class DifModFluids{
 	//JETPACK FUEL
 	public static final DeferredHolder<Fluid,FlowingFluid> JETPACK_FUEL=REGISTRY.register("jetpack_fuel_fluid",()->new BaseFluidBlocks.Source(createProperties(DifModFluidTypes.JETPACK_FUEL_TYPE,fluidSupplier("jetpack_fuel_fluid"),fluidSupplier("flowing_jetpack_fuel_fluid"),DifModItems.JETPACK_FUEL_BUCKET,()->(LiquidBlock)DifModBlocks.JETPACK_FUEL_FLUID.get(),JetpackFuel.TICK_RATE)));
 	public static final DeferredHolder<Fluid,FlowingFluid> FLOWING_JETPACK_FUEL=REGISTRY.register("flowing_jetpack_fuel_fluid",()->new BaseFluidBlocks.Flowing(createProperties(DifModFluidTypes.JETPACK_FUEL_TYPE,fluidSupplier("jetpack_fuel_fluid"),fluidSupplier("flowing_jetpack_fuel_fluid"),DifModItems.JETPACK_FUEL_BUCKET,()->(LiquidBlock)DifModBlocks.JETPACK_FUEL_FLUID.get(),JetpackFuel.TICK_RATE)));
-	//CIDER
-	public static final DeferredHolder<Fluid,FlowingFluid> CIDER=REGISTRY.register("cider_fluid",()->new BaseFluidBlocks.Source(createProperties(DifModFluidTypes.CIDER_TYPE,fluidSupplier("cider_fluid"),fluidSupplier("flowing_cider_fluid"),DifModItems.CIDER_BUCKET,()->(LiquidBlock)DifModBlocks.CIDER_FLUID.get(),Cider.TICK_RATE)));
-	public static final DeferredHolder<Fluid,FlowingFluid> FLOWING_CIDER=REGISTRY.register("flowing_cider_fluid",()->new BaseFluidBlocks.Flowing(createProperties(DifModFluidTypes.CIDER_TYPE,fluidSupplier("cider_fluid"),fluidSupplier("flowing_cider_fluid"),DifModItems.CIDER_BUCKET,()->(LiquidBlock)DifModBlocks.CIDER_FLUID.get(),Cider.TICK_RATE)));
 	//CRUDE OIL
 	public static final DeferredHolder<Fluid,FlowingFluid> CRUDE_OIL=REGISTRY.register("crude_oil_fluid",()->new BaseFluidBlocks.Source(createProperties(DifModFluidTypes.CRUDE_OIL_TYPE,fluidSupplier("crude_oil_fluid"),fluidSupplier("flowing_crude_oil_fluid"),DifModItems.CRUDE_OIL_BUCKET,()->(LiquidBlock)DifModBlocks.CRUDE_OIL_FLUID.get(),CrudeOil.TICK_RATE)));
 	public static final DeferredHolder<Fluid,FlowingFluid> FLOWING_CRUDE_OIL=REGISTRY.register("flowing_crude_oil_fluid",()->new BaseFluidBlocks.Flowing(createProperties(DifModFluidTypes.CRUDE_OIL_TYPE,fluidSupplier("crude_oil_fluid"),fluidSupplier("flowing_crude_oil_fluid"),DifModItems.CRUDE_OIL_BUCKET,()->(LiquidBlock)DifModBlocks.CRUDE_OIL_FLUID.get(),CrudeOil.TICK_RATE)));
@@ -84,9 +81,6 @@ public class DifModFluids{
 	public static class FluidsClientSideHandler{
 		@SubscribeEvent
 		public static void clientSetup(FMLClientSetupEvent event){
-			ItemBlockRenderTypes.setRenderLayer(CIDER.get(),RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(FLOWING_CIDER.get(),RenderType.translucent());
-
 			ItemBlockRenderTypes.setRenderLayer(SUNFLOWER_OIL.get(),RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(FLOWING_SUNFLOWER_OIL.get(),RenderType.translucent());
 
