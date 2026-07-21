@@ -23,6 +23,7 @@ public class DifModCommonConfig{
 	public static final ModConfigSpec.IntValue MEGA_TORCH_RADIUS;
 	public static final ModConfigSpec.IntValue NANO_GLASS_MAX_SPREAD;
 	public static final ModConfigSpec.IntValue JETPACK_CAPACITY;
+	public static final ModConfigSpec.IntValue ELECTRUM_DEFORESTER_MAX_LOGS;
 
 	public static final ModConfigSpec.DoubleValue FAST_RAIL_TOP_SPEED;
 	public static final ModConfigSpec.DoubleValue FAST_POWERED_RAIL_ACCELERATION;
@@ -60,6 +61,7 @@ public class DifModCommonConfig{
 		// Maximum number of blocks NanoGlass will spread to when triggered (BFS limit)
 		NANO_GLASS_MAX_SPREAD=BUILDER.defineInRange("nano_glass_max_spread",128,1,MAX);
 		JETPACK_CAPACITY=BUILDER.defineInRange("jetpack_capacity",16000,1000,MAX);
+		ELECTRUM_DEFORESTER_MAX_LOGS=BUILDER.defineInRange("electrum_deforester_max_logs",128,1,MAX);
 		BUILDER.pop();
 		BUILDER.push("SolarPanelSettings");
 		SOLAR_PANEL_00=BUILDER.defineInRange("solar_panel_00",1,0,MAX);

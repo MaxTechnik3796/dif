@@ -309,7 +309,8 @@ public class DifModItems{
 	public static final DeferredItem<Item>SILKWORM_MOTH_SPAWN_EGG=REGISTRY.register("silkworm_moth_spawn_egg",()->new DeferredSpawnEggItem(DifModEntities.SILKWORM_MOTH,0xFFFFFF,0x898989,new Item.Properties()));
 
 
-	public static final DeferredItem<Item>ELECTRUM_DEFORESTRATOR=REGISTRY.register("electrum_deforestrator",TestItem::new);
+	public static final DeferredItem<Item>ELECTRUM_DEFORESTRATOR=REGISTRY.register("electrum_deforestrator",ElectrumDeforester::new);
+	public static final DeferredItem<Item>ELECTRUM_DEFORESTER=ELECTRUM_DEFORESTRATOR;
 
 
 }
