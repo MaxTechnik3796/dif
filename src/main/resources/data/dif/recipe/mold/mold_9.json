@@ -1,9 +1,0 @@
-{
-	"type":"minecraft:stonecutting",
-	"ingredient":{
-		"item":"dif:casting_mold"
-	},
-	"result":{
-		"id":"dif:casting_mold_battle_axe_head"
-	}
-}
