@@ -55,7 +55,8 @@ public class DifModItems{
 
 	public static final DeferredItem<Item>MEGA_TORCH=block(DifModBlocks.MEGA_TORCH);
 
-	public static final DeferredItem<Item>PHANTOM_RING=REGISTRY.register("phantom_ring",PhantomRing::new);
+	public static final DeferredItem<Item>PHANTOM_RING=REGISTRY.register("phantom_ring", PhantomRing::new);
+	public static final DeferredItem<Item>MAGNET=REGISTRY.register("magnet",Magnet::new);
 
 	public static final DeferredItem<Item>GOD_TOTEM=REGISTRY.register("god_totem",()->new GodTotemItem(new Item.Properties()));
 	public static final DeferredItem<Item>BAN_HAMMER=REGISTRY.register("ban_hammer",BanHammer::new);

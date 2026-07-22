@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -33,6 +34,7 @@ import java.util.*;
 @EventBusSubscriber(modid=DifMod.MODID, bus=EventBusSubscriber.Bus.GAME)
 public class NanoGlass extends TransparentBlock implements EntityBlock{
 	public static final BooleanProperty DARK=BooleanProperty.create("dark");
+	public static final BooleanProperty POWERED=BlockStateProperties.POWERED;
 	public static final long COOLDOWN_TICKS=20L;
 	private static final int[][] NEIGHBOR_OFFSETS=buildNeighborOffsets();
 	private static int[][] buildNeighborOffsets(){
@@ -162,11 +164,11 @@ public class NanoGlass extends TransparentBlock implements EntityBlock{
 	// ---------------------------------------------------------------
 	public NanoGlass(BlockBehaviour.Properties properties){
 		super(properties);
-		this.registerDefaultState(this.stateDefinition.any().setValue(DARK,false));
+		this.registerDefaultState(this.stateDefinition.any().setValue(DARK,false).setValue(POWERED,false));
 	}
 	@Override
 	public void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
-		builder.add(DARK);
+		builder.add(DARK,POWERED);
 	}
 	@Override
 	public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
@@ -186,20 +188,18 @@ public class NanoGlass extends TransparentBlock implements EntityBlock{
 		return InteractionResult.SUCCESS;
 	}
 	/**
-	 * Reakce POUZE na skutečnou změnu redstone signálu. Notifikace vyvolané
-	 * jiným NanoGlass blokem (položení/odebrání sousedního skla, nebo naše
-	 * vlastní vlna přes setBlockAndUpdate) se ignorují, jinak by docházelo
-	 * k reentrancy/ping-pong šíření i bez skutečného redstone podnětu.
+	 * Reakce POUZE na skutečnou změnu redstone signálu.
 	 */
 	@Override
 	public void neighborChanged(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Block block,@NotNull BlockPos fromPos,boolean isMoving){
 		super.neighborChanged(state,level,pos,block,fromPos,isMoving);
 		if(level.isClientSide) return;
 		if(!(level instanceof ServerLevel serverLevel)) return;
-		if(block instanceof NanoGlass) return;
 		boolean powered=level.hasNeighborSignal(pos);
-		if(state.getValue(DARK)==powered) return;
-		startWave(serverLevel,pos,powered);
+		if(state.getValue(POWERED)!=powered){
+			level.setBlock(pos,state.setValue(POWERED,powered),3);
+			startWave(serverLevel,pos,powered);
+		}
 	}
 	@Override
 	public int getLightBlock(@NotNull BlockState blockState,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
