@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.init.basic.DifModItems;
-import cz.maxtechnik.dif.item.armor.ElectroRunners;
 import cz.maxtechnik.dif.item.armor.Jetpack;
 
 import static cz.maxtechnik.dif.init.other.DifModBlockEntities.*;
@@ -15,7 +14,6 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import org.jetbrains.annotations.Nullable;
 public class DifModCapabilities{
 	static final BlockCapability<IItemHandler,@Nullable Direction> bITEM=Capabilities.ItemHandler.BLOCK;
@@ -44,7 +42,6 @@ public class DifModCapabilities{
 		event.registerBlockEntity(bFLUID,ENGINE.get(),(be,side)->be.fluidTank);
 	}
 	private static void registerEnergyCapabilities(RegisterCapabilitiesEvent event){
-		ElectroRunners.Boots.registerCapability(event,DifModItems.ELECTRO_RUNNERS.get());
 		event.registerBlockEntity(bENERGY,QUARRY.get(),(be,side)->be.getEnergyStorage());
 		event.registerBlockEntity(bENERGY,BURNING_GENERATOR.get(),(be,side)->be.getEnergyStorage());
 	}

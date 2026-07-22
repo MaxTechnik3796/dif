@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.item.tool;
 
 import cz.maxtechnik.dif.init.other.DifModComponents;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -11,13 +10,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class Magnet extends Item {
 
@@ -57,19 +51,5 @@ public class Magnet extends Item {
     @Override
     public boolean isFoil(@NotNull ItemStack stack) {
         return isEnabled(stack);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(@NotNull ItemStack itemStack, Item.@NotNull TooltipContext context, @NotNull List<Component> list, @NotNull TooltipFlag flag) {
-        super.appendHoverText(itemStack, context, list, flag);
-
-        boolean enabled = isEnabled(itemStack);
-        list.add(Component.literal("Magnet: ")
-                .append(Component.literal(enabled ? "ZAPNUTO" : "VYPNUTO")
-                        .withStyle(enabled ? ChatFormatting.GREEN : ChatFormatting.RED))
-                .withStyle(ChatFormatting.GRAY));
-        list.add(Component.literal("Přitahuje itemy do 5 bloků").withStyle(ChatFormatting.GRAY));
-        list.add(Component.literal("Pravým klikem přepneš magnet").withStyle(ChatFormatting.DARK_GRAY));
     }
 }

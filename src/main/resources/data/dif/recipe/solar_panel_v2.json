@@ -1,0 +1,17 @@
+{
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": true,
+  "key": {
+    "A": { "item": "minecraft:glass" },
+    "B": { "item": "dif:nickel_sheet" },
+    "C": { "item": "dif:mithril_plate" },
+    "D": { "item": "create:industrial_iron_block" },
+    "E": { "item": "dif:solar_panel_00" }
+  },
+  "pattern": [
+    "AAA",
+    "BCB",
+    "DED"
+  ],
+  "result": { "id": "dif:solar_panel_01" }
+}

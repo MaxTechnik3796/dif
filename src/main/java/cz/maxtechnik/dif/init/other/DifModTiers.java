@@ -81,21 +81,6 @@ public class DifModTiers{
             0.2F
     ));
 
-    public static final Holder<ArmorMaterial> ARMOR_MATERIAL_ELECTRO=Holder.direct(new ArmorMaterial(
-            Util.make(new EnumMap<>(ArmorItem.Type.class),map->{
-                map.put(ArmorItem.Type.HELMET,0);
-                map.put(ArmorItem.Type.CHESTPLATE,0);
-                map.put(ArmorItem.Type.LEGGINGS,0);
-                map.put(ArmorItem.Type.BOOTS,0);
-            }),
-            0,
-            SoundEvents.ARMOR_EQUIP_DIAMOND,
-			Ingredient::of,
-            List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath("dif","electro_runners"))),
-            0.0F,
-            0.0F
-    ));
-
     public static final Holder<ArmorMaterial> ARMOR_MATERIAL_JETPACK=Holder.direct(new ArmorMaterial(
             Util.make(new EnumMap<>(ArmorItem.Type.class),map->{
                 map.put(ArmorItem.Type.HELMET,0);

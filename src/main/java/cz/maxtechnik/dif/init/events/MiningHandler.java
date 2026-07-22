@@ -36,8 +36,8 @@ public final class MiningHandler {
 		ItemStack tool = player.getMainHandItem();
 		if (tool.isEmpty()) return;
 
-		boolean isDestroyer = tool.is(DifModItems.ELECTRUM_DESTROYER.get());
-		boolean isDeforester = tool.is(DifModItems.ELECTRUM_DEFORESTER.get()) || tool.is(DifModItems.ELECTRUM_DEFORESTRATOR.get());
+		boolean isDestroyer = tool.is(DifModItems.DESTROYER.get());
+		boolean isDeforester = tool.is(DifModItems.DEFORESTER.get()) || tool.is(DifModItems.DEFORESTRATOR.get());
 
 		if (!isDestroyer && !isDeforester) return;
 

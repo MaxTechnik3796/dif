@@ -2,6 +2,6 @@
   "type": "minecraft:smithing_transform",
   "template": { "item": "dif:mithril_template" },
   "base":     { "item": "minecraft:netherite_pickaxe" },
-  "addition": { "item": "createaddition:electrum_ingot" },
-  "result": { "id": "dif:electrum_destroyer" }
+  "addition": { "item": "create:polished_rose_quartz" },
+  "result": { "id": "dif:destroyer" }
 }

@@ -15,7 +15,6 @@ public class DifModModels{
 		event.registerLayerDefinition(ModelSpaceLeggings.LAYER_LOCATION, ModelSpaceLeggings::createBodyLayer);
 		event.registerLayerDefinition(ModelSpaceChestplate.LAYER_LOCATION, ModelSpaceChestplate::createBodyLayer);
 		event.registerLayerDefinition(ModelJetpack.LAYER_LOCATION, ModelJetpack::createBodyLayer);
-		event.registerLayerDefinition(ModelElectroRunners.LAYER_LOCATION,ModelElectroRunners::createBodyLayer);
 		event.registerLayerDefinition(FormulaModel.LAYER_LOCATION, FormulaModel::createBodyLayer);
 		event.registerLayerDefinition(PortalModel.LAYER_LOCATION, PortalModel::createBodyLayer);
 		event.registerLayerDefinition(SilkwormMothModel.LAYER_LOCATION, SilkwormMothModel::createBodyLayer);

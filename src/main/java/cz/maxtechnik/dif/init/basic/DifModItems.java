@@ -71,8 +71,6 @@ public class DifModItems{
 
 	public static final DeferredItem<Item> PORTAL_GUN=REGISTRY.register("portal_gun",PortalGun::new);
 
-	public static final DeferredItem<Item> ELECTRO_RUNNERS=REGISTRY.register("electro_runners",ElectroRunners.Boots::new);
-
 	//Jetpack
 	public static final DeferredItem<Item> JETPACK=REGISTRY.register("jetpack",Jetpack.Chestplate::new);
 
@@ -123,7 +121,7 @@ public class DifModItems{
 
 	//Tech & Stuff:
 	public static final DeferredItem<Item> INCOMPLETE_UNIVERSAL=REGISTRY.register("incomplete_universal",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item> ELECTRUM_DESTROYER=REGISTRY.register("electrum_destroyer",ElectrumDestroyer::new);
+	public static final DeferredItem<Item> DESTROYER=REGISTRY.register("destroyer", Destroyer::new);
 	public static final DeferredItem<Item> BLUESTONE=REGISTRY.register("bluestone",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item> BLUE_PLATE=REGISTRY.register("blue_plate",()->new Item(new Item.Properties()));
 
@@ -308,8 +306,8 @@ public class DifModItems{
 	public static final DeferredItem<Item>SILKWORM_MOTH_SPAWN_EGG=REGISTRY.register("silkworm_moth_spawn_egg",()->new DeferredSpawnEggItem(DifModEntities.SILKWORM_MOTH,0xFFFFFF,0x898989,new Item.Properties()));
 
 
-	public static final DeferredItem<Item>ELECTRUM_DEFORESTRATOR=REGISTRY.register("electrum_deforestrator",ElectrumDeforester::new);
-	public static final DeferredItem<Item>ELECTRUM_DEFORESTER=ELECTRUM_DEFORESTRATOR;
+	public static final DeferredItem<Item>DEFORESTRATOR=REGISTRY.register("deforestrator", Electrum::new);
+	public static final DeferredItem<Item>DEFORESTER=DEFORESTRATOR;
 
 
 }

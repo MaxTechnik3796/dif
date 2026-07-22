@@ -8,8 +8,8 @@ import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-public class ElectrumDeforester extends AxeItem {
-	public ElectrumDeforester() {
+public class Electrum extends AxeItem {
+	public Electrum() {
 		super(Tiers.NETHERITE, new Item.Properties().fireResistant().attributes(AxeItem.createAttributes(Tiers.NETHERITE, 5.0F, -3.0F)));
 	}
 

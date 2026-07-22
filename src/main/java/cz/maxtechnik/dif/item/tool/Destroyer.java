@@ -7,8 +7,8 @@ import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-public class ElectrumDestroyer extends PickaxeItem {
-	public ElectrumDestroyer() {
+public class Destroyer extends PickaxeItem {
+	public Destroyer() {
 		super(Tiers.NETHERITE, new Properties().fireResistant().attributes(PickaxeItem.createAttributes(Tiers.NETHERITE, 1.0F, -2.8F)));
 	}
 

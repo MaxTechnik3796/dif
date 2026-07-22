@@ -127,8 +127,6 @@ public class DifModTabs{
 
 		tabData.accept(JETPACK);
 
-		tabData.accept(ELECTRO_RUNNERS);
-
 	})).build());
 
 	public static void addCreative(BuildCreativeModeTabContentsEvent tabData){
@@ -161,9 +159,14 @@ public class DifModTabs{
 							new ItemStack(BRASS_BARREL.get())
 					});
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES)){
-			tabData.insertBefore(new ItemStack(Items.BUCKET),new ItemStack(ELECTRUM_DESTROYER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			tabData.insertBefore(new ItemStack(Items.BUCKET),new ItemStack(ELECTRUM_DEFORESTER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			tabData.insertAfter(new ItemStack(Items.ELYTRA),new ItemStack(PHANTOM_RING.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertBefore(new ItemStack(Items.BUCKET),new ItemStack(DESTROYER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			tabData.insertBefore(new ItemStack(Items.BUCKET),new ItemStack(DEFORESTER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			addItemStacksBehind(tabData,new ItemStack(Items.ELYTRA),
+					new ItemStack[]{
+							new ItemStack(PHANTOM_RING.get()),
+							new ItemStack(MAGNET.get())
+					});
+
 			addItemStacksBehind(tabData,new ItemStack(Items.STONE_HOE),
 					new ItemStack[]{
 							new ItemStack(COPPER_SHOVEL.get()),

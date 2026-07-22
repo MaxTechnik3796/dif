@@ -3,8 +3,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [30, 30],
 	"textures": {
-		"1": "dif:item/electrum_deforestrator",
-		"particle": "dif:item/electrum_deforestrator"
+		"1": "dif:item/deforestrator",
+		"particle":"block/netherite_block"
 	},
 	"elements": [
 		{
