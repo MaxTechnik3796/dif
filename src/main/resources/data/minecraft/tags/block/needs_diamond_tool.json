@@ -1,6 +1,7 @@
 {
 	"replace":false,
 	"values":[
-		"dif:pedrock"
+		"dif:pedrock",
+		"dif:deepslate_mithril_ore"
 	]
 }

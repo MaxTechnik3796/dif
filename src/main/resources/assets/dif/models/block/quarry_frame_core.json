@@ -2,6 +2,7 @@
 	"format_version":"1.9.0",
 	"credit":"Made by: MaxTechnik in: Blockbench",
 	"render_type":"cutout",
+	"ambientocclusion": false,
 	"textures":{
 		"0":"dif:block/quarry_frame",
 		"particle":"dif:block/quarry_frame"
@@ -18,6 +19,7 @@
 				12,
 				12
 			],
+			"shade": false,
 			"rotation":{
 				"angle":0,
 				"axis":"y",

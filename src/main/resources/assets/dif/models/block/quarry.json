@@ -3,9 +3,9 @@
 	"textures":{
 		"down":"dif:block/quarry_bottom",
 		"up":"dif:block/quarry_top",
-		"north":"dif:block/quarry_front",
+		"north":"dif:block/quarry_side",
 		"east":"dif:block/quarry_side",
-		"south":"dif:block/quarry_back",
+		"south":"dif:block/quarry_side",
 		"west":"dif:block/quarry_side",
 		"particle":"dif:block/quarry_top"
 	},

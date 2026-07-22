@@ -122,7 +122,6 @@ dependencies{
     //implementation fileTree(dir: 'sourceLibs', include: ['*.jar'])
 
     runtimeOnly "curse.maven:sable-1312371:8263584"
-    implementation "curse.maven:mt-recipex-1554878:8335682"
 }
 
 tasks.named('processResources', ProcessResources).configure {
