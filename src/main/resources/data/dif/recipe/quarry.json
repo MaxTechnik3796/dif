@@ -1,28 +1,17 @@
 {
-	"type":"minecraft:crafting_shaped",
-	"pattern":[
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
 		"ABA",
 		"CDC",
-		"AEA"
+		"EFE"
 	],
-	"key":{
-		"A":{
-			"item":"dif:nickel_sheet"
-		},
-		"B":{
-			"item":"minecraft:redstone"
-		},
-		"C":{
-			"item":"create:golden_sheet"
-		},
-		"D":{
-			"item":"dif:mithril_plate"
-		},
-		"E":{
-			"item":"minecraft:diamond_pickaxe"
-		}
+	"key": {
+		"A": { "item": "dif:mithril_plate" },
+		"B": { "item": "create:brass_sheet" },
+		"C": { "item": "dif:nickel_sheet" },
+		"D": { "item": "minecraft:redstone_block" },
+		"E": { "item": "create:industrial_iron_block" },
+		"F": { "item": "create:mechanical_drill" }
 	},
-	"result":{
-		"id":"dif:quarry"
-	}
+	"result": { "id": "dif:quarry" }
 }

@@ -2,7 +2,7 @@
 	"type":"minecraft:crafting_shaped",
 	"pattern":[
 		"AA ",
-		"BCA",
+		"B A",
 		"AA "
 	],
 	"key":{
@@ -10,9 +10,6 @@
 			"item":"minecraft:gold_ingot"
 		},
 		"B":{
-			"item":"create:precision_mechanism"
-		},
-		"C":{
 			"item":"dif:quarry_engine_iron"
 		}
 	},
