@@ -47,11 +47,6 @@ public class DifModTabs{
 		tabData.accept(QUARRY);
 		tabData.accept(QUARRY_FRAME);
 		tabData.accept(QUARRY_LANDMARK);
-
-		tabData.accept(QUARRY_ENGINE_IRON);
-		tabData.accept(QUARRY_ENGINE_GOLD);
-		tabData.accept(QUARRY_ENGINE_DIAMOND);
-
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>INDUSTRIAL=REGISTER.register("industrial",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.industrials")).icon(()->new ItemStack(ENGINE_EXTENDER_DIESEL.get())).displayItems(((parameters,tabData)->{
 
