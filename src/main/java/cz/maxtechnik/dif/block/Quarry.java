@@ -131,10 +131,7 @@ public class Quarry extends BaseEntityBlock{
 	}
 	@Override
 	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState bs,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
-		if(!level.isClientSide){
-			if(level.getBlockEntity(pos) instanceof QuarryBlockEntity qe) player.openMenu(qe,pos);
-		}
-		return InteractionResult.sidedSuccess(level.isClientSide);
+		return InteractionResult.PASS;
 	}
 	@Nullable
 	@Override

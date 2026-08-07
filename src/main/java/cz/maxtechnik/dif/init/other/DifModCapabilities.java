@@ -26,7 +26,6 @@ public class DifModCapabilities{
 		registerEnergyCapabilities(event);
 	}
 	private static void registerItemCapabilities(RegisterCapabilitiesEvent event){
-		event.registerBlockEntity(bITEM,QUARRY.get(),(be,side)->be.getInventory());
 		event.registerBlockEntity(bITEM,ANDESITE_BARREL.get(),(be,side)->be.getInventory());
 		event.registerBlockEntity(bITEM,COPPER_BARREL.get(),(be,side)->be.getInventory());
 		event.registerBlockEntity(bITEM,BRASS_BARREL.get(),(be,side)->be.getInventory());
