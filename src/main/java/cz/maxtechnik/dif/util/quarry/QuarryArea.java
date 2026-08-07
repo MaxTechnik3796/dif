@@ -44,14 +44,4 @@ public record QuarryArea(int minX,int maxX,int minZ,int maxZ){
 				tag.getInt("AMnZ"),tag.getInt("AMxZ")
 		);
 	}
-	/**
-	 * Zpětná kompatibilita — načte oblast z původního "halfX + center" formátu.
-	 */
-	@Nullable
-	public static QuarryArea loadLegacyHalf(CompoundTag tag,String halfXKey,String halfZKey,String cxKey,String czKey){
-		if(!tag.contains(halfXKey)||!tag.contains(cxKey)) return null;
-		int hx=tag.getInt(halfXKey), hz=tag.getInt(halfZKey);
-		int cx=tag.getInt(cxKey), cz=tag.getInt(czKey);
-		return new QuarryArea(cx-hx,cx+hx,cz-hz,cz+hz);
-	}
 }

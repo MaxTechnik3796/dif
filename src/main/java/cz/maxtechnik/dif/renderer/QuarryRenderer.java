@@ -32,6 +32,7 @@ public class QuarryRenderer implements BlockEntityRenderer<QuarryBlockEntity>{
 	@Override
 	public void render(QuarryBlockEntity be,float partialTick,@NotNull PoseStack ps,
 	                   @NotNull MultiBufferSource buf,int light,int overlay){
+		be.ensureAreaInitialized();
 		State state=be.getQuarryState();
 		if(state==State.DONE) return;
 		Level level=Minecraft.getInstance().level;
@@ -96,7 +97,7 @@ public class QuarryRenderer implements BlockEntityRenderer<QuarryBlockEntity>{
 		Matrix4f m=ps.last().pose();
 		VertexConsumer vc=buf.getBuffer(RenderType.lines());
 		for(QuarryLandmarkBlockEntity lm: FORMED_LANDMARKS.values()){
-			if(!lm.isFormed()) continue;
+			if(lm.isFormed()) continue;
 			var area=lm.getFormedArea();
 			if(area==null) continue;
 			float y=lm.getBlockPos().getY()+0.5f;

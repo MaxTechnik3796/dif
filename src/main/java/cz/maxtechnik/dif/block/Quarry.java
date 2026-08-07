@@ -104,6 +104,10 @@ public class Quarry extends KineticBlock implements EntityBlock, IWrenchable, IB
 		super.onPlace(bs, level, pos, old, moving);
 		if (level.isClientSide) return;
 		tryApplyNearbyLandmarks(level, pos);
+		if (level.getBlockEntity(pos) instanceof QuarryBlockEntity qe) {
+			qe.setChanged();
+			qe.sendData();
+		}
 		if (hasUnbreakableInFrameArea(level, pos)) {
 			level.removeBlock(pos, false);
 			Block.popResource(level, pos, new net.minecraft.world.item.ItemStack(this));
@@ -118,7 +122,7 @@ public class Quarry extends KineticBlock implements EntityBlock, IWrenchable, IB
 				BlockPos scanPos = new BlockPos(qx + dx, qy, qz + dz);
 				if (!level.getBlockState(scanPos).is(DifModBlocks.QUARRY_LANDMARK.get())) continue;
 				if (!(level.getBlockEntity(scanPos) instanceof QuarryLandmarkBlockEntity lm)) continue;
-				if (!lm.isFormed()) continue;
+				if (lm.isFormed()) continue;
 				QuarryArea area = lm.getFormedArea();
 				if (area == null) continue;
 				boolean onEdge =

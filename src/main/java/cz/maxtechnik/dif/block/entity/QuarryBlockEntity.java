@@ -36,7 +36,9 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 	private int frameCheckTimer = 0;
 	private float miningProgressAcc = 0f;
 	private boolean chunksNeedReload = false;
-	private boolean lastRedstoneState = false;
+	private boolean redstoneDisabled = false;
+	private int redstoneOffCooldown = 0;
+	private int disabledTicks = 0;
 
 	// ── QuarryAreaManager ────────────────────────────────────────────────
 	private final QuarryAreaManager areaManager = new QuarryAreaManager();
@@ -53,10 +55,14 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 		return level != null && level.hasNeighborSignal(worldPosition);
 	}
 
+	public boolean isRedstoneDisabled() {
+		return redstoneDisabled || isRedstonePowered() || redstoneOffCooldown > 0;
+	}
+
 	// ── Create Kinetic Stress (1 RPM = 128 SU, 0 při redstonu) ──────────
 	@Override
 	public float calculateStressApplied() {
-		if (isRedstonePowered()) {
+		if (isRedstoneDisabled()) {
 			this.lastStressApplied = 0f;
 			return 0f;
 		}
@@ -71,7 +77,7 @@ public class QuarryBlockEntity extends KineticBlockEntity {
         super.addToGoggleTooltip(tooltip, isPlayerSneaking);
         // 1. Status
 		Component statusComponent;
-		if (isRedstonePowered()) {
+		if (isRedstoneDisabled()) {
 			statusComponent = Component.literal("Stopped").withStyle(ChatFormatting.GOLD);
 		} else if (quarryState == State.DONE) {
 			statusComponent = Component.literal("Finished").withStyle(ChatFormatting.AQUA);
@@ -88,13 +94,13 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 			};
 			statusComponent = Component.literal(actionName).withStyle(ChatFormatting.GREEN);
 		}
-		tooltip.add(Component.literal("    Status: ").withStyle(ChatFormatting.GRAY).append(statusComponent));
+		tooltip.add(Component.literal("     Status: ").withStyle(ChatFormatting.GRAY).append(statusComponent));
 
 		// 2. Area Size
 		if (areaManager.hasArea()) {
 			int sizeX = areaManager.getArea().sizeX();
 			int sizeZ = areaManager.getArea().sizeZ();
-			tooltip.add(Component.literal("    Area: ").withStyle(ChatFormatting.GRAY)
+			tooltip.add(Component.literal("     Area: ").withStyle(ChatFormatting.GRAY)
 					.append(Component.literal(sizeX + " x " + sizeZ + " blocks").withStyle(ChatFormatting.WHITE)));
 		}
 		return true;
@@ -106,7 +112,7 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 		sendData();
 	}
 
-	private void ensureAreaInitialized() {
+	public void ensureAreaInitialized() {
 		if (!areaManager.hasArea()) {
 			Direction facing = getBlockState().getValue(Quarry.FACING);
 			BlockPos center = worldPosition.relative(facing.getOpposite(), QuarryAreaManager.DEFAULT_RANGE + 1);
@@ -118,7 +124,7 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 	// Rychlost těžby podle RPM sítě
 	public float getProgressPerTick() {
 		float speed = Math.abs(getSpeed());
-		if (speed <= 0f || isOverStressed() || isRedstonePowered()) return 0f;
+		if (speed <= 0f || isOverStressed() || isRedstoneDisabled()) return 0f;
 		return Math.clamp(speed / 12.8f, 0.1f, 20.0f);
 	}
 
@@ -131,15 +137,40 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 		if (level == null || level.isClientSide) return;
 		ensureAreaInitialized();
 
-		boolean redstoneStopped = isRedstonePowered();
-		if (lastRedstoneState != redstoneStopped) {
-			lastRedstoneState = redstoneStopped;
-			if (hasNetwork()) {
-				getOrCreateNetwork().updateStress();
+		boolean currentRedstone = isRedstonePowered();
+
+		if (currentRedstone) {
+			disabledTicks++;
+			if (!redstoneDisabled) {
+				redstoneDisabled = true;
+				if (hasNetwork()) {
+					getOrCreateNetwork().updateStress();
+				}
+				sendData();
 			}
-			sendData();
+		} else {
+			if (redstoneDisabled) {
+				if (redstoneOffCooldown == 0 && disabledTicks < 40) {
+					redstoneOffCooldown = 40 - disabledTicks;
+				}
+				if (redstoneOffCooldown > 0) {
+					redstoneOffCooldown--;
+				}
+				if (redstoneOffCooldown == 0) {
+					redstoneDisabled = false;
+					disabledTicks = 0;
+					if (hasNetwork()) {
+						getOrCreateNetwork().updateStress();
+					}
+					sendData();
+				}
+			} else {
+				disabledTicks = 0;
+				redstoneOffCooldown = 0;
+			}
 		}
 
+		boolean redstoneStopped = isRedstoneDisabled();
 		float speed = Math.abs(getSpeed());
 		boolean hasPower = speed > 0f && !isOverStressed() && !redstoneStopped;
 
@@ -203,14 +234,33 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 		float progress = getProgressPerTick();
 		if (progress <= 0f) return;
 		miningProgressAcc += progress;
-		float cost = 10f;
-		while (workIndex < workQueue.size() && miningProgressAcc >= cost) {
-			BlockPos bp = workQueue.get(workIndex++);
-			if (!level.isEmptyBlock(bp) && isOwnedFrame(level, bp)) {
-				level.removeBlock(bp, false);
-				miningProgressAcc -= cost;
+
+		int safety = 0;
+		while (workIndex < workQueue.size() && safety++ < 1000) {
+			BlockPos bp = workQueue.get(workIndex);
+			BlockState state = level.getBlockState(bp);
+
+			if (state.isAir() || !isOwnedFrame(level, bp)) {
+				workIndex++;
+				continue;
 			}
+
+			float hardness = state.getDestroySpeed(level, bp);
+			if (hardness < 0) {
+				workIndex++;
+				continue;
+			}
+
+			float required = Math.max(1f, hardness * 10f);
+			if (miningProgressAcc < required) {
+				break;
+			}
+
+			miningProgressAcc -= required;
+			level.removeBlock(bp, false);
+			workIndex++;
 		}
+
 		if (workIndex >= workQueue.size()) {
 			workQueue.clear();
 			workIndex = 0;
@@ -336,13 +386,13 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 			areaManager.setMiningPos(new BlockPos(tag.getInt("MineX"), tag.getInt("MineY"), tag.getInt("MineZ")));
 		}
 		QuarryArea loadedArea = QuarryArea.load(tag);
-		if (loadedArea == null) {
-			loadedArea = QuarryArea.loadLegacyHalf(tag, "LmHX", "LmHZ", "LmCX", "LmCZ");
-		}
 		if (loadedArea != null) {
 			areaManager.setArea(loadedArea);
 		}
-		if (quarryState == State.MINING) {
+		redstoneDisabled = tag.getBoolean("RD");
+		disabledTicks = tag.getInt("DT");
+		redstoneOffCooldown = tag.getInt("ROC");
+		if (quarryState == State.MINING && !redstoneDisabled) {
 			chunksNeedReload = true;
 		}
 	}
@@ -352,6 +402,9 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 		super.write(tag, registries, clientPacket);
 		tag.putInt("QS", quarryState.ordinal());
 		tag.putInt("WI", workIndex);
+		tag.putBoolean("RD", redstoneDisabled);
+		tag.putInt("DT", disabledTicks);
+		tag.putInt("ROC", redstoneOffCooldown);
 		BlockPos miningPos = areaManager.getMiningPos();
 		if (miningPos != null) {
 			tag.putInt("MineX", miningPos.getX());
@@ -377,18 +430,22 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 	}
 
 	public int getAreaMinX() {
+		ensureAreaInitialized();
 		return areaManager.hasArea() ? areaManager.getArea().minX() : getBlockPos().getX() - QuarryAreaManager.DEFAULT_RANGE;
 	}
 
 	public int getAreaMinZ() {
+		ensureAreaInitialized();
 		return areaManager.hasArea() ? areaManager.getArea().minZ() : getBlockPos().getZ() - QuarryAreaManager.DEFAULT_RANGE;
 	}
 
 	public int getAreaMaxX() {
+		ensureAreaInitialized();
 		return areaManager.hasArea() ? areaManager.getArea().maxX() : getBlockPos().getX() + QuarryAreaManager.DEFAULT_RANGE;
 	}
 
 	public int getAreaMaxZ() {
+		ensureAreaInitialized();
 		return areaManager.hasArea() ? areaManager.getArea().maxZ() : getBlockPos().getZ() + QuarryAreaManager.DEFAULT_RANGE;
 	}
 }

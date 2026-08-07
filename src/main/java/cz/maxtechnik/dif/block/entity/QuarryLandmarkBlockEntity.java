@@ -170,23 +170,11 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 	}
 	// ── Gettery ─────────────────────────────────────────────────────────
 	public boolean isFormed(){
-		return formed;
+		return !formed;
 	}
 	@Nullable
 	public QuarryArea getFormedArea(){
 		return formedArea;
-	}
-	/** Zpětná kompatibilita pro renderer */
-	public int getFormedHalfX(){
-		return formedArea!=null?(formedArea.maxX()-formedArea.minX())/2:0;
-	}
-	public int getFormedHalfZ(){
-		return formedArea!=null?(formedArea.maxZ()-formedArea.minZ())/2:0;
-	}
-	@Nullable
-	public BlockPos getFormedCenter(){
-		if(formedArea==null) return null;
-		return new BlockPos((formedArea.minX()+formedArea.maxX())/2,worldPosition.getY(),(formedArea.minZ()+formedArea.maxZ())/2);
 	}
 	// ── NBT ─────────────────────────────────────────────────────────────
 	@Override
@@ -204,21 +192,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 	public void loadAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider p){
 		super.loadAdditional(tag,p);
 		formed=tag.getBoolean("Formed");
-		QuarryArea area=QuarryArea.load(tag);
-		if(area==null){
-			area=QuarryArea.loadLegacyHalf(tag,"FHX","FHZ","FC","FC");
-			// Původní načítání center: var center=tag.contains("FC")?NbtUtils.readBlockPos(tag,"FC").orElse(null):null;
-			// Pokud to bylo jinak, můžeme jen ponechat původní kompatibilitu nebo předpokládat fallback
-		}
-		// Vylepšený fallback pro starý formát (pokud byl BlockPos center uložen jako FC tag)
-		if(area==null&&tag.contains("FHX")){
-			int hx=tag.getInt("FHX"), hz=tag.getInt("FHZ");
-			var center=tag.contains("FC")?NbtUtils.readBlockPos(tag,"FC").orElse(null):null;
-			if(center!=null){
-				area=new QuarryArea(center.getX()-hx,center.getX()+hx,center.getZ()-hz,center.getZ()+hz);
-			}
-		}
-		this.formedArea=area;
+		this.formedArea=QuarryArea.load(tag);
 		partnerPositions.clear();
 		ListTag pl=tag.getList("Partners",Tag.TAG_COMPOUND);
 		for(int i=0;i<pl.size();i++){
