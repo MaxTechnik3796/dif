@@ -1,10 +1,12 @@
 package cz.maxtechnik.dif.block.entity;
 
+import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.renderer.QuarryRenderer;
 import cz.maxtechnik.dif.util.quarry.QuarryArea;
 import cz.maxtechnik.dif.util.quarry.QuarryAreaManager;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -13,7 +15,6 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -24,9 +25,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-public class QuarryLandmarkBlockEntity extends BlockEntity{
+
+public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggleInformation {
 	public static final int MAX_SEARCH=QuarryAreaManager.DEFAULT_RANGE*25; // Odpovídá zhruba 125, v originále QuarryBlockEntity.MAX_AREA_SIDE
-	public static final int MIN_SPAN=4; // min 5x5 oblast = span >= 4
+	public static final int MIN_SPAN=2; // min 3x3 celkový rozměr (1x1 těžební díra)
 	private final List<BlockPos> partnerPositions=new ArrayList<>(2);
 	private boolean formed=false;
 	@Nullable
@@ -35,7 +37,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 		super(DifModBlockEntities.QUARRY_LANDMARK.get(),pos,blockState);
 	}
 	// ── Klik na landmark ────────────────────────────────────────────────
-	public void onRightClick(Player player){
+	public void onRightClick(){
 		if(level==null||level.isClientSide||formed) return;
 		// Scan 4 směry, najdi sousední landmarky
 		List<BlockPos> nearby=new ArrayList<>();
@@ -49,7 +51,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 				for(int b=a+1;b<nearby.size();b++){
 					QuarryArea area=tryForm(worldPosition,nearby.get(a),nearby.get(b));
 					if(area!=null){
-						applyFormation(List.of(worldPosition,nearby.get(a),nearby.get(b)),area,player);
+						applyFormation(List.of(worldPosition,nearby.get(a),nearby.get(b)),area);
 						return;
 					}
 				}
@@ -64,13 +66,12 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 				if(third!=null&&!third.equals(worldPosition)){
 					QuarryArea area=tryForm(worldPosition,first,third);
 					if(area!=null){
-						applyFormation(List.of(worldPosition,first,third),area,player);
+						applyFormation(List.of(worldPosition,first,third),area);
 						return;
 					}
 				}
 			}
 		}
-		player.sendSystemMessage(Component.literal("§cNo valid area found. Place 3 landmarks in an L-shape."));
 	}
 	// ── Scan jedním směrem ──────────────────────────────────────────────
 	@Nullable
@@ -103,7 +104,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 				&&(corner.getX()!=p2.getX()||corner.getZ()!=p1.getZ());
 	}
 	// ── Aplikuj formaci ─────────────────────────────────────────────────
-	private void applyFormation(List<BlockPos> landmarks,QuarryArea area,Player player){
+	private void applyFormation(List<BlockPos> landmarks,QuarryArea area){
 		if(level==null) return;
 		for(BlockPos lmPos: landmarks){
 			if(!(level.getBlockEntity(lmPos) instanceof QuarryLandmarkBlockEntity lm)) continue;
@@ -114,7 +115,6 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 			lm.setChanged();
 			level.sendBlockUpdated(lmPos,lm.getBlockState(),lm.getBlockState(),3);
 		}
-		player.sendSystemMessage(Component.literal("§aArea marked: §f"+area.sizeX()+"§ax§f"+area.sizeZ()+" §ablocks. Place Quarry at the edge."));
 	}
 	// ── Předat oblast quarry ────────────────────────────────────────────
 	public void applyToQuarry(Level level,BlockPos quarryPos){
@@ -168,9 +168,80 @@ public class QuarryLandmarkBlockEntity extends BlockEntity{
 		if(formed) QuarryRenderer.register(this);
 		else QuarryRenderer.unregister(worldPosition);
 	}
+	// ── Goggles Tooltip ──────────────────────────────────────────────────
+	@Override
+	public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+		Component statusComponent;
+		QuarryArea canFormArea = getFormableArea();
+
+		if (formed && formedArea != null) {
+			statusComponent = Component.literal("Formed").withStyle(ChatFormatting.GREEN);
+		} else if (canFormArea != null) {
+			statusComponent = Component.literal("Can Be Formed (3/3)").withStyle(ChatFormatting.GOLD);
+		} else {
+			int count = countConnectedLandmarks() + 1;
+			statusComponent = Component.literal("Cannot Be Formed (" + count + "/3)").withStyle(ChatFormatting.RED);
+		}
+		tooltip.add(Component.literal("     Status: ").withStyle(ChatFormatting.GRAY).append(statusComponent));
+
+		QuarryArea displayArea = formed ? formedArea : canFormArea;
+		if (displayArea != null) {
+			QuarryArea mining = displayArea.miningBounds();
+			tooltip.add(Component.literal("     Area: ").withStyle(ChatFormatting.GRAY)
+					.append(Component.literal(displayArea.sizeX() + " x " + displayArea.sizeZ() + " blocks").withStyle(ChatFormatting.WHITE)));
+			tooltip.add(Component.literal("     Mining: ").withStyle(ChatFormatting.GRAY)
+					.append(Component.literal(mining.sizeX() + " x " + mining.sizeZ() + " blocks").withStyle(ChatFormatting.WHITE)));
+		}
+		return true;
+	}
+
+	@Nullable
+	public QuarryArea getFormableArea() {
+		if (level == null || formed) return null;
+
+		List<BlockPos> nearby = new ArrayList<>();
+		for (int[] dir : new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}) {
+			BlockPos found = scanDirection(worldPosition, dir[0], dir[1]);
+			if (found != null) nearby.add(found);
+		}
+
+		if (nearby.size() >= 2) {
+			for (int a = 0; a < nearby.size(); a++) {
+				for (int b = a + 1; b < nearby.size(); b++) {
+					QuarryArea area = tryForm(worldPosition, nearby.get(a), nearby.get(b));
+					if (area != null) return area;
+				}
+			}
+		}
+
+		for (BlockPos first : nearby) {
+			boolean onX = first.getZ() == worldPosition.getZ();
+			int[][] perps = onX ? new int[][]{{0, -1}, {0, 1}} : new int[][]{{-1, 0}, {1, 0}};
+			for (int[] p : perps) {
+				BlockPos third = scanDirection(first, p[0], p[1]);
+				if (third != null && !third.equals(worldPosition)) {
+					QuarryArea area = tryForm(worldPosition, first, third);
+					if (area != null) return area;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	public int countConnectedLandmarks() {
+		if (level == null) return 0;
+		int count = 0;
+		for (int[] dir : new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}) {
+			BlockPos found = scanDirection(worldPosition, dir[0], dir[1]);
+			if (found != null) count++;
+		}
+		return count;
+	}
+
 	// ── Gettery ─────────────────────────────────────────────────────────
 	public boolean isFormed(){
-		return !formed;
+		return formed;
 	}
 	@Nullable
 	public QuarryArea getFormedArea(){

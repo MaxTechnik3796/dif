@@ -90,12 +90,14 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 		}
 		tooltip.add(Component.literal("     Status: ").withStyle(ChatFormatting.GRAY).append(statusComponent));
 
-		// 2. Area Size
+		// 2. Area Size & Mining Size
 		if (areaManager.hasArea()) {
-			int sizeX = areaManager.getArea().sizeX();
-			int sizeZ = areaManager.getArea().sizeZ();
+			QuarryArea area = areaManager.getArea();
+			QuarryArea mining = area.miningBounds();
 			tooltip.add(Component.literal("     Area: ").withStyle(ChatFormatting.GRAY)
-					.append(Component.literal(sizeX + " x " + sizeZ + " blocks").withStyle(ChatFormatting.WHITE)));
+					.append(Component.literal(area.sizeX() + " x " + area.sizeZ() + " blocks").withStyle(ChatFormatting.WHITE)));
+			tooltip.add(Component.literal("     Mining: ").withStyle(ChatFormatting.GRAY)
+					.append(Component.literal(mining.sizeX() + " x " + mining.sizeZ() + " blocks").withStyle(ChatFormatting.WHITE)));
 		}
 		return true;
 	}

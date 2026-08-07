@@ -103,7 +103,7 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 		Matrix4f m=ps.last().pose();
 		VertexConsumer vc=buf.getBuffer(RenderType.lines());
 		for(QuarryLandmarkBlockEntity lm: FORMED_LANDMARKS.values()){
-			if(lm.isFormed()) continue;
+			if(!lm.isFormed()) continue;
 			var area=lm.getFormedArea();
 			if(area==null) continue;
 			float y=lm.getBlockPos().getY()+0.5f;

@@ -85,7 +85,7 @@ public class QuarryLandmark extends BaseEntityBlock{
 	@Override
 	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
 		if(!level.isClientSide&&level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity blockEntity)
-			blockEntity.onRightClick(player);
+			blockEntity.onRightClick();
 		return InteractionResult.sidedSuccess(level.isClientSide);
 	}
 	@Override
