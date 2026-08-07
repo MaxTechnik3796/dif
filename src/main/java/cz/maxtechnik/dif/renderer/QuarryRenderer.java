@@ -8,7 +8,8 @@ import cz.maxtechnik.dif.block.entity.QuarryLandmarkBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
@@ -17,11 +18,15 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 @EventBusSubscriber(value=Dist.CLIENT)
-public class QuarryRenderer implements BlockEntityRenderer<QuarryBlockEntity>{
+public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity>{
+	public QuarryRenderer(BlockEntityRendererProvider.Context context) {
+		super(context);
+	}
+
 	// ── Barvy ───────────────────────────────────────────────────────────
 	private static final int[] FRAME_COLOR={200,0,255,200};   // fialová
 	private static final int[] LANDMARK_COLOR={50,120,255,220}; // modrá
@@ -30,8 +35,8 @@ public class QuarryRenderer implements BlockEntityRenderer<QuarryBlockEntity>{
 	// ── Quarry BER ──────────────────────────────────────────────────────
 	// ══════════════════════════════════════════════════════════════════════
 	@Override
-	public void render(QuarryBlockEntity be,float partialTick,@NotNull PoseStack ps,
-	                   @NotNull MultiBufferSource buf,int light,int overlay){
+	protected void renderSafe(QuarryBlockEntity be,float partialTick,@NotNull PoseStack ps,
+	                       @NotNull MultiBufferSource buf,int light,int overlay){
 		be.ensureAreaInitialized();
 		State state=be.getQuarryState();
 		if(state==State.DONE) return;

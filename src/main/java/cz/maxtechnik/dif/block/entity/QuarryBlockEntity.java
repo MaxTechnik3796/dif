@@ -36,9 +36,7 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 	private int frameCheckTimer = 0;
 	private float miningProgressAcc = 0f;
 	private boolean chunksNeedReload = false;
-	private boolean redstoneDisabled = false;
-	private int redstoneOffCooldown = 0;
-	private int disabledTicks = 0;
+	private boolean lastRedstoneState = false;
 
 	// ── QuarryAreaManager ────────────────────────────────────────────────
 	private final QuarryAreaManager areaManager = new QuarryAreaManager();
@@ -55,14 +53,10 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 		return level != null && level.hasNeighborSignal(worldPosition);
 	}
 
-	public boolean isRedstoneDisabled() {
-		return redstoneDisabled || isRedstonePowered() || redstoneOffCooldown > 0;
-	}
-
 	// ── Create Kinetic Stress (1 RPM = 128 SU, 0 při redstonu) ──────────
 	@Override
 	public float calculateStressApplied() {
-		if (isRedstoneDisabled()) {
+		if (isRedstonePowered()) {
 			this.lastStressApplied = 0f;
 			return 0f;
 		}
@@ -77,7 +71,7 @@ public class QuarryBlockEntity extends KineticBlockEntity {
         super.addToGoggleTooltip(tooltip, isPlayerSneaking);
         // 1. Status
 		Component statusComponent;
-		if (isRedstoneDisabled()) {
+		if (isRedstonePowered()) {
 			statusComponent = Component.literal("Stopped").withStyle(ChatFormatting.GOLD);
 		} else if (quarryState == State.DONE) {
 			statusComponent = Component.literal("Finished").withStyle(ChatFormatting.AQUA);
@@ -124,7 +118,7 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 	// Rychlost těžby podle RPM sítě
 	public float getProgressPerTick() {
 		float speed = Math.abs(getSpeed());
-		if (speed <= 0f || isOverStressed() || isRedstoneDisabled()) return 0f;
+		if (speed <= 0f || isOverStressed() || isRedstonePowered()) return 0f;
 		return Math.clamp(speed / 12.8f, 0.1f, 20.0f);
 	}
 
@@ -137,40 +131,15 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 		if (level == null || level.isClientSide) return;
 		ensureAreaInitialized();
 
-		boolean currentRedstone = isRedstonePowered();
-
-		if (currentRedstone) {
-			disabledTicks++;
-			if (!redstoneDisabled) {
-				redstoneDisabled = true;
-				if (hasNetwork()) {
-					getOrCreateNetwork().updateStress();
-				}
-				sendData();
+		boolean redstoneStopped = isRedstonePowered();
+		if (lastRedstoneState != redstoneStopped) {
+			lastRedstoneState = redstoneStopped;
+			if (hasNetwork()) {
+				getOrCreateNetwork().updateStress();
 			}
-		} else {
-			if (redstoneDisabled) {
-				if (redstoneOffCooldown == 0 && disabledTicks < 40) {
-					redstoneOffCooldown = 40 - disabledTicks;
-				}
-				if (redstoneOffCooldown > 0) {
-					redstoneOffCooldown--;
-				}
-				if (redstoneOffCooldown == 0) {
-					redstoneDisabled = false;
-					disabledTicks = 0;
-					if (hasNetwork()) {
-						getOrCreateNetwork().updateStress();
-					}
-					sendData();
-				}
-			} else {
-				disabledTicks = 0;
-				redstoneOffCooldown = 0;
-			}
+			sendData();
 		}
 
-		boolean redstoneStopped = isRedstoneDisabled();
 		float speed = Math.abs(getSpeed());
 		boolean hasPower = speed > 0f && !isOverStressed() && !redstoneStopped;
 
@@ -389,10 +358,7 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 		if (loadedArea != null) {
 			areaManager.setArea(loadedArea);
 		}
-		redstoneDisabled = tag.getBoolean("RD");
-		disabledTicks = tag.getInt("DT");
-		redstoneOffCooldown = tag.getInt("ROC");
-		if (quarryState == State.MINING && !redstoneDisabled) {
+		if (quarryState == State.MINING) {
 			chunksNeedReload = true;
 		}
 	}
@@ -402,9 +368,6 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 		super.write(tag, registries, clientPacket);
 		tag.putInt("QS", quarryState.ordinal());
 		tag.putInt("WI", workIndex);
-		tag.putBoolean("RD", redstoneDisabled);
-		tag.putInt("DT", disabledTicks);
-		tag.putInt("ROC", redstoneOffCooldown);
 		BlockPos miningPos = areaManager.getMiningPos();
 		if (miningPos != null) {
 			tag.putInt("MineX", miningPos.getX());

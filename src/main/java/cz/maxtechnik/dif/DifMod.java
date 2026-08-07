@@ -134,7 +134,7 @@ public class DifMod{
 		@SubscribeEvent
 		public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event){
 			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(),context->new FryingTableRenderer());
-			event.registerBlockEntityRenderer(DifModBlockEntities.QUARRY.get(),context->new QuarryRenderer());
+			event.registerBlockEntityRenderer(DifModBlockEntities.QUARRY.get(),QuarryRenderer::new);
 			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(),context->new ChunkLoaderRenderer());
 			event.registerEntityRenderer(DifModEntities.FORMULA.get(),CarRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_EXPLOSION.get(),NoopRenderer::new);
@@ -143,6 +143,7 @@ public class DifMod{
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_RADIATION.get(),NoopRenderer::new);
 			event.registerEntityRenderer(DifModEntities.SILKWORM_MOTH.get(), SilkwormMothRenderer::new);
 			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.ENGINE.get()).factory(SingleAxisRotatingVisual::shaft).neverSkipVanillaRender().apply();
+			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.QUARRY.get()).factory(QuarryShaftVisual.factory()).neverSkipVanillaRender().apply();
 		}
 		@SubscribeEvent
 		public static void registerParticles(RegisterParticleProvidersEvent event){
