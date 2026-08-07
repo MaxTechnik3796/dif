@@ -96,4 +96,11 @@ public class EngineExtender extends Block implements SimpleWaterloggedBlock, IWr
 			return InteractionResult.SUCCESS;
 		}
 	}
+	@Override
+	public void appendHoverText(net.minecraft.world.item.@NotNull ItemStack stack, net.minecraft.world.item.Item.@NotNull TooltipContext context, java.util.@NotNull List<net.minecraft.network.chat.Component> tooltipComponents, net.minecraft.world.item.@NotNull TooltipFlag tooltipFlag) {
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+		tooltipComponents.add(net.minecraft.network.chat.Component.literal("Attach up to 3 extenders to an Engine Base.").withStyle(net.minecraft.ChatFormatting.GRAY));
+		tooltipComponents.add(net.minecraft.network.chat.Component.literal(" • Each extender increases SU capacity.").withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
+		tooltipComponents.add(net.minecraft.network.chat.Component.literal(" • Additional extenders increase fuel consumption by +50%.").withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
+	}
 }

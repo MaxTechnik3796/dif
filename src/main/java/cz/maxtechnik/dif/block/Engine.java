@@ -97,9 +97,9 @@ public class Engine extends KineticBlock implements EntityBlock, IWrenchable{
 
 		tooltipComponents.add(net.minecraft.network.chat.Component.literal("Burn Rates:").withStyle(net.minecraft.ChatFormatting.GRAY));
 		
-		double dieselRate = cz.maxtechnik.dif.config.DifModCommonConfig.ENGINE_DIESEL_CONSUMPTION.get() * mult * 2.0D;
-		double gasolineRate = cz.maxtechnik.dif.config.DifModCommonConfig.ENGINE_GASOLINE_CONSUMPTION.get() * mult * 2.0D;
-		double lpgRate = cz.maxtechnik.dif.config.DifModCommonConfig.ENGINE_LPG_CONSUMPTION.get() * mult * 2.0D;
+		double dieselRate = cz.maxtechnik.dif.config.DifModCommonConfig.ENGINE_DIESEL_CONSUMPTION.get() * mult;
+		double gasolineRate = cz.maxtechnik.dif.config.DifModCommonConfig.ENGINE_GASOLINE_CONSUMPTION.get() * mult;
+		double lpgRate = cz.maxtechnik.dif.config.DifModCommonConfig.ENGINE_LPG_CONSUMPTION.get() * mult;
 
 		tooltipComponents.add(net.minecraft.network.chat.Component.literal(" • Diesel: ").withStyle(net.minecraft.ChatFormatting.DARK_GRAY)
 			.append(net.minecraft.network.chat.Component.literal(String.format(java.util.Locale.US, "%.2f mB/s", dieselRate)).withStyle(net.minecraft.ChatFormatting.GOLD)));
@@ -109,7 +109,7 @@ public class Engine extends KineticBlock implements EntityBlock, IWrenchable{
 			.append(net.minecraft.network.chat.Component.literal(String.format(java.util.Locale.US, "%.2f mB/s", lpgRate)).withStyle(net.minecraft.ChatFormatting.GOLD)));
 
 		if (!isPortable) {
-			double heavyRate = cz.maxtechnik.dif.config.DifModCommonConfig.ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get() * mult * 2.0D;
+			double heavyRate = cz.maxtechnik.dif.config.DifModCommonConfig.ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get() * mult;
 			tooltipComponents.add(net.minecraft.network.chat.Component.literal(" • Heavy Fuel Oil: ").withStyle(net.minecraft.ChatFormatting.DARK_GRAY)
 				.append(net.minecraft.network.chat.Component.literal(String.format(java.util.Locale.US, "%.2f mB/s", heavyRate)).withStyle(net.minecraft.ChatFormatting.GOLD)));
 		}

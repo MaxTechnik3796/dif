@@ -119,7 +119,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 				speed=(float)baseRpm;
 				su=(float)(baseSu*extenders*portableMultiplier);
 				double consumptionMultiplier = 1.0 + (extenders - 1) * 0.5;
-				double consumptionPerTick=(baseConsumption*consumptionMultiplier*portableMultiplier)/FUEL_TICK_INTERVAL;
+				double consumptionPerTick=(baseConsumption*consumptionMultiplier*portableMultiplier)/20.0D;
 				fuelAccumulator+=consumptionPerTick;
 				if(fuelTickCounter++>=FUEL_TICK_INTERVAL){
 					fuelTickCounter=0;
@@ -292,7 +292,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 
 			double portableMultiplier = isEngineBlockPortable(getBlockState().getBlock()) ? ENGINE_PORTABLE_MULTIPLIER.get() : 1.0D;
 			double consumptionMultiplier = 1.0 + (extenders - 1) * 0.5;
-			double burnRatePerSec = baseConsumption * consumptionMultiplier * portableMultiplier * 2.0D;
+			double burnRatePerSec = baseConsumption * consumptionMultiplier * portableMultiplier;
 
 			String burnRateStr = String.format(java.util.Locale.US, "%.2f", burnRatePerSec);
 			tooltip.add(net.minecraft.network.chat.Component.literal("     Burn Rate: ").withStyle(net.minecraft.ChatFormatting.GRAY)
