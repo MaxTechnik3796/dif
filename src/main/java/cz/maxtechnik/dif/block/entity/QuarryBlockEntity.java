@@ -56,14 +56,14 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 		return level != null && level.hasNeighborSignal(worldPosition);
 	}
 
-	// ── Create Kinetic Stress (1 RPM = 128 SU, 0 při redstonu) ──────────
+	// ── Create Kinetic Stress (0 při redstonu) ──────────────────────────
 	@Override
 	public float calculateStressApplied() {
 		if (isRedstonePowered()) {
 			this.lastStressApplied = 0f;
 			return 0f;
 		}
-		float impact = 128.0f;
+		float impact = cz.maxtechnik.dif.config.DifModCommonConfig.QUARRY_STRESS_IMPACT.get().floatValue();
 		this.lastStressApplied = impact;
 		return impact;
 	}

@@ -33,6 +33,8 @@ public class DifModCommonConfig{
 	public static final ModConfigSpec.IntValue PORTAL_MAX_DISTANCE;
 	public static final ModConfigSpec.BooleanValue PORTAL_ALLOW_ENTITIES;
 
+	public static final ModConfigSpec.DoubleValue QUARRY_STRESS_IMPACT;
+
 	public static final double DOUBLE_MAX=1_000_000.0D;
 	public static final ModConfigSpec.DoubleValue ENGINE_DIESEL_RPM;
 	public static final ModConfigSpec.DoubleValue ENGINE_DIESEL_SU;
@@ -86,6 +88,10 @@ public class DifModCommonConfig{
 		PORTAL_GUN_ENERGY_PER_PEARL=BUILDER.defineInRange("portal_gun_energy_per_pearl",4,1,MAX);
 		PORTAL_MAX_DISTANCE=BUILDER.defineInRange("portal_max_distance",512,16,MAX);
 		PORTAL_ALLOW_ENTITIES=BUILDER.define("portal_allow_entities",true);
+		BUILDER.pop();
+
+		BUILDER.push("Quarry");
+		QUARRY_STRESS_IMPACT=BUILDER.comment("Create Kinetic Stress Impact of Quarry (SU consumed per 1 RPM). Default: 128.0").defineInRange("quarry_stress_impact",128.0D,0.0D,DOUBLE_MAX);
 		BUILDER.pop();
 
 

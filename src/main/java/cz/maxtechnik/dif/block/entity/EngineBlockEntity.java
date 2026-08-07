@@ -22,6 +22,11 @@ import static cz.maxtechnik.dif.block.Engine.*;
 import static cz.maxtechnik.dif.config.DifModCommonConfig.*;
 import static cz.maxtechnik.dif.init.basic.DifModBlocks.*;
 public class EngineBlockEntity extends GeneratingKineticBlockEntity{
+	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> DIESEL_TAG = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID, net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c", "diesel"));
+	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> GASOLINE_TAG = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID, net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c", "gasoline"));
+	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> LPG_TAG = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID, net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c", "lpg"));
+	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> HEAVY_FUEL_OIL_TAG = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID, net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c", "heavy_fuel_oil"));
+
 	boolean generating=false;
 	boolean uGenerating=false;
 	float speed=0F;
@@ -36,13 +41,12 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	}
 	public final FluidTank fluidTank=new FluidTank(1000,stack->{
 		if(stack.isEmpty()) return false;
-		net.minecraft.world.level.material.Fluid f=stack.getFluid();
 		boolean isPortable=isEngineBlockPortable(getBlockState().getBlock());
-		if(f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.DIESEL.get())||f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_DIESEL.get())) return true;
-		if(f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.GASOLINE.get())||f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_GASOLINE.get())) return true;
-		if(f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.LPG.get())||f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_LPG.get())) return true;
-        return !isPortable && (f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.HEAVY_FUEL_OIL.get()) || f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_HEAVY_FUEL_OIL.get()));
-    }){
+		if(stack.is(DIESEL_TAG)) return true;
+		if(stack.is(GASOLINE_TAG)) return true;
+		if(stack.is(LPG_TAG)) return true;
+		return !isPortable && stack.is(HEAVY_FUEL_OIL_TAG);
+	}){
 		@Override
 		protected void onContentsChanged(){
 			super.onContentsChanged();
@@ -212,11 +216,11 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	}
 	public FuelType getFuelFromTank(){
 		if(fluidTank.isEmpty()) return FuelType.INVALID;
-		net.minecraft.world.level.material.Fluid fluid=fluidTank.getFluid().getFluid();
-		if(fluid.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.DIESEL.get())||fluid.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_DIESEL.get())) return FuelType.DIESEL;
-		if(fluid.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.GASOLINE.get())||fluid.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_GASOLINE.get())) return FuelType.GASOLINE;
-		if(fluid.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.LPG.get())||fluid.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_LPG.get())) return FuelType.LPG;
-		if(fluid.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.HEAVY_FUEL_OIL.get())||fluid.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_HEAVY_FUEL_OIL.get())) return FuelType.HEAVY_FUEL_OIL;
+		net.neoforged.neoforge.fluids.FluidStack stack=fluidTank.getFluid();
+		if(stack.is(DIESEL_TAG)) return FuelType.DIESEL;
+		if(stack.is(GASOLINE_TAG)) return FuelType.GASOLINE;
+		if(stack.is(LPG_TAG)) return FuelType.LPG;
+		if(stack.is(HEAVY_FUEL_OIL_TAG)) return FuelType.HEAVY_FUEL_OIL;
 		return FuelType.INVALID;
 	}
 	public FuelType scanExtenders(){

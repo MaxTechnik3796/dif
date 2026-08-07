@@ -1,7 +1,7 @@
 {
-	"replace":false,
-	"values":[
-		"dif:flowing_heavy_fuel_oil_fluid",
-		"dif:heavy_fuel_oil_fluid"
+	"replace": false,
+	"values": [
+		"dif:heavy_fuel_oil_fluid",
+		"dif:flowing_heavy_fuel_oil_fluid"
 	]
 }

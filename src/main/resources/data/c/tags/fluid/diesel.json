@@ -1,7 +1,7 @@
 {
-	"replace":false,
-	"values":[
-		"dif:flowing_diesel_fluid",
-		"dif:diesel_fluid"
+	"replace": false,
+	"values": [
+		"dif:diesel_fluid",
+		"dif:flowing_diesel_fluid"
 	]
 }

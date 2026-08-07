@@ -1,7 +1,7 @@
 {
-	"replace":false,
-	"values":[
-		"dif:flowing_lpg_fluid",
-		"dif:lpg_fluid"
+	"replace": false,
+	"values": [
+		"dif:lpg_fluid",
+		"dif:flowing_lpg_fluid"
 	]
 }
