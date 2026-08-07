@@ -6,20 +6,24 @@ import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.util.quarry.QuarryArea;
 import cz.maxtechnik.dif.util.quarry.QuarryAreaManager;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * BlockEntity pro těžební zařízení (Quarry).
  * Připojeno na Create kinetic síť (shaft zdola).
  * 1 RPM = 128 SU zátěže. Těžební rychlost odvislá přímo od RPM.
+ * Podporuje vyžadované Goggles info a Redstone zastavení.
  */
 public class QuarryBlockEntity extends KineticBlockEntity {
 	public enum State { NO_ENERGY, CLEARING, BUILDING_FRAME, MINING, DONE }
@@ -32,6 +36,7 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 	private int frameCheckTimer = 0;
 	private float miningProgressAcc = 0f;
 	private boolean chunksNeedReload = false;
+	private boolean lastRedstoneState = false;
 
 	// ── QuarryAreaManager ────────────────────────────────────────────────
 	private final QuarryAreaManager areaManager = new QuarryAreaManager();
@@ -44,12 +49,75 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 		super(DifModBlockEntities.QUARRY.get(), pos, blockState);
 	}
 
-	// ── Create Kinetic Stress (1 RPM = 128 SU) ──────────────────────────
+	public boolean isRedstonePowered() {
+		return level != null && level.hasNeighborSignal(worldPosition);
+	}
+
+	// ── Create Kinetic Stress (1 RPM = 128 SU, 0 při redstonu) ──────────
 	@Override
 	public float calculateStressApplied() {
+		if (isRedstonePowered()) {
+			this.lastStressApplied = 0f;
+			return 0f;
+		}
 		float impact = 128.0f;
 		this.lastStressApplied = impact;
 		return impact;
+	}
+
+	// ── Goggles Tooltip (Engineer's Goggles Info) ────────────────────────
+	@Override
+	public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+		boolean added = super.addToGoggleTooltip(tooltip, isPlayerSneaking);
+
+		tooltip.add(Component.literal(""));
+		tooltip.add(Component.literal(" ◆ Quarry Info").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
+
+		// 1. Status
+		if (isRedstonePowered()) {
+			tooltip.add(Component.literal("  Status: ").withStyle(ChatFormatting.GRAY)
+					.append(Component.literal("Stopped (Redstone)").withStyle(ChatFormatting.GOLD)));
+		} else if (quarryState == State.DONE) {
+			tooltip.add(Component.literal("  Status: ").withStyle(ChatFormatting.GRAY)
+					.append(Component.literal("Finished").withStyle(ChatFormatting.AQUA)));
+		} else if (isOverStressed()) {
+			tooltip.add(Component.literal("  Status: ").withStyle(ChatFormatting.GRAY)
+					.append(Component.literal("Overstressed").withStyle(ChatFormatting.RED)));
+		} else if (Math.abs(getSpeed()) == 0) {
+			tooltip.add(Component.literal("  Status: ").withStyle(ChatFormatting.GRAY)
+					.append(Component.literal("No Kinetic Power").withStyle(ChatFormatting.RED)));
+		} else {
+			String actionName = switch (quarryState) {
+				case CLEARING -> "Clearing Area";
+				case BUILDING_FRAME -> "Building Frame";
+				case MINING -> "Mining";
+				default -> "Active";
+			};
+			tooltip.add(Component.literal("  Status: ").withStyle(ChatFormatting.GRAY)
+					.append(Component.literal(actionName).withStyle(ChatFormatting.GREEN)));
+		}
+
+		// 2. Area Size
+		if (areaManager.hasArea()) {
+			int sizeX = areaManager.getArea().sizeX();
+			int sizeZ = areaManager.getArea().sizeZ();
+			tooltip.add(Component.literal("  Area: ").withStyle(ChatFormatting.GRAY)
+					.append(Component.literal(sizeX + " x " + sizeZ + " blocks").withStyle(ChatFormatting.WHITE)));
+		}
+
+		// 3. SU Usage
+		float speed = Math.abs(getSpeed());
+		if (isRedstonePowered()) {
+			tooltip.add(Component.literal("  SU Usage: ").withStyle(ChatFormatting.GRAY)
+					.append(Component.literal("0 SU (Disabled)").withStyle(ChatFormatting.DARK_GRAY)));
+		} else {
+			int totalSu = (int) (speed * 128f);
+			tooltip.add(Component.literal("  SU Usage: ").withStyle(ChatFormatting.GRAY)
+					.append(Component.literal(totalSu + " SU").withStyle(ChatFormatting.AQUA))
+					.append(Component.literal(" (128 SU/RPM)").withStyle(ChatFormatting.DARK_GRAY)));
+		}
+
+		return true;
 	}
 
 	// ── Inicializace oblasti ───────────────────────────────────────────
@@ -70,7 +138,7 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 	// Rychlost těžby podle RPM sítě
 	public float getProgressPerTick() {
 		float speed = Math.abs(getSpeed());
-		if (speed <= 0f || isOverStressed()) return 0f;
+		if (speed <= 0f || isOverStressed() || isRedstonePowered()) return 0f;
 		return Math.clamp(speed / 12.8f, 0.1f, 20.0f);
 	}
 
@@ -83,8 +151,17 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 		if (level == null || level.isClientSide) return;
 		ensureAreaInitialized();
 
+		boolean redstoneStopped = isRedstonePowered();
+		if (lastRedstoneState != redstoneStopped) {
+			lastRedstoneState = redstoneStopped;
+			if (hasNetwork()) {
+				getOrCreateNetwork().updateStress();
+			}
+			sendData();
+		}
+
 		float speed = Math.abs(getSpeed());
-		boolean hasPower = speed > 0f && !isOverStressed();
+		boolean hasPower = speed > 0f && !isOverStressed() && !redstoneStopped;
 
 		if (!hasPower && quarryState != State.DONE) {
 			if (quarryState != State.NO_ENERGY) {
