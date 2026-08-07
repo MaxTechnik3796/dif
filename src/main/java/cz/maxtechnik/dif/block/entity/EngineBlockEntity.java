@@ -18,8 +18,6 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
-import java.util.stream.Stream;
-
 import static cz.maxtechnik.dif.block.Engine.*;
 import static cz.maxtechnik.dif.config.DifModCommonConfig.*;
 import static cz.maxtechnik.dif.init.basic.DifModBlocks.*;
@@ -43,9 +41,8 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		if(f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.DIESEL.get())||f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_DIESEL.get())) return true;
 		if(f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.GASOLINE.get())||f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_GASOLINE.get())) return true;
 		if(f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.LPG.get())||f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_LPG.get())) return true;
-		if(!isPortable&&(f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.HEAVY_FUEL_OIL.get())||f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_HEAVY_FUEL_OIL.get()))) return true;
-		return false;
-	}){
+        return !isPortable && (f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.HEAVY_FUEL_OIL.get()) || f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_HEAVY_FUEL_OIL.get()));
+    }){
 		@Override
 		protected void onContentsChanged(){
 			super.onContentsChanged();
@@ -269,5 +266,42 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		if(level==null) return;
 		if(DifMod.rouletteBoolean(4))
 			level.addParticle(ParticleTypes.SMOKE,pos.x,pos.y,pos.z,velocity.x,velocity.y,velocity.z);
+	}
+
+	@Override
+	public boolean addToGoggleTooltip(java.util.List<net.minecraft.network.chat.Component> tooltip, boolean isPlayerSneaking) {
+        super.addToGoggleTooltip(tooltip, isPlayerSneaking);
+
+        if (!fluidTank.isEmpty()) {
+			String fluidName = fluidTank.getFluid().getHoverName().getString();
+			tooltip.add(net.minecraft.network.chat.Component.literal("     Fuel: ").withStyle(net.minecraft.ChatFormatting.GRAY)
+				.append(net.minecraft.network.chat.Component.literal(fluidName + " (" + fluidTank.getFluidAmount() + " / " + fluidTank.getCapacity() + " mB)").withStyle(net.minecraft.ChatFormatting.AQUA)));
+		} else {
+			tooltip.add(net.minecraft.network.chat.Component.literal("     Fuel: ").withStyle(net.minecraft.ChatFormatting.GRAY)
+				.append(net.minecraft.network.chat.Component.literal("Empty (0 / " + fluidTank.getCapacity() + " mB)").withStyle(net.minecraft.ChatFormatting.DARK_GRAY)));
+		}
+
+		FuelType fuel = scanExtenders();
+		if (fuel != FuelType.INVALID) {
+			int extenders = countExtenders();
+			double baseConsumption = 0.0D;
+			if (fuel == FuelType.DIESEL) baseConsumption = ENGINE_DIESEL_CONSUMPTION.get();
+			else if (fuel == FuelType.GASOLINE) baseConsumption = ENGINE_GASOLINE_CONSUMPTION.get();
+			else if (fuel == FuelType.LPG) baseConsumption = ENGINE_LPG_CONSUMPTION.get();
+			else if (fuel == FuelType.HEAVY_FUEL_OIL) baseConsumption = ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get();
+
+			double portableMultiplier = isEngineBlockPortable(getBlockState().getBlock()) ? ENGINE_PORTABLE_MULTIPLIER.get() : 1.0D;
+			double consumptionMultiplier = 1.0 + (extenders - 1) * 0.5;
+			double burnRatePerSec = baseConsumption * consumptionMultiplier * portableMultiplier * 2.0D;
+
+			String burnRateStr = String.format(java.util.Locale.US, "%.2f", burnRatePerSec);
+			tooltip.add(net.minecraft.network.chat.Component.literal("     Burn Rate: ").withStyle(net.minecraft.ChatFormatting.GRAY)
+				.append(net.minecraft.network.chat.Component.literal(burnRateStr + " mB/s").withStyle(net.minecraft.ChatFormatting.GOLD)));
+		} else {
+			tooltip.add(net.minecraft.network.chat.Component.literal("     Burn Rate: ").withStyle(net.minecraft.ChatFormatting.GRAY)
+				.append(net.minecraft.network.chat.Component.literal("0.00 mB/s").withStyle(net.minecraft.ChatFormatting.DARK_GRAY)));
+		}
+
+		return true;
 	}
 }

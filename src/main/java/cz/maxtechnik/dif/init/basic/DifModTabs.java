@@ -43,10 +43,6 @@ public class DifModTabs{
 		tabData.accept(BLUESTONE);
 		tabData.accept(BLUE_PLATE);
 		tabData.accept(NICKEL_SHEET);
-
-		tabData.accept(QUARRY);
-		tabData.accept(QUARRY_FRAME);
-		tabData.accept(QUARRY_LANDMARK);
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>INDUSTRIAL=REGISTER.register("industrial",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.industrials")).icon(()->new ItemStack(ENGINE_EXTENDER.get())).displayItems(((parameters,tabData)->{
 
@@ -58,6 +54,10 @@ public class DifModTabs{
 
 		tabData.accept(ZINC_CASING);
 		tabData.accept(BIG_GIRDER);
+
+		tabData.accept(QUARRY);
+		tabData.accept(QUARRY_FRAME);
+		tabData.accept(QUARRY_LANDMARK);
 
 		tabData.accept(BURNING_GENERATOR);
 
