@@ -34,7 +34,8 @@ side = "BOTH"
 
 [[dependencies."${mod_id}"]]
 modId = "farmersdelight"
-mandatory = true
+type = "optional"
+mandatory = false
 versionRange = "[0,)"
 ordering = "AFTER"
 side = "BOTH"

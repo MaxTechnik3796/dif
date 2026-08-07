@@ -1,22 +1,28 @@
 {
-	"type":"minecraft:crafting_shaped",
-	"pattern":[
+	"neoforge:conditions": [
+		{
+			"type": "neoforge:mod_loaded",
+			"modid": "farmersdelight"
+		}
+	],
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
 		" A ",
 		"BCB",
 		" A "
 	],
-	"key":{
-		"A":{
-			"item":"create:iron_sheet"
+	"key": {
+		"A": {
+			"item": "create:iron_sheet"
 		},
-		"B":{
-			"item":"minecraft:iron_bars"
+		"B": {
+			"item": "minecraft:iron_bars"
 		},
-		"C":{
-			"item":"farmersdelight:skillet"
+		"C": {
+			"item": "farmersdelight:skillet"
 		}
 	},
-	"result":{
-		"id":"dif:frying_table"
+	"result": {
+		"id": "dif:frying_table"
 	}
 }

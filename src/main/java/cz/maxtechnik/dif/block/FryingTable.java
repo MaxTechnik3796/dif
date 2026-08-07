@@ -42,7 +42,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import vectorwing.farmersdelight.common.registry.ModSounds;
 
 import static cz.maxtechnik.dif.block.entity.FryingTableBlockEntity.INPUT_SLOT;
 import static cz.maxtechnik.dif.block.entity.FryingTableBlockEntity.OUTPUT_SLOT;
@@ -200,8 +199,10 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 				handItem.setCount(0);
 				be.setChanged();
 				world.playSound(null,pos,SoundEvents.LANTERN_PLACE,SoundSource.BLOCKS,1F,1F);
-				if(blockstate.getValue(OIL)&&blockstate.getValue(HEATED))
-					world.playSound(null,pos,ModSounds.BLOCK_SKILLET_ADD_FOOD.get(),SoundSource.BLOCKS,1F,1F);
+				if(blockstate.getValue(OIL)&&blockstate.getValue(HEATED)){
+					net.minecraft.sounds.SoundEvent skilletSound=net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.fromNamespaceAndPath("farmersdelight","block.skillet.add_food"));
+					if(skilletSound!=null) world.playSound(null,pos,skilletSound,SoundSource.BLOCKS,1F,1F);
+				}
 				return InteractionResult.SUCCESS;
 			}
 		}else{

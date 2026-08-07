@@ -1,14 +1,20 @@
 {
-	"type":"create:compacting",
-	"ingredients":[
+	"neoforge:conditions": [
 		{
-			"item":"minecraft:sunflower"
+			"type": "neoforge:mod_loaded",
+			"modid": "farmersdelight"
 		}
 	],
-	"results":[
+	"type": "create:compacting",
+	"ingredients": [
 		{
-			"amount":5,
-			"id":"dif:sunflower_oil_fluid"
+			"item": "minecraft:sunflower"
+		}
+	],
+	"results": [
+		{
+			"amount": 5,
+			"id": "dif:sunflower_oil_fluid"
 		}
 	]
 }

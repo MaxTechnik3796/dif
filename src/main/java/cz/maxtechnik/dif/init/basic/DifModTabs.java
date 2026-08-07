@@ -9,9 +9,6 @@ import net.minecraft.world.item.*;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import vectorwing.farmersdelight.common.registry.ModCreativeTabs;
-import vectorwing.farmersdelight.common.registry.ModItems;
-
 import java.util.Objects;
 import static cz.maxtechnik.dif.DifMod.addItemStacksBehind;
 import static cz.maxtechnik.dif.init.basic.DifModItems.*;
@@ -31,7 +28,9 @@ public class DifModTabs{
 		tabData.accept(ANDESITE_LATTICE);
 		tabData.accept(ANDESITE_WINDOW);
 		tabData.accept(SUPER_BOX);
-		tabData.accept(FRYING_TABLE);
+		if (net.neoforged.fml.ModList.get().isLoaded("farmersdelight")) {
+			tabData.accept(FRYING_TABLE);
+		}
 
 		tabData.accept(LAP_TIMER);
 
@@ -162,21 +161,24 @@ public class DifModTabs{
 							new ItemStack(COPPER_AXE.get()),
 							new ItemStack(COPPER_HOE.get())
 					});
-			addItemStacksBehind(tabData,new ItemStack(Items.LAVA_BUCKET),
-					new ItemStack[]{
-							new ItemStack(BEER_BUCKET.get()),
-							new ItemStack(XP_BUCKET.get()),
-							new ItemStack(FUEL_BUCKET.get()),
-							new ItemStack(JETPACK_FUEL_BUCKET.get()),
-							new ItemStack(SUNFLOWER_OIL_BUCKET.get()),
-							new ItemStack(CRUDE_OIL_BUCKET.get()),
-
-							new ItemStack(LPG_BUCKET.get()),
-							new ItemStack(GASOLINE_BUCKET.get()),
-							new ItemStack(DIESEL_BUCKET.get()),
-							new ItemStack(LUBRICATING_OIL_BUCKET.get()),
-							new ItemStack(HEAVY_FUEL_OIL_BUCKET.get()),
-					});
+			java.util.List<ItemStack> buckets = new java.util.ArrayList<>(java.util.Arrays.asList(
+					new ItemStack(BEER_BUCKET.get()),
+					new ItemStack(XP_BUCKET.get()),
+					new ItemStack(FUEL_BUCKET.get()),
+					new ItemStack(JETPACK_FUEL_BUCKET.get())
+			));
+			if (net.neoforged.fml.ModList.get().isLoaded("farmersdelight")) {
+				buckets.add(new ItemStack(SUNFLOWER_OIL_BUCKET.get()));
+			}
+			buckets.addAll(java.util.Arrays.asList(
+					new ItemStack(CRUDE_OIL_BUCKET.get()),
+					new ItemStack(LPG_BUCKET.get()),
+					new ItemStack(GASOLINE_BUCKET.get()),
+					new ItemStack(DIESEL_BUCKET.get()),
+					new ItemStack(LUBRICATING_OIL_BUCKET.get()),
+					new ItemStack(HEAVY_FUEL_OIL_BUCKET.get())
+			));
+			addItemStacksBehind(tabData, new ItemStack(Items.LAVA_BUCKET), buckets.toArray(new ItemStack[0]));
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.COMBAT)){
 			tabData.insertAfter(new ItemStack(Items.STONE_SWORD),new ItemStack(COPPER_SWORD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertAfter(new ItemStack(Items.STONE_AXE),new ItemStack(COPPER_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
@@ -205,35 +207,37 @@ public class DifModTabs{
 							new ItemStack(COPPER_BOOTS.get())
 					});
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.FOOD_AND_DRINKS)){
-			tabData.insertAfter(new ItemStack(Items.POISONOUS_POTATO),new ItemStack(FRIES.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			addItemStacksBehind(tabData,new ItemStack(Items.BREAD),
-					new ItemStack[]{
-							new ItemStack(BAGUETTE.get()),
-							new ItemStack(BURNED_TOAST.get())
-					});
-			addItemStacksBehind(tabData,new ItemStack(Items.COOKED_CHICKEN),
-					new ItemStack[]{
-							new ItemStack(BUCKET_OF_CHICKEN.get()),
-							new ItemStack(RIZEK.get())
-					});
-			addItemStacksBehind(tabData,new ItemStack(Items.COOKED_RABBIT),
-					new ItemStack[]{
-							new ItemStack(HORSE_MEAT.get()),
-							new ItemStack(COOKED_HORSE_MEAT.get())
-					});
-			addItemStacksBehind(tabData,new ItemStack(Items.RABBIT_STEW),
-					new ItemStack[]{
-							new ItemStack(CREATE_CAN.get()),
-							new ItemStack(CREATE_BOWL.get()),
-							new ItemStack(SUPER_HEATED_CREATE_BOWL.get())
-					});
+			if (net.neoforged.fml.ModList.get().isLoaded("farmersdelight")) {
+				tabData.insertAfter(new ItemStack(Items.POISONOUS_POTATO),new ItemStack(FRIES.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+				addItemStacksBehind(tabData,new ItemStack(Items.BREAD),
+						new ItemStack[]{
+								new ItemStack(BAGUETTE.get()),
+								new ItemStack(BURNED_TOAST.get())
+						});
+				addItemStacksBehind(tabData,new ItemStack(Items.COOKED_CHICKEN),
+						new ItemStack[]{
+								new ItemStack(BUCKET_OF_CHICKEN.get()),
+								new ItemStack(RIZEK.get())
+						});
+				addItemStacksBehind(tabData,new ItemStack(Items.COOKED_RABBIT),
+						new ItemStack[]{
+								new ItemStack(HORSE_MEAT.get()),
+								new ItemStack(COOKED_HORSE_MEAT.get())
+						});
+				addItemStacksBehind(tabData,new ItemStack(Items.RABBIT_STEW),
+						new ItemStack[]{
+								new ItemStack(CREATE_CAN.get()),
+								new ItemStack(CREATE_BOWL.get()),
+								new ItemStack(SUPER_HEATED_CREATE_BOWL.get())
+						});
+				tabData.accept(FLAT_DOUGH);
+			}
 			addItemStacksBehind(tabData,new ItemStack(Items.MILK_BUCKET),
 					new ItemStack[]{   
 							new ItemStack(BEER.get()),
 					});
 			tabData.accept(BOTTLE_OF_MOLOTOVUV_KOKTEJL);
 			tabData.accept(BOTTLE_OF_URANOVEJ_KOKTEJL);
-			tabData.accept(FLAT_DOUGH);
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.INGREDIENTS)){
 			tabData.insertAfter(new ItemStack(Items.RAW_IRON),new ItemStack(RAW_NICKEL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertAfter(new ItemStack(Items.IRON_NUGGET),new ItemStack(NICKEL_NUGGET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
@@ -256,8 +260,11 @@ public class DifModTabs{
 			tabData.accept(NUKE_SAFE);
 			tabData.accept(INCOMPLETE_UNIVERSAL);
 
-		}else if(tabData.getTab().equals(ModCreativeTabs.TAB_FARMERS_DELIGHT.get())){
-			tabData.insertAfter(new ItemStack(ModItems.STRAW_BALE.get()),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+		}else if(tabData.getTabKey().location().getNamespace().equals("farmersdelight")){
+			Item strawBale=net.minecraft.core.registries.BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("farmersdelight","straw_bale"));
+			if(strawBale!=Items.AIR){
+				tabData.insertAfter(new ItemStack(strawBale),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			}
 		}else if(tabData.getTab().equals(AllCreativeModeTabs.BASE_CREATIVE_TAB.get())){
 			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create","item_hatch")))),new ItemStack[]{new ItemStack(FLUID_HATCH.get())});
 		}else if(tabData.getTab().equals(AllCreativeModeTabs.PALETTES_CREATIVE_TAB.get())){
