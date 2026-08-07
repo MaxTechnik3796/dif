@@ -68,24 +68,17 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 	// ── Goggles Tooltip (Engineer's Goggles Info) ────────────────────────
 	@Override
 	public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-		boolean added = super.addToGoggleTooltip(tooltip, isPlayerSneaking);
-
-		tooltip.add(Component.literal(""));
-		tooltip.add(Component.literal(" ◆ Quarry Info").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
-
-		// 1. Status
+        super.addToGoggleTooltip(tooltip, isPlayerSneaking);
+        // 1. Status
+		Component statusComponent;
 		if (isRedstonePowered()) {
-			tooltip.add(Component.literal("  Status: ").withStyle(ChatFormatting.GRAY)
-					.append(Component.literal("Stopped (Redstone)").withStyle(ChatFormatting.GOLD)));
+			statusComponent = Component.literal("Stopped").withStyle(ChatFormatting.GOLD);
 		} else if (quarryState == State.DONE) {
-			tooltip.add(Component.literal("  Status: ").withStyle(ChatFormatting.GRAY)
-					.append(Component.literal("Finished").withStyle(ChatFormatting.AQUA)));
+			statusComponent = Component.literal("Finished").withStyle(ChatFormatting.AQUA);
 		} else if (isOverStressed()) {
-			tooltip.add(Component.literal("  Status: ").withStyle(ChatFormatting.GRAY)
-					.append(Component.literal("Overstressed").withStyle(ChatFormatting.RED)));
+			statusComponent = Component.literal("Overstressed").withStyle(ChatFormatting.RED);
 		} else if (Math.abs(getSpeed()) == 0) {
-			tooltip.add(Component.literal("  Status: ").withStyle(ChatFormatting.GRAY)
-					.append(Component.literal("No Kinetic Power").withStyle(ChatFormatting.RED)));
+			statusComponent = Component.literal("No Power").withStyle(ChatFormatting.RED);
 		} else {
 			String actionName = switch (quarryState) {
 				case CLEARING -> "Clearing Area";
@@ -93,30 +86,17 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 				case MINING -> "Mining";
 				default -> "Active";
 			};
-			tooltip.add(Component.literal("  Status: ").withStyle(ChatFormatting.GRAY)
-					.append(Component.literal(actionName).withStyle(ChatFormatting.GREEN)));
+			statusComponent = Component.literal(actionName).withStyle(ChatFormatting.GREEN);
 		}
+		tooltip.add(Component.literal("    Status: ").withStyle(ChatFormatting.GRAY).append(statusComponent));
 
 		// 2. Area Size
 		if (areaManager.hasArea()) {
 			int sizeX = areaManager.getArea().sizeX();
 			int sizeZ = areaManager.getArea().sizeZ();
-			tooltip.add(Component.literal("  Area: ").withStyle(ChatFormatting.GRAY)
+			tooltip.add(Component.literal("    Area: ").withStyle(ChatFormatting.GRAY)
 					.append(Component.literal(sizeX + " x " + sizeZ + " blocks").withStyle(ChatFormatting.WHITE)));
 		}
-
-		// 3. SU Usage
-		float speed = Math.abs(getSpeed());
-		if (isRedstonePowered()) {
-			tooltip.add(Component.literal("  SU Usage: ").withStyle(ChatFormatting.GRAY)
-					.append(Component.literal("0 SU (Disabled)").withStyle(ChatFormatting.DARK_GRAY)));
-		} else {
-			int totalSu = (int) (speed * 128f);
-			tooltip.add(Component.literal("  SU Usage: ").withStyle(ChatFormatting.GRAY)
-					.append(Component.literal(totalSu + " SU").withStyle(ChatFormatting.AQUA))
-					.append(Component.literal(" (128 SU/RPM)").withStyle(ChatFormatting.DARK_GRAY)));
-		}
-
 		return true;
 	}
 
