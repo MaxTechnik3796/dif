@@ -88,6 +88,7 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 	public static void unregister(BlockPos pos){
 		FORMED_LANDMARKS.remove(pos);
 	}
+	@SuppressWarnings("unused")
 	@SubscribeEvent
 	public static void onRenderLevel(RenderLevelStageEvent event){
 		if(event.getStage()!=RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) return;
