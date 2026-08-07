@@ -157,15 +157,10 @@ public class DifModBlocks{
 
 	public static final BlockBehaviour.Properties ENGINE_PROPERTIES=BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops();
 	public static final DeferredBlock<Block>ENGINE_BASE=REGISTRY.register("engine_base",()->new Engine(ENGINE_PROPERTIES));
-	public static final DeferredBlock<Block>ENGINE_PORTABLE_DIESEL=REGISTRY.register("engine_portable_diesel",()->new Engine(ENGINE_PROPERTIES));
-	public static final DeferredBlock<Block>ENGINE_PORTABLE_GASOLINE=REGISTRY.register("engine_portable_gasoline",()->new Engine(ENGINE_PROPERTIES));
-	public static final DeferredBlock<Block>ENGINE_PORTABLE_LPG=REGISTRY.register("engine_portable_lpg",()->new Engine(ENGINE_PROPERTIES));
+	public static final DeferredBlock<Block>ENGINE_PORTABLE=REGISTRY.register("engine_portable",()->new Engine(ENGINE_PROPERTIES));
 
 	public static final BlockBehaviour.Properties ENGINE_EXTENDER_PROPERTIES=BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops();
-	public static final DeferredBlock<Block>ENGINE_EXTENDER_DIESEL=REGISTRY.register("engine_extender_diesel",()->new EngineExtender(ENGINE_EXTENDER_PROPERTIES));
-	public static final DeferredBlock<Block>ENGINE_EXTENDER_GASOLINE=REGISTRY.register("engine_extender_gasoline",()->new EngineExtender(ENGINE_EXTENDER_PROPERTIES));
-	public static final DeferredBlock<Block>ENGINE_EXTENDER_LPG=REGISTRY.register("engine_extender_lpg",()->new EngineExtender(ENGINE_EXTENDER_PROPERTIES));
-	public static final DeferredBlock<Block>ENGINE_EXTENDER_HEAVY_FUEL_OIL=REGISTRY.register("engine_extender_heavy_fuel_oil",()->new EngineExtender(ENGINE_EXTENDER_PROPERTIES));
+	public static final DeferredBlock<Block>ENGINE_EXTENDER=REGISTRY.register("engine_extender",()->new EngineExtender(ENGINE_EXTENDER_PROPERTIES));
 
 	public static final DeferredBlock<Block>DEEPSLATE_MITHRIL_ORE=REGISTRY.register("deepslate_mithril_ore",()->new DropExperienceBlock(ConstantInt.of(0),BlockBehaviour.Properties.ofFullCopy(GOLD_ORE).mapColor(MapColor.DEEPSLATE).strength(4.5F,3F).sound(SoundType.DEEPSLATE)));
 
@@ -178,4 +173,15 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>DEEPSLATE_NICKEL_ORE=REGISTRY.register("deepslate_nickel_ore",()->new DropExperienceBlock(ConstantInt.of(0),BlockBehaviour.Properties.ofFullCopy(GOLD_ORE).mapColor(MapColor.DEEPSLATE).strength(4.5F,3F).sound(SoundType.DEEPSLATE)));
 
 	public static final DeferredBlock<Block>NANO_GLASS=REGISTRY.register("nano_glass",()->new NanoGlass(BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.HAT).strength(0.3F).sound(SoundType.GLASS).noOcclusion().isValidSpawn(Blocks::never).isRedstoneConductor((bs,br,bp)->false).isSuffocating((blockState,blockGetter,pos)->false).isViewBlocking((blockState,blockGetter,pos)->false)));
+
+	static {
+		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_diesel"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
+		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_gasoline"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
+		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_lpg"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
+
+		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_diesel"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
+		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_gasoline"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
+		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_lpg"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
+		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_heavy_fuel_oil"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
+	}
 }

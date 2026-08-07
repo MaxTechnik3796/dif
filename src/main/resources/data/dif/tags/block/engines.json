@@ -2,8 +2,6 @@
 	"replace":false,
 	"values":[
 		"dif:engine_base",
-		"dif:engine_portable_diesel",
-		"dif:engine_portable_gasoline",
-		"dif:engine_portable_lpg"
+		"dif:engine_portable"
 	]
 }

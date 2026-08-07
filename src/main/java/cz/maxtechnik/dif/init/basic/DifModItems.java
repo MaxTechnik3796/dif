@@ -272,15 +272,8 @@ public class DifModItems{
 	public static final DeferredItem<Item>NUKE_SAFE=block(DifModBlocks.NUKE_SAFE,new Item.Properties().stacksTo(16));
 
 	public static final DeferredItem<Item>ENGINE_BASE=block(DifModBlocks.ENGINE_BASE);
-
-	public static final DeferredItem<Item>ENGINE_PORTABLE_DIESEL=block(DifModBlocks.ENGINE_PORTABLE_DIESEL);
-	public static final DeferredItem<Item>ENGINE_PORTABLE_GASOLINE=block(DifModBlocks.ENGINE_PORTABLE_GASOLINE);
-	public static final DeferredItem<Item>ENGINE_PORTABLE_LPG=block(DifModBlocks.ENGINE_PORTABLE_LPG);
-
-	public static final DeferredItem<Item>ENGINE_EXTENDER_DIESEL=block(DifModBlocks.ENGINE_EXTENDER_DIESEL);
-	public static final DeferredItem<Item>ENGINE_EXTENDER_GASOLINE=block(DifModBlocks.ENGINE_EXTENDER_GASOLINE);
-	public static final DeferredItem<Item>ENGINE_EXTENDER_LPG=block(DifModBlocks.ENGINE_EXTENDER_LPG);
-	public static final DeferredItem<Item>ENGINE_EXTENDER_HEAVY_FUEL_OIL=block(DifModBlocks.ENGINE_EXTENDER_HEAVY_FUEL_OIL);
+	public static final DeferredItem<Item>ENGINE_PORTABLE=block(DifModBlocks.ENGINE_PORTABLE);
+	public static final DeferredItem<Item>ENGINE_EXTENDER=block(DifModBlocks.ENGINE_EXTENDER);
 
 	public static final DeferredItem<Item>WOODEN_FRAME=block(DifModBlocks.WOODEN_FRAME);
 	public static final DeferredItem<Item>DEEPSLATE_MITHRIL_ORE=block(DifModBlocks.DEEPSLATE_MITHRIL_ORE);
@@ -304,5 +297,14 @@ public class DifModItems{
 	public static final DeferredItem<Item>DEFORESTRATOR=REGISTRY.register("deforestrator", Electrum::new);
 	public static final DeferredItem<Item>DEFORESTER=DEFORESTRATOR;
 
+	static {
+		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_diesel"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
+		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_gasoline"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
+		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_lpg"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
 
+		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_diesel"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
+		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_gasoline"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
+		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_lpg"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
+		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_heavy_fuel_oil"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
+	}
 }

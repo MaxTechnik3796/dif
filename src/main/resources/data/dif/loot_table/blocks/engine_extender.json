@@ -1,6 +1,6 @@
 {
 	"type":"minecraft:block",
-	"random_sequence":"dif:blocks/engine_extender_gasoline",
+	"random_sequence":"dif:blocks/engine_extender",
 	"pools":[
 		{
 			"rolls":1.0,
@@ -12,7 +12,7 @@
 			"entries":[
 				{
 					"type":"minecraft:item",
-					"name":"dif:engine_extender_gasoline"
+					"name":"dif:engine_extender"
 				}
 			]
 		}

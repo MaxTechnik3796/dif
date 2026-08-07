@@ -48,20 +48,13 @@ public class DifModTabs{
 		tabData.accept(QUARRY_FRAME);
 		tabData.accept(QUARRY_LANDMARK);
 	})).build());
-	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>INDUSTRIAL=REGISTER.register("industrial",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.industrials")).icon(()->new ItemStack(ENGINE_EXTENDER_DIESEL.get())).displayItems(((parameters,tabData)->{
+	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>INDUSTRIAL=REGISTER.register("industrial",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.industrials")).icon(()->new ItemStack(ENGINE_EXTENDER.get())).displayItems(((parameters,tabData)->{
 
 		tabData.accept(DISTILLATION_TANK);
 
 		tabData.accept(ENGINE_BASE);
-
-		tabData.accept(ENGINE_PORTABLE_DIESEL);
-		tabData.accept(ENGINE_PORTABLE_GASOLINE);
-		tabData.accept(ENGINE_PORTABLE_LPG);
-
-		tabData.accept(ENGINE_EXTENDER_DIESEL);
-		tabData.accept(ENGINE_EXTENDER_GASOLINE);
-		tabData.accept(ENGINE_EXTENDER_LPG);
-		tabData.accept(ENGINE_EXTENDER_HEAVY_FUEL_OIL);
+		tabData.accept(ENGINE_PORTABLE);
+		tabData.accept(ENGINE_EXTENDER);
 
 		tabData.accept(ZINC_CASING);
 		tabData.accept(BIG_GIRDER);

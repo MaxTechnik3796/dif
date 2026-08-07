@@ -10,7 +10,7 @@
 			"item":"dif:mithril_plate"
 		},
 		"B":{
-			"item":"create:zinc_nugget"
+			"item":"minecraft:iron_nugget"
 		},
 		"C":{
 			"item":"create:fluid_tank"
@@ -19,10 +19,10 @@
 			"item":"dif:nickel_sheet"
 		},
 		"E":{
-			"item":"dif:zinc_casing"
+			"item":"dif:engine_base"
 		}
 	},
 	"result":{
-		"id":"dif:engine_extender_gasoline"
+		"id":"dif:engine_portable"
 	}
 }

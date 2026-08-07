@@ -36,7 +36,16 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	public EngineBlockEntity(BlockPos pos,BlockState blockState){
 		super(DifModBlockEntities.ENGINE.get(),pos,blockState);
 	}
-	public final FluidTank fluidTank=new FluidTank(1000){
+	public final FluidTank fluidTank=new FluidTank(1000,stack->{
+		if(stack.isEmpty()) return false;
+		net.minecraft.world.level.material.Fluid f=stack.getFluid();
+		boolean isPortable=isEngineBlockPortable(getBlockState().getBlock());
+		if(f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.DIESEL.get())||f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_DIESEL.get())) return true;
+		if(f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.GASOLINE.get())||f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_GASOLINE.get())) return true;
+		if(f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.LPG.get())||f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_LPG.get())) return true;
+		if(!isPortable&&(f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.HEAVY_FUEL_OIL.get())||f.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_HEAVY_FUEL_OIL.get()))) return true;
+		return false;
+	}){
 		@Override
 		protected void onContentsChanged(){
 			super.onContentsChanged();
@@ -204,43 +213,27 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 			}
 		}
 	}
+	public FuelType getFuelFromTank(){
+		if(fluidTank.isEmpty()) return FuelType.INVALID;
+		net.minecraft.world.level.material.Fluid fluid=fluidTank.getFluid().getFluid();
+		if(fluid.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.DIESEL.get())||fluid.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_DIESEL.get())) return FuelType.DIESEL;
+		if(fluid.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.GASOLINE.get())||fluid.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_GASOLINE.get())) return FuelType.GASOLINE;
+		if(fluid.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.LPG.get())||fluid.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_LPG.get())) return FuelType.LPG;
+		if(fluid.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.HEAVY_FUEL_OIL.get())||fluid.isSame(cz.maxtechnik.dif.init.fluid.DifModFluids.FLOWING_HEAVY_FUEL_OIL.get())) return FuelType.HEAVY_FUEL_OIL;
+		return FuelType.INVALID;
+	}
 	public FuelType scanExtenders(){
 		if(level==null) return FuelType.INVALID;
 		BlockState ownState=getBlockState();
 		if(!(ownState.getBlock() instanceof Engine)) return FuelType.INVALID;
 		Block ownBlock=ownState.getBlock();
 		if(isEngineBlock(ownBlock)){
-			Direction.Axis axis=ownState.getValue(FACING).getAxis();
-			FuelType ext0=getExtenderFuel(worldPosition.above());
-			FuelType ext1=FuelType.INVALID;
-			FuelType ext2=FuelType.INVALID;
-			if(axis==Direction.Axis.Z){
-				ext1=getExtenderFuel(worldPosition.east());
-				ext2=getExtenderFuel(worldPosition.west());
-			}else if(axis==Direction.Axis.X){
-				ext1=getExtenderFuel(worldPosition.north());
-				ext2=getExtenderFuel(worldPosition.south());
-			}
-			long validCount=Stream.of(ext0,ext1,ext2).filter(f->f!=FuelType.INVALID).count();
-			long uniqueValidCount=Stream.of(ext0,ext1,ext2).filter(f->f!=FuelType.INVALID).distinct().count();
-			if(validCount==0) return FuelType.INVALID;
-			if((validCount==3&&uniqueValidCount==1)||(validCount==2&&uniqueValidCount==1)||(validCount==1))
-				return Stream.of(ext0,ext1,ext2).filter(f->f!=FuelType.INVALID).findFirst().orElse(FuelType.INVALID);
-		}else{
-			if(ownBlock.equals(ENGINE_PORTABLE_DIESEL.get())) return FuelType.DIESEL;
-			else if(ownBlock.equals(ENGINE_PORTABLE_GASOLINE.get())) return FuelType.GASOLINE;
-			else if(ownBlock.equals(ENGINE_PORTABLE_LPG.get())) return FuelType.LPG;
+			if(countExtenders()==0) return FuelType.INVALID;
+			return getFuelFromTank();
+		}else if(isEngineBlockPortable(ownBlock)){
+			FuelType fuel=getFuelFromTank();
+			return fuel==FuelType.HEAVY_FUEL_OIL?FuelType.INVALID:fuel;
 		}
-		return FuelType.INVALID;
-	}
-	public FuelType getExtenderFuel(BlockPos pos){
-		if(level==null) return FuelType.INVALID;
-		Block block=level.getBlockState(pos).getBlock();
-		if(!(block instanceof EngineExtender)) return FuelType.INVALID;
-		if(block.equals(ENGINE_EXTENDER_DIESEL.get())) return FuelType.DIESEL;
-		if(block.equals(ENGINE_EXTENDER_GASOLINE.get())) return FuelType.GASOLINE;
-		if(block.equals(ENGINE_EXTENDER_LPG.get())) return FuelType.LPG;
-		if(block.equals(ENGINE_EXTENDER_HEAVY_FUEL_OIL.get())) return FuelType.HEAVY_FUEL_OIL;
 		return FuelType.INVALID;
 	}
 	public int countExtenders(){
@@ -269,7 +262,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		return block.equals(ENGINE_BASE.get());
 	}
 	private boolean isEngineBlockPortable(Block block){
-		return block.equals(ENGINE_PORTABLE_DIESEL.get())||block.equals(ENGINE_PORTABLE_GASOLINE.get())||block.equals(ENGINE_PORTABLE_LPG.get());
+		return block.equals(ENGINE_PORTABLE.get());
 	}
 
 	public void particle(Vec3 pos,Vec3 velocity){

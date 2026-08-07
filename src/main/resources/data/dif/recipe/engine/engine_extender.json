@@ -10,7 +10,7 @@
 			"item":"dif:mithril_plate"
 		},
 		"B":{
-			"item":"dif:nickel_nugget"
+			"item":"minecraft:iron_nugget"
 		},
 		"C":{
 			"item":"create:fluid_tank"
@@ -23,6 +23,6 @@
 		}
 	},
 	"result":{
-		"id":"dif:engine_extender_lpg"
+		"id":"dif:engine_extender"
 	}
 }

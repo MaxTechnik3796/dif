@@ -1,6 +1,6 @@
 {
 	"type":"minecraft:block",
-	"random_sequence":"dif:blocks/engine_portable_gasoline",
+	"random_sequence":"dif:blocks/engine_base",
 	"pools":[
 		{
 			"rolls":1.0,
@@ -12,7 +12,7 @@
 			"entries":[
 				{
 					"type":"minecraft:item",
-					"name":"dif:engine_portable_gasoline"
+					"name":"dif:engine_base"
 				}
 			]
 		}
