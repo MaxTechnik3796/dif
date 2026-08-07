@@ -122,14 +122,12 @@ public class Quarry extends KineticBlock implements EntityBlock, IWrenchable, IB
 				BlockPos scanPos = new BlockPos(qx + dx, qy, qz + dz);
 				if (!level.getBlockState(scanPos).is(DifModBlocks.QUARRY_LANDMARK.get())) continue;
 				if (!(level.getBlockEntity(scanPos) instanceof QuarryLandmarkBlockEntity lm)) continue;
-				if (lm.isFormed()) continue;
+				if (!lm.isFormed()) continue;
 				QuarryArea area = lm.getFormedArea();
 				if (area == null) continue;
 				boolean onEdge =
-						(qz == area.minZ() - 1 && qx >= area.minX() && qx <= area.maxX()) ||
-						(qz == area.maxZ() + 1 && qx >= area.minX() && qx <= area.maxX()) ||
-						(qx == area.minX() - 1 && qz >= area.minZ() && qz <= area.maxZ()) ||
-						(qx == area.maxX() + 1 && qz >= area.minZ() && qz <= area.maxZ());
+						(qx >= area.minX() - 1 && qx <= area.maxX() + 1) &&
+						(qz >= area.minZ() - 1 && qz <= area.maxZ() + 1);
 				if (!onEdge) continue;
 				lm.applyToQuarry(level, quarryPos);
 				return;
