@@ -1,8 +1,8 @@
 package cz.maxtechnik.dif.block.entity;
 
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import cz.maxtechnik.dif.block.Quarry;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
-import cz.maxtechnik.dif.init.events.QuarryStats;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.util.quarry.QuarryArea;
 import cz.maxtechnik.dif.util.quarry.QuarryAreaManager;
@@ -10,28 +10,20 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.energy.EnergyStorage;
-import net.neoforged.neoforge.energy.IEnergyStorage;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 /**
  * BlockEntity pro těžební zařízení (Quarry).
- * Přijímá FE energii a běží plnou rychlostí (QP = 256).
- * Veškeré GUI a upgrady byly odstraněny.
+ * Připojeno na Create kinetic síť (shaft zdola).
+ * 1 RPM = 128 SU zátěže. Těžební rychlost odvislá přímo od RPM.
  */
-public class QuarryBlockEntity extends BlockEntity {
+public class QuarryBlockEntity extends KineticBlockEntity {
 	public enum State { NO_ENERGY, CLEARING, BUILDING_FRAME, MINING, DONE }
 
-	private static final int ENERGY_CAPACITY = 100000;
-	private static final int ENERGY_INPUT = 5000;
-	private static final int ENERGY_USAGE_PER_TICK = 100;
 	private static final int FRAME_CHECK_INTERVAL = 40;
 
 	// ── Stav Quarry ─────────────────────────────────────────────────────
@@ -48,17 +40,22 @@ public class QuarryBlockEntity extends BlockEntity {
 	private final ArrayList<BlockPos> workQueue = new ArrayList<>();
 	private int workIndex = 0;
 
-	// ── FE Energie ──────────────────────────────────────────────────────
-	private final EnergyStorage energy = new EnergyStorage(ENERGY_CAPACITY, ENERGY_INPUT, ENERGY_CAPACITY);
-
 	public QuarryBlockEntity(BlockPos pos, BlockState blockState) {
 		super(DifModBlockEntities.QUARRY.get(), pos, blockState);
+	}
+
+	// ── Create Kinetic Stress (1 RPM = 128 SU) ──────────────────────────
+	@Override
+	public float calculateStressApplied() {
+		float impact = 64.0f;
+		this.lastStressApplied = impact;
+		return impact;
 	}
 
 	// ── Inicializace oblasti ───────────────────────────────────────────
 	public void setArea(int minX, int maxX, int minZ, int maxZ) {
 		areaManager.setArea(new QuarryArea(minX, maxX, minZ, maxZ));
-		sync();
+		sendData();
 	}
 
 	private void ensureAreaInitialized() {
@@ -70,47 +67,49 @@ public class QuarryBlockEntity extends BlockEntity {
 		}
 	}
 
+	// Rychlost těžby podle RPM sítě
 	public float getProgressPerTick() {
-		return QuarryStats.MAX_PROGRESS_PER_TICK;
+		float speed = Math.abs(getSpeed());
+		if (speed <= 0f || isOverStressed()) return 0f;
+		return Math.clamp(speed / 12.8f, 0.1f, 20.0f);
 	}
 
 	// ══════════════════════════════════════════════════════════════════════
 	// ── HLAVNÍ TICK ───────────────────────────────────────────────────────
 	// ══════════════════════════════════════════════════════════════════════
-	public static void tick(Level level, QuarryBlockEntity be) {
-		if (level.isClientSide) return;
-		be.ensureAreaInitialized();
+	@Override
+	public void tick() {
+		super.tick();
+		if (level == null || level.isClientSide) return;
+		ensureAreaInitialized();
 
-		// Odběr energie
-		boolean hasEnergy = be.energy.getEnergyStored() >= ENERGY_USAGE_PER_TICK;
+		float speed = Math.abs(getSpeed());
+		boolean hasPower = speed > 0f && !isOverStressed();
 
-		if (be.quarryState != State.DONE) {
-			if (hasEnergy) {
-				be.energy.extractEnergy(ENERGY_USAGE_PER_TICK, false);
-				if (be.quarryState == State.NO_ENERGY) {
-					be.quarryState = be.activeState;
-					be.sync();
-				}
-			} else {
-				if (be.quarryState != State.NO_ENERGY) {
-					be.activeState = be.quarryState;
-					be.quarryState = State.NO_ENERGY;
-					be.sync();
-				}
-				return;
+		if (!hasPower && quarryState != State.DONE) {
+			if (quarryState != State.NO_ENERGY) {
+				activeState = quarryState;
+				quarryState = State.NO_ENERGY;
+				sendData();
 			}
+			return;
 		}
 
-		switch (be.quarryState) {
-			case CLEARING -> be.tickClearing(level);
-			case BUILDING_FRAME -> be.tickBuildFrame(level);
-			case MINING -> be.tickMine(level);
+		if (hasPower && quarryState == State.NO_ENERGY) {
+			quarryState = activeState;
+			sendData();
+		}
+
+		switch (quarryState) {
+			case CLEARING -> tickClearing(level);
+			case BUILDING_FRAME -> tickBuildFrame(level);
+			case MINING -> tickMine(level);
 			default -> {}
 		}
 
-		if (be.chunksNeedReload && be.quarryState == State.MINING && level instanceof ServerLevel sl) {
-			be.areaManager.loadMiningChunks(sl);
-			be.chunksNeedReload = false;
+		if (chunksNeedReload && quarryState == State.MINING && level instanceof ServerLevel sl) {
+			areaManager.loadMiningChunks(sl);
+			chunksNeedReload = false;
 		}
 	}
 
@@ -136,7 +135,7 @@ public class QuarryBlockEntity extends BlockEntity {
 		}
 		quarryState = State.CLEARING;
 		miningProgressAcc = 0f;
-		sync();
+		sendData();
 	}
 
 	private void tickClearing(Level level) {
@@ -169,7 +168,7 @@ public class QuarryBlockEntity extends BlockEntity {
 		workQueue.clear();
 		workQueue.addAll(areaManager.computeFramePositions(worldPosition.getY()));
 		workIndex = 0;
-		sync();
+		sendData();
 	}
 
 	private void tickBuildFrame(Level level) {
@@ -201,7 +200,7 @@ public class QuarryBlockEntity extends BlockEntity {
 			if (level instanceof ServerLevel sl) {
 				areaManager.loadMiningChunks(sl);
 			}
-			sync();
+			sendData();
 		}
 	}
 
@@ -216,7 +215,7 @@ public class QuarryBlockEntity extends BlockEntity {
 				workQueue.clear();
 				workIndex = 0;
 				areaManager.setMiningPos(null);
-				sync();
+				sendData();
 				return;
 			}
 		}
@@ -229,7 +228,7 @@ public class QuarryBlockEntity extends BlockEntity {
 		quarryState = State.DONE;
 		areaManager.setMiningPos(null);
 		if (level instanceof ServerLevel sl) areaManager.unloadForcedChunks(sl);
-		sync();
+		sendData();
 	}
 
 	// ── Frame Utility ─────────────────────────────────────────────────────
@@ -256,7 +255,7 @@ public class QuarryBlockEntity extends BlockEntity {
 		workQueue.clear();
 		workIndex = 0;
 		areaManager.setMiningPos(null);
-		sync();
+		sendData();
 	}
 
 	public void onQuarryRemoved() {
@@ -269,39 +268,10 @@ public class QuarryBlockEntity extends BlockEntity {
 		}
 	}
 
-	// ── Sync a Ukládání/Načítání (NBT) ────────────────────────────────────
-	private void sync() {
-		setChanged();
-		if (level != null && !level.isClientSide) {
-			level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
-		}
-	}
-
+	// ── Create Kinetic NBT (read / write) ──────────────────────────────────
 	@Override
-	public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider p) {
-		CompoundTag tag = new CompoundTag();
-		tag.putInt("QS", quarryState.ordinal());
-		BlockPos miningPos = areaManager.getMiningPos();
-		if (miningPos != null) {
-			tag.putInt("MineX", miningPos.getX());
-			tag.putInt("MineY", miningPos.getY());
-			tag.putInt("MineZ", miningPos.getZ());
-		}
-		if (areaManager.hasArea()) {
-			areaManager.getArea().save(tag);
-		}
-		return tag;
-	}
-
-	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-
-	@Override
-	public void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider p) {
-		super.loadAdditional(tag, p);
-		energy.receiveEnergy(tag.getInt("Energy") - energy.getEnergyStored(), false);
+	protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+		super.read(tag, registries, clientPacket);
 		int ord = tag.getInt("QS");
 		quarryState = (ord >= 0 && ord < State.values().length) ? State.values()[ord] : State.NO_ENERGY;
 		workIndex = tag.getInt("WI");
@@ -321,9 +291,8 @@ public class QuarryBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider p) {
-		super.saveAdditional(tag, p);
-		tag.putInt("Energy", energy.getEnergyStored());
+	protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+		super.write(tag, registries, clientPacket);
 		tag.putInt("QS", quarryState.ordinal());
 		tag.putInt("WI", workIndex);
 		BlockPos miningPos = areaManager.getMiningPos();
@@ -348,10 +317,6 @@ public class QuarryBlockEntity extends BlockEntity {
 
 	public State getQuarryState() {
 		return quarryState;
-	}
-
-	public IEnergyStorage getEnergyStorage() {
-		return energy;
 	}
 
 	public int getAreaMinX() {

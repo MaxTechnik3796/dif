@@ -41,7 +41,6 @@ public class DifModCapabilities{
 		event.registerBlockEntity(bFLUID,ENGINE.get(),(be,side)->be.fluidTank);
 	}
 	private static void registerEnergyCapabilities(RegisterCapabilitiesEvent event){
-		event.registerBlockEntity(bENERGY,QUARRY.get(),(be,side)->be.getEnergyStorage());
 		event.registerBlockEntity(bENERGY,BURNING_GENERATOR.get(),(be,side)->be.getEnergyStorage());
 	}
 }
