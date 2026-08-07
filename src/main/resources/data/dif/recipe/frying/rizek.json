@@ -1,12 +1,15 @@
 {
-	"type":"dif:frying",
-	"ingredient":{
-		"item":"minecraft:porkchop"
+	"type": "dif:frying",
+	"ingredient": {
+		"item": "minecraft:porkchop"
 	},
-	"result":{
-		"count":1,
-		"id":"dif:rizek"
+	"fluid_ingredient": {
+		"tag": "c:sunflower_oil",
+		"amount": 10
 	},
-	"processingTime":120,
-	"oilAmount":10
+	"result": {
+		"count": 1,
+		"id": "dif:rizek"
+	},
+	"processingTime": 120
 }

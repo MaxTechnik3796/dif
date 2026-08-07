@@ -1,11 +1,15 @@
 {
-	"type":"dif:frying",
-	"ingredient":{
-		"item":"minecraft:bread"
+	"type": "dif:frying",
+	"ingredient": {
+		"item": "minecraft:bread"
 	},
-	"result":{
-		"id":"dif:burned_toast"
+	"fluid_ingredient": {
+		"tag": "c:sunflower_oil",
+		"amount": 10
 	},
-	"processingTime":100,
-	"oilAmount":10
+	"result": {
+		"count": 1,
+		"id": "dif:burned_toast"
+	},
+	"processingTime": 100
 }

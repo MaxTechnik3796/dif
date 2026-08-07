@@ -2,7 +2,6 @@ package cz.maxtechnik.dif.compat.jei;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
-import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.recipe.FryingRecipe;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.placement.HorizontalAlignment;
@@ -16,7 +15,6 @@ import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -40,7 +38,7 @@ public class FryingJEI {
 				builder.addSlot(RecipeIngredientRole.INPUT,1,38)
 						.setStandardSlotBackground()
 						.setFluidRenderer(recipe.getOilAmount(),false,16,16)
-						.addIngredient(NeoForgeTypes.FLUID_STACK,new FluidStack(DifModFluids.SUNFLOWER_OIL.get(),recipe.getOilAmount()));
+						.addIngredients(NeoForgeTypes.FLUID_STACK, java.util.Arrays.asList(recipe.getFluidIngredient().getFluids()));
 			}
 		}
 		@Override

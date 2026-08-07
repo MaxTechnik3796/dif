@@ -1,12 +1,15 @@
 {
-	"type":"dif:frying",
-	"ingredient":{
-		"item":"minecraft:potato"
+	"type": "dif:frying",
+	"ingredient": {
+		"item": "minecraft:potato"
 	},
-	"result":{
-		"count":2,
-		"id":"dif:fries"
+	"fluid_ingredient": {
+		"tag": "c:sunflower_oil",
+		"amount": 10
 	},
-	"processingTime":100,
-	"oilAmount":10
+	"result": {
+		"count": 2,
+		"id": "dif:fries"
+	},
+	"processingTime": 100
 }

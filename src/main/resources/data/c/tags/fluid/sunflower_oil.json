@@ -1,7 +1,7 @@
 {
-	"replace":false,
-	"values":[
-		"dif:flowing_sunflower_oil_fluid",
-		"dif:sunflower_oil_fluid"
+	"replace": false,
+	"values": [
+		"dif:sunflower_oil_fluid",
+		"dif:flowing_sunflower_oil_fluid"
 	]
 }

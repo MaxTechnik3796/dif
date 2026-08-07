@@ -3,7 +3,6 @@ package cz.maxtechnik.dif.block.entity;
 import cz.maxtechnik.dif.block.FryingTable;
 import cz.maxtechnik.dif.block.Nuke;
 import cz.maxtechnik.dif.init.basic.DifModItems;
-import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
 import cz.maxtechnik.dif.recipe.FryingRecipe;
@@ -39,12 +38,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 public class FryingTableBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer{
+	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> SUNFLOWER_OIL_TAG = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID, net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c", "sunflower_oil"));
 	public static final int SLOTS=2;
 	public static final int INPUT_SLOT=0;
 	public static final int OUTPUT_SLOT=1;
 	public int progress=0;
 	public NonNullList<ItemStack> stacks=NonNullList.withSize(SLOTS,ItemStack.EMPTY);
-	public final FluidTank fluidTank=new FluidTank(1000,fs->fs.getFluid()==DifModFluids.SUNFLOWER_OIL.get()){
+	public final FluidTank fluidTank=new FluidTank(1000,fs->fs.is(SUNFLOWER_OIL_TAG)){
 		@Override
 		protected void onContentsChanged(){
 			super.onContentsChanged();
@@ -182,7 +182,7 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 		if(recipeOpt.isPresent()){
 			FryingRecipe recipe=recipeOpt.get().value();
 			ItemStack result=recipe.getResultItem(world.registryAccess());
-			if(be.fluidTank.getFluidAmount()>=recipe.getOilAmount()&&canInsertResult(be,result)){
+			if(recipe.matchesFluid(be.fluidTank.getFluid())&&canInsertResult(be,result)){
 				be.progress++;
 				if(be.progress>=recipe.getProcessingTime()){
 					be.getItem(INPUT_SLOT).shrink(1);
