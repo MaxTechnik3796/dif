@@ -1,30 +1,21 @@
 {
-	"type":"minecraft:block",
-	"pools":[
+	"type": "minecraft:block",
+	"pools": [
 		{
-			"bonus_rolls":0.0,
-			"conditions":[
+			"bonus_rolls": 0.0,
+			"conditions": [
 				{
-					"condition":"minecraft:survives_explosion"
+					"condition": "minecraft:survives_explosion"
 				}
 			],
-			"entries":[
+			"entries": [
 				{
-					"type":"minecraft:item",
-					"conditions":[
-						{
-							"block":"dif:sleeping_bag",
-							"condition":"minecraft:block_state_property",
-							"properties":{
-								"part":"head"
-							}
-						}
-					],
-					"name":"dif:sleeping_bag"
+					"type": "minecraft:item",
+					"name": "dif:sleeping_bag"
 				}
 			],
-			"rolls":1.0
+			"rolls": 1.0
 		}
 	],
-	"random_sequence":"dif:blocks/sleeping_bag"
+	"random_sequence": "dif:blocks/sleeping_bag"
 }

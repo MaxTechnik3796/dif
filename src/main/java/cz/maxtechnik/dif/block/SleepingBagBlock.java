@@ -60,6 +60,21 @@ public class SleepingBagBlock extends BaseEntityBlock{
 		}
 	}
 	@Override
+	public @NotNull BlockState playerWillDestroy(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player) {
+		if (!level.isClientSide && player.isCreative()) {
+			BedPart bedpart = state.getValue(PART);
+			if (bedpart == BedPart.FOOT) {
+				BlockPos headPos = pos.relative(state.getValue(FACING));
+				BlockState headState = level.getBlockState(headPos);
+				if (headState.is(this) && headState.getValue(PART) == BedPart.HEAD) {
+					level.setBlock(headPos, Blocks.AIR.defaultBlockState(), 35);
+					level.levelEvent(player, 2001, headPos, Block.getId(headState));
+				}
+			}
+		}
+		return super.playerWillDestroy(level, pos, state, player);
+	}
+	@Override
 	public void onRemove(BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,BlockState newState,boolean moving){
 		if(!blockState.is(newState.getBlock())){
 			BlockPos otherPos;
