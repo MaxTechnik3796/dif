@@ -29,14 +29,17 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 	public enum State { NO_ENERGY, CLEARING, BUILDING_FRAME, MINING, DONE }
 
 	private static final int FRAME_CHECK_INTERVAL = 40;
+	private static final int POS_CHECK_INTERVAL = 10;
 
 	// ── Stav Quarry ─────────────────────────────────────────────────────
 	private State quarryState = State.NO_ENERGY;
 	private State activeState = State.CLEARING;
 	private int frameCheckTimer = 0;
+	private int posCheckTimer = 0;
 	private float miningProgressAcc = 0f;
 	private boolean chunksNeedReload = false;
 	private boolean lastRedstoneState = false;
+	private BlockPos originPos = null;
 
 	// ── QuarryAreaManager ────────────────────────────────────────────────
 	private final QuarryAreaManager areaManager = new QuarryAreaManager();
@@ -104,11 +107,15 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 
 	// ── Inicializace oblasti ───────────────────────────────────────────
 	public void setArea(int minX, int maxX, int minZ, int maxZ) {
+		originPos = worldPosition;
 		areaManager.setArea(new QuarryArea(minX, maxX, minZ, maxZ));
 		sendData();
 	}
 
 	public void ensureAreaInitialized() {
+		if (originPos == null) {
+			originPos = worldPosition;
+		}
 		if (!areaManager.hasArea()) {
 			Direction facing = getBlockState().getValue(Quarry.FACING);
 			BlockPos center = worldPosition.relative(facing.getOpposite(), QuarryAreaManager.DEFAULT_RANGE + 1);
@@ -131,6 +138,16 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 	public void tick() {
 		super.tick();
 		if (level == null || level.isClientSide) return;
+
+		// Kontrola pohybu / kontraptce každých 10 ticků
+		if (++posCheckTimer >= POS_CHECK_INTERVAL) {
+			posCheckTimer = 0;
+			if (isVirtual() || (originPos != null && !worldPosition.equals(originPos))) {
+				resetAreaDueToMovement();
+				return;
+			}
+		}
+
 		ensureAreaInitialized();
 
 		boolean redstoneStopped = isRedstonePowered();
@@ -336,14 +353,42 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 		sendData();
 	}
 
+	public void resetAreaDueToMovement() {
+		try {
+			if (level instanceof ServerLevel sl && !level.isClientSide) {
+				areaManager.unloadForcedChunks(sl);
+			}
+			BlockPos checkPos = originPos != null ? originPos : worldPosition;
+			if (areaManager.hasArea() && level != null && !level.isClientSide) {
+				int yBase = checkPos.getY();
+				List<BlockPos> frames = areaManager.computeFramePositions(yBase);
+				for (BlockPos fp : frames) {
+					if (level.isLoaded(fp) && level.getBlockEntity(fp) instanceof QuarryFrameBlockEntity frame) {
+						if (checkPos.equals(frame.getOwnerPos())) {
+							frame.scheduleRemoval();
+						}
+					}
+				}
+			}
+		} catch (Exception ignored) {
+			// Zabezpečení proti padání při neplatném nebo přechodném stavu sveta/kontraptce
+		}
+		areaManager.setArea(null);
+		areaManager.setMiningPos(null);
+		workQueue.clear();
+		workIndex = 0;
+		miningProgressAcc = 0f;
+		originPos = null;
+		quarryState = State.NO_ENERGY;
+		activeState = State.CLEARING;
+		try {
+			sendData();
+		} catch (Exception ignored) {}
+	}
+
 	public void onQuarryRemoved() {
 		if (level == null || level.isClientSide) return;
-		if (level instanceof ServerLevel sl) areaManager.unloadForcedChunks(sl);
-		for (BlockPos fp : areaManager.computeFramePositions(worldPosition.getY())) {
-			if (level.getBlockEntity(fp) instanceof QuarryFrameBlockEntity frame && worldPosition.equals(frame.getOwnerPos())) {
-				frame.scheduleRemoval();
-			}
-		}
+		resetAreaDueToMovement();
 	}
 
 	// ── Create Kinetic NBT (read / write) ──────────────────────────────────
@@ -353,6 +398,11 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 		int ord = tag.getInt("QS");
 		quarryState = (ord >= 0 && ord < State.values().length) ? State.values()[ord] : State.NO_ENERGY;
 		workIndex = tag.getInt("WI");
+		if (tag.contains("OrigX")) {
+			originPos = new BlockPos(tag.getInt("OrigX"), tag.getInt("OrigY"), tag.getInt("OrigZ"));
+		} else {
+			originPos = worldPosition;
+		}
 		if (tag.contains("MineX")) {
 			areaManager.setMiningPos(new BlockPos(tag.getInt("MineX"), tag.getInt("MineY"), tag.getInt("MineZ")));
 		}
@@ -370,6 +420,11 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 		super.write(tag, registries, clientPacket);
 		tag.putInt("QS", quarryState.ordinal());
 		tag.putInt("WI", workIndex);
+		if (originPos != null) {
+			tag.putInt("OrigX", originPos.getX());
+			tag.putInt("OrigY", originPos.getY());
+			tag.putInt("OrigZ", originPos.getZ());
+		}
 		BlockPos miningPos = areaManager.getMiningPos();
 		if (miningPos != null) {
 			tag.putInt("MineX", miningPos.getX());

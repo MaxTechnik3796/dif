@@ -23,9 +23,9 @@ public class QuarryAreaManager{
 	public QuarryAreaManager(){
 	}
 	// ── Správa oblasti ──────────────────────────────────────────────────
-	public void setArea(QuarryArea newArea){
+	public void setArea(@org.jetbrains.annotations.Nullable QuarryArea newArea){
 		this.area=newArea;
-		this.miningBounds=newArea.miningBounds();
+		this.miningBounds=newArea!=null?newArea.miningBounds():null;
 		this.cachedFramePos=null;
 		this.cachedCenter=null;
 	}
