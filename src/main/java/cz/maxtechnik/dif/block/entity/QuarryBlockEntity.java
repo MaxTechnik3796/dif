@@ -47,7 +47,7 @@ public class QuarryBlockEntity extends KineticBlockEntity {
 	// ── Create Kinetic Stress (1 RPM = 128 SU) ──────────────────────────
 	@Override
 	public float calculateStressApplied() {
-		float impact = 64.0f;
+		float impact = 128.0f;
 		this.lastStressApplied = impact;
 		return impact;
 	}
