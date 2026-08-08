@@ -208,7 +208,7 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 		ChatFormatting speedColor=master.cachedSpeed==0?ChatFormatting.GRAY:ChatFormatting.GOLD;
 		tooltip.add(Component.literal("     Speed: ").withStyle(ChatFormatting.GRAY).append(Component.literal(master.cachedSpeed+"×").withStyle(speedColor)));
 		if(isTowerMaster())
-			tooltip.add(Component.literal("     Master").withStyle(ChatFormatting.GRAY));
+			tooltip.add(Component.literal("     Master").withStyle(ChatFormatting.AQUA));
 		return true;
 	}
 	@Override
