@@ -203,14 +203,12 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 		boolean added=super.addToGoggleTooltip(tooltip,isPlayerSneaking);
 		DistillationTankBlockEntity master=getTowerMaster();
 		if(master==null) return added;
-		tooltip.add(Component.literal(" "));
+		ChatFormatting heatColor=master.cachedHeatPoints==0?ChatFormatting.GRAY:ChatFormatting.AQUA;
+		tooltip.add(Component.literal("     Heat: ").withStyle(ChatFormatting.GRAY).append(Component.literal(master.cachedHeatPoints+" / 10").withStyle(heatColor)));
+		ChatFormatting speedColor=master.cachedSpeed==0?ChatFormatting.GRAY:ChatFormatting.GOLD;
+		tooltip.add(Component.literal("     Speed: ").withStyle(ChatFormatting.GRAY).append(Component.literal(master.cachedSpeed+"×").withStyle(speedColor)));
 		if(isTowerMaster())
-			tooltip.add(Component.literal(" ◆ TOWER MASTER").withStyle(ChatFormatting.GOLD,ChatFormatting.BOLD));
-		else tooltip.add(Component.literal(" ◆ TOWER").withStyle(ChatFormatting.GOLD,ChatFormatting.BOLD));
-		tooltip.add(Component.literal(" Heat: ").withStyle(ChatFormatting.GRAY).append(Component.literal(master.cachedHeatPoints+" / 10").withStyle(master.cachedHeatPoints>=10?ChatFormatting.GREEN:ChatFormatting.WHITE)));
-		if(master.cachedSpeed>0)
-			tooltip.add(Component.literal(" Speed: ").withStyle(ChatFormatting.GRAY).append(Component.literal(master.cachedSpeed+"×").withStyle(master.cachedSpeed>=4.0f?ChatFormatting.GREEN:ChatFormatting.AQUA)));
-		else tooltip.add(Component.literal(" No heat source!").withStyle(ChatFormatting.RED));
+			tooltip.add(Component.literal("     Master").withStyle(ChatFormatting.GRAY));
 		return true;
 	}
 	@Override
