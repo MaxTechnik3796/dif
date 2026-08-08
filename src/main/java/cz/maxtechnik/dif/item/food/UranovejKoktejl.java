@@ -29,6 +29,15 @@ public class UranovejKoktejl extends Item{
 	@Override
 	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemStack,@NotNull Level level,@NotNull LivingEntity entity){
 		ItemStack itemstack=super.finishUsingItem(itemStack,level,entity);
-		return entity instanceof Player&&((Player)entity).getAbilities().instabuild?itemstack:new ItemStack(Items.GLASS_BOTTLE);
+		if(entity instanceof Player player&&!player.getAbilities().instabuild){
+			ItemStack container=new ItemStack(Items.GLASS_BOTTLE);
+			if(itemstack.isEmpty()){
+				return container;
+			}
+			if(!player.getInventory().add(container)){
+				player.drop(container,false);
+			}
+		}
+		return itemstack;
 	}
 }

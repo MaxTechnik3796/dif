@@ -31,8 +31,7 @@ public class MolotovuvKoktejl extends Item{
 	}
 	@Override
 	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemstack,@NotNull Level world,@NotNull LivingEntity entity){
-		ItemStack retval=new ItemStack(Items.GLASS_BOTTLE);
-		super.finishUsingItem(itemstack,world,entity);
+		ItemStack itemStackResult=super.finishUsingItem(itemstack,world,entity);
 		if(!world.isClientSide()){
 			if(DifMod.rouletteBoolean(2)){
 				world.explode(null,entity.getX(),entity.getY(),entity.getZ(),15.0F,Level.ExplosionInteraction.TNT);
@@ -40,14 +39,15 @@ public class MolotovuvKoktejl extends Item{
 				entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION,100,0));
 			}
 		}
-		if(itemstack.isEmpty()){
-			return retval;
-		}else{
-			if(entity instanceof Player player&&!player.getAbilities().instabuild){
-				if(!player.getInventory().add(retval))
-					player.drop(retval,false);
+		if(entity instanceof Player player&&!player.getAbilities().instabuild){
+			ItemStack container=new ItemStack(Items.GLASS_BOTTLE);
+			if(itemStackResult.isEmpty()){
+				return container;
 			}
-			return itemstack;
+			if(!player.getInventory().add(container)){
+				player.drop(container,false);
+			}
 		}
+		return itemStackResult;
 	}
 }
