@@ -8,6 +8,7 @@ import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -15,7 +16,9 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
+
 public class DistillationTankItem extends BlockItem{
 	public DistillationTankItem(Block block,Properties properties){
 		super(block,properties);
@@ -58,6 +61,7 @@ public class DistillationTankItem extends BlockItem{
 				BlockState blockState=world.getBlockState(offsetPos);
 				if(blockState.getBlock() instanceof DistillationTank) continue;
 				if(!blockState.canBeReplaced()) return;
+				if(!world.getEntitiesOfClass(LivingEntity.class,new AABB(offsetPos)).isEmpty()) return;
 				tanksToPlace++;
 			}
 		}
