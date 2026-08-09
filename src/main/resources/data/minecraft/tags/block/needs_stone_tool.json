@@ -13,6 +13,8 @@
 		"dif:solar_panel_02_w",
 		"dif:solar_panel_03_w",
 		"dif:solar_panel_04_w",
-		"dif:quarry"
+		"dif:quarry",
+		"#dif:engines",
+		"#dif:engine_extenders"
 	]
 }

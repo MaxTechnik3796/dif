@@ -16,5 +16,14 @@
 				"stream":false
 			}
 		]
+	},
+	"engine_loop":{
+		"category":"block",
+		"sounds":[
+			{
+				"name":"dif:engine_loop",
+				"stream":false
+			}
+		]
 	}
 }

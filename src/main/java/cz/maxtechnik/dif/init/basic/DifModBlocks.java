@@ -155,12 +155,10 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>BRASS_SUPPORT=REGISTRY.register("brass_support",()->new SupportBase(BlockBehaviour.Properties.of().strength(4F,5F).sound(SoundType.METAL).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>COPPER_SUPPORT=REGISTRY.register("copper_support",()->new SupportBase(BlockBehaviour.Properties.of().strength(4F,5F).sound(SoundType.COPPER).requiresCorrectToolForDrops()));
 
-	public static final BlockBehaviour.Properties ENGINE_PROPERTIES=BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops();
+	public static final BlockBehaviour.Properties ENGINE_PROPERTIES=BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(5.0F,6.0F).requiresCorrectToolForDrops();
 	public static final DeferredBlock<Block>ENGINE_BASE=REGISTRY.register("engine_base",()->new Engine(ENGINE_PROPERTIES));
 	public static final DeferredBlock<Block>ENGINE_PORTABLE=REGISTRY.register("engine_portable",()->new Engine(ENGINE_PROPERTIES));
-
-	public static final BlockBehaviour.Properties ENGINE_EXTENDER_PROPERTIES=BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops();
-	public static final DeferredBlock<Block>ENGINE_EXTENDER=REGISTRY.register("engine_extender",()->new EngineExtender(ENGINE_EXTENDER_PROPERTIES));
+	public static final DeferredBlock<Block>ENGINE_EXTENDER=REGISTRY.register("engine_extender",()->new EngineExtender(ENGINE_PROPERTIES));
 
 	public static final DeferredBlock<Block>DEEPSLATE_MITHRIL_ORE=REGISTRY.register("deepslate_mithril_ore",()->new DropExperienceBlock(ConstantInt.of(0),BlockBehaviour.Properties.ofFullCopy(GOLD_ORE).mapColor(MapColor.DEEPSLATE).strength(4.5F,3F).sound(SoundType.DEEPSLATE)));
 
