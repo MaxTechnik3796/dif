@@ -1,0 +1,13 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    { "item": "minecraft:blaze_powder" },
+    { "item": "minecraft:gunpowder" },
+    { "item": "minecraft:gunpowder" },
+    { "item": "minecraft:coal" },
+    { "type": "neoforge:single", "fluid": "minecraft:lava", "amount": 250 }
+  ],
+  "results": [
+    { "id": "dif:jetpack_fuel_fluid", "amount": 250 }
+  ]
+}
