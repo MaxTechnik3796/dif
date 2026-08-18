@@ -76,13 +76,22 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		if(isOnCooldown(player)) return;
 		handleXpExtraction(world,pos,blockState,player,player.isShiftKeyDown()?30:1);
 	}
+	// --- Helper pro získání fluid handleru připojeného bloku ---
+	private IFluidHandler getTargetFluidHandler(Level world,BlockPos pos,BlockState blockState){
+		BlockPos targetPos=pos.relative(blockState.getValue(FACING));
+		Direction targetFace=blockState.getValue(FACING).getOpposite();
+		IFluidHandler cap=world.getCapability(Capabilities.FluidHandler.BLOCK,targetPos,targetFace);
+		if(cap==null) cap=world.getCapability(Capabilities.FluidHandler.BLOCK,targetPos,null);
+		if(cap==null) cap=world.getCapability(Capabilities.FluidHandler.BLOCK,targetPos,blockState.getValue(FACING));
+		return cap;
+	}
+
 	// --- Pravý klik — kbelík / wrench / XP vkládání ---
 	@Override
 	protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack heldItem,@NotNull BlockState blockState,
 	                                                   @NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,
 	                                                   @NotNull InteractionHand hand,@NotNull BlockHitResult hit){
 		if(world.isClientSide()) return ItemInteractionResult.SUCCESS;
-		BlockPos targetPos=pos.relative(blockState.getValue(FACING));
 		// Wrench logika — toggle XP módu
 		if(heldItem.getItem() instanceof WrenchItem){
 			world.setBlock(pos,blockState.setValue(XP,!blockState.getValue(XP)),3);
@@ -92,7 +101,7 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		// XP vkládání — prázdná ruka + XP mód zapnutý
 		if(blockState.getValue(XP)&&heldItem.isEmpty()){
 			if(isOnCooldown(player)) return ItemInteractionResult.SUCCESS;
-			handleXpInsertion(world,targetPos,blockState,player,player.isShiftKeyDown());
+			handleXpInsertion(world,pos,blockState,player,player.isShiftKeyDown());
 			return ItemInteractionResult.SUCCESS;
 		}
 		// Kbelík — POUZE pokud XP mód je vypnutý
@@ -101,7 +110,7 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 			if(fluidHandlerItem.isPresent()){
 				FluidStack containedFluid=fluidHandlerItem.get().getFluidInTank(0);
 				if(containedFluid.isEmpty()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-				IFluidHandler cap=world.getCapability(Capabilities.FluidHandler.BLOCK,targetPos,blockState.getValue(FACING));
+				IFluidHandler cap=getTargetFluidHandler(world,pos,blockState);
 				if(cap==null) return ItemInteractionResult.FAIL;
 				FluidStack fluidToFill=new FluidStack(containedFluid.getFluid(),1000);
 				int simulated=cap.fill(fluidToFill,IFluidHandler.FluidAction.SIMULATE);
@@ -120,8 +129,8 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 	// --- XP Vkládání ---
-	private void handleXpInsertion(Level world,BlockPos targetPos,BlockState blockState,Player player,boolean insertAll){
-		IFluidHandler cap=world.getCapability(Capabilities.FluidHandler.BLOCK,targetPos,blockState.getValue(FACING));
+	private void handleXpInsertion(Level world,BlockPos hatchPos,BlockState blockState,Player player,boolean insertAll){
+		IFluidHandler cap=getTargetFluidHandler(world,hatchPos,blockState);
 		if(cap==null) return;
 		int currentTotal=getActualPlayerXP(player);
 		int toInsert;
@@ -148,8 +157,7 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 	}
 	// --- XP Vytahování ---
 	private void handleXpExtraction(Level world,BlockPos hatchPos,BlockState blockState,Player player,int levelsRequested){
-		BlockPos targetPos=hatchPos.relative(blockState.getValue(FACING));
-		IFluidHandler cap=world.getCapability(Capabilities.FluidHandler.BLOCK,targetPos,blockState.getValue(FACING));
+		IFluidHandler cap=getTargetFluidHandler(world,hatchPos,blockState);
 		if(cap==null) return;
 		int targetLevel=player.experienceLevel+levelsRequested;
 		int neededXP=totalXpForLevel(targetLevel)-getActualPlayerXP(player);
