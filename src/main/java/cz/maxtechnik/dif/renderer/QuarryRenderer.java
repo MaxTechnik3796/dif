@@ -74,7 +74,7 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 	}
 	@Override
 	public int getViewDistance(){
-		return 128;
+		return Minecraft.getInstance().options.renderDistance().get() * 16;
 	}
 	// ══════════════════════════════════════════════════════════════════════
 	// ── Landmark overlay (level event) ──────────────────────────────────
@@ -99,8 +99,13 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 		ps.translate(-camPos.x,-camPos.y,-camPos.z);
 		Matrix4f m=ps.last().pose();
 		VertexConsumer vc=buf.getBuffer(RenderType.lines());
+		
+		double renderDist = mc.options.renderDistance().get() * 16.0;
+		double renderDistSq = renderDist * renderDist;
+		
 		for(QuarryLandmarkBlockEntity lm: FORMED_LANDMARKS.values()){
 			if(!lm.isFormed()) continue;
+			if(lm.getBlockPos().distToCenterSqr(camPos) > renderDistSq) continue;
 			var area=lm.getFormedArea();
 			if(area==null) continue;
 			float y=lm.getBlockPos().getY()+0.5F;
