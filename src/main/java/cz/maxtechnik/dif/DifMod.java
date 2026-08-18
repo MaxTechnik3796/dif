@@ -89,7 +89,7 @@ public class DifMod{
 	}
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event){
-		LOGGER.info("DIF MOD: Server Starting");
+		LOGGER.info("TheDifferential: Server Starting");
 	}
 	@SubscribeEvent
 	public void onCommandsRegister(RegisterCommandsEvent event){
@@ -121,13 +121,13 @@ public class DifMod{
 	public static class ClientModEvents{
 		@SubscribeEvent
 		public static void onClientSetup(FMLClientSetupEvent event){
-			LOGGER.info("DIF MOD: Client Setup");
+			LOGGER.info("TheDifferential: Client Setup");
 			event.enqueueWork(()->{
 				try{
-					LOGGER.info("DIF MOD: Flywheel BER fallback setup pro BrassLargeWaterWheel");
+					LOGGER.info("TheDifferential: Flywheel BER fallback setup for BrassLargeWaterWheel");
 					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.QUARRY_LANDMARK.get(),RenderType.cutout());
 				}catch(Exception e){
-					LOGGER.error("DIF MOD: Chyba při Flywheel setup",e);
+					LOGGER.error("TheDifferential: Chyba při Flywheel setup",e);
 				}
 			});
 		}

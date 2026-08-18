@@ -2,6 +2,7 @@ package cz.maxtechnik.dif.block;
 
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.Create;
+import com.simibubi.create.content.equipment.wrench.WrenchItem;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import net.minecraft.core.BlockPos;
@@ -83,7 +84,7 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		if(world.isClientSide()) return ItemInteractionResult.SUCCESS;
 		BlockPos targetPos=pos.relative(blockState.getValue(FACING));
 		// Wrench logika — toggle XP módu
-		if(heldItem.getItem() instanceof com.simibubi.create.content.equipment.wrench.WrenchItem){
+		if(heldItem.getItem() instanceof WrenchItem){
 			world.setBlock(pos,blockState.setValue(XP,!blockState.getValue(XP)),3);
 			AllSoundEvents.WRENCH_ROTATE.playOnServer(world,pos,1.0F,Create.RANDOM.nextFloat()*0.5F+0.5F);
 			return ItemInteractionResult.SUCCESS;
