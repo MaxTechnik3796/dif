@@ -153,10 +153,10 @@ public class JetpackHandler{
 	private static void spawnParticles(Player player){
 		if(player.level() instanceof ServerLevel sl){
 			double angle=Math.toRadians(player.getYRot());
-			double bx=player.getX()-Math.sin(angle)*0.3;
+			double bx=player.getX()+Math.sin(angle)*0.3;
 			double by=player.getY()+0.8;
-			double bz=player.getZ()+Math.cos(angle)*0.3;
-			sl.sendParticles(ParticleTypes.FLAME,bx,by,bz,2,-Math.sin(angle)*0.05,-0.1,Math.cos(angle)*0.05,0.02);
+			double bz=player.getZ()-Math.cos(angle)*0.3;
+			sl.sendParticles(ParticleTypes.FLAME,bx,by,bz,2,Math.sin(angle)*0.05,-0.1,-Math.cos(angle)*0.05,0.02);
 		}
 	}
 	private static void syncFuel(Player player,ItemStack chest){
