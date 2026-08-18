@@ -20,24 +20,14 @@ public class DifModKeys{
 	public static final String CATEGORY="key.categories.dif";
 	// Původní klávesy
 	public static final KeyMapping JETPACK_FLY=new KeyMapping("key.dif.jetpack_fly",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_SPACE,CATEGORY);
-	public static final KeyMapping KEY_HOVER=new KeyMapping("key.dif.jetpack_hover",KeyConflictContext.IN_GAME,InputConstants.Type.KEYSYM,InputConstants.KEY_V,"key.categories.dif");
-	public static final KeyMapping OPEN_ENDER_CHEST=new KeyMapping("key.dif.open_ender",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_V,CATEGORY);
-	// NOVÉ KLÁVESY PRO AUTO
-	public static final KeyMapping GEAR_UP=new KeyMapping("key.dif.gear_up",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_R,CATEGORY);
-	public static final KeyMapping GEAR_DOWN=new KeyMapping("key.dif.gear_down",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_F,CATEGORY);
-	public static final KeyMapping CAMERA_LOCK=new KeyMapping("key.dif.camera_lock",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_H,CATEGORY);
-	public static final KeyMapping CAR_GAS=new KeyMapping("key.dif.car_gas",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_W,CATEGORY);
-	public static final KeyMapping CAR_BRAKE=new KeyMapping("key.dif.car_brake",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_SPACE,CATEGORY);
+	public static final KeyMapping KEY_HOVER=new KeyMapping("key.dif.jetpack_hover",KeyConflictContext.IN_GAME,InputConstants.Type.KEYSYM,InputConstants.KEY_X,"key.categories.dif");
+	public static final KeyMapping OPEN_ENDER_CHEST=new KeyMapping("key.dif.open_ender",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_B,CATEGORY);
+
 	@SubscribeEvent
 	public static void registerKeys(RegisterKeyMappingsEvent event){
 		event.register(JETPACK_FLY);
 		event.register(KEY_HOVER);
 		event.register(OPEN_ENDER_CHEST);
-		event.register(GEAR_UP);
-		event.register(GEAR_DOWN);
-		event.register(CAMERA_LOCK);
-		event.register(CAR_GAS);
-		event.register(CAR_BRAKE);
 	}
 	@EventBusSubscriber(modid=DifMod.MODID, value=Dist.CLIENT, bus=EventBusSubscriber.Bus.GAME)
 	public static class ClientTickHandler{
@@ -45,9 +35,6 @@ public class DifModKeys{
 		public static void onClientTick(ClientTickEvent.Post event){
 			if(Minecraft.getInstance().player!=null){
 				var player=Minecraft.getInstance().player;
-				// 1. Řazení obsluhuje CarInputHandler přes InputEvent.Key
-				//    (má správnou logiku R/N/1-7 a klientskou predikci)
-				// 2. Logika Jetpacku
 				if(JETPACK_FLY.isDown()){
 					PacketDistributor.sendToServer(new JetpackFlyMessage(0,0));
 					JetpackFlyMessage.pressAction(player,0);

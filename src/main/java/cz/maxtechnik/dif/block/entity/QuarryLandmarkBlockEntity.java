@@ -244,9 +244,9 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 		if(formedArea!=null){
 			formedArea.save(tag);
 		}
-		ListTag pl=new ListTag();
-		for(BlockPos pp: partnerPositions) pl.add(NbtUtils.writeBlockPos(pp));
-		tag.put("Partners",pl);
+		long[] array=new long[partnerPositions.size()];
+		for(int i=0;i<partnerPositions.size();i++) array[i]=partnerPositions.get(i).asLong();
+		tag.putLongArray("Partners",array);
 	}
 	@Override
 	public void loadAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider p){
@@ -254,9 +254,9 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 		formed=tag.getBoolean("Formed");
 		this.formedArea=QuarryArea.load(tag);
 		partnerPositions.clear();
-		ListTag pl=tag.getList("Partners",Tag.TAG_COMPOUND);
-		for(int i=0;i<pl.size();i++){
-			NbtUtils.readBlockPos(pl.getCompound(i),"Pos").ifPresent(partnerPositions::add);
+		if(tag.contains("Partners")){
+			long[] array=tag.getLongArray("Partners");
+			for(long l: array) partnerPositions.add(BlockPos.of(l));
 		}
 	}
 	@Override
@@ -266,9 +266,9 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 		if(formedArea!=null){
 			formedArea.save(tag);
 		}
-		ListTag pl=new ListTag();
-		for(BlockPos pp: partnerPositions) pl.add(NbtUtils.writeBlockPos(pp));
-		tag.put("Partners",pl);
+		long[] array=new long[partnerPositions.size()];
+		for(int i=0;i<partnerPositions.size();i++) array[i]=partnerPositions.get(i).asLong();
+		tag.putLongArray("Partners",array);
 		return tag;
 	}
 	@Override

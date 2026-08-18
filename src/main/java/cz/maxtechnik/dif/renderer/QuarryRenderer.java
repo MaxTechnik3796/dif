@@ -77,10 +77,17 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 	// -------------------- Landmark overlay (level event) --------------------
 	private static final Map<BlockPos,QuarryLandmarkBlockEntity> FORMED_LANDMARKS=new ConcurrentHashMap<>();
 	public static void register(QuarryLandmarkBlockEntity lm){
-		FORMED_LANDMARKS.put(lm.getBlockPos(),lm);
+		if(lm.isFormed()||(lm.getBlockState().hasProperty(cz.maxtechnik.dif.block.QuarryLandmark.POWERED)&&lm.getBlockState().getValue(cz.maxtechnik.dif.block.QuarryLandmark.POWERED))){
+			FORMED_LANDMARKS.put(lm.getBlockPos(),lm);
+		}else{
+			FORMED_LANDMARKS.remove(lm.getBlockPos());
+		}
 	}
 	public static void unregister(BlockPos pos){
 		FORMED_LANDMARKS.remove(pos);
+	}
+	public static void clearAll(){
+		FORMED_LANDMARKS.clear();
 	}
 	@SubscribeEvent
 	public static void onRenderLevel(RenderLevelStageEvent event){
@@ -88,6 +95,11 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 		if(FORMED_LANDMARKS.isEmpty()) return;
 		Minecraft mc=Minecraft.getInstance();
 		if(mc.level==null) return;
+
+		// Odstranění landmarků z jiné dimenze, zničených bloků nebo neplatných levelů
+		FORMED_LANDMARKS.values().removeIf(lm -> lm.isRemoved() || lm.getLevel() == null || lm.getLevel() != mc.level || !mc.level.getBlockState(lm.getBlockPos()).is(cz.maxtechnik.dif.init.basic.DifModBlocks.QUARRY_LANDMARK.get()));
+		if(FORMED_LANDMARKS.isEmpty()) return;
+
 		var camPos=mc.gameRenderer.getMainCamera().getPosition();
 		PoseStack ps=event.getPoseStack();
 		MultiBufferSource.BufferSource buf=mc.renderBuffers().bufferSource();
@@ -97,11 +109,12 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 		VertexConsumer vc=buf.getBuffer(RenderType.lines());
 		double renderDist=mc.options.renderDistance().get()*16;
 		double renderDistSq=renderDist*renderDist;
+		java.util.Set<cz.maxtechnik.dif.util.quarry.QuarryArea> renderedAreas=new java.util.HashSet<>();
 		for(QuarryLandmarkBlockEntity lm: FORMED_LANDMARKS.values()){
 			if(lm.getBlockPos().distToCenterSqr(camPos)>renderDistSq) continue;
 			if(lm.isFormed()){
 				var area=lm.getFormedArea();
-				if(area==null) continue;
+				if(area==null||!renderedAreas.add(area)) continue;
 				float y=lm.getBlockPos().getY()+0.5F;
 				// Střed bloků (+0.5F)
 				float minX=area.minX()+0.5F, maxX=area.maxX()+0.5F;
