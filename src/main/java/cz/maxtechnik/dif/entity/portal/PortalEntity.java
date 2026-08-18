@@ -185,29 +185,21 @@ public class PortalEntity extends Entity{
 		AABB box=getBoundingBox().inflate(0.1);
 		long now=sl.getGameTime();
 
-		// Hráči (vždy)
+		// Hráči (mají přednost)
 		for(Player p: sl.getEntitiesOfClass(Player.class,box)){
 			if(isOnCooldown(p.getUUID(),now)) continue;
 			teleport(p,sl,now,true);
 		}
 
 		// Ostatní entity (pokud povoleno v configu)
-		int count=0;
 		if(DifModServerConfig.PORTAL_ALLOW_ENTITIES.get()){
-			for(Entity e: sl.getEntitiesOfClass(Entity.class,box,e->!(e instanceof Player)&&!(e instanceof PortalEntity)&&!(e instanceof Projectile))){
+			int count=0;
+			for(Entity e: sl.getEntitiesOfClass(Entity.class,box,e->!(e instanceof Player)&&!(e instanceof PortalEntity))){
 				if(count>=MAX_ENTITIES_PER_TICK) break;
 				if(isOnCooldown(e.getUUID(),now)) continue;
 				teleport(e,sl,now,false);
 				count++;
 			}
-		}
-
-		// Itemy (vždy)
-		for(ItemEntity item: sl.getEntitiesOfClass(ItemEntity.class,box)){
-			if(count>=MAX_ENTITIES_PER_TICK) break;
-			if(isOnCooldown(item.getUUID(),now)) continue;
-			teleport(item,sl,now,false);
-			count++;
 		}
 
 		cooldowns.entrySet().removeIf(e->now-e.getValue()>200);
@@ -223,6 +215,8 @@ public class PortalEntity extends Entity{
 		for(BlockPos p: blocks){
 			BlockPos behind=p.relative(facing.getOpposite());
 			if(!sl.getBlockState(behind).isFaceSturdy(sl,behind,facing)) return false;
+			// Pokud se do prostoru portálu položí blok, portál se zruší
+			if(!sl.isEmptyBlock(p)&&!sl.getBlockState(p).canBeReplaced()) return false;
 		}
 		return true;
 	}
@@ -250,12 +244,18 @@ public class PortalEntity extends Entity{
 
 		// Výpočet nové pozice, rotace a hybnosti
 		Vec3 dest=calcDestination(other,entity);
-		float yawDelta=calcYawDelta(this,other);
-		float newYaw=entity.getYRot()+yawDelta;
+		
+		// 3D transformace pohledu pro správné zachování left/right orientace i přes kolmé portály
+		Vec3 lookVec=entity.getViewVector(1.0F);
+		Vec3 newLook=transformVector(lookVec,this,other);
+		
+		float newYaw=(float)(Math.atan2(-newLook.x,newLook.z)*(180F/Math.PI));
+		float newPitch=(float)(Math.asin(-newLook.y/newLook.length())*(180F/Math.PI));
+		
 		Vec3 newMotion=transformMotion(entity.getDeltaMovement(),this,other);
 
 		if(isPlayer&&entity instanceof ServerPlayer sp){
-			sp.teleportTo(sl,dest.x,dest.y,dest.z,Set.of(),newYaw,sp.getXRot());
+			sp.teleportTo(sl,dest.x,dest.y,dest.z,Set.of(),newYaw,newPitch);
 			sp.setYBodyRot(newYaw);
 			sp.setYHeadRot(newYaw);
 			sp.yRotO=newYaw;
@@ -299,72 +299,43 @@ public class PortalEntity extends Entity{
 		}
 	}
 
-	// -------------------- Rotace kamery --------------------
+	// -------------------- Rotace a hybnost (3D Transformace) --------------------
 
 	/**
-	 * Každý portál má „referenční yaw" – směr, kterým se hráč dívá, když stojí kolmo k portálu.
-	 *
-	 * Zeď:    Hráč se dívá DO portálu = opačný směr k facing → enterYaw = facing.opposite.toYRot
-	 *         Hráč vychází VEN z portálu = směr facing → exitYaw = facing.toYRot
-	 *
-	 * Podlaha (UP): „Vpřed" portálu = upDir (dolní polovina je za tebou, horní před tebou)
-	 *         enterYaw = upDir.opposite.toYRot (díváš se dolů do portálu, nohy směrem k upDir)
-	 *         exitYaw  = upDir.opposite.toYRot
-	 *
-	 * Strop (DOWN): Zrcadlově oproti podlaze
-	 *         enterYaw = upDir.toYRot
-	 *         exitYaw  = upDir.toYRot
+	 * Rozloží vektor do lokální báze vstupního portálu a přemapuje ho do báze výstupního.
+	 * Zachovává relativní směry (např. vlevo/vpravo) napříč všemi kombinacemi rotací.
 	 */
-	private static float portalRefYaw(Direction facing,Direction upDir,boolean entering){
-		if(facing==Direction.UP){
-			// Podlaha: „vpřed" portálu = upDir
-			return upDir.toYRot();
-		}else if(facing==Direction.DOWN){
-			// Strop
-			return upDir.getOpposite().toYRot();
-		}else{
-			// Zeď
-			return entering?facing.getOpposite().toYRot():facing.toYRot();
-		}
-	}
-
-	private static float calcYawDelta(PortalEntity in,PortalEntity out){
-		float enterRef=portalRefYaw(in.getFacing(),in.getUpDir(),true);
-		float exitRef=portalRefYaw(out.getFacing(),out.getUpDir(),false);
-		return exitRef-enterRef;
-	}
-
-	// -------------------- Transformace hybnosti --------------------
-
-	/**
-	 * Rozloží hybnost do lokálního systému vstupního portálu (normal, up, right)
-	 * a přemapuje do lokálního systému výstupního portálu.
-	 */
-	private static Vec3 transformMotion(Vec3 vel,PortalEntity in,PortalEntity out){
-		double speed=vel.length();
-		if(speed<0.001) return vel;
-
-		// Vstupní báze
+	private static Vec3 transformVector(Vec3 vec,PortalEntity in,PortalEntity out){
 		Vec3 inN=dirVec(in.getFacing());
 		Vec3 inU=dirVec(in.getUpDir());
 		Vec3 inR=inN.cross(inU);
 
 		// Rozložení do lokálních os (komponenta „dovnitř" = záporný normálový směr)
-		double cIn=vel.dot(inN.scale(-1));
-		double cUp=vel.dot(inU);
-		double cRi=vel.dot(inR);
+		double cIn=vec.dot(inN.scale(-1));
+		double cUp=vec.dot(inU);
+		double cRi=vec.dot(inR);
 
-		// Výstupní báze
 		Vec3 outN=dirVec(out.getFacing());
 		Vec3 outU=dirVec(out.getUpDir());
 		Vec3 outR=outN.cross(outU);
 
 		// Složení do výstupní báze (ven z portálu = kladný normálový směr)
-		Vec3 result=outN.scale(Math.max(cIn,0.05))
-				.add(outU.scale(cUp))
-				.add(outR.scale(cRi));
+		return outN.scale(cIn).add(outU.scale(cUp)).add(outR.scale(cRi));
+	}
 
-		return result.lengthSqr()>0.001?result.normalize().scale(speed):outN.scale(speed);
+	private static Vec3 transformMotion(Vec3 vel,PortalEntity in,PortalEntity out){
+		double speed=vel.length();
+		if(speed<0.001) return vel;
+
+		Vec3 inN=dirVec(in.getFacing());
+		double cIn=vel.dot(inN.scale(-1));
+		
+		// Zabrání zasekávání v portálu – garantuje mírné vymrštění ven
+		double minIn=Math.max(cIn,0.05);
+		Vec3 adjustedVel=vel.add(inN.scale(-1).scale(minIn-cIn));
+		
+		Vec3 transformed=transformVector(adjustedVel,in,out);
+		return transformed.lengthSqr()>0.001?transformed.normalize().scale(speed):dirVec(out.getFacing()).scale(speed);
 	}
 
 	// -------------------- Hledání protějšího portálu --------------------
