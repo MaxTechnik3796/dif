@@ -202,7 +202,9 @@ public class PortalEntity extends Entity{
 			}
 		}
 
-		cooldowns.entrySet().removeIf(e->now-e.getValue()>200);
+		if(!cooldowns.isEmpty()&&(tickCount&31)==0){
+			cooldowns.values().removeIf(t->now-t>200);
+		}
 	}
 
 	private boolean isOnCooldown(UUID id,long now){
@@ -333,7 +335,7 @@ public class PortalEntity extends Entity{
 		Vec3 inR=inN.cross(inU);
 
 		// Rozložení do lokálních os (komponenta „dovnitř" = záporný normálový směr)
-		double cIn=vec.dot(inN.scale(-1));
+		double cIn=-vec.dot(inN);
 		double cUp=vec.dot(inU);
 		double cRi=vec.dot(inR);
 
@@ -350,11 +352,11 @@ public class PortalEntity extends Entity{
 		if(speed<0.001) return vel;
 
 		Vec3 inN=dirVec(in.getFacing());
-		double cIn=vel.dot(inN.scale(-1));
+		double cIn=-vel.dot(inN);
 		
 		// Zabrání zasekávání v portálu – garantuje mírné vymrštění ven
 		double minIn=Math.max(cIn,0.05);
-		Vec3 adjustedVel=vel.add(inN.scale(-1).scale(minIn-cIn));
+		Vec3 adjustedVel=vel.subtract(inN.scale(minIn-cIn));
 		
 		Vec3 transformed=transformVector(adjustedVel,in,out);
 		return transformed.lengthSqr()>0.001?transformed.normalize().scale(speed):dirVec(out.getFacing()).scale(speed);
@@ -461,8 +463,12 @@ public class PortalEntity extends Entity{
 	}
 
 	// -------------------- Utility --------------------
+	
+	private static final Vec3[] DIR_VECS = Arrays.stream(Direction.values())
+			.map(d -> new Vec3(d.getStepX(), d.getStepY(), d.getStepZ()))
+			.toArray(Vec3[]::new);
 
 	private static Vec3 dirVec(Direction d){
-		return new Vec3(d.getStepX(),d.getStepY(),d.getStepZ());
+		return d != null ? DIR_VECS[d.ordinal()] : Vec3.ZERO;
 	}
 }
