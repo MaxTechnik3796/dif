@@ -128,10 +128,10 @@ public class Drain extends Block implements SimpleWaterloggedBlock{
 	@Override
 	public @NotNull VoxelShape getShape(BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
 		return switch(blockState.getValue(FACING)){
-			case NORTH -> box(1,0,0,15,16,6);
-			case EAST -> box(10,0,1,16,16,15);
-			case WEST -> box(0,0,1,6,16,15);
-			default -> box(1,0,10,15,16,16);
+			case NORTH -> box(3,3,0,13,15,6);
+			case EAST -> box(10,3,3,16,15,13);
+			case WEST -> box(0,3,3,6,15,13);
+			default -> box(3,3,10,13,15,16);
 		};
 	}
 
