@@ -15,10 +15,7 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -26,15 +23,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-/**
- * Portálová entita. Každý hráč může mít 2 portály (blue + orange).
- * Portály mohou být na zdi, podlaze i stropě. Jakákoliv entita může projít párem portálů.
- *
- * Koordinátový systém portálu:
- *   facing = normálový směr ven ze stěny (směr, kam se entita „vynoří")
- *   upDir  = „nahoru" portálu (výšková osa 2-blokového otvoru)
- *   right  = facing × upDir
- */
 public class PortalEntity extends Entity{
 
 	// -------------------- Synched data --------------------
