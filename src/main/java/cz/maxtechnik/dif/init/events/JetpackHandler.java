@@ -31,6 +31,7 @@ public class JetpackHandler{
 	// Spotřeba paliva v mB za tick
 	private static final int FLY_COST=1;   // normální let
 	private static final int HOVER_COST=1;  // hover = 5x levnější
+	private static final Map<UUID,Integer> lastFlyTick=new HashMap<>();
 	@SubscribeEvent
 	public static void onPlayerTick(PlayerTickEvent.Post event){
 		Player player=event.getEntity();
@@ -50,6 +51,23 @@ public class JetpackHandler{
 		int fuel=Jetpack.Chestplate.getThrust(chest);
 		if(fuel<=0) return;
 		UUID uid=player.getUUID();
+		lastFlyTick.put(uid,player.tickCount);
+
+		// Pokud hráč drží Shift + Mezerník zároveň, zůstane stát na místě (výška Y = 0)
+		// s aktivovaným sneakem, takže může stavět bloky např. na truhlu bez jejího otevření
+		if(player.isShiftKeyDown()){
+			verticalVelocity.remove(uid);
+			Vec3 motion=player.getDeltaMovement();
+			player.setDeltaMovement(motion.x,0,motion.z);
+			player.fallDistance=0;
+			if(!player.level().isClientSide()){
+				Jetpack.Chestplate.setThrust(chest,fuel-FLY_COST);
+				syncFuel(player,chest);
+			}
+			spawnParticles(player);
+			return;
+		}
+
 		float accel=MAX_VELOCITY/ACCEL_TICKS;
 		float curVel=verticalVelocity.getOrDefault(uid,0F);
 		curVel=Math.min(curVel+accel,MAX_VELOCITY);
@@ -102,16 +120,25 @@ public class JetpackHandler{
 			Jetpack.Chestplate.setMode(chest,2); // vypni při prázdné nádrži
 			return;
 		}
+
+		UUID uid=player.getUUID();
+		boolean spaceDown=(player.tickCount-lastFlyTick.getOrDefault(uid,-99)<=1);
+		if(player.level().isClientSide()){
+			spaceDown=cz.maxtechnik.dif.init.other.DifModKeys.JETPACK_FLY.isDown();
+		}
+
+		// Pokud se drží mezerník (fly), stoupání nebo držení výšky při Shift+Space vyřizuje fly()
+		if(spaceDown) return;
+
 		// Drží výšku
 		Vec3 motion=player.getDeltaMovement();
 		double newY=0;
-		// Shift = klesání v hover módu
+		// Shift bez mezerníku = klesání v hover módu
 		if(player.isShiftKeyDown()) newY=-0.25;
 		player.setDeltaMovement(motion.x,newY,motion.z);
 		player.fallDistance=0;
 		// Spotřeba jen na serveru, 1 mB každých 5 ticků (5x levnější)
 		if(!player.level().isClientSide()){
-			UUID uid=player.getUUID();
 			int t=hoverTick.getOrDefault(uid,0)+1;
 			if(t>=5){
 				hoverTick.put(uid,0);
