@@ -65,8 +65,6 @@ public class DifModServerConfig{
 	public static final ModConfigSpec.DoubleValue ENGINE_LPG_PORTABLE_CONSUMPTION;
 
 	static{
-		BUILDER.comment("Dif server config (automatically synced from server to client).");
-
 		BUILDER.push("GeneralSettings");
 		SPACE_SCAFFOLDING_LIFE_TIME=BUILDER.defineInRange("space_scaffolding_life_time",300,1,MAX);
 		MEGA_TORCH_RADIUS=BUILDER.defineInRange("mega_torch_radius",128,32,8192);
@@ -108,33 +106,33 @@ public class DifModServerConfig{
 
 		BUILDER.push("Engines");
 		BUILDER.push("Diesel");
-		ENGINE_DIESEL_RPM=BUILDER.defineInRange("engine_diesel_rpm",120.0D,0.0D,DOUBLE_MAX);
-		ENGINE_DIESEL_SU=BUILDER.defineInRange("engine_diesel_su",120.0D,0.0D,DOUBLE_MAX);
-		ENGINE_DIESEL_CONSUMPTION=BUILDER.comment("Diesel consumption in mB per second (20 ticks). Default: 2.5 mB/s").defineInRange("engine_diesel_consumption",2.5D,0.0D,DOUBLE_MAX);
-		ENGINE_DIESEL_PORTABLE_SU=BUILDER.comment("Diesel stress capacity for portable engine. Default: 90.0 SU").defineInRange("engine_diesel_portable_su",90.0D,0.0D,DOUBLE_MAX);
-		ENGINE_DIESEL_PORTABLE_CONSUMPTION=BUILDER.comment("Diesel consumption for portable engine in mB per second (20 ticks). Default: 1.88 mB/s").defineInRange("engine_diesel_portable_consumption",1.88D,0.0D,DOUBLE_MAX);
+		ENGINE_DIESEL_RPM=BUILDER.defineInRange("engine_diesel_rpm",128.0D,0.0D,DOUBLE_MAX);
+		ENGINE_DIESEL_SU=BUILDER.defineInRange("engine_diesel_su",160.0D,0.0D,DOUBLE_MAX);
+		ENGINE_DIESEL_CONSUMPTION=BUILDER.defineInRange("engine_diesel_consumption",2.5D,0.0D,DOUBLE_MAX);
+		ENGINE_DIESEL_PORTABLE_SU=BUILDER.defineInRange("engine_diesel_portable_su",142.0D,0.0D,DOUBLE_MAX);
+		ENGINE_DIESEL_PORTABLE_CONSUMPTION=BUILDER.defineInRange("engine_diesel_portable_consumption",2.2D,0.0D,DOUBLE_MAX);
 		BUILDER.pop();
 
 		BUILDER.push("HeavyFuelOil");
-		ENGINE_HEAVY_FUEL_OIL_RPM=BUILDER.defineInRange("engine_heavy_fuel_oil_rpm",80.0D,0.0D,DOUBLE_MAX);
-		ENGINE_HEAVY_FUEL_OIL_SU=BUILDER.defineInRange("engine_heavy_fuel_oil_su",264.0D,0.0D,DOUBLE_MAX);
-		ENGINE_HEAVY_FUEL_OIL_CONSUMPTION=BUILDER.comment("Heavy Fuel Oil consumption in mB per second (20 ticks). Default: 3.5 mB/s").defineInRange("engine_heavy_fuel_oil_consumption",3.5D,0.0D,DOUBLE_MAX);
+		ENGINE_HEAVY_FUEL_OIL_RPM=BUILDER.defineInRange("engine_heavy_fuel_oil_rpm",96.0D,0.0D,DOUBLE_MAX);
+		ENGINE_HEAVY_FUEL_OIL_SU=BUILDER.defineInRange("engine_heavy_fuel_oil_su",292.0D,0.0D,DOUBLE_MAX);
+		ENGINE_HEAVY_FUEL_OIL_CONSUMPTION=BUILDER.defineInRange("engine_heavy_fuel_oil_consumption",3.5D,0.0D,DOUBLE_MAX);
 		BUILDER.pop();
 
 		BUILDER.push("Gasoline");
-		ENGINE_GASOLINE_RPM=BUILDER.defineInRange("engine_gasoline_rpm",210.0D,0.0D,DOUBLE_MAX);
-		ENGINE_GASOLINE_SU=BUILDER.defineInRange("engine_gasoline_su",52.0D,0.0D,DOUBLE_MAX);
-		ENGINE_GASOLINE_CONSUMPTION=BUILDER.comment("Gasoline consumption in mB per second (20 ticks). Default: 2.0 mB/s").defineInRange("engine_gasoline_consumption",2.0D,0.0D,DOUBLE_MAX);
-		ENGINE_GASOLINE_PORTABLE_SU=BUILDER.comment("Gasoline stress capacity for portable engine. Default: 39.0 SU").defineInRange("engine_gasoline_portable_su",39.0D,0.0D,DOUBLE_MAX);
-		ENGINE_GASOLINE_PORTABLE_CONSUMPTION=BUILDER.comment("Gasoline consumption for portable engine in mB per second (20 ticks). Default: 1.5 mB/s").defineInRange("engine_gasoline_portable_consumption",1.5D,0.0D,DOUBLE_MAX);
+		ENGINE_GASOLINE_RPM=BUILDER.defineInRange("engine_gasoline_rpm",192.0D,0.0D,DOUBLE_MAX);
+		ENGINE_GASOLINE_SU=BUILDER.defineInRange("engine_gasoline_su",86.0D,0.0D,DOUBLE_MAX);
+		ENGINE_GASOLINE_CONSUMPTION=BUILDER.defineInRange("engine_gasoline_consumption",2.0D,0.0D,DOUBLE_MAX);
+		ENGINE_GASOLINE_PORTABLE_SU=BUILDER.defineInRange("engine_gasoline_portable_su",74.0D,0.0D,DOUBLE_MAX);
+		ENGINE_GASOLINE_PORTABLE_CONSUMPTION=BUILDER.defineInRange("engine_gasoline_portable_consumption",1.7D,0.0D,DOUBLE_MAX);
 		BUILDER.pop();
 
 		BUILDER.push("LPG");
 		ENGINE_LPG_RPM=BUILDER.defineInRange("engine_lpg_rpm",160.0D,0.0D,DOUBLE_MAX);
-		ENGINE_LPG_SU=BUILDER.defineInRange("engine_lpg_su",52.0D,0.0D,DOUBLE_MAX);
-		ENGINE_LPG_CONSUMPTION=BUILDER.comment("LPG consumption in mB per second (20 ticks). Default: 1.5 mB/s").defineInRange("engine_lpg_consumption",1.5D,0.0D,DOUBLE_MAX);
-		ENGINE_LPG_PORTABLE_SU=BUILDER.comment("LPG stress capacity for portable engine. Default: 39.0 SU").defineInRange("engine_lpg_portable_su",39.0D,0.0D,DOUBLE_MAX);
-		ENGINE_LPG_PORTABLE_CONSUMPTION=BUILDER.comment("LPG consumption for portable engine in mB per second (20 ticks). Default: 1.13 mB/s").defineInRange("engine_lpg_portable_consumption",1.13D,0.0D,DOUBLE_MAX);
+		ENGINE_LPG_SU=BUILDER.defineInRange("engine_lpg_su",80.0D,0.0D,DOUBLE_MAX);
+		ENGINE_LPG_CONSUMPTION=BUILDER.defineInRange("engine_lpg_consumption",1.5D,0.0D,DOUBLE_MAX);
+		ENGINE_LPG_PORTABLE_SU=BUILDER.defineInRange("engine_lpg_portable_su",64.0D,0.0D,DOUBLE_MAX);
+		ENGINE_LPG_PORTABLE_CONSUMPTION=BUILDER.defineInRange("engine_lpg_portable_consumption",1.2D,0.0D,DOUBLE_MAX);
 		BUILDER.pop();
 
 		BUILDER.pop();

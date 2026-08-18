@@ -7,7 +7,6 @@ public class DifModCommonConfig{
 	public static final ModConfigSpec SPEC;
 
 	static{
-		BUILDER.comment("Dif common config.");
 		SPEC=BUILDER.build();
 	}
 }
