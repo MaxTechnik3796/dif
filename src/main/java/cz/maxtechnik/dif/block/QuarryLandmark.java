@@ -15,8 +15,8 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
@@ -33,12 +33,12 @@ public class QuarryLandmark extends BaseEntityBlock{
 	}
 	public static final DirectionProperty FACING=BlockStateProperties.FACING;
 	public static final BooleanProperty POWERED=BlockStateProperties.POWERED;
-	protected static final VoxelShape UP_SHAPE = Block.box(4D, 0D, 4D, 12D, 4D, 12D);
-	protected static final VoxelShape DOWN_SHAPE = Block.box(4D, 12D, 4D, 12D, 16D, 12D);
-	protected static final VoxelShape NORTH_SHAPE = Block.box(4D, 4D, 12D, 12D, 12D, 16D);
-	protected static final VoxelShape SOUTH_SHAPE = Block.box(4D, 4D, 0D, 12D, 12D, 4D);
-	protected static final VoxelShape WEST_SHAPE = Block.box(12D, 4D, 4D, 16D, 12D, 12D);
-	protected static final VoxelShape EAST_SHAPE = Block.box(0D, 4D, 4D, 4D, 12D, 12D);
+	protected static final VoxelShape UP_SHAPE=Block.box(4D,0D,4D,12D,4D,12D);
+	protected static final VoxelShape DOWN_SHAPE=Block.box(4D,12D,4D,12D,16D,12D);
+	protected static final VoxelShape NORTH_SHAPE=Block.box(4D,4D,12D,12D,12D,16D);
+	protected static final VoxelShape SOUTH_SHAPE=Block.box(4D,4D,0D,12D,12D,4D);
+	protected static final VoxelShape WEST_SHAPE=Block.box(12D,4D,4D,16D,12D,12D);
+	protected static final VoxelShape EAST_SHAPE=Block.box(0D,4D,4D,4D,12D,12D);
 	public QuarryLandmark(){
 		super(Properties.of().strength(0.5F,0.5F).sound(SoundType.WOOD).noCollission().noOcclusion().pushReaction(PushReaction.BLOCK).lightLevel(state->14));
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.UP).setValue(POWERED,false));

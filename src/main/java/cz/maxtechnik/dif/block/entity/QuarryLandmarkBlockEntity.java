@@ -25,8 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-
-public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggleInformation {
+public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggleInformation{
 	public static final int MAX_SEARCH=QuarryAreaManager.DEFAULT_RANGE*25; // Odpovídá zhruba 125, v originále QuarryBlockEntity.MAX_AREA_SIDE
 	public static final int MIN_SPAN=2; // min 3x3 celkový rozměr (1x1 těžební díra)
 	private final List<BlockPos> partnerPositions=new ArrayList<>(2);
@@ -169,75 +168,66 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 	}
 	// ── Goggles Tooltip ──────────────────────────────────────────────────
 	@Override
-	public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+	public boolean addToGoggleTooltip(List<Component> tooltip,boolean isPlayerSneaking){
 		Component statusComponent;
-		QuarryArea canFormArea = getFormableArea();
-
-		if (formed && formedArea != null) {
-			statusComponent = Component.literal("Formed").withStyle(ChatFormatting.GREEN);
-		} else if (canFormArea != null) {
-			statusComponent = Component.literal("Can Be Formed (3/3)").withStyle(ChatFormatting.GOLD);
-		} else {
-			int count = countConnectedLandmarks() + 1;
-			statusComponent = Component.literal("Cannot Be Formed (" + count + "/3)").withStyle(ChatFormatting.RED);
+		QuarryArea canFormArea=getFormableArea();
+		if(formed&&formedArea!=null){
+			statusComponent=Component.literal("Formed").withStyle(ChatFormatting.GREEN);
+		}else if(canFormArea!=null){
+			statusComponent=Component.literal("Can Be Formed (3/3)").withStyle(ChatFormatting.GOLD);
+		}else{
+			int count=countConnectedLandmarks()+1;
+			statusComponent=Component.literal("Cannot Be Formed ("+count+"/3)").withStyle(ChatFormatting.RED);
 		}
 		tooltip.add(Component.literal("     Status: ").withStyle(ChatFormatting.GRAY).append(statusComponent));
-
-		QuarryArea displayArea = formed ? formedArea : canFormArea;
-		if (displayArea != null) {
-			QuarryArea mining = displayArea.miningBounds();
+		QuarryArea displayArea=formed?formedArea:canFormArea;
+		if(displayArea!=null){
+			QuarryArea mining=displayArea.miningBounds();
 			tooltip.add(Component.literal("     Area: ").withStyle(ChatFormatting.GRAY)
-					.append(Component.literal(displayArea.sizeX() + " x " + displayArea.sizeZ() + " blocks").withStyle(ChatFormatting.WHITE)));
+					.append(Component.literal(displayArea.sizeX()+" x "+displayArea.sizeZ()+" blocks").withStyle(ChatFormatting.WHITE)));
 			tooltip.add(Component.literal("     Mining: ").withStyle(ChatFormatting.GRAY)
-					.append(Component.literal(mining.sizeX() + " x " + mining.sizeZ() + " blocks").withStyle(ChatFormatting.WHITE)));
+					.append(Component.literal(mining.sizeX()+" x "+mining.sizeZ()+" blocks").withStyle(ChatFormatting.WHITE)));
 		}
 		return true;
 	}
-
 	@Nullable
-	public QuarryArea getFormableArea() {
-		if (level == null || formed) return null;
-
-		List<BlockPos> nearby = new ArrayList<>();
-		for (int[] dir : new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}) {
-			BlockPos found = scanDirection(worldPosition, dir[0], dir[1]);
-			if (found != null) nearby.add(found);
+	public QuarryArea getFormableArea(){
+		if(level==null||formed) return null;
+		List<BlockPos> nearby=new ArrayList<>();
+		for(int[] dir: new int[][]{{1,0},{-1,0},{0,1},{0,-1}}){
+			BlockPos found=scanDirection(worldPosition,dir[0],dir[1]);
+			if(found!=null) nearby.add(found);
 		}
-
-		if (nearby.size() >= 2) {
-			for (int a = 0; a < nearby.size(); a++) {
-				for (int b = a + 1; b < nearby.size(); b++) {
-					QuarryArea area = tryForm(worldPosition, nearby.get(a), nearby.get(b));
-					if (area != null) return area;
+		if(nearby.size()>=2){
+			for(int a=0;a<nearby.size();a++){
+				for(int b=a+1;b<nearby.size();b++){
+					QuarryArea area=tryForm(worldPosition,nearby.get(a),nearby.get(b));
+					if(area!=null) return area;
 				}
 			}
 		}
-
-		for (BlockPos first : nearby) {
-			boolean onX = first.getZ() == worldPosition.getZ();
-			int[][] perps = onX ? new int[][]{{0, -1}, {0, 1}} : new int[][]{{-1, 0}, {1, 0}};
-			for (int[] p : perps) {
-				BlockPos third = scanDirection(first, p[0], p[1]);
-				if (third != null && !third.equals(worldPosition)) {
-					QuarryArea area = tryForm(worldPosition, first, third);
-					if (area != null) return area;
+		for(BlockPos first: nearby){
+			boolean onX=first.getZ()==worldPosition.getZ();
+			int[][] perps=onX?new int[][]{{0,-1},{0,1}}:new int[][]{{-1,0},{1,0}};
+			for(int[] p: perps){
+				BlockPos third=scanDirection(first,p[0],p[1]);
+				if(third!=null&&!third.equals(worldPosition)){
+					QuarryArea area=tryForm(worldPosition,first,third);
+					if(area!=null) return area;
 				}
 			}
 		}
-
 		return null;
 	}
-
-	public int countConnectedLandmarks() {
-		if (level == null) return 0;
-		int count = 0;
-		for (int[] dir : new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}) {
-			BlockPos found = scanDirection(worldPosition, dir[0], dir[1]);
-			if (found != null) count++;
+	public int countConnectedLandmarks(){
+		if(level==null) return 0;
+		int count=0;
+		for(int[] dir: new int[][]{{1,0},{-1,0},{0,1},{0,-1}}){
+			BlockPos found=scanDirection(worldPosition,dir[0],dir[1]);
+			if(found!=null) count++;
 		}
 		return count;
 	}
-
 	// ── Gettery ─────────────────────────────────────────────────────────
 	public boolean isFormed(){
 		return formed;
