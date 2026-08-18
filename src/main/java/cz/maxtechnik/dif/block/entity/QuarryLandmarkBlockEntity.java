@@ -35,7 +35,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 	public QuarryLandmarkBlockEntity(BlockPos pos,BlockState blockState){
 		super(DifModBlockEntities.QUARRY_LANDMARK.get(),pos,blockState);
 	}
-	// ── Klik na landmark ────────────────────────────────────────────────
+	// -------------------- Klik na landmark --------------------
 	public void onRightClick(){
 		if(level==null||level.isClientSide||formed) return;
 		// Scan 4 směry, najdi sousední landmarky
@@ -72,7 +72,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 			}
 		}
 	}
-	// ── Scan jedním směrem ──────────────────────────────────────────────
+	// -------------------- Scan jedním směrem --------------------
 	@Nullable
 	private BlockPos scanDirection(BlockPos from,int dx,int dz){
 		if(level==null) return null;
@@ -84,7 +84,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 		}
 		return null;
 	}
-	// ── Zkus vytvořit oblast ze 3 bodů ──────────────────────────────────
+	// -------------------- Zkus vytvořit oblast ze 3 bodů --------------------
 	@Nullable
 	public static QuarryArea tryForm(BlockPos a,BlockPos b,BlockPos c){
 		// Musí tvořit L-tvar: přesně jeden bod musí sdílet X s jedním a Z s druhým
@@ -102,7 +102,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 		return (corner.getX()!=p1.getX()||corner.getZ()!=p2.getZ())
 				&&(corner.getX()!=p2.getX()||corner.getZ()!=p1.getZ());
 	}
-	// ── Aplikuj formaci ─────────────────────────────────────────────────
+	// -------------------- Aplikuj formaci --------------------
 	private void applyFormation(List<BlockPos> landmarks,QuarryArea area){
 		if(level==null) return;
 		for(BlockPos lmPos: landmarks){
@@ -115,7 +115,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 			level.sendBlockUpdated(lmPos,lm.getBlockState(),lm.getBlockState(),3);
 		}
 	}
-	// ── Předat oblast quarry ────────────────────────────────────────────
+	// -------------------- Předat oblast quarry --------------------
 	public void applyToQuarry(Level level,BlockPos quarryPos){
 		if(!formed||formedArea==null) return;
 		if(!(level.getBlockEntity(quarryPos) instanceof QuarryBlockEntity qe)) return;
@@ -129,7 +129,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 			}
 		}
 	}
-	// ── Odstranění landmarku ────────────────────────────────────────────
+	// -------------------- Odstranění landmarku --------------------
 	public void onRemoved(){
 		if(level==null||level.isClientSide||!formed) return;
 		for(BlockPos pp: new ArrayList<>(partnerPositions)){
@@ -141,7 +141,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 			level.sendBlockUpdated(pp,pe.getBlockState(),pe.getBlockState(),3);
 		}
 	}
-	// ── Client rendering ────────────────────────────────────────────────
+	// -------------------- Client rendering --------------------
 	@Override
 	public void onLoad(){
 		super.onLoad();
@@ -166,7 +166,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 		if(level==null||!level.isClientSide) return;
 		QuarryRenderer.register(this);
 	}
-	// ── Goggles Tooltip ──────────────────────────────────────────────────
+	// -------------------- Goggles Tooltip --------------------
 	@Override
 	public boolean addToGoggleTooltip(List<Component> tooltip,boolean isPlayerSneaking){
 		Component statusComponent;
@@ -228,7 +228,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 		}
 		return count;
 	}
-	// ── Gettery ─────────────────────────────────────────────────────────
+	// -------------------- Gettery --------------------
 	public boolean isFormed(){
 		return formed;
 	}
@@ -236,7 +236,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 	public QuarryArea getFormedArea(){
 		return formedArea;
 	}
-	// ── NBT ─────────────────────────────────────────────────────────────
+	// -------------------- NBT --------------------
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider p){
 		super.saveAdditional(tag,p);

@@ -26,13 +26,11 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 	public QuarryRenderer(BlockEntityRendererProvider.Context context){
 		super(context);
 	}
-	// ── Barvy ───────────────────────────────────────────────────────────
+	// -------------------- Barvy --------------------
 	private static final int[] FRAME_COLOR={200,0,255,200};   // fialová
 	private static final int[] LANDMARK_COLOR={50,120,255,220}; // modrá
 	private static final int[] DRILL_COLOR={255,255,255,200}; // bílá
-	// ══════════════════════════════════════════════════════════════════════
-	// ── Quarry BER ──────────────────────────────────────────────────────
-	// ══════════════════════════════════════════════════════════════════════
+	// -------------------- Quarry BER --------------------
 	@Override
 	protected void renderSafe(QuarryBlockEntity blockEntity,float partialTick,@NotNull PoseStack poseStack,@NotNull MultiBufferSource buf,int light,int overlay){
 		blockEntity.ensureAreaInitialized();
@@ -76,9 +74,7 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 	public int getViewDistance(){
 		return Minecraft.getInstance().options.renderDistance().get()*16;
 	}
-	// ══════════════════════════════════════════════════════════════════════
-	// ── Landmark overlay (level event) ──────────────────────────────────
-	// ══════════════════════════════════════════════════════════════════════
+	// -------------------- Landmark overlay (level event) --------------------
 	private static final Map<BlockPos,QuarryLandmarkBlockEntity> FORMED_LANDMARKS=new ConcurrentHashMap<>();
 	public static void register(QuarryLandmarkBlockEntity lm){
 		FORMED_LANDMARKS.put(lm.getBlockPos(),lm);
@@ -128,9 +124,7 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 		ps.popPose();
 		buf.endBatch(RenderType.lines());
 	}
-	// ══════════════════════════════════════════════════════════════════════
-	// ── Sdílené kreslicí utility ────────────────────────────────────────
-	// ══════════════════════════════════════════════════════════════════════
+	// -------------------- Sdílené kreslicí utility --------------------
 	private static void wireRect(Matrix4f m,VertexConsumer vc,float minX,float y,float minZ,float maxX,float maxZ,int[] c){
 		wireLine(m,vc,minX,y,minZ,maxX,y,minZ,c);
 		wireLine(m,vc,maxX,y,minZ,maxX,y,maxZ,c);

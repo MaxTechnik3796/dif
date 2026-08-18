@@ -9,7 +9,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 public class NukeSoundEffect{
-	// ── Konfigurace ───────────────────────────────────────────────────────────
+	// -------------------- Konfigurace --------------------
 	private static final double MAX_DISTANCE=1024.0;
 	private static final double BLOCKS_PER_TICK=2.0; // 2 blocky = 1 tick delay
 	private static final float VOLUME_SCALE=8.0f;   // Zvýšení hlasitosti aby to bylo slyšet na 1024b
@@ -26,7 +26,7 @@ public class NukeSoundEffect{
 			SoundEvents.LIGHTNING_BOLT_THUNDER,
 			SoundEvents.LIGHTNING_BOLT_THUNDER,
 	};
-	// ── Hlavní metoda ─────────────────────────────────────────────────────────
+	// -------------------- Hlavní metoda --------------------
 	public static void play(ServerLevel level,double x,double y,double z){
 		long currentTick=level.getServer().getTickCount();
 		for(ServerPlayer player: level.getPlayers(p->p.distanceToSqr(x,y,z)<MAX_DISTANCE*MAX_DISTANCE)){

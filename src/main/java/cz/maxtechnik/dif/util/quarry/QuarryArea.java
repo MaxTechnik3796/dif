@@ -23,7 +23,7 @@ public record QuarryArea(int minX,int maxX,int minZ,int maxZ){
 	public QuarryArea miningBounds(){
 		return new QuarryArea(minX+1,maxX-1,minZ+1,maxZ-1);
 	}
-	// ── NBT ─────────────────────────────────────────────────────────────
+	// -------------------- NBT --------------------
 	/**
 	 * Uloží oblast do NBT tagu pod klíče "AMnX", "AMxX", "AMnZ", "AMxZ".
 	 */

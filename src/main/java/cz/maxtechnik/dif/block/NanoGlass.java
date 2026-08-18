@@ -49,9 +49,7 @@ public class NanoGlass extends TransparentBlock implements EntityBlock{
 		}
 		return offsets.toArray(new int[0][]);
 	}
-	// ---------------------------------------------------------------
-	// Wave scheduling (level-scoped, in-memory, ring-based)
-	// ---------------------------------------------------------------
+	// -------------------- Wave scheduling (level-scoped, in-memory, ring-based) --------------------
 	private static final Map<ServerLevel,LevelWaveState> WAVE_STATES=new WeakHashMap<>();
 	/** Stav rozpracovaných vln pro jeden level. Fronta prstenců čekajících na aplikaci. */
 	private static final class LevelWaveState{
@@ -159,9 +157,7 @@ public class NanoGlass extends TransparentBlock implements EntityBlock{
 			tickWaves(serverLevel);
 		}
 	}
-	// ---------------------------------------------------------------
-	// Block implementation
-	// ---------------------------------------------------------------
+	// -------------------- Block implementation --------------------
 	public NanoGlass(BlockBehaviour.Properties properties){
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(DARK,false).setValue(POWERED,false));

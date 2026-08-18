@@ -22,7 +22,7 @@ public class QuarryAreaManager{
 	private final List<ChunkPos> forcedChunks=new ArrayList<>();
 	public QuarryAreaManager(){
 	}
-	// ── Správa oblasti ──────────────────────────────────────────────────
+	// -------------------- Správa oblasti --------------------
 	public void setArea(@org.jetbrains.annotations.Nullable QuarryArea newArea){
 		this.area=newArea;
 		this.miningBounds=newArea!=null?newArea.miningBounds():null;
@@ -35,7 +35,7 @@ public class QuarryAreaManager{
 	public boolean hasArea(){
 		return area!=null;
 	}
-	// ── Matematika rámu ─────────────────────────────────────────────────
+	// -------------------- Matematika rámu --------------------
 	/**
 	 * Vypočítá (a zacachuje) všechny pozice bloků, kde má stát rám lomu.
 	 */
@@ -66,7 +66,7 @@ public class QuarryAreaManager{
 		computeFramePositions(yBase);
 		return cachedCenter;
 	}
-	// ── Iterace těžební pozice ──────────────────────────────────────────
+	// -------------------- Iterace těžební pozice --------------------
 	public BlockPos getMiningPos(){
 		return miningPos;
 	}
@@ -102,7 +102,7 @@ public class QuarryAreaManager{
 		miningPos=new BlockPos(nx,ny,nz);
 		return ny<=level.getMinBuildHeight();
 	}
-	// ── Chunkloading ────────────────────────────────────────────────────
+	// -------------------- Chunkloading --------------------
 	/**
 	 * Načte a "zamkne" všechny chunky, které quarry aktuálně těží.
 	 */
