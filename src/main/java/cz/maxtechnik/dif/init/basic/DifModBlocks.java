@@ -61,6 +61,7 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>VENT=REGISTRY.register("vent",()->new CustomWaterloggedHorizontalRotation(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(5F,6F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>BURNING_GENERATOR=REGISTRY.register("burning_generator",BurningGenerator::new);
 	public static final DeferredBlock<Block>FLUID_HATCH=REGISTRY.register("fluid_hatch",FluidHatch::new);
+	public static final DeferredBlock<Block>DRAIN=REGISTRY.register("drain",Drain::new);
 	public static final DeferredBlock<Block>SINGULARITATOR=REGISTRY.register("singularitator",()->new CustomWaterlogged(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>SUPER_BOX=REGISTRY.register("super_box",SuperBox::new);
 	public static final DeferredBlock<Block>OLD_CHEST=REGISTRY.register("old_chest",OldChest::new);

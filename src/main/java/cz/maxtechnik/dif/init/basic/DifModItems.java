@@ -150,6 +150,7 @@ public class DifModItems{
 
 	public static final DeferredItem<Item> BURNING_GENERATOR=block(DifModBlocks.BURNING_GENERATOR);
 	public static final DeferredItem<Item> FLUID_HATCH=block(DifModBlocks.FLUID_HATCH);
+	public static final DeferredItem<Item> DRAIN=block(DifModBlocks.DRAIN);
 
 	public static final DeferredItem<Item> SUPER_BOX=block(DifModBlocks.SUPER_BOX);
 	public static final DeferredItem<Item> OLD_CHEST=block(DifModBlocks.OLD_CHEST);

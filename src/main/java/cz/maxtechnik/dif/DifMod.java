@@ -123,6 +123,8 @@ public class DifMod{
 				try{
 					LOGGER.info("TheDifferential: Flywheel BER fallback setup for BrassLargeWaterWheel");
 					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.QUARRY_LANDMARK.get(),RenderType.cutout());
+					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.FLUID_HATCH.get(),RenderType.cutout());
+					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.DRAIN.get(),RenderType.cutout());
 				}catch(Exception e){
 					LOGGER.error("TheDifferential: Chyba při Flywheel setup",e);
 				}
