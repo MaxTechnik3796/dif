@@ -244,18 +244,13 @@ public class PortalEntity extends Entity{
 
 		// Výpočet nové pozice, rotace a hybnosti
 		Vec3 dest=calcDestination(other,entity);
-		
-		// 3D transformace pohledu pro správné zachování left/right orientace i přes kolmé portály
-		Vec3 lookVec=entity.getViewVector(1.0F);
-		Vec3 newLook=transformVector(lookVec,this,other);
-		
-		float newYaw=(float)(Math.atan2(-newLook.x,newLook.z)*(180F/Math.PI));
-		float newPitch=(float)(Math.asin(-newLook.y/newLook.length())*(180F/Math.PI));
+		// 2D rotace kamery podle požadavku hráče (neměnit pitch, pouze yaw s ohledem na chiralitu portálů)
+		float newYaw=calcNewYaw(entity.getYRot(),this,other);
 		
 		Vec3 newMotion=transformMotion(entity.getDeltaMovement(),this,other);
 
 		if(isPlayer&&entity instanceof ServerPlayer sp){
-			sp.teleportTo(sl,dest.x,dest.y,dest.z,Set.of(),newYaw,newPitch);
+			sp.teleportTo(sl,dest.x,dest.y,dest.z,Set.of(),newYaw,sp.getXRot());
 			sp.setYBodyRot(newYaw);
 			sp.setYHeadRot(newYaw);
 			sp.yRotO=newYaw;
@@ -297,6 +292,24 @@ public class PortalEntity extends Entity{
 					center.z+faceVec.z*dist
 			);
 		}
+	}
+
+	// -------------------- Rotace kamery (2D) --------------------
+
+	private static float getPortalBaseYaw(PortalEntity p){
+		return p.getFacing().getAxis() == Direction.Axis.Y ? p.getUpDir().toYRot() : p.getFacing().toYRot();
+	}
+	
+	private static float calcNewYaw(float oldYaw, PortalEntity in, PortalEntity out){
+		boolean inIsWall = in.getFacing().getAxis() != Direction.Axis.Y;
+		boolean outIsWall = out.getFacing().getAxis() != Direction.Axis.Y;
+		
+		float delta = getPortalBaseYaw(out) - getPortalBaseYaw(in);
+		if (inIsWall && outIsWall) {
+			delta += 180.0F;
+		}
+		
+		return net.minecraft.util.Mth.wrapDegrees(oldYaw + delta);
 	}
 
 	// -------------------- Rotace a hybnost (3D Transformace) --------------------

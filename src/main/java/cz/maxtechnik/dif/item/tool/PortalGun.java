@@ -98,9 +98,9 @@ public class PortalGun extends Item{
 
 		// Střelba
 		if(!world.isClientSide){
-			if(energy>=1){
+			if(energy>=1 || player.isCreative()){
 				if(firePortal((ServerLevel)world,player,isBlue)){
-					setEnergy(gun,energy-1);
+					if(!player.isCreative()) setEnergy(gun,energy-1);
 					player.getCooldowns().addCooldown(this,10);
 				}
 			}else{
