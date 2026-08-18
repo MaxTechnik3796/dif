@@ -34,6 +34,7 @@ public class PortalRenderer extends EntityRenderer<PortalEntity>{
 				poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
 			}else{
 				poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+				poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
 			}
 		}else{
 			poseStack.mulPose(Axis.YP.rotationDegrees(-facing.toYRot()));
