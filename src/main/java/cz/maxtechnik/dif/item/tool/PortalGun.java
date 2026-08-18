@@ -15,6 +15,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
@@ -23,45 +25,57 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Set;
+
 public class PortalGun extends Item{
+
 	public PortalGun(){
 		super(new Properties().stacksTo(1));
 	}
+
+	// -------------------- NBT helpers --------------------
+
 	private boolean isBlueMode(ItemStack gun){
-		var data=gun.get(DataComponents.CUSTOM_DATA);
-		if(data==null) return true;
-		return data.copyTag().getBoolean("mode");
+		CustomData data=gun.get(DataComponents.CUSTOM_DATA);
+		return data==null||data.copyTag().getBoolean("mode");
 	}
-	private void setMode(ItemStack gun,boolean mode){
-		net.minecraft.world.item.component.CustomData.update(DataComponents.CUSTOM_DATA,gun,tag->tag.putBoolean("mode",mode));
-		gun.set(DataComponents.CUSTOM_MODEL_DATA,new net.minecraft.world.item.component.CustomModelData(mode?0:1));
+
+	private void setMode(ItemStack gun,boolean blue){
+		CustomData.update(DataComponents.CUSTOM_DATA,gun,tag->tag.putBoolean("mode",blue));
+		gun.set(DataComponents.CUSTOM_MODEL_DATA,new CustomModelData(blue?0:1));
 	}
+
 	private int getEnergy(ItemStack gun){
-		var data=gun.get(DataComponents.CUSTOM_DATA);
+		CustomData data=gun.get(DataComponents.CUSTOM_DATA);
 		if(data==null) return DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get();
 		return data.copyTag().getInt("energy");
 	}
+
 	private void setEnergy(ItemStack gun,int energy){
-		gun.update(DataComponents.CUSTOM_DATA,
-				net.minecraft.world.item.component.CustomData.EMPTY,
-				cd->{
-					var tag=cd.copyTag().copy();
-					tag.putInt("energy",Math.clamp(energy,0,DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get()));
-					return net.minecraft.world.item.component.CustomData.of(tag);
-				});
+		int max=DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get();
+		gun.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,cd->{
+			var tag=cd.copyTag().copy();
+			tag.putInt("energy",Math.clamp(energy,0,max));
+			return CustomData.of(tag);
+		});
 	}
+
+	// -------------------- use() --------------------
+
 	@Override
 	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world,Player player,@NotNull InteractionHand hand){
 		ItemStack gun=player.getItemInHand(hand);
-		// Inicializace pokud chybí data
-		var data=gun.get(DataComponents.CUSTOM_DATA);
+
+		// Inicializace dat
+		CustomData data=gun.get(DataComponents.CUSTOM_DATA);
 		if(data==null||!data.copyTag().contains("energy")){
 			setMode(gun,true);
 			setEnergy(gun,DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get());
 		}
+
 		boolean isBlue=isBlueMode(gun);
 		int energy=getEnergy(gun);
-		// Dobíjení ender pearlem
+
+		// Dobíjení ender perlou
 		ItemStack off=player.getOffhandItem();
 		if(off.is(Items.ENDER_PEARL)&&energy<DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get()){
 			if(!world.isClientSide){
@@ -71,16 +85,18 @@ public class PortalGun extends Item{
 			}
 			return InteractionResultHolder.sidedSuccess(gun,world.isClientSide());
 		}
+
 		// Přepínání módu
 		if(player.isShiftKeyDown()){
 			if(!world.isClientSide){
-				boolean newMode=!isBlue;
-				setMode(gun,newMode);
-				player.displayClientMessage(Component.literal(newMode?"Mode: Blue":"Mode: Orange"),true);
+				boolean m=!isBlue;
+				setMode(gun,m);
+				player.displayClientMessage(Component.literal(m?"Mode: Blue":"Mode: Orange"),true);
 			}
 			return InteractionResultHolder.sidedSuccess(gun,world.isClientSide());
 		}
-		// Výstřel
+
+		// Střelba
 		if(!world.isClientSide){
 			if(energy>=1){
 				if(firePortal((ServerLevel)world,player,isBlue)){
@@ -93,144 +109,115 @@ public class PortalGun extends Item{
 		}
 		return InteractionResultHolder.success(gun);
 	}
-	private Vec3 alignPortal(ServerLevel world,BlockPos hitPos,Direction face,Direction extDir,Vec3 hitLoc){
-		Vec3 C=Vec3.atCenterOf(hitPos);
-		Vec3 normal=Vec3.atLowerCornerOf(face.getNormal());
-		Vec3 up=Vec3.atLowerCornerOf(extDir.getNormal());
-		Vec3 right=normal.cross(up);
-		Direction rightDir=Direction.getNearest(right.x,right.y,right.z);
-		double valUp=hitLoc.dot(up);
-		double centerUp=C.dot(up);
-		BlockPos tryPos1=hitPos.relative(extDir); // UP
-		BlockPos tryPos2=hitPos.relative(extDir.getOpposite()); // DOWN
-		boolean upSturdy=world.getBlockState(tryPos1).isFaceSturdy(world,tryPos1,face);
-		boolean downSturdy=world.getBlockState(tryPos2).isFaceSturdy(world,tryPos2,face);
-		double alignedUpVal;
-		if(upSturdy&&downSturdy){
-			alignedUpVal=valUp;
-		}else if(upSturdy){
-			alignedUpVal=centerUp+0.5;
-		}else if(downSturdy){
-			alignedUpVal=centerUp-0.5;
-		}else{
-			return null;
-		}
-		double valRight=hitLoc.dot(right);
-		double centerRight=C.dot(right);
-		double offsetRight=valRight-centerRight;
-		double alignedRightVal=valRight;
-		boolean rightSturdy=true;
-		boolean leftSturdy=true;
-		net.minecraft.world.phys.Vec3 wallPos=normal.scale(hitLoc.dot(normal))
-				.add(up.scale(alignedUpVal)).add(right.scale(centerRight))
-				.subtract(normal.scale(0.1));
-		for(double h: new double[]{-0.9,0.0,0.9}){
-			BlockPos bPos=BlockPos.containing(wallPos.add(up.scale(h)));
-			BlockPos rPos=bPos.relative(rightDir);
-			BlockPos lPos=bPos.relative(rightDir.getOpposite());
-			if(!world.getBlockState(rPos).isFaceSturdy(world,rPos,face)){
-				rightSturdy=false;
-			}
-			if(!world.getBlockState(lPos).isFaceSturdy(world,lPos,face)){
-				leftSturdy=false;
-			}
-		}
-		if(offsetRight>0&&!rightSturdy){
-			alignedRightVal=centerRight;
-		}else if(offsetRight<0&&!leftSturdy){
-			alignedRightVal=centerRight;
-		}
-		double valNormal=hitLoc.dot(normal);
-		return normal.scale(valNormal).add(up.scale(alignedUpVal)).add(right.scale(alignedRightVal));
-	}
+
+	// -------------------- Placement --------------------
+
 	private boolean firePortal(ServerLevel world,Player player,boolean isBlue){
-		Vec3 start=player.getEyePosition();
-		var hit=world.clip(new ClipContext(start,start.add(player.getLookAngle().scale(128.0)),ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,player));
+		Vec3 eye=player.getEyePosition();
+		var hit=world.clip(new ClipContext(eye,eye.add(player.getLookAngle().scale(128)),
+				ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,player));
 		if(hit.getType()!=HitResult.Type.BLOCK) return false;
+
 		Direction face=hit.getDirection();
 		BlockPos hitPos=hit.getBlockPos();
 		Direction extDir=(face.getAxis()==Direction.Axis.Y)?player.getDirection():Direction.UP;
-		Vec3 alignedLoc=alignPortal(world,hitPos,face,extDir,hit.getLocation());
-		if(alignedLoc==null){
-			player.displayClientMessage(Component.literal("[!] Invalid placement (needs support)"),true);
+
+		Vec3 spawnPos=alignPortal(world,hitPos,face,extDir,hit.getLocation());
+		if(spawnPos==null){
+			player.displayClientMessage(Component.literal("[!] Invalid placement"),true);
 			return false;
 		}
-		// Shift 0.02 blocks away from the wall to prevent z-fighting / texture glitching
-		Vec3 spawnPos=alignedLoc.add(Vec3.atLowerCornerOf(face.getNormal()).scale(0.02));
-		Set<BlockPos> uniquePositions=PortalEntity.getPortalSupportBlocks(spawnPos,extDir,face);
-		// 1. Check space in all unique block positions (up to 4, strictly on the air side)
-		boolean space=true;
-		for(BlockPos p: uniquePositions){
-			if(!world.isEmptyBlock(p)&&!world.getBlockState(p).canBeReplaced()){
-				space=false;
-				break;
-			}
-		}
-		if(!space){
-			player.displayClientMessage(Component.literal("[!] Invalid placement (no space)"),true);
-			return false;
-		}
-		// 2. Check support behind all unique block positions
-		boolean support=true;
-		for(BlockPos p: uniquePositions){
-			BlockPos supPos=p.relative(face.getOpposite());
-			if(!world.getBlockState(supPos).isFaceSturdy(world,supPos,face)){
-				support=false;
-				break;
-			}
-		}
-		if(!support){
-			player.displayClientMessage(Component.literal("[!] Invalid placement (needs support)"),true);
-			return false;
-		}
+
+		// Kontrola překryvu s cizími portály
 		PortalEntity portal=new PortalEntity(world,player.getUUID(),isBlue,face,extDir,spawnPos);
-		boolean overlaps=false;
-		List<PortalEntity> existingPortals=world.getEntitiesOfClass(
-				PortalEntity.class,
-				portal.getBoundingBox().inflate(0.01)
-		);
-		for(PortalEntity other: existingPortals){
-			if(other.getOwner()!=null&&other.getOwner().equals(player.getUUID())&&other.isBlue()==isBlue){
-				continue;
-			}
-			if(portal.getBoundingBox().inflate(0.01).intersects(other.getBoundingBox())){
-				overlaps=true;
-				break;
+		List<PortalEntity> nearby=world.getEntitiesOfClass(PortalEntity.class,portal.getBoundingBox().inflate(0.05));
+		for(PortalEntity o: nearby){
+			if(o.getOwner()!=null&&o.getOwner().equals(player.getUUID())&&o.isBlue()==isBlue) continue;
+			if(portal.getBoundingBox().intersects(o.getBoundingBox())){
+				player.displayClientMessage(Component.literal("[!] Invalid position"),true);
+				return false;
 			}
 		}
-		if(overlaps){
-			player.displayClientMessage(Component.literal("[!] Invalid position"),true);
-			return false;
-		}
+
 		PortalEntity.removeOldPortal(world,player.getUUID(),isBlue);
-		// Save position in PortalData BEFORE spawning entity so that updateLinks during onAddedToLevel finds it!
 		PortalData.get(world).set(player.getUUID(),isBlue,portal.blockPosition());
 		world.addFreshEntity(portal);
 		return true;
 	}
-	@Override
-	public boolean isBarVisible(@NotNull ItemStack stack){
-		return getEnergy(stack)<DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get();
+
+	/**
+	 * Pixel-grid zarovnání portálu (1/16 bloku).
+	 * Zkouší pozice v pořadí: off-grid pixel snap → snap k horní hraně → snap k dolní hraně → střed.
+	 * Každou pozici validuje přes kompletní footprint (podpora + volný prostor).
+	 * Pokud žádná pozice nevyhovuje, vrací null.
+	 */
+	private Vec3 alignPortal(ServerLevel world,BlockPos hitPos,Direction face,Direction extDir,Vec3 hitLoc){
+		Vec3 center=Vec3.atCenterOf(hitPos);
+		Vec3 normal=Vec3.atLowerCornerOf(face.getNormal());
+		Vec3 up=Vec3.atLowerCornerOf(extDir.getNormal());
+		Vec3 right=normal.cross(up);
+
+		double cU=center.dot(up);
+		double cR=center.dot(right);
+		double nVal=center.dot(normal)+0.5; // povrch stěny
+
+		double hitU=hitLoc.dot(up);
+		double hitR=hitLoc.dot(right);
+
+		// Kandidáti pro výšku: off-grid snap, pak hrany bloku, pak střed
+		double offU=snapToGrid(Math.clamp(hitU,cU-0.5,cU+0.5));
+		double[] tryU={offU,cU+0.5,cU-0.5,cU};
+
+		// Kandidáti pro šířku: off-grid snap, pak střed
+		double offR=snapToGrid(Math.clamp(hitR,cR-0.5,cR+0.5));
+		double[] tryR={offR,cR};
+
+		for(double u: tryU){
+			for(double r: tryR){
+				Vec3 pos=normal.scale(nVal+0.02).add(up.scale(u)).add(right.scale(r));
+				if(isValidPortalPos(world,pos,extDir,face)) return pos;
+			}
+		}
+		return null;
 	}
-	@Override
-	public int getBarWidth(@NotNull ItemStack stack){
-		return Math.round((float)getEnergy(stack)/DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get()*13);
+
+	/**
+	 * Ověří kompletní footprint portálu: každý překrytý blok musí mít za sebou oporu a před sebou vzduch.
+	 */
+	private boolean isValidPortalPos(ServerLevel world,Vec3 pos,Direction upDir,Direction face){
+		Set<BlockPos> blocks=PortalEntity.getPortalFootprint(pos,upDir,face);
+		if(blocks.isEmpty()) return false;
+		for(BlockPos p: blocks){
+			BlockPos behind=p.relative(face.getOpposite());
+			if(!world.getBlockState(behind).isFaceSturdy(world,behind,face)) return false;
+			if(!world.isEmptyBlock(p)&&!world.getBlockState(p).canBeReplaced()) return false;
+		}
+		return true;
 	}
-	@Override
-	public int getBarColor(@NotNull ItemStack stack){
-		float f=(float)getEnergy(stack)/DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get();
-		return FastColor.ARGB32.color(0,(int)(f*255),255-((int)(f*255)),0);
+
+	private static double snapToGrid(double v){
+		return Math.round(v*16.0)/16.0;
 	}
+
+	// -------------------- Durability bar --------------------
+
 	@Override
-	public boolean isEnchantable(@NotNull ItemStack itemStack){
-		return false;
+	public boolean isBarVisible(@NotNull ItemStack s){
+		return getEnergy(s)<DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get();
 	}
+
 	@Override
-	public boolean isRepairable(@NotNull ItemStack itemStack){
-		return false;
+	public int getBarWidth(@NotNull ItemStack s){
+		return Math.round((float)getEnergy(s)/DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get()*13);
 	}
+
 	@Override
-	public boolean isValidRepairItem(@NotNull ItemStack pToRepair,@NotNull ItemStack pRepair){
-		return false;
+	public int getBarColor(@NotNull ItemStack s){
+		float f=(float)getEnergy(s)/DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get();
+		return FastColor.ARGB32.color(0,(int)(f*255),255-(int)(f*255),0);
 	}
+
+	@Override public boolean isEnchantable(@NotNull ItemStack s){ return false; }
+	@Override public boolean isRepairable(@NotNull ItemStack s){ return false; }
+	@Override public boolean isValidRepairItem(@NotNull ItemStack a,@NotNull ItemStack b){ return false; }
 }
