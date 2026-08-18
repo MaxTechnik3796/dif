@@ -2,13 +2,13 @@ package cz.maxtechnik.dif.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import cz.maxtechnik.dif.block.entity.QuarryBlockEntity;
 import cz.maxtechnik.dif.block.entity.QuarryBlockEntity.State;
 import cz.maxtechnik.dif.block.entity.QuarryLandmarkBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -18,15 +18,14 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 @EventBusSubscriber(value=Dist.CLIENT)
 public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity>{
-	public QuarryRenderer(BlockEntityRendererProvider.Context context) {
+	public QuarryRenderer(BlockEntityRendererProvider.Context context){
 		super(context);
 	}
-
 	// ── Barvy ───────────────────────────────────────────────────────────
 	private static final int[] FRAME_COLOR={200,0,255,200};   // fialová
 	private static final int[] LANDMARK_COLOR={50,120,255,220}; // modrá
@@ -35,24 +34,23 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 	// ── Quarry BER ──────────────────────────────────────────────────────
 	// ══════════════════════════════════════════════════════════════════════
 	@Override
-	protected void renderSafe(QuarryBlockEntity be,float partialTick,@NotNull PoseStack ps,
-	                       @NotNull MultiBufferSource buf,int light,int overlay){
-		be.ensureAreaInitialized();
-		State state=be.getQuarryState();
+	protected void renderSafe(QuarryBlockEntity blockEntity,float partialTick,@NotNull PoseStack poseStack,@NotNull MultiBufferSource buf,int light,int overlay){
+		blockEntity.ensureAreaInitialized();
+		State state=blockEntity.getQuarryState();
 		if(state==State.DONE) return;
 		Level level=Minecraft.getInstance().level;
-		if(state==State.MINING&&level!=null&&be.isFrameIntact(level)) return;
-		if(state==State.NO_ENERGY&&level!=null&&be.isFrameIntact(level)) return;
-		BlockPos qPos=be.getBlockPos();
-		// Střed bloků (+0.5f)
-		float minX=be.getAreaMinX()-qPos.getX()+0.5f;
-		float maxX=be.getAreaMaxX()-qPos.getX()+0.5f;
-		float minZ=be.getAreaMinZ()-qPos.getZ()+0.5f;
-		float maxZ=be.getAreaMaxZ()-qPos.getZ()+0.5f;
-		ps.pushPose();
-		Matrix4f m=ps.last().pose();
+		if(state==State.MINING&&level!=null&&blockEntity.isFrameIntact(level)) return;
+		if(state==State.NO_ENERGY&&level!=null&&blockEntity.isFrameIntact(level)) return;
+		BlockPos qPos=blockEntity.getBlockPos();
+		// Střed bloků (+0.5F)
+		float minX=blockEntity.getAreaMinX()-qPos.getX()+0.5F;
+		float maxX=blockEntity.getAreaMaxX()-qPos.getX()+0.5F;
+		float minZ=blockEntity.getAreaMinZ()-qPos.getZ()+0.5F;
+		float maxZ=blockEntity.getAreaMaxZ()-qPos.getZ()+0.5F;
+		poseStack.pushPose();
+		Matrix4f m=poseStack.last().pose();
 		VertexConsumer vc=buf.getBuffer(RenderType.lines());
-		float yBot=0.5f, yTop=3.5f;
+		float yBot=0.5F, yTop=3.5F;
 		wireRect(m,vc,minX,yBot,minZ,maxX,maxZ,FRAME_COLOR);
 		wireRect(m,vc,minX,yTop,minZ,maxX,maxZ,FRAME_COLOR);
 		wirePillar(m,vc,minX,minZ,yBot,yTop);
@@ -60,15 +58,15 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 		wirePillar(m,vc,minX,maxZ,yBot,yTop);
 		wirePillar(m,vc,maxX,maxZ,yBot,yTop);
 		if(state==State.MINING){
-			BlockPos mp=be.getMiningPos();
+			BlockPos mp=blockEntity.getMiningPos();
 			if(mp!=null){
-				float dx=mp.getX()-qPos.getX()+0.5f;
-				float dz=mp.getZ()-qPos.getZ()+0.5f;
+				float dx=mp.getX()-qPos.getX()+0.5F;
+				float dz=mp.getZ()-qPos.getZ()+0.5F;
 				float dy=mp.getY()-qPos.getY();
 				wireLine(m,vc,dx,yTop,dz,dx,dy,dz,DRILL_COLOR);
 			}
 		}
-		ps.popPose();
+		poseStack.popPose();
 	}
 	@Override
 	public boolean shouldRenderOffScreen(@NotNull QuarryBlockEntity be){
@@ -88,7 +86,6 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 	public static void unregister(BlockPos pos){
 		FORMED_LANDMARKS.remove(pos);
 	}
-	@SuppressWarnings("unused")
 	@SubscribeEvent
 	public static void onRenderLevel(RenderLevelStageEvent event){
 		if(event.getStage()!=RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) return;
@@ -106,10 +103,10 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 			if(!lm.isFormed()) continue;
 			var area=lm.getFormedArea();
 			if(area==null) continue;
-			float y=lm.getBlockPos().getY()+0.5f;
-			// Střed bloků (+0.5f)
-			float minX=area.minX()+0.5f, maxX=area.maxX()+0.5f;
-			float minZ=area.minZ()+0.5f, maxZ=area.maxZ()+0.5f;
+			float y=lm.getBlockPos().getY()+0.5F;
+			// Střed bloků (+0.5F)
+			float minX=area.minX()+0.5F, maxX=area.maxX()+0.5F;
+			float minZ=area.minZ()+0.5F, maxZ=area.maxZ()+0.5F;
 			wireRect(m,vc,minX,y,minZ,maxX,maxZ,LANDMARK_COLOR);
 		}
 		ps.popPose();
@@ -130,7 +127,7 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 	private static void wireLine(Matrix4f m,VertexConsumer vc,float x0,float y0,float z0,float x1,float y1,float z1,int[] c){
 		float dx=x1-x0, dy=y1-y0, dz=z1-z0;
 		float len=(float)Math.sqrt(dx*dx+dy*dy+dz*dz);
-		if(len<0.001f) return;
+		if(len<0.001F) return;
 		float nx=dx/len, ny=dy/len, nz=dz/len;
 		vc.addVertex(m,x0,y0,z0).setColor(c[0],c[1],c[2],c[3]).setNormal(nx,ny,nz);
 		vc.addVertex(m,x1,y1,z1).setColor(c[0],c[1],c[2],c[3]).setNormal(nx,ny,nz);

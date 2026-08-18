@@ -151,7 +151,7 @@ public class DifMod{
 			event.registerSpriteSet(DifModParticles.FIREBALL.get(),FireballParticle.Factory::new);
 		}
 	}
-	public static final String goggleTooltipFix="    ";
+	public static final String goggleTooltipFix="     ";
 	public static boolean rouletteBoolean(int range){
 		return 0==Mth.nextInt(RandomSource.create(),0,range);
 	}
