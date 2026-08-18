@@ -82,7 +82,6 @@ public class DifMod{
 		// REGISTRACE EVENTŮ
 		NeoForge.EVENT_BUS.register(this);
 		NeoForge.EVENT_BUS.register(JetpackHandler.class);
-		NeoForge.EVENT_BUS.addListener(DifMod::onRenderGui);
 		bus.addListener(DifModTabs::addCreative);
 		modContainer.registerConfig(ModConfig.Type.COMMON,DifModCommonConfig.SPEC);
 		bus.addListener(DifModCapabilities::registerCapabilities);
@@ -113,9 +112,6 @@ public class DifMod{
 		workQueue.removeAll(actions);
 	}
 	public static void onRenderGui(RenderGuiLayerEvent.Post event){
-		if(event.getName().equals(net.neoforged.neoforge.client.gui.VanillaGuiLayers.HOTBAR)){
-			CarHudOverlay.render(event.getGuiGraphics());
-		}
 	}
 	@EventBusSubscriber(modid=MODID, bus=EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
 	public static class ClientModEvents{
@@ -136,7 +132,6 @@ public class DifMod{
 			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(),context->new FryingTableRenderer());
 			event.registerBlockEntityRenderer(DifModBlockEntities.QUARRY.get(),QuarryRenderer::new);
 			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(),context->new ChunkLoaderRenderer());
-			event.registerEntityRenderer(DifModEntities.FORMULA.get(),CarRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_EXPLOSION.get(),NoopRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_MUSHROOM.get(),NoopRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_WAVE.get(),NoopRenderer::new);

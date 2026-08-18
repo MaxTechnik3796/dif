@@ -195,7 +195,6 @@ public class DifModItems{
 	public static final DeferredItem<Item> TREE_BARK_BLOCK=block(DifModBlocks.TREE_BARK_BLOCK);
 	public static final DeferredItem<Item> FRYING_TABLE=block(DifModBlocks.FRYING_TABLE);
 
-	public static final DeferredItem<Item> FORMULA=REGISTRY.register("formula",()->new FormulaItem(new Item.Properties().stacksTo(1)));
 
 
 	//Weapons:

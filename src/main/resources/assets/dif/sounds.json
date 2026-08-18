@@ -1,13 +1,4 @@
 {
-	"formula_engine":{
-		"category":"neutral",
-		"sounds":[
-			{
-				"name":"dif:f1",
-				"stream":true
-			}
-		]
-	},
 	"nano_glass":{
 		"category":"block",
 		"sounds":[

@@ -13,7 +13,6 @@
 	"effect.dif.redstone_not_iq":"Redstonenot Anti-Boost",
 	"effect.dif.drank":"Drank",
 	"effect.dif.wtf":"WTF",
-	"subtitles.formula_engine":"Formula Engine",
 
 	"gui.dif.inventory":"Inventory",
 	"gui.dif.burning_generator":"Burning Generator",
@@ -250,8 +249,6 @@
 	"item.dif.quarry_engine_iron":"Quarry Iron Engine",
 	"item.dif.quarry_engine_gold":"Quarry Gold Engine",
 	"item.dif.quarry_engine_diamond":"Quarry Diamond Engine",
-	"entity.dif.formula":"Formula",
-	"item.dif.formula":"Formula",
 	"entity.dif.nuclear_explosion":"Nuclear Explosion",
 	"entity.dif.nuclear_mushroom":"Nuclear Mushroom",
 	"entity.dif.nuclear_radiation":"Nuclear Radiation",

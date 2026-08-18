@@ -5,7 +5,6 @@ import cz.maxtechnik.dif.entity.bomb.NuclearExplosionEntity;
 import cz.maxtechnik.dif.entity.bomb.NuclearMushroomEntity;
 import cz.maxtechnik.dif.entity.bomb.NuclearRadiationEntity;
 import cz.maxtechnik.dif.entity.bomb.NuclearWaveEntity;
-import cz.maxtechnik.dif.entity.vehicle.FormulaEntity;
 import cz.maxtechnik.dif.entity.creature.SilkwormMothEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
@@ -14,11 +13,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 public class DifModEntities{
 	public static final DeferredRegister<EntityType<?>> REGISTRY=DeferredRegister.create(Registries.ENTITY_TYPE,DifMod.MODID);
-	public static final DeferredHolder<EntityType<?>,EntityType<FormulaEntity>> FORMULA=REGISTRY.register("formula",
-			()->EntityType.Builder.of(FormulaEntity::new,MobCategory.MISC)
-					.sized(2F,1.8F)
-					.clientTrackingRange(10)
-					.build("formula"));
 	public static final DeferredHolder<EntityType<?>,EntityType<NuclearExplosionEntity>> NUCLEAR_EXPLOSION=
 			REGISTRY.register("nuclear_explosion",()->
 					EntityType.Builder.of(NuclearExplosionEntity::new,MobCategory.MISC)
