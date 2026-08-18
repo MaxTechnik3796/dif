@@ -1,11 +1,14 @@
 package cz.maxtechnik.dif.item.tool;
 
 import cz.maxtechnik.dif.config.DifModServerConfig;
+import cz.maxtechnik.dif.entity.portal.PortalData;
+import cz.maxtechnik.dif.entity.portal.PortalEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -15,7 +18,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.Set;
 public class PortalGun extends Item{
 	public PortalGun(){
 		super(new Properties().stacksTo(1));
@@ -86,11 +93,11 @@ public class PortalGun extends Item{
 		}
 		return InteractionResultHolder.success(gun);
 	}
-	private net.minecraft.world.phys.Vec3 alignPortal(ServerLevel world,BlockPos hitPos,Direction face,Direction extDir,net.minecraft.world.phys.Vec3 hitLoc){
-		net.minecraft.world.phys.Vec3 C=net.minecraft.world.phys.Vec3.atCenterOf(hitPos);
-		net.minecraft.world.phys.Vec3 normal=net.minecraft.world.phys.Vec3.atLowerCornerOf(face.getNormal());
-		net.minecraft.world.phys.Vec3 up=net.minecraft.world.phys.Vec3.atLowerCornerOf(extDir.getNormal());
-		net.minecraft.world.phys.Vec3 right=normal.cross(up);
+	private Vec3 alignPortal(ServerLevel world,BlockPos hitPos,Direction face,Direction extDir,Vec3 hitLoc){
+		Vec3 C=Vec3.atCenterOf(hitPos);
+		Vec3 normal=Vec3.atLowerCornerOf(face.getNormal());
+		Vec3 up=Vec3.atLowerCornerOf(extDir.getNormal());
+		Vec3 right=normal.cross(up);
 		Direction rightDir=Direction.getNearest(right.x,right.y,right.z);
 		double valUp=hitLoc.dot(up);
 		double centerUp=C.dot(up);
@@ -137,21 +144,20 @@ public class PortalGun extends Item{
 		return normal.scale(valNormal).add(up.scale(alignedUpVal)).add(right.scale(alignedRightVal));
 	}
 	private boolean firePortal(ServerLevel world,Player player,boolean isBlue){
-		var start=player.getEyePosition();
-		var hit=world.clip(new ClipContext(start,start.add(player.getLookAngle().scale(128.0)),
-				ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,player));
+		Vec3 start=player.getEyePosition();
+		var hit=world.clip(new ClipContext(start,start.add(player.getLookAngle().scale(128.0)),ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,player));
 		if(hit.getType()!=HitResult.Type.BLOCK) return false;
 		Direction face=hit.getDirection();
 		BlockPos hitPos=hit.getBlockPos();
 		Direction extDir=(face.getAxis()==Direction.Axis.Y)?player.getDirection():Direction.UP;
-		net.minecraft.world.phys.Vec3 alignedLoc=alignPortal(world,hitPos,face,extDir,hit.getLocation());
+		Vec3 alignedLoc=alignPortal(world,hitPos,face,extDir,hit.getLocation());
 		if(alignedLoc==null){
 			player.displayClientMessage(Component.literal("[!] Invalid placement (needs support)"),true);
 			return false;
 		}
 		// Shift 0.02 blocks away from the wall to prevent z-fighting / texture glitching
-		net.minecraft.world.phys.Vec3 spawnPos=alignedLoc.add(net.minecraft.world.phys.Vec3.atLowerCornerOf(face.getNormal()).scale(0.02));
-		java.util.Set<BlockPos> uniquePositions=cz.maxtechnik.dif.entity.portal.PortalEntity.getPortalSupportBlocks(spawnPos,extDir,face);
+		Vec3 spawnPos=alignedLoc.add(Vec3.atLowerCornerOf(face.getNormal()).scale(0.02));
+		Set<BlockPos> uniquePositions=PortalEntity.getPortalSupportBlocks(spawnPos,extDir,face);
 		// 1. Check space in all unique block positions (up to 4, strictly on the air side)
 		boolean space=true;
 		for(BlockPos p: uniquePositions){
@@ -177,13 +183,13 @@ public class PortalGun extends Item{
 			player.displayClientMessage(Component.literal("[!] Invalid placement (needs support)"),true);
 			return false;
 		}
-		cz.maxtechnik.dif.entity.portal.PortalEntity portal=new cz.maxtechnik.dif.entity.portal.PortalEntity(world,player.getUUID(),isBlue,face,extDir,spawnPos);
+		PortalEntity portal=new PortalEntity(world,player.getUUID(),isBlue,face,extDir,spawnPos);
 		boolean overlaps=false;
-		java.util.List<cz.maxtechnik.dif.entity.portal.PortalEntity> existingPortals=world.getEntitiesOfClass(
-				cz.maxtechnik.dif.entity.portal.PortalEntity.class,
+		List<PortalEntity> existingPortals=world.getEntitiesOfClass(
+				PortalEntity.class,
 				portal.getBoundingBox().inflate(0.01)
 		);
-		for(cz.maxtechnik.dif.entity.portal.PortalEntity other: existingPortals){
+		for(PortalEntity other: existingPortals){
 			if(other.getOwner()!=null&&other.getOwner().equals(player.getUUID())&&other.isBlue()==isBlue){
 				continue;
 			}
@@ -196,9 +202,9 @@ public class PortalGun extends Item{
 			player.displayClientMessage(Component.literal("[!] Invalid position"),true);
 			return false;
 		}
-		cz.maxtechnik.dif.entity.portal.PortalEntity.removeOldPortal(world,player.getUUID(),isBlue);
+		PortalEntity.removeOldPortal(world,player.getUUID(),isBlue);
 		// Save position in PortalData BEFORE spawning entity so that updateLinks during onAddedToLevel finds it!
-		cz.maxtechnik.dif.entity.portal.PortalData.get(world).set(player.getUUID(),isBlue,portal.blockPosition());
+		PortalData.get(world).set(player.getUUID(),isBlue,portal.blockPosition());
 		world.addFreshEntity(portal);
 		return true;
 	}
@@ -213,7 +219,7 @@ public class PortalGun extends Item{
 	@Override
 	public int getBarColor(@NotNull ItemStack stack){
 		float f=(float)getEnergy(stack)/DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get();
-		return net.minecraft.util.FastColor.ARGB32.color(0,(int)(f*255),255-((int)(f*255)),0);
+		return FastColor.ARGB32.color(0,(int)(f*255),255-((int)(f*255)),0);
 	}
 	@Override
 	public boolean isEnchantable(@NotNull ItemStack itemStack){
