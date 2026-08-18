@@ -296,20 +296,27 @@ public class PortalEntity extends Entity{
 
 	// -------------------- Rotace kamery (2D) --------------------
 
-	private static float getPortalBaseYaw(PortalEntity p){
+	private static float getEntryYaw(PortalEntity p){
+		return p.getFacing().getAxis() == Direction.Axis.Y ? p.getUpDir().toYRot() : p.getFacing().getOpposite().toYRot();
+	}
+
+	private static float getExitYaw(PortalEntity p){
 		return p.getFacing().getAxis() == Direction.Axis.Y ? p.getUpDir().toYRot() : p.getFacing().toYRot();
 	}
 	
 	private static float calcNewYaw(float oldYaw, PortalEntity in, PortalEntity out){
 		boolean inIsWall = in.getFacing().getAxis() != Direction.Axis.Y;
 		boolean outIsWall = out.getFacing().getAxis() != Direction.Axis.Y;
-		
-		float delta = getPortalBaseYaw(out) - getPortalBaseYaw(in);
-		if (inIsWall && outIsWall) {
-			delta += 180.0F;
+
+		float inYaw = getEntryYaw(in);
+		float outYaw = getExitYaw(out);
+		float relYaw = net.minecraft.util.Mth.wrapDegrees(oldYaw - inYaw);
+
+		if (!inIsWall && outIsWall) {
+			relYaw = -relYaw;
 		}
-		
-		return net.minecraft.util.Mth.wrapDegrees(oldYaw + delta);
+
+		return net.minecraft.util.Mth.wrapDegrees(outYaw + relYaw);
 	}
 
 	// -------------------- Rotace a hybnost (3D Transformace) --------------------
