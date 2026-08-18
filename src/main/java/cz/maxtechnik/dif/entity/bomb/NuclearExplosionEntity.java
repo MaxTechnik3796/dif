@@ -163,8 +163,9 @@ public class NuclearExplosionEntity extends Entity{
 	}
 	// -------------------- Helpers --------------------
 	private void destroyAt(int x,int y,int z){
+		if(y<level().getMinBuildHeight()||y>=level().getMaxBuildHeight()) return;
 		mutablePos.set(x,y,z);
-		if(!level().isLoaded(mutablePos)) return;
+		// Odstraněn isLoaded check: getBlockState nyní forcně načte chunk, pokud ještě není načtený
 		BlockState state=level().getBlockState(mutablePos);
 		if(state.isAir()) return;
 		if(state.getBlock().getExplosionResistance()>MAX_DESTROYABLE_RESISTANCE) return;

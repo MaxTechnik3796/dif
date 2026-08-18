@@ -26,8 +26,11 @@ public class NuclearRadiationEntity extends Entity{
 		if(level().isClientSide) return;
 		if(!processed){
 			processed=true;
-			level().explode(null,getX(),getY()+2.0,getZ(),30,Level.ExplosionInteraction.NONE);
-			AABB area=new AABB(getX()-320,getY()-320,getZ()-320,getX()+320,getY()+320,getZ()+320);
+			// Exploze o poloměru 64 zasáhne entity až do vzdálenosti 128 bloků
+			// Používáme vanilla explozi (NONE - neničí bloky), takže totemy, brnění a štíty fungují 100% správně!
+			level().explode(null,getX(),getY()+2.0,getZ(),64,Level.ExplosionInteraction.NONE);
+
+			AABB area=new AABB(getX()-220,getY()-220,getZ()-220,getX()+220,getY()+220,getZ()+220);
 			for(LivingEntity entity: level().getEntitiesOfClass(LivingEntity.class,area)){
 				if(entity.isSpectator()) continue;
 				if(entity instanceof Player player&&player.isCreative()) continue;
@@ -35,13 +38,6 @@ public class NuclearRadiationEntity extends Entity{
 				// Wither efekt
 				if(dist<=220.0)
 					entity.addEffect(new MobEffectInstance(MobEffects.WITHER,2400,1));
-				// Damage do 128 bloků
-				if(dist<=128.0){
-					float damage=(float)(200.0*(1.0-dist/128.0));
-					entity.invulnerableTime=0;
-					entity.setHealth(entity.getHealth()-damage);
-					if(entity.getHealth()<=0) entity.kill();
-				}
 			}
 			// Nyní se entita smaže. Pokud byste chtěl dělat dlouhodobou radiaci,
 			// můžete discard() odebrat a přidat logiku pro opakovaný dmg/wither.
