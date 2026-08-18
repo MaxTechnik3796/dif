@@ -2,7 +2,7 @@ package cz.maxtechnik.dif.block;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.block.entity.NanoGlassBlockEntity;
-import cz.maxtechnik.dif.config.DifModCommonConfig;
+import cz.maxtechnik.dif.config.DifModServerConfig;
 import cz.maxtechnik.dif.init.basic.DifModSounds;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities; // uprav podle své registrace
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
@@ -69,7 +69,7 @@ public class NanoGlass extends TransparentBlock implements EntityBlock{
 	 * vzdálenosti. Prstence se pak aplikují postupně, jeden za tick, přes tick().
 	 */
 	private static void startWave(ServerLevel level,BlockPos originPos,boolean dark){
-		int maxSpread=DifModCommonConfig.NANO_GLASS_MAX_SPREAD.get();
+		int maxSpread=DifModServerConfig.NANO_GLASS_MAX_SPREAD.get();
 		LevelWaveState waveState=WAVE_STATES.computeIfAbsent(level,l->new LevelWaveState());
 		level.playSound(null,originPos,DifModSounds.NANO_GLASS.get(),SoundSource.BLOCKS,1F,1F);
 		LongOpenHashSet visited=new LongOpenHashSet();

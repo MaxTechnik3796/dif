@@ -84,6 +84,7 @@ public class DifMod{
 		NeoForge.EVENT_BUS.register(JetpackHandler.class);
 		bus.addListener(DifModTabs::addCreative);
 		modContainer.registerConfig(ModConfig.Type.COMMON,DifModCommonConfig.SPEC);
+		modContainer.registerConfig(ModConfig.Type.SERVER,cz.maxtechnik.dif.config.DifModServerConfig.SPEC);
 		bus.addListener(DifModCapabilities::registerCapabilities);
 	}
 	@SubscribeEvent

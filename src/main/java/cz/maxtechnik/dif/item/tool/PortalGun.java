@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.item.tool;
 
-import cz.maxtechnik.dif.config.DifModCommonConfig;
+import cz.maxtechnik.dif.config.DifModServerConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -31,7 +31,7 @@ public class PortalGun extends Item{
 	}
 	private int getEnergy(ItemStack gun){
 		var data=gun.get(DataComponents.CUSTOM_DATA);
-		if(data==null) return DifModCommonConfig.PORTAL_GUN_MAX_DURABILITY.get();
+		if(data==null) return DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get();
 		return data.copyTag().getInt("energy");
 	}
 	private void setEnergy(ItemStack gun,int energy){
@@ -39,7 +39,7 @@ public class PortalGun extends Item{
 				net.minecraft.world.item.component.CustomData.EMPTY,
 				cd->{
 					var tag=cd.copyTag().copy();
-					tag.putInt("energy",Math.clamp(energy,0,DifModCommonConfig.PORTAL_GUN_MAX_DURABILITY.get()));
+					tag.putInt("energy",Math.clamp(energy,0,DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get()));
 					return net.minecraft.world.item.component.CustomData.of(tag);
 				});
 	}
@@ -50,15 +50,15 @@ public class PortalGun extends Item{
 		var data=gun.get(DataComponents.CUSTOM_DATA);
 		if(data==null||!data.copyTag().contains("energy")){
 			setMode(gun,true);
-			setEnergy(gun,DifModCommonConfig.PORTAL_GUN_MAX_DURABILITY.get());
+			setEnergy(gun,DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get());
 		}
 		boolean isBlue=isBlueMode(gun);
 		int energy=getEnergy(gun);
 		// Dobíjení ender pearlem
 		ItemStack off=player.getOffhandItem();
-		if(off.is(Items.ENDER_PEARL)&&energy<DifModCommonConfig.PORTAL_GUN_MAX_DURABILITY.get()){
+		if(off.is(Items.ENDER_PEARL)&&energy<DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get()){
 			if(!world.isClientSide){
-				setEnergy(gun,energy+DifModCommonConfig.PORTAL_GUN_ENERGY_PER_PEARL.get());
+				setEnergy(gun,energy+DifModServerConfig.PORTAL_GUN_ENERGY_PER_PEARL.get());
 				off.shrink(1);
 				player.displayClientMessage(Component.literal("[+] Energy restored"),true);
 			}
@@ -204,15 +204,15 @@ public class PortalGun extends Item{
 	}
 	@Override
 	public boolean isBarVisible(@NotNull ItemStack stack){
-		return getEnergy(stack)<DifModCommonConfig.PORTAL_GUN_MAX_DURABILITY.get();
+		return getEnergy(stack)<DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get();
 	}
 	@Override
 	public int getBarWidth(@NotNull ItemStack stack){
-		return Math.round((float)getEnergy(stack)/DifModCommonConfig.PORTAL_GUN_MAX_DURABILITY.get()*13);
+		return Math.round((float)getEnergy(stack)/DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get()*13);
 	}
 	@Override
 	public int getBarColor(@NotNull ItemStack stack){
-		float f=(float)getEnergy(stack)/DifModCommonConfig.PORTAL_GUN_MAX_DURABILITY.get();
+		float f=(float)getEnergy(stack)/DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get();
 		return net.minecraft.util.FastColor.ARGB32.color(0,(int)(f*255),255-((int)(f*255)),0);
 	}
 	@Override

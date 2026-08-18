@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.block.entity;
 
 import cz.maxtechnik.dif.block.BurningGenerator;
-import cz.maxtechnik.dif.config.DifModCommonConfig;
+import cz.maxtechnik.dif.config.DifModServerConfig;
 import cz.maxtechnik.dif.gui.menu.BurningGeneratorMenu;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import io.netty.buffer.Unpooled;
@@ -36,17 +36,17 @@ import java.util.stream.IntStream;
 public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer{
 	public static final int SLOTS=1;
 	public static final int INPUT_SLOT=0;
-	public static final int ENERGY_PER_TICK=DifModCommonConfig.BURNING_GENERATOR_ENERGY_PER_TICK.get();
-	public static final int MAX_ENERGY=DifModCommonConfig.BURNING_GENERATOR_MAX_ENERGY.get();
+	public static int getEnergyPerTick(){ return DifModServerConfig.BURNING_GENERATOR_ENERGY_PER_TICK.get(); }
+	public static int getMaxEnergy(){ return DifModServerConfig.BURNING_GENERATOR_MAX_ENERGY.get(); }
 	public static final int MAX_RECEIVE=Integer.MAX_VALUE;
-	public static final int MAX_EXTRACT=DifModCommonConfig.BURNING_GENERATOR_MAX_EXTRACT.get();
+	public static int getMaxExtract(){ return DifModServerConfig.BURNING_GENERATOR_MAX_EXTRACT.get(); }
 	private final ItemStackHandler itemHandler=new ItemStackHandler(SLOTS){
 		@Override
 		protected void onContentsChanged(int slot){
 			setChanged();
 		}
 	};
-	private final EnergyStorage energyStorage=new EnergyStorage(MAX_ENERGY,MAX_RECEIVE,MAX_EXTRACT,0){
+	private final EnergyStorage energyStorage=new EnergyStorage(getMaxEnergy(),MAX_RECEIVE,getMaxExtract(),0){
 		@Override
 		public int receiveEnergy(int maxReceive,boolean simulate){
 			return 0;
@@ -141,7 +141,8 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 	}
 	public static void serverTick(Level level,BlockPos pos,BlockState blockState,BurningGeneratorBlockEntity entity){
 		boolean shouldBeLit=false;
-		if(entity.energyStorage.getEnergyStored()+ENERGY_PER_TICK<=entity.energyStorage.getMaxEnergyStored()){
+		int energyPerTick=getEnergyPerTick();
+		if(entity.energyStorage.getEnergyStored()+energyPerTick<=entity.energyStorage.getMaxEnergyStored()){
 			if(entity.burnTime>0){
 				shouldBeLit=true;
 				entity.burnTime--;
@@ -150,7 +151,7 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 					f.setAccessible(true);
 					int current=(int)f.get(entity.energyStorage);
 					int max=entity.energyStorage.getMaxEnergyStored();
-					f.set(entity.energyStorage,Math.min(current+ENERGY_PER_TICK,max));
+					f.set(entity.energyStorage,Math.min(current+energyPerTick,max));
 				}catch(Exception ignored){
 				}
 				entity.setChanged();
@@ -181,7 +182,7 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 				BlockPos neighborPos=pos.relative(direction);
 				IEnergyStorage storage=level.getCapability(Capabilities.EnergyStorage.BLOCK,neighborPos,direction.getOpposite());
 				if(storage!=null&&storage.canReceive()){
-					int energyToTransfer=Math.min(entity.energyStorage.getEnergyStored(),MAX_EXTRACT);
+					int energyToTransfer=Math.min(entity.energyStorage.getEnergyStored(),getMaxExtract());
 					if(energyToTransfer>0){
 						int received=storage.receiveEnergy(energyToTransfer,false);
 						if(received>0) entity.energyStorage.extractEnergy(received,false);

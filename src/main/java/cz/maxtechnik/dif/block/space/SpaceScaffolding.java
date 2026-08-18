@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.block.space;
 
 import cz.maxtechnik.dif.block.entity.SpaceScaffoldingBlockEntity;
-import cz.maxtechnik.dif.config.DifModCommonConfig;
+import cz.maxtechnik.dif.config.DifModServerConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -68,7 +68,7 @@ public class SpaceScaffolding extends Block implements EntityBlock{
 		if(!world.getBlockState(pos).is(this)) return;
 		BlockEntity blockEntity=world.getBlockEntity(pos);
 		if(blockEntity instanceof SpaceScaffoldingBlockEntity scaffolding){
-			if(scaffolding.lifeTime>=DifModCommonConfig.SPACE_SCAFFOLDING_LIFE_TIME.get())
+			if(scaffolding.lifeTime>=DifModServerConfig.SPACE_SCAFFOLDING_LIFE_TIME.get())
 				world.setBlock(pos,Blocks.AIR.defaultBlockState(),3);
 			else{
 				scaffolding.lifeTime+=1;

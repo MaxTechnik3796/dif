@@ -19,7 +19,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import static cz.maxtechnik.dif.block.Engine.*;
-import static cz.maxtechnik.dif.config.DifModCommonConfig.*;
+import static cz.maxtechnik.dif.config.DifModServerConfig.*;
 import static cz.maxtechnik.dif.init.basic.DifModBlocks.*;
 public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> DIESEL_TAG = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID, net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c", "diesel"));
@@ -96,34 +96,46 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 				speed=0F;
 				su=0F;
 			}else{
+				boolean isPortable=isEngineBlockPortable(getBlockState().getBlock());
 				int extenders=countExtenders();
 				double baseRpm=0.0D;
-				double baseSu=0.0D;
-				double baseConsumption=0.0D;
+				double calculatedSu=0.0D;
+				double burnRatePerSec=0.0D;
 				if(fuel.equals(FuelType.DIESEL)){
 					baseRpm=ENGINE_DIESEL_RPM.get();
-					baseSu=ENGINE_DIESEL_SU.get();
-					baseConsumption=ENGINE_DIESEL_CONSUMPTION.get();
+					if(isPortable){
+						calculatedSu=ENGINE_DIESEL_PORTABLE_SU.get();
+						burnRatePerSec=ENGINE_DIESEL_PORTABLE_CONSUMPTION.get();
+					}else{
+						calculatedSu=ENGINE_DIESEL_SU.get()*extenders;
+						burnRatePerSec=ENGINE_DIESEL_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
+					}
 				}else if(fuel.equals(FuelType.HEAVY_FUEL_OIL)){
 					baseRpm=ENGINE_HEAVY_FUEL_OIL_RPM.get();
-					baseSu=ENGINE_HEAVY_FUEL_OIL_SU.get();
-					baseConsumption=ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get();
+					calculatedSu=ENGINE_HEAVY_FUEL_OIL_SU.get()*extenders;
+					burnRatePerSec=ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
 				}else if(fuel.equals(FuelType.GASOLINE)){
 					baseRpm=ENGINE_GASOLINE_RPM.get();
-					baseSu=ENGINE_GASOLINE_SU.get();
-					baseConsumption=ENGINE_GASOLINE_CONSUMPTION.get();
+					if(isPortable){
+						calculatedSu=ENGINE_GASOLINE_PORTABLE_SU.get();
+						burnRatePerSec=ENGINE_GASOLINE_PORTABLE_CONSUMPTION.get();
+					}else{
+						calculatedSu=ENGINE_GASOLINE_SU.get()*extenders;
+						burnRatePerSec=ENGINE_GASOLINE_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
+					}
 				}else if(fuel.equals(FuelType.LPG)){
 					baseRpm=ENGINE_LPG_RPM.get();
-					baseSu=ENGINE_LPG_SU.get();
-					baseConsumption=ENGINE_LPG_CONSUMPTION.get();
+					if(isPortable){
+						calculatedSu=ENGINE_LPG_PORTABLE_SU.get();
+						burnRatePerSec=ENGINE_LPG_PORTABLE_CONSUMPTION.get();
+					}else{
+						calculatedSu=ENGINE_LPG_SU.get()*extenders;
+						burnRatePerSec=ENGINE_LPG_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
+					}
 				}
-				// Apply portable engine multiplier if applicable
-				double portableMultiplier=isEngineBlockPortable(getBlockState().getBlock())?ENGINE_PORTABLE_MULTIPLIER.get():1.0D;
-				// Speed stays constant regardless of extender count; SU and consumption scale linearly
 				speed=(float)baseRpm;
-				su=(float)(baseSu*extenders*portableMultiplier);
-				double consumptionMultiplier = 1.0 + (extenders - 1) * 0.5;
-				double consumptionPerTick=(baseConsumption*consumptionMultiplier*portableMultiplier)/20.0D;
+				su=(float)calculatedSu;
+				double consumptionPerTick=burnRatePerSec/20.0D;
 				fuelAccumulator+=consumptionPerTick;
 				if(fuelTickCounter++>=FUEL_TICK_INTERVAL){
 					fuelTickCounter=0;
@@ -287,16 +299,18 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 
 		FuelType fuel = scanExtenders();
 		if (fuel != FuelType.INVALID) {
+			boolean isPortable = isEngineBlockPortable(getBlockState().getBlock());
 			int extenders = countExtenders();
-			double baseConsumption = 0.0D;
-			if (fuel == FuelType.DIESEL) baseConsumption = ENGINE_DIESEL_CONSUMPTION.get();
-			else if (fuel == FuelType.GASOLINE) baseConsumption = ENGINE_GASOLINE_CONSUMPTION.get();
-			else if (fuel == FuelType.LPG) baseConsumption = ENGINE_LPG_CONSUMPTION.get();
-			else if (fuel == FuelType.HEAVY_FUEL_OIL) baseConsumption = ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get();
-
-			double portableMultiplier = isEngineBlockPortable(getBlockState().getBlock()) ? ENGINE_PORTABLE_MULTIPLIER.get() : 1.0D;
-			double consumptionMultiplier = 1.0 + (extenders - 1) * 0.5;
-			double burnRatePerSec = baseConsumption * consumptionMultiplier * portableMultiplier;
+			double burnRatePerSec = 0.0D;
+			if (fuel == FuelType.DIESEL) {
+				burnRatePerSec = isPortable ? ENGINE_DIESEL_PORTABLE_CONSUMPTION.get() : ENGINE_DIESEL_CONSUMPTION.get() * (1.0 + (extenders - 1) * 0.5);
+			} else if (fuel == FuelType.GASOLINE) {
+				burnRatePerSec = isPortable ? ENGINE_GASOLINE_PORTABLE_CONSUMPTION.get() : ENGINE_GASOLINE_CONSUMPTION.get() * (1.0 + (extenders - 1) * 0.5);
+			} else if (fuel == FuelType.LPG) {
+				burnRatePerSec = isPortable ? ENGINE_LPG_PORTABLE_CONSUMPTION.get() : ENGINE_LPG_CONSUMPTION.get() * (1.0 + (extenders - 1) * 0.5);
+			} else if (fuel == FuelType.HEAVY_FUEL_OIL) {
+				burnRatePerSec = ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get() * (1.0 + (extenders - 1) * 0.5);
+			}
 
 			String burnRateStr = String.format(java.util.Locale.US, "%.2f", burnRatePerSec);
 			tooltip.add(net.minecraft.network.chat.Component.literal("     Burn Rate: ").withStyle(net.minecraft.ChatFormatting.GRAY)

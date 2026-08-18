@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.block.rails;
 
-import cz.maxtechnik.dif.config.DifModCommonConfig;
+import cz.maxtechnik.dif.config.DifModServerConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.Level;
@@ -14,11 +14,11 @@ public class FastPoweredRailBlock extends PoweredRailBlock{
 	}
 	@Override
 	public float getRailMaxSpeed(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull AbstractMinecart cart){
-		return DifModCommonConfig.FAST_RAIL_TOP_SPEED.get().floatValue();
+		return DifModServerConfig.FAST_RAIL_TOP_SPEED.get().floatValue();
 	}
 	@Override
 	public void onMinecartPass(BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull AbstractMinecart cart){
-		double multiplier=DifModCommonConfig.FAST_POWERED_RAIL_ACCELERATION.get();
+		double multiplier=DifModServerConfig.FAST_POWERED_RAIL_ACCELERATION.get();
 		if(blockState.getValue(POWERED)){
 			Vec3 motion=cart.getDeltaMovement();
 			double speed=motion.horizontalDistance();

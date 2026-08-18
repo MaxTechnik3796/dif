@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.block.rails;
 
-import cz.maxtechnik.dif.config.DifModCommonConfig;
+import cz.maxtechnik.dif.config.DifModServerConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.Level;
@@ -13,6 +13,6 @@ public class FastRailBlock extends RailBlock{
 	}
 	@Override
 	public float getRailMaxSpeed(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull AbstractMinecart cart){
-		return DifModCommonConfig.FAST_RAIL_TOP_SPEED.get().floatValue();
+		return DifModServerConfig.FAST_RAIL_TOP_SPEED.get().floatValue();
 	}
 }

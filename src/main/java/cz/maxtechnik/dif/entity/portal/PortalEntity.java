@@ -1,6 +1,6 @@
 package cz.maxtechnik.dif.entity.portal;
 
-import cz.maxtechnik.dif.config.DifModCommonConfig;
+import cz.maxtechnik.dif.config.DifModServerConfig;
 import cz.maxtechnik.dif.init.other.DifModEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -178,7 +178,7 @@ public class PortalEntity extends Entity{
 				continue;
 			this.tryTeleportPlayer(p,serverLevel,now);
 		}
-		if(DifModCommonConfig.PORTAL_ALLOW_ENTITIES.get()){
+		if(DifModServerConfig.PORTAL_ALLOW_ENTITIES.get()){
 			List<LivingEntity> mobs=serverLevel.getEntitiesOfClass(LivingEntity.class,box);
 			int count=0;
 			for(LivingEntity mob: mobs){
@@ -227,7 +227,7 @@ public class PortalEntity extends Entity{
 			p.displayClientMessage(Component.literal("[!] Linked portal not found"),true);
 			return;
 		}
-		if(this.blockPosition().distSqr(target)>(long)DifModCommonConfig.PORTAL_MAX_DISTANCE.get()*DifModCommonConfig.PORTAL_MAX_DISTANCE.get()){
+		if(this.blockPosition().distSqr(target)>(long)DifModServerConfig.PORTAL_MAX_DISTANCE.get()*DifModServerConfig.PORTAL_MAX_DISTANCE.get()){
 			p.displayClientMessage(Component.literal("[!] Portal too far away"),true);
 			return;
 		}
@@ -268,7 +268,7 @@ public class PortalEntity extends Entity{
 	private void tryTeleportEntity(Entity entity,ServerLevel sl,long now){
 		BlockPos target=PortalData.get(sl).getPos(this.getOwner(),!this.isBlue());
 		if(target==null) return;
-		if(this.blockPosition().distSqr(target)>(long)DifModCommonConfig.PORTAL_MAX_DISTANCE.get()*DifModCommonConfig.PORTAL_MAX_DISTANCE.get())
+		if(this.blockPosition().distSqr(target)>(long)DifModServerConfig.PORTAL_MAX_DISTANCE.get()*DifModServerConfig.PORTAL_MAX_DISTANCE.get())
 			return;
 		if(!sl.isLoaded(target)) return;
 		PortalEntity other=findLinkedPortal(sl,target);

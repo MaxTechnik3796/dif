@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.init.events;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.config.DifModCommonConfig;
+import cz.maxtechnik.dif.config.DifModServerConfig;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -76,7 +76,7 @@ public final class MiningHandler {
 	}
 
 	private static void handleDeforester(Level level, ServerPlayer player, ItemStack tool, BlockPos centre, BlockState centreState) {
-		int maxLogs = DifModCommonConfig.ELECTRUM_DEFORESTER_MAX_LOGS.get();
+		int maxLogs = DifModServerConfig.ELECTRUM_DEFORESTER_MAX_LOGS.get();
 
 		if (centreState.is(BlockTags.LOGS)) {
 			List<BlockPos> logs = collectNaturalLogs(level, centre, maxLogs);

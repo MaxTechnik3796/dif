@@ -57,7 +57,7 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 			this.lastStressApplied=0F;
 			return 0F;
 		}
-		float impact=cz.maxtechnik.dif.config.DifModCommonConfig.QUARRY_STRESS_IMPACT.get().floatValue();
+		float impact=cz.maxtechnik.dif.config.DifModServerConfig.QUARRY_STRESS_IMPACT.get().floatValue();
 		this.lastStressApplied=impact;
 		return impact;
 	}

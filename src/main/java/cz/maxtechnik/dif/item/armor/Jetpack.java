@@ -35,7 +35,7 @@ public abstract class Jetpack extends ArmorItem{
 	// Fallback kapacita nádrže v mB (skutečná hodnota se bere z configu)
 	public static final int CAPACITY=16000;
 	public static int getCapacity(){
-		return cz.maxtechnik.dif.config.DifModCommonConfig.JETPACK_CAPACITY.get();
+		return cz.maxtechnik.dif.config.DifModServerConfig.JETPACK_CAPACITY.get();
 	}
 	public Jetpack(ArmorItem.Type type,Item.Properties properties){
 		super(DifModTiers.ARMOR_MATERIAL_JETPACK,type,properties.stacksTo(1));
