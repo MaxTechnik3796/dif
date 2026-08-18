@@ -104,15 +104,28 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 		double renderDistSq = renderDist * renderDist;
 		
 		for(QuarryLandmarkBlockEntity lm: FORMED_LANDMARKS.values()){
-			if(!lm.isFormed()) continue;
 			if(lm.getBlockPos().distToCenterSqr(camPos) > renderDistSq) continue;
-			var area=lm.getFormedArea();
-			if(area==null) continue;
-			float y=lm.getBlockPos().getY()+0.5F;
-			// Střed bloků (+0.5F)
-			float minX=area.minX()+0.5F, maxX=area.maxX()+0.5F;
-			float minZ=area.minZ()+0.5F, maxZ=area.maxZ()+0.5F;
-			wireRect(m,vc,minX,y,minZ,maxX,maxZ,LANDMARK_COLOR);
+			if(lm.isFormed()){
+				var area=lm.getFormedArea();
+				if(area==null) continue;
+				float y=lm.getBlockPos().getY()+0.5F;
+				// Střed bloků (+0.5F)
+				float minX=area.minX()+0.5F, maxX=area.maxX()+0.5F;
+				float minZ=area.minZ()+0.5F, maxZ=area.maxZ()+0.5F;
+				wireRect(m,vc,minX,y,minZ,maxX,maxZ,LANDMARK_COLOR);
+			}else{
+				net.minecraft.world.level.block.state.BlockState state = lm.getBlockState();
+				if(state.hasProperty(cz.maxtechnik.dif.block.QuarryLandmark.POWERED) && state.getValue(cz.maxtechnik.dif.block.QuarryLandmark.POWERED)){
+					float x = lm.getBlockPos().getX() + 0.5F;
+					float y = lm.getBlockPos().getY() + 0.5F;
+					float z = lm.getBlockPos().getZ() + 0.5F;
+					float length = cz.maxtechnik.dif.block.entity.QuarryLandmarkBlockEntity.MAX_SEARCH;
+					wireLine(m,vc, x, y, z, x + length, y, z, LANDMARK_COLOR);
+					wireLine(m,vc, x, y, z, x - length, y, z, LANDMARK_COLOR);
+					wireLine(m,vc, x, y, z, x, y, z + length, LANDMARK_COLOR);
+					wireLine(m,vc, x, y, z, x, y, z - length, LANDMARK_COLOR);
+				}
+			}
 		}
 		ps.popPose();
 		buf.endBatch(RenderType.lines());

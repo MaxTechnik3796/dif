@@ -2,7 +2,6 @@ package cz.maxtechnik.dif.init.other;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.init.events.client.VehicleCameraHandler;
 import cz.maxtechnik.dif.network.EnderOpenMessage;
 import cz.maxtechnik.dif.network.JetpackFlyMessage;
 import net.minecraft.client.KeyMapping;
@@ -59,9 +58,6 @@ public class DifModKeys{
 				// 3. Logika Ender Chesty
 				while(OPEN_ENDER_CHEST.consumeClick()){
 					PacketDistributor.sendToServer(new EnderOpenMessage(0,0));
-				}
-				while(CAMERA_LOCK.consumeClick()){
-					VehicleCameraHandler.vehicleCameraLocked=!VehicleCameraHandler.vehicleCameraLocked;
 				}
 			}
 		}

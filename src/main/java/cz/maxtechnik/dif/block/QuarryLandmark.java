@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.PushReaction;
@@ -31,6 +32,7 @@ public class QuarryLandmark extends BaseEntityBlock{
 		return CODEC;
 	}
 	public static final DirectionProperty FACING=BlockStateProperties.FACING;
+	public static final BooleanProperty POWERED=BlockStateProperties.POWERED;
 	protected static final VoxelShape UP_SHAPE = Block.box(4D, 0D, 4D, 12D, 4D, 12D);
 	protected static final VoxelShape DOWN_SHAPE = Block.box(4D, 12D, 4D, 12D, 16D, 12D);
 	protected static final VoxelShape NORTH_SHAPE = Block.box(4D, 4D, 12D, 12D, 12D, 16D);
@@ -39,15 +41,15 @@ public class QuarryLandmark extends BaseEntityBlock{
 	protected static final VoxelShape EAST_SHAPE = Block.box(0D, 4D, 4D, 4D, 12D, 12D);
 	public QuarryLandmark(){
 		super(Properties.of().strength(0.5F,0.5F).sound(SoundType.WOOD).noCollission().noOcclusion().pushReaction(PushReaction.BLOCK).lightLevel(state->14));
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.UP));
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.UP).setValue(POWERED,false));
 	}
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
-		builder.add(FACING);
+		builder.add(FACING,POWERED);
 	}
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context){
-		return this.defaultBlockState().setValue(FACING,context.getClickedFace());
+		return this.defaultBlockState().setValue(FACING,context.getClickedFace()).setValue(POWERED,context.getLevel().hasNeighborSignal(context.getClickedPos()));
 	}
 	@Override
 	public @NotNull VoxelShape getShape(BlockState blockState,@NotNull BlockGetter level,@NotNull BlockPos pos,@NotNull CollisionContext context){
@@ -93,5 +95,13 @@ public class QuarryLandmark extends BaseEntityBlock{
 		if(!blockState.is(newState.getBlock())&&!level.isClientSide)
 			if(level.getBlockEntity(pos) instanceof QuarryLandmarkBlockEntity lmEntity) lmEntity.onRemoved();
 		super.onRemove(blockState,level,pos,newState,moving);
+	}
+	@Override
+	public void neighborChanged(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Block block,@NotNull BlockPos fromPos,boolean isMoving){
+		if(!level.isClientSide){
+			boolean powered=level.hasNeighborSignal(pos);
+			if(powered!=state.getValue(POWERED))
+				level.setBlock(pos,state.setValue(POWERED,powered),3);
+		}
 	}
 }

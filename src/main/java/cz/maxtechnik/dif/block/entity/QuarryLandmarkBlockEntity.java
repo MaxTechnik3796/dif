@@ -165,8 +165,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 	}
 	private void updateClientRenderer(){
 		if(level==null||!level.isClientSide) return;
-		if(formed) QuarryRenderer.register(this);
-		else QuarryRenderer.unregister(worldPosition);
+		QuarryRenderer.register(this);
 	}
 	// ── Goggles Tooltip ──────────────────────────────────────────────────
 	@Override
