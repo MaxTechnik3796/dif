@@ -1,13 +1,13 @@
 {
   "type": "create:mixing",
   "ingredients": [
-    { "item": "minecraft:blaze_powder" },
+    { "tag": "minecraft:coals" },
+    { "tag": "minecraft:coals" },
     { "item": "minecraft:gunpowder" },
-    { "item": "minecraft:gunpowder" },
-    { "item": "minecraft:coal" },
-    { "type": "neoforge:single", "fluid": "minecraft:lava", "amount": 250 }
+    { "type": "neoforge:single", "fluid": "minecraft:lava", "amount": 500 }
   ],
   "results": [
-    { "id": "dif:jetpack_fuel_fluid", "amount": 250 }
-  ]
+    { "id": "dif:jetpack_fuel_fluid", "amount": 500 }
+  ],
+  "heat_requirement": "heated"
 }
