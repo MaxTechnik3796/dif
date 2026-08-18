@@ -303,23 +303,13 @@ public class PortalEntity extends Entity{
 	}
 
 	private static float getExitYaw(PortalEntity p){
-		return p.getFacing().getAxis() == Direction.Axis.Y ? p.getUpDir().toYRot() : p.getFacing().toYRot();
+		return p.getFacing().getAxis() == Direction.Axis.Y ? p.getUpDir().getOpposite().toYRot() : p.getFacing().toYRot();
 	}
 	
 	private static float calcNewYaw(float oldYaw, PortalEntity in, PortalEntity out){
-		boolean inIsWall = in.getFacing().getAxis() != Direction.Axis.Y;
-		boolean outIsWall = out.getFacing().getAxis() != Direction.Axis.Y;
-
 		float inYaw = getEntryYaw(in);
 		float outYaw = getExitYaw(out);
 		float relYaw = net.minecraft.util.Mth.wrapDegrees(oldYaw - inYaw);
-
-		if (!inIsWall && outIsWall) {
-			relYaw = -relYaw;
-		} else if (inIsWall && !outIsWall) {
-			relYaw = 180.0F - relYaw;
-		}
-
 		return net.minecraft.util.Mth.wrapDegrees(outYaw + relYaw);
 	}
 
