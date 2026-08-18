@@ -131,7 +131,7 @@ public class DifModServerConfig{
 		ENGINE_LPG_RPM=BUILDER.defineInRange("engine_lpg_rpm",160.0D,0.0D,DOUBLE_MAX);
 		ENGINE_LPG_SU=BUILDER.defineInRange("engine_lpg_su",80.0D,0.0D,DOUBLE_MAX);
 		ENGINE_LPG_CONSUMPTION=BUILDER.defineInRange("engine_lpg_consumption",1.5D,0.0D,DOUBLE_MAX);
-		ENGINE_LPG_PORTABLE_SU=BUILDER.defineInRange("engine_lpg_portable_su",64.0D,0.0D,DOUBLE_MAX);
+		ENGINE_LPG_PORTABLE_SU=BUILDER.defineInRange("engine_lpg_portable_su",68.0D,0.0D,DOUBLE_MAX);
 		ENGINE_LPG_PORTABLE_CONSUMPTION=BUILDER.defineInRange("engine_lpg_portable_consumption",1.2D,0.0D,DOUBLE_MAX);
 		BUILDER.pop();
 
