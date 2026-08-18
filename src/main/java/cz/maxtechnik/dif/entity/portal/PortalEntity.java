@@ -314,6 +314,8 @@ public class PortalEntity extends Entity{
 
 		if (!inIsWall && outIsWall) {
 			relYaw = -relYaw;
+		} else if (inIsWall && !outIsWall) {
+			relYaw = 180.0F - relYaw;
 		}
 
 		return net.minecraft.util.Mth.wrapDegrees(outYaw + relYaw);
