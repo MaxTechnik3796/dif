@@ -41,22 +41,22 @@ public class DifModItems{
 		return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));
 	}
 
-	public static final DeferredItem<Item>WHITE_SLEEPING_BAG=block(DifModBlocks.WHITE_SLEEPING_BAG);
-	public static final DeferredItem<Item>ORANGE_SLEEPING_BAG=block(DifModBlocks.ORANGE_SLEEPING_BAG);
-	public static final DeferredItem<Item>MAGENTA_SLEEPING_BAG=block(DifModBlocks.MAGENTA_SLEEPING_BAG);
-	public static final DeferredItem<Item>LIGHT_BLUE_SLEEPING_BAG=block(DifModBlocks.LIGHT_BLUE_SLEEPING_BAG);
-	public static final DeferredItem<Item>YELLOW_SLEEPING_BAG=block(DifModBlocks.YELLOW_SLEEPING_BAG);
-	public static final DeferredItem<Item>LIME_SLEEPING_BAG=block(DifModBlocks.LIME_SLEEPING_BAG);
-	public static final DeferredItem<Item>PINK_SLEEPING_BAG=block(DifModBlocks.PINK_SLEEPING_BAG);
-	public static final DeferredItem<Item>GRAY_SLEEPING_BAG=block(DifModBlocks.GRAY_SLEEPING_BAG);
-	public static final DeferredItem<Item>LIGHT_GRAY_SLEEPING_BAG=block(DifModBlocks.LIGHT_GRAY_SLEEPING_BAG);
-	public static final DeferredItem<Item>CYAN_SLEEPING_BAG=block(DifModBlocks.CYAN_SLEEPING_BAG);
-	public static final DeferredItem<Item>PURPLE_SLEEPING_BAG=block(DifModBlocks.PURPLE_SLEEPING_BAG);
-	public static final DeferredItem<Item>BLUE_SLEEPING_BAG=block(DifModBlocks.BLUE_SLEEPING_BAG);
-	public static final DeferredItem<Item>BROWN_SLEEPING_BAG=block(DifModBlocks.BROWN_SLEEPING_BAG);
-	public static final DeferredItem<Item>GREEN_SLEEPING_BAG=block(DifModBlocks.GREEN_SLEEPING_BAG);
-	public static final DeferredItem<Item>RED_SLEEPING_BAG=block(DifModBlocks.RED_SLEEPING_BAG);
-	public static final DeferredItem<Item>BLACK_SLEEPING_BAG=block(DifModBlocks.BLACK_SLEEPING_BAG);
+	public static final DeferredItem<Item>WHITE_SLEEPING_BAG=block(DifModBlocks.WHITE_SLEEPING_BAG,new Item.Properties().stacksTo(16));
+	public static final DeferredItem<Item>ORANGE_SLEEPING_BAG=block(DifModBlocks.ORANGE_SLEEPING_BAG,new Item.Properties().stacksTo(16));
+	public static final DeferredItem<Item>MAGENTA_SLEEPING_BAG=block(DifModBlocks.MAGENTA_SLEEPING_BAG,new Item.Properties().stacksTo(16));
+	public static final DeferredItem<Item>LIGHT_BLUE_SLEEPING_BAG=block(DifModBlocks.LIGHT_BLUE_SLEEPING_BAG,new Item.Properties().stacksTo(16));
+	public static final DeferredItem<Item>YELLOW_SLEEPING_BAG=block(DifModBlocks.YELLOW_SLEEPING_BAG,new Item.Properties().stacksTo(16));
+	public static final DeferredItem<Item>LIME_SLEEPING_BAG=block(DifModBlocks.LIME_SLEEPING_BAG,new Item.Properties().stacksTo(16));
+	public static final DeferredItem<Item>PINK_SLEEPING_BAG=block(DifModBlocks.PINK_SLEEPING_BAG,new Item.Properties().stacksTo(16));
+	public static final DeferredItem<Item>GRAY_SLEEPING_BAG=block(DifModBlocks.GRAY_SLEEPING_BAG,new Item.Properties().stacksTo(16));
+	public static final DeferredItem<Item>LIGHT_GRAY_SLEEPING_BAG=block(DifModBlocks.LIGHT_GRAY_SLEEPING_BAG,new Item.Properties().stacksTo(16));
+	public static final DeferredItem<Item>CYAN_SLEEPING_BAG=block(DifModBlocks.CYAN_SLEEPING_BAG,new Item.Properties().stacksTo(16));
+	public static final DeferredItem<Item>PURPLE_SLEEPING_BAG=block(DifModBlocks.PURPLE_SLEEPING_BAG,new Item.Properties().stacksTo(16));
+	public static final DeferredItem<Item>BLUE_SLEEPING_BAG=block(DifModBlocks.BLUE_SLEEPING_BAG,new Item.Properties().stacksTo(16));
+	public static final DeferredItem<Item>BROWN_SLEEPING_BAG=block(DifModBlocks.BROWN_SLEEPING_BAG,new Item.Properties().stacksTo(16));
+	public static final DeferredItem<Item>GREEN_SLEEPING_BAG=block(DifModBlocks.GREEN_SLEEPING_BAG,new Item.Properties().stacksTo(16));
+	public static final DeferredItem<Item>RED_SLEEPING_BAG=block(DifModBlocks.RED_SLEEPING_BAG,new Item.Properties().stacksTo(16));
+	public static final DeferredItem<Item>BLACK_SLEEPING_BAG=block(DifModBlocks.BLACK_SLEEPING_BAG,new Item.Properties().stacksTo(16));
 
 	public static final DeferredItem<Item>LAP_TIMER=block(DifModBlocks.LAP_TIMER);
 
