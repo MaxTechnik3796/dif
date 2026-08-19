@@ -22,57 +22,45 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.UUID;
 
+import static cz.maxtechnik.dif.DifMod.goggleTooltipFix;
 public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleInformation{
 	public static final int MAX_RADIUS=2; // 0 = 1x1, 1 = 3x3, 2 = 5x5
 	private int radius=0;
 	private UUID ownerUUID;
 	private String ownerName="Unknown";
 	private boolean active=true;
-
 	public ChunkLoaderBlockEntity(BlockPos pos,BlockState blockState){
 		super(DifModBlockEntities.CHUNK_LOADER_BE.get(),pos,blockState);
 	}
-
-
-
 	public void setOwner(UUID uuid,String name){
 		this.ownerUUID=uuid;
 		this.ownerName=name;
 		this.setChanged();
 	}
-
 	public int getRadius(){
 		return radius;
 	}
-
 	public int getLoadedChunksCount(){
 		int side=2*radius+1;
 		return side*side;
 	}
-
 	public String getRadiusText(){
 		int side=2*radius+1;
 		return side+"×"+side;
 	}
-
 	public void cycleRadius(Player player){
 		if(level instanceof ServerLevel serverLevel){
 			// 1. Zrušíme tickety starých chunků pro tuto konkrétní pozici
 			forceChunksInRadius(serverLevel,this.radius,false);
-
 			// 2. Cyklujeme radius: 0 (1x1) -> 1 (3x3) -> 2 (5x5) -> 0 (1x1)
 			this.radius=(this.radius+1)%(MAX_RADIUS+1);
-
 			// 3. Vytvoříme tickety pro nové chunky
-			if(this.active){
+			if(this.active)
 				forceChunksInRadius(serverLevel,this.radius,true);
-			}
-
 			// 4. Aktualizujeme data a uložíme
 			ChunkLoaderData.get(serverLevel).updateRecord(worldPosition,ownerUUID,ownerName,active,this.radius);
 			this.setChanged();
 			serverLevel.sendBlockUpdated(worldPosition,getBlockState(),getBlockState(),3);
-
 			// 5. Zvuk a zpětná vazba pro hráče
 			serverLevel.playSound(null,worldPosition,SoundEvents.EXPERIENCE_ORB_PICKUP,SoundSource.BLOCKS,1.0F,0.8F+this.radius*0.3F);
 			if(player!=null){
@@ -84,7 +72,6 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 			}
 		}
 	}
-
 	public void updateStatus(boolean newActive){
 		this.active=newActive;
 		if(level instanceof ServerLevel serverLevel){
@@ -94,16 +81,12 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 			serverLevel.sendBlockUpdated(worldPosition,getBlockState(),getBlockState(),3);
 		}
 	}
-
 	private void forceChunksInRadius(ServerLevel serverLevel,int r,boolean force){
 		ChunkPos center=new ChunkPos(worldPosition);
-		for(int x=-r;x<=r;x++){
-			for(int z=-r;z<=r;z++){
+		for(int x=-r;x<=r;x++)
+			for(int z=-r;z<=r;z++)
 				DifMod.CHUNK_LOADER_TICKETS.forceChunk(serverLevel,this.worldPosition,center.x+x,center.z+z,force,true);
-			}
-		}
 	}
-
 	public void handleRemoval(){
 		if(level instanceof ServerLevel serverLevel){
 			forceChunksInRadius(serverLevel,this.radius,false);
@@ -112,21 +95,17 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 			data.setDirty();
 		}
 	}
-
 	@Override
 	public boolean addToGoggleTooltip(List<Component> tooltip,boolean isPlayerSneaking){
-		tooltip.add(Component.literal("     Chunk Loader").withStyle(ChatFormatting.GOLD));
-		tooltip.add(Component.literal("     Stav: ").withStyle(ChatFormatting.GRAY)
+		tooltip.add(Component.literal(goggleTooltipFix+"Chunk Loader").withStyle(ChatFormatting.GOLD));
+		tooltip.add(Component.literal(goggleTooltipFix+"Stav: ").withStyle(ChatFormatting.GRAY)
 				.append(active?Component.literal("Aktivní").withStyle(ChatFormatting.GREEN):Component.literal("Vypnuto (Redstone)").withStyle(ChatFormatting.RED)));
-		tooltip.add(Component.literal("     Rozsah: ").withStyle(ChatFormatting.GRAY)
+		tooltip.add(Component.literal(goggleTooltipFix+"Rozsah: ").withStyle(ChatFormatting.GRAY)
 				.append(Component.literal(getRadiusText()+" ("+getLoadedChunksCount()+" chunků)").withStyle(ChatFormatting.AQUA)));
-		if(ownerName!=null&&!ownerName.isEmpty()){
-			tooltip.add(Component.literal("     Majitel: ").withStyle(ChatFormatting.GRAY)
-					.append(Component.literal(ownerName).withStyle(ChatFormatting.WHITE)));
-		}
+		if(ownerName!=null&&!ownerName.isEmpty())
+			tooltip.add(Component.literal(goggleTooltipFix+"Majitel: ").withStyle(ChatFormatting.GRAY).append(Component.literal(ownerName).withStyle(ChatFormatting.WHITE)));
 		return true;
 	}
-
 	@Override
 	protected void loadAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider registries){
 		super.loadAdditional(tag,registries);
@@ -136,20 +115,16 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 		if(tag.hasUUID("ownerUUID")) this.ownerUUID=tag.getUUID("ownerUUID");
 		if(tag.contains("ownerName")) this.ownerName=tag.getString("ownerName");
 	}
-
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider registries){
 		super.saveAdditional(tag,registries);
 		tag.putInt("radius",this.radius);
 		tag.putBoolean("active",this.active);
-		if(this.ownerUUID!=null){
+		if(this.ownerUUID!=null)
 			tag.putUUID("ownerUUID",this.ownerUUID);
-		}
-		if(this.ownerName!=null){
+		if(this.ownerName!=null)
 			tag.putString("ownerName",this.ownerName);
-		}
 	}
-
 	@Override
 	public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registries){
 		CompoundTag tag=new CompoundTag();
@@ -159,7 +134,6 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 		if(this.ownerName!=null) tag.putString("ownerName",this.ownerName);
 		return tag;
 	}
-
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket(){
 		return ClientboundBlockEntityDataPacket.create(this);
