@@ -2,6 +2,7 @@ package cz.maxtechnik.dif.init.basic;
 
 import com.simibubi.create.AllCreativeModeTabs;
 import cz.maxtechnik.dif.DifMod;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -11,6 +12,7 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.List;
 import java.util.Objects;
 
 import static cz.maxtechnik.dif.DifMod.addItemStacksBehind;
@@ -165,6 +167,10 @@ public class DifModTabs{
 							new ItemStack(COPPER_BARREL.get()),
 							new ItemStack(BRASS_BARREL.get())
 					});
+			addItemStacksBehind(tabData,new ItemStack(Items.PINK_BED),
+					new ItemStack[]{
+							new ItemStack(WHITE_SLEEPING_BAG.get())
+					});
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES)){
 			tabData.insertBefore(new ItemStack(Items.BUCKET),new ItemStack(DESTROYER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertBefore(new ItemStack(Items.BUCKET),new ItemStack(DEFORESTER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
@@ -181,13 +187,13 @@ public class DifModTabs{
 							new ItemStack(COPPER_AXE.get()),
 							new ItemStack(COPPER_HOE.get())
 					});
-			java.util.List<ItemStack> buckets = new java.util.ArrayList<>(java.util.Arrays.asList(
+			List<ItemStack> buckets = new java.util.ArrayList<>(java.util.Arrays.asList(
 					new ItemStack(BEER_BUCKET.get()),
 					new ItemStack(XP_BUCKET.get()),
 					new ItemStack(FUEL_BUCKET.get()),
 					new ItemStack(JETPACK_FUEL_BUCKET.get())
 			));
-			if (net.neoforged.fml.ModList.get().isLoaded("farmersdelight")) {
+			if(ModList.get().isLoaded("farmersdelight")) {
 				buckets.add(new ItemStack(SUNFLOWER_OIL_BUCKET.get()));
 			}
 			buckets.addAll(java.util.Arrays.asList(
@@ -281,14 +287,16 @@ public class DifModTabs{
 			tabData.accept(INCOMPLETE_UNIVERSAL);
 
 		}else if(tabData.getTabKey().location().getNamespace().equals("farmersdelight")){
-			Item strawBale=net.minecraft.core.registries.BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("farmersdelight","straw_bale"));
-			if(strawBale!=Items.AIR){
-				tabData.insertAfter(new ItemStack(strawBale),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-			}
+			Item strawBale=BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("farmersdelight","straw_bale"));
+			if(strawBale!=Items.AIR) tabData.insertAfter(new ItemStack(strawBale),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 		}else if(tabData.getTab().equals(AllCreativeModeTabs.BASE_CREATIVE_TAB.get())){
-			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create","item_hatch")))),new ItemStack[]{new ItemStack(FLUID_HATCH.get()),new ItemStack(FLUID_DRAIN.get())});
+			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create","item_hatch")))),
+					new ItemStack[]{
+							new ItemStack(FLUID_HATCH.get()),
+							new ItemStack(FLUID_DRAIN.get())
+					});
 		}else if(tabData.getTab().equals(AllCreativeModeTabs.PALETTES_CREATIVE_TAB.get())){
-			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create","framed_glass_trapdoor")))),
+			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create","framed_glass_trapdoor")))),
 					new ItemStack[]{
 							new ItemStack(BROKEN_TRACK00.get()),
 							new ItemStack(BROKEN_TRACK01.get()),
