@@ -25,7 +25,7 @@ public class DifModBlockEntities{
 
 
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<SpaceshipBlockEntity>> SPACESHIP=register("spaceship",DifModBlocks.SPACESHIP,SpaceshipBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<ChunkLoaderBlockEntity>> CHUNK_LOADER_BE=REGISTRY.register("chunk_loader_be",()->BlockEntityType.Builder.of(ChunkLoaderBlockEntity::new,DifModBlocks.CHUNK_LOADER_1X1.get(),DifModBlocks.CHUNK_LOADER_3X3.get()).build(null));
+	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<ChunkLoaderBlockEntity>> CHUNK_LOADER_BE=REGISTRY.register("chunk_loader_be",()->BlockEntityType.Builder.of(ChunkLoaderBlockEntity::new,DifModBlocks.CHUNK_LOADER.get()).build(null));
 
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<SpaceScaffoldingBlockEntity>> SPACE_SCAFFOLDING=REGISTRY.register("space_scaffolding",()->BlockEntityType.Builder.of(SpaceScaffoldingBlockEntity::new,DifModBlocks.SPACE_SCAFFOLDING.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<FryingTableBlockEntity>> FRYING_TABLE=REGISTRY.register("frying_table",()->BlockEntityType.Builder.of(FryingTableBlockEntity::new,DifModBlocks.FRYING_TABLE.get()).build(null));

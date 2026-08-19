@@ -78,8 +78,7 @@ public class DifModItems{
 	public static final DeferredItem<Item>FAST_POWERED_RAIL=block(DifModBlocks.FAST_POWERED_RAIL);
 	public static final DeferredItem<Item>FAST_RAIL=block(DifModBlocks.FAST_RAIL);
 
-	public static final DeferredItem<Item>CHUNK_LOADER_1X1=REGISTRY.register("chunk_loader_1x1",()->new BlockItem(DifModBlocks.CHUNK_LOADER_1X1.get(),new Item.Properties()){@Override public boolean isFoil(@NotNull ItemStack stack){return true;}});
-	public static final DeferredItem<Item>CHUNK_LOADER_3X3=REGISTRY.register("chunk_loader_3x3",()->new BlockItem(DifModBlocks.CHUNK_LOADER_3X3.get(),new Item.Properties()){@Override public boolean isFoil(@NotNull ItemStack stack){return true;}});
+	public static final DeferredItem<Item>CHUNK_LOADER=REGISTRY.register("chunk_loader",()->new BlockItem(DifModBlocks.CHUNK_LOADER.get(),new Item.Properties()){@Override public boolean isFoil(@NotNull ItemStack stack){return true;}});
 
 	public static final DeferredItem<Item>SILK=REGISTRY.register("silk",()->new Item(new Item.Properties()));
 
@@ -325,5 +324,7 @@ public class DifModItems{
 		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_gasoline"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
 		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_lpg"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
 		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_heavy_fuel_oil"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader_1x1"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader_3x3"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader"));
 	}
 }

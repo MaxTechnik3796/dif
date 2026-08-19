@@ -86,6 +86,27 @@ public class DifMod{
 		modContainer.registerConfig(ModConfig.Type.COMMON,DifModCommonConfig.SPEC);
 		modContainer.registerConfig(ModConfig.Type.SERVER,cz.maxtechnik.dif.config.DifModServerConfig.SPEC);
 		bus.addListener(DifModCapabilities::registerCapabilities);
+		bus.addListener((net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent event) -> event.register(CHUNK_LOADER_TICKETS));
+	}
+
+	public static final net.neoforged.neoforge.common.world.chunk.TicketController CHUNK_LOADER_TICKETS = new net.neoforged.neoforge.common.world.chunk.TicketController(
+			net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loaders"),
+			DifMod::onLoadLevelTickets
+	);
+
+	private static void onLoadLevelTickets(net.minecraft.server.level.ServerLevel level, net.neoforged.neoforge.common.world.chunk.TicketHelper ticketHelper) {
+		cz.maxtechnik.dif.init.events.ChunkLoaderData data = cz.maxtechnik.dif.init.events.ChunkLoaderData.get(level);
+		for (cz.maxtechnik.dif.init.events.ChunkLoaderData.LoaderRecord record : data.loaders) {
+			if (record.active()) {
+				net.minecraft.world.level.ChunkPos center = new net.minecraft.world.level.ChunkPos(record.pos());
+				int r = record.radius();
+				for (int x = -r; x <= r; x++) {
+					for (int z = -r; z <= r; z++) {
+						CHUNK_LOADER_TICKETS.forceChunk(level, record.pos(), center.x + x, center.z + z, true, true);
+					}
+				}
+			}
+		}
 	}
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event){

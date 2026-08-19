@@ -24,8 +24,7 @@ public class DifModTabs{
 		tabData.accept(THE_DIFFERENTIAL);
 		tabData.accept(MEGA_TORCH);
 		tabData.accept(PORTAL_GUN);
-		tabData.accept(CHUNK_LOADER_1X1);
-		tabData.accept(CHUNK_LOADER_3X3);
+		tabData.accept(CHUNK_LOADER);
 
 		tabData.accept(EVENT_BUS);
 		tabData.accept(VENT);

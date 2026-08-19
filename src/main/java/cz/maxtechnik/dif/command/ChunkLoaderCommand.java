@@ -71,7 +71,8 @@ public class ChunkLoaderCommand{
 		boolean isOp=source.hasPermission(2);
 		for(var r: list){
 			var pos=r.pos();
-			MutableComponent line=Component.literal(" §e• "+(r.is3x3()?"§b[3x3]":"§7[1x1]")+" §f"+pos.getX()+", "+pos.getY()+", "+pos.getZ()+" ");
+			String sizeTag=r.radius()==2?"§d[5x5]":(r.radius()==1?"§b[3x3]":"§7[1x1]");
+			MutableComponent line=Component.literal(" §e• "+sizeTag+" §f"+pos.getX()+", "+pos.getY()+", "+pos.getZ()+" ");
 			if(isOp){
 				line.append(Component.literal("§6[TP] ").withStyle(s->s
 						.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/tp "+pos.getX()+" "+pos.getY()+" "+pos.getZ()))

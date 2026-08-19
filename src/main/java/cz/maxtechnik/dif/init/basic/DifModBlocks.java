@@ -25,8 +25,7 @@ import static net.minecraft.world.level.block.Blocks.GOLD_ORE;
 public class DifModBlocks{
 	public static final DeferredRegister.Blocks REGISTRY=DeferredRegister.createBlocks(DifMod.MODID);
 	//Random:
-	public static final DeferredBlock<Block>CHUNK_LOADER_1X1=REGISTRY.register("chunk_loader_1x1",ChunkLoader::new);
-	public static final DeferredBlock<Block>CHUNK_LOADER_3X3=REGISTRY.register("chunk_loader_3x3",ChunkLoader::new);
+	public static final DeferredBlock<Block>CHUNK_LOADER=REGISTRY.register("chunk_loader",ChunkLoader::new);
 	public static final DeferredBlock<Block>FAST_POWERED_RAIL=REGISTRY.register("fast_powered_rail",()->new FastPoweredRailBlock(BlockBehaviour.Properties.of().noCollission().strength(0.7F).sound(SoundType.METAL)));
 	public static final DeferredBlock<Block>FAST_RAIL=REGISTRY.register("fast_rail",()->new FastRailBlock(BlockBehaviour.Properties.of().noCollission().strength(0.7F).sound(SoundType.METAL)));
 	//Sleeping Bags:
@@ -199,5 +198,7 @@ public class DifModBlocks{
 		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_gasoline"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
 		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_lpg"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
 		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_heavy_fuel_oil"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader_1x1"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader_3x3"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader"));
 	}
 }

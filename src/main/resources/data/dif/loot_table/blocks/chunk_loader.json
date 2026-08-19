@@ -1,9 +1,9 @@
 {
 	"type":"minecraft:block",
-	"random_sequence":"dif:blocks/chunk_loader_3x3",
+	"random_sequence":"dif:blocks/chunk_loader",
 	"pools":[
 		{
-			"rolls":1.0,
+			"bonus_rolls":0.0,
 			"conditions":[
 				{
 					"condition":"minecraft:survives_explosion"
@@ -12,9 +12,10 @@
 			"entries":[
 				{
 					"type":"minecraft:item",
-					"name":"dif:chunk_loader_3x3"
+					"name":"dif:chunk_loader"
 				}
-			]
+			],
+			"rolls":1.0
 		}
 	]
 }
