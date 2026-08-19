@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.init.events;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.block.SleepingBagBlock;
+import cz.maxtechnik.dif.block.SleepingBag;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,7 +16,7 @@ public class PlayerSpawnHandler{
 		BlockPos pos=event.getNewSpawn();
 		if(pos!=null){
 			BlockState state=level.getBlockState(pos);
-			if(state.getBlock() instanceof SleepingBagBlock){
+			if(state.getBlock() instanceof SleepingBag){
 				event.setCanceled(true);
 			}
 		}

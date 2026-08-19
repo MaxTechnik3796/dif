@@ -5,18 +5,21 @@ import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModEntities;
 import cz.maxtechnik.dif.init.other.DifModFoods;
 import cz.maxtechnik.dif.init.other.DifModTiers;
-import cz.maxtechnik.dif.item.*;
-import cz.maxtechnik.dif.item.food.*;
+import cz.maxtechnik.dif.item.armor.CarbonSuit;
+import cz.maxtechnik.dif.item.armor.CopperArmor;
+import cz.maxtechnik.dif.item.armor.Jetpack;
+import cz.maxtechnik.dif.item.armor.SpaceSuit;
+import cz.maxtechnik.dif.item.food.Beer;
+import cz.maxtechnik.dif.item.food.MolotovuvKoktejl;
+import cz.maxtechnik.dif.item.food.RetvalFoods;
+import cz.maxtechnik.dif.item.food.UranovejKoktejl;
 import cz.maxtechnik.dif.item.tool.*;
-import cz.maxtechnik.dif.item.armor.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-
-
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -24,7 +27,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-
 @SuppressWarnings("unused")
 public class DifModItems{
 	public static final DeferredRegister.Items REGISTRY=DeferredRegister.createItems(DifMod.MODID);
@@ -38,7 +40,24 @@ public class DifModItems{
 	private static DeferredItem<Item> doubleBlock(DeferredBlock<Block> block){
 		return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));
 	}
-	public static final DeferredItem<Item>SLEEPING_BAG=block(DifModBlocks.SLEEPING_BAG);
+
+	public static final DeferredItem<Item>WHITE_SLEEPING_BAG=block(DifModBlocks.WHITE_SLEEPING_BAG);
+	public static final DeferredItem<Item>ORANGE_SLEEPING_BAG=block(DifModBlocks.ORANGE_SLEEPING_BAG);
+	public static final DeferredItem<Item>MAGENTA_SLEEPING_BAG=block(DifModBlocks.MAGENTA_SLEEPING_BAG);
+	public static final DeferredItem<Item>LIGHT_BLUE_SLEEPING_BAG=block(DifModBlocks.LIGHT_BLUE_SLEEPING_BAG);
+	public static final DeferredItem<Item>YELLOW_SLEEPING_BAG=block(DifModBlocks.YELLOW_SLEEPING_BAG);
+	public static final DeferredItem<Item>LIME_SLEEPING_BAG=block(DifModBlocks.LIME_SLEEPING_BAG);
+	public static final DeferredItem<Item>PINK_SLEEPING_BAG=block(DifModBlocks.PINK_SLEEPING_BAG);
+	public static final DeferredItem<Item>GRAY_SLEEPING_BAG=block(DifModBlocks.GRAY_SLEEPING_BAG);
+	public static final DeferredItem<Item>LIGHT_GRAY_SLEEPING_BAG=block(DifModBlocks.LIGHT_GRAY_SLEEPING_BAG);
+	public static final DeferredItem<Item>CYAN_SLEEPING_BAG=block(DifModBlocks.CYAN_SLEEPING_BAG);
+	public static final DeferredItem<Item>PURPLE_SLEEPING_BAG=block(DifModBlocks.PURPLE_SLEEPING_BAG);
+	public static final DeferredItem<Item>BLUE_SLEEPING_BAG=block(DifModBlocks.BLUE_SLEEPING_BAG);
+	public static final DeferredItem<Item>BROWN_SLEEPING_BAG=block(DifModBlocks.BROWN_SLEEPING_BAG);
+	public static final DeferredItem<Item>GREEN_SLEEPING_BAG=block(DifModBlocks.GREEN_SLEEPING_BAG);
+	public static final DeferredItem<Item>RED_SLEEPING_BAG=block(DifModBlocks.RED_SLEEPING_BAG);
+	public static final DeferredItem<Item>BLACK_SLEEPING_BAG=block(DifModBlocks.BLACK_SLEEPING_BAG);
+
 	public static final DeferredItem<Item>LAP_TIMER=block(DifModBlocks.LAP_TIMER);
 
 	public static final DeferredItem<Item>QUARRY=block(DifModBlocks.QUARRY);

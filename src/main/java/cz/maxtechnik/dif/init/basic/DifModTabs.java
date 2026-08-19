@@ -6,10 +6,13 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
 import java.util.Objects;
+
 import static cz.maxtechnik.dif.DifMod.addItemStacksBehind;
 import static cz.maxtechnik.dif.init.basic.DifModItems.*;
 @SuppressWarnings("unused")
@@ -28,13 +31,30 @@ public class DifModTabs{
 		tabData.accept(ANDESITE_LATTICE);
 		tabData.accept(ANDESITE_WINDOW);
 		tabData.accept(SUPER_BOX);
-		if (net.neoforged.fml.ModList.get().isLoaded("farmersdelight")) {
-			tabData.accept(FRYING_TABLE);
-		}
+		if(ModList.get().isLoaded("farmersdelight")) tabData.accept(FRYING_TABLE);
 
 		tabData.accept(LAP_TIMER);
 
-		tabData.accept(SLEEPING_BAG);
+		tabData.accept(WHITE_SLEEPING_BAG);
+		tabData.accept(ORANGE_SLEEPING_BAG);
+		tabData.accept(MAGENTA_SLEEPING_BAG);
+		tabData.accept(LIGHT_BLUE_SLEEPING_BAG);
+		tabData.accept(YELLOW_SLEEPING_BAG);
+		tabData.accept(LIME_SLEEPING_BAG);
+		tabData.accept(PINK_SLEEPING_BAG);
+		tabData.accept(GRAY_SLEEPING_BAG);
+		tabData.accept(LIGHT_GRAY_SLEEPING_BAG);
+		tabData.accept(CYAN_SLEEPING_BAG);
+		tabData.accept(PURPLE_SLEEPING_BAG);
+		tabData.accept(BLUE_SLEEPING_BAG);
+		tabData.accept(BROWN_SLEEPING_BAG);
+		tabData.accept(GREEN_SLEEPING_BAG);
+		tabData.accept(RED_SLEEPING_BAG);
+		tabData.accept(BLACK_SLEEPING_BAG);
+
+
+
+
 
 		tabData.accept(MITHRIL);
 		tabData.accept(MITHRIL_PLATE);

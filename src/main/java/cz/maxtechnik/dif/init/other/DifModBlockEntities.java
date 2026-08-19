@@ -34,7 +34,6 @@ public class DifModBlockEntities{
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<QuarryFrameBlockEntity>> QUARRY_FRAME=REGISTRY.register("quarry_frame",()->BlockEntityType.Builder.of(QuarryFrameBlockEntity::new,DifModBlocks.QUARRY_FRAME.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<QuarryLandmarkBlockEntity>> QUARRY_LANDMARK=REGISTRY.register("quarry_landmark",()->BlockEntityType.Builder.of(QuarryLandmarkBlockEntity::new,DifModBlocks.QUARRY_LANDMARK.get()).build(null));
 
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<SleepingBagBlockEntity>> SLEEPING_BAG=REGISTRY.register("sleeping_bag",()->BlockEntityType.Builder.of(SleepingBagBlockEntity::new,DifModBlocks.SLEEPING_BAG.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<SpaceCrateBlockEntity>> SPACE_CRATE=REGISTRY.register("space_crate",()->BlockEntityType.Builder.of(SpaceCrateBlockEntity::new,DifModBlocks.SPACE_CRATE.get()).build(null));
 
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<BurningGeneratorBlockEntity>> BURNING_GENERATOR=REGISTRY.register("burning_generator",()->BlockEntityType.Builder.of(BurningGeneratorBlockEntity::new,DifModBlocks.BURNING_GENERATOR.get()).build(null));

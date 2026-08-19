@@ -1,20 +1,16 @@
 package cz.maxtechnik.dif.block;
 
-import com.mojang.serialization.MapCodec;
-import cz.maxtechnik.dif.block.entity.SleepingBagBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -25,12 +21,15 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-public class SleepingBagBlock extends BaseEntityBlock{
+
+import static cz.maxtechnik.dif.init.basic.DifModBlocks.*;
+import static net.minecraft.world.item.DyeColor.*;
+public class SleepingBag extends Block{
 	public static final DirectionProperty FACING=BlockStateProperties.HORIZONTAL_FACING;
 	public static final EnumProperty<BedPart> PART=BlockStateProperties.BED_PART;
 	public static final BooleanProperty OCCUPIED=BlockStateProperties.OCCUPIED;
 	protected static final VoxelShape SHAPE=Block.box(0D,0D,0D,16D,2D,16D);
-	public SleepingBagBlock(){
+	public SleepingBag(){
 		super(BlockBehaviour.Properties.of().sound(SoundType.WOOL).strength(0.2F).pushReaction(PushReaction.BLOCK).noOcclusion());
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(PART,BedPart.FOOT).setValue(OCCUPIED,false));
 	}
@@ -39,16 +38,12 @@ public class SleepingBagBlock extends BaseEntityBlock{
 		builder.add(FACING,PART,OCCUPIED);
 	}
 	@Override
-	protected @NotNull MapCodec<? extends BaseEntityBlock> codec(){
-		return BlockBehaviour.simpleCodec(properties->new SleepingBagBlock());
-	}
-	@Override
-	public @Nullable BlockState getStateForPlacement(BlockPlaceContext ctx){
-		Direction dir=ctx.getHorizontalDirection();
-		BlockPos pos=ctx.getClickedPos();
+	public @Nullable BlockState getStateForPlacement(BlockPlaceContext context){
+		Direction dir=context.getHorizontalDirection();
+		BlockPos pos=context.getClickedPos();
 		BlockPos headPos=pos.relative(dir);
-		Level level=ctx.getLevel();
-		if(level.getBlockState(headPos).canBeReplaced(ctx)&&level.getWorldBorder().isWithinBounds(headPos))
+		Level level=context.getLevel();
+		if(level.getBlockState(headPos).canBeReplaced(context)&&level.getWorldBorder().isWithinBounds(headPos))
 			return this.defaultBlockState().setValue(FACING,dir);
 		return null;
 	}
@@ -60,25 +55,25 @@ public class SleepingBagBlock extends BaseEntityBlock{
 		}
 	}
 	@Override
-	public @NotNull BlockState playerWillDestroy(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player) {
-		if (!level.isClientSide && player.isCreative()) {
-			BedPart bedpart = state.getValue(PART);
-			if (bedpart == BedPart.FOOT) {
-				BlockPos headPos = pos.relative(state.getValue(FACING));
-				BlockState headState = level.getBlockState(headPos);
-				if (headState.is(this) && headState.getValue(PART) == BedPart.HEAD) {
-					level.setBlock(headPos, Blocks.AIR.defaultBlockState(), 35);
-					level.levelEvent(player, 2001, headPos, Block.getId(headState));
+	public @NotNull BlockState playerWillDestroy(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState blockState,@NotNull Player player){
+		if(!level.isClientSide&&player.isCreative()){
+			BedPart bedpart=blockState.getValue(PART);
+			if(bedpart.equals(BedPart.FOOT)){
+				BlockPos headPos=pos.relative(blockState.getValue(FACING));
+				BlockState headState=level.getBlockState(headPos);
+				if(headState.is(this)&&headState.getValue(PART).equals(BedPart.HEAD)){
+					level.setBlock(headPos,Blocks.AIR.defaultBlockState(),35);
+					level.levelEvent(player,2001,headPos,Block.getId(headState));
 				}
 			}
 		}
-		return super.playerWillDestroy(level, pos, state, player);
+		return super.playerWillDestroy(level,pos,blockState,player);
 	}
 	@Override
 	public void onRemove(BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,BlockState newState,boolean moving){
 		if(!blockState.is(newState.getBlock())){
 			BlockPos otherPos;
-			if(blockState.getValue(PART)==BedPart.FOOT) otherPos=pos.relative(blockState.getValue(FACING));
+			if(blockState.getValue(PART).equals(BedPart.FOOT)) otherPos=pos.relative(blockState.getValue(FACING));
 			else otherPos=pos.relative(blockState.getValue(FACING).getOpposite());
 			BlockState otherState=level.getBlockState(otherPos);
 			if(otherState.is(this)) level.removeBlock(otherPos,false);
@@ -86,18 +81,18 @@ public class SleepingBagBlock extends BaseEntityBlock{
 		super.onRemove(blockState,level,pos,newState,moving);
 	}
 	@Override
-	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
+	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
 		if(level.isClientSide) return InteractionResult.CONSUME;
-		if(state.getValue(PART)!=BedPart.HEAD){
-			pos=pos.relative(state.getValue(FACING));
-			state=level.getBlockState(pos);
-			if(!state.is(this)) return InteractionResult.FAIL;
+		if(blockState.getValue(PART)!=BedPart.HEAD){
+			pos=pos.relative(blockState.getValue(FACING));
+			blockState=level.getBlockState(pos);
+			if(!blockState.is(this)) return InteractionResult.FAIL;
 		}
 		if(!BedBlock.canSetSpawn(level)){
 			level.explode(null,pos.getX()+0.5,pos.getY()+0.5,pos.getZ()+0.5,5.0F,Level.ExplosionInteraction.BLOCK);
 			return InteractionResult.SUCCESS;
 		}
-		if(state.getValue(OCCUPIED)){
+		if(blockState.getValue(OCCUPIED)){
 			player.displayClientMessage(Component.translatable("block.minecraft.bed.occupied"),true);
 			return InteractionResult.SUCCESS;
 		}
@@ -123,20 +118,33 @@ public class SleepingBagBlock extends BaseEntityBlock{
 		return SHAPE;
 	}
 	@Override
-	public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
-		return blockState.getValue(PART).equals(BedPart.HEAD)?new SleepingBagBlockEntity(pos,blockState):null;
-	}
-	@Nullable
-	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState blockState,@NotNull BlockEntityType<T> type){
-		return null;
-	}
-	@Override
 	protected @NotNull BlockState rotate(@NotNull BlockState blockState,@NotNull Rotation rotation){
 		return blockState.setValue(FACING,rotation.rotate(blockState.getValue(FACING)));
 	}
 	@Override
 	protected @NotNull BlockState mirror(@NotNull BlockState blockState,@NotNull Mirror mirror){
 		return blockState.setValue(FACING,mirror.mirror(blockState.getValue(FACING)));
+	}
+	@SuppressWarnings("unused")
+	private DyeColor getColor(BlockState blockState){
+		Block block=blockState.getBlock();
+		if(!(block instanceof BedBlock)) return WHITE;
+		if(block.equals(WHITE_SLEEPING_BAG.get())) return WHITE;
+		if(block.equals(ORANGE_SLEEPING_BAG.get())) return ORANGE;
+		if(block.equals(MAGENTA_SLEEPING_BAG.get())) return MAGENTA;
+		if(block.equals(LIGHT_BLUE_SLEEPING_BAG.get())) return LIGHT_BLUE;
+		if(block.equals(YELLOW_SLEEPING_BAG.get())) return YELLOW;
+		if(block.equals(LIME_SLEEPING_BAG.get())) return LIME;
+		if(block.equals(PINK_SLEEPING_BAG.get())) return PINK;
+		if(block.equals(GRAY_SLEEPING_BAG.get())) return GRAY;
+		if(block.equals(LIGHT_GRAY_SLEEPING_BAG.get())) return LIGHT_GRAY;
+		if(block.equals(CYAN_SLEEPING_BAG.get())) return CYAN;
+		if(block.equals(PURPLE_SLEEPING_BAG.get())) return PURPLE;
+		if(block.equals(BLUE_SLEEPING_BAG.get())) return BLUE;
+		if(block.equals(BROWN_SLEEPING_BAG.get())) return BROWN;
+		if(block.equals(GREEN_SLEEPING_BAG.get())) return GREEN;
+		if(block.equals(RED_SLEEPING_BAG.get())) return RED;
+		if(block.equals(BLACK_SLEEPING_BAG.get())) return BLACK;
+		return WHITE;
 	}
 }

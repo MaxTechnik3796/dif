@@ -28,8 +28,24 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>CHUNK_LOADER_3X3=REGISTRY.register("chunk_loader_3x3",ChunkLoader::new);
 	public static final DeferredBlock<Block>FAST_POWERED_RAIL=REGISTRY.register("fast_powered_rail",()->new FastPoweredRailBlock(BlockBehaviour.Properties.of().noCollission().strength(0.7F).sound(SoundType.METAL)));
 	public static final DeferredBlock<Block>FAST_RAIL=REGISTRY.register("fast_rail",()->new FastRailBlock(BlockBehaviour.Properties.of().noCollission().strength(0.7F).sound(SoundType.METAL)));
+	//Sleeping Bags:
+	public static final DeferredBlock<Block>WHITE_SLEEPING_BAG=REGISTRY.register("white_sleeping_bag",SleepingBag::new);
+	public static final DeferredBlock<Block>ORANGE_SLEEPING_BAG=REGISTRY.register("orange_sleeping_bag",SleepingBag::new);
+	public static final DeferredBlock<Block>MAGENTA_SLEEPING_BAG=REGISTRY.register("magenta_sleeping_bag",SleepingBag::new);
+	public static final DeferredBlock<Block>LIGHT_BLUE_SLEEPING_BAG=REGISTRY.register("light_blue_sleeping_bag",SleepingBag::new);
+	public static final DeferredBlock<Block>YELLOW_SLEEPING_BAG=REGISTRY.register("yellow_sleeping_bag",SleepingBag::new);
+	public static final DeferredBlock<Block>LIME_SLEEPING_BAG=REGISTRY.register("lime_sleeping_bag",SleepingBag::new);
+	public static final DeferredBlock<Block>PINK_SLEEPING_BAG=REGISTRY.register("pink_sleeping_bag",SleepingBag::new);
+	public static final DeferredBlock<Block>GRAY_SLEEPING_BAG=REGISTRY.register("gray_sleeping_bag",SleepingBag::new);
+	public static final DeferredBlock<Block>LIGHT_GRAY_SLEEPING_BAG=REGISTRY.register("light_gray_sleeping_bag",SleepingBag::new);
+	public static final DeferredBlock<Block>CYAN_SLEEPING_BAG=REGISTRY.register("cyan_sleeping_bag",SleepingBag::new);
+	public static final DeferredBlock<Block>PURPLE_SLEEPING_BAG=REGISTRY.register("purple_sleeping_bag",SleepingBag::new);
+	public static final DeferredBlock<Block>BLUE_SLEEPING_BAG=REGISTRY.register("blue_sleeping_bag",SleepingBag::new);
+	public static final DeferredBlock<Block>BROWN_SLEEPING_BAG=REGISTRY.register("brown_sleeping_bag",SleepingBag::new);
+	public static final DeferredBlock<Block>GREEN_SLEEPING_BAG=REGISTRY.register("green_sleeping_bag",SleepingBag::new);
+	public static final DeferredBlock<Block>RED_SLEEPING_BAG=REGISTRY.register("red_sleeping_bag",SleepingBag::new);
+	public static final DeferredBlock<Block>BLACK_SLEEPING_BAG=REGISTRY.register("black_sleeping_bag",SleepingBag::new);
 
-	public static final DeferredBlock<Block>SLEEPING_BAG=REGISTRY.register("sleeping_bag",SleepingBagBlock::new);
 
 	//Quarry & Stuff:
 	public static final DeferredBlock<Block>QUARRY=REGISTRY.register("quarry",()->new Quarry(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops()));
