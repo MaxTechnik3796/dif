@@ -169,7 +169,7 @@ public class DifModItems{
 
 	public static final DeferredItem<Item> BURNING_GENERATOR=block(DifModBlocks.BURNING_GENERATOR);
 	public static final DeferredItem<Item> FLUID_HATCH=block(DifModBlocks.FLUID_HATCH);
-	public static final DeferredItem<Item> DRAIN=block(DifModBlocks.DRAIN);
+	public static final DeferredItem<Item> FLUID_DRAIN=block(DifModBlocks.FLUID_DRAIN);
 
 	public static final DeferredItem<Item> SUPER_BOX=block(DifModBlocks.SUPER_BOX);
 	public static final DeferredItem<Item> OLD_CHEST=block(DifModBlocks.OLD_CHEST);
@@ -317,13 +317,13 @@ public class DifModItems{
 	public static final DeferredItem<Item>DEFORESTER=DEFORESTRATOR;
 
 	static {
-		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_diesel"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
-		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_gasoline"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
-		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_lpg"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_diesel"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_gasoline"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_lpg"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
 
-		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_diesel"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
-		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_gasoline"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
-		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_lpg"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
-		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_heavy_fuel_oil"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_diesel"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_gasoline"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_lpg"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_heavy_fuel_oil"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
 	}
 }

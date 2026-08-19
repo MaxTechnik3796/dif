@@ -10,6 +10,7 @@ import cz.maxtechnik.dif.block.rails.FastRailBlock;
 import cz.maxtechnik.dif.block.space.*;
 import cz.maxtechnik.dif.block.template.*;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -77,7 +78,7 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>VENT=REGISTRY.register("vent",()->new CustomWaterloggedHorizontalRotation(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(5F,6F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>BURNING_GENERATOR=REGISTRY.register("burning_generator",BurningGenerator::new);
 	public static final DeferredBlock<Block>FLUID_HATCH=REGISTRY.register("fluid_hatch",FluidHatch::new);
-	public static final DeferredBlock<Block>DRAIN=REGISTRY.register("drain",Drain::new);
+	public static final DeferredBlock<Block>FLUID_DRAIN=REGISTRY.register("fluid_drain",FluidDrain::new);
 	public static final DeferredBlock<Block>SINGULARITATOR=REGISTRY.register("singularitator",()->new CustomWaterlogged(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>SUPER_BOX=REGISTRY.register("super_box",SuperBox::new);
 	public static final DeferredBlock<Block>OLD_CHEST=REGISTRY.register("old_chest",OldChest::new);
@@ -190,13 +191,13 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>NANO_GLASS=REGISTRY.register("nano_glass",()->new NanoGlass(BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.HAT).strength(0.3F).sound(SoundType.GLASS).noOcclusion().isValidSpawn(Blocks::never).isRedstoneConductor((bs,br,bp)->false).isSuffocating((blockState,blockGetter,pos)->false).isViewBlocking((blockState,blockGetter,pos)->false)));
 
 	static {
-		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_diesel"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
-		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_gasoline"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
-		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_lpg"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_diesel"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_gasoline"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_lpg"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
 
-		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_diesel"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
-		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_gasoline"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
-		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_lpg"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
-		REGISTRY.addAlias(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_heavy_fuel_oil"), net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_diesel"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_gasoline"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_lpg"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_heavy_fuel_oil"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
 	}
 }

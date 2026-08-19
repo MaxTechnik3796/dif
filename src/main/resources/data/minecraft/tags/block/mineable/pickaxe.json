@@ -4,7 +4,7 @@
 		"dif:event_bus",
 		"dif:vent",
 		"dif:fluid_hatch",
-		"dif:drain",
+		"dif:fluid_drain",
 		"dif:the_differential",
 		"dif:burning_generator",
 		"dif:deepslated_arrow",
