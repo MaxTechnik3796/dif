@@ -37,27 +37,6 @@ public class DifModTabs{
 
 		tabData.accept(LAP_TIMER);
 
-		tabData.accept(WHITE_SLEEPING_BAG);
-		tabData.accept(ORANGE_SLEEPING_BAG);
-		tabData.accept(MAGENTA_SLEEPING_BAG);
-		tabData.accept(LIGHT_BLUE_SLEEPING_BAG);
-		tabData.accept(YELLOW_SLEEPING_BAG);
-		tabData.accept(LIME_SLEEPING_BAG);
-		tabData.accept(PINK_SLEEPING_BAG);
-		tabData.accept(GRAY_SLEEPING_BAG);
-		tabData.accept(LIGHT_GRAY_SLEEPING_BAG);
-		tabData.accept(CYAN_SLEEPING_BAG);
-		tabData.accept(PURPLE_SLEEPING_BAG);
-		tabData.accept(BLUE_SLEEPING_BAG);
-		tabData.accept(BROWN_SLEEPING_BAG);
-		tabData.accept(GREEN_SLEEPING_BAG);
-		tabData.accept(RED_SLEEPING_BAG);
-		tabData.accept(BLACK_SLEEPING_BAG);
-
-
-
-
-
 		tabData.accept(MITHRIL);
 		tabData.accept(MITHRIL_PLATE);
 		tabData.accept(MITHRIL_TEMPLATE);
@@ -169,7 +148,22 @@ public class DifModTabs{
 					});
 			addItemStacksBehind(tabData,new ItemStack(Items.PINK_BED),
 					new ItemStack[]{
-							new ItemStack(WHITE_SLEEPING_BAG.get())
+							new ItemStack(WHITE_SLEEPING_BAG.get()),
+							new ItemStack(LIGHT_GRAY_SLEEPING_BAG.get()),
+							new ItemStack(GRAY_SLEEPING_BAG.get()),
+							new ItemStack(BLACK_SLEEPING_BAG.get()),
+							new ItemStack(BROWN_SLEEPING_BAG.get()),
+							new ItemStack(RED_SLEEPING_BAG.get()),
+							new ItemStack(ORANGE_SLEEPING_BAG.get()),
+							new ItemStack(YELLOW_SLEEPING_BAG.get()),
+							new ItemStack(LIME_SLEEPING_BAG.get()),
+							new ItemStack(GREEN_SLEEPING_BAG.get()),
+							new ItemStack(CYAN_SLEEPING_BAG.get()),
+							new ItemStack(LIGHT_BLUE_SLEEPING_BAG.get()),
+							new ItemStack(BLUE_SLEEPING_BAG.get()),
+							new ItemStack(PURPLE_SLEEPING_BAG.get()),
+							new ItemStack(MAGENTA_SLEEPING_BAG.get()),
+							new ItemStack(PINK_SLEEPING_BAG.get())
 					});
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.TOOLS_AND_UTILITIES)){
 			tabData.insertBefore(new ItemStack(Items.BUCKET),new ItemStack(DESTROYER.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
