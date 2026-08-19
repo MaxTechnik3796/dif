@@ -2,8 +2,6 @@ package cz.maxtechnik.dif.block.entity;
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.block.ChunkLoader;
-import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.events.ChunkLoaderData;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.ChatFormatting;
@@ -17,7 +15,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
