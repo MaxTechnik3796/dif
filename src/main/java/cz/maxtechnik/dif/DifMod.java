@@ -96,7 +96,7 @@ public class DifMod{
 
 	private static void onLoadLevelTickets(net.minecraft.server.level.ServerLevel level, net.neoforged.neoforge.common.world.chunk.TicketHelper ticketHelper) {
 		cz.maxtechnik.dif.init.events.ChunkLoaderData data = cz.maxtechnik.dif.init.events.ChunkLoaderData.get(level);
-		for (cz.maxtechnik.dif.init.events.ChunkLoaderData.LoaderRecord record : data.loaders) {
+		for (cz.maxtechnik.dif.init.events.ChunkLoaderData.LoaderRecord record : data.getLoadersForDimension(level.dimension())) {
 			if (record.active()) {
 				net.minecraft.world.level.ChunkPos center = new net.minecraft.world.level.ChunkPos(record.pos());
 				int r = record.radius();

@@ -46,10 +46,6 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 		return radius;
 	}
 
-	public boolean isActive() {
-		return active;
-	}
-
 	public int getLoadedChunksCount() {
 		int side = 2 * radius + 1;
 		return side * side;
@@ -141,13 +137,14 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 		if (level instanceof ServerLevel serverLevel) {
 			forceChunks(serverLevel, this.radius, false);
 			ChunkLoaderData data = ChunkLoaderData.get(serverLevel);
-			data.loaders.removeIf(r -> r.pos().equals(this.worldPosition));
+			net.minecraft.resources.ResourceLocation dimId = serverLevel.dimension().location();
+			data.loaders.removeIf(r -> r.pos().equals(this.worldPosition) && r.dimension().equals(dimId));
 			data.setDirty();
 		}
 	}
 
 	private void syncAndSave(ServerLevel serverLevel) {
-		ChunkLoaderData.get(serverLevel).updateRecord(worldPosition, ownerUUID, ownerName, active, this.radius);
+		ChunkLoaderData.get(serverLevel).updateRecord(worldPosition, ownerUUID, ownerName, active, this.radius, serverLevel.dimension().location());
 		this.setChanged();
 		serverLevel.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
 	}
