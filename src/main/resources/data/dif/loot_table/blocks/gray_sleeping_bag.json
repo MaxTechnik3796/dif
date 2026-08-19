@@ -11,11 +11,11 @@
 			"entries": [
 				{
 					"type": "minecraft:item",
-					"name": "dif:sleeping_bag"
+					"name": "dif:gray_sleeping_bag"
 				}
 			],
 			"rolls": 1.0
 		}
 	],
-	"random_sequence": "dif:blocks/sleeping_bag"
+	"random_sequence": "dif:blocks/gray_sleeping_bag"
 }

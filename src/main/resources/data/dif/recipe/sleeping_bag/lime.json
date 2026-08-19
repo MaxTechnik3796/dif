@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"show_notification": false,
+	"acceptMirrored": true,
+	"pattern": [
+		"###"
+	],
+	"key": {
+		"#": {
+			"item": "minecraft:lime_wool"
+		}
+	},
+	"result": {
+		"id": "dif:lime_sleeping_bag"
+	}
+}
