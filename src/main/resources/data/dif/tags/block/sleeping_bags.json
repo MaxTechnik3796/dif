@@ -1,0 +1,21 @@
+{
+	"replace": false,
+	"values": [
+		"dif:white_sleeping_bag",
+		"dif:orange_sleeping_bag",
+		"dif:magenta_sleeping_bag",
+		"dif:light_blue_sleeping_bag",
+		"dif:yellow_sleeping_bag",
+		"dif:lime_sleeping_bag",
+		"dif:pink_sleeping_bag",
+		"dif:gray_sleeping_bag",
+		"dif:light_gray_sleeping_bag",
+		"dif:cyan_sleeping_bag",
+		"dif:purple_sleeping_bag",
+		"dif:blue_sleeping_bag",
+		"dif:brown_sleeping_bag",
+		"dif:green_sleeping_bag",
+		"dif:red_sleeping_bag",
+		"dif:black_sleeping_bag"
+	]
+}
