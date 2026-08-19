@@ -5,7 +5,8 @@
 		"0": "dif:block/drain",
 		"1": "create:block/smart_pipe_2",
 		"2": "create:block/encased_pipe",
-		"3": "create:block/chute_hole"
+		"3": "create:block/chute_hole",
+		"particle":"create:block/copper_casing"
 	},
 	"elements": [
 		{
