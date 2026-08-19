@@ -1,32 +1,32 @@
 {
-	"neoforge:conditions": [
+	"neoforge:conditions":[
 		{
-			"type": "neoforge:mod_loaded",
-			"modid": "farmersdelight"
+			"type":"neoforge:mod_loaded",
+			"modid":"farmersdelight"
 		}
 	],
-	"type": "farmersdelight:cooking",
-	"cookingtime": 200,
-	"experience": 0.35,
-	"ingredients": [
+	"type":"farmersdelight:cooking",
+	"cookingtime":200,
+	"experience":0.35,
+	"ingredients":[
 		{
-			"item": "create:wrench"
+			"item":"create:wrench"
 		},
 		{
-			"item": "create:andesite_casing"
+			"item":"create:andesite_casing"
 		},
 		{
-			"item": "create:andesite_alloy"
+			"item":"create:andesite_alloy"
 		},
 		{
-			"item": "create:goggles"
+			"item":"create:goggles"
 		}
 	],
-	"result": {
-		"count": 1,
-		"id": "dif:create_bowl"
+	"result":{
+		"count":1,
+		"id":"dif:create_bowl"
 	},
-	"container": {
-		"id": "minecraft:bowl"
+	"container":{
+		"id":"minecraft:bowl"
 	}
 }

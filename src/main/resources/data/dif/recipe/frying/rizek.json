@@ -1,21 +1,21 @@
 {
-	"neoforge:conditions": [
+	"neoforge:conditions":[
 		{
-			"type": "neoforge:mod_loaded",
-			"modid": "farmersdelight"
+			"type":"neoforge:mod_loaded",
+			"modid":"farmersdelight"
 		}
 	],
-	"type": "dif:frying",
-	"ingredient": {
-		"item": "minecraft:porkchop"
+	"type":"dif:frying",
+	"ingredient":{
+		"item":"minecraft:porkchop"
 	},
-	"fluid_ingredient": {
-		"tag": "c:sunflower_oil",
-		"amount": 10
+	"fluid_ingredient":{
+		"tag":"c:sunflower_oil",
+		"amount":10
 	},
-	"result": {
-		"count": 1,
-		"id": "dif:rizek"
+	"result":{
+		"count":1,
+		"id":"dif:rizek"
 	},
-	"processingTime": 120
+	"processingTime":120
 }

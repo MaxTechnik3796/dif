@@ -1,21 +1,21 @@
 {
-	"neoforge:conditions": [
+	"neoforge:conditions":[
 		{
-			"type": "neoforge:mod_loaded",
-			"modid": "farmersdelight"
+			"type":"neoforge:mod_loaded",
+			"modid":"farmersdelight"
 		}
 	],
-	"type": "dif:frying",
-	"ingredient": {
-		"item": "minecraft:bread"
+	"type":"dif:frying",
+	"ingredient":{
+		"item":"minecraft:bread"
 	},
-	"fluid_ingredient": {
-		"tag": "c:sunflower_oil",
-		"amount": 10
+	"fluid_ingredient":{
+		"tag":"c:sunflower_oil",
+		"amount":10
 	},
-	"result": {
-		"count": 1,
-		"id": "dif:burned_toast"
+	"result":{
+		"count":1,
+		"id":"dif:burned_toast"
 	},
-	"processingTime": 100
+	"processingTime":100
 }

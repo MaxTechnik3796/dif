@@ -1,7 +1,15 @@
 {
-  "type": "minecraft:smithing_transform",
-  "template": { "item": "dif:mithril_template" },
-  "base":     { "item": "minecraft:netherite_pickaxe" },
-  "addition": { "item": "create:polished_rose_quartz" },
-  "result": { "id": "dif:destroyer" }
+	"type":"minecraft:smithing_transform",
+	"template":{
+		"item":"dif:mithril_template"
+	},
+	"base":{
+		"item":"minecraft:netherite_pickaxe"
+	},
+	"addition":{
+		"item":"create:polished_rose_quartz"
+	},
+	"result":{
+		"id":"dif:destroyer"
+	}
 }

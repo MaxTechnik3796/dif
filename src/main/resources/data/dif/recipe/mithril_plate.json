@@ -1,83 +1,83 @@
 {
-	"type": "create:sequenced_assembly",
-	"ingredient": {
-		"item": "create:sturdy_sheet"
+	"type":"create:sequenced_assembly",
+	"ingredient":{
+		"item":"create:sturdy_sheet"
 	},
-	"results": [
+	"results":[
 		{
-			"id": "dif:mithril_plate"
+			"id":"dif:mithril_plate"
 		}
 	],
-	"sequence": [
+	"sequence":[
 		{
-			"type": "create:deploying",
-			"ingredients": [
+			"type":"create:deploying",
+			"ingredients":[
 				{
-					"item": "dif:incomplete_mithril_plate"
+					"item":"dif:incomplete_mithril_plate"
 				},
 				[
 					{
-						"item": "dif:mithril"
+						"item":"dif:mithril"
 					}
 				]
 			],
-			"results": [
+			"results":[
 				{
-					"id": "dif:incomplete_mithril_plate"
+					"id":"dif:incomplete_mithril_plate"
 				}
 			]
 		},
 		{
-			"type": "create:deploying",
-			"ingredients": [
+			"type":"create:deploying",
+			"ingredients":[
 				{
-					"item": "dif:incomplete_mithril_plate"
+					"item":"dif:incomplete_mithril_plate"
 				},
 				[
 					{
-						"item": "dif:mithril"
+						"item":"dif:mithril"
 					}
 				]
 			],
-			"results": [
+			"results":[
 				{
-					"id": "dif:incomplete_mithril_plate"
+					"id":"dif:incomplete_mithril_plate"
 				}
 			]
 		},
 		{
-			"type": "create:deploying",
-			"ingredients": [
+			"type":"create:deploying",
+			"ingredients":[
 				{
-					"item": "dif:incomplete_mithril_plate"
+					"item":"dif:incomplete_mithril_plate"
 				},
 				[
 					{
-						"item": "dif:mithril"
+						"item":"dif:mithril"
 					}
 				]
 			],
-			"results": [
+			"results":[
 				{
-					"id": "dif:incomplete_mithril_plate"
+					"id":"dif:incomplete_mithril_plate"
 				}
 			]
 		},
 		{
-			"type": "create:pressing",
-			"ingredients": [
+			"type":"create:pressing",
+			"ingredients":[
 				{
-					"item": "dif:incomplete_mithril_plate"
+					"item":"dif:incomplete_mithril_plate"
 				}
 			],
-			"results": [
+			"results":[
 				{
-					"id": "dif:incomplete_mithril_plate"
+					"id":"dif:incomplete_mithril_plate"
 				}
 			]
 		}
 	],
-	"transitional_item": {
-		"id": "dif:incomplete_mithril_plate"
+	"transitional_item":{
+		"id":"dif:incomplete_mithril_plate"
 	}
 }

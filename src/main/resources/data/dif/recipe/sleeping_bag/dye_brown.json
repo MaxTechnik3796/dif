@@ -1,14 +1,14 @@
 {
-	"type": "minecraft:crafting_shapeless",
-	"ingredients": [
+	"type":"minecraft:crafting_shapeless",
+	"ingredients":[
 		{
-			"tag": "dif:sleeping_bags"
+			"tag":"dif:sleeping_bags"
 		},
 		{
-			"item": "minecraft:brown_dye"
+			"item":"minecraft:brown_dye"
 		}
 	],
-	"result": {
-		"id": "dif:brown_sleeping_bag"
+	"result":{
+		"id":"dif:brown_sleeping_bag"
 	}
 }

@@ -1,13 +1,26 @@
 {
-  "type": "create:mixing",
-  "ingredients": [
-    { "tag": "minecraft:coals" },
-    { "tag": "minecraft:coals" },
-    { "item": "minecraft:gunpowder" },
-    { "type": "neoforge:single", "fluid": "minecraft:lava", "amount": 500 }
-  ],
-  "results": [
-    { "id": "dif:jetpack_fuel_fluid", "amount": 500 }
-  ],
-  "heat_requirement": "heated"
+	"type":"create:mixing",
+	"ingredients":[
+		{
+			"tag":"minecraft:coals"
+		},
+		{
+			"tag":"minecraft:coals"
+		},
+		{
+			"item":"minecraft:gunpowder"
+		},
+		{
+			"type":"neoforge:single",
+			"fluid":"minecraft:lava",
+			"amount":500
+		}
+	],
+	"results":[
+		{
+			"id":"dif:jetpack_fuel_fluid",
+			"amount":500
+		}
+	],
+	"heat_requirement":"heated"
 }

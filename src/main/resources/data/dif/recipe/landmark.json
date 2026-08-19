@@ -1,14 +1,22 @@
 {
-	"type": "minecraft:crafting_shaped",
-	"pattern": [
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
 		"A",
 		"B",
 		"C"
 	],
-	"key": {
-		"A": { "item": "dif:bluestone" },
-		"B": { "item": "dif:nickel_sheet" },
-		"C": { "item": "create:brass_ingot" }
+	"key":{
+		"A":{
+			"item":"dif:bluestone"
+		},
+		"B":{
+			"item":"dif:nickel_sheet"
+		},
+		"C":{
+			"item":"create:brass_ingot"
+		}
 	},
-	"result": { "id": "dif:quarry_landmark" }
+	"result":{
+		"id":"dif:quarry_landmark"
+	}
 }

@@ -1,23 +1,23 @@
 {
-	"neoforge:conditions": [
+	"neoforge:conditions":[
 		{
-			"type": "neoforge:mod_loaded",
-			"modid": "farmersdelight"
+			"type":"neoforge:mod_loaded",
+			"modid":"farmersdelight"
 		}
 	],
-	"type": "minecraft:crafting_shaped",
-	"show_notification": false,
-	"pattern": [
+	"type":"minecraft:crafting_shaped",
+	"show_notification":false,
+	"pattern":[
 		"###",
 		"###",
 		"###"
 	],
-	"key": {
-		"#": {
-			"item": "farmersdelight:tree_bark"
+	"key":{
+		"#":{
+			"item":"farmersdelight:tree_bark"
 		}
 	},
-	"result": {
-		"id": "dif:tree_bark_block"
+	"result":{
+		"id":"dif:tree_bark_block"
 	}
 }

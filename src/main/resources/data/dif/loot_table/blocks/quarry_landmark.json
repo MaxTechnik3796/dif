@@ -1,18 +1,18 @@
 {
-	"type": "minecraft:block",
-	"random_sequence": "dif:blocks/quarry_landmark",
-	"pools": [
+	"type":"minecraft:block",
+	"random_sequence":"dif:blocks/quarry_landmark",
+	"pools":[
 		{
-			"rolls": 1.0,
-			"conditions": [
+			"rolls":1.0,
+			"conditions":[
 				{
-					"condition": "minecraft:survives_explosion"
+					"condition":"minecraft:survives_explosion"
 				}
 			],
-			"entries": [
+			"entries":[
 				{
-					"type": "minecraft:item",
-					"name": "dif:quarry_landmark"
+					"type":"minecraft:item",
+					"name":"dif:quarry_landmark"
 				}
 			]
 		}

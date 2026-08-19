@@ -1,6 +1,6 @@
 {
-	"replace": false,
-	"values": [
+	"replace":false,
+	"values":[
 		"dif:gasoline_fluid",
 		"dif:flowing_gasoline_fluid"
 	]
