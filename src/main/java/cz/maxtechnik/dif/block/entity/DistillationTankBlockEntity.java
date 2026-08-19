@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
-@SuppressWarnings("unsafe")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 	public static final int MAX_FOOTPRINT=3;
 	public static final int MAX_OUTPUTS=15;
