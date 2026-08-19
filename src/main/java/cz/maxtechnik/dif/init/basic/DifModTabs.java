@@ -126,8 +126,26 @@ public class DifModTabs{
 			tabData.accept(STONED_ARROW);
 			tabData.accept(WOODED_ARROW);
 			tabData.accept(GLITCH_BLOCK);
-
-
+		}else if(tabData.getTabKey().equals(CreativeModeTabs.COLORED_BLOCKS)){
+			addItemStacksBehind(tabData,new ItemStack(Items.PINK_BED),
+					new ItemStack[]{
+							new ItemStack(WHITE_SLEEPING_BAG.get()),
+							new ItemStack(LIGHT_GRAY_SLEEPING_BAG.get()),
+							new ItemStack(GRAY_SLEEPING_BAG.get()),
+							new ItemStack(BLACK_SLEEPING_BAG.get()),
+							new ItemStack(BROWN_SLEEPING_BAG.get()),
+							new ItemStack(RED_SLEEPING_BAG.get()),
+							new ItemStack(ORANGE_SLEEPING_BAG.get()),
+							new ItemStack(YELLOW_SLEEPING_BAG.get()),
+							new ItemStack(LIME_SLEEPING_BAG.get()),
+							new ItemStack(GREEN_SLEEPING_BAG.get()),
+							new ItemStack(CYAN_SLEEPING_BAG.get()),
+							new ItemStack(LIGHT_BLUE_SLEEPING_BAG.get()),
+							new ItemStack(BLUE_SLEEPING_BAG.get()),
+							new ItemStack(PURPLE_SLEEPING_BAG.get()),
+							new ItemStack(MAGENTA_SLEEPING_BAG.get()),
+							new ItemStack(PINK_SLEEPING_BAG.get())
+					});
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.NATURAL_BLOCKS)){
 			tabData.insertAfter(new ItemStack(Items.BEDROCK),new ItemStack(PEDROCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertAfter(new ItemStack(Items.CRYING_OBSIDIAN),new ItemStack(CINDER_FLOUR_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
