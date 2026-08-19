@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": { "item": "dif:deepslate_mithril_ore" },
+  "result": { "id": "dif:mithril" },
+  "experience": 2.0,
+  "cookingtime": 200
+}

@@ -1,0 +1,13 @@
+{
+  "type": "create:crushing",
+  "ingredients": [
+    { "item": "dif:deepslate_mithril_ore" }
+  ],
+  "results": [
+    { "id": "dif:mithril" },
+    { "id": "dif:mithril", "chance": 0.75 },
+    { "id": "create:experience_nugget" },
+    { "id": "minecraft:cobbled_deepslate" }
+  ],
+  "processingTime": 150
+}

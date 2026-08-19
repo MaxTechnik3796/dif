@@ -5,7 +5,7 @@
 			"tag":"dif:sleeping_bags"
 		},
 		{
-			"item":"minecraft:blue_dye"
+			"tag":"c:dyes/blue"
 		}
 	],
 	"result":{
