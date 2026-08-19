@@ -1,149 +1,162 @@
 package cz.maxtechnik.dif.block.entity.barrel;
 
 import cz.maxtechnik.dif.block.barrel.BrassBarrel;
-import cz.maxtechnik.dif.gui.menu.BrassBarrelMenu;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
-import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.stream.IntStream;
-public class BrassBarrelBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer{
-	private final ItemStackHandler inventory=new ItemStackHandler(54){
+
+public class BrassBarrelBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+	public static final int CONTAINER_SIZE = 54;
+	private NonNullList<ItemStack> items = NonNullList.withSize(CONTAINER_SIZE, ItemStack.EMPTY);
+	private final IItemHandler itemHandler = new InvWrapper(this);
+
+	private final ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
 		@Override
-		protected void onContentsChanged(int slot){
-			setChanged();
+		protected void onOpen(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState blockState) {
+			level.playSound(null, pos, SoundEvents.BARREL_OPEN, SoundSource.BLOCKS, 1F, 1F);
+			level.setBlock(pos, blockState.setValue(BrassBarrel.OPEN, true), 3);
 		}
-	};
-	public ItemStackHandler getInventory(){
-		return inventory;
-	}
-	private final ContainerOpenersCounter openersCounter=new ContainerOpenersCounter(){
+
 		@Override
-		protected void onOpen(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState blockState){
-			level.playSound(null,pos,SoundEvents.BARREL_OPEN,SoundSource.BLOCKS,1F,1F);
-			level.setBlock(pos,blockState.setValue(BrassBarrel.OPEN,true),3);
+		protected void onClose(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState blockState) {
+			level.playSound(null, pos, SoundEvents.BARREL_CLOSE, SoundSource.BLOCKS, 1F, 1F);
+			level.setBlock(pos, blockState.setValue(BrassBarrel.OPEN, false), 3);
 		}
+
 		@Override
-		protected void onClose(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState blockState){
-			level.playSound(null,pos,SoundEvents.BARREL_CLOSE,SoundSource.BLOCKS,1F,1F);
-			level.setBlock(pos,blockState.setValue(BrassBarrel.OPEN,false),3);
+		protected void openerCountChanged(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState blockState, int prevOpenCount, int openCount) {
 		}
+
 		@Override
-		protected void openerCountChanged(@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState blockState,int i,int j){
-		}
-		@Override
-		protected boolean isOwnContainer(Player player){
-			if(player.containerMenu instanceof BrassBarrelMenu menu)
-				return menu.getBlockEntity().equals(BrassBarrelBlockEntity.this);
+		protected boolean isOwnContainer(Player player) {
+			if (player.containerMenu instanceof ChestMenu menu) {
+				return menu.getContainer() == BrassBarrelBlockEntity.this;
+			}
 			return false;
 		}
 	};
-	public BrassBarrelBlockEntity(BlockPos position,BlockState blockState){
-		super(DifModBlockEntities.BRASS_BARREL.get(),position,blockState);
+
+	public BrassBarrelBlockEntity(BlockPos position, BlockState blockState) {
+		super(DifModBlockEntities.BRASS_BARREL.get(), position, blockState);
 	}
+
+	public IItemHandler getInventory() {
+		return itemHandler;
+	}
+
 	@Override
-	public void startOpen(@NotNull Player player){
-		super.startOpen(player);
-		if(this.level!=null&&!this.level.isClientSide){
-			assert this.getLevel()!=null;
-			this.openersCounter.incrementOpeners(player,this.getLevel(),this.getBlockPos(),this.getBlockState());
+	public int getContainerSize() {
+		return CONTAINER_SIZE;
+	}
+
+	@Override
+	protected @NotNull NonNullList<ItemStack> getItems() {
+		return this.items;
+	}
+
+	@Override
+	protected void setItems(@NotNull NonNullList<ItemStack> itemStacks) {
+		this.items = itemStacks;
+	}
+
+	@Override
+	public @NotNull Component getDefaultName() {
+		return Component.translatable("container.dif.brass_barrel");
+	}
+
+	@Override
+	public @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory inv) {
+		return ChestMenu.sixRows(id, inv, this);
+	}
+
+	@Override
+	public void startOpen(@NotNull Player player) {
+		if (!this.remove && !player.isSpectator()) {
+            assert this.getLevel() != null;
+            this.openersCounter.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
 		}
 	}
+
 	@Override
-	public void stopOpen(@NotNull Player player){
-		super.stopOpen(player);
-		if(this.level!=null&&!this.level.isClientSide){
-			assert this.getLevel()!=null;
-			this.openersCounter.decrementOpeners(player,this.getLevel(),this.getBlockPos(),this.getBlockState());
+	public void stopOpen(@NotNull Player player) {
+		if (!this.remove && !player.isSpectator()) {
+            assert this.getLevel() != null;
+            this.openersCounter.decrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
 		}
 	}
+
 	@Override
-	protected void loadAdditional(@NotNull CompoundTag compound,@NotNull HolderLookup.Provider provider){
-		super.loadAdditional(compound,provider);
-		if(compound.contains("inventory")) inventory.deserializeNBT(provider,compound.getCompound("inventory"));
+	protected void loadAdditional(@NotNull CompoundTag compound, @NotNull HolderLookup.Provider provider) {
+		super.loadAdditional(compound, provider);
+		this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
+		if (!this.tryLoadLootTable(compound)) {
+			if (compound.contains("Items", CompoundTag.TAG_LIST)) {
+				ContainerHelper.loadAllItems(compound, this.items, provider);
+			} else if (compound.contains("inventory")) {
+				ItemStackHandler handler = new ItemStackHandler(this.getContainerSize());
+				handler.deserializeNBT(provider, compound.getCompound("inventory"));
+				for (int i = 0; i < handler.getSlots() && i < this.items.size(); i++) {
+					this.items.set(i, handler.getStackInSlot(i));
+				}
+			}
+		}
 	}
+
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag compound,@NotNull HolderLookup.Provider provider){
-		super.saveAdditional(compound,provider);
-		compound.put("inventory",inventory.serializeNBT(provider));
+	protected void saveAdditional(@NotNull CompoundTag compound, @NotNull HolderLookup.Provider provider) {
+		super.saveAdditional(compound, provider);
+		if (!this.trySaveLootTable(compound)) {
+			ContainerHelper.saveAllItems(compound, this.items, provider);
+		}
 	}
+
 	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket(){
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
+
 	@Override
-	public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider provider){
+	public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider provider) {
 		return this.saveWithFullMetadata(provider);
 	}
+
 	@Override
-	public int getContainerSize(){
-		return inventory.getSlots();
+	public int @NotNull [] getSlotsForFace(@NotNull Direction side) {
+		return IntStream.range(0, this.getContainerSize()).toArray();
 	}
+
 	@Override
-	public boolean isEmpty(){
-		for(int i=0;i<inventory.getSlots();i++)
-			if(!inventory.getStackInSlot(i).isEmpty()) return false;
+	public boolean canPlaceItemThroughFace(int index, @NotNull ItemStack itemStack, @Nullable Direction direction) {
 		return true;
 	}
+
 	@Override
-	public @NotNull Component getDefaultName(){
-		return Component.translatable("container.dif.brass_barrel");
-	}
-	@Override
-	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inv){
-		FriendlyByteBuf buffer=new FriendlyByteBuf(Unpooled.buffer());
-		buffer.writeBlockPos(this.worldPosition);
-		return new BrassBarrelMenu(id,inv,buffer);
-	}
-	@Override
-	public @NotNull Component getDisplayName(){
-		return Component.translatable("container.dif.brass_barrel");
-	}
-	@Override
-	protected @NotNull NonNullList<ItemStack> getItems(){
-		NonNullList<ItemStack> list=NonNullList.withSize(inventory.getSlots(),ItemStack.EMPTY);
-		for(int i=0;i<inventory.getSlots();i++) list.set(i,inventory.getStackInSlot(i));
-		return list;
-	}
-	@Override
-	protected void setItems(@NotNull NonNullList<ItemStack> itemStacks){
-		for(int i=0;i<itemStacks.size()&&i<inventory.getSlots();i++) inventory.setStackInSlot(i,itemStacks.get(i));
-	}
-	@Override
-	public boolean canPlaceItem(int index,@NotNull ItemStack itemStack){
-		return true;
-	}
-	@Override
-	public int @NotNull [] getSlotsForFace(@NotNull Direction side){
-		return IntStream.range(0,inventory.getSlots()).toArray();
-	}
-	@Override
-	public boolean canPlaceItemThroughFace(int index,@NotNull ItemStack itemStack,@Nullable Direction direction){
-		return true;
-	}
-	@Override
-	public boolean canTakeItemThroughFace(int index,@NotNull ItemStack itemStack,@NotNull Direction direction){
+	public boolean canTakeItemThroughFace(int index, @NotNull ItemStack itemStack, @NotNull Direction direction) {
 		return true;
 	}
 }
