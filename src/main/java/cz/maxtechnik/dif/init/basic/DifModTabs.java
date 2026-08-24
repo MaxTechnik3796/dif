@@ -298,16 +298,16 @@ public class DifModTabs{
 			tabData.accept(INCOMPLETE_UNIVERSAL);
 
 		}else if(tabData.getTabKey().location().getNamespace().equals("farmersdelight")){
-			Item strawBale=BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("farmersdelight","straw_bale"));
+			Item strawBale=BuiltInRegistries.ITEM.get(ResourceLocation.parse("farmersdelight:straw_bale"));
 			if(strawBale!=Items.AIR) tabData.insertAfter(new ItemStack(strawBale),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 		}else if(tabData.getTab().equals(AllCreativeModeTabs.BASE_CREATIVE_TAB.get())){
-			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create","item_hatch")))),
+			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.parse("create:item_hatch")))),
 					new ItemStack[]{
 							new ItemStack(FLUID_HATCH.get()),
 							new ItemStack(FLUID_DRAIN.get())
 					});
 		}else if(tabData.getTab().equals(AllCreativeModeTabs.PALETTES_CREATIVE_TAB.get())){
-			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create","framed_glass_trapdoor")))),
+			addItemStacksBehind(tabData,new ItemStack(Objects.requireNonNull(BuiltInRegistries.ITEM.get(ResourceLocation.parse("create:framed_glass_trapdoor")))),
 					new ItemStack[]{
 							new ItemStack(BROKEN_TRACK00.get()),
 							new ItemStack(BROKEN_TRACK01.get()),
