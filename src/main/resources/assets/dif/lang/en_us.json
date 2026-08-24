@@ -305,5 +305,16 @@
 	"block.dif.wooden_frame":"Wooden Frame",
 	"block.dif.deepslate_mithril_ore":"Deepslate Mithril Ore",
 
-	"block.dif.nano_glass":"Nano Glass"
+	"block.dif.nano_glass":"Nano Glass",
+
+	"dif.ponder.distillation_tank_intro.header":"The Distillation Tank",
+	"dif.ponder.distillation_tank_intro.text_1":"The distillation tank is a multi-block structure that can be built as 1x1, 2x2, or 3x3, its height is determined by the recipe.",
+	"dif.ponder.distillation_tank_intro.text_2":"The input tank is located at the very bottom.",
+	"dif.ponder.distillation_tank_intro.text_3":"For example, Crude Oil.",
+	"dif.ponder.distillation_tank_intro.text_4":"Don't forget to turn on the burners!",
+	"dif.ponder.distillation_tank_intro.text_5":"The Distillation Tank will now begin processing fluids.",
+
+	"dif.ponder.mega_torch_intro.header":"MEGA Torch",
+	"dif.ponder.mega_torch_intro.text_1":"The MEGA Torch is a torch that is 5 blocks high.",
+	"dif.ponder.mega_torch_intro.text_2":"Blocks spawning of hostile mobs in a large area."
 }

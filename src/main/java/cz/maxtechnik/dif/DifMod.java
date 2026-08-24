@@ -18,6 +18,7 @@ import cz.maxtechnik.dif.particle.FireballParticle;
 import cz.maxtechnik.dif.particle.HugeSmoke;
 import cz.maxtechnik.dif.renderer.*;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
+import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.NoopRenderer;
@@ -142,13 +143,13 @@ public class DifMod{
 			LOGGER.info("TheDifferential: Client Setup");
 			event.enqueueWork(()->{
 				try{
-					LOGGER.info("TheDifferential: Flywheel BER fallback setup for BrassLargeWaterWheel");
 					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.QUARRY_LANDMARK.get(),RenderType.cutout());
 					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.FLUID_HATCH.get(),RenderType.cutout());
 					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.FLUID_DRAIN.get(),RenderType.cutout());
-				}catch(Exception e){
-					LOGGER.error("TheDifferential: Chyba při Flywheel setup",e);
+				}catch(Exception exception){
+					LOGGER.error("TheDifferential: Error during Client Setup.",exception);
 				}
+				PonderIndex.addPlugin(new DifModPonderScenes());
 			});
 		}
 		@SubscribeEvent
