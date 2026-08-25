@@ -316,5 +316,21 @@
 
 	"dif.ponder.mega_torch_intro.header":"MEGA Torch",
 	"dif.ponder.mega_torch_intro.text_1":"The MEGA Torch is a torch that is 5 blocks high.",
-	"dif.ponder.mega_torch_intro.text_2":"Blocks spawning of hostile mobs in a large area."
+	"dif.ponder.mega_torch_intro.text_2":"Blocks spawning of hostile mobs in a large area.",
+
+
+
+	"block.dif.fluid_hatch.tooltip.summary": "Základní popis bloku, který se automaticky zalomí na více řádků podle šířky obrazovky.",
+
+	"block.dif.fluid_hatch.tooltip.condition1": "Při rotaci:",
+	"block.dif.fluid_hatch.tooltip.behaviour1": "Generuje _tlak_ a pohání sousední komponenty.",
+
+	"block.dif.fluid_hatch.tooltip.condition2": "Při přetížení:",
+	"block.dif.fluid_hatch.tooltip.behaviour2": "Zastaví celou soustavu a začne _vydávat kouř_.",
+
+	"block.dif.fluid_hatch.tooltip.control1": "Pravé tlačítko myši",
+	"block.dif.fluid_hatch.tooltip.action1": "Otevře _konfigurační menu_ stroje.",
+
+	"block.dif.fluid_hatch.tooltip.control2": "Shift + Pravé tlačítko",
+	"block.dif.fluid_hatch.tooltip.action2": "Okamžitě _demontuje_ stroj zpět do inventáře."
 }

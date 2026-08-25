@@ -5,6 +5,7 @@ import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModEntities;
 import cz.maxtechnik.dif.init.other.DifModFoods;
 import cz.maxtechnik.dif.init.other.DifModTiers;
+import cz.maxtechnik.dif.item.FluidDrain;
 import cz.maxtechnik.dif.item.armor.CarbonSuit;
 import cz.maxtechnik.dif.item.armor.CopperArmor;
 import cz.maxtechnik.dif.item.armor.Jetpack;
@@ -27,6 +28,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 @SuppressWarnings("unused")
 public class DifModItems{
 	public static final DeferredRegister.Items REGISTRY=DeferredRegister.createItems(DifMod.MODID);
@@ -36,6 +38,9 @@ public class DifModItems{
 	}
 	private static DeferredItem<Item> block(DeferredBlock<Block> block,Item.Properties properties){
 		return REGISTRY.register(block.getId().getPath(),()->new BlockItem(block.get(),properties));
+	}
+	private static DeferredItem<Item> block(DeferredBlock<Block> block,Supplier<? extends Item> item){
+		return REGISTRY.register(block.getId().getPath(),item);
 	}
 	private static DeferredItem<Item> doubleBlock(DeferredBlock<Block> block){
 		return REGISTRY.register(block.getId().getPath(),()->new DoubleHighBlockItem(block.get(),new Item.Properties()));
@@ -168,7 +173,7 @@ public class DifModItems{
 
 	public static final DeferredItem<Item> BURNING_GENERATOR=block(DifModBlocks.BURNING_GENERATOR);
 	public static final DeferredItem<Item> FLUID_HATCH=block(DifModBlocks.FLUID_HATCH);
-	public static final DeferredItem<Item> FLUID_DRAIN=block(DifModBlocks.FLUID_DRAIN);
+	public static final DeferredItem<Item> FLUID_DRAIN=block(DifModBlocks.FLUID_DRAIN,()->new FluidDrain(DifModBlocks.FLUID_DRAIN,new Item.Properties()));
 
 	public static final DeferredItem<Item> SUPER_BOX=block(DifModBlocks.SUPER_BOX);
 	public static final DeferredItem<Item> OLD_CHEST=block(DifModBlocks.OLD_CHEST);
