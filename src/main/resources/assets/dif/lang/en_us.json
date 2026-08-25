@@ -318,6 +318,21 @@
 	"dif.ponder.mega_torch_intro.text_1":"The MEGA Torch is a torch that is 5 blocks high.",
 	"dif.ponder.mega_torch_intro.text_2":"Blocks spawning of hostile mobs in a large area.",
 
+	"dif.ponder.modular_engine_intro.header":"Modular Engine",
+	"dif.ponder.modular_engine_intro.text_1":"Modular Engine is a multi-block structure created from Engine Base and Engine Extender.",
+	"dif.ponder.modular_engine_intro.text_2":"There can be up to 3 Engine Extenders.",
+	"dif.ponder.modular_engine_intro.text_3":"Fuel is supplied from any open side of the Engine Base.",
+	"dif.ponder.modular_engine_intro.text_4":"You can use any supported fuel.",
+	"dif.ponder.modular_engine_intro.text_5":"The direction of rotation can be changed by clicking with the Wrench on the side with the axis.",
+	"dif.ponder.modular_engine_intro.text_6":"Engine can by stopped by redstone.",
+
+	"dif.ponder.portable_engine_intro.header":"Portable Engine",
+	"dif.ponder.portable_engine_intro.text_1":"Portable Engine is a single-block variant of a Modular Engine.",
+	"dif.ponder.portable_engine_intro.text_2":"Fuel is supplied from any open side of the Engine Base.",
+	"dif.ponder.portable_engine_intro.text_3":"You can use any supported fuel.",
+	"dif.ponder.portable_engine_intro.text_4":"The direction of rotation can be changed by clicking with the Wrench on the side with the axis.",
+	"dif.ponder.portable_engine_intro.text_5":"Engine can by stopped by redstone.",
+
 	"block.dif.fluid_hatch.tooltip.summary":"Allows you to interact with fluid tanks.",
 	"block.dif.fluid_hatch.tooltip.condition1":"When R-Clicked with Wrench",
 	"block.dif.fluid_hatch.tooltip.behaviour1":"Changes the _Fluid_ and _XP_ mode.",

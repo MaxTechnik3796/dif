@@ -1,0 +1,70 @@
+package cz.maxtechnik.dif.ponder;
+
+import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
+import cz.maxtechnik.dif.init.basic.DifModItems;
+import cz.maxtechnik.dif.init.fluid.DifModFluids;
+import cz.maxtechnik.dif.ponder.util.Type;
+import net.createmod.catnip.math.Pointing;
+import net.createmod.ponder.api.scene.SceneBuilder;
+import net.createmod.ponder.api.scene.SceneBuildingUtil;
+import net.createmod.ponder.api.scene.Selection;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.FluidStack;
+
+import static cz.maxtechnik.dif.ponder.util.PonderScene.*;
+public class ModularEngine{
+	public static void intro(SceneBuilder sceneBuilder,SceneBuildingUtil util){
+		CreateSceneBuilder scene=new CreateSceneBuilder(sceneBuilder);
+		scene.title("modular_engine_intro","Modular Engine");
+		setupScene(7,scene);
+		zoom(scene,0.9F);
+		scene.idle(10);
+		reveal(scene,util.select().position(3,1,3),Direction.DOWN);
+		scene.idle(8);
+		narrate(scene,"Modular Engine is a multi-block structure created from Engine Base and Engine Extender.",util.vector().centerOf(3,1,3),20);
+		scene.idle(4);
+		reveal(scene,util.select().position(2,1,3),Direction.EAST);
+		scene.idle(2);
+		reveal(scene,util.select().position(3,2,3),Direction.DOWN);
+		scene.idle(2);
+		reveal(scene,util.select().position(4,1,3),Direction.WEST);
+		scene.idle(8);
+		narrate(scene,"There can be up to 3 Engine Extenders.",util.vector().centerOf(2,1,3),12);
+		scene.idle(4);
+		Selection fuelSelection=util.select().fromTo(1,1,4,3,2,6);
+		reveal(scene,fuelSelection,Direction.NORTH);
+		scene.idle(5);
+		narrate(scene,"Fuel is supplied from any open side of the Engine Base.",util.vector().centerOf(3,1,3),15);
+		scene.idle(4);
+		showItem(scene,util,new BlockPos(1,2,6),new ItemStack(DifModItems.GASOLINE_BUCKET.get()),Pointing.DOWN,5);
+		fillFluidTank(scene,new BlockPos(1,1,6),new FluidStack(DifModFluids.GASOLINE.get(),16000));
+		applyKineticSpeedAt(scene,util,util.select().position(2,1,6),32);
+		scene.world().propagatePipeChange(new BlockPos(2,1,6));
+		scene.idle(8);
+		narrate(scene,"You can use any supported fuel.",util.vector().centerOf(1,2,6),10);
+		scene.idle(4);
+		Selection outputSelection=util.select().fromTo(3,1,0,3,1,3);
+		applyKineticSpeedAt(scene,util,outputSelection,192);
+		reveal(scene,util.select().fromTo(3,1,0,3,1,2),Direction.SOUTH);
+		scene.effects().rotationDirectionIndicator(new BlockPos(3,1,0));
+		scene.idle(10);
+		showClickWithItemAt(scene,util,new BlockPos(3,0,3),new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse("create:wrench"))),Pointing.RIGHT,Type.RIGHT,18);
+		narrate(scene,"The direction of rotation can be changed by clicking with the Wrench on the side with the axis.",util.vector().centerOf(3,1,3),18);
+		applyKineticSpeedAt(scene,util,outputSelection,-192);
+		scene.effects().rotationDirectionIndicator(new BlockPos(3,1,0));
+		scene.idle(10);
+		Selection redstoneSelection=util.select().fromTo(2,1,1,2,1,2);
+		reveal(scene,redstoneSelection,Direction.EAST);
+		scene.idle(8);
+		narrate(scene,"Engine can by stopped by redstone.",util.vector().centerOf(2,1,1),8);
+		scene.idle(4);
+		scene.world().toggleRedstonePower(redstoneSelection);
+		applyKineticSpeedAt(scene,util,outputSelection,0);
+		scene.idle(10);
+		scene.markAsFinished();
+	}
+}
