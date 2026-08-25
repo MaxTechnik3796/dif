@@ -318,19 +318,39 @@
 	"dif.ponder.mega_torch_intro.text_1":"The MEGA Torch is a torch that is 5 blocks high.",
 	"dif.ponder.mega_torch_intro.text_2":"Blocks spawning of hostile mobs in a large area.",
 
+	"block.dif.fluid_hatch.tooltip.summary":"Allows you to interact with fluid tanks.",
+	"block.dif.fluid_hatch.tooltip.condition1":"When R-Clicked with Wrench",
+	"block.dif.fluid_hatch.tooltip.behaviour1":"Changes the _Fluid_ and _XP_ mode.",
+	"block.dif.fluid_hatch.tooltip.control1":"When R-Clicked with Bucket of any Fluid in Fluid mode",
+	"block.dif.fluid_hatch.tooltip.action1":"Fill the _Fluid Tank_ with _Fluid_ from _Bucket_",
+	"block.dif.fluid_hatch.tooltip.control2":"When R-Clicked in XP mode",
+	"block.dif.fluid_hatch.tooltip.action2":"Stores _1 XP level_",
+	"block.dif.fluid_hatch.tooltip.control3":"When R-Clicked in XP mode while sneaking",
+	"block.dif.fluid_hatch.tooltip.action3":"Stores _all XP levels_",
+	"block.dif.fluid_hatch.tooltip.control4":"When L-Clicked in XP mode",
+	"block.dif.fluid_hatch.tooltip.action4":"Gives _1 level_ of _XP_",
+	"block.dif.fluid_hatch.tooltip.control5":"When L-Clicked in XP mode while sneaking",
+	"block.dif.fluid_hatch.tooltip.action5":"Gives _30 levels_ of _XP_",
 
+	"block.dif.fluid_drain.tooltip.summary":"Allows you to interact with fluid tanks.",
+	"block.dif.fluid_drain.tooltip.condition1":"When R-Clicked with Empty Bucket",
+	"block.dif.fluid_drain.tooltip.behaviour1":"Fills _Bucket_ with _Fluid_ from _Fluid Tank_",
 
-	"block.dif.fluid_hatch.tooltip.summary": "Základní popis bloku, který se automaticky zalomí na více řádků podle šířky obrazovky.",
+	"item.dif.phantom_ring.tooltip.summary":"Had enough of _Annoying Phantoms_?",
+	"item.dif.phantom_ring.tooltip.condition1":"When Worn",
+	"item.dif.phantom_ring.tooltip.behaviour1":"Blocks spawning of _Phantoms_ nearby",
 
-	"block.dif.fluid_hatch.tooltip.condition1": "Při rotaci:",
-	"block.dif.fluid_hatch.tooltip.behaviour1": "Generuje _tlak_ a pohání sousední komponenty.",
+	"item.dif.magnet.tooltip.summary":"Too many _Items_? Pull them towards you!",
+	"item.dif.magnet.tooltip.condition1":"When R-Clicked",
+	"item.dif.magnet.tooltip.behaviour1":"Turns _Magnet_ _On_ or _Off_",
+	"item.dif.magnet.tooltip.condition2":"When On",
+	"item.dif.magnet.tooltip.behaviour2":"Attracts _Items_",
 
-	"block.dif.fluid_hatch.tooltip.condition2": "Při přetížení:",
-	"block.dif.fluid_hatch.tooltip.behaviour2": "Zastaví celou soustavu a začne _vydávat kouř_.",
-
-	"block.dif.fluid_hatch.tooltip.control1": "Pravé tlačítko myši",
-	"block.dif.fluid_hatch.tooltip.action1": "Otevře _konfigurační menu_ stroje.",
-
-	"block.dif.fluid_hatch.tooltip.control2": "Shift + Pravé tlačítko",
-	"block.dif.fluid_hatch.tooltip.action2": "Okamžitě _demontuje_ stroj zpět do inventáře."
+	"block.dif.quarry.tooltip.summary":"Don't want to _mine manually_ anymore? _No problem_!",
+	"block.dif.quarry.tooltip.condition1":"When Powered by Kinetics from bottom",
+	"block.dif.quarry.tooltip.behaviour1":"It will build a _mining area_ and _begin mining_",
+	"block.dif.quarry.tooltip.condition2":"When Placed nearby Chest",
+	"block.dif.quarry.tooltip.behaviour2":"_Mined Items_ will _drop into it_",
+	"block.dif.quarry.tooltip.condition3":"When Placed nearby Landmarked area",
+	"block.dif.quarry.tooltip.behaviour3":"_Mining area_ will _Expand/Shrink_"
 }
