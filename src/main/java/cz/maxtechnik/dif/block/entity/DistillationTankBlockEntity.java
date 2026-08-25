@@ -4,6 +4,7 @@ import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import cz.maxtechnik.dif.block.DistillationTank;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
 import cz.maxtechnik.dif.recipe.DistillationRecipe;
 import net.minecraft.ChatFormatting;
@@ -23,7 +24,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
-@SuppressWarnings({"unchecked", "rawtypes"})
+
+import static cz.maxtechnik.dif.DifMod.goggleTooltipFix;
 public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 	public static final int MAX_FOOTPRINT=3;
 	public static final int MAX_OUTPUTS=15;
@@ -99,10 +101,10 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 		for(int x=0;x<w;x++){
 			for(int z=0;z<w;z++){
 				BlockState burner=level.getBlockState(worldPosition.offset(x,-1,z));
-				HeatLevel h=BlazeBurnerBlock.getHeatLevelOf(burner);
-				if(h==HeatLevel.KINDLED) points+=1;
-				else if(h==HeatLevel.SEETHING) points+=2;
-				if(h.ordinal()>best.ordinal()) best=h;
+				HeatLevel heatLevel=BlazeBurnerBlock.getHeatLevelOf(burner);
+				if(heatLevel==HeatLevel.KINDLED) points+=1;
+				else if(heatLevel==HeatLevel.SEETHING) points+=2;
+				if(heatLevel.ordinal()>best.ordinal()) best=heatLevel;
 			}
 		}
 		cachedHeatPoints=points;
@@ -178,24 +180,21 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 	public void updateTowerState(boolean notifyNeighbors){
 		if(level==null||level.isClientSide) return;
 		BlockState state=getBlockState();
-		if(!(state.getBlock() instanceof cz.maxtechnik.dif.block.DistillationTank)) return;
-		boolean hasTankBelow=level.getBlockState(worldPosition.below()).getBlock() instanceof cz.maxtechnik.dif.block.DistillationTank;
-		boolean hasTankAbove=level.getBlockState(worldPosition.above()).getBlock() instanceof cz.maxtechnik.dif.block.DistillationTank;
-		BlockState newState=state.setValue(cz.maxtechnik.dif.block.DistillationTank.BOTTOM,!hasTankBelow)
-				.setValue(cz.maxtechnik.dif.block.DistillationTank.TOP,!hasTankAbove);
+		if(!(state.getBlock() instanceof DistillationTank)) return;
+		boolean hasTankBelow=level.getBlockState(worldPosition.below()).getBlock() instanceof DistillationTank;
+		boolean hasTankAbove=level.getBlockState(worldPosition.above()).getBlock() instanceof DistillationTank;
+		BlockState newState=state.setValue(DistillationTank.BOTTOM,!hasTankBelow)
+				.setValue(DistillationTank.TOP,!hasTankAbove);
 		if(state!=newState){
 			level.setBlock(worldPosition,newState,net.minecraft.world.level.block.Block.UPDATE_CLIENTS|net.minecraft.world.level.block.Block.UPDATE_INVISIBLE);
 			level.sendBlockUpdated(worldPosition,state,newState,3);
-		}else{
+		}else
 			level.sendBlockUpdated(worldPosition,state,state,3);
-		}
 		if(notifyNeighbors){
-			if(level.getBlockEntity(worldPosition.above()) instanceof DistillationTankBlockEntity above){
+			if(level.getBlockEntity(worldPosition.above()) instanceof DistillationTankBlockEntity above)
 				above.updateTowerState(false);
-			}
-			if(level.getBlockEntity(worldPosition.below()) instanceof DistillationTankBlockEntity below){
+			if(level.getBlockEntity(worldPosition.below()) instanceof DistillationTankBlockEntity below)
 				below.updateTowerState(false);
-			}
 		}
 	}
 	@Override
@@ -204,11 +203,11 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 		DistillationTankBlockEntity master=getTowerMaster();
 		if(master==null) return added;
 		ChatFormatting heatColor=master.cachedHeatPoints==0?ChatFormatting.GRAY:ChatFormatting.AQUA;
-		tooltip.add(Component.literal("     Heat: ").withStyle(ChatFormatting.GRAY).append(Component.literal(master.cachedHeatPoints+" / 10").withStyle(heatColor)));
+		tooltip.add(Component.literal(goggleTooltipFix+"eat: ").withStyle(ChatFormatting.GRAY).append(Component.literal(master.cachedHeatPoints+" / 10").withStyle(heatColor)));
 		ChatFormatting speedColor=master.cachedSpeed==0?ChatFormatting.GRAY:ChatFormatting.GOLD;
-		tooltip.add(Component.literal("     Speed: ").withStyle(ChatFormatting.GRAY).append(Component.literal(master.cachedSpeed+"×").withStyle(speedColor)));
+		tooltip.add(Component.literal(goggleTooltipFix+"Speed: ").withStyle(ChatFormatting.GRAY).append(Component.literal(master.cachedSpeed+"×").withStyle(speedColor)));
 		if(isTowerMaster())
-			tooltip.add(Component.literal("     Master").withStyle(ChatFormatting.AQUA));
+			tooltip.add(Component.literal(goggleTooltipFix+"Master").withStyle(ChatFormatting.AQUA));
 		return true;
 	}
 	@Override
