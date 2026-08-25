@@ -1,8 +1,6 @@
 {
 	"replace":false,
 	"values":[
-		"dif:nickel_block",
-		"dif:raw_nickel_block",
 		"dif:tree_bark_block"
 	]
 }
