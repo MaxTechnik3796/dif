@@ -1,0 +1,7 @@
+{
+	"selector":"dif:pedrock",
+	"priority":1001,
+	"properties":{
+		"sable:mass":96.0
+	}
+}
