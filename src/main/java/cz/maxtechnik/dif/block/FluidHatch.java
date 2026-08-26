@@ -50,12 +50,10 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
 	private static final Map<UUID,Long> COOLDOWNS=new HashMap<>();
 	private static final long COOLDOWN_MS=50;
-
 	public FluidHatch(){
 		super(Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(3F,6F).requiresCorrectToolForDrops().noOcclusion().isRedstoneConductor((bs,br,bp)->false));
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(WATERLOGGED,false).setValue(XP,false));
 	}
-
 	@SubscribeEvent
 	public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event){
 		BlockState state=event.getLevel().getBlockState(event.getPos());
@@ -64,14 +62,12 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 			if(!(event.getItemStack().getItem() instanceof WrenchItem)) event.setUseItem(TriState.FALSE);
 		}
 	}
-
 	private boolean isOnCooldown(Player player){
 		long now=System.currentTimeMillis();
 		if(COOLDOWNS.containsKey(player.getUUID())&&now-COOLDOWNS.get(player.getUUID())<COOLDOWN_MS) return true;
 		COOLDOWNS.put(player.getUUID(),now);
 		return false;
 	}
-
 	@Override
 	public void attack(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player){
 		super.attack(blockState,world,pos,player);
@@ -79,11 +75,8 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		if(!blockState.getValue(XP)||isOnCooldown(player)) return;
 		handleXpExtraction(world,pos,blockState,player,player.isShiftKeyDown()?30:1);
 	}
-
 	@Override
-	protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack heldItem,@NotNull BlockState blockState,
-	                                                   @NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,
-	                                                   @NotNull InteractionHand hand,@NotNull BlockHitResult hit){
+	protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack heldItem,@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
 		if(world.isClientSide()) return ItemInteractionResult.SUCCESS;
 		if(heldItem.getItem() instanceof WrenchItem){
 			world.setBlock(pos,blockState.setValue(XP,!blockState.getValue(XP)),3);
@@ -115,7 +108,6 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		}
 		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
-
 	private IFluidHandler getTargetFluidHandler(Level world,BlockPos pos,BlockState blockState){
 		BlockPos targetPos=pos.relative(blockState.getValue(FACING));
 		Direction targetFace=blockState.getValue(FACING).getOpposite();
@@ -124,7 +116,6 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		if(cap==null) cap=world.getCapability(Capabilities.FluidHandler.BLOCK,targetPos,blockState.getValue(FACING));
 		return cap;
 	}
-
 	private void handleXpInsertion(Level world,BlockPos hatchPos,BlockState blockState,Player player,boolean insertAll){
 		IFluidHandler cap=getTargetFluidHandler(world,hatchPos,blockState);
 		if(cap==null) return;
@@ -134,7 +125,6 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		int filled=cap.fill(new FluidStack(DifModFluids.XP.get(),toInsert),IFluidHandler.FluidAction.EXECUTE);
 		if(filled>0) player.giveExperiencePoints(-filled);
 	}
-
 	private void handleXpExtraction(Level world,BlockPos hatchPos,BlockState blockState,Player player,int levelsRequested){
 		IFluidHandler cap=getTargetFluidHandler(world,hatchPos,blockState);
 		if(cap==null) return;
@@ -143,24 +133,25 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		FluidStack drained=cap.drain(new FluidStack(DifModFluids.XP.get(),neededXP),IFluidHandler.FluidAction.EXECUTE);
 		if(drained.getAmount()>0) player.giveExperiencePoints(drained.getAmount());
 	}
-
 	private static int totalXpForLevel(int level){
 		if(level<=0) return 0;
 		if(level<=16) return level*level+6*level;
 		if(level<=31) return (int)(2.5*level*level-40.5*level+360);
 		return (int)(4.5*level*level-162.5*level+2220);
 	}
-
 	private static int getActualPlayerXP(Player player){
 		int l=player.experienceLevel;
 		int cap=l>=30?112+(l-30)*9:(l>=15?37+(l-15)*5:7+l*2);
 		return totalXpForLevel(l)+(int)(player.experienceProgress*cap);
 	}
-
 	@Override
-	public int getLightBlock(@NotNull BlockState blockState,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){ return 0; }
+	public int getLightBlock(@NotNull BlockState blockState,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
+		return 0;
+	}
 	@Override
-	public @NotNull VoxelShape getVisualShape(@NotNull BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){ return Shapes.empty(); }
+	public @NotNull VoxelShape getVisualShape(@NotNull BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
+		return Shapes.empty();
+	}
 	@Override
 	public @NotNull VoxelShape getShape(BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
 		return switch(blockState.getValue(FACING)){
@@ -171,18 +162,26 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		};
 	}
 	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){ builder.add(FACING,WATERLOGGED,XP); }
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder){
+		builder.add(FACING,WATERLOGGED,XP);
+	}
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context){
 		if(context.getClickedFace().getAxis().equals(Direction.Axis.Y)) return null;
 		return this.defaultBlockState().setValue(FACING,context.getClickedFace().getOpposite()).setValue(WATERLOGGED,context.getLevel().getFluidState(context.getClickedPos()).is(Fluids.WATER));
 	}
 	@Override
-	public @NotNull BlockState rotate(BlockState blockState,Rotation rotation){ return blockState.setValue(FACING,rotation.rotate(blockState.getValue(FACING))); }
+	public @NotNull BlockState rotate(BlockState blockState,Rotation rotation){
+		return blockState.setValue(FACING,rotation.rotate(blockState.getValue(FACING)));
+	}
 	@Override
-	public @NotNull BlockState mirror(BlockState blockState,Mirror mirror){ return blockState.rotate(mirror.getRotation(blockState.getValue(FACING))); }
+	public @NotNull BlockState mirror(BlockState blockState,Mirror mirror){
+		return blockState.rotate(mirror.getRotation(blockState.getValue(FACING)));
+	}
 	@Override
-	public @NotNull FluidState getFluidState(BlockState blockState){ return blockState.getValue(WATERLOGGED)?Fluids.WATER.getSource(false):super.getFluidState(blockState); }
+	public @NotNull FluidState getFluidState(BlockState blockState){
+		return blockState.getValue(WATERLOGGED)?Fluids.WATER.getSource(false):super.getFluidState(blockState);
+	}
 	@Override
 	public @NotNull BlockState updateShape(BlockState blockState,@NotNull Direction facing,@NotNull BlockState facingState,@NotNull LevelAccessor world,@NotNull BlockPos currentPos,@NotNull BlockPos facingPos){
 		if(blockState.getValue(WATERLOGGED)) world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
