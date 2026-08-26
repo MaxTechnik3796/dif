@@ -21,8 +21,8 @@ public class MegaTorchScenes{
 		scene.idle(3);
 		scene.world().modifyBlocks(torchSelection,bs->bs.setValue(MegaTorch.FORMED,true),false);
 		scene.idle(10);
-		narrate(scene,"The MEGA Torch is a torch that is 5 blocks high.",util.vector().centerOf(2,3,2),20);
-		narrate(scene,"Blocks spawning of hostile mobs in a large area.",util.vector().centerOf(2,3,2),20);
+		narrate(scene,"The MEGA Torch is a torch that is 5 blocks high.",util.vector().centerOf(2,3,2));
+		narrate(scene,"Blocks spawning of hostile mobs in a large area.",util.vector().centerOf(2,3,2));
 		scene.idle(10);
 		scene.markAsFinished();
 	}
