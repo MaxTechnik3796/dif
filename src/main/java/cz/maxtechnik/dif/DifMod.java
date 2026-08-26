@@ -10,6 +10,7 @@ import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.basic.DifModSounds;
 import cz.maxtechnik.dif.init.basic.DifModTabs;
+import cz.maxtechnik.dif.init.events.ChunkLoaderData;
 import cz.maxtechnik.dif.init.events.JetpackHandler;
 import cz.maxtechnik.dif.init.fluid.DifModFluidTypes;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
@@ -26,6 +27,8 @@ import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -33,6 +36,7 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -47,6 +51,9 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
+import net.neoforged.neoforge.common.world.chunk.TicketController;
+import net.neoforged.neoforge.common.world.chunk.TicketHelper;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -88,23 +95,21 @@ public class DifMod{
 		modContainer.registerConfig(ModConfig.Type.COMMON,DifModCommonConfig.SPEC);
 		modContainer.registerConfig(ModConfig.Type.SERVER,DifModServerConfig.SPEC);
 		bus.addListener(DifModCapabilities::registerCapabilities);
-		bus.addListener((net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent event) -> event.register(CHUNK_LOADER_TICKETS));
+		bus.addListener((RegisterTicketControllersEvent event)->event.register(CHUNK_LOADER_TICKETS));
 	}
-
-	public static final net.neoforged.neoforge.common.world.chunk.TicketController CHUNK_LOADER_TICKETS = new net.neoforged.neoforge.common.world.chunk.TicketController(
-			net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loaders"),
+	public static final TicketController CHUNK_LOADER_TICKETS=new TicketController(
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"chunk_loaders"),
 			DifMod::onLoadLevelTickets
 	);
-
-	private static void onLoadLevelTickets(net.minecraft.server.level.ServerLevel level, net.neoforged.neoforge.common.world.chunk.TicketHelper ticketHelper) {
-		cz.maxtechnik.dif.init.events.ChunkLoaderData data = cz.maxtechnik.dif.init.events.ChunkLoaderData.get(level);
-		for (cz.maxtechnik.dif.init.events.ChunkLoaderData.LoaderRecord record : data.getLoadersForDimension(level.dimension())) {
-			if (record.active()) {
-				net.minecraft.world.level.ChunkPos center = new net.minecraft.world.level.ChunkPos(record.pos());
-				int r = record.radius();
-				for (int x = -r; x <= r; x++) {
-					for (int z = -r; z <= r; z++) {
-						CHUNK_LOADER_TICKETS.forceChunk(level, record.pos(), center.x + x, center.z + z, true, true);
+	private static void onLoadLevelTickets(ServerLevel level,TicketHelper ticketHelper){
+		ChunkLoaderData data=ChunkLoaderData.get(level);
+		for(ChunkLoaderData.LoaderRecord record: data.getLoadersForDimension(level.dimension())){
+			if(record.active()){
+				ChunkPos center=new ChunkPos(record.pos());
+				int r=record.radius();
+				for(int x=-r;x<=r;x++){
+					for(int z=-r;z<=r;z++){
+						CHUNK_LOADER_TICKETS.forceChunk(level,record.pos(),center.x+x,center.z+z,true,true);
 					}
 				}
 			}
@@ -162,7 +167,7 @@ public class DifMod{
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_MUSHROOM.get(),NoopRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_WAVE.get(),NoopRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_RADIATION.get(),NoopRenderer::new);
-			event.registerEntityRenderer(DifModEntities.SILKWORM_MOTH.get(), SilkwormMothRenderer::new);
+			event.registerEntityRenderer(DifModEntities.SILKWORM_MOTH.get(),SilkwormMothRenderer::new);
 			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.ENGINE.get()).factory(SingleAxisRotatingVisual::shaft).neverSkipVanillaRender().apply();
 			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.QUARRY.get()).factory(QuarryShaftVisual.factory()).neverSkipVanillaRender().apply();
 		}
