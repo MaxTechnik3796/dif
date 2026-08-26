@@ -367,5 +367,10 @@
 	"block.dif.quarry.tooltip.condition2":"When Placed nearby Chest",
 	"block.dif.quarry.tooltip.behaviour2":"_Mined Items_ will _drop into it_",
 	"block.dif.quarry.tooltip.condition3":"When Placed nearby Landmarked area",
-	"block.dif.quarry.tooltip.behaviour3":"_Mining area_ will _Expand/Shrink_"
+	"block.dif.quarry.tooltip.behaviour3":"_Mining area_ will _Expand/Shrink_",
+
+
+	"block.dif.chunk_loader.tooltip.summary":"Loads nearby chunks",
+	"block.dif.chunk_loader.tooltip.condition1":"When R-Clicked with Wrench",
+	"block.dif.chunk_loader.tooltip.behaviour1":"Changes loading _distance_"
 }

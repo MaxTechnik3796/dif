@@ -17,13 +17,14 @@ import java.util.function.Supplier;
 
 import static cz.maxtechnik.dif.init.basic.DifModItems.*;
 @EventBusSubscriber(modid=DifMod.MODID, value=Dist.CLIENT)
-public class DifModClientTooltips{
+public class DifModTooltips{
 	private static final List<Supplier<? extends ItemLike>> CREATE_TOOLTIP_ITEMS=List.of(
 			PHANTOM_RING,
 			MAGNET,
 			FLUID_HATCH,
 			FLUID_DRAIN,
-			QUARRY
+			QUARRY,
+			CHUNK_LOADER
 	);
 	@SubscribeEvent
 	public static void onItemTooltip(ItemTooltipEvent event){
