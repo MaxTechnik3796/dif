@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.init.events.client;
+package cz.maxtechnik.dif.init.other;
 
 import com.simibubi.create.foundation.item.ItemDescription;
 import cz.maxtechnik.dif.DifMod;
