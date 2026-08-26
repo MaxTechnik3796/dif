@@ -8,7 +8,7 @@
 			"item":"minecraft:iron_trapdoor"
 		},
 		"B":{
-			"item":"create:smart_fluid_pipe"
+			"item":"create:fluid_pipe"
 		}
 	},
 	"result":{
