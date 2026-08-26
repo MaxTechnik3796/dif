@@ -5,6 +5,7 @@ import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
 import cz.maxtechnik.dif.command.IsChunkLoadedCommand;
 import cz.maxtechnik.dif.config.DifModCommonConfig;
+import cz.maxtechnik.dif.config.DifModServerConfig;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.basic.DifModSounds;
@@ -85,7 +86,7 @@ public class DifMod{
 		NeoForge.EVENT_BUS.register(JetpackHandler.class);
 		bus.addListener(DifModTabs::addCreative);
 		modContainer.registerConfig(ModConfig.Type.COMMON,DifModCommonConfig.SPEC);
-		modContainer.registerConfig(ModConfig.Type.SERVER,cz.maxtechnik.dif.config.DifModServerConfig.SPEC);
+		modContainer.registerConfig(ModConfig.Type.SERVER,DifModServerConfig.SPEC);
 		bus.addListener(DifModCapabilities::registerCapabilities);
 		bus.addListener((net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent event) -> event.register(CHUNK_LOADER_TICKETS));
 	}
