@@ -7,11 +7,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -61,15 +61,16 @@ public final class MiningHandler {
 		List<BlockPos> neighbours = get3x3Plane(centre, face);
 
 		for (BlockPos pos : neighbours) {
-			if (tool.isEmpty()) break;
+			if (player.getMainHandItem().isEmpty()) break;
 			BlockState state = level.getBlockState(pos);
 			if (state.isAir()) continue;
 			if (state.getDestroySpeed(level, pos) < 0) continue;
 
 			if (state.is(BlockTags.MINEABLE_WITH_PICKAXE) || state.is(BlockTags.MINEABLE_WITH_SHOVEL) || tool.isCorrectToolForDrops(state)) {
-				level.destroyBlock(pos, true, player);
-				if (!player.isCreative()) {
-					tool.hurtAndBreak(1, player, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
+				if (player.gameMode.destroyBlock(pos)) {
+					if (!(state.getBlock() instanceof BaseFireBlock)) {
+						level.levelEvent(2001, pos, Block.getId(state));
+					}
 				}
 			}
 		}
@@ -82,14 +83,15 @@ public final class MiningHandler {
 			List<BlockPos> logs = collectNaturalLogs(level, centre, maxLogs);
 			if (logs != null && !logs.isEmpty()) {
 				for (int i = 1; i < logs.size(); i++) {
-					if (tool.isEmpty()) break;
+					if (player.getMainHandItem().isEmpty()) break;
 					BlockPos pos = logs.get(i);
 					BlockState state = level.getBlockState(pos);
 					if (state.isAir()) continue;
 
-					level.destroyBlock(pos, true, player);
-					if (!player.isCreative()) {
-						tool.hurtAndBreak(1, player, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
+					if (player.gameMode.destroyBlock(pos)) {
+						if (!(state.getBlock() instanceof BaseFireBlock)) {
+							level.levelEvent(2001, pos, Block.getId(state));
+						}
 					}
 				}
 				return;
@@ -100,15 +102,16 @@ public final class MiningHandler {
 		List<BlockPos> neighbours = get3x3Plane(centre, face);
 
 		for (BlockPos pos : neighbours) {
-			if (tool.isEmpty()) break;
+			if (player.getMainHandItem().isEmpty()) break;
 			BlockState state = level.getBlockState(pos);
 			if (state.isAir()) continue;
 			if (state.getDestroySpeed(level, pos) < 0) continue;
 
 			if (state.is(BlockTags.MINEABLE_WITH_AXE) || state.is(BlockTags.LOGS) || tool.isCorrectToolForDrops(state)) {
-				level.destroyBlock(pos, true, player);
-				if (!player.isCreative()) {
-					tool.hurtAndBreak(1, player, LivingEntity.getSlotForHand(InteractionHand.MAIN_HAND));
+				if (player.gameMode.destroyBlock(pos)) {
+					if (!(state.getBlock() instanceof BaseFireBlock)) {
+						level.levelEvent(2001, pos, Block.getId(state));
+					}
 				}
 			}
 		}
