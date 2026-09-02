@@ -29,8 +29,8 @@ public class CustomWaterlogged extends Block implements SimpleWaterloggedBlock{
 		return adjacentBlockState.getBlock().equals(this)||super.skipRendering(blockState,adjacentBlockState,side);
 	}
 	@Override
-	public boolean propagatesSkylightDown(BlockState state,@NotNull BlockGetter reader,@NotNull BlockPos pos){
-		return state.getFluidState().isEmpty();
+	public boolean propagatesSkylightDown(BlockState blockState,@NotNull BlockGetter reader,@NotNull BlockPos pos){
+		return blockState.getFluidState().isEmpty();
 	}
 	@Override
 	public float getShadeBrightness(@NotNull BlockState blockState,@NotNull BlockGetter blockGetter,@NotNull BlockPos pos){
