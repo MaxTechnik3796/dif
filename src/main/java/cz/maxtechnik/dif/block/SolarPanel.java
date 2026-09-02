@@ -59,7 +59,7 @@ public class SolarPanel extends Block implements SimpleWaterloggedBlock{
 	}
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context){
-		boolean flag=context.getLevel().getFluidState(context.getClickedPos()).getType()==Fluids.WATER;
+		boolean flag=context.getLevel().getFluidState(context.getClickedPos()).getType().equals(Fluids.WATER);
 		return this.defaultBlockState().setValue(WATERLOGGED,flag);
 	}
 	@Override
