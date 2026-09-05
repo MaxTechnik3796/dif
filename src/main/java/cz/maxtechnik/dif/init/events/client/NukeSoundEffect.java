@@ -36,7 +36,7 @@ public class NukeSoundEffect{
 	public static void play(ServerLevel level,double x,double y,double z){
 		long currentTick=level.getServer().getTickCount();
 		for(ServerPlayer player: level.getPlayers(p->p.distanceToSqr(x,y,z)<MAX_DISTANCE*MAX_DISTANCE)){
-			// Odeslání paketu pro vizuální efekty (záblesk, otřes kamery, tinnitus)
+			// Odeslání paketu pro vizuální efekty (záblesk, otřes kamery)
 			PacketDistributor.sendToPlayer(player,new NukeDetonationMessage(x,y,z,1.0F));
 
 			double distance=Math.sqrt(player.distanceToSqr(x,y,z));

@@ -34,9 +34,6 @@ public class ClientVisualEffectsRenderer{
 			float factor=(float)Math.max(0.0,1.0-(dist/320.0));
 			nukeFlashIntensity=Math.min(1.0F,Math.max(nukeFlashIntensity,factor*intensity*1.5F));
 			nukeShakeIntensity=Math.min(1.0F,Math.max(nukeShakeIntensity,factor*intensity));
-			if(dist<40.0){
-				mc.getSoundManager().play(SimpleSoundInstance.forUI(net.minecraft.sounds.SoundEvents.BEACON_AMBIENT,2.0F,0.4F));
-			}
 		}
 	}
 	@SubscribeEvent
