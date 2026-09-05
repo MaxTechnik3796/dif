@@ -14,13 +14,13 @@ public class NukeCraterHandler{
 	private static final int BLOCKS_PER_TICK=36_000;
 	private static final float MAX_DESTROYABLE_RESISTANCE=1500F;
 	// 2x větší exploze: Průměr kráteru cca 128 bloků (poloměr 64), zóna sežehnutí poloměr 100 bloků (průměr 200 bloků)
-	private static final double HOR_R_FULL=48.0, HOR_R_TOTAL=64.0;
-	private static final double UP_R_FULL=32.0, UP_R_TOTAL=42.0;
-	private static final double DOWN_R_FULL=18.0, DOWN_R_TOTAL=24.0;
+	private static final double HOR_R_FULL=56.0, HOR_R_TOTAL=72.0;
+	private static final double UP_R_FULL=36.0, UP_R_TOTAL=48.0;
+	private static final double DOWN_R_FULL=20.0, DOWN_R_TOTAL=28.0;
 	private static final double HOR_FULL_SQ=HOR_R_FULL*HOR_R_FULL, HOR_TOTAL_SQ=HOR_R_TOTAL*HOR_R_TOTAL;
 	private static final double UP_FULL_SQ=UP_R_FULL*UP_R_FULL, UP_TOTAL_SQ=UP_R_TOTAL*UP_R_TOTAL;
 	private static final double DN_FULL_SQ=DOWN_R_FULL*DOWN_R_FULL, DN_TOTAL_SQ=DOWN_R_TOTAL*DOWN_R_TOTAL;
-	private static final double SCORCH_RADIUS=92.0, SCORCH_RADIUS_SQ=SCORCH_RADIUS*SCORCH_RADIUS;
+	private static final double SCORCH_RADIUS=116.0, SCORCH_RADIUS_SQ=SCORCH_RADIUS*SCORCH_RADIUS;
 	private static final BlockState AIR=Blocks.AIR.defaultBlockState();
 	private static final int UPDATE_FLAGS=2|16|64;
 
@@ -139,12 +139,16 @@ public class NukeCraterHandler{
 		}
 	}
 
+	@SuppressWarnings("deprecation")
+	private static boolean isBlastResistant(BlockState state){
+		return state.getBlock().getExplosionResistance()>MAX_DESTROYABLE_RESISTANCE;
+	}
+
 	private void destroyAt(Level level,int x,int y,int z){
 		if(y<level.getMinBuildHeight()||y>=level.getMaxBuildHeight()) return;
 		mutablePos.set(x,y,z);
 		BlockState state=level.getBlockState(mutablePos);
-		if(state.isAir()) return;
-		if(state.getBlock().getExplosionResistance()>MAX_DESTROYABLE_RESISTANCE) return;
+		if(state.isAir()||isBlastResistant(state)) return;
 		level.setBlock(mutablePos,AIR,UPDATE_FLAGS);
 	}
 
@@ -152,8 +156,8 @@ public class NukeCraterHandler{
 		if(y<level.getMinBuildHeight()||y>=level.getMaxBuildHeight()) return;
 		mutablePos.set(x,y,z);
 		BlockState state=level.getBlockState(mutablePos);
-		if(state.isAir()||state.getBlock().getExplosionResistance()>MAX_DESTROYABLE_RESISTANCE) return;
-		if(state.isSolid()){
+		if(state.isAir()||isBlastResistant(state)) return;
+		if(state.isSolidRender(level,mutablePos)){
 			// Dno kráteru: kombinace deepslatu (2 typy) a blackstone (2 typy) s trochou magmy, žádný čedič ani obsidián
 			float roll=random.nextFloat();
 			BlockState melted = roll<0.38F ? Blocks.COBBLED_DEEPSLATE.defaultBlockState()
@@ -216,7 +220,7 @@ public class NukeCraterHandler{
 		}
 
 		// Příležitostné zapálení pevných povrchů
-		if(random.nextFloat()<0.08F&&state.isSolid()){
+		if(random.nextFloat()<0.08F&&state.isSolidRender(level,mutablePos)){
 			mutablePos.set(x,y+1,z);
 			if(level.getBlockState(mutablePos).isAir()){
 				level.setBlock(mutablePos,Blocks.FIRE.defaultBlockState(),UPDATE_FLAGS);
