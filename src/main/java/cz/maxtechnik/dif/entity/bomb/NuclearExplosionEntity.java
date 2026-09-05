@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class NuclearExplosionEntity extends Entity{
-	private static final int LIFETIME_TICKS=360;
+	private static final int LIFETIME_TICKS=750;
 
 	private final NukeCraterHandler craterHandler=new NukeCraterHandler();
 	private int age=0;
