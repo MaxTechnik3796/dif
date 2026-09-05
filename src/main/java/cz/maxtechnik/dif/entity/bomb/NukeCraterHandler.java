@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class NukeCraterHandler{
-	private static final int BLOCKS_PER_TICK=8_000;
+	private static final int BLOCKS_PER_TICK=12_000;
 	private static final float MAX_DESTROYABLE_RESISTANCE=1500F;
 	// Průměr cca 64 bloků (poloměr 32)
 	private static final double HOR_R_FULL=24.0, HOR_R_TOTAL=32.0;
@@ -27,7 +27,7 @@ public class NukeCraterHandler{
 	private boolean debrisSpawned=false;
 	private final BlockPos.MutableBlockPos mutablePos=new BlockPos.MutableBlockPos();
 
-	public boolean tick(Level level,BlockPos center,RandomSource random){
+	public boolean tick(Level level,BlockPos center,double groundWaveRadius,RandomSource random){
 		if(level.isClientSide) return true;
 
 		if(!debrisSpawned){
@@ -35,10 +35,15 @@ public class NukeCraterHandler{
 			spawnDebris(level,center,random);
 		}
 
+		int targetShell=(int)Math.floor(groundWaveRadius);
 		int cx=center.getX(), cy=center.getY(), cz=center.getZ(), processed=0;
 		while(processed<BLOCKS_PER_TICK){
 			if(currentShell>maxShell){
 				return true; // Kráter je kompletně hotový
+			}
+			if(currentShell>targetShell){
+				// Počkáme, až rázová vlna postoupí k další vrstvě
+				return false;
 			}
 			int r=currentShell;
 			if(r==0){

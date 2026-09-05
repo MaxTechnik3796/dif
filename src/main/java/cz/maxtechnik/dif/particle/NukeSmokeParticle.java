@@ -45,7 +45,7 @@ public class NukeSmokeParticle extends TextureSheetParticle{
 
 		// vz: Životnost v ticích
 		int life=(int)Math.abs(vz);
-		this.lifetime=(life>20)?life:120;
+		this.lifetime=(life>0)?life:120;
 
 		this.gravity=-0.0015F;
 		this.hasPhysics=false;

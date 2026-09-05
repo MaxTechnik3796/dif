@@ -64,13 +64,6 @@ public class NukeParticleHandler{
 		if(age>=25&&age<=90){
 			spawnCondensationRing(level,bx,by+18.0,bz,age,random);
 		}
-
-		// ---------------------------------------------------------------------
-		// 6. Pozemní rázová vlna s prachem a odhozením entit (věk 0 - 80 ticků)
-		// ---------------------------------------------------------------------
-		if(age<=80){
-			spawnGroundShockwave(level,bx,by,bz,age);
-		}
 	}
 
 	/**
@@ -292,50 +285,6 @@ public class NukeParticleHandler{
 
 			// Světle azurovo-bílá kondenzační pára
 			spawnSmoke(level,rx,ringY+(random.nextDouble()-0.5)*1.8,rz,0.80F,0.92F,1.0F,3.2F,45);
-		}
-	}
-
-	/**
-	 * Pozemní rázová vlna: Prachový prstenec a fyzické odhození entit.
-	 */
-	private static void spawnGroundShockwave(ServerLevel level,double bx,double by,double bz,int age){
-		if(age%2!=0) return;
-
-		double waveRadius=age*1.1; // plynulé šíření do dálky
-		if(waveRadius<1.5||waveRadius>72.0) return;
-
-		int waveParticles=20;
-		double step=(Math.PI*2.0)/waveParticles;
-		for(int i=0;i<waveParticles;i++){
-			double angle=i*step;
-			double wx=bx+Math.cos(angle)*waveRadius;
-			double wz=bz+Math.sin(angle)*waveRadius;
-
-			sendVanilla(level,ParticleTypes.POOF,wx,by+0.4,wz,1,0,0,0,0.04);
-			if(age<30&&i%3==0){
-				sendVanilla(level,ParticleTypes.FLAME,wx,by+0.3,wz,1,0,0,0,0.02);
-			}
-		}
-
-		// Fyzické odhození entit tlakovou vlnou
-		AABB waveBox=new AABB(bx-waveRadius-3,by-2,bz-waveRadius-3,bx+waveRadius+3,by+6,bz+waveRadius+3);
-		double rMinSq=(waveRadius-3.2)*(waveRadius-3.2);
-		double rMaxSq=(waveRadius+3.2)*(waveRadius+3.2);
-
-		for(LivingEntity entity: level.getEntitiesOfClass(LivingEntity.class,waveBox)){
-			if(entity.isSpectator()) continue;
-			double dx=entity.getX()-bx;
-			double dz=entity.getZ()-bz;
-			double dSq=dx*dx+dz*dz;
-			if(dSq>=rMinSq&&dSq<=rMaxSq){
-				double dist=Math.sqrt(dSq);
-				if(dist>0.01){
-					double pushFactor=Math.max(0.35,1.0-(dist/72.0))*1.7;
-					Vec3 motion=new Vec3((dx/dist)*pushFactor,0.38,(dz/dist)*pushFactor);
-					entity.setDeltaMovement(entity.getDeltaMovement().add(motion));
-					entity.hurtMarked=true;
-				}
-			}
 		}
 	}
 

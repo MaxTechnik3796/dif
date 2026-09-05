@@ -39,12 +39,16 @@ public class NuclearExplosionEntity extends Entity{
 			NukeRadiationHandler.apply(level(),blockPosition());
 		}
 
-		// Výpočet a tvorba kráteru
+		// Výpočet a tvorba kráteru synchronizovaně s čelem rázové vlny
+		double groundRadius=NukeShockwaveHandler.getGroundWaveRadius(age);
 		if(!craterFinished){
-			craterFinished=craterHandler.tick(level(),blockPosition(),random);
+			craterFinished=craterHandler.tick(level(),blockPosition(),groundRadius,random);
 		}
 
-		// Vizuální částicový systém (stoupající hřib, klobouk, rázová vlna)
+		// Dva prstence rázové vlny (horní tenký vzdušný + dolní pozemní)
+		NukeShockwaveHandler.tick(sl,x,y,z,age,random);
+
+		// Vizuální částicový systém (detonace, stoupající koule, noha, hřib)
 		NukeParticleHandler.tick(sl,x,y,z,age,random);
 
 		age++;
