@@ -31,7 +31,7 @@ public class Nuke extends Block{
 		double z=pos.getZ()+0.5;
 		NuclearExplosionEntity explosion=new NuclearExplosionEntity(DifModEntities.NUCLEAR_EXPLOSION.get(),level);
 		explosion.setPos(x,y,z);
-		explosion.setRadius(40);
+		explosion.setRadius(32);
 		level.addFreshEntity(explosion);
 		NuclearMushroomEntity mushroom=new NuclearMushroomEntity(DifModEntities.NUCLEAR_MUSHROOM.get(),level);
 		mushroom.setPos(x,y,z);

@@ -16,8 +16,6 @@ import cz.maxtechnik.dif.init.fluid.DifModFluidTypes;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import cz.maxtechnik.dif.init.other.*;
-import cz.maxtechnik.dif.particle.FireballParticle;
-import cz.maxtechnik.dif.particle.HugeSmoke;
 import cz.maxtechnik.dif.renderer.*;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import net.createmod.ponder.foundation.PonderIndex;
@@ -48,7 +46,6 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.util.thread.SidedThreadGroups;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
@@ -85,7 +82,6 @@ public class DifMod{
 		DifModRecipes.TYPE_REGISTRY.register(bus);
 		DifModEntities.REGISTRY.register(bus);
 		DifModFeatures.REGISTRY.register(bus);
-		DifModParticles.REGISTRY.register(bus);
 		DifModLootModifiers.REGISTRY.register(bus);
 		DifModComponents.REGISTRY.register(bus);
 		// REGISTRACE EVENTŮ
@@ -170,11 +166,6 @@ public class DifMod{
 			event.registerEntityRenderer(DifModEntities.SILKWORM_MOTH.get(),SilkwormMothRenderer::new);
 			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.ENGINE.get()).factory(SingleAxisRotatingVisual::shaft).neverSkipVanillaRender().apply();
 			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.QUARRY.get()).factory(QuarryShaftVisual.factory()).neverSkipVanillaRender().apply();
-		}
-		@SubscribeEvent
-		public static void registerParticles(RegisterParticleProvidersEvent event){
-			event.registerSpriteSet(DifModParticles.HUGE_SMOKE.get(),HugeSmoke.Factory::new);
-			event.registerSpriteSet(DifModParticles.FIREBALL.get(),FireballParticle.Factory::new);
 		}
 	}
 	public static final String goggleTooltipFix="     ";

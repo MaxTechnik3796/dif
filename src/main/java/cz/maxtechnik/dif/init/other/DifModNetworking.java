@@ -17,5 +17,6 @@ public class DifModNetworking{
 		registrar.playToServer(EnderOpenMessage.TYPE,EnderOpenMessage.STREAM_CODEC,EnderOpenMessage::handle);
 		registrar.playToServer(SpaceshipScreenButtonMessage.TYPE,SpaceshipScreenButtonMessage.STREAM_CODEC,SpaceshipScreenButtonMessage::handle);
 		registrar.playToClient(JetpackSyncMessage.TYPE,JetpackSyncMessage.STREAM_CODEC,JetpackSyncMessage::handle);
+		registrar.playToClient(NukeDetonationMessage.TYPE,NukeDetonationMessage.STREAM_CODEC,NukeDetonationMessage::handle);
 	}
 }
