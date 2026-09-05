@@ -16,6 +16,7 @@ import cz.maxtechnik.dif.init.fluid.DifModFluidTypes;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import cz.maxtechnik.dif.init.other.*;
+import cz.maxtechnik.dif.particle.NukeSmokeParticle;
 import cz.maxtechnik.dif.renderer.*;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import net.createmod.ponder.foundation.PonderIndex;
@@ -38,6 +39,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -84,6 +86,7 @@ public class DifMod{
 		DifModFeatures.REGISTRY.register(bus);
 		DifModLootModifiers.REGISTRY.register(bus);
 		DifModComponents.REGISTRY.register(bus);
+		DifModParticles.REGISTRY.register(bus);
 		// REGISTRACE EVENTŮ
 		NeoForge.EVENT_BUS.register(this);
 		NeoForge.EVENT_BUS.register(JetpackHandler.class);
@@ -163,6 +166,10 @@ public class DifMod{
 			event.registerEntityRenderer(DifModEntities.SILKWORM_MOTH.get(),SilkwormMothRenderer::new);
 			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.ENGINE.get()).factory(SingleAxisRotatingVisual::shaft).neverSkipVanillaRender().apply();
 			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.QUARRY.get()).factory(QuarryShaftVisual.factory()).neverSkipVanillaRender().apply();
+		}
+		@SubscribeEvent
+		public static void registerParticles(RegisterParticleProvidersEvent event){
+			event.registerSpriteSet(DifModParticles.NUKE_SMOKE.get(),NukeSmokeParticle.Factory::new);
 		}
 	}
 	public static final String goggleTooltipFix="     ";
