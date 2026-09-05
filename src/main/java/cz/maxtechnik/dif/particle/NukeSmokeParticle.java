@@ -11,38 +11,60 @@ import org.jetbrains.annotations.NotNull;
 public class NukeSmokeParticle extends TextureSheetParticle{
 	private final SpriteSet sprites;
 	private final float baseSize;
-	private final boolean isFire;
+	private final float initialR, initialG, initialB;
+	private final boolean isGlowing;
 
 	protected NukeSmokeParticle(ClientLevel level,double x,double y,double z,
 	                            double vx,double vy,double vz,SpriteSet sprites){
-		super(level,x,y,z,vx,vy,vz);
+		super(level,x,y,z,0.0,0.0,0.0);
 		this.sprites=sprites;
 		this.setSpriteFromAge(sprites);
 
-		this.lifetime=160+this.random.nextInt(60); // 8 - 11 sekund
-		this.gravity=-0.003F; // jemné stoupání kouře
-		this.hasPhysics=false;
-		this.xd=vx;
-		this.yd=vy;
-		this.zd=vz;
+		// vx: Packed 24-bit RGB barva
+		int rgb=(int)vx;
+		if(rgb!=0){
+			this.initialR=((rgb>>16)&0xFF)/255.0F;
+			this.initialG=((rgb>>8)&0xFF)/255.0F;
+			this.initialB=(rgb&0xFF)/255.0F;
+		}else{
+			this.initialR=0.25F;
+			this.initialG=0.25F;
+			this.initialB=0.25F;
+		}
+		this.rCol=this.initialR;
+		this.gCol=this.initialG;
+		this.bCol=this.initialB;
 
-		// Zvětšená velikost částice (cca 6 - 9 bloků při zrodu)
-		this.baseSize=6.5F+this.random.nextFloat()*3.5F;
+		// Je částice svítivá/žhnoucí? (Žlutá, oranžová, červená nebo azurová/barevná)
+		this.isGlowing=(this.initialR>0.45F||this.initialG>0.35F||this.initialB>0.45F);
+
+		// vy: Velikost částice
+		float size=(float)Math.abs(vy);
+		this.baseSize=(size>0.1F)?size:3.5F;
 		this.quadSize=this.baseSize;
 
-		// Pokud částice stoupá rychle nebo má příznak ohně, začíná jako žhnoucí plamen
-		this.isFire=(vy>0.15||this.random.nextFloat()<0.35F);
-		if(this.isFire){
-			this.rCol=1.0F;
-			this.gCol=0.55F+this.random.nextFloat()*0.25F;
-			this.bCol=0.12F;
-		}else{
-			float shade=0.18F+this.random.nextFloat()*0.14F;
-			this.rCol=shade;
-			this.gCol=shade*0.96F;
-			this.bCol=shade*0.92F;
-		}
+		// vz: Životnost v ticích
+		int life=(int)Math.abs(vz);
+		this.lifetime=(life>20)?life:120;
+
+		this.gravity=-0.0015F;
+		this.hasPhysics=false;
+		this.xd=(this.random.nextFloat()-0.5F)*0.01F;
+		this.yd=this.isGlowing ? (0.015F+this.random.nextFloat()*0.015F) : (0.006F+this.random.nextFloat()*0.008F);
+		this.zd=(this.random.nextFloat()-0.5F)*0.01F;
 		this.alpha=0.92F;
+	}
+
+	@Override
+	public int getLightColor(float partialTick){
+		// Žhnoucí částice (žlutá/oranžová/červená) září plným jasem i v noci
+		if(this.isGlowing){
+			float progress=(float)this.age/(float)this.lifetime;
+			if(progress<0.55F){
+				return 0xF000F0; // Plné světlo (emissive glow)
+			}
+		}
+		return super.getLightColor(partialTick);
 	}
 
 	@Override
@@ -52,18 +74,18 @@ public class NukeSmokeParticle extends TextureSheetParticle{
 
 		float progress=(float)this.age/(float)this.lifetime;
 
-		// Plynulé zvětšování kouře s rostoucím časem (expanze oblaku)
-		this.quadSize=this.baseSize*(1.0F+progress*1.4F);
+		// Plynulá expanze o 55 %
+		this.quadSize=this.baseSize*(1.0F+progress*0.55F);
 
-		// Pokud začala jako oheň, plynule chladne do hustého tmavého dýmu
-		if(this.isFire&&progress>0.12F){
-			float cool=Math.min(1.0F,(progress-0.12F)/0.35F);
-			this.rCol=1.0F*(1.0F-cool)+0.22F*cool;
-			this.gCol=0.6F*(1.0F-cool)+0.20F*cool;
-			this.bCol=0.12F*(1.0F-cool)+0.20F*cool;
+		// Postupné chladnutí ohnivých barev do popelavé šedé (0.28, 0.28, 0.28)
+		if(this.isGlowing&&progress>0.20F){
+			float cool=Math.min(1.0F,(progress-0.20F)/0.45F);
+			this.rCol=this.initialR*(1.0F-cool)+0.28F*cool;
+			this.gCol=this.initialG*(1.0F-cool)+0.28F*cool;
+			this.bCol=this.initialB*(1.0F-cool)+0.28F*cool;
 		}
 
-		// Plynulé slábnutí v závěru života
+		// Plynulé mizení v závěru života (od 65 %)
 		if(progress>0.65F){
 			float fade=(progress-0.65F)/0.35F;
 			this.alpha=0.92F*(1.0F-fade);
