@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 public class PortalEntity extends Entity{
-	// -------------------- Synched data --------------------
+	// Synched data
 	private static final EntityDataAccessor<Optional<UUID>> DATA_OWNER=SynchedEntityData.defineId(PortalEntity.class,EntityDataSerializers.OPTIONAL_UUID);
 	private static final EntityDataAccessor<Boolean> DATA_IS_BLUE=SynchedEntityData.defineId(PortalEntity.class,EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Boolean> DATA_IS_LINKED=SynchedEntityData.defineId(PortalEntity.class,EntityDataSerializers.BOOLEAN);
@@ -32,7 +32,7 @@ public class PortalEntity extends Entity{
 	private static final int MAX_ENTITIES_PER_TICK=5;
 	public long lastTeleportTime=0;
 	private final Map<UUID,Long> cooldowns=new HashMap<>();
-	// -------------------- Constructors --------------------
+	// Constructors
 	public PortalEntity(EntityType<?> type,Level level){
 		super(type,level);
 	}
@@ -45,7 +45,7 @@ public class PortalEntity extends Entity{
 		setPos(pos);
 		setBoundingBox(buildPortalAABB());
 	}
-	// -------------------- Accessors --------------------
+	// Accessors
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder){
 		builder.define(DATA_OWNER,Optional.empty());
@@ -84,7 +84,7 @@ public class PortalEntity extends Entity{
 	public void setUpDir(Direction direction){
 		entityData.set(DATA_UP_DIR,direction!=null?direction.getName():Direction.UP.getName());
 	}
-	// -------------------- Bounding box --------------------
+	// Bounding box
 	public AABB buildPortalAABB(){
 		double x=getX(), y=getY(), z=getZ();
 		Direction facing=getFacing();
@@ -107,11 +107,7 @@ public class PortalEntity extends Entity{
 	protected @NotNull AABB makeBoundingBox(){
 		return buildPortalAABB();
 	}
-	// -------------------- Footprint (bloky pod portálem) --------------------
-	/**
-	 * Vrátí sadu BlockPos na vzduchové straně portálu, které portál zabírá.
-	 * Používá se pro ověření placementu i pro kontrolu podpory v ticku.
-	 */
+	// Footprint (bloky pod portálem)
 	public static Set<BlockPos> getPortalFootprint(Vec3 pos,Direction upDir,Direction facing){
 		Vec3 upVec=dirVec(upDir);
 		Vec3 rightVec=dirVec(facing).cross(upVec);
@@ -141,7 +137,7 @@ public class PortalEntity extends Entity{
 	private static double max4(double a,double b,double c,double d){
 		return Math.max(Math.max(a,b),Math.max(c,d));
 	}
-	// -------------------- Tick --------------------
+	// Tick
 	@Override
 	public void tick(){
 		super.tick();
@@ -162,12 +158,10 @@ public class PortalEntity extends Entity{
 		// Teleportace entit
 		AABB box=getBoundingBox().inflate(0.1);
 		long now=sl.getGameTime();
-		// Hráči (mají přednost)
 		for(Player p: sl.getEntitiesOfClass(Player.class,box)){
 			if(isOnCooldown(p.getUUID(),now)) continue;
 			teleport(p,sl,now,true);
 		}
-		// Ostatní entity (pokud povoleno v configu)
 		if(DifModServerConfig.PORTAL_ALLOW_ENTITIES.get()){
 			int count=0;
 			for(Entity e: sl.getEntitiesOfClass(Entity.class,box,e->!(e instanceof Player)&&!(e instanceof PortalEntity))){
@@ -188,12 +182,11 @@ public class PortalEntity extends Entity{
 		for(BlockPos p: blocks){
 			BlockPos behind=p.relative(facing.getOpposite());
 			if(!sl.getBlockState(behind).isFaceSturdy(sl,behind,facing)) return false;
-			// Pokud se do prostoru portálu položí blok, portál se zruší
 			if(!sl.isEmptyBlock(p)&&!sl.getBlockState(p).canBeReplaced()) return false;
 		}
 		return true;
 	}
-	// -------------------- Teleportace --------------------
+	// Teleportace
 	private void teleport(Entity entity,ServerLevel sl,long now,boolean isPlayer){
 		BlockPos targetPos=PortalData.get(sl).getPos(getOwner(),!isBlue());
 		if(targetPos==null){
@@ -211,9 +204,7 @@ public class PortalEntity extends Entity{
 			PortalData.get(sl).remove(getOwner(),!isBlue());
 			return;
 		}
-		// Výpočet nové pozice, rotace a hybnosti
 		Vec3 dest=calcDestination(other,entity);
-		// 2D rotace kamery podle požadavku hráče (neměnit pitch, pouze yaw s ohledem na chiralitu portálů)
 		float newYaw=calcNewYaw(entity.getYRot(),this,other);
 		Vec3 newMotion=transformMotion(entity.getDeltaMovement(),this,other);
 		if(isPlayer&&entity instanceof ServerPlayer sp){
@@ -235,7 +226,7 @@ public class PortalEntity extends Entity{
 		other.lastTeleportTime=this.lastTeleportTime=now;
 		other.cooldowns.put(entity.getUUID(),now);
 	}
-	// -------------------- Výstupní pozice --------------------
+	// Výstupní pozice
 	private static Vec3 calcDestination(PortalEntity out,Entity entity){
 		Vec3 center=out.position();
 		Direction face=out.getFacing();
@@ -243,7 +234,6 @@ public class PortalEntity extends Entity{
 		if(face==Direction.UP) return center.add(0,0.05,0);
 		else if(face==Direction.DOWN) return new Vec3(center.x,center.y-entity.getBbHeight()-0.1,center.z);
 		else{
-			// Na zdi: entita se objeví před portálem, nohy na spodku
 			double dist=entity.getBbWidth()*0.5+0.1;
 			return new Vec3(
 					center.x+faceVec.x*dist,
@@ -252,7 +242,7 @@ public class PortalEntity extends Entity{
 			);
 		}
 	}
-	// -------------------- Rotace kamery (2D) --------------------
+	//Rotace kamery
 	private static float getEntryYaw(PortalEntity p){
 		return p.getFacing().getAxis().equals(Direction.Axis.Y)?p.getUpDir().toYRot():p.getFacing().getOpposite().toYRot();
 	}
@@ -265,23 +255,17 @@ public class PortalEntity extends Entity{
 		float relYaw=net.minecraft.util.Mth.wrapDegrees(oldYaw-inYaw);
 		return net.minecraft.util.Mth.wrapDegrees(outYaw+relYaw);
 	}
-	// -------------------- Rotace a hybnost (3D Transformace) --------------------
-	/**
-	 * Rozloží vektor do lokální báze vstupního portálu a přemapuje ho do báze výstupního.
-	 * Zachovává relativní směry (např. vlevo/vpravo) napříč všemi kombinacemi rotací.
-	 */
+	// Rotace a hybnost 3D
 	private static Vec3 transformVector(Vec3 vec,PortalEntity in,PortalEntity out){
 		Vec3 inN=dirVec(in.getFacing());
 		Vec3 inU=dirVec(in.getUpDir());
 		Vec3 inR=inN.cross(inU);
-		// Rozložení do lokálních os (komponenta „dovnitř" = záporný normálový směr)
 		double cIn=-vec.dot(inN);
 		double cUp=vec.dot(inU);
 		double cRi=vec.dot(inR);
 		Vec3 outN=dirVec(out.getFacing());
 		Vec3 outU=dirVec(out.getUpDir());
 		Vec3 outR=outN.cross(outU);
-		// Složení do výstupní báze (ven z portálu = kladný normálový směr)
 		return outN.scale(cIn).add(outU.scale(cUp)).add(outR.scale(cRi));
 	}
 	private static Vec3 transformMotion(Vec3 vel,PortalEntity in,PortalEntity out){
@@ -289,19 +273,18 @@ public class PortalEntity extends Entity{
 		if(speed<0.001) return vel;
 		Vec3 inN=dirVec(in.getFacing());
 		double cIn=-vel.dot(inN);
-		// Zabrání zasekávání v portálu – garantuje mírné vymrštění ven
 		double minIn=Math.max(cIn,0.05);
 		Vec3 adjustedVel=vel.subtract(inN.scale(minIn-cIn));
 		Vec3 transformed=transformVector(adjustedVel,in,out);
 		return transformed.lengthSqr()>0.001?transformed.normalize().scale(speed):dirVec(out.getFacing()).scale(speed);
 	}
-	// -------------------- Hledání protějšího portálu --------------------
+	// Hledání protějšího portálu
 	private PortalEntity findLinkedPortal(ServerLevel sl,BlockPos targetPos){
 		List<PortalEntity> list=sl.getEntitiesOfClass(PortalEntity.class,new AABB(targetPos).inflate(2),
 				p->getOwner().equals(p.getOwner())&&p.isBlue()!=isBlue());
 		return list.isEmpty()?null:list.getFirst();
 	}
-	// -------------------- NBT --------------------
+	// NBT
 	@Override
 	protected void readAdditionalSaveData(@NotNull CompoundTag tag){
 		if(tag.hasUUID("owner")) setOwner(tag.getUUID("owner"));
@@ -318,7 +301,7 @@ public class PortalEntity extends Entity{
 		if(getFacing()!=null) tag.putString("facing",getFacing().getName());
 		if(getUpDir()!=null) tag.putString("upDir",getUpDir().getName());
 	}
-	// -------------------- Správa portálů --------------------
+	// Správa portálů
 	public static void removeOldPortal(ServerLevel sl,UUID owner,boolean isBlue){
 		BlockPos pos=PortalData.get(sl).getPos(owner,isBlue);
 		if(pos!=null){
@@ -345,7 +328,7 @@ public class PortalEntity extends Entity{
 		if(blue!=null) blue.setIsLinked(linked);
 		if(orange!=null) orange.setIsLinked(linked);
 	}
-	// -------------------- Lifecycle --------------------
+	// Lifecycle
 	@Override
 	public void onAddedToLevel(){
 		super.onAddedToLevel();
@@ -381,7 +364,7 @@ public class PortalEntity extends Entity{
 	public boolean isPickable(){
 		return !isRemoved();
 	}
-	// -------------------- Utility --------------------
+	// Utility
 	private static final Vec3[] DIR_VECS=Arrays.stream(Direction.values())
 			.map(direction->new Vec3(direction.getStepX(),direction.getStepY(),direction.getStepZ()))
 			.toArray(Vec3[]::new);

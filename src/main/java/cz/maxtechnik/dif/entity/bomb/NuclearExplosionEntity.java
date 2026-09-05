@@ -1,6 +1,10 @@
 package cz.maxtechnik.dif.entity.bomb;
 
 import cz.maxtechnik.dif.init.events.client.NukeSoundEffect;
+import cz.maxtechnik.dif.init.events.nuke.NukeCraterHandler;
+import cz.maxtechnik.dif.init.events.nuke.NukeParticleHandler;
+import cz.maxtechnik.dif.init.events.nuke.NukeRadiationHandler;
+import cz.maxtechnik.dif.init.events.nuke.NukeShockwaveHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
@@ -33,22 +37,21 @@ public class NuclearExplosionEntity extends Entity{
 
 		double x=getX(), y=getY(), z=getZ();
 
-		// Fáze 0: Spuštění zvuku, klientského záblesku a okamžité radiace s knockbackem
 		if(age==0){
 			NukeSoundEffect.play(sl,x,y,z);
 			NukeRadiationHandler.apply(level(),blockPosition());
 		}
 
-		// Výpočet a tvorba kráteru synchronizovaně s čelem rázové vlny
-		double groundRadius=NukeShockwaveHandler.getGroundWaveRadius(age);
+		// Tvorba kráteru
+		double groundRadius= NukeShockwaveHandler.getGroundWaveRadius(age);
 		if(!craterFinished){
 			craterFinished=craterHandler.tick(level(),blockPosition(),groundRadius,random);
 		}
 
-		// Dva prstence rázové vlny (horní tenký vzdušný + dolní pozemní)
+		// Dva prstence rázové vlny
 		NukeShockwaveHandler.tick(sl,x,y,z,age);
 
-		// Vizuální částicový systém (detonace, stoupající koule, noha, hřib)
+		// Vizuální systém
 		NukeParticleHandler.tick(sl,x,y,z,age,random);
 
 		age++;

@@ -31,9 +31,9 @@ public class OilWellFeature extends Feature<NoneFeatureConfiguration>{
 	@Override
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context){
 		WorldGenLevel level=context.level();
-		BlockPos origin=context.origin(); // Střed baňky pod zemí
+		BlockPos origin=context.origin();
 		RandomSource random=context.random();
-		// VÁŽENÝ NÁHODNÝ VÝBĚR VELIKOSTI (aby malé byly častější než obří)
+		// VÁŽENÝ NÁHODNÝ VÝBĚR VELIKOSTI
 		int totalWeight=0;
 		for(WellSize s: WellSize.values()) totalWeight+=s.weight;
 		int r=random.nextInt(totalWeight);
@@ -48,8 +48,6 @@ public class OilWellFeature extends Feature<NoneFeatureConfiguration>{
 		}
 		int polomerKouleRopy=size.radiusSphereOil;
 		int vyskaGejziruNadZemi=size.geyserHighAboveGround;
-		// OCHRANA PROTI GENEROVÁNÍ VE VELKÝCH JESKYNÍCH
-		// Otestujeme několik náhodných bloků uvnitř prostoru budoucí baňky.
 		int airBlocks=0;
 		int checks=20;
 		for(int i=0;i<checks;i++){
@@ -58,43 +56,37 @@ public class OilWellFeature extends Feature<NoneFeatureConfiguration>{
 			int rz=random.nextInt(polomerKouleRopy)-(polomerKouleRopy/2);
 			if(level.isEmptyBlock(origin.offset(rx,ry,rz))) airBlocks++;
 		}
-		// Pokud je víc než 25 % testovaných bodů čistý vzduch = jsme uvnitř obrovské jeskyně. Tím pádem generování zrušíme.
 		if(airBlocks>checks/4) return false;
 		BlockState fluid=DifModBlocks.CRUDE_OIL_FLUID.get().defaultBlockState();
 		int centerChunkX=origin.getX()>>4;
 		int centerChunkZ=origin.getZ()>>4;
-		// 1. GENERACE BAŇKY (Čistá koule ropy pod zemí)
-		// Žádný kamenný obal už se negeneruje. Pokud je kolem malá jeskyně, ropa tam zkrátka vyteče.
+		// GENERACE BAŇKY
 		for(int x=-polomerKouleRopy;x<=polomerKouleRopy;x++){
 			for(int y=-polomerKouleRopy;y<=polomerKouleRopy;y++){
 				for(int z=-polomerKouleRopy;z<=polomerKouleRopy;z++){
 					double distance=Math.sqrt(x*x+y*y+z*z);
 					if(distance<polomerKouleRopy){
 						BlockPos currentPos=origin.offset(x,y,z);
-						// Prevence pádů - kontrolujeme pouze limitní chunky 3x3
 						int chunkX=currentPos.getX()>>4;
 						int chunkZ=currentPos.getZ()>>4;
 						if(Math.abs(chunkX-centerChunkX)<=1&&Math.abs(chunkZ-centerChunkZ)<=1)
-							level.setBlock(currentPos,fluid,3); // Flag 3 - nutné pro Block Update (aby se tekutina později rozlila)
+							level.setBlock(currentPos,fluid,3);
 					}
 				}
 			}
 		}
-		// 2. GENERACE STOŽÁRU (Gejzíru)
-		// Vyjdeme cca 2 bloky pod horním okrajem vytvořené koule a stoupáme rovnou čarou nahoru.
+		// GENERACE STOŽÁRU
 		BlockPos pillarStart=origin.above(polomerKouleRopy-2);
 		int surfaceY=level.getHeight(Heightmap.Types.WORLD_SURFACE_WG,origin.getX(),origin.getZ());
 		int maxHeight=surfaceY+vyskaGejziruNadZemi;
 		for(int y=pillarStart.getY();y<=maxHeight;y++){
-			// Gejzír je vygenerován jako 1x1 tenký pramen.
+			// Gejzír
 			BlockPos currentPillarPos=new BlockPos(origin.getX(),y,origin.getZ());
 			int chunkX=currentPillarPos.getX()>>4;
 			int chunkZ=currentPillarPos.getZ()>>4;
 			if(Math.abs(chunkX-centerChunkX)<=1&&Math.abs(chunkZ-centerChunkZ)<=1){
-				// Přepsání bloku čistou ropou (nahradí block i vzduch nad urovní země)
 				level.setBlock(currentPillarPos,fluid,3);
-				// === KLÍČOVÉ PRO ROZLITÍ ===
-				// Pomocí scheduleTicking ihned po vygenerování donutíme ropu spustit svoje fyzikální chování (tok dolů po stranách).
+				// KLÍČOVÉ PRO ROZLITÍ
 				if(!fluid.getFluidState().isEmpty())
 					level.scheduleTick(currentPillarPos,fluid.getFluidState().getType(),0);
 			}

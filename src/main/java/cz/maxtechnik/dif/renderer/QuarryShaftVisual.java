@@ -13,9 +13,7 @@ import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import net.minecraft.core.Direction;
 
 import java.util.function.Consumer;
-/**
- * Custom visual pro Quarry - renderuje jen dolní půlku hřídele a čte světlo ze spodního bloku.
- */
+
 public class QuarryShaftVisual extends KineticBlockEntityVisual<QuarryBlockEntity> implements SimpleTickableVisual{
 	protected final RotatingInstance rotatingModel;
 	public QuarryShaftVisual(VisualizationContext context,QuarryBlockEntity blockEntity,float partialTick){
@@ -41,7 +39,6 @@ public class QuarryShaftVisual extends KineticBlockEntityVisual<QuarryBlockEntit
 	}
 	@Override
 	public void updateLight(float partialTick){
-		// Čteme světlo z bloku pod Quarry, protože Quarry samotná je neprůhledná a má světlo 0
 		relight(pos.below(),rotatingModel);
 	}
 	@Override

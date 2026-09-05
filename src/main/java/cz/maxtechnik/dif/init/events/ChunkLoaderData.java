@@ -31,7 +31,7 @@ public class ChunkLoaderData extends SavedData {
 		return level.getServer().overworld().getDataStorage().computeIfAbsent(FACTORY, "dif_loaders");
 	}
 
-	// --- Records ---
+	// Records
 
 	public void updateRecord(BlockPos pos, UUID uuid, String name, boolean active, int radius, ResourceLocation dimension) {
 		loaders.removeIf(r -> r.pos.equals(pos) && r.dimension.equals(dimension));
@@ -44,7 +44,7 @@ public class ChunkLoaderData extends SavedData {
 		return loaders.stream().filter(r -> r.dimension.equals(dimId)).toList();
 	}
 
-	// --- NBT ---
+	// NBT
 
 	public static ChunkLoaderData load(CompoundTag tag, HolderLookup.Provider registries) {
 		ChunkLoaderData data = new ChunkLoaderData();

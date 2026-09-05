@@ -19,22 +19,16 @@ public class ChunkLoaderRenderer implements BlockEntityRenderer<ChunkLoaderBlock
 	@Override
 	public void render(ChunkLoaderBlockEntity be,float partialTicks,@NotNull PoseStack poseStack,@NotNull MultiBufferSource buffer,int combinedLight,int combinedOverlay){
 		BlockState state=be.getBlockState();
-		// Vykreslíme glint pouze pokud je blok zapnutý (LIT = true)
 		if(state.hasProperty(ChunkLoader.LIT)&&state.getValue(ChunkLoader.LIT)){
 			BlockRenderDispatcher dispatcher=Minecraft.getInstance().getBlockRenderer();
 			BakedModel model=dispatcher.getBlockModel(state);
-			// TADY JE TO KOUZLO:
-			// Získáme speciální buffer pro "Glint" (ten fialový svit)
-			// Použijeme buď glint() nebo armorGlint() pro jinou intenzitu
 			VertexConsumer glintBuffer=buffer.getBuffer(RenderType.glint());
-			// Vykreslíme model znovu přes tento buffer
-			// Tím se na stávající blok "přilepí" ta animovaná fialová vrstva
 			dispatcher.getModelRenderer().renderModel(
 					poseStack.last(),
 					glintBuffer,
 					state,
 					model,
-					1.0F,1.0F,1.0F, // Barva (RGB)
+					1.0F,1.0F,1.0F,
 					combinedLight,
 					combinedOverlay,
 					ModelData.EMPTY,

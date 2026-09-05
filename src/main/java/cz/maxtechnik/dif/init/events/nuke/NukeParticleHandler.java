@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.entity.bomb;
+package cz.maxtechnik.dif.init.events.nuke;
 
 import cz.maxtechnik.dif.init.other.DifModParticles;
 import net.minecraft.core.particles.ParticleOptions;
@@ -16,59 +16,47 @@ public class NukeParticleHandler {
 	private static final double MAX_HEAD_HEIGHT = 39.0;
 	private static final double ASCENT_DURATION = 240.0;
 
-	// HLAVNÍ SMYČKA A ŘÍZENÍ FÁZÍ (TICK)
 
 	public static void tick(ServerLevel level, double bx, double by, double bz, int age, RandomSource random) {
-		// Po odeznění aktivního generování oblaku
 		if (age > 480) return;
 
-		// Optimalizace serveru: pokud v dosahu 512 bloků není žádný hráč, částice se vůbec nepočítají
 		double maxDistSq = SEND_RADIUS * SEND_RADIUS;
 		List<ServerPlayer> nearbyPlayers = level.getPlayers(p -> p.distanceToSqr(bx, by, bz) < maxDistSq);
 		if (nearbyPlayers.isEmpty()) return;
 
-		// 1. Počáteční detonační záblesk a prudký rozlet částic
 		if (age <= 12) {
 			spawnDetonationBurst(nearbyPlayers, bx, by, bz, age, random);
 		}
 
-		// 2. Trajektorie stoupající žhavé koule
 		double tNorm = Math.min(1.0, (double) age / ASCENT_DURATION);
 		double easeOut = 1.0 - Math.pow(1.0 - tNorm, 2.4);
 
 		double headY = by + 2.0 + easeOut * (MAX_HEAD_HEIGHT - 2.0);
 		double headRadius = 4.5 + easeOut * 13.5;
 
-		// 3. Stoupající koule a objemový oblak hřibu
 		spawnMushroomHead(nearbyPlayers, bx, bz, headY, headRadius, easeOut, age, random);
 
-		// 4. Souvislá kouřová noha a světlejší límec pod koulí
 		if (age >= 4) {
 			spawnStem(nearbyPlayers, bx, by, bz, headY, easeOut, age, random);
 			spawnCollar(nearbyPlayers, bx, by, bz, headY, headRadius, age, random);
 		}
 
-		// 5. Wilsonův kondenzační prstenec
 		if (age >= 25 && age <= 90) {
 			spawnCondensationRing(nearbyPlayers, bx, by + 18.0, bz, age, random);
 		}
 	}
 
-	// 1. DETONAČNÍ ZÁBLESK A VYTRYSKOVÉ ČÁSTICE
+	// ZÁBLESK
 
 	private static void spawnDetonationBurst(List<ServerPlayer> players, double bx, double by, double bz, int age, RandomSource random) {
 		if (age == 0) {
-			// Centrální oslepující záblesk a výbuch
 			sendVanilla(players, ParticleTypes.FLASH, bx, by + 2.0, bz, 1, 0, 0, 0, 0);
 			sendVanilla(players, ParticleTypes.EXPLOSION_EMITTER, bx, by + 2.0, bz, 2, 1.0, 1.0, 1.0, 0);
-
-			// Radiální výtrysky lávy, plamenů, Čerenkovova ionizačního záření a jisker
 			spawnRadialBurst(players, ParticleTypes.LAVA, bx, by + 1.5, bz, 40, 0.0, Math.PI * 0.44, 1.2, 1.8, 0.25, random);
 			spawnRadialBurst(players, ParticleTypes.FLAME, bx, by + 2.0, bz, 45, -0.2 * Math.PI * 0.45, Math.PI * 0.45, 1.0, 2.2, 0.20, random);
 			spawnRadialBurst(players, ParticleTypes.SOUL_FIRE_FLAME, bx, by + 2.0, bz, 40, -0.1 * Math.PI * 0.45, Math.PI * 0.45, 1.3, 1.8, 0.30, random);
 			spawnRadialBurst(players, ParticleTypes.ELECTRIC_SPARK, bx, by + 2.0, bz, 25, 0.0, Math.PI * 0.50, 0.8, 1.5, 0.20, random);
 
-			// Počáteční obří žhnoucí oblak v epicentru
 			float epicSmokeColor = packColor(1.0F, 0.96F, 0.22F);
 			for (int i = 0; i < 10; i++) {
 				double ox = (random.nextDouble() - 0.5) * 4.5;
@@ -107,31 +95,26 @@ public class NukeParticleHandler {
 		}
 	}
 
-	// 2. STOUPAJÍCÍ ŽHAVÁ KOULE A OBLAK HŘIBU
+	// STOUPAJÍCÍ ŽHAVÁ KOULE A OBLAK HŘIBU
 
 	private static void spawnMushroomHead(List<ServerPlayer> players, double bx, double bz, double headY, double headRadius, double easeOut, int age, RandomSource random) {
-		// Výpočet barvy dle fáze vzestupu
 		float rCol, gCol, bCol;
 		if (easeOut < 0.22) {
-			// Fáze 1: Zářivá nukleární žlutá (při zemi a raný vzestup)
 			float t = (float) (easeOut / 0.22);
 			rCol = 1.0F;
 			gCol = Mth.lerp(t, 0.96F, 0.82F);
 			bCol = Mth.lerp(t, 0.18F, 0.05F);
 		} else if (easeOut < 0.52) {
-			// Fáze 2: Žhavá oranžová (střední vzestup)
 			float t = (float) ((easeOut - 0.22) / 0.30);
 			rCol = 1.0F;
 			gCol = Mth.lerp(t, 0.82F, 0.38F);
 			bCol = Mth.lerp(t, 0.05F, 0.02F);
 		} else if (easeOut < 0.80) {
-			// Fáze 3: Temně rudá až ohnivá (horní fáze vzestupu)
 			float t = (float) ((easeOut - 0.52) / 0.28);
 			rCol = Mth.lerp(t, 1.0F, 0.78F);
 			gCol = Mth.lerp(t, 0.38F, 0.10F);
 			bCol = 0.02F;
 		} else {
-			// Fáze 4: Popelavě tmavě šedý kouř (vrchol hřibu)
 			float t = (float) Math.min(1.0, (easeOut - 0.80) / 0.20);
 			rCol = Mth.lerp(t, 0.78F, 0.22F);
 			gCol = Mth.lerp(t, 0.10F, 0.22F);
@@ -139,8 +122,6 @@ public class NukeParticleHandler {
 		}
 
 		float packedColor = packColor(rCol, gCol, bCol);
-
-		// Adaptivní počet částic: plná hustota během vzestupu, pozvolné ředění v pozdní fázi
 		int count;
 		if (age < 240) {
 			count = 3;
@@ -151,7 +132,6 @@ public class NukeParticleHandler {
 		}
 
 		float pSize = (float) (4.6 + easeOut * 2.2);
-		// Pozvolné zkracování životnosti v pozdní fázi pro přirozené rozptýlení kouře
 		int lifetime = (age <= 260) ? 240 : Math.max(130, 240 - (age - 260));
 
 		for (int i = 0; i < count; i++) {
@@ -159,23 +139,14 @@ public class NukeParticleHandler {
 			double theta = random.nextDouble() * Math.PI * 2.0;
 
 			if (easeOut < 0.55) {
-				// Vzestup: kompaktní stoupající plná žhavá koule
-				double u = Math.cbrt(random.nextDouble());
+				double r = headRadius * Math.sqrt(random.nextDouble());
 				double phi = (random.nextDouble() - 0.5) * Math.PI;
-				double r = headRadius * u;
-
-				px = bx + Math.cos(theta) * Math.cos(phi) * r;
+				px = bx + Math.cos(theta) * r;
 				py = headY + Math.sin(phi) * r * 0.85;
-				pz = bz + Math.sin(theta) * Math.cos(phi) * r;
+				pz = bz + Math.sin(theta) * r;
 			} else {
-				double r, yOff;
-				if (random.nextBoolean()) {
-					r = headRadius * 0.55 * Math.sqrt(random.nextDouble());
-					yOff = (random.nextDouble() - 0.4) * (headRadius * 0.45);
-				} else {
-					r = headRadius * (0.45 + 0.55 * Math.sqrt(random.nextDouble()));
-					yOff = (random.nextDouble() - 0.5) * (headRadius * 0.40);
-				}
+				double r = headRadius * (0.3 + 0.7 * Math.sqrt(random.nextDouble()));
+				double yOff = (random.nextDouble() - 0.5) * (headRadius * 0.45);
 				px = bx + Math.cos(theta) * r;
 				py = headY + yOff;
 				pz = bz + Math.sin(theta) * r;
@@ -184,7 +155,6 @@ public class NukeParticleHandler {
 			spawnSmoke(players, px, py, pz, packedColor, pSize, lifetime);
 		}
 
-		// Ionizační tyrkysové jiskry vířící kolem koule během žhavé fáze
 		if (age >= 4 && age <= 160 && age % 2 == 0) {
 			double angle = random.nextDouble() * Math.PI * 2.0;
 			double r = headRadius * (0.80 + random.nextDouble() * 0.35);
@@ -196,7 +166,7 @@ public class NukeParticleHandler {
 		}
 	}
 
-	// 3. ZBYTEK HŘIBU
+	// ZBYTEK HŘIBU
 
 	private static void spawnStem(List<ServerPlayer> players, double bx, double by, double bz, double headY, double easeOut, int age, RandomSource random) {
 		double stemBottomY = by - easeOut * 17.0;
@@ -207,7 +177,6 @@ public class NukeParticleHandler {
 		float baseSmokeColor = packColor(0.17F, 0.17F, 0.17F);
 		float glowSmokeColor = packColor(0.75F, 0.45F, 0.15F);
 
-		// Během vzestupu 5 částic/tick pro rychlé vytvoření sloupu, po ustavení 3 částice/tick
 		int stemParticles = (age < 140) ? 5 : ((age % 2 == 0) ? 3 : 2);
 		int lifetime = (age <= 260) ? 240 : Math.max(130, 240 - (age - 260));
 
@@ -215,20 +184,9 @@ public class NukeParticleHandler {
 			double frac = random.nextDouble();
 			double stemY = stemBottomY + frac * stemHeight;
 
-			// Profil nohy
-			double stemR;
-			if (frac < 0.22) {
-				double normH = frac / 0.22;
-				stemR = 3.0 + 2.4 * (1.0 - normH) * (1.0 - normH);
-			} else if (frac > 0.78) {
-				double normH = (frac - 0.78) / 0.22;
-				stemR = 3.0 + 0.8 * normH;
-			} else {
-				stemR = 3.0;
-			}
-
+			double stemR = (frac < 0.25) ? 3.0 + 2.0 * (1.0 - frac / 0.25) : 3.0;
 			double angle = random.nextDouble() * Math.PI * 2.0;
-			double dist = stemR * Math.sqrt(0.15 + 0.85 * random.nextDouble());
+			double dist = stemR * (0.3 + 0.7 * random.nextDouble());
 
 			float color = (age < 140 && frac > 0.85) ? glowSmokeColor : baseSmokeColor;
 			float pSize = (float) (4.8 + random.nextDouble() * 1.2);
@@ -236,7 +194,6 @@ public class NukeParticleHandler {
 			spawnSmoke(players, bx + Math.cos(angle) * dist, stemY, bz + Math.sin(angle) * dist, color, pSize, lifetime);
 		}
 
-		// Přídavné sání prachu přímo na dně kráteru
 		if (easeOut > 0.10 && age % 2 == 0) {
 			float craterDustColor = packColor(0.15F, 0.15F, 0.15F);
 			for (int j = 0; j < 2; j++) {
@@ -254,42 +211,28 @@ public class NukeParticleHandler {
 		double collarHeight = yTop - yBottom;
 		if (collarHeight < 2.0) return;
 
-		// Adaptivní počet: 4 během vzestupu, 2 po ustavení oblaku
 		int collarCount = (age < 200) ? 4 : 2;
 		int lifetime = (age <= 260) ? 240 : Math.max(130, 240 - (age - 260));
 		double minCollarR = 3.2;
 		double maxCollarR = Math.min(13.2, headRadius * 0.72);
 
 		boolean earlyGlow = (age < 130);
-		float darkAgeFrac = (float) Math.clamp((age - 190.0) / 150.0, 0.0, 1.0);
-		float lightR = 0.62F * (1.0F - darkAgeFrac * 0.42F);
-		float lightG = 0.65F * (1.0F - darkAgeFrac * 0.42F);
-		float lightB = 0.70F * (1.0F - darkAgeFrac * 0.42F);
-
 		for (int i = 0; i < collarCount; i++) {
 			double h = random.nextDouble();
 			double cy = yBottom + h * collarHeight + (random.nextDouble() - 0.5) * 1.4;
-
-			double maxRAtH = minCollarR + (maxCollarR - minCollarR) * Math.pow(h, 1.35);
-			double cr = maxRAtH * Math.sqrt(0.15 + 0.85 * random.nextDouble());
+			double maxRAtH = minCollarR + (maxCollarR - minCollarR) * h;
+			double cr = maxRAtH * (0.3 + 0.7 * random.nextDouble());
 			double angle = random.nextDouble() * Math.PI * 2.0;
 
-			float colR, colG, colB;
-			if (earlyGlow) {
-				colR = 0.84F; colG = 0.58F; colB = 0.20F;
-			} else {
-				float blend = Math.min((float) Math.clamp(h / 0.25, 0.0, 1.0), (float) Math.clamp((1.0 - h) / 0.20, 0.0, 1.0));
-				colR = Mth.lerp(blend, 0.20F, lightR);
-				colG = Mth.lerp(blend, 0.20F, lightG);
-				colB = Mth.lerp(blend, 0.20F, lightB);
-			}
-
+			float colR = earlyGlow ? 0.84F : 0.50F;
+			float colG = earlyGlow ? 0.58F : 0.50F;
+			float colB = earlyGlow ? 0.20F : 0.52F;
 			float pSize = (float) (4.8 + h * 1.8 + random.nextDouble() * 0.6);
 			spawnSmoke(players, bx + Math.cos(angle) * cr, cy, bz + Math.sin(angle) * cr, colR, colG, colB, pSize, lifetime);
 		}
 	}
 
-	// 4. WILSONŮV KONDENZAČNÍ PRSTENEC
+	// PRSTENEC
 
 	private static void spawnCondensationRing(List<ServerPlayer> players, double bx, double ringY, double bz, int age, RandomSource random) {
 		double progress = (double) (age - 25) / 65.0;
@@ -310,7 +253,7 @@ public class NukeParticleHandler {
 		}
 	}
 
-	// 5. SÍŤOVÁ VRSTVA A ZASÍLÁNÍ PAKETŮ HRÁČŮM
+	// SÍŤOVÁ VRSTVA
 
 	public static float packColor(float r, float g, float b) {
 		int ir = Math.clamp((int) (r * 255.0F), 0, 255);

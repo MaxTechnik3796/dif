@@ -39,28 +39,22 @@ public class AddMeatLootModifier extends LootModifier {
 	protected @NotNull ObjectArrayList<ItemStack> doApply(@NotNull ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
 		Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
 
-		// 1. POJISTKA: Hříbata (miminka) zvířat v Minecraftu maso nedropují
 		if (entity instanceof AgeableMob ageable && ageable.isBaby()) {
 			return generatedLoot;
 		}
 
-		// 2. KONTROLA OHNĚ: Pokud entita uhořela, dropneme pečené maso
 		Item itemToDrop = this.rawItem;
 		if (entity != null && entity.isOnFire()) {
 			itemToDrop = this.cookedItem;
 		}
 
-		// 3. POČET: Vygenerujeme standardní množství 1 až 3 kusy (jako u krav/ovcí)
 		int count = context.getRandom().nextInt(3) + 1; // 1-3 ks
 
-		// 4. LOOTING BONUS (FIX PRO 1.21.1): Bezpečné načtení Lootingu z hlavní ruky útočníka
 		int lootingLevel = 0;
 		Entity attacker = context.getParamOrNull(LootContextParams.ATTACKING_ENTITY);
 		if (attacker instanceof LivingEntity livingAttacker) {
-			// Vytáhneme si lookup registr pro enchantmenty
 			var enchantmentRegistry = context.getLevel().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
 
-			// Tady je ta změna: místo getUsedItemHand se ptáme rovnou na hlavní ruku
 			lootingLevel = livingAttacker.getMainHandItem().getEnchantmentLevel(
 					enchantmentRegistry.getOrThrow(Enchantments.LOOTING)
 			);

@@ -32,8 +32,8 @@ public class ClientVisualEffectsRenderer{
 		double dist=Math.sqrt(player.distanceToSqr(x,y,z));
 		if(dist<320.0){
 			float factor=(float)Math.max(0.0,1.0-(dist/320.0));
-			nukeFlashIntensity=Math.min(1.0F,Math.max(nukeFlashIntensity,factor*intensity*1.5F));
-			nukeShakeIntensity=Math.min(1.0F,Math.max(nukeShakeIntensity,factor*intensity));
+			nukeFlashIntensity= Math.clamp(nukeFlashIntensity, factor * intensity * 1.5F, 1.0F);
+			nukeShakeIntensity= Math.clamp(nukeShakeIntensity, factor * intensity, 1.0F);
 		}
 	}
 	@SubscribeEvent

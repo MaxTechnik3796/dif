@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.entity.bomb;
+package cz.maxtechnik.dif.init.events.nuke;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -19,10 +19,10 @@ public class NukeRadiationHandler{
 		double ey=center.getY()+1.5;
 		double ez=center.getZ()+0.5;
 
-		// 1. Vanilla exploze pro poškození, odolnosti a štíty bez ničení bloků
+		// Vanilla exploze pro poškození
 		level.explode(null,ex,ey,ez,48.0F,Level.ExplosionInteraction.NONE);
 
-		// 2. Smrtící radiace a kinetický odhoz entit
+		// Radiace a odhoz entit
 		AABB area=new AABB(ex-RADIATION_RADIUS,ey-RADIATION_RADIUS,ez-RADIATION_RADIUS,
 				ex+RADIATION_RADIUS,ey+RADIATION_RADIUS,ez+RADIATION_RADIUS);
 

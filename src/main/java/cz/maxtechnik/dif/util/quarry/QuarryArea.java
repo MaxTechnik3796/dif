@@ -2,40 +2,23 @@ package cz.maxtechnik.dif.util.quarry;
 
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.Nullable;
-/**
- * Sdílená datová třída reprezentující obdélníkovou oblast quarry na ose X-Z.
- * Tuto třídu používají jak QuarryBlockEntity, tak QuarryLandmarkBlockEntity,
- * takže výpočty rozměrů jsou vždy na jednom místě.
- */
+
 public record QuarryArea(int minX,int maxX,int minZ,int maxZ){
-	/** Šířka oblasti (počet bloků na ose X). */
 	public int sizeX(){
 		return maxX-minX+1;
 	}
-	/** Hloubka oblasti (počet bloků na ose Z). */
 	public int sizeZ(){
 		return maxZ-minZ+1;
 	}
-	/**
-	 * Vrátí hranice těžební oblasti — o 1 blok menší ze každé strany
-	 * (kvůli vnějšímu rámu, který quarry tvoří).
-	 */
 	public QuarryArea miningBounds(){
 		return new QuarryArea(minX+1,maxX-1,minZ+1,maxZ-1);
 	}
-	// -------------------- NBT --------------------
-	/**
-	 * Uloží oblast do NBT tagu pod klíče "AMnX", "AMxX", "AMnZ", "AMxZ".
-	 */
 	public void save(CompoundTag tag){
 		tag.putInt("AMnX",minX);
 		tag.putInt("AMxX",maxX);
 		tag.putInt("AMnZ",minZ);
 		tag.putInt("AMxZ",maxZ);
 	}
-	/**
-	 * Načte oblast z NBT tagu. Vrátí null, pokud klíče neexistují.
-	 */
 	@Nullable
 	public static QuarryArea load(CompoundTag tag){
 		if(!tag.contains("AMnX")) return null;

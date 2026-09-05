@@ -18,17 +18,13 @@ public class GodTotemEventHandler{
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public static void onLivingIncomingDamage(LivingIncomingDamageEvent event){
 		if(event.getEntity() instanceof Player target&&isHoldingGodTotem(target)){
-			// Kontrola útočníka
 			if(event.getSource().getEntity() instanceof LivingEntity attacker){
 				var item=attacker.getMainHandItem();
-				// Pokud útočník drží Ban Hammer, imunita neplatí
 				if(item.is(DifModItems.BAN_HAMMER.get())) return;
-				// ODRAZ (Thorns) - pouze pokud útočník není sám cíl
 				if(attacker!=target){
 					attacker.hurt(target.damageSources().thorns(target),event.getAmount()*2.0F);
 				}
 			}
-			// TOTÁLNÍ IMUNITA (Zruší poškození)
 			event.setCanceled(true);
 		}
 	}

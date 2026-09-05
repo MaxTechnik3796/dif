@@ -1,10 +1,9 @@
-package cz.maxtechnik.dif.entity.bomb;
+package cz.maxtechnik.dif.init.events.nuke;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 
 public class NukeShockwaveHandler{
 	private static final double MAX_GROUND_RADIUS=85.0;
@@ -15,12 +14,12 @@ public class NukeShockwaveHandler{
 	}
 
 	public static void tick(ServerLevel level,double bx,double by,double bz,int age){
-		// 1. Dolní pozemní kružnice (letí do 85 bloků a ihned zmizí)
+		// Dolní pozemní kružnice
 		if(age<=75){
 			tickGroundWave(level,bx,by,bz,age);
 		}
 
-		// 2. Horní vzdušná kružnice (letí vysoko na obloze a po 155 blocích ihned zmizí)
+		// Horní vzdušná kružnice
 		if(age>=6&&age<=80){
 			tickAirWave(level,bx,by+34.0,bz,age);
 		}
@@ -52,24 +51,17 @@ public class NukeShockwaveHandler{
 			}
 		}
 
-		// Kinetické odhození entit přesně na čele kružnice
+		// Kinetické odhození entit
 		AABB waveBox=new AABB(bx-r-2.5,by-3.0,bz-r-2.5,bx+r+2.5,by+6.0,bz+r+2.5);
-		double rMinSq=(r-2.0)*(r-2.0);
-		double rMaxSq=(r+2.0)*(r+2.0);
-
 		for(LivingEntity entity: level.getEntitiesOfClass(LivingEntity.class,waveBox)){
 			if(entity.isSpectator()) continue;
 			double dx=entity.getX()-bx;
 			double dz=entity.getZ()-bz;
-			double dSq=dx*dx+dz*dz;
-			if(dSq>=rMinSq&&dSq<=rMaxSq){
-				double dist=Math.sqrt(dSq);
-				if(dist>0.01){
-					double pushFactor=Math.max(0.35,1.0-(dist/MAX_GROUND_RADIUS))*1.8;
-					Vec3 motion=new Vec3((dx/dist)*pushFactor,0.40,(dz/dist)*pushFactor);
-					entity.setDeltaMovement(entity.getDeltaMovement().add(motion));
-					entity.hurtMarked=true;
-				}
+			double dist=Math.sqrt(dx*dx+dz*dz);
+			if(Math.abs(dist-r)<=2.0&&dist>0.01){
+				double pushFactor=Math.max(0.35,1.0-(dist/MAX_GROUND_RADIUS))*1.8;
+				entity.setDeltaMovement(entity.getDeltaMovement().add((dx/dist)*pushFactor,0.40,(dz/dist)*pushFactor));
+				entity.hurtMarked=true;
 			}
 		}
 	}
@@ -86,7 +78,6 @@ public class NukeShockwaveHandler{
 			double rx=bx+Math.cos(angle)*airRadius;
 			double rz=bz+Math.sin(angle)*airRadius;
 
-			// Životnost 2 ticky: zobrazí se jako ostrá letící kružnice a nezanechává za sebou kouř
 			NukeParticleHandler.spawnSmoke(level,rx,airY,rz,0.85F,0.95F,1.0F,1.1F,2);
 
 			if(i%5==0){

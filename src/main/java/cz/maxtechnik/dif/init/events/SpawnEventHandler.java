@@ -25,7 +25,6 @@ public class SpawnEventHandler{
 		for(BlockPos torchPos: torches){
 			if(Math.abs(torchPos.getX()-spawnPos.getX())<=DifModServerConfig.MEGA_TORCH_RADIUS.get()&&
 					Math.abs(torchPos.getZ()-spawnPos.getZ())<=DifModServerConfig.MEGA_TORCH_RADIUS.get()){
-				// OPRAVA PRO NEOFORGE 1.21.1
 				event.setResult(MobSpawnEvent.PositionCheck.Result.FAIL);
 				return;
 			}

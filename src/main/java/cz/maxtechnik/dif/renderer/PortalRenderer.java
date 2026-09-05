@@ -34,7 +34,7 @@ public class PortalRenderer extends EntityRenderer<PortalEntity> {
 		Direction facing = entity.getFacing();
 		Direction up = entity.getUpDir();
 
-		// Rotace podle orientace portálu (stěna vs podlaha vs strop)
+		// Rotace podle orientace portálu
 		if (facing.getAxis() == Direction.Axis.Y) {
 			poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - up.toYRot()));
 			if (facing == Direction.UP) {
@@ -47,7 +47,6 @@ public class PortalRenderer extends EntityRenderer<PortalEntity> {
 			poseStack.mulPose(Axis.YP.rotationDegrees(-facing.toYRot()));
 		}
 
-		// Posun o 0.01 bloku podél normály pro eliminaci z-fightingu / problikávání
 		poseStack.translate(0.0F, 0.0F, 0.01F);
 
 		ResourceLocation texture = getTextureLocation(entity);

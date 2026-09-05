@@ -30,7 +30,7 @@ public class OrbitVoidTeleport{
 						entity.teleportTo(overworld,entity.getX(),500,entity.getZ(),new HashSet<>(),entity.getYRot(),entity.getXRot());
 						// Efekty
 						entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS,100,0,true,false));
-						entity.setRemainingFireTicks(200); // 10 sekund = 200 ticků
+						entity.setRemainingFireTicks(200);
 						if(entity instanceof ServerPlayer serverPlayer){
 							serverPlayer.displayClientMessage(Component.literal("§6You are falling back to Overworld!"),true);
 						}

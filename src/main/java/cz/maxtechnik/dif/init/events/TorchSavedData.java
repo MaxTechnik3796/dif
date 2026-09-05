@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 public class TorchSavedData extends SavedData{
 	private final Set<BlockPos> torches=ConcurrentHashMap.newKeySet();
-	// Factory definice pro NeoForge 1.21.1
 	private static final SavedData.Factory<TorchSavedData> FACTORY=new SavedData.Factory<>(
 			TorchSavedData::new,
 			TorchSavedData::load,
@@ -19,7 +18,7 @@ public class TorchSavedData extends SavedData{
 	);
 	public TorchSavedData(){
 	}
-	// Načtení z NBT - nyní vyžaduje HolderLookup.Provider
+	// Načtení z NBT
 	public static TorchSavedData load(CompoundTag tag,HolderLookup.Provider registries){
 		TorchSavedData data=new TorchSavedData();
 		long[] array=tag.getLongArray("Torches");
@@ -28,7 +27,7 @@ public class TorchSavedData extends SavedData{
 		}
 		return data;
 	}
-	// Uložení do NBT - nyní vyžaduje HolderLookup.Provider
+	// Uložení do NBT
 	@Override
 	public @NotNull CompoundTag save(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider registries){
 		long[] array=new long[torches.size()];
@@ -52,7 +51,7 @@ public class TorchSavedData extends SavedData{
 	}
 	// Získání nebo vytvoření dat pro daný ServerLevel
 	public static TorchSavedData get(ServerLevel level){
-		// level.getDataStorage() ukládá data pro každou dimenzi zvlášť
+		// ukládá data pro každou dimenzi zvlášť
 		return level.getDataStorage().computeIfAbsent(FACTORY,"dif_mega_torches");
 	}
 }

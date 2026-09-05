@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.entity.bomb;
+package cz.maxtechnik.dif.init.events.nuke;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -13,7 +13,6 @@ import net.minecraft.world.level.block.state.BlockState;
 public class NukeCraterHandler{
 	private static final int BLOCKS_PER_TICK=36_000;
 	private static final float MAX_DESTROYABLE_RESISTANCE=1500F;
-	// 2x větší exploze: Průměr kráteru cca 128 bloků (poloměr 64), zóna sežehnutí poloměr 100 bloků (průměr 200 bloků)
 	private static final double HOR_R_FULL=56.0, HOR_R_TOTAL=72.0;
 	private static final double UP_R_FULL=36.0, UP_R_TOTAL=48.0;
 	private static final double DOWN_R_FULL=20.0, DOWN_R_TOTAL=28.0;
@@ -98,13 +97,12 @@ public class NukeCraterHandler{
 			if(nTotal<=1.0){
 				double nFull=dxSq/HOR_FULL_SQ+dyEffSq/verFullSq+dzSq/HOR_FULL_SQ;
 				boolean destroy;
-				if(nFull<=1.0) destroy=true;
-				else{
-					double scaleSq=1.0/nTotal;
-					double maxNFull=(dxSq*scaleSq)/HOR_FULL_SQ+(dyEffSq*scaleSq)/verFullSq+(dzSq*scaleSq)/HOR_FULL_SQ;
-					double t=Math.clamp((nFull-1.0)/(maxNFull-1.0),0.0,1.0);
-					double chance=1.0-t*0.95;
-					destroy=chance>=1.0||random.nextDouble()<chance;
+				if(nFull<=1.0){
+					destroy=true;
+				}else{
+					double t=(nFull-1.0)/((HOR_TOTAL_SQ/HOR_FULL_SQ)-1.0);
+					double chance=Math.max(0.15,1.0-t*0.80);
+					destroy=random.nextDouble()<chance;
 				}
 				if(destroy){
 					destroyAt(level,cx+dx,cy+dy,cz+dz);
@@ -158,13 +156,12 @@ public class NukeCraterHandler{
 		BlockState state=level.getBlockState(mutablePos);
 		if(state.isAir()||isBlastResistant(state)) return;
 		if(state.isSolidRender(level,mutablePos)){
-			// Dno kráteru: kombinace deepslatu (2 typy) a blackstone (2 typy) s trochou magmy, žádný čedič ani obsidián
 			float roll=random.nextFloat();
 			BlockState melted = roll<0.38F ? Blocks.COBBLED_DEEPSLATE.defaultBlockState()
 					: roll<0.68F ? Blocks.DEEPSLATE.defaultBlockState()
 					: roll<0.84F ? Blocks.BLACKSTONE.defaultBlockState()
 					: roll<0.94F ? Blocks.POLISHED_BLACKSTONE.defaultBlockState()
-					: Blocks.MAGMA_BLOCK.defaultBlockState(); // pouze 6 % magma
+					: Blocks.MAGMA_BLOCK.defaultBlockState();
 			level.setBlock(mutablePos,melted,UPDATE_FLAGS);
 		}
 	}
@@ -175,13 +172,11 @@ public class NukeCraterHandler{
 		BlockState state=level.getBlockState(mutablePos);
 		if(state.isAir()) return;
 
-		// Voda v sežehnuté oblasti zmizí (vypaří se)
 		if(state.is(Blocks.WATER)||state.getFluidState().is(net.minecraft.tags.FluidTags.WATER)){
 			level.setBlock(mutablePos,AIR,UPDATE_FLAGS);
 			return;
 		}
 
-		// Vegetace, vodní rostliny, sníh, led a liány / bloky nahraditelné stromy se sežehnou a zmizí
 		if(state.is(BlockTags.REPLACEABLE_BY_TREES)||state.is(BlockTags.LEAVES)||state.is(BlockTags.FLOWERS)
 				||state.is(Blocks.SHORT_GRASS)||state.is(Blocks.TALL_GRASS)||state.is(Blocks.VINE)
 				||state.is(Blocks.SEAGRASS)||state.is(Blocks.TALL_SEAGRASS)||state.is(Blocks.KELP)||state.is(Blocks.KELP_PLANT)
@@ -190,14 +185,12 @@ public class NukeCraterHandler{
 			return;
 		}
 
-		// Stromy: Kmeny se promění na leštěný / obyčejný čedič (žádné bloky uhlí)
 		if(state.is(BlockTags.LOGS)){
 			BlockState charred=(random.nextFloat()<0.70F)?Blocks.POLISHED_BASALT.defaultBlockState():Blocks.BASALT.defaultBlockState();
 			level.setBlock(mutablePos,charred,UPDATE_FLAGS);
 			return;
 		}
 
-		// Písek, štěrk, jíl a tráva se sežehnou na hlínu a hrubou hlínu
 		if(state.is(Blocks.GRASS_BLOCK)||state.is(Blocks.SAND)||state.is(Blocks.RED_SAND)
 				||state.is(Blocks.GRAVEL)||state.is(Blocks.CLAY)){
 			float r=random.nextFloat();
@@ -212,14 +205,12 @@ public class NukeCraterHandler{
 			return;
 		}
 
-		// Příležitostné ohoření pevných kamenných povrchů na povrchu
 		if(state.is(Blocks.STONE)){
 			if(random.nextFloat()<0.10F){
 				level.setBlock(mutablePos,Blocks.COBBLESTONE.defaultBlockState(),UPDATE_FLAGS);
 			}
 		}
 
-		// Příležitostné zapálení pevných povrchů
 		if(random.nextFloat()<0.08F&&state.isSolidRender(level,mutablePos)){
 			mutablePos.set(x,y+1,z);
 			if(level.getBlockState(mutablePos).isAir()){

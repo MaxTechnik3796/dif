@@ -32,7 +32,7 @@ public class PortalGun extends Item{
 		super(new Properties().stacksTo(1));
 	}
 
-	// -------------------- NBT helpers --------------------
+	// NBT helpers
 
 	private boolean isBlueMode(ItemStack gun){
 		CustomData data=gun.get(DataComponents.CUSTOM_DATA);
@@ -59,7 +59,7 @@ public class PortalGun extends Item{
 		});
 	}
 
-	// -------------------- use() --------------------
+	// use
 
 	@Override
 	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world,Player player,@NotNull InteractionHand hand){
@@ -110,7 +110,7 @@ public class PortalGun extends Item{
 		return InteractionResultHolder.success(gun);
 	}
 
-	// -------------------- Placement --------------------
+	// Placement
 
 	private boolean firePortal(ServerLevel world,Player player,boolean isBlue){
 		Vec3 eye=player.getEyePosition();
@@ -128,7 +128,7 @@ public class PortalGun extends Item{
 			return false;
 		}
 
-		// Kontrola překryvu s cizími portály
+		// Kontrola překryvu s jinými portály
 		PortalEntity portal=new PortalEntity(world,player.getUUID(),isBlue,face,extDir,spawnPos);
 		List<PortalEntity> nearby=world.getEntitiesOfClass(PortalEntity.class,portal.getBoundingBox().inflate(0.05));
 		for(PortalEntity o: nearby){
@@ -145,12 +145,7 @@ public class PortalGun extends Item{
 		return true;
 	}
 
-	/**
-	 * Pixel-grid zarovnání portálu (1/16 bloku).
-	 * Zkouší pozice v pořadí: off-grid pixel snap → snap k horní hraně → snap k dolní hraně → střed.
-	 * Každou pozici validuje přes kompletní footprint (podpora + volný prostor).
-	 * Pokud žádná pozice nevyhovuje, vrací null.
-	 */
+
 	private Vec3 alignPortal(ServerLevel world,BlockPos hitPos,Direction face,Direction extDir,Vec3 hitLoc){
 		Vec3 center=Vec3.atCenterOf(hitPos);
 		Vec3 normal=Vec3.atLowerCornerOf(face.getNormal());
@@ -159,16 +154,14 @@ public class PortalGun extends Item{
 
 		double cU=center.dot(up);
 		double cR=center.dot(right);
-		double nVal=center.dot(normal)+0.5; // povrch stěny
+		double nVal=center.dot(normal)+0.5;
 
 		double hitU=hitLoc.dot(up);
 		double hitR=hitLoc.dot(right);
 
-		// Kandidáti pro výšku: off-grid snap, pak hrany bloku, pak střed
 		double offU=snapToGrid(Math.clamp(hitU,cU-0.5,cU+0.5));
 		double[] tryU={offU,cU+0.5,cU-0.5,cU};
 
-		// Kandidáti pro šířku: off-grid snap, pak střed
 		double offR=snapToGrid(Math.clamp(hitR,cR-0.5,cR+0.5));
 		double[] tryR={offR,cR};
 
@@ -181,9 +174,6 @@ public class PortalGun extends Item{
 		return null;
 	}
 
-	/**
-	 * Ověří kompletní footprint portálu: každý překrytý blok musí mít za sebou oporu a před sebou vzduch.
-	 */
 	private boolean isValidPortalPos(ServerLevel world,Vec3 pos,Direction upDir,Direction face){
 		Set<BlockPos> blocks=PortalEntity.getPortalFootprint(pos,upDir,face);
 		if(blocks.isEmpty()) return false;
@@ -199,7 +189,7 @@ public class PortalGun extends Item{
 		return Math.round(v*16.0)/16.0;
 	}
 
-	// -------------------- Durability bar --------------------
+	// Durability bar
 
 	@Override
 	public boolean isBarVisible(@NotNull ItemStack s){

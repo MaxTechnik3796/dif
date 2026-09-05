@@ -32,8 +32,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 @SuppressWarnings("removal")
 public abstract class Jetpack extends ArmorItem{
-	// Fallback kapacita nádrže v mB (skutečná hodnota se bere z configu)
-	public static final int CAPACITY=16000;
 	public static int getCapacity(){
 		return cz.maxtechnik.dif.config.DifModServerConfig.JETPACK_CAPACITY.get();
 	}
@@ -70,7 +68,7 @@ public abstract class Jetpack extends ArmorItem{
 				}
 			});
 		}
-		// === Palivo (Thrust) v mB ===
+		// Palivo (Thrust)
 		public static int getThrust(ItemStack stack){
 			CustomData data=stack.get(DataComponents.CUSTOM_DATA);
 			if(data==null||!data.copyTag().contains("Thrust")) return 0;
@@ -83,7 +81,7 @@ public abstract class Jetpack extends ArmorItem{
 		public static int getMax(){
 			return getCapacity();
 		}
-		// === Stav jetpacku: 0=let, 1=hover, 2=vypnuto ===
+		// Stav jetpacku: 0=let, 1=hover, 2=vypnuto
 		public static int getMode(ItemStack stack){
 			CustomData data=stack.get(DataComponents.CUSTOM_DATA);
 			if(data==null||!data.copyTag().contains("Mode")) return 0;
@@ -99,10 +97,7 @@ public abstract class Jetpack extends ArmorItem{
 		public static boolean isOff(ItemStack stack){
 			return getMode(stack)==2;
 		}
-		// === Fluid capability ===
-		// Registruje se v DifMod.registerCapabilities přes Capabilities.FluidHandler.ITEM.
-		// Spout (i jakýkoliv tank/stroj) tím pádem může jetpack plnit, fill() bere přesně
-		// tolik mB kolik chybí.
+		// Fluid capability
 		public static class FluidHandler implements IFluidHandlerItem{
 			private final ItemStack container;
 			public FluidHandler(ItemStack container){

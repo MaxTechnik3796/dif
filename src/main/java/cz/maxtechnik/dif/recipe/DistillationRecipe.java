@@ -19,11 +19,7 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-/**
- * Distillation recept: 1 vstupní fluid -> N výstupů (každý do svého tanku nad controllerem).
- * Index v outputs odpovídá pos.above(index+1): 0 -> tank těsně nad controllerem, 1 -> druhý, atd.
- * Maximum {@link #MAX_OUTPUTS} výstupů (= 15 tanků nad controllerem).
- */
+
 public record DistillationRecipe(
 		SizedFluidIngredient input,
 		List<FluidStack> outputs
@@ -43,13 +39,10 @@ public record DistillationRecipe(
 		if(list.size()>MAX_OUTPUTS) return DataResult.error(()->"outputs must not exceed "+MAX_OUTPUTS+" entries");
 		return DataResult.success(list);
 	}
-	/**
-	 * Kontrola, jestli fluid v tanku odpovídá ingredienci a má dostatečný amount.
-	 */
+
 	public boolean matches(FluidStack tankFluid){
 		return input.test(tankFluid)&&tankFluid.getAmount()>=input.amount();
 	}
-	// Vyžadované metody Recipe<RecipeInput> - my recept hledáme manuálně, takže prázdné
 	@Override
 	public boolean matches(@NotNull RecipeInput input,@NotNull Level level){
 		return false;

@@ -26,11 +26,11 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 	public QuarryRenderer(BlockEntityRendererProvider.Context context){
 		super(context);
 	}
-	// -------------------- Barvy --------------------
+	// Barvy
 	private static final int[] FRAME_COLOR={200,0,255,200};   // fialová
 	private static final int[] LANDMARK_COLOR={50,120,255,220}; // modrá
 	private static final int[] DRILL_COLOR={255,255,255,200}; // bílá
-	// -------------------- Quarry BER --------------------
+	// Quarry BER
 	@Override
 	protected void renderSafe(QuarryBlockEntity blockEntity,float partialTick,@NotNull PoseStack poseStack,@NotNull MultiBufferSource buf,int light,int overlay){
 		blockEntity.ensureAreaInitialized();
@@ -40,7 +40,7 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 		if(state==State.MINING&&level!=null&&blockEntity.isFrameIntact(level)) return;
 		if(state==State.NO_ENERGY&&level!=null&&blockEntity.isFrameIntact(level)) return;
 		BlockPos qPos=blockEntity.getBlockPos();
-		// Střed bloků (+0.5F)
+		// Střed bloku
 		float minX=blockEntity.getAreaMinX()-qPos.getX()+0.5F;
 		float maxX=blockEntity.getAreaMaxX()-qPos.getX()+0.5F;
 		float minZ=blockEntity.getAreaMinZ()-qPos.getZ()+0.5F;
@@ -74,7 +74,7 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 	public int getViewDistance(){
 		return Minecraft.getInstance().options.renderDistance().get()*16;
 	}
-	// -------------------- Landmark overlay (level event) --------------------
+	// Landmark overlay
 	private static final Map<BlockPos,QuarryLandmarkBlockEntity> FORMED_LANDMARKS=new ConcurrentHashMap<>();
 	public static void register(QuarryLandmarkBlockEntity lm){
 		if(lm.isFormed()||(lm.getBlockState().hasProperty(cz.maxtechnik.dif.block.QuarryLandmark.POWERED)&&lm.getBlockState().getValue(cz.maxtechnik.dif.block.QuarryLandmark.POWERED))){
@@ -86,9 +86,6 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 	public static void unregister(BlockPos pos){
 		FORMED_LANDMARKS.remove(pos);
 	}
-	public static void clearAll(){
-		FORMED_LANDMARKS.clear();
-	}
 	@SubscribeEvent
 	public static void onRenderLevel(RenderLevelStageEvent event){
 		if(event.getStage()!=RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) return;
@@ -96,7 +93,7 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 		Minecraft mc=Minecraft.getInstance();
 		if(mc.level==null) return;
 
-		// Odstranění landmarků z jiné dimenze, zničených bloků nebo neplatných levelů
+		// Odstranění landmarků z jiné dimenze
 		FORMED_LANDMARKS.values().removeIf(lm -> lm.isRemoved() || lm.getLevel() == null || lm.getLevel() != mc.level || !mc.level.getBlockState(lm.getBlockPos()).is(cz.maxtechnik.dif.init.basic.DifModBlocks.QUARRY_LANDMARK.get()));
 		if(FORMED_LANDMARKS.isEmpty()) return;
 
@@ -116,7 +113,7 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 				var area=lm.getFormedArea();
 				if(area==null||!renderedAreas.add(area)) continue;
 				float y=lm.getBlockPos().getY()+0.5F;
-				// Střed bloků (+0.5F)
+				// Střed bloku
 				float minX=area.minX()+0.5F, maxX=area.maxX()+0.5F;
 				float minZ=area.minZ()+0.5F, maxZ=area.maxZ()+0.5F;
 				wireRect(m,vc,minX,y,minZ,maxX,maxZ,LANDMARK_COLOR);
@@ -137,7 +134,7 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 		ps.popPose();
 		buf.endBatch(RenderType.lines());
 	}
-	// -------------------- Sdílené kreslicí utility --------------------
+	// Sdílené kreslicí utility
 	private static void wireRect(Matrix4f m,VertexConsumer vc,float minX,float y,float minZ,float maxX,float maxZ,int[] c){
 		wireLine(m,vc,minX,y,minZ,maxX,y,minZ,c);
 		wireLine(m,vc,maxX,y,minZ,maxX,y,maxZ,c);
