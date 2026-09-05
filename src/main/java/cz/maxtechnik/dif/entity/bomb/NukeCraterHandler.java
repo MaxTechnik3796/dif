@@ -11,16 +11,16 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class NukeCraterHandler{
-	private static final int BLOCKS_PER_TICK=12_000;
+	private static final int BLOCKS_PER_TICK=36_000;
 	private static final float MAX_DESTROYABLE_RESISTANCE=1500F;
-	// Průměr cca 64 bloků (poloměr 32)
-	private static final double HOR_R_FULL=24.0, HOR_R_TOTAL=32.0;
-	private static final double UP_R_FULL=20.0, UP_R_TOTAL=24.0;
-	private static final double DOWN_R_FULL=12.0, DOWN_R_TOTAL=16.0;
+	// 2x větší exploze: Průměr kráteru cca 128 bloků (poloměr 64), zóna sežehnutí poloměr 100 bloků (průměr 200 bloků)
+	private static final double HOR_R_FULL=48.0, HOR_R_TOTAL=64.0;
+	private static final double UP_R_FULL=32.0, UP_R_TOTAL=42.0;
+	private static final double DOWN_R_FULL=18.0, DOWN_R_TOTAL=24.0;
 	private static final double HOR_FULL_SQ=HOR_R_FULL*HOR_R_FULL, HOR_TOTAL_SQ=HOR_R_TOTAL*HOR_R_TOTAL;
 	private static final double UP_FULL_SQ=UP_R_FULL*UP_R_FULL, UP_TOTAL_SQ=UP_R_TOTAL*UP_R_TOTAL;
 	private static final double DN_FULL_SQ=DOWN_R_FULL*DOWN_R_FULL, DN_TOTAL_SQ=DOWN_R_TOTAL*DOWN_R_TOTAL;
-	private static final double SCORCH_RADIUS=48.0, SCORCH_RADIUS_SQ=SCORCH_RADIUS*SCORCH_RADIUS;
+	private static final double SCORCH_RADIUS=100.0, SCORCH_RADIUS_SQ=SCORCH_RADIUS*SCORCH_RADIUS;
 	private static final BlockState AIR=Blocks.AIR.defaultBlockState();
 
 	private int currentShell=0, maxShell=(int)Math.ceil(SCORCH_RADIUS), shellFace=0, shellU=0, shellV=0;
@@ -108,13 +108,13 @@ public class NukeCraterHandler{
 				}
 				if(destroy){
 					destroyAt(level,cx+dx,cy+dy,cz+dz);
-					if(dy<-6){
+					if(dy<-8){
 						mutateFloorAt(level,cx+dx,cy+dy-1,cz+dz,random);
 					}
 				}else{
 					thermalScorchAt(level,cx+dx,cy+dy,cz+dz,random);
 				}
-			}else if(dy>=-4&&dy<=12&&horizDistSq<=SCORCH_RADIUS_SQ){
+			}else if(dy>=-16&&dy<=28&&horizDistSq<=SCORCH_RADIUS_SQ){
 				thermalScorchAt(level,cx+dx,cy+dy,cz+dz,random);
 			}
 			processed++;
@@ -124,16 +124,17 @@ public class NukeCraterHandler{
 
 	private void spawnDebris(Level level,BlockPos center,RandomSource random){
 		if(!(level instanceof ServerLevel sl)) return;
-		for(int i=0;i<35;i++){
-			BlockState debrisState = (random.nextFloat()<0.35F) ? Blocks.MAGMA_BLOCK.defaultBlockState()
-					: (random.nextFloat()<0.45F) ? Blocks.COBBLESTONE.defaultBlockState()
+		for(int i=0;i<45;i++){
+			BlockState debrisState = (random.nextFloat()<0.40F) ? Blocks.BASALT.defaultBlockState()
+					: (random.nextFloat()<0.40F) ? Blocks.BLACKSTONE.defaultBlockState()
+					: (random.nextFloat()<0.50F) ? Blocks.COBBLESTONE.defaultBlockState()
 					: Blocks.DIRT.defaultBlockState();
-			FallingBlockEntity falling=FallingBlockEntity.fall(sl,center.above(2),debrisState);
+			FallingBlockEntity falling=FallingBlockEntity.fall(sl,center.above(3),debrisState);
 			falling.time=1;
 			falling.dropItem=false;
 			double angle=random.nextDouble()*Math.PI*2.0;
-			double speed=0.4+random.nextDouble()*0.7;
-			double vy=0.55+random.nextDouble()*0.65;
+			double speed=0.5+random.nextDouble()*0.9;
+			double vy=0.65+random.nextDouble()*0.80;
 			falling.setDeltaMovement(Math.cos(angle)*speed,vy,Math.sin(angle)*speed);
 		}
 	}
@@ -154,14 +155,12 @@ public class NukeCraterHandler{
 		if(state.isAir()||state.getBlock().getExplosionResistance()>MAX_DESTROYABLE_RESISTANCE) return;
 		if(state.isSolid()){
 			float roll=random.nextFloat();
-			BlockState melted = roll<0.35F ? Blocks.MAGMA_BLOCK.defaultBlockState()
-					: roll<0.55F ? Blocks.BASALT.defaultBlockState()
-					: roll<0.70F ? Blocks.OBSIDIAN.defaultBlockState()
-					: roll<0.80F ? Blocks.CRYING_OBSIDIAN.defaultBlockState()
-					: null;
-			if(melted!=null){
-				level.setBlock(mutablePos,melted,2|16|64);
-			}
+			BlockState melted = roll<0.36F ? Blocks.BASALT.defaultBlockState()
+					: roll<0.68F ? Blocks.BLACKSTONE.defaultBlockState()
+					: roll<0.85F ? Blocks.SMOOTH_BASALT.defaultBlockState()
+					: roll<0.94F ? Blocks.POLISHED_BLACKSTONE.defaultBlockState()
+					: Blocks.MAGMA_BLOCK.defaultBlockState(); // pouze 6 % magma, žádný obsidian/crying
+			level.setBlock(mutablePos,melted,2|16|64);
 		}
 	}
 
@@ -171,28 +170,41 @@ public class NukeCraterHandler{
 		BlockState state=level.getBlockState(mutablePos);
 		if(state.isAir()) return;
 
-		if(state.is(BlockTags.LEAVES)||state.is(BlockTags.FLOWERS)||state.is(Blocks.SHORT_GRASS)||state.is(Blocks.TALL_GRASS)){
+		// Voda v sežehnuté oblasti zmizí (vypaří se)
+		if(state.is(Blocks.WATER)||state.getFluidState().is(net.minecraft.tags.FluidTags.WATER)){
 			level.setBlock(mutablePos,AIR,2|16|64);
 			return;
 		}
+
+		// Vegetace, vodní rostliny a sníh se sežehnou a zmizí
+		if(state.is(BlockTags.LEAVES)||state.is(BlockTags.FLOWERS)||state.is(Blocks.SHORT_GRASS)||state.is(Blocks.TALL_GRASS)
+				||state.is(Blocks.SEAGRASS)||state.is(Blocks.TALL_SEAGRASS)||state.is(Blocks.KELP)||state.is(Blocks.KELP_PLANT)
+				||state.is(Blocks.SNOW)||state.is(Blocks.SNOW_BLOCK)||state.is(Blocks.ICE)){
+			level.setBlock(mutablePos,AIR,2|16|64);
+			return;
+		}
+
+		// Stromy: Kmeny se promění na leštěný / obyčejný čedič (žádné bloky uhlí)
 		if(state.is(BlockTags.LOGS)){
-			BlockState charred=(random.nextFloat()<0.7F)?Blocks.COAL_BLOCK.defaultBlockState():Blocks.BASALT.defaultBlockState();
+			BlockState charred=(random.nextFloat()<0.75F)?Blocks.POLISHED_BASALT.defaultBlockState():Blocks.BASALT.defaultBlockState();
 			level.setBlock(mutablePos,charred,2|16|64);
 			return;
 		}
-		if(state.is(Blocks.SAND)||state.is(Blocks.RED_SAND)){
-			level.setBlock(mutablePos,Blocks.GLASS.defaultBlockState(),2|16|64);
-			return;
-		}
+
+		// Písek se NEMĚNÍ na sklo (ponechán tak jak je)
+
+		// Tráva se promění na hlínu / hrubou hlínu s možností ohně
 		if(state.is(Blocks.GRASS_BLOCK)){
-			BlockState dirt=(random.nextFloat()<0.6F)?Blocks.COARSE_DIRT.defaultBlockState():Blocks.DIRT.defaultBlockState();
+			BlockState dirt=(random.nextFloat()<0.65F)?Blocks.COARSE_DIRT.defaultBlockState():Blocks.DIRT.defaultBlockState();
 			level.setBlock(mutablePos,dirt,2|16|64);
 			mutablePos.set(x,y+1,z);
-			if(level.getBlockState(mutablePos).isAir()&&random.nextFloat()<0.15F){
+			if(level.getBlockState(mutablePos).isAir()&&random.nextFloat()<0.18F){
 				level.setBlock(mutablePos,Blocks.FIRE.defaultBlockState(),2|16|64);
 			}
 			return;
 		}
+
+		// Příležitostné zapálení pevných povrchů
 		if(random.nextFloat()<0.08F&&state.isSolid()){
 			mutablePos.set(x,y+1,z);
 			if(level.getBlockState(mutablePos).isAir()){

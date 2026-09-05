@@ -10,7 +10,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class NukeRadiationHandler{
-	private static final double RADIATION_RADIUS=96.0;
+	private static final double RADIATION_RADIUS=180.0;
 
 	public static void apply(Level level,BlockPos center){
 		if(level.isClientSide) return;
@@ -20,7 +20,7 @@ public class NukeRadiationHandler{
 		double ez=center.getZ()+0.5;
 
 		// 1. Vanilla exploze pro poškození, odolnosti a štíty bez ničení bloků
-		level.explode(null,ex,ey,ez,32.0F,Level.ExplosionInteraction.NONE);
+		level.explode(null,ex,ey,ez,48.0F,Level.ExplosionInteraction.NONE);
 
 		// 2. Smrtící radiace a kinetický odhoz entit
 		AABB area=new AABB(ex-RADIATION_RADIUS,ey-RADIATION_RADIUS,ez-RADIATION_RADIUS,
@@ -32,7 +32,7 @@ public class NukeRadiationHandler{
 
 			double dist=Math.sqrt(entity.distanceToSqr(ex,ey,ez));
 			if(dist<=RADIATION_RADIUS){
-				if(dist<=36.0){
+				if(dist<=65.0){
 					entity.addEffect(new MobEffectInstance(MobEffects.WITHER,1200,1));
 					entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,400,2));
 					entity.addEffect(new MobEffectInstance(MobEffects.DARKNESS,200,0));

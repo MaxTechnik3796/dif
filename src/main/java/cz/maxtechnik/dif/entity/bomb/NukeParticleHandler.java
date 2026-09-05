@@ -328,10 +328,13 @@ public class NukeParticleHandler{
 				float tTop=(float)Math.clamp((1.0-h)/0.20,0.0,1.0);
 				float blend=Math.min(tBottom,tTop);
 
+				// Postupné ztmavování límce v pozdějším stádiu ("možná aby byl pak tmavší")
+				float darkAgeFrac=(float)Math.clamp((age-190.0)/150.0,0.0,1.0);
+				float collarLightR=0.62F*(1.0F-darkAgeFrac*0.42F); // z 0.62 na ~0.36
+				float collarLightG=0.65F*(1.0F-darkAgeFrac*0.42F); // z 0.65 na ~0.38
+				float collarLightB=0.70F*(1.0F-darkAgeFrac*0.42F); // z 0.70 na ~0.41
+
 				float baseDark=0.20F;
-				float collarLightR=0.62F;
-				float collarLightG=0.65F;
-				float collarLightB=0.70F;
 
 				cr_col=baseDark*(1.0F-blend)+collarLightR*blend;
 				cg_col=baseDark*(1.0F-blend)+collarLightG*blend;
