@@ -1,8 +1,0 @@
-{
-	"parent":"block/cube_all",
-	"textures":{
-		"all":"dif:block/space_scaffolding",
-		"particle":"dif:block/space_scaffolding"
-	},
-	"render_type":"cutout"
-}

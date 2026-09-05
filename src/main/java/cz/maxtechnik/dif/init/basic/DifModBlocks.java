@@ -7,7 +7,6 @@ import cz.maxtechnik.dif.block.barrel.BrassBarrel;
 import cz.maxtechnik.dif.block.barrel.CopperBarrel;
 import cz.maxtechnik.dif.block.rails.FastPoweredRailBlock;
 import cz.maxtechnik.dif.block.rails.FastRailBlock;
-import cz.maxtechnik.dif.block.space.*;
 import cz.maxtechnik.dif.block.template.*;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import net.minecraft.resources.ResourceLocation;
@@ -54,7 +53,6 @@ public class DifModBlocks{
 
 	//Fluids:
 	public static final BlockBehaviour.Properties FLUID_PROPERTIES=BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable();
-	public static final DeferredBlock<Block>FUEL_FLUID=REGISTRY.register("fuel_fluid",()->new LiquidBlock(DifModFluids.FUEL.get(),FLUID_PROPERTIES));
 	public static final DeferredBlock<Block>BEER_FLUID=REGISTRY.register("beer_fluid",()->new LiquidBlock(DifModFluids.BEER.get(),FLUID_PROPERTIES));
 	public static final DeferredBlock<Block>XP_FLUID=REGISTRY.register("xp_fluid",()->new LiquidBlock(DifModFluids.XP.get(),BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable().lightLevel(s->15)));
 	public static final DeferredBlock<Block>CRUDE_OIL_FLUID=REGISTRY.register("crude_oil_fluid",()->new LiquidBlock(DifModFluids.CRUDE_OIL.get(),FLUID_PROPERTIES));
@@ -131,32 +129,10 @@ public class DifModBlocks{
 
 	public static final DeferredBlock<Block> DISTILLATION_TANK=REGISTRY.register("distillation_tank", DistillationTank::new);
 
-	//Space:
-	public static final DeferredBlock<Block>AURORA_CASING=REGISTRY.register("aurora_casing",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(4F,4F).requiresCorrectToolForDrops()));
-	public static final DeferredBlock<Block>SPACESHIP=REGISTRY.register("spaceship",Spaceship::new);
-	public static final DeferredBlock<Block>SPACESHIP_GHOST_BLOCK=REGISTRY.register("spaceship_ghost_block",SpaceshipGhostBlock::new);
-	public static final DeferredBlock<Block>SPACE_ENGINE=REGISTRY.register("space_engine",SpaceEngine::new);
-
-
-	public static final DeferredBlock<Block>SPACE_SCAFFOLDING=REGISTRY.register("space_scaffolding",SpaceScaffolding::new);
-	public static final DeferredBlock<Block>SPACE_CASING=REGISTRY.register("space_casing",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(5F,6F).requiresCorrectToolForDrops()));
-	public static final DeferredBlock<Block>SPACE_CASING_REINFORCED=REGISTRY.register("space_casing_reinforced",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(5F,6F).requiresCorrectToolForDrops()));
-	public static final DeferredBlock<Block>SPACE_CASING_METAL=REGISTRY.register("space_casing_metal",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(5F,6F).requiresCorrectToolForDrops()));
-	public static final DeferredBlock<Block>SPACE_DOOR=REGISTRY.register("space_door",SpaceDoor::new);
-	public static final DeferredBlock<Block>SPACE_CORRIDOR=REGISTRY.register("space_corridor",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.GLASS).strength(5F,6F).requiresCorrectToolForDrops()));
-	public static final DeferredBlock<Block>SPACE_CRATE=REGISTRY.register("space_crate",()->new SpaceCrateBlock(BlockBehaviour.Properties.of().strength(5F,6F).sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops()));
-	public static final DeferredBlock<Block>SOLAR_PANEL_BLOCK=REGISTRY.register("solar_panel_block",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(5F,6F).requiresCorrectToolForDrops()));
-
-	public static final DeferredBlock<Block>MOON_STONE=REGISTRY.register("moon_stone",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(3F,4F).requiresCorrectToolForDrops()));
-	public static final DeferredBlock<Block>MARS_STONE=REGISTRY.register("mars_stone",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(3F,4F).requiresCorrectToolForDrops()));
-
 	//Tracks:
 	public static final DeferredBlock<Block>BROKEN_TRACK00=REGISTRY.register("broken_track00",BrokenTrack::new);
 	public static final DeferredBlock<Block>BROKEN_TRACK01=REGISTRY.register("broken_track01",BrokenTrack::new);
 	public static final DeferredBlock<Block>BROKEN_TRACK02=REGISTRY.register("broken_track02",BrokenTrack::new);
-
-	//Race:
-	public static final DeferredBlock<Block>LAP_TIMER=REGISTRY.register("lap_timer",()->new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.NETHERITE_BLOCK)));
 
 	//nuke
 	public static final DeferredBlock<Block> NUKE= REGISTRY.register("nuke",()->new Nuke(BlockBehaviour.Properties.of().strength(5F,1200F).sound(SoundType.METAL).noOcclusion()));

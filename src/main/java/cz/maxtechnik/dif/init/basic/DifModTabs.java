@@ -34,14 +34,20 @@ public class DifModTabs{
 		tabData.accept(SUPER_BOX);
 		if(ModList.get().isLoaded("farmersdelight")) tabData.accept(FRYING_TABLE);
 
-		tabData.accept(LAP_TIMER);
-
 		tabData.accept(MITHRIL);
 		tabData.accept(MITHRIL_PLATE);
 		tabData.accept(MITHRIL_TEMPLATE);
 		tabData.accept(BLUESTONE);
 		tabData.accept(BLUE_PLATE);
 		tabData.accept(NICKEL_SHEET);
+
+		tabData.accept(JETPACK);
+
+		tabData.accept(CARBON_SUIT_HELMET);
+		tabData.accept(CARBON_SUIT_CHESTPLATE);
+		tabData.accept(CARBON_SUIT_LEGGINGS);
+		tabData.accept(CARBON_SUIT_BOOTS);
+
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>INDUSTRIAL=REGISTER.register("industrial",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.industrials")).icon(()->new ItemStack(ENGINE_EXTENDER.get())).displayItems(((parameters,tabData)->{
 
@@ -79,40 +85,6 @@ public class DifModTabs{
 		tabData.accept(SOLAR_PANEL_02_W);
 		tabData.accept(SOLAR_PANEL_03_W);
 		tabData.accept(SOLAR_PANEL_04_W);
-
-	})).build());
-	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>SPACE=REGISTER.register("space",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.INDUSTRIAL.getKey()).title(Component.translatable("creative_tab.dif.space")).icon(()->new ItemStack(SPACESHIP.get())).displayItems(((parameters,tabData)->{
-		tabData.accept(SPACESHIP);
-		tabData.accept(SPACE_ENGINE);
-		tabData.accept(SPACE_SCAFFOLDING);
-
-		tabData.accept(ROCKET_FUEL);
-		tabData.accept(EMPTY_ROCKET_FUEL);
-
-		tabData.accept(AURORA_CASING);
-		tabData.accept(AURORA_INGOT);
-
-		tabData.accept(SPACE_CASING);
-		tabData.accept(SPACE_CASING_METAL);
-		tabData.accept(SPACE_CASING_REINFORCED);
-		tabData.accept(SPACE_DOOR);
-		tabData.accept(SPACE_CORRIDOR);
-		tabData.accept(SPACE_CRATE);
-		tabData.accept(SOLAR_PANEL_BLOCK);
-
-		tabData.accept(SPACE_SUIT_HELMET);
-		tabData.accept(SPACE_SUIT_CHESTPLATE);
-		tabData.accept(SPACE_SUIT_LEGGINGS);
-		tabData.accept(SPACE_SUIT_BOOTS);
-		tabData.accept(CARBON_SUIT_HELMET);
-		tabData.accept(CARBON_SUIT_CHESTPLATE);
-		tabData.accept(CARBON_SUIT_LEGGINGS);
-		tabData.accept(CARBON_SUIT_BOOTS);
-
-		tabData.accept(MOON_STONE);
-		tabData.accept(MARS_STONE);
-
-		tabData.accept(JETPACK);
 
 	})).build());
 
@@ -201,7 +173,6 @@ public class DifModTabs{
 			List<ItemStack> buckets = new java.util.ArrayList<>(java.util.Arrays.asList(
 					new ItemStack(BEER_BUCKET.get()),
 					new ItemStack(XP_BUCKET.get()),
-					new ItemStack(FUEL_BUCKET.get()),
 					new ItemStack(JETPACK_FUEL_BUCKET.get())
 			));
 			if(ModList.get().isLoaded("farmersdelight")) {

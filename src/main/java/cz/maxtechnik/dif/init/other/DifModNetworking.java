@@ -15,7 +15,6 @@ public class DifModNetworking{
 		// Server-bound packets (Client -> Server)
 		registrar.playToServer(JetpackFlyMessage.TYPE,JetpackFlyMessage.STREAM_CODEC,JetpackFlyMessage::handle);
 		registrar.playToServer(EnderOpenMessage.TYPE,EnderOpenMessage.STREAM_CODEC,EnderOpenMessage::handle);
-		registrar.playToServer(SpaceshipScreenButtonMessage.TYPE,SpaceshipScreenButtonMessage.STREAM_CODEC,SpaceshipScreenButtonMessage::handle);
 		registrar.playToClient(JetpackSyncMessage.TYPE,JetpackSyncMessage.STREAM_CODEC,JetpackSyncMessage::handle);
 		registrar.playToClient(NukeDetonationMessage.TYPE,NukeDetonationMessage.STREAM_CODEC,NukeDetonationMessage::handle);
 	}

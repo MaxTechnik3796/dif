@@ -8,7 +8,6 @@ import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.armor.CarbonSuit;
 import cz.maxtechnik.dif.item.armor.CopperArmor;
 import cz.maxtechnik.dif.item.armor.Jetpack;
-import cz.maxtechnik.dif.item.armor.SpaceSuit;
 import cz.maxtechnik.dif.item.food.Beer;
 import cz.maxtechnik.dif.item.food.MolotovuvKoktejl;
 import cz.maxtechnik.dif.item.food.RetvalFoods;
@@ -62,8 +61,6 @@ public class DifModItems{
 	public static final DeferredItem<Item>RED_SLEEPING_BAG=block(DifModBlocks.RED_SLEEPING_BAG,new Item.Properties().stacksTo(16));
 	public static final DeferredItem<Item>BLACK_SLEEPING_BAG=block(DifModBlocks.BLACK_SLEEPING_BAG,new Item.Properties().stacksTo(16));
 
-	public static final DeferredItem<Item>LAP_TIMER=block(DifModBlocks.LAP_TIMER);
-
 	public static final DeferredItem<Item>QUARRY=block(DifModBlocks.QUARRY);
 	public static final DeferredItem<Item>QUARRY_FRAME=block(DifModBlocks.QUARRY_FRAME);
 	public static final DeferredItem<Item>QUARRY_LANDMARK=block(DifModBlocks.QUARRY_LANDMARK);
@@ -95,7 +92,6 @@ public class DifModItems{
 	public static final Item.Properties BUCKET_PROPERTIES=new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1);
 	public static final DeferredItem<Item> BEER_BUCKET=REGISTRY.register("beer_bucket",()->new BucketItem(DifModFluids.BEER.get(),BUCKET_PROPERTIES));
 	public static final DeferredItem<Item> XP_BUCKET=REGISTRY.register("xp_bucket",()->new BucketItem(DifModFluids.XP.get(),BUCKET_PROPERTIES));
-	public static final DeferredItem<Item> FUEL_BUCKET=REGISTRY.register("fuel_bucket",()->new BucketItem(DifModFluids.FUEL.get(),BUCKET_PROPERTIES));
 	public static final DeferredItem<Item>CRUDE_OIL_BUCKET=REGISTRY.register("crude_oil_bucket",()->new BucketItem(DifModFluids.CRUDE_OIL.get(),BUCKET_PROPERTIES));
 	public static final DeferredItem<Item>JETPACK_FUEL_BUCKET=REGISTRY.register("jetpack_fuel_bucket",()->new BucketItem(DifModFluids.JETPACK_FUEL.get(),BUCKET_PROPERTIES));
 	public static final DeferredItem<Item>SUNFLOWER_OIL_BUCKET=REGISTRY.register("sunflower_oil_bucket",()->new BucketItem(DifModFluids.SUNFLOWER_OIL.get(),BUCKET_PROPERTIES));
@@ -248,38 +244,10 @@ public class DifModItems{
 	public static final DeferredItem<Item> COPPER_LEGGINGS=REGISTRY.register("copper_leggings",CopperArmor.Leggings::new);
 	public static final DeferredItem<Item> COPPER_BOOTS=REGISTRY.register("copper_boots",CopperArmor.Boots::new);
 
-	//Space:
-	public static final DeferredItem<Item> AURORA_CASING=block(DifModBlocks.AURORA_CASING);
-	public static final DeferredItem<Item> AURORA_INGOT=REGISTRY.register("aurora_ingot",()->new Item(new Item.Properties()));
-
-	public static final DeferredItem<Item> ROCKET_FUEL=REGISTRY.register("rocket_fuel",()->new Item(new Item.Properties().stacksTo(16)));
-	public static final DeferredItem<Item> EMPTY_ROCKET_FUEL=REGISTRY.register("empty_rocket_fuel",()->new Item(new Item.Properties().stacksTo(16)));
-
-	public static final DeferredItem<Item> SPACE_SUIT_HELMET=REGISTRY.register("space_suit_helmet",SpaceSuit.Helmet::new);
-	public static final DeferredItem<Item> SPACE_SUIT_CHESTPLATE=REGISTRY.register("space_suit_chestplate",SpaceSuit.Chestplate::new);
-	public static final DeferredItem<Item> SPACE_SUIT_LEGGINGS=REGISTRY.register("space_suit_leggings",SpaceSuit.Leggings::new);
-	public static final DeferredItem<Item> SPACE_SUIT_BOOTS=REGISTRY.register("space_suit_boots",SpaceSuit.Boots::new);
-
 	public static final DeferredItem<Item> CARBON_SUIT_HELMET=REGISTRY.register("carbon_suit_helmet",CarbonSuit.Helmet::new);
 	public static final DeferredItem<Item> CARBON_SUIT_CHESTPLATE=REGISTRY.register("carbon_suit_chestplate",CarbonSuit.Chestplate::new);
 	public static final DeferredItem<Item> CARBON_SUIT_LEGGINGS=REGISTRY.register("carbon_suit_leggings",CarbonSuit.Leggings::new);
 	public static final DeferredItem<Item> CARBON_SUIT_BOOTS=REGISTRY.register("carbon_suit_boots",CarbonSuit.Boots::new);
-
-	public static final DeferredItem<Item> SPACESHIP=block(DifModBlocks.SPACESHIP);
-	public static final DeferredItem<Item> SPACE_ENGINE=block(DifModBlocks.SPACE_ENGINE);
-	public static final DeferredItem<Item> SPACE_SCAFFOLDING=block(DifModBlocks.SPACE_SCAFFOLDING);
-
-	public static final DeferredItem<Item> SPACE_CASING=block(DifModBlocks.SPACE_CASING);
-	public static final DeferredItem<Item> SPACE_CASING_REINFORCED=block(DifModBlocks.SPACE_CASING_REINFORCED);
-	public static final DeferredItem<Item> SPACE_CASING_METAL=block(DifModBlocks.SPACE_CASING_METAL);
-
-	public static final DeferredItem<Item> SPACE_DOOR=doubleBlock(DifModBlocks.SPACE_DOOR);
-	public static final DeferredItem<Item> SPACE_CORRIDOR=block(DifModBlocks.SPACE_CORRIDOR);
-	public static final DeferredItem<Item> SPACE_CRATE=block(DifModBlocks.SPACE_CRATE);
-	public static final DeferredItem<Item> SOLAR_PANEL_BLOCK=block(DifModBlocks.SOLAR_PANEL_BLOCK);
-
-	public static final DeferredItem<Item> MOON_STONE=block(DifModBlocks.MOON_STONE);
-	public static final DeferredItem<Item> MARS_STONE=block(DifModBlocks.MARS_STONE);
 
 
 	public static final DeferredItem<Item>ZINC_CASING=block(DifModBlocks.ZINC_CASING);

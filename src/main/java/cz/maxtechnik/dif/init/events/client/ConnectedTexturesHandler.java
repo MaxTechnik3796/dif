@@ -20,7 +20,6 @@ public class ConnectedTexturesHandler{
 	@SubscribeEvent
 	public static void onModelBake(ModelEvent.ModifyBakingResult event){
 		register(event,DifModBlocks.ZINC_CASING,DifModSpriteShifts.ZINC_CASING);
-		register(event,DifModBlocks.AURORA_CASING,DifModSpriteShifts.AURORA_CASING);
 		ModelSwapper.swapModels(event.getModels(),ModelSwapper.getAllBlockStateModelLocations(DifModBlocks.DISTILLATION_TANK.get()),DistillationTankModel::standard);
 	}
 	private static void register(ModelEvent.ModifyBakingResult event,DeferredBlock<Block> block,CTSpriteShiftEntry shift){

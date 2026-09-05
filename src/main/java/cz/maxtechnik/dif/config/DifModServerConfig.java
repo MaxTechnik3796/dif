@@ -9,7 +9,6 @@ public class DifModServerConfig{
 	public static final double DOUBLE_MAX=1_000_000.0D;
 
 	// General
-	public static final ModConfigSpec.IntValue SPACE_SCAFFOLDING_LIFE_TIME;
 	public static final ModConfigSpec.IntValue MEGA_TORCH_RADIUS;
 	public static final ModConfigSpec.IntValue NANO_GLASS_MAX_SPREAD;
 	public static final ModConfigSpec.IntValue JETPACK_CAPACITY;
@@ -21,7 +20,6 @@ public class DifModServerConfig{
 	public static final ModConfigSpec.IntValue SOLAR_PANEL_02;
 	public static final ModConfigSpec.IntValue SOLAR_PANEL_03;
 	public static final ModConfigSpec.IntValue SOLAR_PANEL_04;
-	public static final ModConfigSpec.IntValue SOLAR_PANEL_ORBIT_MULTIPLIER;
 
 	// Burning Generator
 	public static final ModConfigSpec.IntValue BURNING_GENERATOR_ENERGY_PER_TICK;
@@ -66,7 +64,6 @@ public class DifModServerConfig{
 
 	static{
 		BUILDER.push("GeneralSettings");
-		SPACE_SCAFFOLDING_LIFE_TIME=BUILDER.defineInRange("space_scaffolding_life_time",300,1,MAX);
 		MEGA_TORCH_RADIUS=BUILDER.defineInRange("mega_torch_radius",128,32,8192);
 		NANO_GLASS_MAX_SPREAD=BUILDER.defineInRange("nano_glass_max_spread",128,1,MAX);
 		JETPACK_CAPACITY=BUILDER.defineInRange("jetpack_capacity",16000,1000,MAX);
@@ -79,7 +76,6 @@ public class DifModServerConfig{
 		SOLAR_PANEL_02=BUILDER.defineInRange("solar_panel_02",20,0,MAX);
 		SOLAR_PANEL_03=BUILDER.defineInRange("solar_panel_03",50,0,MAX);
 		SOLAR_PANEL_04=BUILDER.defineInRange("solar_panel_04",100,0,MAX);
-		SOLAR_PANEL_ORBIT_MULTIPLIER=BUILDER.defineInRange("solar_panel_orbit_multiplier",2,1,MAX);
 		BUILDER.pop();
 
 		BUILDER.push("BurningGenerator");

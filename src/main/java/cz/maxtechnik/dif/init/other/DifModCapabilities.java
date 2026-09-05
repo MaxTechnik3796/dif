@@ -32,8 +32,6 @@ public class DifModCapabilities{
 		event.registerBlockEntity(bITEM,SUPER_BOX.get(),(be,side)->be.getInventory());
 		event.registerBlockEntity(bITEM,OLD_CHEST.get(),(be,side)->be.getInventory());
 		event.registerBlockEntity(bITEM,BURNING_GENERATOR.get(),(be,side)->be.getInventory());
-		event.registerBlockEntity(bITEM,SPACE_CRATE.get(),(be,side)->be.getInventory());
-		event.registerBlockEntity(bITEM,SPACESHIP.get(),(be,side)->be.getInventory());
 	}
 	private static void registerFluidCapabilities(RegisterCapabilitiesEvent event){
 		event.registerItem(iFLUID,(stack,side)->new Jetpack.Chestplate.FluidHandler(stack),DifModItems.JETPACK.get());

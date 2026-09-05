@@ -51,21 +51,6 @@ public class DifModTiers{
             0.0F
     ));
 
-    public static final Holder<ArmorMaterial> ARMOR_MATERIAL_SPACE=Holder.direct(new ArmorMaterial(
-            Util.make(new EnumMap<>(ArmorItem.Type.class),map->{
-                map.put(ArmorItem.Type.HELMET,3);
-                map.put(ArmorItem.Type.CHESTPLATE,8);
-                map.put(ArmorItem.Type.LEGGINGS,6);
-                map.put(ArmorItem.Type.BOOTS,3);
-            }),
-            12,
-            SoundEvents.ARMOR_EQUIP_IRON,
-			Ingredient::of,
-            List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath("dif","spacesuit"))),
-            2.0F,
-            0.0F
-    ));
-
     public static final Holder<ArmorMaterial> ARMOR_MATERIAL_CARBON=Holder.direct(new ArmorMaterial(
             Util.make(new EnumMap<>(ArmorItem.Type.class),map->{
                 map.put(ArmorItem.Type.HELMET,4);

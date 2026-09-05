@@ -14,9 +14,7 @@ public class DifModScreens {
 	@SubscribeEvent
 	public static void registerScreens(RegisterMenuScreensEvent event) {
 		event.register(DifModMenus.SUPER_BOX.get(), SuperBoxScreen::new);
-		event.register(DifModMenus.SPACE_CRATE.get(), SpaceCrateScreen::new);
 		event.register(DifModMenus.GENERATOR.get(), BurningGeneratorScreen::new);
 		event.register(DifModMenus.OLD_CHEST.get(), OldChestScreen::new);
-		event.register(DifModMenus.SPACESHIP.get(), SpaceshipScreen::new);
 	}
 }

@@ -24,17 +24,13 @@ public class DifModBlockEntities{
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<OldChestBlockEntity>> OLD_CHEST=register("old_chest",DifModBlocks.OLD_CHEST,OldChestBlockEntity::new);
 
 
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<SpaceshipBlockEntity>> SPACESHIP=register("spaceship",DifModBlocks.SPACESHIP,SpaceshipBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<ChunkLoaderBlockEntity>> CHUNK_LOADER_BE=REGISTRY.register("chunk_loader_be",()->BlockEntityType.Builder.of(ChunkLoaderBlockEntity::new,DifModBlocks.CHUNK_LOADER.get()).build(null));
 
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<SpaceScaffoldingBlockEntity>> SPACE_SCAFFOLDING=REGISTRY.register("space_scaffolding",()->BlockEntityType.Builder.of(SpaceScaffoldingBlockEntity::new,DifModBlocks.SPACE_SCAFFOLDING.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<FryingTableBlockEntity>> FRYING_TABLE=REGISTRY.register("frying_table",()->BlockEntityType.Builder.of(FryingTableBlockEntity::new,DifModBlocks.FRYING_TABLE.get()).build(null));
 
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<QuarryBlockEntity>> QUARRY=REGISTRY.register("quarry",()->BlockEntityType.Builder.of(QuarryBlockEntity::new,DifModBlocks.QUARRY.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<QuarryFrameBlockEntity>> QUARRY_FRAME=REGISTRY.register("quarry_frame",()->BlockEntityType.Builder.of(QuarryFrameBlockEntity::new,DifModBlocks.QUARRY_FRAME.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<QuarryLandmarkBlockEntity>> QUARRY_LANDMARK=REGISTRY.register("quarry_landmark",()->BlockEntityType.Builder.of(QuarryLandmarkBlockEntity::new,DifModBlocks.QUARRY_LANDMARK.get()).build(null));
-
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<SpaceCrateBlockEntity>> SPACE_CRATE=REGISTRY.register("space_crate",()->BlockEntityType.Builder.of(SpaceCrateBlockEntity::new,DifModBlocks.SPACE_CRATE.get()).build(null));
 
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<BurningGeneratorBlockEntity>> BURNING_GENERATOR=REGISTRY.register("burning_generator",()->BlockEntityType.Builder.of(BurningGeneratorBlockEntity::new,DifModBlocks.BURNING_GENERATOR.get()).build(null));
 
