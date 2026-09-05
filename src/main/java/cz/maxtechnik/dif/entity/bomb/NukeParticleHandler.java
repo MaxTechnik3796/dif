@@ -45,17 +45,18 @@ public class NukeParticleHandler{
 		double headRadius=4.5+easeOut*13.5;
 
 		// ---------------------------------------------------------------------
-		// 3. Stoupající koule a objemový oblak hřibu (věk 0 - 420 ticků)
+		// 3. Stoupající koule a objemový oblak hřibu (věk 0 - 480 ticků)
 		// ---------------------------------------------------------------------
-		if(age<=420){
+		if(age<=480){
 			spawnMushroomHead(level,bx,bz,headY,headRadius,easeOut,age,random);
 		}
 
 		// ---------------------------------------------------------------------
-		// 4. Souvislá kouřová noha pod koulí (věk 6 - 380 ticků)
+		// 4. Souvislá kouřová noha a světlejší límec pod koulí (věk 4 - 480 ticků)
 		// ---------------------------------------------------------------------
-		if(age>=6&&age<=380){
+		if(age>=4&&age<=480){
 			spawnStem(level,bx,by,bz,headY,age,random);
+			spawnCollar(level,bx,by,bz,headY,headRadius,easeOut,age,random);
 		}
 
 		// ---------------------------------------------------------------------
@@ -219,8 +220,8 @@ public class NukeParticleHandler{
 				}
 			}
 
-			float pSize=(float)(4.4+easeOut*2.2); // velikost 4.4 až 6.6 bloku
-			int lifetime=220; // dlouhá životnost pro plynulé visení a postupné rozplynutí
+			float pSize=(float)(4.6+easeOut*2.2); // velikost 4.6 až 6.8 bloku
+			int lifetime=240; // dlouhá životnost pro plynulé visení a postupné rozplynutí
 
 			spawnSmoke(level,px,py,pz,rCol,gCol,bCol,pSize,lifetime);
 		}
@@ -238,32 +239,109 @@ public class NukeParticleHandler{
 	}
 
 	/**
-	 * Souvislá noha hřibu: Propojuje dno výbuchu se stoupající koulí po celou dobu,
-	 * takže oblak nikdy nezůstane viset osamoceně ve vzduchu.
+	 * Souvislá noha hřibu: Propojuje dno kráteru se spodkem límce.
+	 * Tmavý popelavý válec s mírným sáním u země, který se směrem nahoru
+	 * plynule napojuje do světlého kuželového límce bez jakýchkoliv děr.
 	 */
 	private static void spawnStem(ServerLevel level,double bx,double by,double bz,double headY,int age,RandomSource random){
-		int stemParticles=2;
-		for(int i=0;i<stemParticles;i++){
-			double stemY=by+1.0+random.nextDouble()*Math.max(1.0,headY-by);
-			double heightFrac=(stemY-by)/Math.max(1.0,headY-by);
+		double stemTopY=Math.max(by+2.0,headY-12.0);
+		double stemHeight=stemTopY-(by+1.0);
+		if(stemHeight<1.0) return;
 
-			// Profil nohy: dole u země rozšířená (sání prachu), uprostřed štíhlá, nahoře se rozšiřuje do oblaku
-			double stemR=1.4+1.3*(1.0-heightFrac)*(1.0-heightFrac)+1.5*heightFrac*heightFrac;
+		int stemParticles=4;
+		for(int i=0;i<stemParticles;i++){
+			double frac=random.nextDouble();
+			double stemY=by+1.0+frac*stemHeight;
+
+			// Profil nohy: dole u země rozšířená (sání z kráteru), uprostřed štíhlá
+			double stemR;
+			if(frac<0.25){
+				double normH=frac/0.25;
+				stemR=2.8+1.2*(1.0-normH)*(1.0-normH); // 2.8 až 4.0 u země
+			}else if(frac>0.75){
+				double normH=(frac-0.75)/0.25;
+				stemR=2.8+0.8*normH; // mírné rozšíření do náběhu límce (2.8 až 3.6)
+			}else{
+				stemR=2.8;
+			}
+
 			double angle=random.nextDouble()*Math.PI*2.0;
-			double dist=stemR*Math.sqrt(random.nextDouble());
+			double dist=stemR*Math.sqrt(0.15+0.85*random.nextDouble());
 
 			double px=bx+Math.cos(angle)*dist;
 			double pz=bz+Math.sin(angle)*dist;
 
-			// Barva nohy: hustý tmavý kouř, těsně pod stoupající koulí teplý oranžový odlesk
+			// Barva nohy: sytě tmavý popelavý kouř
 			float sr=0.17F, sg=0.17F, sb=0.17F;
-			if(heightFrac>0.78&&age<180){
+			if(age<140&&frac>0.85){
+				// V rané fázi žhavý odlesk u vrchu
 				sr=0.75F;
-				sg=0.38F;
-				sb=0.08F;
+				sg=0.45F;
+				sb=0.15F;
 			}
 
-			spawnSmoke(level,px,stemY,pz,sr,sg,sb,4.0F,220);
+			float pSize=(float)(4.8+random.nextDouble()*1.0); // 4.8 až 5.8 bloku pro eliminaci děr
+			int lifetime=240;
+
+			spawnSmoke(level,px,stemY,pz,sr,sg,sb,pSize,lifetime);
+		}
+	}
+
+	/**
+	 * Světlejší límec / spojení mezi nohou a kloboukem:
+	 * Plynulý kuželový trychtýř (límec) světlejších popelavě stříbřitých částic,
+	 * který pozvolna roste od šířky nohy (~3.2) až k podhledu klobouku (~12.5 bloků)
+	 * bez jakéhokoliv skoku v šířce, přesně podle referenčního obrázku.
+	 */
+	private static void spawnCollar(ServerLevel level,double bx,double by,double bz,double headY,double headRadius,double easeOut,int age,RandomSource random){
+		double yTop=headY-2.5;
+		double yBottom=Math.max(by+2.5,headY-14.5);
+		double collarHeight=yTop-yBottom;
+		if(collarHeight<2.0) return;
+
+		int collarCount=(age<240)?5:3;
+		double minCollarR=3.2;
+		double maxCollarR=Math.min(13.2,headRadius*0.72);
+
+		for(int i=0;i<collarCount;i++){
+			double h=random.nextDouble(); // výškový zlomek v límci (0 = spodek u nohy, 1 = vršek u klobouku)
+			double cy=yBottom+h*collarHeight+(random.nextDouble()-0.5)*1.4;
+
+			// Plynulý náběh poloměru: žádný skok! (3.2 u nohy -> ~12.5 u klobouku)
+			double maxRAtH=minCollarR+(maxCollarR-minCollarR)*Math.pow(h,1.35);
+			double cr=maxRAtH*Math.sqrt(0.15+0.85*random.nextDouble());
+			double angle=random.nextDouble()*Math.PI*2.0;
+
+			double px=bx+Math.cos(angle)*cr;
+			double pz=bz+Math.sin(angle)*cr;
+
+			// Barva: charakteristický světlejší stříbřitě popelavý kouř z obrázku
+			float cr_col, cg_col, cb_col;
+			if(age<130){
+				// Během stoupání ohnivý/oranžový odlesk
+				cr_col=0.84F;
+				cg_col=0.58F;
+				cb_col=0.20F;
+			}else{
+				// Trvalý světlejší kouř přecházející dole ze tmy a nahoře do klobouku
+				float tBottom=(float)Math.clamp(h/0.25,0.0,1.0);
+				float tTop=(float)Math.clamp((1.0-h)/0.20,0.0,1.0);
+				float blend=Math.min(tBottom,tTop);
+
+				float baseDark=0.20F;
+				float collarLightR=0.62F;
+				float collarLightG=0.65F;
+				float collarLightB=0.70F;
+
+				cr_col=baseDark*(1.0F-blend)+collarLightR*blend;
+				cg_col=baseDark*(1.0F-blend)+collarLightG*blend;
+				cb_col=baseDark*(1.0F-blend)+collarLightB*blend;
+			}
+
+			float pSize=(float)(4.8+h*1.8+random.nextDouble()*0.6); // 4.8 bloku dole, až 7.2 bloku nahoře
+			int lifetime=240;
+
+			spawnSmoke(level,px,cy,pz,cr_col,cg_col,cb_col,pSize,lifetime);
 		}
 	}
 
