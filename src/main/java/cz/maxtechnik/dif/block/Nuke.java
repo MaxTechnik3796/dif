@@ -1,13 +1,8 @@
 package cz.maxtechnik.dif.block;
 
 import cz.maxtechnik.dif.entity.bomb.NuclearExplosionEntity;
-import cz.maxtechnik.dif.entity.bomb.NuclearMushroomEntity;
-import cz.maxtechnik.dif.entity.bomb.NuclearRadiationEntity;
-import cz.maxtechnik.dif.entity.bomb.NuclearWaveEntity;
-import cz.maxtechnik.dif.init.events.client.NukeSoundEffect;
 import cz.maxtechnik.dif.init.other.DifModEntities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -31,30 +26,6 @@ public class Nuke extends Block{
 		double z=pos.getZ()+0.5;
 		NuclearExplosionEntity explosion=new NuclearExplosionEntity(DifModEntities.NUCLEAR_EXPLOSION.get(),level);
 		explosion.setPos(x,y,z);
-		explosion.setRadius(32);
 		level.addFreshEntity(explosion);
-		NuclearMushroomEntity mushroom=new NuclearMushroomEntity(DifModEntities.NUCLEAR_MUSHROOM.get(),level);
-		mushroom.setPos(x,y,z);
-		level.addFreshEntity(mushroom);
-		NuclearWaveEntity wave=new NuclearWaveEntity(DifModEntities.NUCLEAR_WAVE.get(),level);
-		wave.setPos(x,y,z);
-		level.addFreshEntity(wave);
-		NuclearRadiationEntity radiation=new NuclearRadiationEntity(DifModEntities.NUCLEAR_RADIATION.get(),level);
-		radiation.setPos(x,y,z);
-		level.addFreshEntity(radiation);
-		if(level instanceof ServerLevel serverLevel) NukeSoundEffect.play(serverLevel,x,y,z);
-	}
-
-	public static void spawnSafeNuclearEffects(Level level,BlockPos pos){
-		double x=pos.getX()+0.5;
-		double y=pos.getY();
-		double z=pos.getZ()+0.5;
-		NuclearMushroomEntity mushroom=new NuclearMushroomEntity(DifModEntities.NUCLEAR_MUSHROOM.get(),level);
-		mushroom.setPos(x,y,z);
-		level.addFreshEntity(mushroom);
-		NuclearWaveEntity wave=new NuclearWaveEntity(DifModEntities.NUCLEAR_WAVE.get(),level);
-		wave.setPos(x,y,z);
-		level.addFreshEntity(wave);
-		if(level instanceof ServerLevel serverLevel) NukeSoundEffect.play(serverLevel,x,y,z);
 	}
 }

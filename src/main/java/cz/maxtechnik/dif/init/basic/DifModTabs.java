@@ -294,7 +294,6 @@ public class DifModTabs{
 			tabData.accept(FAST_RAIL);
 
 			tabData.accept(NUKE);
-			tabData.accept(NUKE_SAFE);
 			tabData.accept(INCOMPLETE_UNIVERSAL);
 
 		}else if(tabData.getTabKey().location().getNamespace().equals("farmersdelight")){
