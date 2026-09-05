@@ -125,7 +125,7 @@ public class NukeCraterHandler{
 	private void spawnDebris(Level level,BlockPos center,RandomSource random){
 		if(!(level instanceof ServerLevel sl)) return;
 		for(int i=0;i<45;i++){
-			BlockState debrisState = (random.nextFloat()<0.40F) ? Blocks.BASALT.defaultBlockState()
+			BlockState debrisState = (random.nextFloat()<0.40F) ? Blocks.COBBLED_DEEPSLATE.defaultBlockState()
 					: (random.nextFloat()<0.40F) ? Blocks.BLACKSTONE.defaultBlockState()
 					: (random.nextFloat()<0.50F) ? Blocks.COBBLESTONE.defaultBlockState()
 					: Blocks.DIRT.defaultBlockState();
@@ -154,12 +154,13 @@ public class NukeCraterHandler{
 		BlockState state=level.getBlockState(mutablePos);
 		if(state.isAir()||state.getBlock().getExplosionResistance()>MAX_DESTROYABLE_RESISTANCE) return;
 		if(state.isSolid()){
+			// Dno kráteru: kombinace deepslatu (2 typy) a blackstone (2 typy) s trochou magmy, žádný čedič ani obsidián
 			float roll=random.nextFloat();
-			BlockState melted = roll<0.36F ? Blocks.BASALT.defaultBlockState()
-					: roll<0.68F ? Blocks.BLACKSTONE.defaultBlockState()
-					: roll<0.85F ? Blocks.SMOOTH_BASALT.defaultBlockState()
+			BlockState melted = roll<0.38F ? Blocks.COBBLED_DEEPSLATE.defaultBlockState()
+					: roll<0.68F ? Blocks.DEEPSLATE.defaultBlockState()
+					: roll<0.84F ? Blocks.BLACKSTONE.defaultBlockState()
 					: roll<0.94F ? Blocks.POLISHED_BLACKSTONE.defaultBlockState()
-					: Blocks.MAGMA_BLOCK.defaultBlockState(); // pouze 6 % magma, žádný obsidian/crying
+					: Blocks.MAGMA_BLOCK.defaultBlockState(); // pouze 6 % magma
 			level.setBlock(mutablePos,melted,2|16|64);
 		}
 	}
@@ -176,8 +177,9 @@ public class NukeCraterHandler{
 			return;
 		}
 
-		// Vegetace, vodní rostliny a sníh se sežehnou a zmizí
-		if(state.is(BlockTags.LEAVES)||state.is(BlockTags.FLOWERS)||state.is(Blocks.SHORT_GRASS)||state.is(Blocks.TALL_GRASS)
+		// Vegetace, vodní rostliny, sníh, led a liány / bloky nahraditelné stromy se sežehnou a zmizí
+		if(state.is(BlockTags.REPLACEABLE_BY_TREES)||state.is(BlockTags.LEAVES)||state.is(BlockTags.FLOWERS)
+				||state.is(Blocks.SHORT_GRASS)||state.is(Blocks.TALL_GRASS)||state.is(Blocks.VINE)
 				||state.is(Blocks.SEAGRASS)||state.is(Blocks.TALL_SEAGRASS)||state.is(Blocks.KELP)||state.is(Blocks.KELP_PLANT)
 				||state.is(Blocks.SNOW)||state.is(Blocks.SNOW_BLOCK)||state.is(Blocks.ICE)){
 			level.setBlock(mutablePos,AIR,2|16|64);
@@ -186,22 +188,31 @@ public class NukeCraterHandler{
 
 		// Stromy: Kmeny se promění na leštěný / obyčejný čedič (žádné bloky uhlí)
 		if(state.is(BlockTags.LOGS)){
-			BlockState charred=(random.nextFloat()<0.75F)?Blocks.POLISHED_BASALT.defaultBlockState():Blocks.BASALT.defaultBlockState();
+			BlockState charred=(random.nextFloat()<0.70F)?Blocks.POLISHED_BASALT.defaultBlockState():Blocks.BASALT.defaultBlockState();
 			level.setBlock(mutablePos,charred,2|16|64);
 			return;
 		}
 
-		// Písek se NEMĚNÍ na sklo (ponechán tak jak je)
-
-		// Tráva se promění na hlínu / hrubou hlínu s možností ohně
-		if(state.is(Blocks.GRASS_BLOCK)){
-			BlockState dirt=(random.nextFloat()<0.65F)?Blocks.COARSE_DIRT.defaultBlockState():Blocks.DIRT.defaultBlockState();
+		// Písek, štěrk, jíl a tráva se sežehnou na hlínu a hrubou hlínu
+		if(state.is(Blocks.GRASS_BLOCK)||state.is(Blocks.SAND)||state.is(Blocks.RED_SAND)
+				||state.is(Blocks.GRAVEL)||state.is(Blocks.CLAY)){
+			float r=random.nextFloat();
+			BlockState dirt=(r<0.60F)?Blocks.COARSE_DIRT.defaultBlockState()
+					:(r<0.90F)?Blocks.DIRT.defaultBlockState()
+					:Blocks.ROOTED_DIRT.defaultBlockState();
 			level.setBlock(mutablePos,dirt,2|16|64);
 			mutablePos.set(x,y+1,z);
-			if(level.getBlockState(mutablePos).isAir()&&random.nextFloat()<0.18F){
+			if(level.getBlockState(mutablePos).isAir()&&random.nextFloat()<0.16F){
 				level.setBlock(mutablePos,Blocks.FIRE.defaultBlockState(),2|16|64);
 			}
 			return;
+		}
+
+		// Příležitostné ohoření pevných kamenných povrchů na povrchu
+		if(state.is(Blocks.STONE)){
+			if(random.nextFloat()<0.10F){
+				level.setBlock(mutablePos,Blocks.COBBLESTONE.defaultBlockState(),2|16|64);
+			}
 		}
 
 		// Příležitostné zapálení pevných povrchů

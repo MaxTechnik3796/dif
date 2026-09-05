@@ -23,7 +23,7 @@ import net.minecraft.world.phys.Vec3;
  */
 public class NukeParticleHandler{
 	private static final double SEND_RADIUS=512.0;
-	private static final double MAX_HEAD_HEIGHT=44.0;
+	private static final double MAX_HEAD_HEIGHT=39.0;
 	private static final double ASCENT_DURATION=240.0; // 3x delší výstup (~12 sekund)
 
 	public static void tick(ServerLevel level,double bx,double by,double bz,int age,RandomSource random){
@@ -55,7 +55,7 @@ public class NukeParticleHandler{
 		// 4. Souvislá kouřová noha a světlejší límec pod koulí (věk 4 - 480 ticků)
 		// ---------------------------------------------------------------------
 		if(age>=4&&age<=480){
-			spawnStem(level,bx,by,bz,headY,age,random);
+			spawnStem(level,bx,by,bz,headY,easeOut,age,random);
 			spawnCollar(level,bx,by,bz,headY,headRadius,easeOut,age,random);
 		}
 
@@ -239,30 +239,31 @@ public class NukeParticleHandler{
 	}
 
 	/**
-	 * Souvislá noha hřibu: Propojuje dno kráteru se spodkem límce.
-	 * Tmavý popelavý válec s mírným sáním u země, který se směrem nahoru
-	 * plynule napojuje do světlého kuželového límce bez jakýchkoliv děr.
+	 * Souvislá noha hřibu: Zasahuje hluboko do kráteru a propojuje dno se spodkem límce.
+	 * Tmavý popelavý sloup se širokým sáním na dně kráteru, který stoupá nahoru
+	 * a plynule přechází do světlého kuželového límce bez jakéhokoliv levitování.
 	 */
-	private static void spawnStem(ServerLevel level,double bx,double by,double bz,double headY,int age,RandomSource random){
-		double stemTopY=Math.max(by+2.0,headY-12.0);
-		double stemHeight=stemTopY-(by+1.0);
+	private static void spawnStem(ServerLevel level,double bx,double by,double bz,double headY,double easeOut,int age,RandomSource random){
+		double stemBottomY=by-easeOut*17.0; // noha sahá hluboko na dno vykopaného kráteru
+		double stemTopY=Math.max(stemBottomY+2.0,headY-12.0);
+		double stemHeight=stemTopY-stemBottomY;
 		if(stemHeight<1.0) return;
 
-		int stemParticles=4;
+		int stemParticles=6;
 		for(int i=0;i<stemParticles;i++){
 			double frac=random.nextDouble();
-			double stemY=by+1.0+frac*stemHeight;
+			double stemY=stemBottomY+frac*stemHeight;
 
-			// Profil nohy: dole u země rozšířená (sání z kráteru), uprostřed štíhlá
+			// Profil nohy: na dně kráteru široké sání z prachu, uprostřed štíhlá, nahoře plynulý náběh do límce
 			double stemR;
-			if(frac<0.25){
-				double normH=frac/0.25;
-				stemR=2.8+1.2*(1.0-normH)*(1.0-normH); // 2.8 až 4.0 u země
-			}else if(frac>0.75){
-				double normH=(frac-0.75)/0.25;
-				stemR=2.8+0.8*normH; // mírné rozšíření do náběhu límce (2.8 až 3.6)
+			if(frac<0.22){
+				double normH=frac/0.22;
+				stemR=3.0+2.4*(1.0-normH)*(1.0-normH); // 3.0 až 5.4 na dně kráteru
+			}else if(frac>0.78){
+				double normH=(frac-0.78)/0.22;
+				stemR=3.0+0.8*normH; // mírné rozšíření do náběhu límce (3.0 až 3.8)
 			}else{
-				stemR=2.8;
+				stemR=3.0;
 			}
 
 			double angle=random.nextDouble()*Math.PI*2.0;
@@ -280,10 +281,22 @@ public class NukeParticleHandler{
 				sb=0.15F;
 			}
 
-			float pSize=(float)(4.8+random.nextDouble()*1.0); // 4.8 až 5.8 bloku pro eliminaci děr
+			float pSize=(float)(4.8+random.nextDouble()*1.2); // dostatečně velké pro eliminaci děr
 			int lifetime=240;
 
 			spawnSmoke(level,px,stemY,pz,sr,sg,sb,pSize,lifetime);
+		}
+
+		// Přídavné částice sání prachu přímo na dně kráteru, aby dno kráteru nebylo holé
+		if(easeOut>0.10){
+			for(int j=0;j<2;j++){
+				double crAngle=random.nextDouble()*Math.PI*2.0;
+				double crDist=1.0+random.nextDouble()*6.0;
+				double cpx=bx+Math.cos(crAngle)*crDist;
+				double cpz=bz+Math.sin(crAngle)*crDist;
+				double cpy=stemBottomY+random.nextDouble()*3.0;
+				spawnSmoke(level,cpx,cpy,cpz,0.15F,0.15F,0.15F,5.2F,240);
+			}
 		}
 	}
 
