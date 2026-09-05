@@ -46,6 +46,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.util.thread.SidedThreadGroups;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
@@ -91,6 +92,7 @@ public class DifMod{
 		NeoForge.EVENT_BUS.register(this);
 		NeoForge.EVENT_BUS.register(JetpackHandler.class);
 		bus.addListener(DifModTabs::addCreative);
+		bus.addListener(this::commonSetup);
 		modContainer.registerConfig(ModConfig.Type.COMMON,DifModCommonConfig.SPEC);
 		modContainer.registerConfig(ModConfig.Type.SERVER,DifModServerConfig.SPEC);
 		bus.addListener(DifModCapabilities::registerCapabilities);
@@ -113,6 +115,9 @@ public class DifMod{
 				}
 			}
 		}
+	}
+	private void commonSetup(final FMLCommonSetupEvent event){
+		LOGGER.info("TheDifferential: Common Setup");
 	}
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event){
