@@ -6,15 +6,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-/**
- * Spravuje rázové vlny atomového výbuchu.
- * Obě vlny jsou čisté KRUŽNICE (pouze tenká obvodová linka bez vnitřní výplně, žádné disky),
- * které se pohybují velkou rychlostí pryč od výbuchu a po dosažení konce cesty ihned zmizí:
- * 1. Dolní pozemní kružnice: Rychle letící obvodová linka po zemi,
- *    přičemž bloky kráteru mizí přesně synchronizovaně pod jejím čelem.
- * 2. Horní vzdušná kružnice: Tenká zářivá obvodová linka vysoko na obloze,
- *    letící rychlostí přes celou atmosféru.
- */
 public class NukeShockwaveHandler{
 	private static final double MAX_GROUND_RADIUS=85.0;
 	private static final double MAX_AIR_RADIUS=155.0;
@@ -35,11 +26,6 @@ public class NukeShockwaveHandler{
 		}
 	}
 
-	/**
-	 * Dolní pozemní kružnice:
-	 * Čistá tenká obvodová linka (životnost jen 2 ticky = nikdy netvoří disk ani výplň).
-	 * Jakmile dorazí na konec cesty, okamžitě zmizí.
-	 */
 	private static void tickGroundWave(ServerLevel level,double bx,double by,double bz,int age){
 		double r=getGroundWaveRadius(age);
 		if(r<1.0||r>MAX_GROUND_RADIUS) return;
@@ -54,13 +40,11 @@ public class NukeShockwaveHandler{
 			double wz=bz+Math.sin(angle)*r;
 
 			if(insideCrater){
-				// Ohnivá obvodová linka – životnost 2 ticky zaručuje, že nevzniká žádný disk
 				NukeParticleHandler.spawnSmoke(level,wx,by+0.35,wz,1.0F,0.70F,0.15F,1.2F,2);
 				if(i%4==0){
 					NukeParticleHandler.sendVanilla(level,ParticleTypes.FLAME,wx,by+0.25,wz,1,0,0,0,0.0);
 				}
 			}else{
-				// Prachová obvodová linka mimo kráter – životnost 2 ticky
 				NukeParticleHandler.spawnSmoke(level,wx,by+0.35,wz,0.65F,0.60F,0.50F,1.2F,2);
 				if(i%4==0){
 					NukeParticleHandler.sendVanilla(level,ParticleTypes.POOF,wx,by+0.25,wz,1,0,0,0,0.0);
@@ -90,11 +74,6 @@ public class NukeShockwaveHandler{
 		}
 	}
 
-	/**
-	 * Horní vzdušná kružnice:
-	 * Čistá tenká obvodová linka vysoko na obloze (žádný disk, žádná výplň),
-	 * která letí do dálky 155 bloků a jakmile tam dorazí, ihned zmizí.
-	 */
 	private static void tickAirWave(ServerLevel level,double bx,double airY,double bz,int age){
 		double airRadius=4.0+(age-6)*2.0;
 		if(airRadius>MAX_AIR_RADIUS) return;

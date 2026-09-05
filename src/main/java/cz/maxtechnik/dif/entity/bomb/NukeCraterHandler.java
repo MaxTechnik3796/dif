@@ -20,7 +20,7 @@ public class NukeCraterHandler{
 	private static final double HOR_FULL_SQ=HOR_R_FULL*HOR_R_FULL, HOR_TOTAL_SQ=HOR_R_TOTAL*HOR_R_TOTAL;
 	private static final double UP_FULL_SQ=UP_R_FULL*UP_R_FULL, UP_TOTAL_SQ=UP_R_TOTAL*UP_R_TOTAL;
 	private static final double DN_FULL_SQ=DOWN_R_FULL*DOWN_R_FULL, DN_TOTAL_SQ=DOWN_R_TOTAL*DOWN_R_TOTAL;
-	private static final double SCORCH_RADIUS=100.0, SCORCH_RADIUS_SQ=SCORCH_RADIUS*SCORCH_RADIUS;
+	private static final double SCORCH_RADIUS=92.0, SCORCH_RADIUS_SQ=SCORCH_RADIUS*SCORCH_RADIUS;
 	private static final BlockState AIR=Blocks.AIR.defaultBlockState();
 	private static final int UPDATE_FLAGS=2|16|64;
 
@@ -40,10 +40,9 @@ public class NukeCraterHandler{
 		int cx=center.getX(), cy=center.getY(), cz=center.getZ(), processed=0;
 		while(processed<BLOCKS_PER_TICK){
 			if(currentShell>maxShell){
-				return true; // Kráter je kompletně hotový
+				return true;
 			}
 			if(currentShell>targetShell){
-				// Počkáme, až rázová vlna postoupí k další vrstvě
 				return false;
 			}
 			int r=currentShell;
