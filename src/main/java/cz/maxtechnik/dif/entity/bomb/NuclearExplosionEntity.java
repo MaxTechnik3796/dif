@@ -46,7 +46,7 @@ public class NuclearExplosionEntity extends Entity{
 		}
 
 		// Dva prstence rázové vlny (horní tenký vzdušný + dolní pozemní)
-		NukeShockwaveHandler.tick(sl,x,y,z,age,random);
+		NukeShockwaveHandler.tick(sl,x,y,z,age);
 
 		// Vizuální částicový systém (detonace, stoupající koule, noha, hřib)
 		NukeParticleHandler.tick(sl,x,y,z,age,random);

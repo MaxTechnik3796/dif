@@ -1,12 +1,7 @@
 package cz.maxtechnik.dif.entity.bomb;
 
-import cz.maxtechnik.dif.init.other.DifModParticles;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -21,16 +16,11 @@ import net.minecraft.world.phys.Vec3;
  *    letící rychlostí přes celou atmosféru.
  */
 public class NukeShockwaveHandler{
-	private static final double SEND_RADIUS=512.0;
 	private static final double MAX_GROUND_RADIUS=85.0;
 	private static final double MAX_AIR_RADIUS=155.0;
 
 	public static double getGroundWaveRadius(int age){
 		return age*1.15;
-	}
-
-	public static void tick(ServerLevel level,double bx,double by,double bz,int age,RandomSource random){
-		tick(level,bx,by,bz,age);
 	}
 
 	public static void tick(ServerLevel level,double bx,double by,double bz,int age){
@@ -65,15 +55,15 @@ public class NukeShockwaveHandler{
 
 			if(insideCrater){
 				// Ohnivá obvodová linka – životnost 2 ticky zaručuje, že nevzniká žádný disk
-				spawnSmoke(level,wx,by+0.35,wz,1.0F,0.70F,0.15F,1.2F,2);
+				NukeParticleHandler.spawnSmoke(level,wx,by+0.35,wz,1.0F,0.70F,0.15F,1.2F,2);
 				if(i%4==0){
-					sendVanilla(level,ParticleTypes.FLAME,wx,by+0.25,wz,1,0,0,0,0.0);
+					NukeParticleHandler.sendVanilla(level,ParticleTypes.FLAME,wx,by+0.25,wz,1,0,0,0,0.0);
 				}
 			}else{
 				// Prachová obvodová linka mimo kráter – životnost 2 ticky
-				spawnSmoke(level,wx,by+0.35,wz,0.65F,0.60F,0.50F,1.2F,2);
+				NukeParticleHandler.spawnSmoke(level,wx,by+0.35,wz,0.65F,0.60F,0.50F,1.2F,2);
 				if(i%4==0){
-					sendVanilla(level,ParticleTypes.POOF,wx,by+0.25,wz,1,0,0,0,0.0);
+					NukeParticleHandler.sendVanilla(level,ParticleTypes.POOF,wx,by+0.25,wz,1,0,0,0,0.0);
 				}
 			}
 		}
@@ -118,34 +108,11 @@ public class NukeShockwaveHandler{
 			double rz=bz+Math.sin(angle)*airRadius;
 
 			// Životnost 2 ticky: zobrazí se jako ostrá letící kružnice a nezanechává za sebou kouř
-			spawnSmoke(level,rx,airY,rz,0.85F,0.95F,1.0F,1.1F,2);
+			NukeParticleHandler.spawnSmoke(level,rx,airY,rz,0.85F,0.95F,1.0F,1.1F,2);
 
 			if(i%5==0){
-				sendVanilla(level,ParticleTypes.ELECTRIC_SPARK,rx,airY,rz,1,0,0,0,0.0);
+				NukeParticleHandler.sendVanilla(level,ParticleTypes.ELECTRIC_SPARK,rx,airY,rz,1,0,0,0,0.0);
 			}
-		}
-	}
-
-	private static void spawnSmoke(ServerLevel level,double x,double y,double z,float r,float g,float b,float size,int lifetime){
-		int ir=Math.clamp((int)(r*255.0F),0,255);
-		int ig=Math.clamp((int)(g*255.0F),0,255);
-		int ib=Math.clamp((int)(b*255.0F),0,255);
-		float packedColor=(float)((ir<<16)|(ig<<8)|ib);
-
-		ClientboundLevelParticlesPacket packet=new ClientboundLevelParticlesPacket(
-				DifModParticles.NUKE_SMOKE.get(),true,x,y,z,packedColor,size,(float)lifetime,1.0F,0
-		);
-		double maxDistSq=SEND_RADIUS*SEND_RADIUS;
-		for(ServerPlayer player: level.getPlayers(p->p.distanceToSqr(x,y,z)<maxDistSq)){
-			player.connection.send(packet);
-		}
-	}
-
-	private static void sendVanilla(ServerLevel level,ParticleOptions particle,double x,double y,double z,int count,double dx,double dy,double dz,double speed){
-		ClientboundLevelParticlesPacket packet=new ClientboundLevelParticlesPacket(particle,true,x,y,z,(float)dx,(float)dy,(float)dz,(float)speed,count);
-		double maxDistSq=SEND_RADIUS*SEND_RADIUS;
-		for(ServerPlayer player: level.getPlayers(p->p.distanceToSqr(x,y,z)<maxDistSq)){
-			player.connection.send(packet);
 		}
 	}
 }

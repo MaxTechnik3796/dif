@@ -22,6 +22,7 @@ public class NukeCraterHandler{
 	private static final double DN_FULL_SQ=DOWN_R_FULL*DOWN_R_FULL, DN_TOTAL_SQ=DOWN_R_TOTAL*DOWN_R_TOTAL;
 	private static final double SCORCH_RADIUS=100.0, SCORCH_RADIUS_SQ=SCORCH_RADIUS*SCORCH_RADIUS;
 	private static final BlockState AIR=Blocks.AIR.defaultBlockState();
+	private static final int UPDATE_FLAGS=2|16|64;
 
 	private int currentShell=0, maxShell=(int)Math.ceil(SCORCH_RADIUS), shellFace=0, shellU=0, shellV=0;
 	private boolean debrisSpawned=false;
@@ -114,7 +115,7 @@ public class NukeCraterHandler{
 				}else{
 					thermalScorchAt(level,cx+dx,cy+dy,cz+dz,random);
 				}
-			}else if(dy>=-16&&dy<=28&&horizDistSq<=SCORCH_RADIUS_SQ){
+			}else if(dy>=-16&&dy<=28){
 				thermalScorchAt(level,cx+dx,cy+dy,cz+dz,random);
 			}
 			processed++;
@@ -145,7 +146,7 @@ public class NukeCraterHandler{
 		BlockState state=level.getBlockState(mutablePos);
 		if(state.isAir()) return;
 		if(state.getBlock().getExplosionResistance()>MAX_DESTROYABLE_RESISTANCE) return;
-		level.setBlock(mutablePos,AIR,2|16|64);
+		level.setBlock(mutablePos,AIR,UPDATE_FLAGS);
 	}
 
 	private void mutateFloorAt(Level level,int x,int y,int z,RandomSource random){
@@ -161,7 +162,7 @@ public class NukeCraterHandler{
 					: roll<0.84F ? Blocks.BLACKSTONE.defaultBlockState()
 					: roll<0.94F ? Blocks.POLISHED_BLACKSTONE.defaultBlockState()
 					: Blocks.MAGMA_BLOCK.defaultBlockState(); // pouze 6 % magma
-			level.setBlock(mutablePos,melted,2|16|64);
+			level.setBlock(mutablePos,melted,UPDATE_FLAGS);
 		}
 	}
 
@@ -173,7 +174,7 @@ public class NukeCraterHandler{
 
 		// Voda v sežehnuté oblasti zmizí (vypaří se)
 		if(state.is(Blocks.WATER)||state.getFluidState().is(net.minecraft.tags.FluidTags.WATER)){
-			level.setBlock(mutablePos,AIR,2|16|64);
+			level.setBlock(mutablePos,AIR,UPDATE_FLAGS);
 			return;
 		}
 
@@ -182,14 +183,14 @@ public class NukeCraterHandler{
 				||state.is(Blocks.SHORT_GRASS)||state.is(Blocks.TALL_GRASS)||state.is(Blocks.VINE)
 				||state.is(Blocks.SEAGRASS)||state.is(Blocks.TALL_SEAGRASS)||state.is(Blocks.KELP)||state.is(Blocks.KELP_PLANT)
 				||state.is(Blocks.SNOW)||state.is(Blocks.SNOW_BLOCK)||state.is(Blocks.ICE)){
-			level.setBlock(mutablePos,AIR,2|16|64);
+			level.setBlock(mutablePos,AIR,UPDATE_FLAGS);
 			return;
 		}
 
 		// Stromy: Kmeny se promění na leštěný / obyčejný čedič (žádné bloky uhlí)
 		if(state.is(BlockTags.LOGS)){
 			BlockState charred=(random.nextFloat()<0.70F)?Blocks.POLISHED_BASALT.defaultBlockState():Blocks.BASALT.defaultBlockState();
-			level.setBlock(mutablePos,charred,2|16|64);
+			level.setBlock(mutablePos,charred,UPDATE_FLAGS);
 			return;
 		}
 
@@ -200,10 +201,10 @@ public class NukeCraterHandler{
 			BlockState dirt=(r<0.60F)?Blocks.COARSE_DIRT.defaultBlockState()
 					:(r<0.90F)?Blocks.DIRT.defaultBlockState()
 					:Blocks.ROOTED_DIRT.defaultBlockState();
-			level.setBlock(mutablePos,dirt,2|16|64);
+			level.setBlock(mutablePos,dirt,UPDATE_FLAGS);
 			mutablePos.set(x,y+1,z);
 			if(level.getBlockState(mutablePos).isAir()&&random.nextFloat()<0.16F){
-				level.setBlock(mutablePos,Blocks.FIRE.defaultBlockState(),2|16|64);
+				level.setBlock(mutablePos,Blocks.FIRE.defaultBlockState(),UPDATE_FLAGS);
 			}
 			return;
 		}
@@ -211,7 +212,7 @@ public class NukeCraterHandler{
 		// Příležitostné ohoření pevných kamenných povrchů na povrchu
 		if(state.is(Blocks.STONE)){
 			if(random.nextFloat()<0.10F){
-				level.setBlock(mutablePos,Blocks.COBBLESTONE.defaultBlockState(),2|16|64);
+				level.setBlock(mutablePos,Blocks.COBBLESTONE.defaultBlockState(),UPDATE_FLAGS);
 			}
 		}
 
@@ -219,7 +220,7 @@ public class NukeCraterHandler{
 		if(random.nextFloat()<0.08F&&state.isSolid()){
 			mutablePos.set(x,y+1,z);
 			if(level.getBlockState(mutablePos).isAir()){
-				level.setBlock(mutablePos,Blocks.FIRE.defaultBlockState(),2|16|64);
+				level.setBlock(mutablePos,Blocks.FIRE.defaultBlockState(),UPDATE_FLAGS);
 			}
 		}
 	}
