@@ -1,9 +1,12 @@
 package cz.maxtechnik.dif.block.barrel;
 
+import cz.maxtechnik.dif.block.entity.barrel.BaseBarrelBlockEntity;
 import cz.maxtechnik.dif.block.entity.barrel.BrassBarrelBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -63,6 +66,13 @@ public class BrassBarrel extends Block implements EntityBlock{
 	@Override
 	public BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState blockState){
 		return new BrassBarrelBlockEntity(pos,blockState);
+	}
+	@Override
+	protected void tick(@NotNull BlockState blockState, ServerLevel serverLevel, @NotNull BlockPos pos, @NotNull RandomSource randomSource){
+		BlockEntity blockEntity=serverLevel.getBlockEntity(pos);
+		if(blockEntity instanceof BaseBarrelBlockEntity barrel){
+			barrel.recheckOpen();
+		}
 	}
 	@Override
 	public boolean triggerEvent(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,int eventID,int eventParam){

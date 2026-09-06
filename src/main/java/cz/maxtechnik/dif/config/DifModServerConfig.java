@@ -71,7 +71,7 @@ public class DifModServerConfig{
 		BUILDER.pop();
 		BUILDER.push("FastRails");
 		FAST_RAIL_TOP_SPEED=BUILDER.defineInRange("fast_rail_top_speed",1.2D,0.1D,MAX);
-		FAST_POWERED_RAIL_ACCELERATION=BUILDER.defineInRange("fast_powered_rail_acceleration",0.5D,0.1D,MAX);
+		FAST_POWERED_RAIL_ACCELERATION=BUILDER.defineInRange("fast_powered_rail_acceleration",0.3D,0.01D,MAX);
 		BUILDER.pop();
 		BUILDER.push("PortalGun");
 		PORTAL_GUN_MAX_DURABILITY=BUILDER.defineInRange("portal_gun_max_durability",24,1,MAX);
