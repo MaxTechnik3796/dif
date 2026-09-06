@@ -51,10 +51,10 @@ public class BurningGeneratorMenu extends AbstractContainerMenu implements Suppl
 				this.bound=true;
 				this.boundBlockEntity=gen;
 			}else{
-				this.data=new SimpleContainerData(7);
+				this.data=new SimpleContainerData(9);
 			}
 		}else{
-			this.data=new SimpleContainerData(7);
+			this.data=new SimpleContainerData(9);
 		}
 		this.addDataSlots(this.data);
 		this.customSlots.put(0,this.addSlot(new SlotItemHandler(internal,0,79,35)));
@@ -80,7 +80,7 @@ public class BurningGeneratorMenu extends AbstractContainerMenu implements Suppl
 			this.bound=true;
 			this.boundBlockEntity=gen;
 		}else{
-			this.data=new SimpleContainerData(7);
+			this.data=new SimpleContainerData(9);
 		}
 		this.addDataSlots(this.data);
 		this.customSlots.put(0,this.addSlot(new SlotItemHandler(internal,0,79,35)));
@@ -100,16 +100,17 @@ public class BurningGeneratorMenu extends AbstractContainerMenu implements Suppl
 		return this.data.get(2);
 	}
 	public int getEnergyStored(){
-		return this.data.get(3);
+		return ((this.data.get(4)&0xFFFF)<<16)|(this.data.get(3)&0xFFFF);
 	}
 	public int getMaxEnergyStored(){
-		return this.data.get(4);
+		int max=((this.data.get(6)&0xFFFF)<<16)|(this.data.get(5)&0xFFFF);
+		return max>0?max:BurningGeneratorBlockEntity.getMaxEnergy();
 	}
 	public int getFuel(){
-		return this.data.get(5);
+		return this.data.get(7);
 	}
 	public int getEmpty(){
-		return this.data.get(6);
+		return this.data.get(8);
 	}
 	@Override
 	public boolean stillValid(@NotNull Player player){

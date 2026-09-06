@@ -52,7 +52,16 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 			setChanged();
 		}
 	};
-	private final EnergyStorage energyStorage=new EnergyStorage(getMaxEnergy(),MAX_RECEIVE,getMaxExtract(),0){
+	public static class GeneratorEnergyStorage extends EnergyStorage{
+		public GeneratorEnergyStorage(int capacity,int maxReceive,int maxExtract,int energy){
+			super(capacity,maxReceive,maxExtract,energy);
+		}
+		public void generateEnergy(int amount){
+			this.energy=Math.min(this.energy+amount,this.capacity);
+		}
+		public void setEnergy(int energy){
+			this.energy=Math.clamp(energy,0,this.capacity);
+		}
 		@Override
 		public int receiveEnergy(int maxReceive,boolean simulate){
 			return 0;
@@ -61,42 +70,58 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 		public boolean canReceive(){
 			return false;
 		}
-		@Override
-		public int extractEnergy(int maxExtract,boolean simulate){
-			int retval=super.extractEnergy(maxExtract,simulate);
-			if(!simulate){
-				setChanged();
-				assert level!=null;
-				level.sendBlockUpdated(worldPosition,level.getBlockState(worldPosition),level.getBlockState(worldPosition),3);
-			}
-			return retval;
-		}
-	};
+	}
+	private final GeneratorEnergyStorage energyStorage=new GeneratorEnergyStorage(getMaxEnergy(),MAX_RECEIVE,getMaxExtract(),0);
 	public ItemStackHandler getItemHandler(){
 		return itemHandler;
 	}
 	public ItemStackHandler getInventory(){
 		return getItemHandler();
 	}
-	public EnergyStorage getEnergyStorage(){
+	public GeneratorEnergyStorage getEnergyStorage(){
 		return energyStorage;
 	}
 	private int burnTime;
 	private int maxBurnTime;
-	public final ContainerData dataAccess=new SimpleContainerData(7){
+	private int clientLit;
+	private int clientEnergyLower;
+	private int clientEnergyUpper;
+	private int clientMaxEnergyLower;
+	private int clientMaxEnergyUpper;
+	private int clientFuel;
+	private int clientEmpty;
+
+	public final ContainerData dataAccess=new SimpleContainerData(9){
 		@Override
 		public int get(int index){
-			int lit=0;
-			if(getBlockState().getValue(BurningGenerator.LIT)) lit=1;
+			if(level!=null&&level.isClientSide){
+				return switch(index){
+					case 0 -> BurningGeneratorBlockEntity.this.burnTime;
+					case 1 -> BurningGeneratorBlockEntity.this.maxBurnTime;
+					case 2 -> BurningGeneratorBlockEntity.this.clientLit;
+					case 3 -> BurningGeneratorBlockEntity.this.clientEnergyLower;
+					case 4 -> BurningGeneratorBlockEntity.this.clientEnergyUpper;
+					case 5 -> BurningGeneratorBlockEntity.this.clientMaxEnergyLower;
+					case 6 -> BurningGeneratorBlockEntity.this.clientMaxEnergyUpper;
+					case 7 -> BurningGeneratorBlockEntity.this.clientFuel;
+					case 8 -> BurningGeneratorBlockEntity.this.clientEmpty;
+					default -> 0;
+				};
+			}
+			int lit=getBlockState().getValue(BurningGenerator.LIT)?1:0;
 			int empty=isEmpty()?1:0;
+			int energy=BurningGeneratorBlockEntity.this.energyStorage.getEnergyStored();
+			int maxEnergy=BurningGeneratorBlockEntity.this.energyStorage.getMaxEnergyStored();
 			return switch(index){
 				case 0 -> BurningGeneratorBlockEntity.this.burnTime;
 				case 1 -> BurningGeneratorBlockEntity.this.maxBurnTime;
 				case 2 -> lit;
-				case 3 -> BurningGeneratorBlockEntity.this.energyStorage.getEnergyStored();
-				case 4 -> BurningGeneratorBlockEntity.this.energyStorage.getMaxEnergyStored();
-				case 5 -> itemHandler.getStackInSlot(INPUT_SLOT).getBurnTime(null);
-				case 6 -> empty;
+				case 3 -> energy&0xFFFF;
+				case 4 -> (energy>>>16)&0xFFFF;
+				case 5 -> maxEnergy&0xFFFF;
+				case 6 -> (maxEnergy>>>16)&0xFFFF;
+				case 7 -> itemHandler.getStackInSlot(INPUT_SLOT).getBurnTime(null);
+				case 8 -> empty;
 				default -> 0;
 			};
 		}
@@ -105,11 +130,26 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 			switch(index){
 				case 0 -> BurningGeneratorBlockEntity.this.burnTime=value;
 				case 1 -> BurningGeneratorBlockEntity.this.maxBurnTime=value;
+				case 2 -> BurningGeneratorBlockEntity.this.clientLit=value;
+				case 3 -> {
+					BurningGeneratorBlockEntity.this.clientEnergyLower=value&0xFFFF;
+					int combined=(BurningGeneratorBlockEntity.this.clientEnergyUpper<<16)|BurningGeneratorBlockEntity.this.clientEnergyLower;
+					BurningGeneratorBlockEntity.this.energyStorage.setEnergy(combined);
+				}
+				case 4 -> {
+					BurningGeneratorBlockEntity.this.clientEnergyUpper=value&0xFFFF;
+					int combined=(BurningGeneratorBlockEntity.this.clientEnergyUpper<<16)|BurningGeneratorBlockEntity.this.clientEnergyLower;
+					BurningGeneratorBlockEntity.this.energyStorage.setEnergy(combined);
+				}
+				case 5 -> BurningGeneratorBlockEntity.this.clientMaxEnergyLower=value&0xFFFF;
+				case 6 -> BurningGeneratorBlockEntity.this.clientMaxEnergyUpper=value&0xFFFF;
+				case 7 -> BurningGeneratorBlockEntity.this.clientFuel=value;
+				case 8 -> BurningGeneratorBlockEntity.this.clientEmpty=value;
 			}
 		}
 		@Override
 		public int getCount(){
-			return 7;
+			return 9;
 		}
 	};
 	public BurningGeneratorBlockEntity(BlockPos position,BlockState blockState){
@@ -152,16 +192,7 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 			if(entity.burnTime>0){
 				shouldBeLit=true;
 				entity.burnTime--;
-				try{
-					java.lang.reflect.Field f=EnergyStorage.class.getDeclaredField("energy");
-					f.setAccessible(true);
-					int current=(int)f.get(entity.energyStorage);
-					int max=entity.energyStorage.getMaxEnergyStored();
-					f.set(entity.energyStorage,Math.min(current+energyPerTick,max));
-				}catch(Exception ignored){
-				}
-				entity.setChanged();
-				level.sendBlockUpdated(pos,blockState,blockState,3);
+				entity.energyStorage.generateEnergy(energyPerTick);
 				entity.setChanged();
 			}else{
 				ItemStack fuelStack=entity.itemHandler.getStackInSlot(INPUT_SLOT);
@@ -178,6 +209,7 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 							entity.itemHandler.setStackInSlot(INPUT_SLOT,copy);
 						}
 						shouldBeLit=true;
+						entity.setChanged();
 					}
 				}
 			}
@@ -191,7 +223,11 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 					int energyToTransfer=Math.min(entity.energyStorage.getEnergyStored(),getMaxExtract());
 					if(energyToTransfer>0){
 						int received=storage.receiveEnergy(energyToTransfer,false);
-						if(received>0) entity.energyStorage.extractEnergy(received,false);
+						if(received>0){
+							entity.energyStorage.extractEnergy(received,false);
+							entity.setChanged();
+							if(entity.energyStorage.getEnergyStored()<=0) break;
+						}
 					}
 				}
 			}
