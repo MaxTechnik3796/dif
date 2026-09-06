@@ -13,19 +13,25 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 @SuppressWarnings("unused")
 @EventBusSubscriber(modid=DifMod.MODID)
 public class BanHammer extends Item{
@@ -75,72 +81,63 @@ public class BanHammer extends Item{
 			event.setCanceled(true);
 		}
 	}
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event){
-		handleRaycastAttack(event.getEntity());
-	}
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public static void onLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event){
-		handleRaycastAttack(event.getEntity());
-	}
-	private static void handleRaycastAttack(Player player){
-		if(player!=null&&!player.level().isClientSide&&player.getMainHandItem().is(DifModItems.BAN_HAMMER.get())){
-			Entity raycastedTarget=getTargetEntity(player);
-			if(raycastedTarget!=null){
-				executeBanHammerEffect(player,raycastedTarget);
-			}
+	private static final Set<UUID> PENDING_BAN_UUIDS = ConcurrentHashMap.newKeySet();
+	public static void executeBanHammerEffect(Player attacker, Entity target){
+		if(attacker == null || attacker.level().isClientSide || target == null) return;
+		if(!(attacker.level() instanceof ServerLevel serverLevel)) return;
+		LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(serverLevel);
+		if(lightning != null){
+			lightning.moveTo(target.position());
+			lightning.setVisualOnly(true);
+			serverLevel.addFreshEntity(lightning);
 		}
-	}
-	public static void executeBanHammerEffect(Player attacker,Entity target){
-		if(attacker==null||attacker.level().isClientSide||target==null) return;
-		// 1. Ban příkaz pro hráče
-		if(target instanceof Player targetPlayer){
-			MinecraftServer server=targetPlayer.getServer();
-			if(server!=null){
-				String name=targetPlayer.getGameProfile().getName();
-				server.getCommands().performPrefixedCommand(
-						server.createCommandSourceStack(),
-						"ban "+name
-				);
-			}
-			targetPlayer.getAbilities().invulnerable=false;
-			targetPlayer.onUpdateAbilities();
-		}
-		// 2. Zrušení jakékoliv imunity entitě
+		serverLevel.playSound(null, target.getX(), target.getY(), target.getZ(),
+				SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.PLAYERS, 5.0F, 0.8F);
+		serverLevel.playSound(null, target.getX(), target.getY(), target.getZ(),
+				SoundEvents.WITHER_SPAWN, SoundSource.PLAYERS, 2.0F, 0.5F);
+		serverLevel.playSound(null, target.getX(), target.getY(), target.getZ(),
+				SoundEvents.WARDEN_SONIC_BOOM, SoundSource.PLAYERS, 2.5F, 0.7F);
+		serverLevel.sendParticles(ParticleTypes.SONIC_BOOM, target.getX(), target.getY() + 1.0, target.getZ(), 1, 0, 0, 0, 0);
+		serverLevel.sendParticles(ParticleTypes.FLASH, target.getX(), target.getY() + 1.0, target.getZ(), 3, 0.2, 0.2, 0.2, 0);
+		serverLevel.sendParticles(ParticleTypes.REVERSE_PORTAL, target.getX(), target.getY() + 1.0, target.getZ(), 80, 0.6, 1.0, 0.6, 0.2);
+		serverLevel.sendParticles(ParticleTypes.LARGE_SMOKE, target.getX(), target.getY() + 1.0, target.getZ(), 40, 0.5, 0.8, 0.5, 0.1);
+		serverLevel.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, target.getX(), target.getY() + 1.0, target.getZ(), 30, 0.4, 0.8, 0.4, 0.15);
+		DamageSource divineSource = serverLevel.damageSources().source(DamageTypes.FELL_OUT_OF_WORLD, attacker);
 		target.setInvulnerable(false);
-		// 3. Extrémní Void poškození
-		DamageSource divineSource=attacker.level().damageSources().source(DamageTypes.FELL_OUT_OF_WORLD,attacker);
-		target.hurt(divineSource,Float.MAX_VALUE);
+		target.hurt(divineSource, Float.MAX_VALUE);
 		if(target instanceof LivingEntity living){
-			living.setHealth(0.0f);
+			living.setHealth(0.0F);
 			living.die(divineSource);
 		}
-		// 4. Absolutní odstranění/zničení ze světa i pro nehitable entitu
-		if(target.isAlive()||!target.isRemoved()){
+		if(target instanceof Player targetPlayer){
+			UUID targetUuid = targetPlayer.getUUID();
+			if(!PENDING_BAN_UUIDS.add(targetUuid)){
+				return;
+			}
+			targetPlayer.getAbilities().invulnerable = false;
+			targetPlayer.onUpdateAbilities();
+			MinecraftServer server = serverLevel.getServer();
+			String playerName = targetPlayer.getGameProfile().getName();
+			long executeTick = server.getTickCount() + 10;
+			server.tell(new TickTask((int) executeTick, () -> {
+				try {
+					Component banMessage = Component.literal("[BAN] ")
+							.withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD)
+							.append(Component.literal("Player " + playerName + " was erased from existence by the Ban Hammer!")
+									.withStyle(ChatFormatting.RED));
+					server.getPlayerList().broadcastSystemMessage(banMessage, false);
+
+					server.getCommands().performPrefixedCommand(
+							server.createCommandSourceStack(),
+							"ban " + playerName + " Erased from existence by the Ban Hammer"
+					);
+				} finally {
+					PENDING_BAN_UUIDS.remove(targetUuid);
+				}
+			}));
+		} else if(target.isAlive() || !target.isRemoved()){
 			target.remove(Entity.RemovalReason.KILLED);
 			target.discard();
 		}
-	}
-	private static Entity getTargetEntity(Player player){
-		Vec3 eyePos=player.getEyePosition();
-		Vec3 viewVec=player.getViewVector(1.0F);
-		Vec3 reachVec=eyePos.add(viewVec.scale(6.0));
-		AABB box=player.getBoundingBox().expandTowards(viewVec.scale(6.0)).inflate(1.0);
-		Entity closest=null;
-		double closestDistance=6.0*6.0;
-		for(Entity entity: player.level().getEntities(player,box,e->e!=player)){
-			AABB entityBox=entity.getBoundingBox().inflate(entity.getPickRadius());
-			Optional<Vec3> hit=entityBox.clip(eyePos,reachVec);
-			if(entityBox.contains(eyePos)){
-				return entity;
-			}else if(hit.isPresent()){
-				double distSq=eyePos.distanceToSqr(hit.get());
-				if(distSq<closestDistance){
-					closest=entity;
-					closestDistance=distSq;
-				}
-			}
-		}
-		return closest;
 	}
 }
