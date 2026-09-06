@@ -7,7 +7,7 @@
 		"2": "dif:block/quarry_bottom",
 		"4": "create:block/axis",
 		"5": "create:block/axis_top",
-		"particle": "quarry_side"
+		"particle": "dif:block/quarry_side"
 	},
 	"elements": [
 		{
