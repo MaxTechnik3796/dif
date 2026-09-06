@@ -83,7 +83,7 @@ public class Engine extends KineticBlock implements EntityBlock, IWrenchable{
 			if(!rotated.canSurvive(level,context.getClickedPos())){
 				return InteractionResult.PASS;
 			}else{
-			KineticBlockEntity.switchToBlockState(level,pos,this.updateAfterWrenched(rotated,context));
+				KineticBlockEntity.switchToBlockState(level,pos,this.updateAfterWrenched(rotated,context));
 				if(level.getBlockState(pos)!=state) IWrenchable.playRotateSound(level,pos);
 				return InteractionResult.SUCCESS;
 			}

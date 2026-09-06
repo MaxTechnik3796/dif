@@ -90,7 +90,6 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 	private int clientMaxEnergyUpper;
 	private int clientFuel;
 	private int clientEmpty;
-
 	public final ContainerData dataAccess=new SimpleContainerData(9){
 		@Override
 		public int get(int index){
@@ -117,9 +116,9 @@ public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntit
 				case 1 -> BurningGeneratorBlockEntity.this.maxBurnTime;
 				case 2 -> lit;
 				case 3 -> energy&0xFFFF;
-				case 4 -> (energy>>>16)&0xFFFF;
+				case 4 -> (energy >>> 16)&0xFFFF;
 				case 5 -> maxEnergy&0xFFFF;
-				case 6 -> (maxEnergy>>>16)&0xFFFF;
+				case 6 -> (maxEnergy >>> 16)&0xFFFF;
 				case 7 -> itemHandler.getStackInSlot(INPUT_SLOT).getBurnTime(null);
 				case 8 -> empty;
 				default -> 0;

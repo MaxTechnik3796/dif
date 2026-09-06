@@ -24,6 +24,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
+
 import java.util.function.Supplier;
 public class SolarPanel extends Block implements SimpleWaterloggedBlock{
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
@@ -79,7 +80,7 @@ public class SolarPanel extends Block implements SimpleWaterloggedBlock{
 		world.scheduleTick(pos,this,1);
 	}
 	@Override
-	protected void neighborChanged(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos, boolean movedByPiston){
+	protected void neighborChanged(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Block neighborBlock,@NotNull BlockPos neighborPos,boolean movedByPiston){
 		super.neighborChanged(state,level,pos,neighborBlock,neighborPos,movedByPiston);
 		if(!level.isClientSide&&neighborPos.equals(pos.below())){
 			level.scheduleTick(pos,this,1);

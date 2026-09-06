@@ -169,7 +169,6 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	}
 	private int cachedExtenders=-1;
 	private boolean ext0=false, ext1=false, ext2=false;
-
 	public void updateExtenders(){
 		if(level==null) return;
 		BlockState ownState=getBlockState();
@@ -196,7 +195,6 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 			cachedExtenders=1;
 		}
 	}
-
 	public void clientTick(){
 		if(level==null) return;
 		if(cachedExtenders==-1) updateExtenders();

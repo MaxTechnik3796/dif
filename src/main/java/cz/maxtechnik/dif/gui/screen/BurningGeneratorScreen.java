@@ -54,7 +54,7 @@ public class BurningGeneratorScreen extends AbstractContainerScreen<BurningGener
 		int maxEnergy=Math.max(1,this.menu.getMaxEnergyStored());
 		int energyBarWidth=14;
 		int energyBarTotalHeight=52;
-		int scaledEnergyHeight= Math.clamp((int) (((double) energyStored / maxEnergy) * energyBarTotalHeight), 0, energyBarTotalHeight);
+		int scaledEnergyHeight=Math.clamp((int)(((double)energyStored/maxEnergy)*energyBarTotalHeight),0,energyBarTotalHeight);
 		int sourceEnergyBarX=100;
 		int sourceEnergyBarY=energyBarTotalHeight-scaledEnergyHeight;//0+
 		int screenEnergyBarX=this.leftPos+9;

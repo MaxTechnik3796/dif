@@ -68,7 +68,7 @@ public class BrassBarrel extends Block implements EntityBlock{
 		return new BrassBarrelBlockEntity(pos,blockState);
 	}
 	@Override
-	protected void tick(@NotNull BlockState blockState, ServerLevel serverLevel, @NotNull BlockPos pos, @NotNull RandomSource randomSource){
+	protected void tick(@NotNull BlockState blockState,ServerLevel serverLevel,@NotNull BlockPos pos,@NotNull RandomSource randomSource){
 		BlockEntity blockEntity=serverLevel.getBlockEntity(pos);
 		if(blockEntity instanceof BaseBarrelBlockEntity barrel){
 			barrel.recheckOpen();

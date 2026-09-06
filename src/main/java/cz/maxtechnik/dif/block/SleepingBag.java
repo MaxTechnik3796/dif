@@ -100,7 +100,7 @@ public class SleepingBag extends Block{
 		final BlockState headState=blockState;
 		player.startSleepInBed(pos).ifLeft(problem->{
 			if(problem!=null&&problem.getMessage()!=null) player.displayClientMessage(problem.getMessage(),true);
-		}).ifRight(unit-> level.setBlock(headPos,headState.setValue(OCCUPIED,true),3));
+		}).ifRight(unit->level.setBlock(headPos,headState.setValue(OCCUPIED,true),3));
 		return InteractionResult.SUCCESS;
 	}
 	@Override

@@ -10,21 +10,17 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-
-public class AndesiteBarrelBlockEntity extends BaseBarrelBlockEntity {
-	public static final int CONTAINER_SIZE = 36;
-
-	public AndesiteBarrelBlockEntity(BlockPos position, BlockState blockState) {
-		super(DifModBlockEntities.ANDESITE_BARREL.get(), position, blockState, CONTAINER_SIZE, AndesiteBarrel.OPEN);
+public class AndesiteBarrelBlockEntity extends BaseBarrelBlockEntity{
+	public static final int CONTAINER_SIZE=36;
+	public AndesiteBarrelBlockEntity(BlockPos position,BlockState blockState){
+		super(DifModBlockEntities.ANDESITE_BARREL.get(),position,blockState,CONTAINER_SIZE,AndesiteBarrel.OPEN);
 	}
-
 	@Override
-	public @NotNull Component getDefaultName() {
+	public @NotNull Component getDefaultName(){
 		return Component.translatable("container.dif.andesite_barrel");
 	}
-
 	@Override
-	public @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory inv) {
-		return new ChestMenu(MenuType.GENERIC_9x4, id, inv, this, 4);
+	public @NotNull AbstractContainerMenu createMenu(int id,@NotNull Inventory inv){
+		return new ChestMenu(MenuType.GENERIC_9x4,id,inv,this,4);
 	}
 }
