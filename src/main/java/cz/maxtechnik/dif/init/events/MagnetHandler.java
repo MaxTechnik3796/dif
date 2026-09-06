@@ -30,28 +30,36 @@ public class MagnetHandler {
         List<ItemEntity> items = player.level().getEntitiesOfClass(ItemEntity.class, area,
                 itemEntity -> !itemEntity.hasPickUpDelay() && itemEntity.isAlive());
 
+        if (items.isEmpty()) return;
+
+        Vec3 playerTarget = player.position().add(0, 0.3, 0);
         for (ItemEntity itemEntity : items) {
-            Vec3 toPlayer = player.position().add(0, 0.3, 0).subtract(itemEntity.position());
-            double distance = toPlayer.length();
+            Vec3 toPlayer = playerTarget.subtract(itemEntity.position());
+            double distSqr = toPlayer.lengthSqr();
 
-            if (distance < 0.7) continue;
+            if (distSqr < 0.49) continue;
 
-            Vec3 motion = toPlayer.normalize().scale(PULL_SPEED);
+            double distance = Math.sqrt(distSqr);
+            Vec3 motion = toPlayer.scale(PULL_SPEED / distance);
             itemEntity.setDeltaMovement(itemEntity.getDeltaMovement().add(motion).scale(0.9));
             itemEntity.hurtMarked = true;
         }
     }
 
     private static boolean hasActiveMagnet(Player player) {
+        if (isMagnetEnabled(player.getMainHandItem())) return true;
+        if (isMagnetEnabled(player.getOffhandItem())) return true;
+
         for (ItemStack stack : player.getInventory().items) {
-            if (stack.getItem() instanceof Magnet && Magnet.isEnabled(stack)) return true;
+            if (isMagnetEnabled(stack)) return true;
         }
         for (ItemStack stack : player.getInventory().armor) {
-            if (stack.getItem() instanceof Magnet && Magnet.isEnabled(stack)) return true;
-        }
-        for (ItemStack stack : player.getInventory().offhand) {
-            if (stack.getItem() instanceof Magnet && Magnet.isEnabled(stack)) return true;
+            if (isMagnetEnabled(stack)) return true;
         }
         return false;
+    }
+
+    private static boolean isMagnetEnabled(ItemStack stack) {
+        return !stack.isEmpty() && stack.getItem() instanceof Magnet && Magnet.isEnabled(stack);
     }
 }
