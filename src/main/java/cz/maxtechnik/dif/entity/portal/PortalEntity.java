@@ -77,12 +77,14 @@ public class PortalEntity extends Entity{
 	}
 	public void setFacing(Direction direction){
 		entityData.set(DATA_FACING,direction!=null?direction.getName():Direction.NORTH.getName());
+		setBoundingBox(buildPortalAABB());
 	}
 	public Direction getUpDir(){
 		return Direction.byName(entityData.get(DATA_UP_DIR));
 	}
 	public void setUpDir(Direction direction){
 		entityData.set(DATA_UP_DIR,direction!=null?direction.getName():Direction.UP.getName());
+		setBoundingBox(buildPortalAABB());
 	}
 	// Bounding box
 	public AABB buildPortalAABB(){
@@ -140,35 +142,32 @@ public class PortalEntity extends Entity{
 	// Tick
 	@Override
 	public void tick(){
-		super.tick();
-		setBoundingBox(buildPortalAABB());
+		this.tickCount++;
 		if(level().isClientSide()) return;
 		if(getOwner()==null){
 			discard();
 			return;
 		}
 		ServerLevel sl=(ServerLevel)level();
-		// Kontrola podpory každé 2 ticky
-		if(tickCount%2==0&&!checkSupport(sl)){
+		// Kontrola podpory každých 20 ticků (1x za sekundu)
+		if(tickCount%20==0&&!checkSupport(sl)){
 			PortalData.get(sl).remove(getOwner(),isBlue());
 			discard();
 			return;
 		}
 		if(!isLinked()) return;
-		// Teleportace entit
+		// Teleportace entit (sjednocené spatial query)
 		AABB box=getBoundingBox().inflate(0.1);
 		long now=sl.getGameTime();
-		for(Player p: sl.getEntitiesOfClass(Player.class,box)){
-			if(isOnCooldown(p.getUUID(),now)) continue;
-			teleport(p,sl,now,true);
-		}
-		if(DifModServerConfig.PORTAL_ALLOW_ENTITIES.get()){
-			int count=0;
-			for(Entity e: sl.getEntitiesOfClass(Entity.class,box,e->!(e instanceof Player)&&!(e instanceof PortalEntity))){
-				if(count>=MAX_ENTITIES_PER_TICK) break;
-				if(isOnCooldown(e.getUUID(),now)) continue;
+		boolean allowNonPlayers=DifModServerConfig.PORTAL_ALLOW_ENTITIES.get();
+		int nonPlayerCount=0;
+		for(Entity e: sl.getEntitiesOfClass(Entity.class,box,entity->!(entity instanceof PortalEntity))){
+			if(isOnCooldown(e.getUUID(),now)) continue;
+			if(e instanceof Player p){
+				teleport(p,sl,now,true);
+			}else if(allowNonPlayers&&nonPlayerCount<MAX_ENTITIES_PER_TICK){
 				teleport(e,sl,now,false);
-				count++;
+				nonPlayerCount++;
 			}
 		}
 		if(!cooldowns.isEmpty()&&(tickCount&31)==0) cooldowns.values().removeIf(t->now-t>200);
