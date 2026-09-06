@@ -13,7 +13,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;   // ✅ správný import
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 
@@ -32,12 +32,12 @@ public class ClientVisualEffectsRenderer{
 		double dist=Math.sqrt(player.distanceToSqr(x,y,z));
 		if(dist<320.0){
 			float factor=(float)Math.max(0.0,1.0-(dist/320.0));
-			nukeFlashIntensity= Math.clamp(nukeFlashIntensity, factor * intensity * 1.5F, 1.0F);
-			nukeShakeIntensity= Math.clamp(nukeShakeIntensity, factor * intensity, 1.0F);
+			nukeFlashIntensity=Math.clamp(Math.max(nukeFlashIntensity, factor * intensity * 1.5F), 0.0F, 1.0F);
+			nukeShakeIntensity=Math.clamp(Math.max(nukeShakeIntensity, factor * intensity), 0.0F, 1.0F);
 		}
 	}
 	@SubscribeEvent
-	public static void onClientTick(ClientTickEvent.Pre event){ // ✅ Pre = Phase.START ekvivalent
+	public static void onClientTick(ClientTickEvent.Pre event){
 		Minecraft mc=Minecraft.getInstance();
 		Player player=mc.player;
 		if(player==null) return;
@@ -96,8 +96,8 @@ public class ClientVisualEffectsRenderer{
 		Player player=mc.player;
 		if(player==null) return;
 		GuiGraphics gg=event.getGuiGraphics();
-		int w=mc.getWindow().getGuiScaledWidth();   // ✅ přes mc.getWindow()
-		int h=mc.getWindow().getGuiScaledHeight();  // ✅
+		int w=mc.getWindow().getGuiScaledWidth();
+		int h=mc.getWindow().getGuiScaledHeight();
 		if(player.hasEffect(DifModMobEffects.WTF)){
 			float hue=(player.tickCount*3.75F%100)/100F;
 			int rgb=Color.getHSBColor(hue,1F,1F).getRGB();

@@ -1,16 +1,22 @@
 package cz.maxtechnik.dif.init.events.nuke;
 
+import cz.maxtechnik.dif.DifMod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class NukeCraterHandler{
+	private static final TagKey<Block> C_STONES=BlockTags.create(ResourceLocation.fromNamespaceAndPath("c","stones"));
+	private static final TagKey<Block> NUKE_WATER_PLANTS=BlockTags.create(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"nuke_water_plants"));
 	private static final int BLOCKS_PER_TICK=36_000;
 	private static final float MAX_DESTROYABLE_RESISTANCE=1500F;
 	private static final double HOR_R_FULL=56.0, HOR_R_TOTAL=72.0;
@@ -21,6 +27,7 @@ public class NukeCraterHandler{
 	private static final double DN_FULL_SQ=DOWN_R_FULL*DOWN_R_FULL, DN_TOTAL_SQ=DOWN_R_TOTAL*DOWN_R_TOTAL;
 	private static final double SCORCH_RADIUS=116.0, SCORCH_RADIUS_SQ=SCORCH_RADIUS*SCORCH_RADIUS;
 	private static final BlockState AIR=Blocks.AIR.defaultBlockState();
+	private static final BlockState WATER=Blocks.WATER.defaultBlockState();
 	private static final int UPDATE_FLAGS=2|16|64;
 
 	private int currentShell=0, maxShell=(int)Math.ceil(SCORCH_RADIUS), shellFace=0, shellU=0, shellV=0;
@@ -172,15 +179,15 @@ public class NukeCraterHandler{
 		BlockState state=level.getBlockState(mutablePos);
 		if(state.isAir()) return;
 
-		if(state.is(Blocks.WATER)||state.getFluidState().is(net.minecraft.tags.FluidTags.WATER)){
-			level.setBlock(mutablePos,AIR,UPDATE_FLAGS);
+		if(state.is(Blocks.WATER)) return;
+
+		if(state.is(NUKE_WATER_PLANTS)){
+			level.setBlock(mutablePos,WATER,UPDATE_FLAGS);
 			return;
 		}
 
-		if(state.is(BlockTags.REPLACEABLE_BY_TREES)||state.is(BlockTags.LEAVES)||state.is(BlockTags.FLOWERS)
-				||state.is(Blocks.SHORT_GRASS)||state.is(Blocks.TALL_GRASS)||state.is(Blocks.VINE)
-				||state.is(Blocks.SEAGRASS)||state.is(Blocks.TALL_SEAGRASS)||state.is(Blocks.KELP)||state.is(Blocks.KELP_PLANT)
-				||state.is(Blocks.SNOW)||state.is(Blocks.SNOW_BLOCK)||state.is(Blocks.ICE)){
+		if(state.is(BlockTags.SWORD_EFFICIENT)||state.is(BlockTags.REPLACEABLE_BY_TREES)
+				||state.is(BlockTags.ICE)||state.is(BlockTags.SNOW)){
 			level.setBlock(mutablePos,AIR,UPDATE_FLAGS);
 			return;
 		}
@@ -191,8 +198,7 @@ public class NukeCraterHandler{
 			return;
 		}
 
-		if(state.is(Blocks.GRASS_BLOCK)||state.is(Blocks.SAND)||state.is(Blocks.RED_SAND)
-				||state.is(Blocks.GRAVEL)||state.is(Blocks.CLAY)){
+		if(state.is(BlockTags.DIRT)||state.is(Blocks.CLAY)){
 			float r=random.nextFloat();
 			BlockState dirt=(r<0.60F)?Blocks.COARSE_DIRT.defaultBlockState()
 					:(r<0.90F)?Blocks.DIRT.defaultBlockState()
@@ -205,7 +211,7 @@ public class NukeCraterHandler{
 			return;
 		}
 
-		if(state.is(Blocks.STONE)){
+		if(state.is(C_STONES)){
 			if(random.nextFloat()<0.10F){
 				level.setBlock(mutablePos,Blocks.COBBLESTONE.defaultBlockState(),UPDATE_FLAGS);
 			}
