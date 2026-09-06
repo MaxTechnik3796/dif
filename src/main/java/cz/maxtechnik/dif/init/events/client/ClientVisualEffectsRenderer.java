@@ -100,7 +100,7 @@ public class ClientVisualEffectsRenderer{
 		int h=mc.getWindow().getGuiScaledHeight();
 		if(player.hasEffect(DifModMobEffects.WTF)){
 			float hue=(player.tickCount*3.75F%100)/100F;
-			int rgb=Color.getHSBColor(hue,1F,1F).getRGB();
+			int rgb=Color.HSBtoRGB(hue,1F,1F);
 			float alpha=0.2F+(float)(Math.sin(player.tickCount*0.75F)+1F)/2F*0.5F;
 			int color=((int)(alpha*255)<<24)|(rgb&0xFFFFFF);
 			gg.fill(0,0,w,h,color);
@@ -108,7 +108,7 @@ public class ClientVisualEffectsRenderer{
 		if(player.hasEffect(DifModMobEffects.DRANK)){
 			float time=player.tickCount*0.02F;
 			float hue=0.3F+0.06F*(float)Math.sin(time);
-			int rgb=Color.getHSBColor(hue,0.9F,0.95F).getRGB();
+			int rgb=Color.HSBtoRGB(hue,0.9F,0.95F);
 			float pulse=(float)(Math.sin(player.tickCount*0.05F)+1F)*0.5F;
 			float alpha=0.18F+pulse*0.25F;
 			int color=((int)(alpha*255)<<24)|(rgb&0xFFFFFF);

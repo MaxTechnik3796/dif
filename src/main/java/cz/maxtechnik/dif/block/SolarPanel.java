@@ -1,7 +1,5 @@
 package cz.maxtechnik.dif.block;
 
-import cz.maxtechnik.dif.config.DifModServerConfig;
-import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -26,15 +24,18 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
+import java.util.function.Supplier;
 public class SolarPanel extends Block implements SimpleWaterloggedBlock{
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
-	public SolarPanel(){
+	private final Supplier<Integer> energyPerTick;
+	public SolarPanel(Supplier<Integer> energyPerTick){
 		super(Properties.of().strength(5F).sound(SoundType.NETHERITE_BLOCK).noOcclusion().isRedstoneConductor((bs,br,bp)->false).requiresCorrectToolForDrops());
+		this.energyPerTick=energyPerTick;
 		this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED,false));
 	}
 	@Override
 	public boolean skipRendering(@NotNull BlockState blockState,BlockState adjacentBlockState,@NotNull Direction side){
-		return adjacentBlockState.getBlock().equals(this)||super.skipRendering(blockState,adjacentBlockState,side);
+		return adjacentBlockState.getBlock() instanceof SolarPanel||super.skipRendering(blockState,adjacentBlockState,side);
 	}
 	@Override
 	public boolean propagatesSkylightDown(BlockState blockState,@NotNull BlockGetter reader,@NotNull BlockPos pos){
@@ -78,21 +79,25 @@ public class SolarPanel extends Block implements SimpleWaterloggedBlock{
 		world.scheduleTick(pos,this,1);
 	}
 	@Override
+	protected void neighborChanged(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos, boolean movedByPiston){
+		super.neighborChanged(state,level,pos,neighborBlock,neighborPos,movedByPiston);
+		if(!level.isClientSide&&neighborPos.equals(pos.below())){
+			level.scheduleTick(pos,this,1);
+		}
+	}
+	@Override
 	public void tick(@NotNull BlockState blockstate,@NotNull ServerLevel world,@NotNull BlockPos pos,@NotNull RandomSource random){
 		super.tick(blockstate,world,pos,random);
-		BlockEntity ent=world.getBlockEntity(pos.below());
-		Block block=blockstate.getBlock();
-		if(world.canSeeSky(pos)&&world.isDay()&&world.dimension().equals(Level.OVERWORLD)&&ent!=null){
-			if(block.equals(DifModBlocks.SOLAR_PANEL_00.get())||block.equals(DifModBlocks.SOLAR_PANEL_00_W.get()))
-				generate(ent,DifModServerConfig.SOLAR_PANEL_00.get());
-			else if(block.equals(DifModBlocks.SOLAR_PANEL_01.get())||block.equals(DifModBlocks.SOLAR_PANEL_01_W.get()))
-				generate(ent,DifModServerConfig.SOLAR_PANEL_01.get());
-			else if(block.equals(DifModBlocks.SOLAR_PANEL_02.get())||block.equals(DifModBlocks.SOLAR_PANEL_02_W.get()))
-				generate(ent,DifModServerConfig.SOLAR_PANEL_02.get());
-			else if(block.equals(DifModBlocks.SOLAR_PANEL_03.get())||block.equals(DifModBlocks.SOLAR_PANEL_03_W.get()))
-				generate(ent,DifModServerConfig.SOLAR_PANEL_03.get());
-			else if(block.equals(DifModBlocks.SOLAR_PANEL_04.get())||block.equals(DifModBlocks.SOLAR_PANEL_04_W.get()))
-				generate(ent,DifModServerConfig.SOLAR_PANEL_04.get());
+		if(!world.dimensionType().hasSkyLight()||!world.isDay()){
+			world.scheduleTick(pos,this,20);
+			return;
+		}
+		if(world.canSeeSky(pos)){
+			BlockEntity ent=world.getBlockEntity(pos.below());
+			if(ent!=null){
+				int amount=this.energyPerTick.get();
+				if(amount>0) generate(ent,amount);
+			}
 		}
 		world.scheduleTick(pos,this,1);
 	}

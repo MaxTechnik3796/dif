@@ -3,7 +3,6 @@ package cz.maxtechnik.dif.block;
 import com.mojang.serialization.MapCodec;
 import cz.maxtechnik.dif.block.entity.QuarryFrameBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
-import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -100,6 +99,6 @@ public class QuarryFrame extends BaseEntityBlock{
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level,@NotNull BlockState blockState,@NotNull BlockEntityType<T> type){
-		return level.isClientSide?null:createTickerHelper(type,DifModBlockEntities.QUARRY_FRAME.get(),(lvl,pos,state,frameEntity)->QuarryFrameBlockEntity.tick(lvl,pos,frameEntity));
+		return null;
 	}
 }

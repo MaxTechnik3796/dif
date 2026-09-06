@@ -2,6 +2,7 @@ package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.block.*;
+import cz.maxtechnik.dif.config.DifModServerConfig;
 import cz.maxtechnik.dif.block.barrel.AndesiteBarrel;
 import cz.maxtechnik.dif.block.barrel.BrassBarrel;
 import cz.maxtechnik.dif.block.barrel.CopperBarrel;
@@ -81,17 +82,17 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>OLD_CHEST=REGISTRY.register("old_chest",OldChest::new);
 
 	//Solar Panels:
-	public static final DeferredBlock<Block>SOLAR_PANEL_00=REGISTRY.register("solar_panel_00",SolarPanel::new);
-	public static final DeferredBlock<Block>SOLAR_PANEL_01=REGISTRY.register("solar_panel_01",SolarPanel::new);
-	public static final DeferredBlock<Block>SOLAR_PANEL_02=REGISTRY.register("solar_panel_02",SolarPanel::new);
-	public static final DeferredBlock<Block>SOLAR_PANEL_03=REGISTRY.register("solar_panel_03",SolarPanel::new);
-	public static final DeferredBlock<Block>SOLAR_PANEL_04=REGISTRY.register("solar_panel_04",SolarPanel::new);
+	public static final DeferredBlock<Block>SOLAR_PANEL_00=REGISTRY.register("solar_panel_00",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_00));
+	public static final DeferredBlock<Block>SOLAR_PANEL_01=REGISTRY.register("solar_panel_01",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_01));
+	public static final DeferredBlock<Block>SOLAR_PANEL_02=REGISTRY.register("solar_panel_02",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_02));
+	public static final DeferredBlock<Block>SOLAR_PANEL_03=REGISTRY.register("solar_panel_03",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_03));
+	public static final DeferredBlock<Block>SOLAR_PANEL_04=REGISTRY.register("solar_panel_04",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_04));
 
-	public static final DeferredBlock<Block>SOLAR_PANEL_00_W=REGISTRY.register("solar_panel_00_w",SolarPanel::new);
-	public static final DeferredBlock<Block>SOLAR_PANEL_01_W=REGISTRY.register("solar_panel_01_w",SolarPanel::new);
-	public static final DeferredBlock<Block>SOLAR_PANEL_02_W=REGISTRY.register("solar_panel_02_w",SolarPanel::new);
-	public static final DeferredBlock<Block>SOLAR_PANEL_03_W=REGISTRY.register("solar_panel_03_w",SolarPanel::new);
-	public static final DeferredBlock<Block>SOLAR_PANEL_04_W=REGISTRY.register("solar_panel_04_w",SolarPanel::new);
+	public static final DeferredBlock<Block>SOLAR_PANEL_00_W=REGISTRY.register("solar_panel_00_w",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_00));
+	public static final DeferredBlock<Block>SOLAR_PANEL_01_W=REGISTRY.register("solar_panel_01_w",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_01));
+	public static final DeferredBlock<Block>SOLAR_PANEL_02_W=REGISTRY.register("solar_panel_02_w",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_02));
+	public static final DeferredBlock<Block>SOLAR_PANEL_03_W=REGISTRY.register("solar_panel_03_w",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_03));
+	public static final DeferredBlock<Block>SOLAR_PANEL_04_W=REGISTRY.register("solar_panel_04_w",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_04));
 
 	//Random (2):
 	public static final DeferredBlock<Block>CINDER_FLOUR_BLOCK=REGISTRY.register("cinder_flour_block",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.WART_BLOCK).strength(0.4F,0.6F)));

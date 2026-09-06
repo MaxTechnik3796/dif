@@ -79,6 +79,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	@Override
 	public void initialize(){
 		super.initialize();
+		updateExtenders();
 		if(level!=null&&!level.isClientSide) updateGeneratedRotation();
 	}
 	@Override
@@ -166,18 +167,44 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		}
 		if(level.isClientSide&&getBlockState().getValue(ACTIVE)) clientTick();
 	}
+	private int cachedExtenders=-1;
+	private boolean ext0=false, ext1=false, ext2=false;
+
+	public void updateExtenders(){
+		if(level==null) return;
+		BlockState ownState=getBlockState();
+		if(!(ownState.getBlock() instanceof Engine)) return;
+		if(isEngineBlock(ownState.getBlock())){
+			Direction.Axis axis=ownState.getValue(FACING).getAxis();
+			ext0=isEngineExtender(worldPosition.above());
+			if(axis==Direction.Axis.Z){
+				ext1=isEngineExtender(worldPosition.east());
+				ext2=isEngineExtender(worldPosition.west());
+			}else if(axis==Direction.Axis.X){
+				ext1=isEngineExtender(worldPosition.north());
+				ext2=isEngineExtender(worldPosition.south());
+			}else{
+				ext1=false;
+				ext2=false;
+			}
+			int count=0;
+			if(ext0) count++;
+			if(ext1) count++;
+			if(ext2) count++;
+			cachedExtenders=count;
+		}else{
+			cachedExtenders=1;
+		}
+	}
+
 	public void clientTick(){
 		if(level==null) return;
+		if(cachedExtenders==-1) updateExtenders();
 		Direction.Axis axis=getBlockState().getValue(FACING).getAxis();
-		boolean ext0=isEngineExtender(worldPosition.above());
-		boolean ext1;
-		boolean ext2;
 		double vel=0.007;
 		Block ownBlock=getBlockState().getBlock();
 		if(axis.equals(Direction.Axis.Z)){
 			if(isEngineBlock(ownBlock)){
-				ext1=isEngineExtender(worldPosition.east());
-				ext2=isEngineExtender(worldPosition.west());
 				if(ext0){
 					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.3),new Vec3(0,vel,0));
 					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
@@ -201,8 +228,6 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 			}
 		}else if(axis.equals(Direction.Axis.X)){
 			if(isEngineBlock(ownBlock)){
-				ext1=isEngineExtender(worldPosition.north());
-				ext2=isEngineExtender(worldPosition.south());
 				if(ext0){
 					particle(new Vec3(worldPosition.getX()+0.3,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
 					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
@@ -250,22 +275,8 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		return FuelType.INVALID;
 	}
 	public int countExtenders(){
-		if(level==null) return 0;
-		BlockState ownState=getBlockState();
-		if(!(ownState.getBlock() instanceof Engine)) return 0;
-		if(isEngineBlock(ownState.getBlock())){
-			Direction.Axis axis=ownState.getValue(FACING).getAxis();
-			int count=0;
-			if(isEngineExtender(worldPosition.above())) count++;
-			if(axis==Direction.Axis.Z){
-				if(isEngineExtender(worldPosition.east())) count++;
-				if(isEngineExtender(worldPosition.west())) count++;
-			}else if(axis==Direction.Axis.X){
-				if(isEngineExtender(worldPosition.north())) count++;
-				if(isEngineExtender(worldPosition.south())) count++;
-			}
-			return count;
-		}else return 1;
+		if(cachedExtenders==-1) updateExtenders();
+		return cachedExtenders;
 	}
 	public boolean isEngineExtender(BlockPos pos){
 		if(level==null) return false;

@@ -83,10 +83,17 @@ public class Engine extends KineticBlock implements EntityBlock, IWrenchable{
 			if(!rotated.canSurvive(level,context.getClickedPos())){
 				return InteractionResult.PASS;
 			}else{
-				KineticBlockEntity.switchToBlockState(level,pos,this.updateAfterWrenched(rotated,context));
+			KineticBlockEntity.switchToBlockState(level,pos,this.updateAfterWrenched(rotated,context));
 				if(level.getBlockState(pos)!=state) IWrenchable.playRotateSound(level,pos);
 				return InteractionResult.SUCCESS;
 			}
+		}
+	}
+	@Override
+	public void neighborChanged(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Block block,@NotNull BlockPos fromPos,boolean isMoving){
+		super.neighborChanged(state,level,pos,block,fromPos,isMoving);
+		if(level.getBlockEntity(pos) instanceof EngineBlockEntity be){
+			be.updateExtenders();
 		}
 	}
 	@Override

@@ -32,6 +32,13 @@ public class JetpackHandler{
 	private static final int HOVER_COST=1;
 	private static final Map<UUID,Integer> lastFlyTick=new HashMap<>();
 	@SubscribeEvent
+	public static void onPlayerLoggedOut(net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent event){
+		UUID uid=event.getEntity().getUUID();
+		verticalVelocity.remove(uid);
+		lastFlyTick.remove(uid);
+		hoverTick.remove(uid);
+	}
+	@SubscribeEvent
 	public static void onPlayerTick(PlayerTickEvent.Post event){
 		Player player=event.getEntity();
 		ItemStack chest=player.getItemBySlot(EquipmentSlot.CHEST);

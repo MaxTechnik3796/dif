@@ -25,7 +25,11 @@ public class QuarryFrameBlockEntity extends BlockEntity{
 	public void scheduleRemoval(){
 		scheduledForRemoval=true;
 		ownerQuarryPos=null;
-		setChanged();
+		if(level!=null&&!level.isClientSide){
+			level.removeBlock(worldPosition,false);
+		}else{
+			setChanged();
+		}
 	}
 	public BlockPos getOwnerPos(){
 		return ownerQuarryPos;

@@ -96,9 +96,11 @@ public class SleepingBag extends Block{
 			player.displayClientMessage(Component.translatable("block.minecraft.bed.occupied"),true);
 			return InteractionResult.SUCCESS;
 		}
+		final BlockPos headPos=pos;
+		final BlockState headState=blockState;
 		player.startSleepInBed(pos).ifLeft(problem->{
 			if(problem!=null&&problem.getMessage()!=null) player.displayClientMessage(problem.getMessage(),true);
-		});
+		}).ifRight(unit-> level.setBlock(headPos,headState.setValue(OCCUPIED,true),3));
 		return InteractionResult.SUCCESS;
 	}
 	@Override
@@ -128,7 +130,7 @@ public class SleepingBag extends Block{
 	@SuppressWarnings("unused")
 	private DyeColor getColor(BlockState blockState){
 		Block block=blockState.getBlock();
-		if(!(block instanceof BedBlock)) return WHITE;
+		if(!(block instanceof SleepingBag)) return WHITE;
 		if(block.equals(WHITE_SLEEPING_BAG.get())) return WHITE;
 		if(block.equals(ORANGE_SLEEPING_BAG.get())) return ORANGE;
 		if(block.equals(MAGENTA_SLEEPING_BAG.get())) return MAGENTA;
