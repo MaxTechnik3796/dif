@@ -7,7 +7,6 @@ import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public class QuarryAreaManager{
 	public static final int DEFAULT_RANGE=5;
 	private static final int FRAME_HEIGHT=3;
@@ -31,7 +30,6 @@ public class QuarryAreaManager{
 		return area!=null;
 	}
 	// Matematika framu
-
 	public List<BlockPos> computeFramePositions(int yBase){
 		if(cachedFramePos!=null) return cachedFramePos;
 		if(area==null) return List.of();
@@ -60,13 +58,11 @@ public class QuarryAreaManager{
 	public void setMiningPos(BlockPos pos){
 		this.miningPos=pos;
 	}
-
 	public void resetMiningPos(int yBase){
 		if(miningBounds!=null){
 			this.miningPos=new BlockPos(miningBounds.minX(),yBase-1,miningBounds.minZ());
 		}
 	}
-
 	public boolean advanceMiningPos(Level level){
 		if(miningPos==null||level==null||miningBounds==null) return true;
 		int nx=miningPos.getX()+1;
@@ -84,7 +80,6 @@ public class QuarryAreaManager{
 		return ny<=level.getMinBuildHeight();
 	}
 	// Chunkloading
-
 	public void loadMiningChunks(ServerLevel sl){
 		unloadForcedChunks(sl);
 		if(miningBounds==null) return;
@@ -99,7 +94,6 @@ public class QuarryAreaManager{
 			}
 		}
 	}
-
 	public void unloadForcedChunks(ServerLevel sl){
 		for(ChunkPos cp: forcedChunks){
 			sl.setChunkForced(cp.x,cp.z,false);

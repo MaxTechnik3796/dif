@@ -6,10 +6,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -21,7 +19,7 @@ import java.util.List;
  * Logika pro samotné vytěžení bloku, spotřebu těžení a distribuci dropů.
  * Odděluje se tím "akční" část quarry od samotné správy stavů.
  */
-public class QuarryMiningLogic {
+public class QuarryMiningLogic{
 	/**
 	 * Provede těžební tick.
 	 *
@@ -31,66 +29,65 @@ public class QuarryMiningLogic {
 	 * @param progressStep      Kolik progresu přibylo tento tick
 	 * @return Nový zůstatek nastřádaného progresu (miningProgressAcc)
 	 */
-	public static float doMiningTick(QuarryBlockEntity be, Level level, float miningProgressAcc, float progressStep) {
-		if (!(level instanceof ServerLevel sl)) return miningProgressAcc;
-		QuarryAreaManager areaManager = be.getAreaManager();
-		BlockPos miningPos = areaManager.getMiningPos();
-		if (miningPos == null) {
+	public static float doMiningTick(QuarryBlockEntity be,Level level,float miningProgressAcc,float progressStep){
+		if(!(level instanceof ServerLevel sl)) return miningProgressAcc;
+		QuarryAreaManager areaManager=be.getAreaManager();
+		BlockPos miningPos=areaManager.getMiningPos();
+		if(miningPos==null){
 			areaManager.resetMiningPos(be.getBlockPos().getY());
-			miningPos = areaManager.getMiningPos();
+			miningPos=areaManager.getMiningPos();
 			be.setChanged();
 		}
-		ItemStack tool = buildSimulatedTool();
-		miningProgressAcc += progressStep;
-		int safety = 0;
-		while (safety++ < 1000) {
+		ItemStack tool=buildSimulatedTool();
+		miningProgressAcc+=progressStep;
+		int safety=0;
+		while(safety++<1000){
 			// Přeskočit prázdné bloky a bloky obsahující pouze kapalinu
-			while (level.isEmptyBlock(miningPos) || !level.getBlockState(miningPos).getFluidState().isEmpty()) {
-				if (areaManager.advanceMiningPos(level)) {
+			while(level.isEmptyBlock(miningPos)||!level.getBlockState(miningPos).getFluidState().isEmpty()){
+				if(areaManager.advanceMiningPos(level)){
 					be.finishMining();
 					return miningProgressAcc;
 				}
-				miningPos = areaManager.getMiningPos();
+				miningPos=areaManager.getMiningPos();
 				be.setChanged();
 			}
-			BlockState target = level.getBlockState(miningPos);
+			BlockState target=level.getBlockState(miningPos);
 			// Řešení nezničitelných bloků (Bedrock atd.)
-			float hardness = target.getDestroySpeed(level, miningPos);
-			if (hardness < 0) {
-				miningProgressAcc = 0f; // Blok nelze zničit
-				if (areaManager.advanceMiningPos(level)) {
+			float hardness=target.getDestroySpeed(level,miningPos);
+			if(hardness<0){
+				miningProgressAcc=0f; // Blok nelze zničit
+				if(areaManager.advanceMiningPos(level)){
 					be.finishMining();
 					return miningProgressAcc;
 				}
-				miningPos = areaManager.getMiningPos();
+				miningPos=areaManager.getMiningPos();
 				be.setChanged();
 				continue;
 			}
 			// Vlastní těžení pevného bloku
-			float required = Math.max(1f, hardness * 10f);
-			if (miningProgressAcc < required) {
+			float required=Math.max(1f,hardness*10f);
+			if(miningProgressAcc<required){
 				return miningProgressAcc; // Nedostatek progresu pro zničení tohoto bloku, čekáme
 			}
-			miningProgressAcc -= required;
-			List<ItemStack> drops = Block.getDrops(target, sl, miningPos, sl.getBlockEntity(miningPos), null, tool);
-			level.removeBlock(miningPos, false);
-			if (!drops.isEmpty()) {
-				distributeDrops(be, level, drops);
+			miningProgressAcc-=required;
+			List<ItemStack> drops=Block.getDrops(target,sl,miningPos,sl.getBlockEntity(miningPos),null,tool);
+			level.removeBlock(miningPos,false);
+			if(!drops.isEmpty()){
+				distributeDrops(be,level,drops);
 			}
-			if (areaManager.advanceMiningPos(level)) {
+			if(areaManager.advanceMiningPos(level)){
 				be.finishMining();
 				return miningProgressAcc;
 			}
-			miningPos = areaManager.getMiningPos();
+			miningPos=areaManager.getMiningPos();
 			be.setChanged();
 		}
 		return miningProgressAcc;
 	}
-
 	/**
 	 * Nasimuluje virtuální nástroj, který quarry používá.
 	 */
-	private static ItemStack buildSimulatedTool() {
+	private static ItemStack buildSimulatedTool(){
 		return new ItemStack(Items.NETHERITE_PICKAXE);
 	}
 	/**

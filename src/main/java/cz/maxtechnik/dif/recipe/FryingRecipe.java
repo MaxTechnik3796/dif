@@ -20,8 +20,7 @@ public class FryingRecipe implements Recipe<SingleRecipeInput>{
 	private final SizedFluidIngredient fluidIngredient;
 	private final ItemStack output;
 	private final int processingTime;
-
-	public FryingRecipe(Ingredient input, SizedFluidIngredient fluidIngredient, ItemStack output, int processingTime){
+	public FryingRecipe(Ingredient input,SizedFluidIngredient fluidIngredient,ItemStack output,int processingTime){
 		this.input=input;
 		this.fluidIngredient=fluidIngredient;
 		this.output=output;
@@ -30,22 +29,18 @@ public class FryingRecipe implements Recipe<SingleRecipeInput>{
 	public Ingredient getIngredient(){
 		return input;
 	}
-
 	public SizedFluidIngredient getFluidIngredient(){
 		return fluidIngredient;
 	}
-
 	public int getProcessingTime(){
 		return processingTime;
 	}
 	public int getOilAmount(){
 		return fluidIngredient.amount();
 	}
-
 	public boolean matchesFluid(FluidStack tankFluid){
-		return fluidIngredient.test(tankFluid) && tankFluid.getAmount() >= fluidIngredient.amount();
+		return fluidIngredient.test(tankFluid)&&tankFluid.getAmount()>=fluidIngredient.amount();
 	}
-
 	@Override
 	public boolean matches(@NotNull SingleRecipeInput recipeInput,@NotNull Level level){
 		return input.test(recipeInput.getItem(INPUT_SLOT));
@@ -83,7 +78,7 @@ public class FryingRecipe implements Recipe<SingleRecipeInput>{
 		);
 		public static final StreamCodec<RegistryFriendlyByteBuf,FryingRecipe> STREAM_CODEC=
 				StreamCodec.composite(
-						Ingredient.CONTENTS_STREAM_CODEC,r->r.input, SizedFluidIngredient.STREAM_CODEC,r->r.fluidIngredient,
+						Ingredient.CONTENTS_STREAM_CODEC,r->r.input,SizedFluidIngredient.STREAM_CODEC,r->r.fluidIngredient,
 						ItemStack.STREAM_CODEC,r->r.output,
 						net.minecraft.network.codec.ByteBufCodecs.INT,r->r.processingTime,
 						FryingRecipe::new

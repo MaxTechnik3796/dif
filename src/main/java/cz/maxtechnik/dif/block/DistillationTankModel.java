@@ -30,12 +30,12 @@ public class DistillationTankModel extends CTModel{
 				DifModSpriteShifts.DISTILLATION_TANK_INNER);
 	}
 	private DistillationTankModel(BakedModel originalModel,CTSpriteShiftEntry side,
-	                              CTSpriteShiftEntry top,CTSpriteShiftEntry inner){
+								  CTSpriteShiftEntry top,CTSpriteShiftEntry inner){
 		super(originalModel,new DistillationTankCTBehaviour(side,top,inner));
 	}
 	@Override
 	protected ModelData.Builder gatherModelData(Builder builder,BlockAndTintGetter world,
-	                                            BlockPos pos,BlockState state,ModelData blockEntityData){
+												BlockPos pos,BlockState state,ModelData blockEntityData){
 		super.gatherModelData(builder,world,pos,state,blockEntityData);
 		CullData cullData=new CullData();
 		for(Direction d: Iterate.horizontalDirections){
@@ -47,7 +47,7 @@ public class DistillationTankModel extends CTModel{
 	}
 	@Override
 	public @NotNull List<BakedQuad> getQuads(BlockState state,Direction side,RandomSource rand,
-	                                         ModelData extraData,RenderType renderType){
+											 ModelData extraData,RenderType renderType){
 		if(side!=null)
 			return Collections.emptyList();
 		List<BakedQuad> quads=new java.util.ArrayList<>();

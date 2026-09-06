@@ -13,7 +13,6 @@ import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import net.minecraft.core.Direction;
 
 import java.util.function.Consumer;
-
 public class QuarryShaftVisual extends KineticBlockEntityVisual<QuarryBlockEntity> implements SimpleTickableVisual{
 	protected final RotatingInstance rotatingModel;
 	public QuarryShaftVisual(VisualizationContext context,QuarryBlockEntity blockEntity,float partialTick){

@@ -18,27 +18,25 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-
-public class FryingJEI {
+public class FryingJEI{
 	public static final RecipeType<FryingRecipe> TYPE=RecipeType.create(DifMod.MODID,"frying",FryingRecipe.class);
-
 	public static class Category extends JeiCompact.Category<FryingRecipe>{
 		public Category(IGuiHelper guiHelper){
 			super(guiHelper,82,56,new ItemStack(DifModBlocks.FRYING_TABLE.get()),TYPE,"jei.dif.frying_table");
 		}
 		@Override
 		public void setRecipe(@NotNull IRecipeLayoutBuilder builder,@NotNull FryingRecipe recipe,@NotNull IFocusGroup focuses){
-			builder.addSlot(RecipeIngredientRole.INPUT, 1, 1)
+			builder.addSlot(RecipeIngredientRole.INPUT,1,1)
 					.setStandardSlotBackground()
 					.addIngredients(recipe.getIngredient());
-			builder.addSlot(RecipeIngredientRole.OUTPUT, 61, 19)
+			builder.addSlot(RecipeIngredientRole.OUTPUT,61,19)
 					.setStandardSlotBackground()
 					.addItemStack(recipe.getResultItem(Objects.requireNonNull(Minecraft.getInstance().level).registryAccess()));
 			if(recipe.getOilAmount()>0){
 				builder.addSlot(RecipeIngredientRole.INPUT,1,38)
 						.setStandardSlotBackground()
 						.setFluidRenderer(recipe.getOilAmount(),false,16,16)
-						.addIngredients(NeoForgeTypes.FLUID_STACK, java.util.Arrays.asList(recipe.getFluidIngredient().getFluids()));
+						.addIngredients(NeoForgeTypes.FLUID_STACK,java.util.Arrays.asList(recipe.getFluidIngredient().getFluids()));
 			}
 		}
 		@Override

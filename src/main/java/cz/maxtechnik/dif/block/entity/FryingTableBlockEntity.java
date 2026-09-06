@@ -38,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 public class FryingTableBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer{
-	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> SUNFLOWER_OIL_TAG = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID, net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c", "sunflower_oil"));
+	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> SUNFLOWER_OIL_TAG=net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID,net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c","sunflower_oil"));
 	public static final int SLOTS=2;
 	public static final int INPUT_SLOT=0;
 	public static final int OUTPUT_SLOT=1;

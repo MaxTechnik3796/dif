@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
-
 public class DistillationTankItem extends BlockItem{
 	public DistillationTankItem(Block block,Properties properties){
 		super(block,properties);

@@ -20,13 +20,13 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import static cz.maxtechnik.dif.block.Engine.*;
 import static cz.maxtechnik.dif.config.DifModServerConfig.*;
-import static cz.maxtechnik.dif.init.basic.DifModBlocks.*;
+import static cz.maxtechnik.dif.init.basic.DifModBlocks.ENGINE_BASE;
+import static cz.maxtechnik.dif.init.basic.DifModBlocks.ENGINE_PORTABLE;
 public class EngineBlockEntity extends GeneratingKineticBlockEntity{
-	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> DIESEL_TAG = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID, net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c", "diesel"));
-	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> GASOLINE_TAG = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID, net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c", "gasoline"));
-	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> LPG_TAG = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID, net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c", "lpg"));
-	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> HEAVY_FUEL_OIL_TAG = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID, net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c", "heavy_fuel_oil"));
-
+	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> DIESEL_TAG=net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID,net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c","diesel"));
+	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> GASOLINE_TAG=net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID,net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c","gasoline"));
+	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> LPG_TAG=net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID,net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c","lpg"));
+	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> HEAVY_FUEL_OIL_TAG=net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID,net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c","heavy_fuel_oil"));
 	boolean generating=false;
 	boolean uGenerating=false;
 	float speed=0F;
@@ -45,7 +45,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		if(stack.is(DIESEL_TAG)) return true;
 		if(stack.is(GASOLINE_TAG)) return true;
 		if(stack.is(LPG_TAG)) return true;
-		return !isPortable && stack.is(HEAVY_FUEL_OIL_TAG);
+		return !isPortable&&stack.is(HEAVY_FUEL_OIL_TAG);
 	}){
 		@Override
 		protected void onContentsChanged(){
@@ -277,49 +277,43 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	private boolean isEngineBlockPortable(Block block){
 		return block.equals(ENGINE_PORTABLE.get());
 	}
-
 	public void particle(Vec3 pos,Vec3 velocity){
 		if(level==null) return;
 		if(DifMod.rouletteBoolean(4))
 			level.addParticle(ParticleTypes.SMOKE,pos.x,pos.y,pos.z,velocity.x,velocity.y,velocity.z);
 	}
-
 	@Override
-	public boolean addToGoggleTooltip(java.util.List<net.minecraft.network.chat.Component> tooltip, boolean isPlayerSneaking) {
-        super.addToGoggleTooltip(tooltip, isPlayerSneaking);
-
-        if (!fluidTank.isEmpty()) {
-			String fluidName = fluidTank.getFluid().getHoverName().getString();
+	public boolean addToGoggleTooltip(java.util.List<net.minecraft.network.chat.Component> tooltip,boolean isPlayerSneaking){
+		super.addToGoggleTooltip(tooltip,isPlayerSneaking);
+		if(!fluidTank.isEmpty()){
+			String fluidName=fluidTank.getFluid().getHoverName().getString();
 			tooltip.add(net.minecraft.network.chat.Component.literal("     Fuel: ").withStyle(net.minecraft.ChatFormatting.GRAY)
-				.append(net.minecraft.network.chat.Component.literal(fluidName + " (" + fluidTank.getFluidAmount() + " / " + fluidTank.getCapacity() + " mB)").withStyle(net.minecraft.ChatFormatting.AQUA)));
-		} else {
+					.append(net.minecraft.network.chat.Component.literal(fluidName+" ("+fluidTank.getFluidAmount()+" / "+fluidTank.getCapacity()+" mB)").withStyle(net.minecraft.ChatFormatting.AQUA)));
+		}else{
 			tooltip.add(net.minecraft.network.chat.Component.literal("     Fuel: ").withStyle(net.minecraft.ChatFormatting.GRAY)
-				.append(net.minecraft.network.chat.Component.literal("Empty (0 / " + fluidTank.getCapacity() + " mB)").withStyle(net.minecraft.ChatFormatting.DARK_GRAY)));
+					.append(net.minecraft.network.chat.Component.literal("Empty (0 / "+fluidTank.getCapacity()+" mB)").withStyle(net.minecraft.ChatFormatting.DARK_GRAY)));
 		}
-
-		FuelType fuel = scanExtenders();
-		if (fuel != FuelType.INVALID) {
-			boolean isPortable = isEngineBlockPortable(getBlockState().getBlock());
-			int extenders = countExtenders();
-			double burnRatePerSec = 0.0D;
-			if (fuel == FuelType.DIESEL) {
-				burnRatePerSec = isPortable ? ENGINE_DIESEL_PORTABLE_CONSUMPTION.get() : ENGINE_DIESEL_CONSUMPTION.get() * (1.0 + (extenders - 1) * 0.5);
-			} else if (fuel == FuelType.GASOLINE) {
-				burnRatePerSec = isPortable ? ENGINE_GASOLINE_PORTABLE_CONSUMPTION.get() : ENGINE_GASOLINE_CONSUMPTION.get() * (1.0 + (extenders - 1) * 0.5);
-			} else if (fuel == FuelType.LPG) {
-				burnRatePerSec = isPortable ? ENGINE_LPG_PORTABLE_CONSUMPTION.get() : ENGINE_LPG_CONSUMPTION.get() * (1.0 + (extenders - 1) * 0.5);
-			} else if (fuel == FuelType.HEAVY_FUEL_OIL) {
-				burnRatePerSec = ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get() * (1.0 + (extenders - 1) * 0.5);
+		FuelType fuel=scanExtenders();
+		if(fuel!=FuelType.INVALID){
+			boolean isPortable=isEngineBlockPortable(getBlockState().getBlock());
+			int extenders=countExtenders();
+			double burnRatePerSec=0.0D;
+			if(fuel==FuelType.DIESEL){
+				burnRatePerSec=isPortable?ENGINE_DIESEL_PORTABLE_CONSUMPTION.get():ENGINE_DIESEL_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
+			}else if(fuel==FuelType.GASOLINE){
+				burnRatePerSec=isPortable?ENGINE_GASOLINE_PORTABLE_CONSUMPTION.get():ENGINE_GASOLINE_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
+			}else if(fuel==FuelType.LPG){
+				burnRatePerSec=isPortable?ENGINE_LPG_PORTABLE_CONSUMPTION.get():ENGINE_LPG_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
+			}else if(fuel==FuelType.HEAVY_FUEL_OIL){
+				burnRatePerSec=ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
 			}
-
-			String burnRateStr = String.format(java.util.Locale.US, "%.2f", burnRatePerSec);
+			String burnRateStr=String.format(java.util.Locale.US,"%.2f",burnRatePerSec);
 			tooltip.add(net.minecraft.network.chat.Component.literal("     Burn Rate: ").withStyle(net.minecraft.ChatFormatting.GRAY)
-				.append(net.minecraft.network.chat.Component.literal(burnRateStr + " mB/s").withStyle(net.minecraft.ChatFormatting.GOLD)));
-		} else {
+					.append(net.minecraft.network.chat.Component.literal(burnRateStr+" mB/s").withStyle(net.minecraft.ChatFormatting.GOLD)));
+		}else{
 			tooltip.add(net.minecraft.network.chat.Component.literal("     Burn Rate: ").withStyle(net.minecraft.ChatFormatting.GRAY)
-				.append(net.minecraft.network.chat.Component.literal("0.00 mB/s").withStyle(net.minecraft.ChatFormatting.DARK_GRAY)));
+					.append(net.minecraft.network.chat.Component.literal("0.00 mB/s").withStyle(net.minecraft.ChatFormatting.DARK_GRAY)));
 		}
-
 		return true;
 	}
 }

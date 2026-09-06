@@ -92,11 +92,9 @@ public class QuarryRenderer extends KineticBlockEntityRenderer<QuarryBlockEntity
 		if(FORMED_LANDMARKS.isEmpty()) return;
 		Minecraft mc=Minecraft.getInstance();
 		if(mc.level==null) return;
-
 		// Odstranění landmarků z jiné dimenze
-		FORMED_LANDMARKS.values().removeIf(lm -> lm.isRemoved() || lm.getLevel() == null || lm.getLevel() != mc.level || !mc.level.getBlockState(lm.getBlockPos()).is(cz.maxtechnik.dif.init.basic.DifModBlocks.QUARRY_LANDMARK.get()));
+		FORMED_LANDMARKS.values().removeIf(lm->lm.isRemoved()||lm.getLevel()==null||lm.getLevel()!=mc.level||!mc.level.getBlockState(lm.getBlockPos()).is(cz.maxtechnik.dif.init.basic.DifModBlocks.QUARRY_LANDMARK.get()));
 		if(FORMED_LANDMARKS.isEmpty()) return;
-
 		var camPos=mc.gameRenderer.getMainCamera().getPosition();
 		PoseStack ps=event.getPoseStack();
 		MultiBufferSource.BufferSource buf=mc.renderBuffers().bufferSource();

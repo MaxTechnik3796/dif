@@ -7,18 +7,14 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
-
-public class SilkwormMothRenderer extends MobRenderer<SilkwormMothEntity, SilkwormMothModel<SilkwormMothEntity>> {
-
-    private static final ResourceLocation TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "textures/entity/silkworm_moth.png");
-
-    public SilkwormMothRenderer(EntityRendererProvider.Context context) {
-        super(context, new SilkwormMothModel<>(context.bakeLayer(SilkwormMothModel.LAYER_LOCATION)), 0.3F);
-    }
-
-    @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull SilkwormMothEntity entity) {
-        return TEXTURE;
-    }
+public class SilkwormMothRenderer extends MobRenderer<SilkwormMothEntity,SilkwormMothModel<SilkwormMothEntity>>{
+	private static final ResourceLocation TEXTURE=
+			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/entity/silkworm_moth.png");
+	public SilkwormMothRenderer(EntityRendererProvider.Context context){
+		super(context,new SilkwormMothModel<>(context.bakeLayer(SilkwormMothModel.LAYER_LOCATION)),0.3F);
+	}
+	@Override
+	public @NotNull ResourceLocation getTextureLocation(@NotNull SilkwormMothEntity entity){
+		return TEXTURE;
+	}
 }

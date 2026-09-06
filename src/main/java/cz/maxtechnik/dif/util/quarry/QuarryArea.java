@@ -2,7 +2,6 @@ package cz.maxtechnik.dif.util.quarry;
 
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.Nullable;
-
 public record QuarryArea(int minX,int maxX,int minZ,int maxZ){
 	public int sizeX(){
 		return maxX-minX+1;

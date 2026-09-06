@@ -36,10 +36,16 @@ import java.util.stream.IntStream;
 public class BurningGeneratorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer{
 	public static final int SLOTS=1;
 	public static final int INPUT_SLOT=0;
-	public static int getEnergyPerTick(){ return DifModServerConfig.BURNING_GENERATOR_ENERGY_PER_TICK.get(); }
-	public static int getMaxEnergy(){ return DifModServerConfig.BURNING_GENERATOR_MAX_ENERGY.get(); }
+	public static int getEnergyPerTick(){
+		return DifModServerConfig.BURNING_GENERATOR_ENERGY_PER_TICK.get();
+	}
+	public static int getMaxEnergy(){
+		return DifModServerConfig.BURNING_GENERATOR_MAX_ENERGY.get();
+	}
 	public static final int MAX_RECEIVE=Integer.MAX_VALUE;
-	public static int getMaxExtract(){ return DifModServerConfig.BURNING_GENERATOR_MAX_EXTRACT.get(); }
+	public static int getMaxExtract(){
+		return DifModServerConfig.BURNING_GENERATOR_MAX_EXTRACT.get();
+	}
 	private final ItemStackHandler itemHandler=new ItemStackHandler(SLOTS){
 		@Override
 		protected void onContentsChanged(int slot){

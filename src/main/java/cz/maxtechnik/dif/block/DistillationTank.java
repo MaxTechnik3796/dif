@@ -66,7 +66,7 @@ public class DistillationTank extends FluidTankBlock{
 	}
 	@Override
 	public void onPlace(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,
-	                    @NotNull BlockState oldState,boolean isMoving){
+						@NotNull BlockState oldState,boolean isMoving){
 		super.onPlace(state,level,pos,oldState,isMoving);
 		if(level.isClientSide) return;
 		if(state.getBlock()==oldState.getBlock()) return;
@@ -81,7 +81,7 @@ public class DistillationTank extends FluidTankBlock{
 	}
 	@Override
 	public void onRemove(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,
-	                     @NotNull BlockState newState,boolean isMoving){
+						 @NotNull BlockState newState,boolean isMoving){
 		super.onRemove(state,level,pos,newState,isMoving);
 		if(level.isClientSide) return;
 		if(state.getBlock()==newState.getBlock()) return;

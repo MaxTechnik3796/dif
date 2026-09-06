@@ -109,15 +109,13 @@ public abstract class PonderScene{
 	/**
 	 *Text callout above a block, for the default duration.
 	 */
-	public static
-	TextElementBuilder showTextAbove(SceneBuilder scene,SceneBuildingUtil util,String text,BlockPos pos){
+	public static TextElementBuilder showTextAbove(SceneBuilder scene,SceneBuildingUtil util,String text,BlockPos pos){
 		return showText(scene,TEXT_DURATION,text,util.vector().topOf(pos));
 	}
 	/**
 	 *Text callout at a block's face, for the default duration.
 	 */
-	public static
-	TextElementBuilder showTextAt(SceneBuilder scene,SceneBuildingUtil util,String text,BlockPos pos,Direction face){
+	public static TextElementBuilder showTextAt(SceneBuilder scene,SceneBuildingUtil util,String text,BlockPos pos,Direction face){
 		return showText(scene,TEXT_DURATION,text,util.vector().blockSurface(pos,face));
 	}
 	/** Highlight a section and label it, pointing at a world position. */
@@ -162,7 +160,6 @@ public abstract class PonderScene{
 				.attachKeyFrame();
 		scene.idle(duration+10);
 	}
-
 	public static void narrate(SceneBuilder scene,String text,Vec3 target,int duration){
 		scene.overlay().showText(duration)
 				.text(text)
@@ -246,5 +243,4 @@ public abstract class PonderScene{
 	public static void fillFluidTank(CreateSceneBuilder scene,BlockPos pos,FluidStack fluidStack){
 		scene.world().modifyBlockEntity(pos,FluidTankBlockEntity.class,be->be.getTankInventory().fill(fluidStack,IFluidHandler.FluidAction.EXECUTE));
 	}
-
 }

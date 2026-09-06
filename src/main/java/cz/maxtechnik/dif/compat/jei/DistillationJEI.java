@@ -13,10 +13,8 @@ import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
-
-public class DistillationJEI {
+public class DistillationJEI{
 	public static final RecipeType<DistillationRecipe> TYPE=RecipeType.create(DifMod.MODID,"distillation",DistillationRecipe.class);
-
 	public static class Category extends JeiCompact.Category<DistillationRecipe>{
 		public Category(IGuiHelper guiHelper){
 			super(guiHelper,162,56,new ItemStack(DifModBlocks.DISTILLATION_TANK.get()),TYPE,"jei.dif.distillation");
