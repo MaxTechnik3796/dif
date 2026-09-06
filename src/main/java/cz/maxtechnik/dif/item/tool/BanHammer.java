@@ -5,7 +5,6 @@ import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
@@ -94,18 +93,8 @@ public class BanHammer extends Item{
 	}
 	public static void executeBanHammerEffect(Player attacker,Entity target){
 		if(attacker==null||attacker.level().isClientSide||target==null) return;
-		// 1. Zrušení God Totemu & Ban příkaz pro hráče
+		// 1. Ban příkaz pro hráče
 		if(target instanceof Player targetPlayer){
-			ItemStack main=targetPlayer.getMainHandItem();
-			ItemStack off=targetPlayer.getOffhandItem();
-			if(main.is(DifModItems.GOD_TOTEM.get())){
-				targetPlayer.setItemInHand(InteractionHand.MAIN_HAND,ItemStack.EMPTY);
-				targetPlayer.level().broadcastEntityEvent(targetPlayer,(byte)35);
-			}
-			if(off.is(DifModItems.GOD_TOTEM.get())){
-				targetPlayer.setItemInHand(InteractionHand.OFF_HAND,ItemStack.EMPTY);
-				targetPlayer.level().broadcastEntityEvent(targetPlayer,(byte)35);
-			}
 			MinecraftServer server=targetPlayer.getServer();
 			if(server!=null){
 				String name=targetPlayer.getGameProfile().getName();
