@@ -30,7 +30,7 @@ import static cz.maxtechnik.dif.DifMod.goggleTooltipFix;
 public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 	public static final int MAX_FOOTPRINT = 3;
 	public static final int MAX_OUTPUTS = 15;
-	public static final int BASE_TICKS = 20;
+	public static final int BASE_TICKS = 100;
 	private static final int CACHE_REFRESH_RATE = 20;
 
 	private int towerOutputCount = 0;
@@ -153,7 +153,7 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 			return;
 		}
 
-		int requiredInput = Math.max(1, Math.round(be.cachedRecipe.input().amount() * be.cachedSpeed));
+		int requiredInput = be.cachedRecipe.input().amount();
 		if (input.getAmount() < requiredInput) {
 			be.resetProgress();
 			return;
@@ -163,18 +163,17 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 			be.resetProgress();
 			return;
 		}
-		List<IFluidHandler> outputHandlers = getOutputHandlersIfFit(level, be.worldPosition, outputs, be.cachedSpeed);
+		List<IFluidHandler> outputHandlers = getOutputHandlersIfFit(level, be.worldPosition, outputs);
 		if (outputHandlers == null) {
 			return;
 		}
 		be.progress++;
-		be.setChanged();
-		if (be.progress >= BASE_TICKS) {
+		int targetTicks = Math.max(1, Math.round(BASE_TICKS / be.cachedSpeed));
+		if (be.progress >= targetTicks) {
 			be.progress = 0;
 			be.tankInventory.drain(requiredInput, IFluidHandler.FluidAction.EXECUTE);
 			for (int i = 0; i < outputs.size(); i++) {
-				int scaledOutputAmount = Math.max(1, Math.round(outputs.get(i).getAmount() * be.cachedSpeed));
-				outputHandlers.get(i).fill(outputs.get(i).copyWithAmount(scaledOutputAmount), IFluidHandler.FluidAction.EXECUTE);
+				outputHandlers.get(i).fill(outputs.get(i).copy(), IFluidHandler.FluidAction.EXECUTE);
 			}
 			be.setChanged();
 		}
@@ -186,14 +185,13 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 		}
 	}
 	@Nullable
-	private static List<IFluidHandler> getOutputHandlersIfFit(Level level, BlockPos masterPos, List<FluidStack> outputs, float speed) {
+	private static List<IFluidHandler> getOutputHandlersIfFit(Level level, BlockPos masterPos, List<FluidStack> outputs) {
 		List<IFluidHandler> handlers = new ArrayList<>(outputs.size());
 		for (int i = 0; i < outputs.size(); i++) {
 			IFluidHandler h = level.getCapability(Capabilities.FluidHandler.BLOCK, masterPos.above(i + 1), null);
 			if (h == null) return null;
-			int scaledAmount = Math.max(1, Math.round(outputs.get(i).getAmount() * speed));
-			FluidStack scaled = outputs.get(i).copyWithAmount(scaledAmount);
-			if (h.fill(scaled, IFluidHandler.FluidAction.SIMULATE) < scaledAmount)
+			FluidStack out = outputs.get(i);
+			if (h.fill(out, IFluidHandler.FluidAction.SIMULATE) < out.getAmount())
 				return null;
 			handlers.add(h);
 		}
@@ -218,13 +216,8 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 			ChatFormatting speedColor = master.cachedSpeed == 0 ? ChatFormatting.GRAY : ChatFormatting.GOLD;
 			tooltip.add(Component.literal(goggleTooltipFix + "Speed: ").withStyle(ChatFormatting.GRAY)
 					.append(Component.literal(master.cachedSpeed + "×").withStyle(speedColor)));
-			if (master.progress > 0) {
-				int percent = Math.min(100, (master.progress * 100) / BASE_TICKS);
-				tooltip.add(Component.literal(goggleTooltipFix + "Progress: ").withStyle(ChatFormatting.GRAY)
-						.append(Component.literal(percent + "%").withStyle(ChatFormatting.GREEN)));
-			}
 			if (isTowerMaster()) {
-				tooltip.add(Component.literal(goggleTooltipFix + "Distillation Master").withStyle(ChatFormatting.AQUA));
+				tooltip.add(Component.literal(goggleTooltipFix + "Master").withStyle(ChatFormatting.AQUA));
 			}
 			return true;
 		}
