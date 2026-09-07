@@ -2,7 +2,6 @@ package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.entity.bomb.NuclearExplosionEntity;
-import cz.maxtechnik.dif.entity.creature.SilkwormMothEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -25,11 +24,4 @@ public class DifModEntities{
 							.clientTrackingRange(10)
 							.updateInterval(1)
 							.build("portal"));
-
-	public static final DeferredHolder<EntityType<?>,EntityType<SilkwormMothEntity>> SILKWORM_MOTH=
-			REGISTRY.register("silkworm_moth",()->
-					EntityType.Builder.of(SilkwormMothEntity::new,MobCategory.CREATURE)
-							.sized(0.6F,0.5F)
-							.clientTrackingRange(8)
-							.build("silkworm_moth"));
 }

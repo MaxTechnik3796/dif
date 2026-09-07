@@ -79,8 +79,6 @@ public class DifModItems{
 
 	public static final DeferredItem<Item>CHUNK_LOADER=REGISTRY.register("chunk_loader",()->new BlockItem(DifModBlocks.CHUNK_LOADER.get(),new Item.Properties()){@Override public boolean isFoil(@NotNull ItemStack stack){return true;}});
 
-	public static final DeferredItem<Item>SILK=REGISTRY.register("silk",()->new Item(new Item.Properties()));
-
 	public static final DeferredItem<Item> PORTAL_GUN=REGISTRY.register("portal_gun",PortalGun::new);
 
 	//Jetpack
@@ -272,8 +270,6 @@ public class DifModItems{
 
 	public static final DeferredItem<Item>NANO_GLASS=block(DifModBlocks.NANO_GLASS);
 
-
-	public static final DeferredItem<Item>SILKWORM_MOTH_SPAWN_EGG=REGISTRY.register("silkworm_moth_spawn_egg",()->new DeferredSpawnEggItem(DifModEntities.SILKWORM_MOTH,0xFFFFFF,0x898989,new Item.Properties()));
 
 
 	public static final DeferredItem<Item>DEFORESTRATOR=REGISTRY.register("deforestrator", Electrum::new);

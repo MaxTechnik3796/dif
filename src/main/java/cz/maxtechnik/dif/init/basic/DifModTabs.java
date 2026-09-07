@@ -246,8 +246,6 @@ public class DifModTabs{
 			tabData.insertAfter(new ItemStack(Items.RAW_IRON),new ItemStack(RAW_NICKEL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertAfter(new ItemStack(Items.IRON_NUGGET),new ItemStack(NICKEL_NUGGET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertAfter(new ItemStack(Items.IRON_INGOT),new ItemStack(NICKEL_INGOT.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-		}else if(tabData.getTabKey().equals(CreativeModeTabs.SPAWN_EGGS)){
-			tabData.accept(SILKWORM_MOTH_SPAWN_EGG);
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.OP_BLOCKS)){
 			tabData.accept(BAN_HAMMER);
 			tabData.accept(END_PORTAL);

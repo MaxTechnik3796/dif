@@ -168,7 +168,6 @@ public class DifMod{
 			event.registerBlockEntityRenderer(DifModBlockEntities.QUARRY.get(),QuarryRenderer::new);
 			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(),context->new ChunkLoaderRenderer());
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_EXPLOSION.get(),NoopRenderer::new);
-			event.registerEntityRenderer(DifModEntities.SILKWORM_MOTH.get(),SilkwormMothRenderer::new);
 			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.ENGINE.get()).factory(SingleAxisRotatingVisual::shaft).neverSkipVanillaRender().apply();
 			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.QUARRY.get()).factory(QuarryShaftVisual.factory()).neverSkipVanillaRender().apply();
 		}

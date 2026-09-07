@@ -12,7 +12,6 @@ public class DifModModels{
 	public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event){
 		event.registerLayerDefinition(ModelJetpack.LAYER_LOCATION, ModelJetpack::createBodyLayer);
 		event.registerLayerDefinition(PortalModel.LAYER_LOCATION, PortalModel::createBodyLayer);
-		event.registerLayerDefinition(SilkwormMothModel.LAYER_LOCATION, SilkwormMothModel::createBodyLayer);
 	}
 
 	@SubscribeEvent
