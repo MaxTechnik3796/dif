@@ -5,7 +5,6 @@ import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModEntities;
 import cz.maxtechnik.dif.init.other.DifModFoods;
 import cz.maxtechnik.dif.init.other.DifModTiers;
-import cz.maxtechnik.dif.item.armor.CarbonSuit;
 import cz.maxtechnik.dif.item.armor.CopperArmor;
 import cz.maxtechnik.dif.item.armor.Jetpack;
 import cz.maxtechnik.dif.item.food.Beer;
@@ -242,11 +241,6 @@ public class DifModItems{
 	public static final DeferredItem<Item> COPPER_CHESTPLATE=REGISTRY.register("copper_chestplate",CopperArmor.Chestplate::new);
 	public static final DeferredItem<Item> COPPER_LEGGINGS=REGISTRY.register("copper_leggings",CopperArmor.Leggings::new);
 	public static final DeferredItem<Item> COPPER_BOOTS=REGISTRY.register("copper_boots",CopperArmor.Boots::new);
-
-	public static final DeferredItem<Item> CARBON_SUIT_HELMET=REGISTRY.register("carbon_suit_helmet",CarbonSuit.Helmet::new);
-	public static final DeferredItem<Item> CARBON_SUIT_CHESTPLATE=REGISTRY.register("carbon_suit_chestplate",CarbonSuit.Chestplate::new);
-	public static final DeferredItem<Item> CARBON_SUIT_LEGGINGS=REGISTRY.register("carbon_suit_leggings",CarbonSuit.Leggings::new);
-	public static final DeferredItem<Item> CARBON_SUIT_BOOTS=REGISTRY.register("carbon_suit_boots",CarbonSuit.Boots::new);
 
 
 	public static final DeferredItem<Item>ZINC_CASING=block(DifModBlocks.ZINC_CASING);

@@ -2,7 +2,6 @@
 	"replace":false,
 	"values":[
 		"dif:copper_chestplate",
-		"dif:carbon_suit_chestplate",
 		"dif:jetpack"
 	]
 }

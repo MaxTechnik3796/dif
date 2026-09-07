@@ -43,10 +43,6 @@ public class DifModTabs{
 
 		tabData.accept(JETPACK);
 
-		tabData.accept(CARBON_SUIT_HELMET);
-		tabData.accept(CARBON_SUIT_CHESTPLATE);
-		tabData.accept(CARBON_SUIT_LEGGINGS);
-		tabData.accept(CARBON_SUIT_BOOTS);
 
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>INDUSTRIAL=REGISTER.register("industrial",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.industrials")).icon(()->new ItemStack(ENGINE_EXTENDER.get())).displayItems(((parameters,tabData)->{

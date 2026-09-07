@@ -1,7 +1,6 @@
 {
 	"replace":false,
 	"values":[
-		"dif:copper_helmet",
-		"dif:carbon_suit_helmet"
+		"dif:copper_helmet"
 	]
 }
