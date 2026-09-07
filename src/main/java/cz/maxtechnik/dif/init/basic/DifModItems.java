@@ -2,7 +2,6 @@ package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
-import cz.maxtechnik.dif.init.other.DifModEntities;
 import cz.maxtechnik.dif.init.other.DifModFoods;
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.armor.CopperArmor;
@@ -18,7 +17,6 @@ import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
