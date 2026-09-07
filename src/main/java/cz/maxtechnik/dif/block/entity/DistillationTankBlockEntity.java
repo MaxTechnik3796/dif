@@ -22,6 +22,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,12 +51,11 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 	}
 	@Override
 	public int getMaxLength(Direction.Axis axis, int width) {
-		if (axis == Direction.Axis.Y) return 1;
-		return getMaxWidth();
+		return axis == Direction.Axis.Y ? 1 : getMaxWidth();
 	}
 	@Override
 	public void addBehaviours(List<BlockEntityBehaviour> list) {
-		// BoilerHeater behaviour is intentionally omitted to avoid steam engine logic
+		// BoilerHeater behavior is intentionally omitted to avoid steam engine logic
 	}
 	public IFluidHandler getFluidCapability() {
 		return fluidCapability;
@@ -73,23 +73,12 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 		DistillationTankBlockEntity ctrl = isController() ? this : (DistillationTankBlockEntity) getControllerBE();
 		if (ctrl == null) return null;
 		if (ctrl.isTowerMaster()) return ctrl;
-		BlockPos check = ctrl.worldPosition.below();
-		for (int i = 0; i < MAX_OUTPUTS + 2; i++) {
-			if (!(level.getBlockState(check).getBlock() instanceof DistillationTank)) return null;
-			if (level.getBlockEntity(check) instanceof DistillationTankBlockEntity be) {
-				DistillationTankBlockEntity beCtrl = be.isController() ? be : (DistillationTankBlockEntity) be.getControllerBE();
-				if (beCtrl != null && beCtrl.isTowerMaster()) return beCtrl;
-			}
-			check = check.below();
+		BlockPos.MutableBlockPos p = ctrl.getBlockPos().mutable();
+		while (level.getBlockEntity(p.move(Direction.DOWN)) instanceof DistillationTankBlockEntity be) {
+			DistillationTankBlockEntity beCtrl = be.isController() ? be : (DistillationTankBlockEntity) be.getControllerBE();
+			if (beCtrl != null && beCtrl.isTowerMaster()) return beCtrl;
 		}
 		return null;
-	}
-	public void notifyTowerStructureChanged() {
-		cacheTick = 0;
-		DistillationTankBlockEntity master = getTowerMaster();
-		if (master != null && master != this) {
-			master.cacheTick = 0;
-		}
 	}
 	@Override
 	public void notifyMultiUpdated() {
@@ -100,59 +89,41 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 		if (master != null && master != this) {
 			master.cacheTick = 0;
 		}
-		updateTowerState(true);
-		sendData();
-	}
-
-	public void updateTowerState(boolean notifyNeighbors) {
-		if (level == null || level.isClientSide) return;
-		BlockState state = getBlockState();
-		if (!(state.getBlock() instanceof DistillationTank)) return;
-		boolean hasTankBelow = level.getBlockState(worldPosition.below()).getBlock() instanceof DistillationTank;
-		boolean hasTankAbove = level.getBlockState(worldPosition.above()).getBlock() instanceof DistillationTank;
-		BlockState newState = state.setValue(DistillationTank.BOTTOM, !hasTankBelow)
-				.setValue(DistillationTank.TOP, !hasTankAbove);
-		if (state != newState) {
-			level.setBlock(worldPosition, newState, net.minecraft.world.level.block.Block.UPDATE_CLIENTS | net.minecraft.world.level.block.Block.UPDATE_INVISIBLE);
-			level.sendBlockUpdated(worldPosition, state, newState, 3);
-		} else {
-			level.sendBlockUpdated(worldPosition, state, state, 3);
-		}
-		if (notifyNeighbors) {
-			if (level.getBlockEntity(worldPosition.above()) instanceof DistillationTankBlockEntity above)
-				above.updateTowerState(false);
-			if (level.getBlockEntity(worldPosition.below()) instanceof DistillationTankBlockEntity below)
-				below.updateTowerState(false);
-		}
 	}
 	private void refreshCache() {
 		if (level == null) return;
 		int w = getWidth();
-		towerOutputCount = 0;
+		int newOutputCount = 0;
 		for (int i = 1; i <= MAX_OUTPUTS; i++) {
 			BlockPos checkPos = worldPosition.above(i);
 			if (!(level.getBlockState(checkPos).getBlock() instanceof DistillationTank)) break;
 			if (level.getBlockEntity(checkPos) instanceof DistillationTankBlockEntity a) {
 				DistillationTankBlockEntity aCtrl = a.isController() ? a : (DistillationTankBlockEntity) a.getControllerBE();
-				if (aCtrl == null || aCtrl.getWidth() != w) break;
-				if (!aCtrl.getBlockPos().equals(checkPos)) break;
-				towerOutputCount++;
+				if (aCtrl == null || aCtrl.getWidth() != w || !aCtrl.getBlockPos().equals(checkPos)) break;
+				newOutputCount++;
 			} else {
 				break;
 			}
 		}
 		int points = 0;
+		BlockPos.MutableBlockPos burnerPos = new BlockPos.MutableBlockPos();
 		for (int x = 0; x < w; x++) {
 			for (int z = 0; z < w; z++) {
-				BlockState burner = level.getBlockState(worldPosition.offset(x, -1, z));
+				burnerPos.set(worldPosition.getX() + x, worldPosition.getY() - 1, worldPosition.getZ() + z);
+				BlockState burner = level.getBlockState(burnerPos);
 				HeatLevel heatLevel = BlazeBurnerBlock.getHeatLevelOf(burner);
 				if (heatLevel == HeatLevel.KINDLED) points += 1;
 				else if (heatLevel == HeatLevel.SEETHING) points += 2;
 			}
 		}
-		cachedHeatPoints = points;
-		cachedSpeed = Math.min(10, points) * 0.5F;
-		sendData();
+		float newSpeed = Math.min(10, points) * 0.5F;
+		if (this.cachedHeatPoints != points || this.towerOutputCount != newOutputCount || this.cachedSpeed != newSpeed) {
+			this.cachedHeatPoints = points;
+			this.towerOutputCount = newOutputCount;
+			this.cachedSpeed = newSpeed;
+			setChanged();
+			sendData();
+		}
 	}
 	public static void serverTick(Level level, DistillationTankBlockEntity be) {
 		if (!be.isTowerMaster()) return;
@@ -192,7 +163,8 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 			be.resetProgress();
 			return;
 		}
-		if (!canFitOutputs(level, be.worldPosition, outputs, be.cachedSpeed)) {
+		List<IFluidHandler> outputHandlers = getOutputHandlersIfFit(level, be.worldPosition, outputs, be.cachedSpeed);
+		if (outputHandlers == null) {
 			return;
 		}
 		be.progress++;
@@ -201,11 +173,8 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 			be.progress = 0;
 			be.tankInventory.drain(requiredInput, IFluidHandler.FluidAction.EXECUTE);
 			for (int i = 0; i < outputs.size(); i++) {
-				IFluidHandler out = level.getCapability(Capabilities.FluidHandler.BLOCK, be.worldPosition.above(i + 1), null);
-				if (out != null) {
-					int scaledOutputAmount = Math.max(1, Math.round(outputs.get(i).getAmount() * be.cachedSpeed));
-					out.fill(outputs.get(i).copyWithAmount(scaledOutputAmount), IFluidHandler.FluidAction.EXECUTE);
-				}
+				int scaledOutputAmount = Math.max(1, Math.round(outputs.get(i).getAmount() * be.cachedSpeed));
+				outputHandlers.get(i).fill(outputs.get(i).copyWithAmount(scaledOutputAmount), IFluidHandler.FluidAction.EXECUTE);
 			}
 			be.setChanged();
 		}
@@ -216,16 +185,19 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 			setChanged();
 		}
 	}
-	private static boolean canFitOutputs(Level level, BlockPos masterPos, List<FluidStack> outputs, float speed) {
+	@Nullable
+	private static List<IFluidHandler> getOutputHandlersIfFit(Level level, BlockPos masterPos, List<FluidStack> outputs, float speed) {
+		List<IFluidHandler> handlers = new ArrayList<>(outputs.size());
 		for (int i = 0; i < outputs.size(); i++) {
 			IFluidHandler h = level.getCapability(Capabilities.FluidHandler.BLOCK, masterPos.above(i + 1), null);
-			if (h == null) return false;
+			if (h == null) return null;
 			int scaledAmount = Math.max(1, Math.round(outputs.get(i).getAmount() * speed));
 			FluidStack scaled = outputs.get(i).copyWithAmount(scaledAmount);
 			if (h.fill(scaled, IFluidHandler.FluidAction.SIMULATE) < scaledAmount)
-				return false;
+				return null;
+			handlers.add(h);
 		}
-		return true;
+		return handlers;
 	}
 	private static Optional<DistillationRecipe> findRecipe(Level level, FluidStack input) {
 		for (RecipeHolder<DistillationRecipe> holder : level.getRecipeManager().getAllRecipesFor(DifModRecipes.DISTILLATION_TYPE.get())) {
@@ -238,7 +210,7 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity {
 	@Override
 	public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
 		boolean added = super.addToGoggleTooltip(tooltip, isPlayerSneaking);
-		DistillationTankBlockEntity master = getTowerMaster();
+		DistillationTankBlockEntity master = isTowerMaster() ? this : getTowerMaster();
 		if (master != null && (master.cachedHeatPoints > 0 || master.towerOutputCount > 0)) {
 			ChatFormatting heatColor = master.cachedHeatPoints == 0 ? ChatFormatting.GRAY : ChatFormatting.AQUA;
 			tooltip.add(Component.literal(goggleTooltipFix + "Heat: ").withStyle(ChatFormatting.GRAY)
