@@ -19,11 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
-/**
- * Destilační tank — multiblok věž.
- * Stavění: stejné jako Create Fluid Tank — postav základnu (1×1, 2×2 nebo 3×3),
- * pak klikni s dalším blokem na vrchní stěnu → automaticky se přidá patro
- */
+
 public class DistillationTank extends FluidTankBlock{
 	public DistillationTank(){
 		super(BlockBehaviour.Properties.of().strength(5F,6F).sound(SoundType.METAL).requiresCorrectToolForDrops(),false);

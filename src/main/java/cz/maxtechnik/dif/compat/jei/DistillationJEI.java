@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.compat.jei;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.block.entity.DistillationTankBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.recipe.DistillationRecipe;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -40,7 +41,7 @@ public class DistillationJEI{
 		}
 		@Override
 		public void createRecipeExtras(@NotNull IRecipeExtrasBuilder builder,@NotNull DistillationRecipe recipe,@NotNull IFocusGroup focuses){
-			builder.addAnimatedRecipeArrow(100).setPosition(26,19);
+			builder.addAnimatedRecipeArrow(DistillationTankBlockEntity.BASE_TICKS).setPosition(26,19);
 		}
 	}
 }
