@@ -64,6 +64,7 @@ public class DifModItems{
 	
 
 	public static final DeferredItem<Item> DISTILLATION_TANK = REGISTRY.register("distillation_tank", () -> new cz.maxtechnik.dif.item.DistillationTankItem(DifModBlocks.DISTILLATION_TANK.get(), new Item.Properties()));
+	public static final DeferredItem<Item> MITHRIL_FLUID_TANK = REGISTRY.register("mithril_fluid_tank", () -> new cz.maxtechnik.dif.item.MithrilFluidTankItem(DifModBlocks.MITHRIL_FLUID_TANK.get(), new Item.Properties()));
 
 	public static final DeferredItem<Item>MEGA_TORCH=block(DifModBlocks.MEGA_TORCH);
 
@@ -284,5 +285,6 @@ public class DifModItems{
 		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_heavy_fuel_oil"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
 		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader_1x1"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader"));
 		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader_3x3"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "mithril_tank"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "mithril_fluid_tank"));
 	}
 }

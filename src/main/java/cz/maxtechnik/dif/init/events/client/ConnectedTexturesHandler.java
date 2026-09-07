@@ -1,5 +1,6 @@
 package cz.maxtechnik.dif.init.events.client;
 
+import com.simibubi.create.content.fluids.tank.FluidTankCTBehaviour;
 import com.simibubi.create.foundation.block.connected.CTModel;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
 import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
@@ -21,6 +22,12 @@ public class ConnectedTexturesHandler{
 	public static void onModelBake(ModelEvent.ModifyBakingResult event){
 		register(event,DifModBlocks.ZINC_CASING,DifModSpriteShifts.ZINC_CASING);
 		ModelSwapper.swapModels(event.getModels(),ModelSwapper.getAllBlockStateModelLocations(DifModBlocks.DISTILLATION_TANK.get()),DistillationTankModel::standard);
+		ModelSwapper.swapModels(event.getModels(),ModelSwapper.getAllBlockStateModelLocations(DifModBlocks.MITHRIL_FLUID_TANK.get()),
+				model->new CTModel(model,new FluidTankCTBehaviour(
+						DifModSpriteShifts.MITHRIL_FLUID_TANK,
+						DifModSpriteShifts.MITHRIL_FLUID_TANK_TOP,
+						DifModSpriteShifts.MITHRIL_FLUID_TANK_INNER
+				)));
 	}
 	private static void register(ModelEvent.ModifyBakingResult event,DeferredBlock<Block> block,CTSpriteShiftEntry shift){
 		ModelSwapper.swapModels(event.getModels(),ModelSwapper.getAllBlockStateModelLocations(block.get()),model->new CTModel(model,new SimpleCTBehaviour(shift)));

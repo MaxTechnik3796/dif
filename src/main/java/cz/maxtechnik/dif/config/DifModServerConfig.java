@@ -50,7 +50,12 @@ public class DifModServerConfig{
 	public static final ModConfigSpec.DoubleValue ENGINE_LPG_CONSUMPTION;
 	public static final ModConfigSpec.DoubleValue ENGINE_LPG_PORTABLE_SU;
 	public static final ModConfigSpec.DoubleValue ENGINE_LPG_PORTABLE_CONSUMPTION;
+	// Fluids
+	public static final ModConfigSpec.IntValue MITHRIL_FLUID_TANK_CAPACITY;
 	static{
+		BUILDER.push("Fluids");
+		MITHRIL_FLUID_TANK_CAPACITY=BUILDER.comment("The amount of liquid a Mithril Fluid Tank can hold per block in buckets (Default: 32 = 4x Create copper tank).").defineInRange("mithril_fluid_tank_capacity",32,1,MAX);
+		BUILDER.pop();
 		BUILDER.push("GeneralSettings");
 		MEGA_TORCH_RADIUS=BUILDER.defineInRange("mega_torch_radius",128,32,8192);
 		NANO_GLASS_MAX_SPREAD=BUILDER.defineInRange("nano_glass_max_spread",128,1,MAX);

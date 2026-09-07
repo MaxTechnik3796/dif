@@ -48,6 +48,7 @@ public class DifModTabs{
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>INDUSTRIAL=REGISTER.register("industrial",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.industrials")).icon(()->new ItemStack(ENGINE_EXTENDER.get())).displayItems(((parameters,tabData)->{
 
 		tabData.accept(DISTILLATION_TANK);
+		tabData.accept(MITHRIL_FLUID_TANK);
 
 		tabData.accept(ENGINE_BASE);
 		tabData.accept(ENGINE_PORTABLE);

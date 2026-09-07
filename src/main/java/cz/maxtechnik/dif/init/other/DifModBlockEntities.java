@@ -35,6 +35,7 @@ public class DifModBlockEntities{
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<BurningGeneratorBlockEntity>> BURNING_GENERATOR=REGISTRY.register("burning_generator",()->BlockEntityType.Builder.of(BurningGeneratorBlockEntity::new,DifModBlocks.BURNING_GENERATOR.get()).build(null));
 
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<DistillationTankBlockEntity>> DISTILLATION_TANK=REGISTRY.register("distillation_tank",()->BlockEntityType.Builder.of((pos,state)->new DistillationTankBlockEntity(DifModBlockEntities.DISTILLATION_TANK.get(),pos,state), DifModBlocks.DISTILLATION_TANK.get()).build(null));
+	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<cz.maxtechnik.dif.block.MithrilFluidTank.Entity>> MITHRIL_FLUID_TANK=REGISTRY.register("mithril_fluid_tank",()->BlockEntityType.Builder.of((pos,state)->new cz.maxtechnik.dif.block.MithrilFluidTank.Entity(DifModBlockEntities.MITHRIL_FLUID_TANK.get(),pos,state), DifModBlocks.MITHRIL_FLUID_TANK.get()).build(null));
 
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<EngineBlockEntity>>ENGINE=REGISTRY.register("engine",()->BlockEntityType.Builder.of(EngineBlockEntity::new,DifModBlocks.ENGINE_BASE.get(),DifModBlocks.ENGINE_PORTABLE.get()).build(null));
 

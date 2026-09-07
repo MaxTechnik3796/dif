@@ -36,6 +36,7 @@
 		"dif:chunk_loader",
 		"dif:quarry",
 		"dif:distillation_tank",
+		"dif:mithril_fluid_tank",
 		"#dif:supports",
 		"#dif:casings",
 		"dif:big_girder",

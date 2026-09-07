@@ -36,6 +36,7 @@ public class DifModCapabilities{
 	private static void registerFluidCapabilities(RegisterCapabilitiesEvent event){
 		event.registerItem(iFLUID,(stack,side)->new Jetpack.Chestplate.FluidHandler(stack),DifModItems.JETPACK.get());
 		event.registerBlockEntity(bFLUID,DISTILLATION_TANK.get(),(be,ctx)->be.fluidTank());
+		event.registerBlockEntity(bFLUID,MITHRIL_FLUID_TANK.get(),(be,ctx)->be.getFluidCapability());
 		event.registerBlockEntity(bFLUID,ENGINE.get(),(be,side)->be.fluidTank);
 	}
 	private static void registerEnergyCapabilities(RegisterCapabilitiesEvent event){

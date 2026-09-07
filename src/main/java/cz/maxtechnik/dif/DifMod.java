@@ -156,6 +156,7 @@ public class DifMod{
 					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.QUARRY_LANDMARK.get(),RenderType.cutout());
 					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.FLUID_HATCH.get(),RenderType.cutout());
 					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.FLUID_DRAIN.get(),RenderType.cutout());
+					ItemBlockRenderTypes.setRenderLayer(DifModBlocks.MITHRIL_FLUID_TANK.get(),RenderType.cutoutMipped());
 				}catch(Exception exception){
 					LOGGER.error("TheDifferential: Error during Client Setup.",exception);
 				}
@@ -167,6 +168,7 @@ public class DifMod{
 			event.registerBlockEntityRenderer(DifModBlockEntities.FRYING_TABLE.get(),context->new FryingTableRenderer());
 			event.registerBlockEntityRenderer(DifModBlockEntities.QUARRY.get(),QuarryRenderer::new);
 			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(),context->new ChunkLoaderRenderer());
+			event.registerBlockEntityRenderer(DifModBlockEntities.MITHRIL_FLUID_TANK.get(),com.simibubi.create.content.fluids.tank.FluidTankRenderer::new);
 			event.registerEntityRenderer(DifModEntities.NUCLEAR_EXPLOSION.get(),NoopRenderer::new);
 			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.ENGINE.get()).factory(SingleAxisRotatingVisual::shaft).neverSkipVanillaRender().apply();
 			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.QUARRY.get()).factory(QuarryShaftVisual.factory()).neverSkipVanillaRender().apply();
