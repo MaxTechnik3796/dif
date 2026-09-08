@@ -1,0 +1,10 @@
+{
+  "type": "create:filling",
+  "ingredients": [
+    { "item": "minecraft:glass_bottle" },
+    { "type": "neoforge:single", "fluid": "dif:xp_fluid", "amount": 250 }
+  ],
+  "results": [
+    { "id": "dif:experience_drink" }
+  ]
+}
