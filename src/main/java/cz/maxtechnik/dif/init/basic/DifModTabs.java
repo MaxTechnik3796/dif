@@ -24,7 +24,12 @@ public class DifModTabs{
 		tabData.accept(THE_DIFFERENTIAL);
 		tabData.accept(MEGA_TORCH);
 		tabData.accept(PORTAL_GUN);
+		tabData.accept(JETPACK);
 		tabData.accept(CHUNK_LOADER);
+		tabData.accept(NUKE);
+
+		tabData.accept(FAST_POWERED_RAIL);
+		tabData.accept(FAST_RAIL);
 
 		tabData.accept(EVENT_BUS);
 		tabData.accept(VENT);
@@ -40,9 +45,6 @@ public class DifModTabs{
 		tabData.accept(BLUESTONE);
 		tabData.accept(BLUE_PLATE);
 		tabData.accept(NICKEL_SHEET);
-
-		tabData.accept(JETPACK);
-
 
 	})).build());
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>INDUSTRIAL=REGISTER.register("industrial",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.industrials")).icon(()->new ItemStack(ENGINE_EXTENDER.get())).displayItems(((parameters,tabData)->{
@@ -246,11 +248,6 @@ public class DifModTabs{
 			tabData.accept(WATER);
 			tabData.accept(LAVA);
 			tabData.accept(FIRE);
-
-			tabData.accept(FAST_POWERED_RAIL);
-			tabData.accept(FAST_RAIL);
-
-			tabData.accept(NUKE);
 			tabData.accept(INCOMPLETE_UNIVERSAL);
 
 		}else if(tabData.getTabKey().location().getNamespace().equals("farmersdelight")){
