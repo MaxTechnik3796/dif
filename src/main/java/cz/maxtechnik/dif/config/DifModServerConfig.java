@@ -11,6 +11,8 @@ public class DifModServerConfig{
 	public static final ModConfigSpec.IntValue NANO_GLASS_MAX_SPREAD;
 	public static final ModConfigSpec.IntValue JETPACK_CAPACITY;
 	public static final ModConfigSpec.IntValue ELECTRUM_DEFORESTER_MAX_LOGS;
+	public static final ModConfigSpec.IntValue MITHRIL_FLUID_TANK_CAPACITY;
+	public static final ModConfigSpec.DoubleValue QUARRY_STRESS_IMPACT;
 	// Solar Panels
 	public static final ModConfigSpec.IntValue SOLAR_PANEL_00;
 	public static final ModConfigSpec.IntValue SOLAR_PANEL_01;
@@ -26,8 +28,6 @@ public class DifModServerConfig{
 	public static final ModConfigSpec.IntValue PORTAL_GUN_ENERGY_PER_PEARL;
 	public static final ModConfigSpec.IntValue PORTAL_MAX_DISTANCE;
 	public static final ModConfigSpec.BooleanValue PORTAL_ALLOW_ENTITIES;
-	// Quarry
-	public static final ModConfigSpec.DoubleValue QUARRY_STRESS_IMPACT;
 	// Engines
 	public static final ModConfigSpec.DoubleValue ENGINE_DIESEL_RPM;
 	public static final ModConfigSpec.DoubleValue ENGINE_DIESEL_SU;
@@ -47,17 +47,14 @@ public class DifModServerConfig{
 	public static final ModConfigSpec.DoubleValue ENGINE_LPG_CONSUMPTION;
 	public static final ModConfigSpec.DoubleValue ENGINE_LPG_PORTABLE_SU;
 	public static final ModConfigSpec.DoubleValue ENGINE_LPG_PORTABLE_CONSUMPTION;
-	// Fluids
-	public static final ModConfigSpec.IntValue MITHRIL_FLUID_TANK_CAPACITY;
 	static{
-		BUILDER.push("Fluids");
-		MITHRIL_FLUID_TANK_CAPACITY=BUILDER.comment("The amount of liquid a Mithril Fluid Tank can hold per block in buckets (Default: 32 = 4x Create copper tank).").defineInRange("mithril_fluid_tank_capacity",32,1,MAX);
-		BUILDER.pop();
 		BUILDER.push("GeneralSettings");
 		MEGA_TORCH_RADIUS=BUILDER.defineInRange("mega_torch_radius",128,32,8192);
 		NANO_GLASS_MAX_SPREAD=BUILDER.defineInRange("nano_glass_max_spread",128,1,MAX);
 		JETPACK_CAPACITY=BUILDER.defineInRange("jetpack_capacity",16000,1000,MAX);
 		ELECTRUM_DEFORESTER_MAX_LOGS=BUILDER.defineInRange("electrum_deforester_max_logs",128,1,MAX);
+		MITHRIL_FLUID_TANK_CAPACITY=BUILDER.comment("The amount of liquid a Mithril Fluid Tank can hold per block in buckets (Default: 32 = 4x Create copper tank).").defineInRange("mithril_fluid_tank_capacity",32,1,MAX);
+		QUARRY_STRESS_IMPACT=BUILDER.comment("Create Kinetic Stress Impact of Quarry (SU consumed per 1 RPM). Default: 128.0").defineInRange("quarry_stress_impact",128.0D,0.0D,DOUBLE_MAX);
 		BUILDER.pop();
 		BUILDER.push("SolarPanelSettings");
 		SOLAR_PANEL_00=BUILDER.defineInRange("solar_panel_00",2,0,MAX);
@@ -77,9 +74,6 @@ public class DifModServerConfig{
 		PORTAL_GUN_ENERGY_PER_PEARL=BUILDER.defineInRange("portal_gun_energy_per_pearl",4,1,MAX);
 		PORTAL_MAX_DISTANCE=BUILDER.defineInRange("portal_max_distance",512,16,MAX);
 		PORTAL_ALLOW_ENTITIES=BUILDER.define("portal_allow_entities",true);
-		BUILDER.pop();
-		BUILDER.push("Quarry");
-		QUARRY_STRESS_IMPACT=BUILDER.comment("Create Kinetic Stress Impact of Quarry (SU consumed per 1 RPM). Default: 128.0").defineInRange("quarry_stress_impact",128.0D,0.0D,DOUBLE_MAX);
 		BUILDER.pop();
 		BUILDER.push("Engines");
 		BUILDER.push("Diesel");
