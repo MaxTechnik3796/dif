@@ -32,16 +32,15 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 	public QuarryLandmarkBlockEntity(BlockPos pos,BlockState blockState){
 		super(DifModBlockEntities.QUARRY_LANDMARK.get(),pos,blockState);
 	}
-	// -------------------- Klik na landmark --------------------
+	// Klik na landmark
 	public void onRightClick(){
 		if(level==null||level.isClientSide||formed) return;
-		// Scan 4 směry, najdi sousední landmarky
+		// Scan 4 směry
 		List<BlockPos> nearby=new ArrayList<>();
 		for(int[] dir: new int[][]{{1,0},{-1,0},{0,1},{0,-1}}){
 			BlockPos found=scanDirection(worldPosition,dir[0],dir[1]);
 			if(found!=null) nearby.add(found);
 		}
-		// 2+ nalezeny → zkus každou dvojici se mnou
 		if(nearby.size()>=2){
 			for(int a=0;a<nearby.size();a++){
 				for(int b=a+1;b<nearby.size();b++){
@@ -53,7 +52,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 				}
 			}
 		}
-		// 1 nalezen → z něj hledej 3. kolmo
+		// 1 nalezen
 		for(BlockPos first: nearby){
 			boolean onX=first.getZ()==worldPosition.getZ();
 			int[][] perps=onX?new int[][]{{0,-1},{0,1}}:new int[][]{{-1,0},{1,0}};
@@ -69,7 +68,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 			}
 		}
 	}
-	// -------------------- Scan jedním směrem --------------------
+	// Scan jedním směrem
 	@Nullable
 	private BlockPos scanDirection(BlockPos from,int dx,int dz){
 		if(level==null) return null;
@@ -81,10 +80,9 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 		}
 		return null;
 	}
-	// -------------------- Zkus vytvořit oblast ze 3 bodů --------------------
+	// Zkus vytvořit oblast
 	@Nullable
 	public static QuarryArea tryForm(BlockPos a,BlockPos b,BlockPos c){
-		// Musí tvořit L-tvar: přesně jeden bod musí sdílet X s jedním a Z s druhým
 		if(isLCorner(a,b,c)&&isLCorner(b,a,c)&&isLCorner(c,a,b)) return null;
 		int minX=Math.min(a.getX(),Math.min(b.getX(),c.getX()));
 		int maxX=Math.max(a.getX(),Math.max(b.getX(),c.getX()));
@@ -99,7 +97,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 		return (corner.getX()!=p1.getX()||corner.getZ()!=p2.getZ())
 				&&(corner.getX()!=p2.getX()||corner.getZ()!=p1.getZ());
 	}
-	// -------------------- Aplikuj formaci --------------------
+	// Aplikuj formaci
 	private void applyFormation(List<BlockPos> landmarks,QuarryArea area){
 		if(level==null) return;
 		for(BlockPos lmPos: landmarks){
@@ -112,7 +110,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 			level.sendBlockUpdated(lmPos,lm.getBlockState(),lm.getBlockState(),3);
 		}
 	}
-	// -------------------- Předat oblast quarry --------------------
+	// Předat oblast quarry
 	public void applyToQuarry(Level level,BlockPos quarryPos){
 		if(!formed||formedArea==null) return;
 		if(!(level.getBlockEntity(quarryPos) instanceof QuarryBlockEntity qe)) return;
@@ -126,7 +124,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 			}
 		}
 	}
-	// -------------------- Odstranění landmarku --------------------
+	// Odstranění landmarku
 	public void onRemoved(){
 		if(level==null||level.isClientSide||!formed) return;
 		for(BlockPos pp: new ArrayList<>(partnerPositions)){
@@ -138,7 +136,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 			level.sendBlockUpdated(pp,pe.getBlockState(),pe.getBlockState(),3);
 		}
 	}
-	// -------------------- Client rendering --------------------
+	// Client rendering
 	@Override
 	public void onLoad(){
 		super.onLoad();
@@ -163,7 +161,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 		if(level==null||!level.isClientSide) return;
 		QuarryRenderer.register(this);
 	}
-	// -------------------- Goggles Tooltip --------------------
+	// Goggles Tooltip
 	@Override
 	public boolean addToGoggleTooltip(List<Component> tooltip,boolean isPlayerSneaking){
 		Component statusComponent;
@@ -225,7 +223,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 		}
 		return count;
 	}
-	// -------------------- Gettery --------------------
+	// Gettery
 	public boolean isFormed(){
 		return formed;
 	}
@@ -233,7 +231,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 	public QuarryArea getFormedArea(){
 		return formedArea;
 	}
-	// -------------------- NBT --------------------
+	// NBT
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider p){
 		super.saveAdditional(tag,p);

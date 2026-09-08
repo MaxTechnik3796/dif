@@ -94,9 +94,10 @@ public class PortalEntity extends Entity{
 		Vec3 upVec=dirVec(up);
 		Vec3 rightVec=dirVec(facing).cross(upVec);
 		// Tenká deska: 1/16 bloku tlustá, 1 blok široká, 2 bloky vysoká
+		double pixelInset=0.01/16.0;
 		Vec3 halfThick=dirVec(facing).scale(0.03125);
-		Vec3 halfWidth=rightVec.scale(0.5);
-		Vec3 halfHeight=upVec.scale(1.0);
+		Vec3 halfWidth=rightVec.scale(0.5-pixelInset);
+		Vec3 halfHeight=upVec.scale(1.0-pixelInset);
 		double minX=x-Math.abs(halfThick.x)-Math.abs(halfWidth.x)-Math.abs(halfHeight.x);
 		double maxX=x+Math.abs(halfThick.x)+Math.abs(halfWidth.x)+Math.abs(halfHeight.x);
 		double minY=y-Math.abs(halfThick.y)-Math.abs(halfWidth.y)-Math.abs(halfHeight.y);
@@ -157,7 +158,7 @@ public class PortalEntity extends Entity{
 		}
 		if(!isLinked()) return;
 		// Teleportace entit (sjednocené spatial query)
-		AABB box=getBoundingBox().inflate(0.1);
+		AABB box=getBoundingBox();
 		long now=sl.getGameTime();
 		boolean allowNonPlayers=DifModServerConfig.PORTAL_ALLOW_ENTITIES.get();
 		int nonPlayerCount=0;

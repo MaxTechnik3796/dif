@@ -30,10 +30,6 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-/**
- * Těžební zařízení (Quarry) jako Create Kinetic block.
- * Přebírá rotaci ze spodu (Direction.DOWN).
- */
 public class Quarry extends KineticBlock implements EntityBlock, IWrenchable, IBE<QuarryBlockEntity>{
 	public static final MapCodec<Quarry> CODEC=simpleCodec(Quarry::new);
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;

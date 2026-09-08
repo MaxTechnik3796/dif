@@ -49,13 +49,10 @@ public class NanoGlass extends TransparentBlock implements EntityBlock{
 		}
 		return offsets.toArray(new int[0][]);
 	}
-	// -------------------- Wave scheduling (level-scoped, in-memory, ring-based) --------------------
+	// Wave scheduling
 	private static final Map<ServerLevel,LevelWaveState> WAVE_STATES=new WeakHashMap<>();
-	/** Stav rozpracovaných vln pro jeden level. Fronta prstenců čekajících na aplikaci. */
 	private static final class LevelWaveState{
-		/** Fronta prstenců (ring = množina pozic se stejnou vlnovou "vzdáleností"). */
 		private final ArrayDeque<Ring> ringQueue=new ArrayDeque<>();
-		/** Pozice, které už jsou zařazené v některém frontovém prstenci (proti duplicitám mezi souběžnými vlnami). */
 		private final LongOpenHashSet scheduledPositions=new LongOpenHashSet();
 		private boolean isEmpty(){
 			return ringQueue.isEmpty();
@@ -63,11 +60,6 @@ public class NanoGlass extends TransparentBlock implements EntityBlock{
 	}
 	private record Ring(List<BlockPos> positions,boolean dark){
 	}
-	/**
-	 * Spustí novou vlnu z originPos. Provede kompletní BFS "objevení" (levné -
-	 * jen čtení BlockState) a rozdělí objevené bloky do prstenců podle BFS
-	 * vzdálenosti. Prstence se pak aplikují postupně, jeden za tick, přes tick().
-	 */
 	private static void startWave(ServerLevel level,BlockPos originPos,boolean dark){
 		int maxSpread=DifModServerConfig.NANO_GLASS_MAX_SPREAD.get();
 		LevelWaveState waveState=WAVE_STATES.computeIfAbsent(level,l->new LevelWaveState());
@@ -116,11 +108,6 @@ public class NanoGlass extends TransparentBlock implements EntityBlock{
 			waveState.ringQueue.add(new Ring(filtered,dark));
 		}
 	}
-	/**
-	 * Aplikuje jeden prstenec za tick - všechny jeho bloky se obarví najednou,
-	 * takže vlna postupuje "po vrstvách" a je výrazně rychlejší než po jednom
-	 * bloku, ale pořád vizuálně plynulá.
-	 */
 	private static void tickWaves(ServerLevel level){
 		LevelWaveState waveState=WAVE_STATES.get(level);
 		if(waveState==null||waveState.isEmpty()) return;
@@ -135,7 +122,6 @@ public class NanoGlass extends TransparentBlock implements EntityBlock{
 			if(currentState.getValue(DARK).equals(ring.dark())) continue;
 			BlockEntity blockEntity=level.getBlockEntity(pos);
 			if(blockEntity instanceof NanoGlassBlockEntity nanoGlassBE&&nanoGlassBE.isOnCooldown(currentTime)){
-				// ještě na cooldownu -> zkusit znovu příští tick jako samostatný "mini-ring"
 				if(retry==null) retry=new ArrayList<>();
 				retry.add(pos);
 				continue;
@@ -153,11 +139,11 @@ public class NanoGlass extends TransparentBlock implements EntityBlock{
 	public static void onLevelTick(LevelTickEvent.Post event){
 		if(!(event.getLevel() instanceof ServerLevel serverLevel)) return;
 		long gameTick=serverLevel.getGameTime();
-		if(gameTick%2==0){  // aplikuj jen každý sudý tick (2x pomaleji)
+		if(gameTick%2==0){
 			tickWaves(serverLevel);
 		}
 	}
-	// -------------------- Block implementation --------------------
+	// Block implementation
 	public NanoGlass(BlockBehaviour.Properties properties){
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(DARK,false).setValue(POWERED,false));
@@ -170,9 +156,6 @@ public class NanoGlass extends TransparentBlock implements EntityBlock{
 	public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos,@NotNull BlockState state){
 		return new NanoGlassBlockEntity(DifModBlockEntities.NANO_GLASS.get(),pos,state);
 	}
-	/**
-	 * Klik prázdnou rukou -> ručně přepne tmavost a spustí plynulou vlnu.
-	 */
 	@Override
 	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull Player player,@NotNull BlockHitResult hit){
 		super.useWithoutItem(blockState,level,pos,player,hit);
@@ -183,9 +166,6 @@ public class NanoGlass extends TransparentBlock implements EntityBlock{
 		startWave(serverLevel,pos,nextDarkValue);
 		return InteractionResult.SUCCESS;
 	}
-	/**
-	 * Reakce POUZE na skutečnou změnu redstone signálu.
-	 */
 	@Override
 	public void neighborChanged(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Block block,@NotNull BlockPos fromPos,boolean isMoving){
 		super.neighborChanged(state,level,pos,block,fromPos,isMoving);

@@ -31,7 +31,7 @@ public class MithrilFluidTank extends FluidTankBlock {
 		return DifModBlockEntities.MITHRIL_FLUID_TANK.get();
 	}
 
-	// ==================== BLOCK ENTITY ====================
+	// BLOCK ENTITY
 	public static class Entity extends FluidTankBlockEntity {
 		public Entity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 			super(type, pos, state);

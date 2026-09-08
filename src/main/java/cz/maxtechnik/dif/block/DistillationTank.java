@@ -36,7 +36,7 @@ public class DistillationTank extends FluidTankBlock{
 	public BlockEntityType<? extends FluidTankBlockEntity> getBlockEntityType(){
 		return DifModBlockEntities.DISTILLATION_TANK.get();
 	}
-	//Ticker — Create logiku + naši recipe logiku
+	//Ticker
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level,BlockState blockState,BlockEntityType<T> type){
@@ -60,7 +60,6 @@ public class DistillationTank extends FluidTankBlock{
 		return super.updateShape(state, direction, neighborState, level, currentPos, neighborPos);
 	}
 
-	// Sousedící blok se změnil → invaliduj cache věže
 	@Override
 	public void neighborChanged(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos fromPos, boolean isMoving) {
 		super.neighborChanged(blockState, level, pos, neighborBlock, fromPos, isMoving);
@@ -106,11 +105,9 @@ public class DistillationTank extends FluidTankBlock{
 				}
 			}
 		}
-		// First, split all existing multiblocks in the area to start fresh
 		for (DistillationTankBlockEntity tank : tanks) {
 			com.simibubi.create.api.connectivity.ConnectivityHandler.splitMulti(tank);
 		}
-		// Re-collect tanks after split to ensure we have the fresh 1x1 states
 		tanks.clear();
 		for (int x = -2; x <= 2; x++) {
 			for (int z = -2; z <= 2; z++) {
@@ -120,9 +117,7 @@ public class DistillationTank extends FluidTankBlock{
 				}
 			}
 		}
-		// Sort tanks Northwest-to-Southeast (smallest X and Z first)
 		tanks.sort(Comparator.comparingInt((DistillationTankBlockEntity a) -> a.getBlockPos().getX()).thenComparingInt(a -> a.getBlockPos().getZ()));
-		// Form new multiblocks starting from the NW-most block of each group
 		for (DistillationTankBlockEntity tank : tanks) {
 			if (tank.isController()) {
 				com.simibubi.create.api.connectivity.ConnectivityHandler.formMulti(tank);

@@ -168,7 +168,7 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 			}
 			return;
 		}
-		// Vaření: potřebuje olej I heat source
+		// Vaření
 		if(!hasOil||!heated){
 			if(be.progress!=0){
 				be.progress=0;

@@ -15,20 +15,8 @@ import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-/**
- * Logika pro samotné vytěžení bloku, spotřebu těžení a distribuci dropů.
- * Odděluje se tím "akční" část quarry od samotné správy stavů.
- */
 public class QuarryMiningLogic{
-	/**
-	 * Provede těžební tick.
-	 *
-	 * @param be                QuarryBlockEntity, která operaci volá
-	 * @param level             Svět
-	 * @param miningProgressAcc Aktuální nastřádaný progres těžby
-	 * @param progressStep      Kolik progresu přibylo tento tick
-	 * @return Nový zůstatek nastřádaného progresu (miningProgressAcc)
-	 */
+
 	public static float doMiningTick(QuarryBlockEntity be,Level level,float miningProgressAcc,float progressStep){
 		if(!(level instanceof ServerLevel sl)) return miningProgressAcc;
 		QuarryAreaManager areaManager=be.getAreaManager();
@@ -43,7 +31,7 @@ public class QuarryMiningLogic{
 		int safety=0;
 		try{
 			while(safety++<1000){
-				// Přeskočit prázdné bloky a bloky obsahující pouze kapalinu
+				// Přeskočit prázdné bloky a bloky obsahující kapalinu
 				while(level.isEmptyBlock(miningPos)||!level.getBlockState(miningPos).getFluidState().isEmpty()){
 					if(areaManager.advanceMiningPos(level)){
 						be.finishMining();
@@ -52,10 +40,10 @@ public class QuarryMiningLogic{
 					miningPos=areaManager.getMiningPos();
 				}
 				BlockState target=level.getBlockState(miningPos);
-				// Řešení nezničitelných bloků (Bedrock atd.)
+				// Řešení nezničitelných bloků
 				float hardness=target.getDestroySpeed(level,miningPos);
 				if(hardness<0){
-					miningProgressAcc=0f; // Blok nelze zničit
+					miningProgressAcc=0f;
 					if(areaManager.advanceMiningPos(level)){
 						be.finishMining();
 						return miningProgressAcc;
@@ -66,7 +54,7 @@ public class QuarryMiningLogic{
 				// Vlastní těžení pevného bloku
 				float required=Math.max(1f,hardness*10f);
 				if(miningProgressAcc<required){
-					return miningProgressAcc; // Nedostatek progresu pro zničení tohoto bloku, čekáme
+					return miningProgressAcc;
 				}
 				miningProgressAcc-=required;
 				List<ItemStack> drops=Block.getDrops(target,sl,miningPos,sl.getBlockEntity(miningPos),null,tool);
@@ -85,15 +73,9 @@ public class QuarryMiningLogic{
 			be.setChanged();
 		}
 	}
-	/**
-	 * Nasimuluje virtuální nástroj, který quarry používá.
-	 */
 	private static ItemStack buildSimulatedTool(){
 		return new ItemStack(Items.NETHERITE_PICKAXE);
 	}
-	/**
-	 * Rozešle vytěžené itemy do okolních inventářů. Pokud se nevejdou, vyhodí je nahoru.
-	 */
 	private static void distributeDrops(QuarryBlockEntity be,Level level,List<ItemStack> drops){
 		BlockPos pos=be.getBlockPos();
 		List<IItemHandler> handlers=new ArrayList<>(6);

@@ -20,17 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static cz.maxtechnik.dif.DifMod.goggleTooltipFix;
-/**
- * BlockEntity pro těžební zařízení (Quarry).
- * Připojeno na Create kinetic síť (shaft zdola).
- * 1 RPM = 128 SU zátěže. Těžební rychlost odvislá přímo od RPM.
- * Podporuje vyžadované Goggles info a Redstone zastavení.
- */
+
 public class QuarryBlockEntity extends KineticBlockEntity{
 	public enum State{NO_ENERGY,CLEARING,BUILDING_FRAME,MINING,DONE}
 	private static final int FRAME_CHECK_INTERVAL=40;
 	private static final int POS_CHECK_INTERVAL=10;
-	// -------------------- Stav Quarry --------------------
+	// Stav Quarry
 	private State quarryState=State.NO_ENERGY;
 	private State activeState=State.CLEARING;
 	private int frameCheckTimer=0;
@@ -39,9 +34,9 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 	private boolean chunksNeedReload=false;
 	private boolean lastRedstoneState=false;
 	private BlockPos originPos;
-	// -------------------- QuarryAreaManager --------------------
+	// QuarryAreaManager
 	private final QuarryAreaManager areaManager=new QuarryAreaManager();
-	// -------------------- Pracovní fronta (pro čištění a stavbu rámu) --------------------
+	// Pracovní fronta
 	private final ArrayList<BlockPos> workQueue=new ArrayList<>();
 	private int workIndex=0;
 	public QuarryBlockEntity(BlockPos pos,BlockState blockState){
@@ -50,7 +45,7 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 	public boolean isRedstonePowered(){
 		return level!=null&&level.hasNeighborSignal(worldPosition);
 	}
-	// -------------------- Create Kinetic Stress (0 při redstonu) --------------------
+	// Create Kinetic Stress
 	@Override
 	public float calculateStressApplied(){
 		if(isRedstonePowered()){
@@ -61,7 +56,7 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 		this.lastStressApplied=impact;
 		return impact;
 	}
-	// -------------------- Goggles Tooltip (Engineer's Goggles Info) --------------------
+	// Goggles Tooltip
 	@Override
 	public boolean addToGoggleTooltip(List<Component> tooltip,boolean isPlayerSneaking){
 		super.addToGoggleTooltip(tooltip,isPlayerSneaking);
@@ -85,7 +80,7 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 			statusComponent=Component.literal(actionName).withStyle(ChatFormatting.GREEN);
 		}
 		tooltip.add(Component.literal(goggleTooltipFix+"Status: ").withStyle(ChatFormatting.GRAY).append(statusComponent));
-		// 2. Area Size & Mining Size
+		// Area Size and Mining Size
 		if(areaManager.hasArea()){
 			QuarryArea area=areaManager.getArea();
 			QuarryArea mining=area.miningBounds();
@@ -96,7 +91,7 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 		}
 		return true;
 	}
-	// -------------------- Inicializace oblasti --------------------
+	// Inicializace oblasti
 	public void setArea(int minX,int maxX,int minZ,int maxZ){
 		originPos=worldPosition;
 		areaManager.setArea(new QuarryArea(minX,maxX,minZ,maxZ));
@@ -119,12 +114,12 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 		if(speed<=0F||isOverStressed()||isRedstonePowered()) return 0F;
 		return Math.clamp(speed/12.8F,0.1F,20F);
 	}
-	// -------------------- HLAVNÍ TICK --------------------
+	// HLAVNÍ TICK
 	@Override
 	public void tick(){
 		super.tick();
 		if(level==null||level.isClientSide) return;
-		// Kontrola pohybu / kontraptce každých 10 ticků
+		// Kontrola pohybu
 		if(++posCheckTimer>=POS_CHECK_INTERVAL){
 			posCheckTimer=0;
 			if(isVirtual()||(originPos!=null&&!worldPosition.equals(originPos))){
@@ -166,7 +161,7 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 			chunksNeedReload=false;
 		}
 	}
-	// -------------------- ČIŠTĚNÍ OBLASTI PRO RÁM --------------------
+	// ČIŠTĚNÍ OBLASTI
 	private void startClearing(Level level){
 		QuarryArea area=areaManager.getArea();
 		int yBase=worldPosition.getY();
@@ -226,7 +221,7 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 			startBuildingFrame();
 		}
 	}
-	// -------------------- STAVBA RÁMU --------------------
+	// STAVBA RÁMU
 	private void startBuildingFrame(){
 		quarryState=State.BUILDING_FRAME;
 		workQueue.clear();
@@ -265,7 +260,7 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 			sendData();
 		}
 	}
-	// -------------------- TĚŽBA --------------------
+	// TĚŽBA
 	private void tickMine(Level level){
 		if(++frameCheckTimer>=FRAME_CHECK_INTERVAL){
 			frameCheckTimer=0;
@@ -290,7 +285,7 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 		if(level instanceof ServerLevel sl) areaManager.unloadForcedChunks(sl);
 		sendData();
 	}
-	// -------------------- Frame Utility --------------------
+	// Frame Utility
 	public boolean isFrameIntact(Level level){
 		for(BlockPos fp: areaManager.computeFramePositions(worldPosition.getY())){
 			if(!level.isLoaded(fp)) continue;
@@ -348,7 +343,7 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 		if(level==null||level.isClientSide) return;
 		resetAreaDueToMovement();
 	}
-	// -------------------- Create Kinetic NBT (read / write) --------------------
+	// Create Kinetic NBT
 	@Override
 	protected void read(CompoundTag tag,HolderLookup.Provider registries,boolean clientPacket){
 		super.read(tag,registries,clientPacket);
@@ -386,7 +381,7 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 		if(areaManager.hasArea())
 			areaManager.getArea().save(tag);
 	}
-	// -------------------- Gettery --------------------
+	// Gettery
 	public QuarryAreaManager getAreaManager(){
 		return areaManager;
 	}

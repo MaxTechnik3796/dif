@@ -49,7 +49,7 @@ public class FluidDrain extends Block implements SimpleWaterloggedBlock{
 	protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack heldItem,@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
 		if(world.isClientSide()) return ItemInteractionResult.SUCCESS;
 		BlockPos targetPos=pos.relative(blockState.getValue(FACING));
-		// Wrench logika — rotace
+		// Wrench logika
 		if(heldItem.getItem() instanceof WrenchItem){
 			world.setBlock(pos,blockState.setValue(FACING,blockState.getValue(FACING).getClockWise()),3);
 			AllSoundEvents.WRENCH_ROTATE.playOnServer(world,pos,1.0F,Create.RANDOM.nextFloat()*0.5F+0.5F);
@@ -80,7 +80,6 @@ public class FluidDrain extends Block implements SimpleWaterloggedBlock{
 				return ItemInteractionResult.SUCCESS;
 			}
 		}else{
-			// 2. Kliknutí jinou fluidní nádobou
 			var fluidHandlerItem=FluidUtil.getFluidHandler(heldItem);
 			if(fluidHandlerItem.isPresent()){
 				var result=FluidUtil.tryFillContainerAndStow(heldItem,cap,new PlayerInvWrapper(player.getInventory()),1000,player,true);

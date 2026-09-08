@@ -48,7 +48,7 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 		int side=2*radius+1;
 		return side+"x"+side;
 	}
-	// --- Chunk forcing via TicketController ---
+	// Chunk forcing via TicketController
 	private void forceChunks(ServerLevel serverLevel,int r,boolean force){
 		ChunkPos center=new ChunkPos(worldPosition);
 		for(int dx=-r;dx<=r;dx++){
@@ -57,28 +57,19 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 			}
 		}
 	}
-	// --- Public API ---
-	/**
-	 * Cycles radius: 1x1 -> 3x3 -> 5x5 -> 1x1.
-	 * Has a 10-tick (0.5s) cooldown to prevent spam.
-	 */
+	// Public API
 	public void cycleRadius(Player player){
 		if(!(level instanceof ServerLevel serverLevel)) return;
 		// Cooldown check
 		long gameTime=serverLevel.getGameTime();
 		if(gameTime-lastCycleTime<CYCLE_COOLDOWN_TICKS) return;
 		lastCycleTime=gameTime;
-		// 1. Unforce old chunks
 		forceChunks(serverLevel,this.radius,false);
-		// 2. Cycle: 0 -> 1 -> 2 -> 0
 		this.radius=(this.radius+1)%(MAX_RADIUS+1);
-		// 3. Force new chunks (only if active)
 		if(this.active){
 			forceChunks(serverLevel,this.radius,true);
 		}
-		// 4. Persist
 		syncAndSave(serverLevel);
-		// 5. Feedback
 		serverLevel.playSound(null,worldPosition,SoundEvents.EXPERIENCE_ORB_PICKUP,SoundSource.BLOCKS,1.0F,0.8F+this.radius*0.3F);
 		if(player!=null){
 			player.displayClientMessage(
@@ -87,9 +78,6 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 			);
 		}
 	}
-	/**
-	 * Activates or deactivates chunk loading (e.g. from redstone).
-	 */
 	public void updateStatus(boolean newActive){
 		if(this.active==newActive) return;
 		this.active=newActive;
@@ -98,9 +86,6 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 			syncAndSave(serverLevel);
 		}
 	}
-	/**
-	 * Called on first placement — forces chunks unconditionally (no active guard).
-	 */
 	public void forceInitialLoad(boolean initialActive){
 		this.active=initialActive;
 		if(level instanceof ServerLevel serverLevel){
@@ -110,9 +95,6 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 			syncAndSave(serverLevel);
 		}
 	}
-	/**
-	 * Called when the block is removed — unforces all chunks and removes from data.
-	 */
 	public void handleRemoval(){
 		if(level instanceof ServerLevel serverLevel){
 			forceChunks(serverLevel,this.radius,false);
@@ -127,7 +109,7 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 		this.setChanged();
 		serverLevel.sendBlockUpdated(worldPosition,getBlockState(),getBlockState(),3);
 	}
-	// --- Goggles overlay (English) ---
+	// Goggles overlay
 	@Override
 	public boolean addToGoggleTooltip(List<Component> tooltip,boolean isPlayerSneaking){
 		tooltip.add(Component.literal("     Chunk Loader").withStyle(ChatFormatting.GOLD));
@@ -143,11 +125,10 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 		}
 		return true;
 	}
-	// --- NBT ---
+	// NBT
 	@Override
 	protected void loadAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider registries){
 		super.loadAdditional(tag,registries);
-		// New format: "radius" int. Legacy fallback: "is3x3" boolean.
 		if(tag.contains("radius")) this.radius=tag.getInt("radius");
 		else if(tag.contains("is3x3")) this.radius=tag.getBoolean("is3x3")?1:0;
 		if(tag.contains("active")) this.active=tag.getBoolean("active");

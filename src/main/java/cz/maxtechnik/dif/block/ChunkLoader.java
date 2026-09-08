@@ -50,7 +50,7 @@ public class ChunkLoader extends Block implements EntityBlock, IWrenchable{
 	public @NotNull RenderShape getRenderShape(@NotNull BlockState blockState){
 		return RenderShape.MODEL;
 	}
-	// --- Wrench interaction ---
+	// Wrench interaction
 	@Override
 	public InteractionResult onWrenched(BlockState blockState,UseOnContext context){
 		Level level=context.getLevel();
@@ -62,7 +62,7 @@ public class ChunkLoader extends Block implements EntityBlock, IWrenchable{
 		}
 		return InteractionResult.SUCCESS;
 	}
-	// --- Lifecycle ---
+	// Lifecycle
 	@Override
 	public void setPlacedBy(Level level,@NotNull BlockPos pos,@NotNull BlockState blockState,@Nullable LivingEntity placer,@NotNull ItemStack itemStack){
 		if(!level.isClientSide&&placer instanceof Player player){
@@ -94,7 +94,7 @@ public class ChunkLoader extends Block implements EntityBlock, IWrenchable{
 			}
 		}
 	}
-	// --- Particles ---
+	// Particles
 	@Override
 	public void animateTick(BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull RandomSource random){
 		if(!blockState.getValue(LIT)) return;
