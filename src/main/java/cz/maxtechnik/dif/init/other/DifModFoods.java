@@ -16,5 +16,4 @@ public class DifModFoods{
 	public static final FoodProperties CREATE_SUPER=new FoodProperties.Builder().nutrition(20).saturationModifier(2F).effect(new MobEffectInstance(MobEffects.DIG_SPEED,1800,1),1F).effect(new MobEffectInstance(MobEffects.NIGHT_VISION,6000,0),1F).effect(new MobEffectInstance(MobEffects.HEALTH_BOOST,4800,1),1F).effect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE,6000,0),1F).alwaysEdible().build();
 	public static final FoodProperties BOTTLE_OF_MOLOTOVUV_KOKTEJL=new FoodProperties.Builder().nutrition(4).saturationModifier(3F).alwaysEdible().build();
 	public static final FoodProperties EXPERIENCE_DRINK=new FoodProperties.Builder().nutrition(4).saturationModifier(3F).effect(new MobEffectInstance(DifModMobEffects.EXPERIENCE,400,0),1F).alwaysEdible().build();
-	public static final FoodProperties FLAT_DOUGH=new FoodProperties.Builder().nutrition(2).saturationModifier(0.1F).effect(new MobEffectInstance(MobEffects.HUNGER,600,0),0.8F).build();
 }

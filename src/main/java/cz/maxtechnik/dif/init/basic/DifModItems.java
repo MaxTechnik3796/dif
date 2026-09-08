@@ -109,8 +109,6 @@ public class DifModItems{
 	//Food:
 	public static final DeferredItem<Item> BEER=REGISTRY.register("beer",()->new Beer(DifModBlocks.BEER.get(),new Item.Properties().food(DifModFoods.BEER)));
 
-	public static final DeferredItem<Item>FLAT_DOUGH=REGISTRY.register("flat_dough",()->new Item((new Item.Properties()).food(DifModFoods.FLAT_DOUGH)));
-
 	public static final DeferredItem<Item> BOTTLE_OF_MOLOTOVUV_KOKTEJL=REGISTRY.register("bottle_of_molotovuv_koktejl",MolotovuvKoktejl::new);
 	public static final DeferredItem<Item> EXPERIENCE_DRINK=REGISTRY.register("experience_drink",ExperienceDrink::new);
 	public static final DeferredItem<Item> BOTTLE_OF_URANOVEJ_KOKTEJL=EXPERIENCE_DRINK;

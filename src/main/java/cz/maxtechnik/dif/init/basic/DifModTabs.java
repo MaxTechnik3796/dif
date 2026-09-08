@@ -227,7 +227,6 @@ public class DifModTabs{
 								new ItemStack(CREATE_BOWL.get()),
 								new ItemStack(SUPER_HEATED_CREATE_BOWL.get())
 						});
-				tabData.accept(FLAT_DOUGH);
 			}
 			addItemStacksBehind(tabData,new ItemStack(Items.MILK_BUCKET),
 					new ItemStack[]{   
