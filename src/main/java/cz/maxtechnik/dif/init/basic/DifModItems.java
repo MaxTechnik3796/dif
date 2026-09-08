@@ -172,11 +172,6 @@ public class DifModItems{
 	public static final DeferredItem<Item> COPPER_BARREL=block(DifModBlocks.COPPER_BARREL);
 	public static final DeferredItem<Item> BRASS_BARREL=block(DifModBlocks.BRASS_BARREL);
 
-	public static final DeferredItem<Item> RUBY=REGISTRY.register("ruby",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item> RUBY_ORE=block(DifModBlocks.RUBY_ORE);
-	public static final DeferredItem<Item> RUBY_BLOCK=block(DifModBlocks.RUBY_BLOCK);
-
-
 
 	public static final DeferredItem<Item> SOLAR_PANEL_INC=REGISTRY.register("solar_panel_inc",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item> SOLAR_PANEL_00=block(DifModBlocks.SOLAR_PANEL_00);
