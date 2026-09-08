@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static cz.maxtechnik.dif.DifMod.goggleTooltipFix;
-
 public class QuarryBlockEntity extends KineticBlockEntity{
 	public enum State{NO_ENERGY,CLEARING,BUILDING_FRAME,MINING,DONE}
 	private static final int FRAME_CHECK_INTERVAL=40;

@@ -1,14 +1,22 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ABA",
-    "BCB",
-    " B "
-  ],
-  "key": {
-    "A": { "item": "minecraft:phantom_membrane" },
-    "B": { "item": "create:iron_sheet" },
-    "C": { "item": "minecraft:diamond" }
-  },
-  "result": { "id": "dif:phantom_ring" }
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		"ABA",
+		"BCB",
+		" B "
+	],
+	"key":{
+		"A":{
+			"item":"minecraft:phantom_membrane"
+		},
+		"B":{
+			"item":"create:iron_sheet"
+		},
+		"C":{
+			"item":"minecraft:diamond"
+		}
+	},
+	"result":{
+		"id":"dif:phantom_ring"
+	}
 }

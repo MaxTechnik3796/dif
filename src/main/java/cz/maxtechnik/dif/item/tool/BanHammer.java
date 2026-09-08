@@ -3,23 +3,23 @@ package cz.maxtechnik.dif.item.tool;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LightningBolt;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
@@ -81,61 +81,60 @@ public class BanHammer extends Item{
 			event.setCanceled(true);
 		}
 	}
-	private static final Set<UUID> PENDING_BAN_UUIDS = ConcurrentHashMap.newKeySet();
-	public static void executeBanHammerEffect(Player attacker, Entity target){
-		if(attacker == null || attacker.level().isClientSide || target == null) return;
+	private static final Set<UUID> PENDING_BAN_UUIDS=ConcurrentHashMap.newKeySet();
+	public static void executeBanHammerEffect(Player attacker,Entity target){
+		if(attacker==null||attacker.level().isClientSide||target==null) return;
 		if(!(attacker.level() instanceof ServerLevel serverLevel)) return;
-		LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(serverLevel);
-		if(lightning != null){
+		LightningBolt lightning=EntityType.LIGHTNING_BOLT.create(serverLevel);
+		if(lightning!=null){
 			lightning.moveTo(target.position());
 			lightning.setVisualOnly(true);
 			serverLevel.addFreshEntity(lightning);
 		}
-		serverLevel.playSound(null, target.getX(), target.getY(), target.getZ(),
-				SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.PLAYERS, 5.0F, 0.8F);
-		serverLevel.playSound(null, target.getX(), target.getY(), target.getZ(),
-				SoundEvents.WITHER_SPAWN, SoundSource.PLAYERS, 2.0F, 0.5F);
-		serverLevel.playSound(null, target.getX(), target.getY(), target.getZ(),
-				SoundEvents.WARDEN_SONIC_BOOM, SoundSource.PLAYERS, 2.5F, 0.7F);
-		serverLevel.sendParticles(ParticleTypes.SONIC_BOOM, target.getX(), target.getY() + 1.0, target.getZ(), 1, 0, 0, 0, 0);
-		serverLevel.sendParticles(ParticleTypes.FLASH, target.getX(), target.getY() + 1.0, target.getZ(), 3, 0.2, 0.2, 0.2, 0);
-		serverLevel.sendParticles(ParticleTypes.REVERSE_PORTAL, target.getX(), target.getY() + 1.0, target.getZ(), 80, 0.6, 1.0, 0.6, 0.2);
-		serverLevel.sendParticles(ParticleTypes.LARGE_SMOKE, target.getX(), target.getY() + 1.0, target.getZ(), 40, 0.5, 0.8, 0.5, 0.1);
-		serverLevel.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, target.getX(), target.getY() + 1.0, target.getZ(), 30, 0.4, 0.8, 0.4, 0.15);
-		DamageSource divineSource = serverLevel.damageSources().source(DamageTypes.FELL_OUT_OF_WORLD, attacker);
+		serverLevel.playSound(null,target.getX(),target.getY(),target.getZ(),
+				SoundEvents.LIGHTNING_BOLT_THUNDER,SoundSource.PLAYERS,5.0F,0.8F);
+		serverLevel.playSound(null,target.getX(),target.getY(),target.getZ(),
+				SoundEvents.WITHER_SPAWN,SoundSource.PLAYERS,2.0F,0.5F);
+		serverLevel.playSound(null,target.getX(),target.getY(),target.getZ(),
+				SoundEvents.WARDEN_SONIC_BOOM,SoundSource.PLAYERS,2.5F,0.7F);
+		serverLevel.sendParticles(ParticleTypes.SONIC_BOOM,target.getX(),target.getY()+1.0,target.getZ(),1,0,0,0,0);
+		serverLevel.sendParticles(ParticleTypes.FLASH,target.getX(),target.getY()+1.0,target.getZ(),3,0.2,0.2,0.2,0);
+		serverLevel.sendParticles(ParticleTypes.REVERSE_PORTAL,target.getX(),target.getY()+1.0,target.getZ(),80,0.6,1.0,0.6,0.2);
+		serverLevel.sendParticles(ParticleTypes.LARGE_SMOKE,target.getX(),target.getY()+1.0,target.getZ(),40,0.5,0.8,0.5,0.1);
+		serverLevel.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,target.getX(),target.getY()+1.0,target.getZ(),30,0.4,0.8,0.4,0.15);
+		DamageSource divineSource=serverLevel.damageSources().source(DamageTypes.FELL_OUT_OF_WORLD,attacker);
 		target.setInvulnerable(false);
-		target.hurt(divineSource, Float.MAX_VALUE);
+		target.hurt(divineSource,Float.MAX_VALUE);
 		if(target instanceof LivingEntity living){
 			living.setHealth(0.0F);
 			living.die(divineSource);
 		}
 		if(target instanceof Player targetPlayer){
-			UUID targetUuid = targetPlayer.getUUID();
+			UUID targetUuid=targetPlayer.getUUID();
 			if(!PENDING_BAN_UUIDS.add(targetUuid)){
 				return;
 			}
-			targetPlayer.getAbilities().invulnerable = false;
+			targetPlayer.getAbilities().invulnerable=false;
 			targetPlayer.onUpdateAbilities();
-			MinecraftServer server = serverLevel.getServer();
-			String playerName = targetPlayer.getGameProfile().getName();
-			long executeTick = server.getTickCount() + 10;
-			server.tell(new TickTask((int) executeTick, () -> {
-				try {
-					Component banMessage = Component.literal("[BAN] ")
-							.withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD)
-							.append(Component.literal("Player " + playerName + " was erased from existence by the Ban Hammer!")
+			MinecraftServer server=serverLevel.getServer();
+			String playerName=targetPlayer.getGameProfile().getName();
+			long executeTick=server.getTickCount()+10;
+			server.tell(new TickTask((int)executeTick,()->{
+				try{
+					Component banMessage=Component.literal("[BAN] ")
+							.withStyle(ChatFormatting.DARK_RED,ChatFormatting.BOLD)
+							.append(Component.literal("Player "+playerName+" was erased from existence by the Ban Hammer!")
 									.withStyle(ChatFormatting.RED));
-					server.getPlayerList().broadcastSystemMessage(banMessage, false);
-
+					server.getPlayerList().broadcastSystemMessage(banMessage,false);
 					server.getCommands().performPrefixedCommand(
 							server.createCommandSourceStack(),
-							"ban " + playerName + " Erased from existence by the Ban Hammer"
+							"ban "+playerName+" Erased from existence by the Ban Hammer"
 					);
-				} finally {
+				}finally{
 					PENDING_BAN_UUIDS.remove(targetUuid);
 				}
 			}));
-		} else if(target.isAlive() || !target.isRemoved()){
+		}else if(target.isAlive()||!target.isRemoved()){
 			target.remove(Entity.RemovalReason.KILLED);
 			target.discard();
 		}
