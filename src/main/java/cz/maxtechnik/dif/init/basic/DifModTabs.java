@@ -220,8 +220,7 @@ public class DifModTabs{
 						});
 				addItemStacksBehind(tabData,new ItemStack(Items.COOKED_CHICKEN),
 						new ItemStack[]{
-								new ItemStack(BUCKET_OF_CHICKEN.get()),
-								new ItemStack(RIZEK.get())
+								new ItemStack(BUCKET_OF_CHICKEN.get())
 						});
 				addItemStacksBehind(tabData,new ItemStack(Items.COOKED_RABBIT),
 						new ItemStack[]{

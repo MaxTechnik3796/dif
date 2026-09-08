@@ -7,7 +7,6 @@ import net.minecraft.world.food.FoodProperties;
 public class DifModFoods{
 	public static final FoodProperties FRIES=new FoodProperties.Builder().nutrition(3).saturationModifier(0.45F).alwaysEdible().build();
 	public static final FoodProperties BUCKET_OF_CHICKEN=new FoodProperties.Builder().nutrition(9).saturationModifier(1.25F).alwaysEdible().build();
-	public static final FoodProperties RIZEK=new FoodProperties.Builder().nutrition(5).saturationModifier(0.4F).alwaysEdible().build();
 	public static final FoodProperties HORSE_MEAT=new FoodProperties.Builder().nutrition(2).saturationModifier(0.1F).alwaysEdible().build();
 	public static final FoodProperties COOKED_HORSE_MEAT=new FoodProperties.Builder().nutrition(6).saturationModifier(0.8F).alwaysEdible().build();
 	public static final FoodProperties BURNED_TOAST=new FoodProperties.Builder().nutrition(3).saturationModifier(0.8F).effect(new MobEffectInstance(MobEffects.WITHER,100),1F).alwaysEdible().build();

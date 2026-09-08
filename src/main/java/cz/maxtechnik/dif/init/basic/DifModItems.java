@@ -114,7 +114,6 @@ public class DifModItems{
 
 	public static final DeferredItem<Item> BUCKET_OF_CHICKEN=REGISTRY.register("bucket_of_chicken",()->new RetvalFoods(new Item.Properties().food(DifModFoods.BUCKET_OF_CHICKEN),Items.BUCKET,UseAnim.EAT));
 	public static final DeferredItem<Item> FRIES=REGISTRY.register("fries",()->new Item(new Item.Properties().food(DifModFoods.FRIES)));
-	public static final DeferredItem<Item> RIZEK=REGISTRY.register("rizek",()->new Item(new Item.Properties().food(DifModFoods.RIZEK)));
 
 	public static final DeferredItem<Item> HORSE_MEAT=REGISTRY.register("horse_meat",()->new Item(new Item.Properties().food(DifModFoods.HORSE_MEAT)));
 	public static final DeferredItem<Item> COOKED_HORSE_MEAT=REGISTRY.register("cooked_horse_meat",()->new Item(new Item.Properties().food(DifModFoods.COOKED_HORSE_MEAT)));
