@@ -14,9 +14,6 @@ public class DifModServerConfig{
 	// Solar Panels
 	public static final ModConfigSpec.IntValue SOLAR_PANEL_00;
 	public static final ModConfigSpec.IntValue SOLAR_PANEL_01;
-	public static final ModConfigSpec.IntValue SOLAR_PANEL_02;
-	public static final ModConfigSpec.IntValue SOLAR_PANEL_03;
-	public static final ModConfigSpec.IntValue SOLAR_PANEL_04;
 	// Burning Generator
 	public static final ModConfigSpec.IntValue BURNING_GENERATOR_ENERGY_PER_TICK;
 	public static final ModConfigSpec.IntValue BURNING_GENERATOR_MAX_ENERGY;
@@ -63,11 +60,8 @@ public class DifModServerConfig{
 		ELECTRUM_DEFORESTER_MAX_LOGS=BUILDER.defineInRange("electrum_deforester_max_logs",128,1,MAX);
 		BUILDER.pop();
 		BUILDER.push("SolarPanelSettings");
-		SOLAR_PANEL_00=BUILDER.defineInRange("solar_panel_00",1,0,MAX);
-		SOLAR_PANEL_01=BUILDER.defineInRange("solar_panel_01",5,0,MAX);
-		SOLAR_PANEL_02=BUILDER.defineInRange("solar_panel_02",20,0,MAX);
-		SOLAR_PANEL_03=BUILDER.defineInRange("solar_panel_03",50,0,MAX);
-		SOLAR_PANEL_04=BUILDER.defineInRange("solar_panel_04",100,0,MAX);
+		SOLAR_PANEL_00=BUILDER.defineInRange("solar_panel_00",2,0,MAX);
+		SOLAR_PANEL_01=BUILDER.defineInRange("solar_panel_01",4,0,MAX);
 		BUILDER.pop();
 		BUILDER.push("BurningGenerator");
 		BURNING_GENERATOR_ENERGY_PER_TICK=BUILDER.defineInRange("burning_generator_energy_per_tick",20,0,MAX);

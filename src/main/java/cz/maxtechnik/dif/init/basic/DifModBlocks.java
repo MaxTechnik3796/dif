@@ -10,7 +10,6 @@ import cz.maxtechnik.dif.block.rails.FastPoweredRailBlock;
 import cz.maxtechnik.dif.block.rails.FastRailBlock;
 import cz.maxtechnik.dif.block.template.*;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -83,15 +82,9 @@ public class DifModBlocks{
 	//Solar Panels:
 	public static final DeferredBlock<Block>SOLAR_PANEL_00=REGISTRY.register("solar_panel_00",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_00));
 	public static final DeferredBlock<Block>SOLAR_PANEL_01=REGISTRY.register("solar_panel_01",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_01));
-	public static final DeferredBlock<Block>SOLAR_PANEL_02=REGISTRY.register("solar_panel_02",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_02));
-	public static final DeferredBlock<Block>SOLAR_PANEL_03=REGISTRY.register("solar_panel_03",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_03));
-	public static final DeferredBlock<Block>SOLAR_PANEL_04=REGISTRY.register("solar_panel_04",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_04));
 
 	public static final DeferredBlock<Block>SOLAR_PANEL_00_W=REGISTRY.register("solar_panel_00_w",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_00));
 	public static final DeferredBlock<Block>SOLAR_PANEL_01_W=REGISTRY.register("solar_panel_01_w",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_01));
-	public static final DeferredBlock<Block>SOLAR_PANEL_02_W=REGISTRY.register("solar_panel_02_w",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_02));
-	public static final DeferredBlock<Block>SOLAR_PANEL_03_W=REGISTRY.register("solar_panel_03_w",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_03));
-	public static final DeferredBlock<Block>SOLAR_PANEL_04_W=REGISTRY.register("solar_panel_04_w",()->new SolarPanel(DifModServerConfig.SOLAR_PANEL_04));
 
 	//Random (2):
 	public static final DeferredBlock<Block>CINDER_FLOUR_BLOCK=REGISTRY.register("cinder_flour_block",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.WART_BLOCK).strength(0.4F,0.6F)));
@@ -154,18 +147,4 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>DEEPSLATE_NICKEL_ORE=REGISTRY.register("deepslate_nickel_ore",()->new DropExperienceBlock(ConstantInt.of(0),BlockBehaviour.Properties.ofFullCopy(GOLD_ORE).mapColor(MapColor.DEEPSLATE).strength(4.5F,3F).sound(SoundType.DEEPSLATE)));
 
 	public static final DeferredBlock<Block>NANO_GLASS=REGISTRY.register("nano_glass",()->new NanoGlass(BlockBehaviour.Properties.of().instrument(NoteBlockInstrument.HAT).strength(0.3F).sound(SoundType.GLASS).noOcclusion().isValidSpawn(Blocks::never).isRedstoneConductor((bs,br,bp)->false).isSuffocating((blockState,blockGetter,pos)->false).isViewBlocking((blockState,blockGetter,pos)->false)));
-
-	static {
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_diesel"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_gasoline"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_lpg"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
-
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_diesel"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_gasoline"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_lpg"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_heavy_fuel_oil"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader_1x1"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader"));
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader_3x3"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader"));
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "mithril_tank"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "mithril_fluid_tank"));
-	}
 }

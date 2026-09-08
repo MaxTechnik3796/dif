@@ -175,14 +175,8 @@ public class DifModItems{
 	public static final DeferredItem<Item> SOLAR_PANEL_INC=REGISTRY.register("solar_panel_inc",()->new Item(new Item.Properties()));
 	public static final DeferredItem<Item> SOLAR_PANEL_00=block(DifModBlocks.SOLAR_PANEL_00);
 	public static final DeferredItem<Item> SOLAR_PANEL_01=block(DifModBlocks.SOLAR_PANEL_01);
-	public static final DeferredItem<Item> SOLAR_PANEL_02=block(DifModBlocks.SOLAR_PANEL_02);
-	public static final DeferredItem<Item> SOLAR_PANEL_03=block(DifModBlocks.SOLAR_PANEL_03);
-	public static final DeferredItem<Item> SOLAR_PANEL_04=block(DifModBlocks.SOLAR_PANEL_04);
 	public static final DeferredItem<Item> SOLAR_PANEL_00_W=block(DifModBlocks.SOLAR_PANEL_00_W);
 	public static final DeferredItem<Item> SOLAR_PANEL_01_W=block(DifModBlocks.SOLAR_PANEL_01_W);
-	public static final DeferredItem<Item> SOLAR_PANEL_02_W=block(DifModBlocks.SOLAR_PANEL_02_W);
-	public static final DeferredItem<Item> SOLAR_PANEL_03_W=block(DifModBlocks.SOLAR_PANEL_03_W);
-	public static final DeferredItem<Item> SOLAR_PANEL_04_W=block(DifModBlocks.SOLAR_PANEL_04_W);
 
 	public static final DeferredItem<Item> DEEPSLATED_ARROW=block(DifModBlocks.DEEPSLATED_ARROW);
 	public static final DeferredItem<Item> STONED_ARROW=block(DifModBlocks.STONED_ARROW);
@@ -257,18 +251,4 @@ public class DifModItems{
 
 	public static final DeferredItem<Item>DEFORESTRATOR=REGISTRY.register("deforestrator", Electrum::new);
 	public static final DeferredItem<Item>DEFORESTER=DEFORESTRATOR;
-
-	static {
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_diesel"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_gasoline"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable_lpg"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_portable"));
-
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_diesel"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_gasoline"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_lpg"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender_heavy_fuel_oil"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "engine_extender"));
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader_1x1"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader"));
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader_3x3"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "chunk_loader"));
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "mithril_tank"), ResourceLocation.fromNamespaceAndPath(DifMod.MODID, "mithril_fluid_tank"));
-	}
 }

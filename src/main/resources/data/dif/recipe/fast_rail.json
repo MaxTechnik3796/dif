@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "key": {
+    "A": { "item": "minecraft:rail" },
+    "B": { "item": "minecraft:diamond" }
+  },
+  "result": { "id": "dif:fast_rail", "count": 8 }
+}

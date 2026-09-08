@@ -73,15 +73,9 @@ public class DifModTabs{
 
 		tabData.accept(SOLAR_PANEL_00);
 		tabData.accept(SOLAR_PANEL_01);
-		tabData.accept(SOLAR_PANEL_02);
-		tabData.accept(SOLAR_PANEL_03);
-		tabData.accept(SOLAR_PANEL_04);
 
 		tabData.accept(SOLAR_PANEL_00_W);
 		tabData.accept(SOLAR_PANEL_01_W);
-		tabData.accept(SOLAR_PANEL_02_W);
-		tabData.accept(SOLAR_PANEL_03_W);
-		tabData.accept(SOLAR_PANEL_04_W);
 
 	})).build());
 
