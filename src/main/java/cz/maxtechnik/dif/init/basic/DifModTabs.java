@@ -240,7 +240,7 @@ public class DifModTabs{
 							new ItemStack(BEER.get()),
 					});
 			tabData.accept(BOTTLE_OF_MOLOTOVUV_KOKTEJL);
-			tabData.accept(BOTTLE_OF_URANOVEJ_KOKTEJL);
+			tabData.accept(EXPERIENCE_DRINK);
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.INGREDIENTS)){
 			tabData.insertAfter(new ItemStack(Items.RAW_IRON),new ItemStack(RAW_NICKEL.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertAfter(new ItemStack(Items.IRON_NUGGET),new ItemStack(NICKEL_NUGGET.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);

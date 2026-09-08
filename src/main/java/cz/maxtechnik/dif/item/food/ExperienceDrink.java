@@ -4,16 +4,21 @@ import cz.maxtechnik.dif.init.other.DifModFoods;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-public class UranovejKoktejl extends Item{
-	public UranovejKoktejl(){
-		super(new Properties().food((DifModFoods.BOTTLE_OF_URANOVEJ_KOKTEJL)));
+
+public class ExperienceDrink extends Item{
+	public ExperienceDrink(){
+		super(new Properties().food(DifModFoods.EXPERIENCE_DRINK));
 	}
 	@Override
 	public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemstack){
@@ -23,8 +28,7 @@ public class UranovejKoktejl extends Item{
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(@NotNull ItemStack itemStack,Item.@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
 		super.appendHoverText(itemStack,context,list,flag);
-		list.add(Component.literal("§l§6!!!WARNING!!!"));
-		list.add(Component.literal("§8- §aIncreased radiation!"));
+		list.add(Component.literal("§eProvides an intense experience trip!"));
 	}
 	@Override
 	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemStack,@NotNull Level level,@NotNull LivingEntity entity){

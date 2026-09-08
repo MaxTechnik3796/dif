@@ -7,9 +7,9 @@ import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.armor.CopperArmor;
 import cz.maxtechnik.dif.item.armor.Jetpack;
 import cz.maxtechnik.dif.item.food.Beer;
+import cz.maxtechnik.dif.item.food.ExperienceDrink;
 import cz.maxtechnik.dif.item.food.MolotovuvKoktejl;
 import cz.maxtechnik.dif.item.food.RetvalFoods;
-import cz.maxtechnik.dif.item.food.UranovejKoktejl;
 import cz.maxtechnik.dif.item.tool.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -110,7 +110,9 @@ public class DifModItems{
 	public static final DeferredItem<Item>FLAT_DOUGH=REGISTRY.register("flat_dough",()->new Item((new Item.Properties()).food(DifModFoods.FLAT_DOUGH)));
 
 	public static final DeferredItem<Item> BOTTLE_OF_MOLOTOVUV_KOKTEJL=REGISTRY.register("bottle_of_molotovuv_koktejl",MolotovuvKoktejl::new);
-	public static final DeferredItem<Item> BOTTLE_OF_URANOVEJ_KOKTEJL=REGISTRY.register("bottle_of_uranovej_koktejl",UranovejKoktejl::new);
+	public static final DeferredItem<Item> EXPERIENCE_DRINK=REGISTRY.register("experience_drink",ExperienceDrink::new);
+	public static final DeferredItem<Item> BOTTLE_OF_URANOVEJ_KOKTEJL=EXPERIENCE_DRINK;
+	public static final DeferredItem<Item> BOTTLE_OF_EXPERIENCE_DRINK=EXPERIENCE_DRINK;
 
 	public static final DeferredItem<Item> BUCKET_OF_CHICKEN=REGISTRY.register("bucket_of_chicken",()->new RetvalFoods(new Item.Properties().food(DifModFoods.BUCKET_OF_CHICKEN),Items.BUCKET,UseAnim.EAT));
 	public static final DeferredItem<Item> FRIES=REGISTRY.register("fries",()->new Item(new Item.Properties().food(DifModFoods.FRIES)));

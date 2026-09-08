@@ -5,7 +5,7 @@
 	"key.dif.jetpack_hover":"Jetpack Mode Switch",
 	"key.dif.open_ender":"Open Ender Chest",
 	"effect.dif.drank":"Drank",
-	"effect.dif.wtf":"WTF",
+	"effect.dif.experience":"Experience",
 
 	"gui.dif.inventory":"Inventory",
 	"gui.dif.burning_generator":"Burning Generator",
@@ -72,7 +72,7 @@
 	"item.dif.bluestone":"Bluestone",
 	"item.dif.blue_plate":"Blue Plate",
 	"item.dif.bottle_of_molotovuv_koktejl":"Bottle of Molotovuv Koktejl",
-	"item.dif.bottle_of_uranovej_koktejl":"Bottle of Uranovej Koktejl",
+	"item.dif.experience_drink":"Experience Drink",
 	"item.dif.bucket_of_chicken":"Bucket of Chicken",
 	"item.dif.fries":"Fries",
 	"item.dif.burned_toast":"§lBurnt Toast§r",

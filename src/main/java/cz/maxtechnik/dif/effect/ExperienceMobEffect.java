@@ -4,9 +4,10 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
-public class WTFMobEffect extends MobEffect{
-	public WTFMobEffect(){
-		super(MobEffectCategory.BENEFICIAL,0x1A4D2E);
+
+public class ExperienceMobEffect extends MobEffect{
+	public ExperienceMobEffect(){
+		super(MobEffectCategory.BENEFICIAL,0x80FF20);
 	}
 	@Override
 	public boolean applyEffectTick(@NotNull LivingEntity entity,int amplifier){
