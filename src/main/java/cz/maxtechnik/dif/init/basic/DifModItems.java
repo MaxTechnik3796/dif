@@ -4,6 +4,8 @@ import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModFoods;
 import cz.maxtechnik.dif.init.other.DifModTiers;
+import cz.maxtechnik.dif.item.DistillationTankItem;
+import cz.maxtechnik.dif.item.MithrilFluidTankItem;
 import cz.maxtechnik.dif.item.armor.CopperArmor;
 import cz.maxtechnik.dif.item.armor.Jetpack;
 import cz.maxtechnik.dif.item.food.Beer;
@@ -62,8 +64,8 @@ public class DifModItems{
 	public static final DeferredItem<Item>QUARRY_LANDMARK=block(DifModBlocks.QUARRY_LANDMARK);
 	
 
-	public static final DeferredItem<Item> DISTILLATION_TANK = REGISTRY.register("distillation_tank", () -> new cz.maxtechnik.dif.item.DistillationTankItem(DifModBlocks.DISTILLATION_TANK.get(), new Item.Properties()));
-	public static final DeferredItem<Item> MITHRIL_FLUID_TANK = REGISTRY.register("mithril_fluid_tank", () -> new cz.maxtechnik.dif.item.MithrilFluidTankItem(DifModBlocks.MITHRIL_FLUID_TANK.get(), new Item.Properties()));
+	public static final DeferredItem<Item> DISTILLATION_TANK=REGISTRY.register("distillation_tank",()->new DistillationTankItem(DifModBlocks.DISTILLATION_TANK.get(),new Item.Properties()));
+	public static final DeferredItem<Item> MITHRIL_FLUID_TANK=REGISTRY.register("mithril_fluid_tank",()->new MithrilFluidTankItem(DifModBlocks.MITHRIL_FLUID_TANK.get(),new Item.Properties()));
 
 	public static final DeferredItem<Item>MEGA_TORCH=block(DifModBlocks.MEGA_TORCH);
 
@@ -127,16 +129,16 @@ public class DifModItems{
 	public static final DeferredItem<Item> SUPER_HEATED_CREATE_BOWL=REGISTRY.register("super_heated_create_bowl",()->new RetvalFoods(new  Item.Properties().food(DifModFoods.CREATE_SUPER),Items.BOWL,UseAnim.EAT));
 
 	//Tech & Stuff:
-	public static final DeferredItem<Item> INCOMPLETE_UNIVERSAL=REGISTRY.register("incomplete_universal",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item> INCOMPLETE_UNIVERSAL=REGISTRY.registerSimpleItem("incomplete_universal");
 	public static final DeferredItem<Item> DESTROYER=REGISTRY.register("destroyer", Destroyer::new);
-	public static final DeferredItem<Item> BLUESTONE=REGISTRY.register("bluestone",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item> BLUE_PLATE=REGISTRY.register("blue_plate",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item> BLUESTONE=REGISTRY.registerSimpleItem("bluestone");
+	public static final DeferredItem<Item> BLUE_PLATE=REGISTRY.registerSimpleItem("blue_plate");
 
 
-	public static final DeferredItem<Item> MITHRIL=REGISTRY.register("mithril",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item> MITHRIL_TEMPLATE=REGISTRY.register("mithril_template",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item> MITHRIL_PLATE=REGISTRY.register("mithril_plate",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item> INCOMPLETE_MITHRIL_PLATE=REGISTRY.register("incomplete_mithril_plate",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item> MITHRIL=REGISTRY.registerSimpleItem("mithril");
+	public static final DeferredItem<Item> MITHRIL_TEMPLATE=REGISTRY.registerSimpleItem("mithril_template");
+	public static final DeferredItem<Item> MITHRIL_PLATE=REGISTRY.registerSimpleItem("mithril_plate");
+	public static final DeferredItem<Item> INCOMPLETE_MITHRIL_PLATE=REGISTRY.registerSimpleItem("incomplete_mithril_plate");
 
 
 
@@ -240,15 +242,14 @@ public class DifModItems{
 	public static final DeferredItem<Item>WOODEN_FRAME=block(DifModBlocks.WOODEN_FRAME);
 	public static final DeferredItem<Item>DEEPSLATE_MITHRIL_ORE=block(DifModBlocks.DEEPSLATE_MITHRIL_ORE);
 
-	public static final DeferredItem<Item>NICKEL_NUGGET=REGISTRY.register("nickel_nugget",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item>NICKEL_INGOT=REGISTRY.register("nickel_ingot",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item>RAW_NICKEL=REGISTRY.register("raw_nickel",()->new Item(new Item.Properties()));
+	public static final DeferredItem<Item>NICKEL_NUGGET=REGISTRY.registerSimpleItem("nickel_nugget");
+	public static final DeferredItem<Item>NICKEL_INGOT=REGISTRY.registerSimpleItem("nickel_ingot");
+	public static final DeferredItem<Item>RAW_NICKEL=REGISTRY.registerSimpleItem("raw_nickel");
 	public static final DeferredItem<Item>NICKEL_BLOCK=block(DifModBlocks.NICKEL_BLOCK);
 	public static final DeferredItem<Item>RAW_NICKEL_BLOCK=block(DifModBlocks.RAW_NICKEL_BLOCK);
 	public static final DeferredItem<Item>NICKEL_ORE=block(DifModBlocks.NICKEL_ORE);
 	public static final DeferredItem<Item>DEEPSLATE_NICKEL_ORE=block(DifModBlocks.DEEPSLATE_NICKEL_ORE);
-	public static final DeferredItem<Item>NICKEL_SHEET=REGISTRY.register("nickel_sheet",()->new Item(new Item.Properties()));
-
+	public static final DeferredItem<Item>NICKEL_SHEET=REGISTRY.registerSimpleItem("nickel_sheet");
 
 	public static final DeferredItem<Item>NANO_GLASS=block(DifModBlocks.NANO_GLASS);
 
