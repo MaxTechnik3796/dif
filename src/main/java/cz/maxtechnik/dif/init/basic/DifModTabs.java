@@ -12,6 +12,8 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -163,15 +165,14 @@ public class DifModTabs{
 							new ItemStack(COPPER_AXE.get()),
 							new ItemStack(COPPER_HOE.get())
 					});
-			List<ItemStack> buckets = new java.util.ArrayList<>(java.util.Arrays.asList(
+			List<ItemStack> buckets = new ArrayList<>(Arrays.asList(
 					new ItemStack(BEER_BUCKET.get()),
 					new ItemStack(XP_BUCKET.get()),
 					new ItemStack(JETPACK_FUEL_BUCKET.get())
 			));
-			if(ModList.get().isLoaded("farmersdelight")) {
+			if(ModList.get().isLoaded("farmersdelight"))
 				buckets.add(new ItemStack(SUNFLOWER_OIL_BUCKET.get()));
-			}
-			buckets.addAll(java.util.Arrays.asList(
+			buckets.addAll(Arrays.asList(
 					new ItemStack(CRUDE_OIL_BUCKET.get()),
 					new ItemStack(LPG_BUCKET.get()),
 					new ItemStack(GASOLINE_BUCKET.get()),
@@ -208,7 +209,7 @@ public class DifModTabs{
 							new ItemStack(COPPER_BOOTS.get())
 					});
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.FOOD_AND_DRINKS)){
-			if (net.neoforged.fml.ModList.get().isLoaded("farmersdelight")) {
+			if (ModList.get().isLoaded("farmersdelight")) {
 				tabData.insertAfter(new ItemStack(Items.POISONOUS_POTATO),new ItemStack(FRIES.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 				addItemStacksBehind(tabData,new ItemStack(Items.BREAD),
 						new ItemStack[]{
@@ -216,6 +217,7 @@ public class DifModTabs{
 						});
 				addItemStacksBehind(tabData,new ItemStack(Items.COOKED_CHICKEN),
 						new ItemStack[]{
+								new ItemStack(FRIED_CHICKEN.get()),
 								new ItemStack(BUCKET_OF_CHICKEN.get())
 						});
 				addItemStacksBehind(tabData,new ItemStack(Items.COOKED_RABBIT),
