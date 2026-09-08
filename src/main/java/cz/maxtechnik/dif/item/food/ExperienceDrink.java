@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 public class ExperienceDrink extends Item{
 	public ExperienceDrink(){
-		super(new Properties().food(DifModFoods.EXPERIENCE_DRINK));
+		super(new Properties().food(DifModFoods.EXPERIENCE_DRINK).stacksTo(16));
 	}
 	@Override
 	public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemstack){
