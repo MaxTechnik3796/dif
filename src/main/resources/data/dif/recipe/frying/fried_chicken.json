@@ -1,0 +1,21 @@
+{
+	"neoforge:conditions":[
+		{
+			"type":"neoforge:mod_loaded",
+			"modid":"farmersdelight"
+		}
+	],
+	"type":"dif:frying",
+	"ingredient":{
+		"tag":"c:foods/raw_chicken"
+	},
+	"fluid_ingredient":{
+		"tag":"c:sunflower_oil",
+		"amount":10
+	},
+	"result":{
+		"count":1,
+		"id":"dif:fried_chicken"
+	},
+	"processingTime":100
+}
