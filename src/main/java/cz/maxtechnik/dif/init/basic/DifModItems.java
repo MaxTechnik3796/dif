@@ -13,7 +13,6 @@ import cz.maxtechnik.dif.item.food.UranovejKoktejl;
 import cz.maxtechnik.dif.item.tool.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -109,7 +108,6 @@ public class DifModItems{
 	public static final DeferredItem<Item> BEER=REGISTRY.register("beer",()->new Beer(DifModBlocks.BEER.get(),new Item.Properties().food(DifModFoods.BEER)));
 
 	public static final DeferredItem<Item>FLAT_DOUGH=REGISTRY.register("flat_dough",()->new Item((new Item.Properties()).food(DifModFoods.FLAT_DOUGH)));
-	public static final DeferredItem<Item>BAGUETTE=REGISTRY.register("baguette",()->new Item(new Item.Properties().food(Foods.BREAD)));
 
 	public static final DeferredItem<Item> BOTTLE_OF_MOLOTOVUV_KOKTEJL=REGISTRY.register("bottle_of_molotovuv_koktejl",MolotovuvKoktejl::new);
 	public static final DeferredItem<Item> BOTTLE_OF_URANOVEJ_KOKTEJL=REGISTRY.register("bottle_of_uranovej_koktejl",UranovejKoktejl::new);
@@ -146,8 +144,6 @@ public class DifModItems{
 	public static final DeferredItem<Item> THE_DIFFERENTIAL=block(DifModBlocks.THE_DIFFERENTIAL);
 	public static final DeferredItem<Item> EVENT_BUS=block(DifModBlocks.EVENT_BUS);
 	public static final DeferredItem<Item> VENT=block(DifModBlocks.VENT);
-
-	public static final DeferredItem<Item> SINGULARITATOR=block(DifModBlocks.SINGULARITATOR);
 
 
 	public static final DeferredItem<Item> CINDER_FLOUR_BLOCK=block(DifModBlocks.CINDER_FLOUR_BLOCK);
@@ -188,15 +184,6 @@ public class DifModItems{
 	public static final DeferredItem<Item> DEEPSLATED_ARROW=block(DifModBlocks.DEEPSLATED_ARROW);
 	public static final DeferredItem<Item> STONED_ARROW=block(DifModBlocks.STONED_ARROW);
 	public static final DeferredItem<Item> WOODED_ARROW=block(DifModBlocks.WOODED_ARROW);
-
-	public static final DeferredItem<Item> BAUXITE_ORE=block(DifModBlocks.BAUXITE_ORE);
-	public static final DeferredItem<Item> DEEPSLATE_BAUXITE_ORE=block(DifModBlocks.DEEPSLATE_BAUXITE_ORE);
-	public static final DeferredItem<Item> RAW_BAUXITE=REGISTRY.register("raw_bauxite",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item> CRUSHED_RAW_BAUXITE=REGISTRY.register("crushed_raw_bauxite",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item> ALUMINUM_INGOT=REGISTRY.register("aluminum_ingot",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item> ALUMINUM_NUGGET=REGISTRY.register("aluminum_nugget",()->new Item(new Item.Properties()));
-	public static final DeferredItem<Item> ALUMINUM_BLOCK=block(DifModBlocks.ALUMINUM_BLOCK);
-	public static final DeferredItem<Item> ALUMINUM_PROFILE=block(DifModBlocks.ALUMINUM_PROFILE);
 
 	public static final DeferredItem<Item> SMOOTH_STONE_DOUBLE_SLAB=block(DifModBlocks.SMOOTH_STONE_DOUBLE_SLAB);
 	public static final DeferredItem<Item> IRON_BARS_BLOCK=block(DifModBlocks.IRON_BARS_BLOCK);

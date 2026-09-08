@@ -1,8 +1,0 @@
-{
-	"parent":"block/cube_all",
-	"textures":{
-		"all":"dif:block/aluminum_block",
-		"particle":"dif:block/aluminum_block"
-	},
-	"render_type":"solid"
-}

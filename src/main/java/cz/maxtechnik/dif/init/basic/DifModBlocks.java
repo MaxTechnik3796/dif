@@ -77,7 +77,6 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>BURNING_GENERATOR=REGISTRY.register("burning_generator",BurningGenerator::new);
 	public static final DeferredBlock<Block>FLUID_HATCH=REGISTRY.register("fluid_hatch",FluidHatch::new);
 	public static final DeferredBlock<Block>FLUID_DRAIN=REGISTRY.register("fluid_drain",FluidDrain::new);
-	public static final DeferredBlock<Block>SINGULARITATOR=REGISTRY.register("singularitator",()->new CustomWaterlogged(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>SUPER_BOX=REGISTRY.register("super_box",SuperBox::new);
 	public static final DeferredBlock<Block>OLD_CHEST=REGISTRY.register("old_chest",OldChest::new);
 
@@ -108,13 +107,6 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>DEEPSLATED_ARROW=REGISTRY.register("deepslated_arrow",()->new CustomHorizontalRotation(BlockBehaviour.Properties.of().sound(SoundType.DEEPSLATE).strength(2.5F,16F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>STONED_ARROW=REGISTRY.register("stoned_arrow",()->new CustomHorizontalRotation(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(1.5F,6F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>WOODED_ARROW=REGISTRY.register("wooded_arrow",()->new CustomHorizontalRotation(BlockBehaviour.Properties.of().sound(SoundType.WOOD).strength(2F,3F)));
-
-	//Bauxite:
-	public static final DeferredBlock<Block>BAUXITE_ORE=REGISTRY.register("bauxite_ore",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(3F,3F).requiresCorrectToolForDrops()));
-	public static final DeferredBlock<Block>DEEPSLATE_BAUXITE_ORE=REGISTRY.register("deepslate_bauxite_ore",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.DEEPSLATE).strength(4.5F,3F).requiresCorrectToolForDrops()));
-	public static final DeferredBlock<Block>ALUMINUM_BLOCK=REGISTRY.register("aluminum_block",()->new Block(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).requiresCorrectToolForDrops()));
-	public static final DeferredBlock<Block>ALUMINUM_PROFILE=REGISTRY.register("aluminum_profile",AluminumProfile::new);
-
 
 	//Barrels:
 	public static final DeferredBlock<Block>ANDESITE_BARREL=REGISTRY.register("andesite_barrel",AndesiteBarrel::new);

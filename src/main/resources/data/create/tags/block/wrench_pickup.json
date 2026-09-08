@@ -11,7 +11,6 @@
 		"dif:event_bus",
 		"dif:vent",
 		"dif:burning_generator",
-		"dif:singularitator",
 		"dif:fluid_hatch",
 		"dif:fluid_drain",
 		"#dif:broken_tracks",

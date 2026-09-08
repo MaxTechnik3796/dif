@@ -1,12 +1,7 @@
 {
 	"replace":false,
 	"values":[
-		"dif:singularitator",
 		"dif:super_box",
-		"dif:deepslate_bauxite_ore",
-		"dif:bauxite_ore",
-		"dif:aluminum_profile",
-		"dif:aluminum_block",
 		"#dif:supports",
 		"dif:nickel_block",
 		"dif:raw_nickel_block",

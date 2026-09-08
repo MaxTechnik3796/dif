@@ -1,8 +1,0 @@
-{
-	"parent":"block/cube_all",
-	"textures":{
-		"all":"dif:block/deepslate_bauxite_ore",
-		"particle":"dif:block/deepslate_bauxite_ore"
-	},
-	"render_type":"solid"
-}

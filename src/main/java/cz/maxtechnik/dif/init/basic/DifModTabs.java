@@ -216,7 +216,6 @@ public class DifModTabs{
 				tabData.insertAfter(new ItemStack(Items.POISONOUS_POTATO),new ItemStack(FRIES.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 				addItemStacksBehind(tabData,new ItemStack(Items.BREAD),
 						new ItemStack[]{
-								new ItemStack(BAGUETTE.get()),
 								new ItemStack(BURNED_TOAST.get())
 						});
 				addItemStacksBehind(tabData,new ItemStack(Items.COOKED_CHICKEN),
