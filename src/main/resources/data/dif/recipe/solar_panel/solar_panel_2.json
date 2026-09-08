@@ -1,16 +1,28 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "AAA",
-    "BCB",
-    "DED"
-  ],
-  "key": {
-    "A": { "tag": "c:glass_blocks/colorless" },
-    "B": { "item": "dif:nickel_sheet" },
-    "C": { "item": "dif:mithril_plate" },
-    "D": { "item": "create:industrial_iron_block" },
-    "E": { "item": "dif:solar_panel_00" }
-  },
-  "result": { "id": "dif:solar_panel_01" }
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		"AAA",
+		"BCB",
+		"DED"
+	],
+	"key":{
+		"A":{
+			"tag":"c:glass_blocks/colorless"
+		},
+		"B":{
+			"item":"dif:nickel_sheet"
+		},
+		"C":{
+			"item":"dif:mithril_plate"
+		},
+		"D":{
+			"item":"create:industrial_iron_block"
+		},
+		"E":{
+			"item":"dif:solar_panel_00"
+		}
+	},
+	"result":{
+		"id":"dif:solar_panel_01"
+	}
 }

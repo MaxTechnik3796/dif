@@ -31,7 +31,6 @@ public class FastPoweredRailBlock extends PoweredRailBlock{
 			double accel=DifModServerConfig.FAST_POWERED_RAIL_ACCELERATION.get();
 			cart.setDeltaMovement(motion.add((motion.x/speed)*accel,0.0D,(motion.z/speed)*accel));
 		}else launchFromWall(level,pos,state.getValue(getShapeProperty()),cart);
-
 	}
 	private void launchFromWall(Level level,BlockPos pos,RailShape shape,AbstractMinecart cart){
 		double dx=0, dz=0;

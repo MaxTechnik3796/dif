@@ -16,7 +16,6 @@ import net.neoforged.neoforge.items.ItemHandlerHelper;
 import java.util.ArrayList;
 import java.util.List;
 public class QuarryMiningLogic{
-
 	public static float doMiningTick(QuarryBlockEntity be,Level level,float miningProgressAcc,float progressStep){
 		if(!(level instanceof ServerLevel sl)) return miningProgressAcc;
 		QuarryAreaManager areaManager=be.getAreaManager();

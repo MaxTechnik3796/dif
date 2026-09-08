@@ -1,10 +1,16 @@
 {
-  "type": "create:item_application",
-  "ingredients": [
-    { "item": "create:fluid_tank" },
-    { "item": "dif:mithril_plate" }
-  ],
-  "results": [
-    { "id": "dif:mithril_fluid_tank" }
-  ]
+	"type":"create:item_application",
+	"ingredients":[
+		{
+			"item":"create:fluid_tank"
+		},
+		{
+			"item":"dif:mithril_plate"
+		}
+	],
+	"results":[
+		{
+			"id":"dif:mithril_fluid_tank"
+		}
+	]
 }
