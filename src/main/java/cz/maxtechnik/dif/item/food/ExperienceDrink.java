@@ -23,7 +23,7 @@ public class ExperienceDrink extends Item{
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(@NotNull ItemStack itemStack,Item.@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
 		super.appendHoverText(itemStack,context,list,flag);
-		list.add(Component.literal("§eProvides an intense experience trip!"));
+		list.add(Component.literal("§eA trip full of experiences!"));
 	}
 	@Override
 	public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemStack,@NotNull Level level,@NotNull LivingEntity entity){
