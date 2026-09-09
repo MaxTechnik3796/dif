@@ -1,68 +1,75 @@
 package cz.maxtechnik.dif.init.other;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumMap;
 import java.util.List;
-
 public class DifModTiers{
-    public static final Tier COPPER=new Tier(){
-        @Override
-        public int getUses(){return 190;}
-        @Override
-        public float getSpeed(){return 5.0F;}
-        @Override
-        public float getAttackDamageBonus(){return 2.0F;}
-        @Override
-        public @NotNull TagKey<Block> getIncorrectBlocksForDrops(){
-            return BlockTags.INCORRECT_FOR_STONE_TOOL;
-        }
-        @Override
-        public int getEnchantmentValue(){return 13;}
-        @Override
-        public @NotNull Ingredient getRepairIngredient(){return Ingredient.of(Items.COPPER_INGOT);}
-    };
-
-    @SuppressWarnings("unused")
-    public static final Holder<ArmorMaterial> ARMOR_MATERIAL=Holder.direct(new ArmorMaterial(
-            Util.make(new EnumMap<>(ArmorItem.Type.class),map->{
-                map.put(ArmorItem.Type.HELMET,2);
-                map.put(ArmorItem.Type.CHESTPLATE,4);
-                map.put(ArmorItem.Type.LEGGINGS,3);
-                map.put(ArmorItem.Type.BOOTS,1);
-            }),
-            8,
-            SoundEvents.ARMOR_EQUIP_IRON,
-            ()->Ingredient.of(Items.COPPER_INGOT),
-            List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath("dif","copper"))),
-            0.0F,
-            0.0F
-    ));
-
-    public static final Holder<ArmorMaterial> ARMOR_MATERIAL_JETPACK=Holder.direct(new ArmorMaterial(
-            Util.make(new EnumMap<>(ArmorItem.Type.class),map->{
-                map.put(ArmorItem.Type.HELMET,0);
-                map.put(ArmorItem.Type.CHESTPLATE,2);
-                map.put(ArmorItem.Type.LEGGINGS,0);
-                map.put(ArmorItem.Type.BOOTS,0);
-            }),
-            0,
-            SoundEvents.ARMOR_EQUIP_IRON,
+	public static final Tier COPPER=new Tier(){
+		@Override
+		public int getUses(){
+			return 190;
+		}
+		@Override
+		public float getSpeed(){
+			return 5.0F;
+		}
+		@Override
+		public float getAttackDamageBonus(){
+			return 2.0F;
+		}
+		@Override
+		public @NotNull TagKey<Block> getIncorrectBlocksForDrops(){
+			return BlockTags.INCORRECT_FOR_STONE_TOOL;
+		}
+		@Override
+		public int getEnchantmentValue(){
+			return 13;
+		}
+		@Override
+		public @NotNull Ingredient getRepairIngredient(){
+			return Ingredient.of(Items.COPPER_INGOT);
+		}
+	};
+	@SuppressWarnings("unused")
+	public static final Holder<ArmorMaterial> ARMOR_MATERIAL=Holder.direct(new ArmorMaterial(
+			Util.make(new EnumMap<>(ArmorItem.Type.class),map->{
+				map.put(ArmorItem.Type.HELMET,2);
+				map.put(ArmorItem.Type.CHESTPLATE,4);
+				map.put(ArmorItem.Type.LEGGINGS,3);
+				map.put(ArmorItem.Type.BOOTS,1);
+			}),
+			8,
+			SoundEvents.ARMOR_EQUIP_IRON,
+			()->Ingredient.of(Items.COPPER_INGOT),
+			List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath("dif","copper"))),
+			0.0F,
+			0.0F
+	));
+	public static final Holder<ArmorMaterial> ARMOR_MATERIAL_JETPACK=Holder.direct(new ArmorMaterial(
+			Util.make(new EnumMap<>(ArmorItem.Type.class),map->{
+				map.put(ArmorItem.Type.HELMET,0);
+				map.put(ArmorItem.Type.CHESTPLATE,2);
+				map.put(ArmorItem.Type.LEGGINGS,0);
+				map.put(ArmorItem.Type.BOOTS,0);
+			}),
+			0,
+			SoundEvents.ARMOR_EQUIP_IRON,
 			Ingredient::of,
-            List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath("dif","jetpack"))),
-            2.0F,
-            0.0F
-    ));
+			List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath("dif","jetpack"))),
+			2.0F,
+			0.0F
+	));
 }

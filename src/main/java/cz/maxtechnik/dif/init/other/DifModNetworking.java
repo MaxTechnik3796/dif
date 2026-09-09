@@ -1,7 +1,10 @@
 package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.network.*;
+import cz.maxtechnik.dif.network.EnderOpenMessage;
+import cz.maxtechnik.dif.network.JetpackFlyMessage;
+import cz.maxtechnik.dif.network.JetpackSyncMessage;
+import cz.maxtechnik.dif.network.NukeDetonationMessage;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;

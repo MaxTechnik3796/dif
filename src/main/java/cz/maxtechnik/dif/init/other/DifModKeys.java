@@ -22,7 +22,6 @@ public class DifModKeys{
 	public static final KeyMapping JETPACK_FLY=new KeyMapping("key.dif.jetpack_fly",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_SPACE,CATEGORY);
 	public static final KeyMapping KEY_HOVER=new KeyMapping("key.dif.jetpack_hover",KeyConflictContext.IN_GAME,InputConstants.Type.KEYSYM,InputConstants.KEY_X,"key.categories.dif");
 	public static final KeyMapping OPEN_ENDER_CHEST=new KeyMapping("key.dif.open_ender",InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_B,CATEGORY);
-
 	@SubscribeEvent
 	public static void registerKeys(RegisterKeyMappingsEvent event){
 		event.register(JETPACK_FLY);

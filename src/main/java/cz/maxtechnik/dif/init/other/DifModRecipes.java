@@ -1,7 +1,8 @@
 package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.recipe.*;
+import cz.maxtechnik.dif.recipe.DistillationRecipe;
+import cz.maxtechnik.dif.recipe.FryingRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -15,4 +16,4 @@ public class DifModRecipes{
 	public static final DeferredHolder<RecipeType<?>,RecipeType<FryingRecipe>> FRYING_TYPE=TYPE_REGISTRY.register("frying",()->RecipeType.simple(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"frying")));
 	public static final DeferredHolder<RecipeSerializer<?>,DistillationRecipe.Serializer> DISTILLATION_SERIALIZER=REGISTRY.register("distillation",DistillationRecipe.Serializer::new);
 	public static final DeferredHolder<RecipeType<?>,RecipeType<DistillationRecipe>> DISTILLATION_TYPE=TYPE_REGISTRY.register("distillation",()->RecipeType.simple(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"distillation")));
-	}
+}

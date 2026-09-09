@@ -2,9 +2,6 @@ package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.item.armor.Jetpack;
-
-import static cz.maxtechnik.dif.init.other.DifModBlockEntities.*;
-
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -15,6 +12,8 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
+
+import static cz.maxtechnik.dif.init.other.DifModBlockEntities.*;
 public class DifModCapabilities{
 	static final BlockCapability<IItemHandler,@Nullable Direction> bITEM=Capabilities.ItemHandler.BLOCK;
 	static final BlockCapability<IFluidHandler,@Nullable Direction> bFLUID=Capabilities.FluidHandler.BLOCK;

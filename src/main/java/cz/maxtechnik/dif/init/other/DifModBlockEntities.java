@@ -13,34 +13,23 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
-
 public class DifModBlockEntities{
 	public static final DeferredRegister<BlockEntityType<?>> REGISTRY=DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE,DifMod.MODID);
-
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<SuperBoxBlockEntity>> SUPER_BOX=register("super_box",DifModBlocks.SUPER_BOX,SuperBoxBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<AndesiteBarrelBlockEntity>> ANDESITE_BARREL=register("andesite_barrel",DifModBlocks.ANDESITE_BARREL,AndesiteBarrelBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<CopperBarrelBlockEntity>> COPPER_BARREL=register("copper_barrel",DifModBlocks.COPPER_BARREL,CopperBarrelBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<BrassBarrelBlockEntity>> BRASS_BARREL=register("brass_barrel",DifModBlocks.BRASS_BARREL,BrassBarrelBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<OldChestBlockEntity>> OLD_CHEST=register("old_chest",DifModBlocks.OLD_CHEST,OldChestBlockEntity::new);
-
-
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<ChunkLoaderBlockEntity>> CHUNK_LOADER_BE=REGISTRY.register("chunk_loader_be",()->BlockEntityType.Builder.of(ChunkLoaderBlockEntity::new,DifModBlocks.CHUNK_LOADER.get()).build(null));
-
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<FryingTableBlockEntity>> FRYING_TABLE=REGISTRY.register("frying_table",()->BlockEntityType.Builder.of(FryingTableBlockEntity::new,DifModBlocks.FRYING_TABLE.get()).build(null));
-
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<QuarryBlockEntity>> QUARRY=REGISTRY.register("quarry",()->BlockEntityType.Builder.of(QuarryBlockEntity::new,DifModBlocks.QUARRY.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<QuarryFrameBlockEntity>> QUARRY_FRAME=REGISTRY.register("quarry_frame",()->BlockEntityType.Builder.of(QuarryFrameBlockEntity::new,DifModBlocks.QUARRY_FRAME.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<QuarryLandmarkBlockEntity>> QUARRY_LANDMARK=REGISTRY.register("quarry_landmark",()->BlockEntityType.Builder.of(QuarryLandmarkBlockEntity::new,DifModBlocks.QUARRY_LANDMARK.get()).build(null));
-
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<BurningGeneratorBlockEntity>> BURNING_GENERATOR=REGISTRY.register("burning_generator",()->BlockEntityType.Builder.of(BurningGeneratorBlockEntity::new,DifModBlocks.BURNING_GENERATOR.get()).build(null));
-
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<DistillationTankBlockEntity>> DISTILLATION_TANK=REGISTRY.register("distillation_tank",()->BlockEntityType.Builder.of((pos,state)->new DistillationTankBlockEntity(DifModBlockEntities.DISTILLATION_TANK.get(),pos,state), DifModBlocks.DISTILLATION_TANK.get()).build(null));
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<cz.maxtechnik.dif.block.MithrilFluidTank.Entity>> MITHRIL_FLUID_TANK=REGISTRY.register("mithril_fluid_tank",()->BlockEntityType.Builder.of((pos,state)->new cz.maxtechnik.dif.block.MithrilFluidTank.Entity(DifModBlockEntities.MITHRIL_FLUID_TANK.get(),pos,state), DifModBlocks.MITHRIL_FLUID_TANK.get()).build(null));
-
-	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<EngineBlockEntity>>ENGINE=REGISTRY.register("engine",()->BlockEntityType.Builder.of(EngineBlockEntity::new,DifModBlocks.ENGINE_BASE.get(),DifModBlocks.ENGINE_PORTABLE.get()).build(null));
-
+	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<DistillationTankBlockEntity>> DISTILLATION_TANK=REGISTRY.register("distillation_tank",()->BlockEntityType.Builder.of((pos,state)->new DistillationTankBlockEntity(DifModBlockEntities.DISTILLATION_TANK.get(),pos,state),DifModBlocks.DISTILLATION_TANK.get()).build(null));
+	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<cz.maxtechnik.dif.block.MithrilFluidTank.Entity>> MITHRIL_FLUID_TANK=REGISTRY.register("mithril_fluid_tank",()->BlockEntityType.Builder.of((pos,state)->new cz.maxtechnik.dif.block.MithrilFluidTank.Entity(DifModBlockEntities.MITHRIL_FLUID_TANK.get(),pos,state),DifModBlocks.MITHRIL_FLUID_TANK.get()).build(null));
+	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<EngineBlockEntity>> ENGINE=REGISTRY.register("engine",()->BlockEntityType.Builder.of(EngineBlockEntity::new,DifModBlocks.ENGINE_BASE.get(),DifModBlocks.ENGINE_PORTABLE.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<NanoGlassBlockEntity>> NANO_GLASS=REGISTRY.register("nano_glass",()->BlockEntityType.Builder.of((pos,state)->new NanoGlassBlockEntity(DifModBlockEntities.NANO_GLASS.get(),pos,state),DifModBlocks.NANO_GLASS.get()).build(null));
-
 	private static <T extends net.minecraft.world.level.block.entity.BlockEntity> DeferredHolder<BlockEntityType<?>,BlockEntityType<T>> register(String name,Supplier<? extends Block> block,BlockEntityType.BlockEntitySupplier<T> supplier){
 		return REGISTRY.register(name,()->BlockEntityType.Builder.of(supplier,block.get()).build(null));
 	}
