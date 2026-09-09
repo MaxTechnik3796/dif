@@ -24,7 +24,9 @@ public class DifModTooltips{
 			FLUID_HATCH,
 			FLUID_DRAIN,
 			QUARRY,
-			CHUNK_LOADER
+			CHUNK_LOADER,
+			NUKE,
+			MITHRIL_FLUID_TANK
 	);
 	@SubscribeEvent
 	public static void onItemTooltip(ItemTooltipEvent event){

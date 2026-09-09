@@ -4,7 +4,7 @@
   "key": {
     "A": { "item": "dif:nickel_block" },
     "B": { "item": "create:brass_sheet" },
-    "C": { "item": "dif:nickel_sheet" },
+    "C": { "item": "dif:nickel_ingot" },
     "D": { "item": "create:industrial_iron_block" },
     "E": { "item": "dif:mithril_plate" },
     "F": { "item": "minecraft:netherite_ingot" },

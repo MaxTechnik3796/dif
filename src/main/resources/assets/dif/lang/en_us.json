@@ -280,5 +280,13 @@
 
 	"block.dif.chunk_loader.tooltip.summary":"Loads nearby chunks",
 	"block.dif.chunk_loader.tooltip.condition1":"When R-Clicked with Wrench",
-	"block.dif.chunk_loader.tooltip.behaviour1":"Changes loading _distance_"
+	"block.dif.chunk_loader.tooltip.behaviour1":"Changes loading _distance_",
+
+	"block.dif.nuke.tooltip.summary":"Devastating nuclear explosive",
+	"block.dif.nuke.tooltip.condition1":"When Powered by Redstone",
+	"block.dif.nuke.tooltip.behaviour1":"Triggers a massive _explosion_",
+
+	"block.dif.mithril_fluid_tank.tooltip.summary":"Higher capacity fluid tank",
+	"block.dif.mithril_fluid_tank.tooltip.condition1":"When Placed",
+	"block.dif.mithril_fluid_tank.tooltip.behaviour1":"Holds _4x more fluid_ than a normal tank"
 }

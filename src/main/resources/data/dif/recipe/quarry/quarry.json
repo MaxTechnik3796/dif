@@ -13,7 +13,7 @@
 			"item":"create:brass_sheet"
 		},
 		"C":{
-			"item":"dif:nickel_sheet"
+			"item":"dif:nickel_ingot"
 		},
 		"D":{
 			"item":"minecraft:redstone_block"
