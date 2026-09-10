@@ -1,28 +1,28 @@
 {
-	"type":"minecraft:crafting_shaped",
-	"pattern":[
-		" A ",
-		"BCB",
-		"DED"
-	],
-	"key":{
-		"A":{
-			"item":"dif:mithril_plate"
-		},
-		"B":{
-			"item":"minecraft:iron_nugget"
-		},
-		"C":{
-			"item":"create:fluid_tank"
-		},
-		"D":{
-			"item":"dif:nickel_sheet"
-		},
-		"E":{
-			"item":"dif:engine_base"
-		}
-	},
-	"result":{
-		"id":"dif:engine_portable"
-	}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " A ",
+    "BCB",
+    "DED"
+  ],
+  "key": {
+    "A": {
+      "tag": "c:plates/mithril"
+    },
+    "B": {
+      "tag": "c:nuggets/iron"
+    },
+    "C": {
+      "item": "create:fluid_tank"
+    },
+    "D": {
+      "tag": "c:plates/nickel"
+    },
+    "E": {
+      "item": "dif:engine_base"
+    }
+  },
+  "result": {
+    "id": "dif:engine_portable"
+  }
 }

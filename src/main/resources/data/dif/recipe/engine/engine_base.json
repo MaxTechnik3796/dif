@@ -1,19 +1,19 @@
 {
-	"type":"minecraft:crafting_shaped",
-	"pattern":[
-		" A ",
-		"ABA",
-		" A "
-	],
-	"key":{
-		"A":{
-			"item":"dif:nickel_sheet"
-		},
-		"B":{
-			"item":"create:shaft"
-		}
-	},
-	"result":{
-		"id":"dif:engine_base"
-	}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "key": {
+    "A": {
+      "tag": "c:plates/nickel"
+    },
+    "B": {
+      "item": "create:shaft"
+    }
+  },
+  "result": {
+    "id": "dif:engine_base"
+  }
 }

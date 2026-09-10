@@ -2,14 +2,30 @@
   "type": "create:mechanical_crafting",
   "accept_mirrored": true,
   "key": {
-    "A": { "item": "dif:nickel_block" },
-    "B": { "item": "create:brass_sheet" },
-    "C": { "item": "dif:nickel_ingot" },
-    "D": { "item": "create:industrial_iron_block" },
-    "E": { "item": "dif:mithril_plate" },
-    "F": { "item": "minecraft:netherite_ingot" },
-    "G": { "item": "minecraft:tnt" },
-    "H": { "item": "minecraft:nether_star" }
+    "A": {
+      "tag": "c:storage_blocks/nickel"
+    },
+    "B": {
+      "tag": "c:plates/brass"
+    },
+    "C": {
+      "tag": "c:ingots/nickel"
+    },
+    "D": {
+      "item": "create:industrial_iron_block"
+    },
+    "E": {
+      "tag": "c:plates/mithril"
+    },
+    "F": {
+      "tag": "c:ingots/netherite"
+    },
+    "G": {
+      "item": "minecraft:tnt"
+    },
+    "H": {
+      "tag": "c:nether_stars"
+    }
   },
   "pattern": [
     "  ABA  ",
@@ -20,5 +36,7 @@
     " CDEDC ",
     "  ABA  "
   ],
-  "result": { "id": "dif:nuke" }
+  "result": {
+    "id": "dif:nuke"
+  }
 }

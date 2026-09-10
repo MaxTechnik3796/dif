@@ -1,8 +1,14 @@
 {
-	"type": "minecraft:crafting_shapeless",
-	"ingredients": [
-		{ "item": "create:fluid_tank" },
-		{ "item": "dif:mithril_plate" }
-	],
-	"result": { "id": "dif:mithril_fluid_tank" }
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "create:fluid_tank"
+    },
+    {
+      "tag": "c:plates/mithril"
+    }
+  ],
+  "result": {
+    "id": "dif:mithril_fluid_tank"
+  }
 }

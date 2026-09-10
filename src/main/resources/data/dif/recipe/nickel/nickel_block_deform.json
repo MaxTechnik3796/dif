@@ -1,15 +1,15 @@
 {
-	"type":"minecraft:crafting_shaped",
-	"pattern":[
-		"A"
-	],
-	"key":{
-		"A":{
-			"item":"dif:nickel_block"
-		}
-	},
-	"result":{
-		"id":"dif:nickel_ingot",
-		"count":9
-	}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "A"
+  ],
+  "key": {
+    "A": {
+      "tag": "c:storage_blocks/nickel"
+    }
+  },
+  "result": {
+    "id": "dif:nickel_ingot",
+    "count": 9
+  }
 }

@@ -1,19 +1,19 @@
 {
-	"type":"minecraft:crafting_shaped",
-	"pattern":[
-		" A ",
-		"ABA",
-		" A "
-	],
-	"key":{
-		"A":{
-			"item":"minecraft:redstone"
-		},
-		"B":{
-			"item":"minecraft:tinted_glass"
-		}
-	},
-	"result":{
-		"id":"dif:nano_glass"
-	}
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "key": {
+    "A": {
+      "tag": "c:dusts/redstone"
+    },
+    "B": {
+      "tag": "c:glass_blocks/tinted"
+    }
+  },
+  "result": {
+    "id": "dif:nano_glass"
+  }
 }
