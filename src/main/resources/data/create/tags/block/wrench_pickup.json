@@ -26,6 +26,7 @@
 		"#dif:casings",
 		"dif:big_girder",
 		"#dif:engines",
-		"#dif:engine_extenders"
+		"#dif:engine_extenders",
+		"dif:super_box"
 	]
 }
