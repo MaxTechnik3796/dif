@@ -22,336 +22,349 @@ import static cz.maxtechnik.dif.block.Engine.*;
 import static cz.maxtechnik.dif.config.DifModServerConfig.*;
 import static cz.maxtechnik.dif.init.basic.DifModBlocks.ENGINE_BASE;
 import static cz.maxtechnik.dif.init.basic.DifModBlocks.ENGINE_PORTABLE;
-public class EngineBlockEntity extends GeneratingKineticBlockEntity{
-	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> DIESEL_TAG=net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID,net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c","diesel"));
-	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> GASOLINE_TAG=net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID,net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c","gasoline"));
-	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> LPG_TAG=net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID,net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c","lpg"));
-	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> HEAVY_FUEL_OIL_TAG=net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID,net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c","heavy_fuel_oil"));
-	boolean generating=false;
-	boolean uGenerating=false;
-	float speed=0F;
-	float uSpeed=0F;
-	float su=0F;
-	float uSu=0F;
-	private static final int FUEL_TICK_INTERVAL=10;
-	private int fuelTickCounter=0;
-	private double fuelAccumulator=0.0D;
-	public EngineBlockEntity(BlockPos pos,BlockState blockState){
-		super(DifModBlockEntities.ENGINE.get(),pos,blockState);
+
+public class EngineBlockEntity extends GeneratingKineticBlockEntity {
+	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> DIESEL_TAG = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID, net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c", "diesel"));
+	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> GASOLINE_TAG = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID, net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c", "gasoline"));
+	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> LPG_TAG = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID, net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c", "lpg"));
+	public static final net.minecraft.tags.TagKey<net.minecraft.world.level.material.Fluid> HEAVY_FUEL_OIL_TAG = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.FLUID, net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("c", "heavy_fuel_oil"));
+
+	boolean generating = false;
+	float speed = 0F;
+	float su = 0F;
+
+	private boolean ext0 = false, ext1 = false, ext2 = false;
+	private int cachedExtenders = 0;
+	private boolean redstonePowered = false;
+	private double consumptionPerTick = 0.0D;
+	private boolean isDrainingInternally = false;
+
+	private static final int FUEL_TICK_INTERVAL = 10;
+	private int fuelTickCounter = 0;
+	private double fuelAccumulator = 0.0D;
+
+	public EngineBlockEntity(BlockPos pos, BlockState blockState) {
+		super(DifModBlockEntities.ENGINE.get(), pos, blockState);
 	}
-	public final FluidTank fluidTank=new FluidTank(1000,stack->{
-		if(stack.isEmpty()) return false;
-		boolean isPortable=isEngineBlockPortable(getBlockState().getBlock());
-		if(stack.is(DIESEL_TAG)) return true;
-		if(stack.is(GASOLINE_TAG)) return true;
-		if(stack.is(LPG_TAG)) return true;
-		return !isPortable&&stack.is(HEAVY_FUEL_OIL_TAG);
-	}){
+
+	public final FluidTank fluidTank = new FluidTank(1000, stack -> {
+		if (stack.isEmpty()) return false;
+		boolean isPortable = isEngineBlockPortable(getBlockState().getBlock());
+		if (stack.is(DIESEL_TAG)) return true;
+		if (stack.is(GASOLINE_TAG)) return true;
+		if (stack.is(LPG_TAG)) return true;
+		return !isPortable && stack.is(HEAVY_FUEL_OIL_TAG);
+	}) {
 		@Override
-		protected void onContentsChanged(){
+		protected void onContentsChanged() {
 			super.onContentsChanged();
 			setChanged();
-			if(level!=null)
-				level.sendBlockUpdated(worldPosition,level.getBlockState(worldPosition),level.getBlockState(worldPosition),2);
+			if (!isDrainingInternally && level != null && !level.isClientSide) {
+				recalculateStats();
+			}
 		}
 	};
+
 	@Override
-	public float getGeneratedSpeed(){
-		if(level==null) return 0F;
-		if(!(level.getBlockState(worldPosition).getBlock() instanceof Engine)) return 0F;
-		return generating?speed*(level.getBlockState(worldPosition).getValue(INVERT)?-1F:1F):0F;
+	public float getGeneratedSpeed() {
+		if (level == null) return 0F;
+		BlockState state = getBlockState();
+		if (!(state.getBlock() instanceof Engine)) return 0F;
+		return generating ? speed * (state.getValue(INVERT) ? -1F : 1F) : 0F;
 	}
+
 	@Override
-	public float calculateAddedStressCapacity(){
-		if(!generating) return 0F;
-		if(su>0F) return su;
-		FuelType fuel=scanExtenders();
-		if(fuel.equals(FuelType.INVALID)) return 0F;
-		boolean isPortable=isEngineBlockPortable(getBlockState().getBlock());
-		int extenders=countExtenders();
-		if(fuel.equals(FuelType.DIESEL)) return (float)(isPortable?ENGINE_DIESEL_PORTABLE_SU.get():ENGINE_DIESEL_SU.get()*extenders);
-		if(fuel.equals(FuelType.HEAVY_FUEL_OIL)) return (float)(ENGINE_HEAVY_FUEL_OIL_SU.get()*extenders);
-		if(fuel.equals(FuelType.GASOLINE)) return (float)(isPortable?ENGINE_GASOLINE_PORTABLE_SU.get():ENGINE_GASOLINE_SU.get()*extenders);
-		if(fuel.equals(FuelType.LPG)) return (float)(isPortable?ENGINE_LPG_PORTABLE_SU.get():ENGINE_LPG_SU.get()*extenders);
-		return 0F;
+	public float calculateAddedStressCapacity() {
+		return generating ? su : 0F;
 	}
+
 	@Override
-	public void read(CompoundTag tag,HolderLookup.Provider registries,boolean clientPacket){
-		super.read(tag,registries,clientPacket);
-		if(tag.get("fluidTank") instanceof CompoundTag fluidTag) fluidTank.readFromNBT(registries,fluidTag);
-		generating=tag.getBoolean("generating");
-		speed=tag.getFloat("speed");
-		su=tag.getFloat("su");
+	public void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+		super.read(tag, registries, clientPacket);
+		if (tag.get("fluidTank") instanceof CompoundTag fluidTag) fluidTank.readFromNBT(registries, fluidTag);
+		generating = tag.getBoolean("generating");
+		speed = tag.getFloat("speed");
+		su = tag.getFloat("su");
+		ext0 = tag.getBoolean("ext0");
+		ext1 = tag.getBoolean("ext1");
+		ext2 = tag.getBoolean("ext2");
+		cachedExtenders = tag.getInt("extenders");
 	}
+
 	@Override
-	public void write(CompoundTag tag,HolderLookup.Provider registries,boolean clientPacket){
-		super.write(tag,registries,clientPacket);
-		tag.put("fluidTank",fluidTank.writeToNBT(registries,new CompoundTag()));
-		tag.putBoolean("generating",generating);
-		tag.putFloat("speed",speed);
-		tag.putFloat("su",su);
+	public void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+		super.write(tag, registries, clientPacket);
+		tag.put("fluidTank", fluidTank.writeToNBT(registries, new CompoundTag()));
+		tag.putBoolean("generating", generating);
+		tag.putFloat("speed", speed);
+		tag.putFloat("su", su);
+		tag.putBoolean("ext0", ext0);
+		tag.putBoolean("ext1", ext1);
+		tag.putBoolean("ext2", ext2);
+		tag.putInt("extenders", cachedExtenders);
 	}
+
 	@Override
-	public void initialize(){
+	public void initialize() {
 		super.initialize();
 		updateExtenders();
-		if(level!=null&&!level.isClientSide) updateGeneratedRotation();
-	}
-	private void recalculateStats(){
-		if(level==null) return;
-		if(level.hasNeighborSignal(worldPosition)){
-			generating=false;
-			speed=0F;
-			su=0F;
-			return;
-		}
-		FuelType fuel=scanExtenders();
-		if(fuel.equals(FuelType.INVALID)){
-			generating=false;
-			speed=0F;
-			su=0F;
-		}else{
-			boolean isPortable=isEngineBlockPortable(getBlockState().getBlock());
-			int extenders=countExtenders();
-			double baseRpm=0.0D;
-			double calculatedSu=0.0D;
-			if(fuel.equals(FuelType.DIESEL)){
-				baseRpm=ENGINE_DIESEL_RPM.get();
-				calculatedSu=isPortable?ENGINE_DIESEL_PORTABLE_SU.get():ENGINE_DIESEL_SU.get()*extenders;
-			}else if(fuel.equals(FuelType.HEAVY_FUEL_OIL)){
-				baseRpm=ENGINE_HEAVY_FUEL_OIL_RPM.get();
-				calculatedSu=ENGINE_HEAVY_FUEL_OIL_SU.get()*extenders;
-			}else if(fuel.equals(FuelType.GASOLINE)){
-				baseRpm=ENGINE_GASOLINE_RPM.get();
-				calculatedSu=isPortable?ENGINE_GASOLINE_PORTABLE_SU.get():ENGINE_GASOLINE_SU.get()*extenders;
-			}else if(fuel.equals(FuelType.LPG)){
-				baseRpm=ENGINE_LPG_RPM.get();
-				calculatedSu=isPortable?ENGINE_LPG_PORTABLE_SU.get():ENGINE_LPG_SU.get()*extenders;
-			}
-			speed=(float)baseRpm;
-			su=(float)calculatedSu;
-			generating=fluidTank.getFluidAmount()>0;
-		}
-	}
-	@Override
-	public void tick(){
-		super.tick();
-		if(level==null||!(getBlockState().getBlock() instanceof Engine)) return;
-		if(reActivateSource){
-			updateGeneratedRotation();
-			reActivateSource=false;
-		}
-		if(!level.isClientSide){
+		if (level != null && !level.isClientSide) {
 			recalculateStats();
-			if(!level.hasNeighborSignal(worldPosition)&&generating){
-				FuelType fuel=scanExtenders();
-				boolean isPortable=isEngineBlockPortable(getBlockState().getBlock());
-				int extenders=countExtenders();
-				double burnRatePerSec=0.0D;
-				if(fuel.equals(FuelType.DIESEL)){
-					burnRatePerSec=isPortable?ENGINE_DIESEL_PORTABLE_CONSUMPTION.get():ENGINE_DIESEL_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
-				}else if(fuel.equals(FuelType.HEAVY_FUEL_OIL)){
-					burnRatePerSec=ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
-				}else if(fuel.equals(FuelType.GASOLINE)){
-					burnRatePerSec=isPortable?ENGINE_GASOLINE_PORTABLE_CONSUMPTION.get():ENGINE_GASOLINE_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
-				}else if(fuel.equals(FuelType.LPG)){
-					burnRatePerSec=isPortable?ENGINE_LPG_PORTABLE_CONSUMPTION.get():ENGINE_LPG_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
+		}
+	}
+
+	public void updateExtenders() {
+		if (level == null) return;
+		BlockState ownState = getBlockState();
+		if (!(ownState.getBlock() instanceof Engine)) return;
+		if (isEngineBlock(ownState.getBlock())) {
+			Direction.Axis axis = ownState.getValue(FACING).getAxis();
+			ext0 = isEngineExtender(worldPosition.above());
+			if (axis == Direction.Axis.Z) {
+				ext1 = isEngineExtender(worldPosition.east());
+				ext2 = isEngineExtender(worldPosition.west());
+			} else if (axis == Direction.Axis.X) {
+				ext1 = isEngineExtender(worldPosition.north());
+				ext2 = isEngineExtender(worldPosition.south());
+			} else {
+				ext1 = false;
+				ext2 = false;
+			}
+			cachedExtenders = (ext0 ? 1 : 0) + (ext1 ? 1 : 0) + (ext2 ? 1 : 0);
+		} else {
+			ext0 = false;
+			ext1 = false;
+			ext2 = false;
+			cachedExtenders = 1;
+		}
+		if (!level.isClientSide) {
+			recalculateStats();
+		}
+	}
+
+	public void recalculateStats() {
+		if (level == null) return;
+		boolean wasGenerating = generating;
+		float prevSpeed = speed;
+		float prevSu = su;
+
+		redstonePowered = level.hasNeighborSignal(worldPosition);
+		FuelType fuel = getFuelType();
+
+		if (redstonePowered || fuel == FuelType.INVALID || fluidTank.isEmpty()) {
+			generating = false;
+			speed = 0F;
+			su = 0F;
+			consumptionPerTick = 0.0D;
+		} else {
+			boolean isPortable = isEngineBlockPortable(getBlockState().getBlock());
+			int extenders = cachedExtenders;
+			double baseRpm = 0.0D;
+			double calculatedSu = 0.0D;
+			double burnRatePerSec = 0.0D;
+
+			if (fuel == FuelType.DIESEL) {
+				baseRpm = ENGINE_DIESEL_RPM.get();
+				calculatedSu = isPortable ? ENGINE_DIESEL_PORTABLE_SU.get() : ENGINE_DIESEL_SU.get() * extenders;
+				burnRatePerSec = isPortable ? ENGINE_DIESEL_PORTABLE_CONSUMPTION.get() : ENGINE_DIESEL_CONSUMPTION.get() * (1.0 + (extenders - 1) * 0.5);
+			} else if (fuel == FuelType.HEAVY_FUEL_OIL) {
+				baseRpm = ENGINE_HEAVY_FUEL_OIL_RPM.get();
+				calculatedSu = ENGINE_HEAVY_FUEL_OIL_SU.get() * extenders;
+				burnRatePerSec = ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get() * (1.0 + (extenders - 1) * 0.5);
+			} else if (fuel == FuelType.GASOLINE) {
+				baseRpm = ENGINE_GASOLINE_RPM.get();
+				calculatedSu = isPortable ? ENGINE_GASOLINE_PORTABLE_SU.get() : ENGINE_GASOLINE_SU.get() * extenders;
+				burnRatePerSec = isPortable ? ENGINE_GASOLINE_PORTABLE_CONSUMPTION.get() : ENGINE_GASOLINE_CONSUMPTION.get() * (1.0 + (extenders - 1) * 0.5);
+			} else if (fuel == FuelType.LPG) {
+				baseRpm = ENGINE_LPG_RPM.get();
+				calculatedSu = isPortable ? ENGINE_LPG_PORTABLE_SU.get() : ENGINE_LPG_SU.get() * extenders;
+				burnRatePerSec = isPortable ? ENGINE_LPG_PORTABLE_CONSUMPTION.get() : ENGINE_LPG_CONSUMPTION.get() * (1.0 + (extenders - 1) * 0.5);
+			}
+
+			speed = (float) baseRpm;
+			su = (float) calculatedSu;
+			consumptionPerTick = burnRatePerSec / 20.0D;
+			generating = true;
+		}
+
+		if (wasGenerating != generating || prevSpeed != speed || prevSu != su) {
+			if (!level.isClientSide) {
+				BlockState state = getBlockState();
+				if (state.getBlock() instanceof Engine && state.getValue(ACTIVE) != generating) {
+					KineticBlockEntity.switchToBlockState(level, worldPosition, state.setValue(ACTIVE, generating));
 				}
-				double consumptionPerTick=burnRatePerSec/20.0D;
-				fuelAccumulator+=consumptionPerTick;
-				if(fuelTickCounter++>=FUEL_TICK_INTERVAL){
-					fuelTickCounter=0;
-					int fuelToDrain=(int)Math.floor(fuelAccumulator);
-					int availableFuel=fluidTank.getFluidAmount();
-					if(fuelToDrain>0){
-						int drainAmount=Math.min(fuelToDrain,availableFuel);
-						if(drainAmount>0){
-							fluidTank.drain(drainAmount,IFluidHandler.FluidAction.EXECUTE);
-							fuelAccumulator-=drainAmount;
-							if(fuelAccumulator<0D) fuelAccumulator=0D;
+				updateGeneratedRotation();
+				sendData();
+			}
+		}
+	}
+
+	@Override
+	public void tick() {
+		super.tick();
+		if (level == null || !(getBlockState().getBlock() instanceof Engine)) return;
+		if (reActivateSource) {
+			updateGeneratedRotation();
+			reActivateSource = false;
+		}
+		if (!level.isClientSide) {
+			if (generating && !redstonePowered) {
+				fuelAccumulator += consumptionPerTick;
+				if (++fuelTickCounter >= FUEL_TICK_INTERVAL) {
+					fuelTickCounter = 0;
+					int toDrain = (int) Math.floor(fuelAccumulator);
+					if (toDrain > 0) {
+						int available = fluidTank.getFluidAmount();
+						int drainAmount = Math.min(toDrain, available);
+						if (drainAmount > 0) {
+							isDrainingInternally = true;
+							try {
+								fluidTank.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
+							} finally {
+								isDrainingInternally = false;
+							}
+							fuelAccumulator -= drainAmount;
+							if (fuelAccumulator < 0D) fuelAccumulator = 0D;
+							if (fluidTank.isEmpty()) {
+								recalculateStats();
+							}
 						}
 					}
 				}
-				generating=fluidTank.getFluidAmount()>0;
-			}
-			if(uGenerating!=generating||uSpeed!=speed||uSu!=su){
-				KineticBlockEntity.switchToBlockState(level,worldPosition,getBlockState().setValue(ACTIVE,generating));
-				updateGeneratedRotation();
-				sendData();
-				uGenerating=generating;
-				uSpeed=speed;
-				uSu=su;
 			}
 		}
-		if(level.isClientSide&&getBlockState().getValue(ACTIVE)) clientTick();
+		if (level.isClientSide && getBlockState().getValue(ACTIVE)) clientTick();
 	}
-	private boolean ext0=false, ext1=false, ext2=false;
-	public void updateExtenders(){
-		if(level==null) return;
-		BlockState ownState=getBlockState();
-		if(!(ownState.getBlock() instanceof Engine)) return;
-		if(isEngineBlock(ownState.getBlock())){
-			Direction.Axis axis=ownState.getValue(FACING).getAxis();
-			ext0=isEngineExtender(worldPosition.above());
-			if(axis==Direction.Axis.Z){
-				ext1=isEngineExtender(worldPosition.east());
-				ext2=isEngineExtender(worldPosition.west());
-			}else if(axis==Direction.Axis.X){
-				ext1=isEngineExtender(worldPosition.north());
-				ext2=isEngineExtender(worldPosition.south());
-			}else{
-				ext1=false;
-				ext2=false;
+
+	public void clientTick() {
+		if (level == null) return;
+		Direction.Axis axis = getBlockState().getValue(FACING).getAxis();
+		double vel = 0.007;
+		Block ownBlock = getBlockState().getBlock();
+		if (axis.equals(Direction.Axis.Z)) {
+			if (isEngineBlock(ownBlock)) {
+				if (ext0) {
+					particle(new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 2, worldPosition.getZ() + 0.3), new Vec3(0, vel, 0));
+					particle(new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 2, worldPosition.getZ() + 0.5), new Vec3(0, vel, 0));
+					particle(new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 2, worldPosition.getZ() + 0.7), new Vec3(0, vel, 0));
+				}
+				if (ext1) {
+					particle(new Vec3(worldPosition.getX() + 2, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.3), new Vec3(vel * 2, vel, 0));
+					particle(new Vec3(worldPosition.getX() + 2, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5), new Vec3(vel * 2, vel, 0));
+					particle(new Vec3(worldPosition.getX() + 2, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.7), new Vec3(vel * 2, vel, 0));
+				}
+				if (ext2) {
+					particle(new Vec3(worldPosition.getX() - 1, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.3), new Vec3(-vel * 2, vel, 0));
+					particle(new Vec3(worldPosition.getX() - 1, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5), new Vec3(-vel * 2, vel, 0));
+					particle(new Vec3(worldPosition.getX() - 1, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.7), new Vec3(-vel * 2, vel, 0));
+				}
+			} else if (isEngineBlockPortable(ownBlock)) {
+				particle(new Vec3(worldPosition.getX() + 0.15, worldPosition.getY() + 0.99, worldPosition.getZ() + 0.22), new Vec3(-vel * 2, vel, 0));
+				particle(new Vec3(worldPosition.getX() + 0.15, worldPosition.getY() + 0.99, worldPosition.getZ() + 0.78), new Vec3(-vel * 2, vel, 0));
+				particle(new Vec3(worldPosition.getX() + 0.85, worldPosition.getY() + 0.99, worldPosition.getZ() + 0.22), new Vec3(vel * 2, vel, 0));
+				particle(new Vec3(worldPosition.getX() + 0.85, worldPosition.getY() + 0.99, worldPosition.getZ() + 0.78), new Vec3(vel * 2, vel, 0));
 			}
-		}else{
-			ext0=false;
-			ext1=false;
-			ext2=false;
-		}
-		if(!level.isClientSide){
-			recalculateStats();
-			updateGeneratedRotation();
-			sendData();
-		}
-	}
-	public void clientTick(){
-		if(level==null) return;
-		updateExtenders();
-		Direction.Axis axis=getBlockState().getValue(FACING).getAxis();
-		double vel=0.007;
-		Block ownBlock=getBlockState().getBlock();
-		if(axis.equals(Direction.Axis.Z)){
-			if(isEngineBlock(ownBlock)){
-				if(ext0){
-					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.3),new Vec3(0,vel,0));
-					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
-					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.7),new Vec3(0,vel,0));
+		} else if (axis.equals(Direction.Axis.X)) {
+			if (isEngineBlock(ownBlock)) {
+				if (ext0) {
+					particle(new Vec3(worldPosition.getX() + 0.3, worldPosition.getY() + 2, worldPosition.getZ() + 0.5), new Vec3(0, vel, 0));
+					particle(new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 2, worldPosition.getZ() + 0.5), new Vec3(0, vel, 0));
+					particle(new Vec3(worldPosition.getX() + 0.7, worldPosition.getY() + 2, worldPosition.getZ() + 0.5), new Vec3(0, vel, 0));
 				}
-				if(ext1){
-					particle(new Vec3(worldPosition.getX()+2,worldPosition.getY()+0.5,worldPosition.getZ()+0.3),new Vec3(vel*2,vel,0));
-					particle(new Vec3(worldPosition.getX()+2,worldPosition.getY()+0.5,worldPosition.getZ()+0.5),new Vec3(vel*2,vel,0));
-					particle(new Vec3(worldPosition.getX()+2,worldPosition.getY()+0.5,worldPosition.getZ()+0.7),new Vec3(vel*2,vel,0));
+				if (ext1) {
+					particle(new Vec3(worldPosition.getX() + 0.3, worldPosition.getY() + 0.5, worldPosition.getZ() - 1), new Vec3(0, vel, -vel * 2));
+					particle(new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() - 1), new Vec3(0, vel, -vel * 2));
+					particle(new Vec3(worldPosition.getX() + 0.7, worldPosition.getY() + 0.5, worldPosition.getZ() - 1), new Vec3(0, vel, -vel * 2));
 				}
-				if(ext2){
-					particle(new Vec3(worldPosition.getX()-1,worldPosition.getY()+0.5,worldPosition.getZ()+0.3),new Vec3(-vel*2,vel,0));
-					particle(new Vec3(worldPosition.getX()-1,worldPosition.getY()+0.5,worldPosition.getZ()+0.5),new Vec3(-vel*2,vel,0));
-					particle(new Vec3(worldPosition.getX()-1,worldPosition.getY()+0.5,worldPosition.getZ()+0.7),new Vec3(-vel*2,vel,0));
+				if (ext2) {
+					particle(new Vec3(worldPosition.getX() + 0.3, worldPosition.getY() + 0.5, worldPosition.getZ() + 2), new Vec3(0, vel, vel * 2));
+					particle(new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 2), new Vec3(0, vel, vel * 2));
+					particle(new Vec3(worldPosition.getX() + 0.7, worldPosition.getY() + 0.5, worldPosition.getZ() + 2), new Vec3(0, vel, vel * 2));
 				}
-			}else if(isEngineBlockPortable(ownBlock)){
-				particle(new Vec3(worldPosition.getX()+0.15,worldPosition.getY()+0.99,worldPosition.getZ()+0.22),new Vec3(-vel*2,vel,0));
-				particle(new Vec3(worldPosition.getX()+0.15,worldPosition.getY()+0.99,worldPosition.getZ()+0.78),new Vec3(-vel*2,vel,0));
-				particle(new Vec3(worldPosition.getX()+0.85,worldPosition.getY()+0.99,worldPosition.getZ()+0.22),new Vec3(vel*2,vel,0));
-				particle(new Vec3(worldPosition.getX()+0.85,worldPosition.getY()+0.99,worldPosition.getZ()+0.78),new Vec3(vel*2,vel,0));
-			}
-		}else if(axis.equals(Direction.Axis.X)){
-			if(isEngineBlock(ownBlock)){
-				if(ext0){
-					particle(new Vec3(worldPosition.getX()+0.3,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
-					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
-					particle(new Vec3(worldPosition.getX()+0.7,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
-				}
-				if(ext1){
-					particle(new Vec3(worldPosition.getX()+0.3,worldPosition.getY()+0.5,worldPosition.getZ()-1),new Vec3(0,vel,-vel*2));
-					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+0.5,worldPosition.getZ()-1),new Vec3(0,vel,-vel*2));
-					particle(new Vec3(worldPosition.getX()+0.7,worldPosition.getY()+0.5,worldPosition.getZ()-1),new Vec3(0,vel,-vel*2));
-				}
-				if(ext2){
-					particle(new Vec3(worldPosition.getX()+0.3,worldPosition.getY()+0.5,worldPosition.getZ()+2),new Vec3(0,vel,vel*2));
-					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+0.5,worldPosition.getZ()+2),new Vec3(0,vel,vel*2));
-					particle(new Vec3(worldPosition.getX()+0.7,worldPosition.getY()+0.5,worldPosition.getZ()+2),new Vec3(0,vel,vel*2));
-				}
-			}else if(isEngineBlockPortable(ownBlock)){
-				particle(new Vec3(worldPosition.getX()+0.22,worldPosition.getY()+0.99,worldPosition.getZ()+0.15),new Vec3(0,vel,-vel*2));
-				particle(new Vec3(worldPosition.getX()+0.75,worldPosition.getY()+0.99,worldPosition.getZ()+0.15),new Vec3(0,vel,-vel*2));
-				particle(new Vec3(worldPosition.getX()+0.22,worldPosition.getY()+0.99,worldPosition.getZ()+0.85),new Vec3(0,vel,vel*2));
-				particle(new Vec3(worldPosition.getX()+0.78,worldPosition.getY()+0.99,worldPosition.getZ()+0.85),new Vec3(0,vel,vel*2));
+			} else if (isEngineBlockPortable(ownBlock)) {
+				particle(new Vec3(worldPosition.getX() + 0.22, worldPosition.getY() + 0.99, worldPosition.getZ() + 0.15), new Vec3(0, vel, -vel * 2));
+				particle(new Vec3(worldPosition.getX() + 0.75, worldPosition.getY() + 0.99, worldPosition.getZ() + 0.15), new Vec3(0, vel, -vel * 2));
+				particle(new Vec3(worldPosition.getX() + 0.22, worldPosition.getY() + 0.99, worldPosition.getZ() + 0.85), new Vec3(0, vel, vel * 2));
+				particle(new Vec3(worldPosition.getX() + 0.78, worldPosition.getY() + 0.99, worldPosition.getZ() + 0.85), new Vec3(0, vel, vel * 2));
 			}
 		}
 	}
-	public FuelType getFuelFromTank(){
-		if(fluidTank.isEmpty()) return FuelType.INVALID;
-		net.neoforged.neoforge.fluids.FluidStack stack=fluidTank.getFluid();
-		if(stack.is(DIESEL_TAG)) return FuelType.DIESEL;
-		if(stack.is(GASOLINE_TAG)) return FuelType.GASOLINE;
-		if(stack.is(LPG_TAG)) return FuelType.LPG;
-		if(stack.is(HEAVY_FUEL_OIL_TAG)) return FuelType.HEAVY_FUEL_OIL;
+
+	public FuelType getFuelFromTank() {
+		if (fluidTank.isEmpty()) return FuelType.INVALID;
+		net.neoforged.neoforge.fluids.FluidStack stack = fluidTank.getFluid();
+		if (stack.is(DIESEL_TAG)) return FuelType.DIESEL;
+		if (stack.is(GASOLINE_TAG)) return FuelType.GASOLINE;
+		if (stack.is(LPG_TAG)) return FuelType.LPG;
+		if (stack.is(HEAVY_FUEL_OIL_TAG)) return FuelType.HEAVY_FUEL_OIL;
 		return FuelType.INVALID;
 	}
-	public FuelType scanExtenders(){
-		if(level==null) return FuelType.INVALID;
-		BlockState ownState=getBlockState();
-		if(!(ownState.getBlock() instanceof Engine)) return FuelType.INVALID;
-		Block ownBlock=ownState.getBlock();
-		if(isEngineBlock(ownBlock)){
-			if(countExtenders()==0) return FuelType.INVALID;
-			return getFuelFromTank();
-		}else if(isEngineBlockPortable(ownBlock)){
-			FuelType fuel=getFuelFromTank();
-			return fuel==FuelType.HEAVY_FUEL_OIL?FuelType.INVALID:fuel;
-		}
-		return FuelType.INVALID;
+
+	public FuelType getFuelType() {
+		if (fluidTank.isEmpty()) return FuelType.INVALID;
+		Block ownBlock = getBlockState().getBlock();
+		if (isEngineBlock(ownBlock) && cachedExtenders == 0) return FuelType.INVALID;
+		FuelType fuel = getFuelFromTank();
+		if (isEngineBlockPortable(ownBlock) && fuel == FuelType.HEAVY_FUEL_OIL) return FuelType.INVALID;
+		return fuel;
 	}
-	public int countExtenders(){
-		if(level==null) return 0;
-		BlockState ownState=getBlockState();
-		if(!(ownState.getBlock() instanceof Engine)) return 0;
-		if(!isEngineBlock(ownState.getBlock())) return 1;
-		Direction.Axis axis=ownState.getValue(FACING).getAxis();
-		int count=0;
-		if(isEngineExtender(worldPosition.above())) count++;
-		if(axis==Direction.Axis.Z){
-			if(isEngineExtender(worldPosition.east())) count++;
-			if(isEngineExtender(worldPosition.west())) count++;
-		}else if(axis==Direction.Axis.X){
-			if(isEngineExtender(worldPosition.north())) count++;
-			if(isEngineExtender(worldPosition.south())) count++;
-		}
-		return count;
+
+	public FuelType scanExtenders() {
+		return getFuelType();
 	}
-	public boolean isEngineExtender(BlockPos pos){
-		if(level==null) return false;
+
+	public int countExtenders() {
+		return cachedExtenders;
+	}
+
+	public boolean isEngineExtender(BlockPos pos) {
+		if (level == null || !level.isLoaded(pos)) return false;
 		return level.getBlockState(pos).getBlock() instanceof EngineExtender;
 	}
-	private boolean isEngineBlock(Block block){
+
+	private boolean isEngineBlock(Block block) {
 		return block.equals(ENGINE_BASE.get());
 	}
-	private boolean isEngineBlockPortable(Block block){
+
+	private boolean isEngineBlockPortable(Block block) {
 		return block.equals(ENGINE_PORTABLE.get());
 	}
-	public void particle(Vec3 pos,Vec3 velocity){
-		if(level==null) return;
-		if(DifMod.rouletteBoolean(4))
-			level.addParticle(ParticleTypes.SMOKE,pos.x,pos.y,pos.z,velocity.x,velocity.y,velocity.z);
+
+	public void particle(Vec3 pos, Vec3 velocity) {
+		if (level == null) return;
+		if (DifMod.rouletteBoolean(4))
+			level.addParticle(ParticleTypes.SMOKE, pos.x, pos.y, pos.z, velocity.x, velocity.y, velocity.z);
 	}
+
 	@Override
-	public boolean addToGoggleTooltip(java.util.List<net.minecraft.network.chat.Component> tooltip,boolean isPlayerSneaking){
-		super.addToGoggleTooltip(tooltip,isPlayerSneaking);
-		if(!fluidTank.isEmpty()){
-			String fluidName=fluidTank.getFluid().getHoverName().getString();
+	public boolean addToGoggleTooltip(java.util.List<net.minecraft.network.chat.Component> tooltip, boolean isPlayerSneaking) {
+		super.addToGoggleTooltip(tooltip, isPlayerSneaking);
+		if (!fluidTank.isEmpty()) {
+			String fluidName = fluidTank.getFluid().getHoverName().getString();
 			tooltip.add(net.minecraft.network.chat.Component.literal("     Fuel: ").withStyle(net.minecraft.ChatFormatting.GRAY)
-					.append(net.minecraft.network.chat.Component.literal(fluidName+" ("+fluidTank.getFluidAmount()+" / "+fluidTank.getCapacity()+" mB)").withStyle(net.minecraft.ChatFormatting.AQUA)));
-		}else{
+					.append(net.minecraft.network.chat.Component.literal(fluidName + " (" + fluidTank.getFluidAmount() + " / " + fluidTank.getCapacity() + " mB)").withStyle(net.minecraft.ChatFormatting.AQUA)));
+		} else {
 			tooltip.add(net.minecraft.network.chat.Component.literal("     Fuel: ").withStyle(net.minecraft.ChatFormatting.GRAY)
-					.append(net.minecraft.network.chat.Component.literal("Empty (0 / "+fluidTank.getCapacity()+" mB)").withStyle(net.minecraft.ChatFormatting.DARK_GRAY)));
+					.append(net.minecraft.network.chat.Component.literal("Empty (0 / " + fluidTank.getCapacity() + " mB)").withStyle(net.minecraft.ChatFormatting.DARK_GRAY)));
 		}
-		FuelType fuel=scanExtenders();
-		if(fuel!=FuelType.INVALID){
-			boolean isPortable=isEngineBlockPortable(getBlockState().getBlock());
-			int extenders=countExtenders();
-			double burnRatePerSec=0.0D;
-			if(fuel==FuelType.DIESEL){
-				burnRatePerSec=isPortable?ENGINE_DIESEL_PORTABLE_CONSUMPTION.get():ENGINE_DIESEL_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
-			}else if(fuel==FuelType.GASOLINE){
-				burnRatePerSec=isPortable?ENGINE_GASOLINE_PORTABLE_CONSUMPTION.get():ENGINE_GASOLINE_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
-			}else if(fuel==FuelType.LPG){
-				burnRatePerSec=isPortable?ENGINE_LPG_PORTABLE_CONSUMPTION.get():ENGINE_LPG_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
-			}else if(fuel==FuelType.HEAVY_FUEL_OIL){
-				burnRatePerSec=ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
+		FuelType fuel = getFuelType();
+		if (fuel != FuelType.INVALID) {
+			boolean isPortable = isEngineBlockPortable(getBlockState().getBlock());
+			int extenders = cachedExtenders;
+			double burnRatePerSec = 0.0D;
+			if (fuel == FuelType.DIESEL) {
+				burnRatePerSec = isPortable ? ENGINE_DIESEL_PORTABLE_CONSUMPTION.get() : ENGINE_DIESEL_CONSUMPTION.get() * (1.0 + (extenders - 1) * 0.5);
+			} else if (fuel == FuelType.GASOLINE) {
+				burnRatePerSec = isPortable ? ENGINE_GASOLINE_PORTABLE_CONSUMPTION.get() : ENGINE_GASOLINE_CONSUMPTION.get() * (1.0 + (extenders - 1) * 0.5);
+			} else if (fuel == FuelType.LPG) {
+				burnRatePerSec = isPortable ? ENGINE_LPG_PORTABLE_CONSUMPTION.get() : ENGINE_LPG_CONSUMPTION.get() * (1.0 + (extenders - 1) * 0.5);
+			} else if (fuel == FuelType.HEAVY_FUEL_OIL) {
+				burnRatePerSec = ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get() * (1.0 + (extenders - 1) * 0.5);
 			}
-			String burnRateStr=String.format(java.util.Locale.US,"%.2f",burnRatePerSec);
+			String burnRateStr = String.format(java.util.Locale.US, "%.2f", burnRatePerSec);
 			tooltip.add(net.minecraft.network.chat.Component.literal("     Burn Rate: ").withStyle(net.minecraft.ChatFormatting.GRAY)
-					.append(net.minecraft.network.chat.Component.literal(burnRateStr+" mB/s").withStyle(net.minecraft.ChatFormatting.GOLD)));
-		}else{
+					.append(net.minecraft.network.chat.Component.literal(burnRateStr + " mB/s").withStyle(net.minecraft.ChatFormatting.GOLD)));
+		} else {
 			tooltip.add(net.minecraft.network.chat.Component.literal("     Burn Rate: ").withStyle(net.minecraft.ChatFormatting.GRAY)
 					.append(net.minecraft.network.chat.Component.literal("0.00 mB/s").withStyle(net.minecraft.ChatFormatting.DARK_GRAY)));
 		}

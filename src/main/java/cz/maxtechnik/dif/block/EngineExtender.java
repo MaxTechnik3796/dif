@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.block;
 
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import cz.maxtechnik.dif.block.entity.EngineBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
@@ -80,6 +81,26 @@ public class EngineExtender extends Block implements SimpleWaterloggedBlock, IWr
 		if(blockState.getValue(WATERLOGGED))
 			world.scheduleTick(currentPos,Fluids.WATER,Fluids.WATER.getTickDelay(world));
 		return super.updateShape(blockState,facing,facingState,world,currentPos,facingPos);
+	}
+	@Override
+	protected void onPlace(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState oldState,boolean isMoving){
+		super.onPlace(state,level,pos,oldState,isMoving);
+		notifyEngines(level,pos);
+	}
+	@Override
+	protected void onRemove(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState newState,boolean isMoving){
+		super.onRemove(state,level,pos,newState,isMoving);
+		if(!state.is(newState.getBlock())){
+			notifyEngines(level,pos);
+		}
+	}
+	private void notifyEngines(Level level,BlockPos pos){
+		for(Direction dir: Direction.values()){
+			BlockPos neighborPos=pos.relative(dir);
+			if(level.getBlockEntity(neighborPos) instanceof EngineBlockEntity be){
+				be.updateExtenders();
+			}
+		}
 	}
 	@Override
 	public InteractionResult onWrenched(BlockState state,UseOnContext context){
