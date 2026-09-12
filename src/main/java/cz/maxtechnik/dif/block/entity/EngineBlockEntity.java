@@ -216,57 +216,37 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		}
 		if(level.isClientSide&&getBlockState().getValue(ACTIVE)) clientTick();
 	}
+	private static final double[] EXTENDER_PARTICLE_OFFSETS={0.3,0.5,0.7};
+	private static final double[] PORTABLE_SIDES={0.15,0.85};
+	private static final double[] PORTABLE_ALONG={0.22,0.78};
 	public void clientTick(){
 		if(level==null) return;
-		Direction.Axis axis=getBlockState().getValue(FACING).getAxis();
+		boolean isZ=getBlockState().getValue(FACING).getAxis()==Direction.Axis.Z;
 		double vel=0.007;
+		double px=worldPosition.getX(), py=worldPosition.getY(), pz=worldPosition.getZ();
 		Block ownBlock=getBlockState().getBlock();
-		if(axis.equals(Direction.Axis.Z)){
-			if(isEngineBlock(ownBlock)){
-				if(ext0){
-					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.3),new Vec3(0,vel,0));
-					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
-					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.7),new Vec3(0,vel,0));
+		if(isEngineBlock(ownBlock)){
+			if(ext0) spawnExtenderParticles(0.5,py+2,0,isZ);
+			if(ext1) spawnExtenderParticles(isZ?2:-1,py+0.5,isZ?vel*2:-vel*2,isZ);
+			if(ext2) spawnExtenderParticles(isZ?-1:2,py+0.5,isZ?-vel*2:vel*2,isZ);
+		}else if(isEngineBlockPortable(ownBlock)){
+			for(double side: PORTABLE_SIDES){
+				double sideVel=side<0.5?-vel*2:vel*2;
+				for(double along: PORTABLE_ALONG){
+					double x=isZ?px+side:px+along;
+					double z=isZ?pz+along:pz+side;
+					particle(new Vec3(x,py+0.99,z),new Vec3(isZ?sideVel:0,vel,isZ?0:sideVel));
 				}
-				if(ext1){
-					particle(new Vec3(worldPosition.getX()+2,worldPosition.getY()+0.5,worldPosition.getZ()+0.3),new Vec3(vel*2,vel,0));
-					particle(new Vec3(worldPosition.getX()+2,worldPosition.getY()+0.5,worldPosition.getZ()+0.5),new Vec3(vel*2,vel,0));
-					particle(new Vec3(worldPosition.getX()+2,worldPosition.getY()+0.5,worldPosition.getZ()+0.7),new Vec3(vel*2,vel,0));
-				}
-				if(ext2){
-					particle(new Vec3(worldPosition.getX()-1,worldPosition.getY()+0.5,worldPosition.getZ()+0.3),new Vec3(-vel*2,vel,0));
-					particle(new Vec3(worldPosition.getX()-1,worldPosition.getY()+0.5,worldPosition.getZ()+0.5),new Vec3(-vel*2,vel,0));
-					particle(new Vec3(worldPosition.getX()-1,worldPosition.getY()+0.5,worldPosition.getZ()+0.7),new Vec3(-vel*2,vel,0));
-				}
-			}else if(isEngineBlockPortable(ownBlock)){
-				particle(new Vec3(worldPosition.getX()+0.15,worldPosition.getY()+0.99,worldPosition.getZ()+0.22),new Vec3(-vel*2,vel,0));
-				particle(new Vec3(worldPosition.getX()+0.15,worldPosition.getY()+0.99,worldPosition.getZ()+0.78),new Vec3(-vel*2,vel,0));
-				particle(new Vec3(worldPosition.getX()+0.85,worldPosition.getY()+0.99,worldPosition.getZ()+0.22),new Vec3(vel*2,vel,0));
-				particle(new Vec3(worldPosition.getX()+0.85,worldPosition.getY()+0.99,worldPosition.getZ()+0.78),new Vec3(vel*2,vel,0));
 			}
-		}else if(axis.equals(Direction.Axis.X)){
-			if(isEngineBlock(ownBlock)){
-				if(ext0){
-					particle(new Vec3(worldPosition.getX()+0.3,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
-					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
-					particle(new Vec3(worldPosition.getX()+0.7,worldPosition.getY()+2,worldPosition.getZ()+0.5),new Vec3(0,vel,0));
-				}
-				if(ext1){
-					particle(new Vec3(worldPosition.getX()+0.3,worldPosition.getY()+0.5,worldPosition.getZ()-1),new Vec3(0,vel,-vel*2));
-					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+0.5,worldPosition.getZ()-1),new Vec3(0,vel,-vel*2));
-					particle(new Vec3(worldPosition.getX()+0.7,worldPosition.getY()+0.5,worldPosition.getZ()-1),new Vec3(0,vel,-vel*2));
-				}
-				if(ext2){
-					particle(new Vec3(worldPosition.getX()+0.3,worldPosition.getY()+0.5,worldPosition.getZ()+2),new Vec3(0,vel,vel*2));
-					particle(new Vec3(worldPosition.getX()+0.5,worldPosition.getY()+0.5,worldPosition.getZ()+2),new Vec3(0,vel,vel*2));
-					particle(new Vec3(worldPosition.getX()+0.7,worldPosition.getY()+0.5,worldPosition.getZ()+2),new Vec3(0,vel,vel*2));
-				}
-			}else if(isEngineBlockPortable(ownBlock)){
-				particle(new Vec3(worldPosition.getX()+0.22,worldPosition.getY()+0.99,worldPosition.getZ()+0.15),new Vec3(0,vel,-vel*2));
-				particle(new Vec3(worldPosition.getX()+0.75,worldPosition.getY()+0.99,worldPosition.getZ()+0.15),new Vec3(0,vel,-vel*2));
-				particle(new Vec3(worldPosition.getX()+0.22,worldPosition.getY()+0.99,worldPosition.getZ()+0.85),new Vec3(0,vel,vel*2));
-				particle(new Vec3(worldPosition.getX()+0.78,worldPosition.getY()+0.99,worldPosition.getZ()+0.85),new Vec3(0,vel,vel*2));
-			}
+		}
+	}
+	private void spawnExtenderParticles(double sideOffset,double y,double sideVel,boolean isZ){
+		double px=worldPosition.getX(), pz=worldPosition.getZ();
+		double vx=isZ?sideVel:0, vz=isZ?0:sideVel;
+		for(double along: EXTENDER_PARTICLE_OFFSETS){
+			double x=isZ?px+sideOffset:px+along;
+			double z=isZ?pz+along:pz+sideOffset;
+			particle(new Vec3(x,y,z),new Vec3(vx,0.007,vz));
 		}
 	}
 	public FuelType getFuelFromTank(){
