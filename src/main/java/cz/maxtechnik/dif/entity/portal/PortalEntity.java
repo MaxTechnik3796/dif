@@ -23,6 +23,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -295,7 +296,7 @@ public class PortalEntity extends Entity{
 	@Override public void move(@NotNull MoverType type,@NotNull Vec3 pos){}
 	@Override public @NotNull PushReaction getPistonPushReaction(){ return PushReaction.IGNORE; }
 	@Override public boolean isNoGravity(){ return true; }
-	@Override public boolean isPushedByFluid(){ return false; }
+	@Override public boolean isPushedByFluid(@NotNull FluidType type){ return false; }
 	@Override public boolean ignoreExplosion(@NotNull Explosion explosion){ return true; }
 	@Override public void lerpTo(double x,double y,double z,float yRot,float xRot,int steps){}
 	// Utility
