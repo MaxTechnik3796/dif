@@ -6,35 +6,30 @@
 			"tag":"c:storage_blocks/nickel"
 		},
 		"B":{
-			"tag":"c:plates/brass"
-		},
-		"C":{
 			"tag":"c:ingots/nickel"
 		},
-		"D":{
-			"item":"create:industrial_iron_block"
-		},
-		"E":{
+		"C":{
 			"tag":"c:plates/mithril"
 		},
-		"F":{
-			"tag":"c:ingots/netherite"
+		"D":{
+			"item":"minecraft:netherite_scrap"
 		},
-		"G":{
+		"E":{
 			"item":"minecraft:tnt"
 		},
-		"H":{
-			"tag":"c:nether_stars"
+		"F":{
+			"tag":"c:plates/brass"
+		},
+		"G":{
+			"item":"minecraft:nether_star"
 		}
 	},
 	"pattern":[
-		"  ABA  ",
-		" CDEDC ",
-		"ADFGFDA",
-		"BEGHGEB",
-		"ADFGFDA",
-		" CDEDC ",
-		"  ABA  "
+		"ABCBA",
+		"CDEDC",
+		"FEGEF",
+		"CDEDC",
+		"ABCBA"
 	],
 	"result":{
 		"id":"dif:nuke"
