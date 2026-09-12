@@ -40,7 +40,7 @@ public final class MiningHandler{
 		BREAKING.set(Boolean.TRUE);
 		try{
 			if(isDestroyer){
-				handleDestroyer(level,player,tool,centre,centreState);
+				handleDestroyer(level,player,tool,centre);
 			}else{
 				handleDeforester(level,player,tool,centre,centreState);
 			}
@@ -48,7 +48,7 @@ public final class MiningHandler{
 			BREAKING.remove();
 		}
 	}
-	private static void handleDestroyer(Level level,ServerPlayer player,ItemStack tool,BlockPos centre,BlockState centreState){
+	private static void handleDestroyer(Level level,ServerPlayer player,ItemStack tool,BlockPos centre){
 		Direction face=getPlayerFacingFace(player);
 		List<BlockPos> neighbours=get3x3Plane(centre,face);
 		for(BlockPos pos: neighbours){
