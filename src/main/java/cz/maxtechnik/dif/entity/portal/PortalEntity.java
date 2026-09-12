@@ -1,8 +1,6 @@
 package cz.maxtechnik.dif.entity.portal;
 
 import cz.maxtechnik.dif.config.DifModServerConfig;
-import cz.maxtechnik.dif.init.events.portal.PortalData;
-import cz.maxtechnik.dif.init.events.portal.PortalPlacement;
 import cz.maxtechnik.dif.init.other.DifModEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

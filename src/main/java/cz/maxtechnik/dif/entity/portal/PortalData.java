@@ -1,6 +1,5 @@
-package cz.maxtechnik.dif.init.events.portal;
+package cz.maxtechnik.dif.entity.portal;
 
-import cz.maxtechnik.dif.entity.portal.PortalEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
