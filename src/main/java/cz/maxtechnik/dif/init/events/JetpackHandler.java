@@ -44,7 +44,7 @@ public class JetpackHandler{
 		ItemStack chest=player.getItemBySlot(EquipmentSlot.CHEST);
 		if(!(chest.getItem() instanceof Jetpack)) return;
 		tickHover(player,chest);
-		if(player.level().isClientSide()){
+		if(player.level().isClientSide()&&player.isLocalPlayer()){
 			showOverlay(player,chest);
 		}
 	}
@@ -145,12 +145,21 @@ public class JetpackHandler{
 		spawnParticles(player);
 	}
 	private static void spawnParticles(Player player){
-		if(player.level() instanceof ServerLevel sl){
-			double angle=Math.toRadians(player.getYRot());
-			double bx=player.getX()+Math.sin(angle)*0.3;
-			double by=player.getY()+0.8;
-			double bz=player.getZ()-Math.cos(angle)*0.3;
-			sl.sendParticles(ParticleTypes.FLAME,bx,by,bz,2,Math.sin(angle)*0.05,-0.1,-Math.cos(angle)*0.05,0.02);
+		double angle=Math.toRadians(player.getYRot());
+		double bx=player.getX()+Math.sin(angle)*0.3;
+		double by=player.getY()+0.8;
+		double bz=player.getZ()-Math.cos(angle)*0.3;
+		double vx=Math.sin(angle)*0.05;
+		double vy=-0.1;
+		double vz=-Math.cos(angle)*0.05;
+
+		if(player.level().isClientSide()){
+			player.level().addParticle(ParticleTypes.FLAME,bx,by,bz,vx,vy,vz);
+		}else if(player.level() instanceof ServerLevel sl){
+			// Throttle server particle packets so Netty event loops aren't flooded with syscalls every tick
+			if(player.tickCount%4==0){
+				sl.sendParticles(ParticleTypes.FLAME,bx,by,bz,1,vx,vy,vz,0.02);
+			}
 		}
 	}
 	private static void syncFuel(Player player,ItemStack chest){

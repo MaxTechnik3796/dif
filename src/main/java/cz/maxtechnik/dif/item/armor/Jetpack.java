@@ -71,8 +71,8 @@ public abstract class Jetpack extends ArmorItem{
 		// Palivo (Thrust)
 		public static int getThrust(ItemStack stack){
 			CustomData data=stack.get(DataComponents.CUSTOM_DATA);
-			if(data==null||!data.copyTag().contains("Thrust")) return 0;
-			return data.copyTag().getInt("Thrust");
+			if(data==null) return 0;
+			return data.getUnsafe().getInt("Thrust");
 		}
 		public static void setThrust(ItemStack stack,int value){
 			stack.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,
@@ -84,8 +84,8 @@ public abstract class Jetpack extends ArmorItem{
 		// Stav jetpacku: 0=let, 1=hover, 2=vypnuto
 		public static int getMode(ItemStack stack){
 			CustomData data=stack.get(DataComponents.CUSTOM_DATA);
-			if(data==null||!data.copyTag().contains("Mode")) return 0;
-			return data.copyTag().getInt("Mode");
+			if(data==null) return 0;
+			return data.getUnsafe().getInt("Mode");
 		}
 		public static void setMode(ItemStack stack,int mode){
 			stack.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,

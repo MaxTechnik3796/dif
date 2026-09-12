@@ -31,7 +31,7 @@ public class PortalGun extends Item{
 	// NBT helpers
 	private CompoundTag readTag(ItemStack gun){
 		CustomData data=gun.get(DataComponents.CUSTOM_DATA);
-		return data!=null?data.copyTag():new CompoundTag();
+		return data!=null?data.getUnsafe():new CompoundTag();
 	}
 	private boolean isBlueMode(ItemStack gun){
 		CompoundTag tag=readTag(gun);
@@ -47,11 +47,7 @@ public class PortalGun extends Item{
 	}
 	private void setEnergy(ItemStack gun,int energy){
 		int max=DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get();
-		gun.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,cd->{
-			var tag=cd.copyTag().copy();
-			tag.putInt("energy",Math.clamp(energy,0,max));
-			return CustomData.of(tag);
-		});
+		CustomData.update(DataComponents.CUSTOM_DATA,gun,tag->tag.putInt("energy",Math.clamp(energy,0,max)));
 	}
 	// use
 	@Override
