@@ -3,9 +3,11 @@ package cz.maxtechnik.dif.item.tool;
 import cz.maxtechnik.dif.config.DifModServerConfig;
 import cz.maxtechnik.dif.entity.portal.PortalData;
 import cz.maxtechnik.dif.entity.portal.PortalEntity;
+import cz.maxtechnik.dif.entity.portal.PortalPlacement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.FastColor;
@@ -22,26 +24,26 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-import java.util.Set;
 public class PortalGun extends Item{
 	public PortalGun(){
 		super(new Properties().stacksTo(1));
 	}
 	// NBT helpers
-	private boolean isBlueMode(ItemStack gun){
+	private CompoundTag readTag(ItemStack gun){
 		CustomData data=gun.get(DataComponents.CUSTOM_DATA);
-		return data==null||data.copyTag().getBoolean("mode");
+		return data!=null?data.copyTag():new CompoundTag();
+	}
+	private boolean isBlueMode(ItemStack gun){
+		CompoundTag tag=readTag(gun);
+		return !tag.contains("mode")||tag.getBoolean("mode");
 	}
 	private void setMode(ItemStack gun,boolean blue){
 		CustomData.update(DataComponents.CUSTOM_DATA,gun,tag->tag.putBoolean("mode",blue));
 		gun.set(DataComponents.CUSTOM_MODEL_DATA,new CustomModelData(blue?0:1));
 	}
 	private int getEnergy(ItemStack gun){
-		CustomData data=gun.get(DataComponents.CUSTOM_DATA);
-		if(data==null) return DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get();
-		return data.copyTag().getInt("energy");
+		CompoundTag tag=readTag(gun);
+		return tag.contains("energy")?tag.getInt("energy"):DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get();
 	}
 	private void setEnergy(ItemStack gun,int energy){
 		int max=DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get();
@@ -56,8 +58,7 @@ public class PortalGun extends Item{
 	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world,Player player,@NotNull InteractionHand hand){
 		ItemStack gun=player.getItemInHand(hand);
 		// Inicializace dat
-		CustomData data=gun.get(DataComponents.CUSTOM_DATA);
-		if(data==null||!data.copyTag().contains("energy")){
+		if(!readTag(gun).contains("energy")){
 			setMode(gun,true);
 			setEnergy(gun,DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get());
 		}
@@ -104,60 +105,21 @@ public class PortalGun extends Item{
 		Direction face=hit.getDirection();
 		BlockPos hitPos=hit.getBlockPos();
 		Direction extDir=(face.getAxis()==Direction.Axis.Y)?player.getDirection():Direction.UP;
-		Vec3 spawnPos=alignPortal(world,hitPos,face,extDir,hit.getLocation());
+		Vec3 spawnPos=PortalPlacement.align(world,hitPos,face,extDir,hit.getLocation());
 		if(spawnPos==null){
 			player.displayClientMessage(Component.literal("[!] Invalid placement"),true);
 			return false;
 		}
-		// Kontrola překryvu s jinými portály
 		PortalEntity portal=new PortalEntity(world,player.getUUID(),isBlue,face,extDir,spawnPos);
-		List<PortalEntity> nearby=world.getEntitiesOfClass(PortalEntity.class,portal.getBoundingBox().inflate(0.05));
-		for(PortalEntity o: nearby){
-			if(o.getOwner()!=null&&o.getOwner().equals(player.getUUID())&&o.isBlue()==isBlue) continue;
-			if(portal.getBoundingBox().intersects(o.getBoundingBox())){
-				player.displayClientMessage(Component.literal("[!] Invalid position"),true);
-				return false;
-			}
+		if(PortalPlacement.hasOverlap(world,portal.getBoundingBox(),player.getUUID(),isBlue)){
+			player.displayClientMessage(Component.literal("[!] Invalid position"),true);
+			return false;
 		}
-		PortalEntity.removeOldPortal(world,player.getUUID(),isBlue);
-		PortalData.get(world).set(player.getUUID(),isBlue,portal.blockPosition());
+		PortalData data=PortalData.get(world);
+		data.removeOldPortal(world,player.getUUID(),isBlue);
+		data.set(player.getUUID(),isBlue,portal.blockPosition());
 		world.addFreshEntity(portal);
 		return true;
-	}
-	private Vec3 alignPortal(ServerLevel world,BlockPos hitPos,Direction face,Direction extDir,Vec3 hitLoc){
-		Vec3 center=Vec3.atCenterOf(hitPos);
-		Vec3 normal=Vec3.atLowerCornerOf(face.getNormal());
-		Vec3 up=Vec3.atLowerCornerOf(extDir.getNormal());
-		Vec3 right=normal.cross(up);
-		double cU=center.dot(up);
-		double cR=center.dot(right);
-		double nVal=center.dot(normal)+0.5;
-		double hitU=hitLoc.dot(up);
-		double hitR=hitLoc.dot(right);
-		double offU=snapToGrid(Math.clamp(hitU,cU-0.5,cU+0.5));
-		double[] tryU={offU,cU+0.5,cU-0.5,cU};
-		double offR=snapToGrid(Math.clamp(hitR,cR-0.5,cR+0.5));
-		double[] tryR={offR,cR};
-		for(double u: tryU){
-			for(double r: tryR){
-				Vec3 pos=normal.scale(nVal+0.005).add(up.scale(u)).add(right.scale(r));
-				if(isValidPortalPos(world,pos,extDir,face)) return pos;
-			}
-		}
-		return null;
-	}
-	private boolean isValidPortalPos(ServerLevel world,Vec3 pos,Direction upDir,Direction face){
-		Set<BlockPos> blocks=PortalEntity.getPortalFootprint(pos,upDir,face);
-		if(blocks.isEmpty()) return false;
-		for(BlockPos p: blocks){
-			BlockPos behind=p.relative(face.getOpposite());
-			if(!world.getBlockState(behind).isFaceSturdy(world,behind,face)) return false;
-			if(!world.isEmptyBlock(p)&&!world.getBlockState(p).canBeReplaced()) return false;
-		}
-		return true;
-	}
-	private static double snapToGrid(double v){
-		return Math.round(v*16.0)/16.0;
 	}
 	// Durability bar
 	@Override

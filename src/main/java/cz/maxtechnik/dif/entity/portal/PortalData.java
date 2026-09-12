@@ -6,9 +6,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 public class PortalData extends SavedData{
@@ -51,5 +53,28 @@ public class PortalData extends SavedData{
 			if(m.isEmpty()) map.remove(id);
 			setDirty();
 		}
+	}
+	// Správa portálů – sjednocený lookup a lifecycle
+	/** Najde portál entity ve světě podle uloženého BlockPos. Sjednocuje původní findPortal i findLinkedPortal. */
+	public PortalEntity findEntity(ServerLevel sl,UUID owner,boolean isBlue){
+		BlockPos pos=getPos(owner,isBlue);
+		if(pos==null||!sl.isLoaded(pos)) return null;
+		List<PortalEntity> list=sl.getEntitiesOfClass(PortalEntity.class,new AABB(pos).inflate(2),
+				p->owner.equals(p.getOwner())&&p.isBlue()==isBlue);
+		return list.isEmpty()?null:list.getFirst();
+	}
+	/** Smaže existující portál entity a jeho data. */
+	public void removeOldPortal(ServerLevel sl,UUID owner,boolean isBlue){
+		PortalEntity existing=findEntity(sl,owner,isBlue);
+		if(existing!=null) existing.discard();
+		remove(owner,isBlue);
+	}
+	/** Aktualizuje isLinked stav obou portálů daného hráče. */
+	public void updateLinks(ServerLevel sl,UUID owner){
+		PortalEntity blue=findEntity(sl,owner,true);
+		PortalEntity orange=findEntity(sl,owner,false);
+		boolean linked=blue!=null&&orange!=null;
+		if(blue!=null) blue.setIsLinked(linked);
+		if(orange!=null) orange.setIsLinked(linked);
 	}
 }
