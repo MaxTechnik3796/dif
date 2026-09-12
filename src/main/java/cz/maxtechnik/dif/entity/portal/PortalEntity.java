@@ -1,6 +1,8 @@
 package cz.maxtechnik.dif.entity.portal;
 
 import cz.maxtechnik.dif.config.DifModServerConfig;
+import cz.maxtechnik.dif.init.events.portal.PortalData;
+import cz.maxtechnik.dif.init.events.portal.PortalPlacement;
 import cz.maxtechnik.dif.init.other.DifModEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -109,8 +111,6 @@ public class PortalEntity extends Entity{
 		Vec3 normal=dirVec(getFacing());
 		Vec3 upVec=dirVec(getUpDir());
 		Vec3 rightVec=normal.cross(upVec);
-		// Tenká deska: 1/16 bloku tlustá, 1 blok široká, 2 bloky vysoká
-		// Bounding box se rozšiřuje od povrchu stěny dopředu do prostoru, ne dovnitř do bloku
 		double inset=0.005;
 		Vec3 thickVec=normal.scale(0.0625);
 		Vec3 halfW=rightVec.scale(0.5-inset);
@@ -137,7 +137,6 @@ public class PortalEntity extends Entity{
 			return;
 		}
 		ServerLevel sl=(ServerLevel)level();
-		// Kontrola podpory každých 20 ticků (1x za sekundu)
 		if(tickCount%20==0&&!PortalPlacement.isValidPosition(sl,position(),getUpDir(),getFacing())){
 			PortalData.get(sl).remove(getOwner(),isBlue());
 			discard();
@@ -213,7 +212,7 @@ public class PortalEntity extends Entity{
 		double dist=entity.getBbWidth()*0.5+0.1;
 		return new Vec3(center.x+faceVec.x*dist,center.y-1.0+0.01,center.z+faceVec.z*dist);
 	}
-	// Rotace kamery – sloučeno z getEntryYaw/getExitYaw/calcNewYaw do jedné metody
+	// Rotace kamery
 	private static float calcNewYaw(float oldYaw,PortalEntity in,PortalEntity out){
 		boolean inV=in.getFacing().getAxis()==Direction.Axis.Y;
 		boolean outV=out.getFacing().getAxis()==Direction.Axis.Y;
@@ -231,9 +230,8 @@ public class PortalEntity extends Entity{
 	private static Vec3 transformMotion(Vec3 vel,PortalEntity in,PortalEntity out){
 		double speed=vel.length();
 		if(speed<0.001) return vel;
-		// Zajistit minimální složku rychlosti směrem do portálu
 		Vec3 inNormal=dirVec(in.getFacing());
-		double inward=-vel.dot(inNormal); // kladné = vstupuje do portálu
+		double inward=-vel.dot(inNormal);
 		if(inward<0.05) vel=vel.subtract(inNormal.scale(0.05-inward));
 		Vec3 result=transformVector(vel,in,out);
 		return result.lengthSqr()>0.001?result.normalize().scale(speed):dirVec(out.getFacing()).scale(speed);
@@ -286,7 +284,7 @@ public class PortalEntity extends Entity{
 		}
 		return false;
 	}
-	// Fyzická imunita – portál nelze posunout, odstrčit, rozstřelit ani stáhnout vodou
+	// Fyzická imunita
 	@Override public boolean isPickable(){ return !isRemoved(); }
 	@Override public boolean canCollideWith(@NotNull Entity entity){ return false; }
 	@Override public void push(@NotNull Entity entity){}

@@ -1,5 +1,6 @@
-package cz.maxtechnik.dif.entity.portal;
+package cz.maxtechnik.dif.init.events.portal;
 
+import cz.maxtechnik.dif.entity.portal.PortalEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -10,21 +11,13 @@ import net.minecraft.world.phys.Vec3;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-/**
- * Utility pro pokládání portálů – zarovnání na pixel grid, validace pozice, footprint a kontrola překryvu.
- */
 public final class PortalPlacement{
 	private PortalPlacement(){}
-	/** Zarovnání souřadnice na 1/16 bloku (pixel grid). */
 	public static double snapToGrid(double v){
 		return Math.round(v*16.0)/16.0;
 	}
-	/**
-	 * Bloky, které portál pokrývá (1 široký × 2 vysoký).
-	 * Zjednodušená verze: dva protilehlé rohy stačí pro axis-aligned směry.
-	 */
 	public static Set<BlockPos> getFootprint(Vec3 pos,Direction upDir,Direction facing){
-		Vec3 up=PortalEntity.dirVec(upDir);
+		Vec3 up= PortalEntity.dirVec(upDir);
 		Vec3 right=PortalEntity.dirVec(facing).cross(up);
 		Vec3 lo=pos.subtract(up).subtract(right.scale(0.5));
 		Vec3 hi=pos.add(up).add(right.scale(0.5));
@@ -38,7 +31,6 @@ public final class PortalPlacement{
 					set.add(new BlockPos(x,y,z));
 		return set;
 	}
-	/** Kontrola zda je pozice platná – za portálem pevné bloky, před ním volný prostor. */
 	public static boolean isValidPosition(ServerLevel world,Vec3 pos,Direction upDir,Direction face){
 		Set<BlockPos> blocks=getFootprint(pos,upDir,face);
 		if(blocks.isEmpty()) return false;
@@ -49,7 +41,6 @@ public final class PortalPlacement{
 		}
 		return true;
 	}
-	/** Najde platnou zarovnanou pozici portálu na stěně bloku. */
 	public static Vec3 align(ServerLevel world,BlockPos hitPos,Direction face,Direction extDir,Vec3 hitLoc){
 		Vec3 center=Vec3.atCenterOf(hitPos);
 		Vec3 normal=Vec3.atLowerCornerOf(face.getNormal());
@@ -67,7 +58,6 @@ public final class PortalPlacement{
 		}
 		return null;
 	}
-	/** Kontrola zda bounding box koliduje s jinými portály (kromě vlastního stejné barvy). */
 	public static boolean hasOverlap(ServerLevel world,AABB box,UUID owner,boolean isBlue){
 		for(PortalEntity o:world.getEntitiesOfClass(PortalEntity.class,box.inflate(0.05))){
 			if(owner.equals(o.getOwner())&&o.isBlue()==isBlue) continue;

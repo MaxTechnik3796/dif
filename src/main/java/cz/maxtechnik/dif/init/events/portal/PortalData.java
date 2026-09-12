@@ -1,5 +1,6 @@
-package cz.maxtechnik.dif.entity.portal;
+package cz.maxtechnik.dif.init.events.portal;
 
+import cz.maxtechnik.dif.entity.portal.PortalEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -56,7 +57,7 @@ public class PortalData extends SavedData{
 	}
 	// Správa portálů – sjednocený lookup a lifecycle
 	/** Najde portál entity ve světě podle uloženého BlockPos. Sjednocuje původní findPortal i findLinkedPortal. */
-	public PortalEntity findEntity(ServerLevel sl,UUID owner,boolean isBlue){
+	public PortalEntity findEntity(ServerLevel sl, UUID owner, boolean isBlue){
 		BlockPos pos=getPos(owner,isBlue);
 		if(pos==null||!sl.isLoaded(pos)) return null;
 		List<PortalEntity> list=sl.getEntitiesOfClass(PortalEntity.class,new AABB(pos).inflate(2),
