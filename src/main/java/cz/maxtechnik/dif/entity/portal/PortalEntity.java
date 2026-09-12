@@ -17,6 +17,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -35,17 +38,29 @@ public class PortalEntity extends Entity{
 	// Constructors
 	public PortalEntity(EntityType<?> type,Level level){
 		super(type,level);
+		this.noPhysics=true;
+		setNoGravity(true);
 	}
 	public PortalEntity(Level level,UUID owner,boolean isBlue,Direction facing,Direction upDir,Vec3 pos){
 		super(DifModEntities.PORTAL.get(),level);
+		this.noPhysics=true;
+		setNoGravity(true);
 		setOwner(owner);
 		setIsBlue(isBlue);
 		setFacing(facing);
 		setUpDir(upDir);
 		setPos(pos);
+		setOldPosAndRot();
 		setBoundingBox(buildPortalAABB());
 	}
 	// Accessors
+	@Override
+	public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> key){
+		super.onSyncedDataUpdated(key);
+		if(DATA_FACING.equals(key)||DATA_UP_DIR.equals(key)){
+			setBoundingBox(buildPortalAABB());
+		}
+	}
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder){
 		builder.define(DATA_OWNER,Optional.empty());
@@ -306,11 +321,11 @@ public class PortalEntity extends Entity{
 		BlockPos pos=PortalData.get(sl).getPos(owner,isBlue);
 		if(pos!=null){
 			PortalData.get(sl).remove(owner,isBlue);
-			boolean wasLoaded=sl.isLoaded(pos);
-			if(!wasLoaded) sl.setChunkForced(pos.getX()>>4,pos.getZ()>>4,true);
-			for(PortalEntity p: sl.getEntitiesOfClass(PortalEntity.class,new AABB(pos).inflate(2),
-					e->owner.equals(e.getOwner())&&e.isBlue()==isBlue)){
-				p.discard();
+			if(sl.isLoaded(pos)){
+				for(PortalEntity p: sl.getEntitiesOfClass(PortalEntity.class,new AABB(pos).inflate(2),
+						e->owner.equals(e.getOwner())&&e.isBlue()==isBlue)){
+					p.discard();
+				}
 			}
 		}
 	}
@@ -346,8 +361,6 @@ public class PortalEntity extends Entity{
 		if(!level().isClientSide()){
 			ServerLevel sl=(ServerLevel)level();
 			sl.setChunkForced(chunkPosition().x,chunkPosition().z,false);
-			BlockPos partnerPos=PortalData.get(sl).getPos(getOwner(),!isBlue());
-			if(partnerPos!=null) sl.setChunkForced(partnerPos.getX()>>4,partnerPos.getZ()>>4,false);
 			updateLinks(sl,getOwner());
 		}
 	}
@@ -363,6 +376,54 @@ public class PortalEntity extends Entity{
 	@Override
 	public boolean isPickable(){
 		return !isRemoved();
+	}
+	@Override
+	public boolean isPushable(){
+		return false;
+	}
+	@Override
+	public boolean canCollideWith(@NotNull Entity entity){
+		return false;
+	}
+	@Override
+	public boolean canBeCollidedWith(){
+		return false;
+	}
+	@Override
+	public void push(@NotNull Entity entity){
+	}
+	@Override
+	public void push(double x,double y,double z){
+	}
+	@Override
+	public void setDeltaMovement(@NotNull Vec3 motion){
+		super.setDeltaMovement(Vec3.ZERO);
+	}
+	@Override
+	public void setDeltaMovement(double x,double y,double z){
+		super.setDeltaMovement(Vec3.ZERO);
+	}
+	@Override
+	public void move(@NotNull MoverType type,@NotNull Vec3 pos){
+	}
+	@Override
+	public @NotNull PushReaction getPistonPushReaction(){
+		return PushReaction.IGNORE;
+	}
+	@Override
+	public boolean isNoGravity(){
+		return true;
+	}
+	@Override
+	public boolean isPushedByFluid(){
+		return false;
+	}
+	@Override
+	public boolean ignoreExplosion(@NotNull Explosion explosion){
+		return true;
+	}
+	@Override
+	public void lerpTo(double x,double y,double z,float yRot,float xRot,int steps){
 	}
 	// Utility
 	private static final Vec3[] DIR_VECS=Arrays.stream(Direction.values())
