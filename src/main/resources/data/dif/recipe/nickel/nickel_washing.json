@@ -1,19 +1,19 @@
 {
-  "type": "create:splashing",
-  "ingredients": [
-    {
-      "tag": "create:crushed_raw_materials"
-    }
-  ],
-  "results": [
-    {
-      "id": "dif:nickel_nugget",
-      "count": 9
-    },
-    {
-      "id": "minecraft:glowstone_dust",
-      "chance": 0.5
-    }
-  ],
-  "processingTime": 200
+	"type":"create:splashing",
+	"ingredients":[
+		{
+			"tag":"create:crushed_raw_materials"
+		}
+	],
+	"results":[
+		{
+			"id":"dif:nickel_nugget",
+			"count":9
+		},
+		{
+			"id":"minecraft:glowstone_dust",
+			"chance":0.5
+		}
+	],
+	"processingTime":200
 }

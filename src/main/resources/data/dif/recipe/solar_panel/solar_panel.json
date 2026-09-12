@@ -1,28 +1,28 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "AAA",
-    "BCB",
-    "DED"
-  ],
-  "key": {
-    "A": {
-      "tag": "c:glass_blocks/colorless"
-    },
-    "B": {
-      "tag": "c:plates/nickel"
-    },
-    "C": {
-      "item": "dif:blue_plate"
-    },
-    "D": {
-      "item": "create:industrial_iron_block"
-    },
-    "E": {
-      "item": "minecraft:daylight_detector"
-    }
-  },
-  "result": {
-    "id": "dif:solar_panel_00"
-  }
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		"AAA",
+		"BCB",
+		"DED"
+	],
+	"key":{
+		"A":{
+			"tag":"c:glass_blocks/colorless"
+		},
+		"B":{
+			"tag":"c:plates/nickel"
+		},
+		"C":{
+			"item":"dif:blue_plate"
+		},
+		"D":{
+			"item":"create:industrial_iron_block"
+		},
+		"E":{
+			"item":"minecraft:daylight_detector"
+		}
+	},
+	"result":{
+		"id":"dif:solar_panel_00"
+	}
 }

@@ -12,7 +12,6 @@ import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerSpawnPhantomsEvent;
 import top.theillusivec4.curios.api.CuriosApi;
-
 @EventBusSubscriber(modid=DifMod.MODID)
 public class PhantomRingHandler{
 	public static boolean hasPhantomRing(Player player){
@@ -37,7 +36,6 @@ public class PhantomRingHandler{
 			event.setResult(PlayerSpawnPhantomsEvent.Result.DENY);
 		}
 	}
-
 	@SubscribeEvent
 	public static void onPhantomTarget(LivingChangeTargetEvent event){
 		if(event.getEntity() instanceof Phantom&&event.getNewAboutToBeSetTarget() instanceof Player player){

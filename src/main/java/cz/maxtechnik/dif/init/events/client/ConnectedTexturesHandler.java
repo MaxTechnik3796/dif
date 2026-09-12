@@ -14,29 +14,26 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
-
 @SuppressWarnings("removal")
-@EventBusSubscriber(modid = DifMod.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class ConnectedTexturesHandler {
-
+@EventBusSubscriber(modid=DifMod.MODID, bus=EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
+public class ConnectedTexturesHandler{
 	@SubscribeEvent
-	public static void onModelBake(ModelEvent.ModifyBakingResult event) {
-		register(event, DifModBlocks.ZINC_CASING, DifModSpriteShifts.ZINC_CASING);
-		ModelSwapper.swapModels(event.getModels(), ModelSwapper.getAllBlockStateModelLocations(DifModBlocks.DISTILLATION_TANK.get()),
-				model -> new CTModel(model, new FluidTankCTBehaviour(
+	public static void onModelBake(ModelEvent.ModifyBakingResult event){
+		register(event,DifModBlocks.ZINC_CASING,DifModSpriteShifts.ZINC_CASING);
+		ModelSwapper.swapModels(event.getModels(),ModelSwapper.getAllBlockStateModelLocations(DifModBlocks.DISTILLATION_TANK.get()),
+				model->new CTModel(model,new FluidTankCTBehaviour(
 						DifModSpriteShifts.DISTILLATION_TANK,
 						DifModSpriteShifts.DISTILLATION_TANK_TOP,
 						DifModSpriteShifts.DISTILLATION_TANK_INNER
 				)));
-		ModelSwapper.swapModels(event.getModels(), ModelSwapper.getAllBlockStateModelLocations(DifModBlocks.MITHRIL_FLUID_TANK.get()),
-				model -> new CTModel(model, new FluidTankCTBehaviour(
+		ModelSwapper.swapModels(event.getModels(),ModelSwapper.getAllBlockStateModelLocations(DifModBlocks.MITHRIL_FLUID_TANK.get()),
+				model->new CTModel(model,new FluidTankCTBehaviour(
 						DifModSpriteShifts.MITHRIL_FLUID_TANK,
 						DifModSpriteShifts.MITHRIL_FLUID_TANK_TOP,
 						DifModSpriteShifts.MITHRIL_FLUID_TANK_INNER
 				)));
 	}
-
-	private static void register(ModelEvent.ModifyBakingResult event, DeferredBlock<Block> block, CTSpriteShiftEntry shift) {
-		ModelSwapper.swapModels(event.getModels(), ModelSwapper.getAllBlockStateModelLocations(block.get()), model -> new CTModel(model, new SimpleCTBehaviour(shift)));
+	private static void register(ModelEvent.ModifyBakingResult event,DeferredBlock<Block> block,CTSpriteShiftEntry shift){
+		ModelSwapper.swapModels(event.getModels(),ModelSwapper.getAllBlockStateModelLocations(block.get()),model->new CTModel(model,new SimpleCTBehaviour(shift)));
 	}
 }

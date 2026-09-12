@@ -8,28 +8,21 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-
 public class NukeRadiationHandler{
 	private static final double RADIATION_RADIUS=180.0;
-
 	public static void apply(Level level,BlockPos center){
 		if(level.isClientSide) return;
-
 		double ex=center.getX()+0.5;
 		double ey=center.getY()+1.5;
 		double ez=center.getZ()+0.5;
-
 		// Vanilla exploze pro poškození
 		level.explode(null,ex,ey,ez,48.0F,Level.ExplosionInteraction.NONE);
-
 		// Radiace a odhoz entit
 		AABB area=new AABB(ex-RADIATION_RADIUS,ey-RADIATION_RADIUS,ez-RADIATION_RADIUS,
 				ex+RADIATION_RADIUS,ey+RADIATION_RADIUS,ez+RADIATION_RADIUS);
-
 		for(LivingEntity entity: level.getEntitiesOfClass(LivingEntity.class,area)){
 			if(entity.isSpectator()) continue;
 			if(entity instanceof Player player&&player.isCreative()) continue;
-
 			double dist=Math.sqrt(entity.distanceToSqr(ex,ey,ez));
 			if(dist<=RADIATION_RADIUS){
 				if(dist<=65.0){
@@ -40,7 +33,6 @@ public class NukeRadiationHandler{
 					entity.addEffect(new MobEffectInstance(MobEffects.WITHER,800,0));
 					entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION,200,0));
 				}
-
 				// Kinetický impuls
 				double dx=entity.getX()-ex;
 				double dz=entity.getZ()-ez;

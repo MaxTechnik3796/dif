@@ -1,20 +1,20 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "AAA",
-    "ABA",
-    "AAA"
-  ],
-  "key": {
-    "A": {
-      "item": "minecraft:rail"
-    },
-    "B": {
-      "tag": "c:gems/diamond"
-    }
-  },
-  "result": {
-    "id": "dif:fast_rail",
-    "count": 8
-  }
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		"AAA",
+		"ABA",
+		"AAA"
+	],
+	"key":{
+		"A":{
+			"item":"minecraft:rail"
+		},
+		"B":{
+			"tag":"c:gems/diamond"
+		}
+	},
+	"result":{
+		"id":"dif:fast_rail",
+		"count":8
+	}
 }

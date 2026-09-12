@@ -10,7 +10,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerSetSpawnEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerWakeUpEvent;
-
 @EventBusSubscriber(modid=DifMod.MODID)
 public class PlayerSpawnHandler{
 	@SubscribeEvent

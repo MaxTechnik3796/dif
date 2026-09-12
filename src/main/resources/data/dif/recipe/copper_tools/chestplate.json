@@ -1,18 +1,18 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "show_notification": false,
-  "acceptMirrored": true,
-  "pattern": [
-    "# #",
-    "###",
-    "###"
-  ],
-  "key": {
-    "#": {
-      "tag": "c:ingots/copper"
-    }
-  },
-  "result": {
-    "id": "dif:copper_chestplate"
-  }
+	"type":"minecraft:crafting_shaped",
+	"show_notification":false,
+	"acceptMirrored":true,
+	"pattern":[
+		"# #",
+		"###",
+		"###"
+	],
+	"key":{
+		"#":{
+			"tag":"c:ingots/copper"
+		}
+	},
+	"result":{
+		"id":"dif:copper_chestplate"
+	}
 }

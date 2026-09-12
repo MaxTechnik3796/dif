@@ -1,28 +1,28 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ABA",
-    "CDC",
-    "AEA"
-  ],
-  "key": {
-    "A": {
-      "tag": "c:plates/nickel"
-    },
-    "B": {
-      "item": "minecraft:flint_and_steel"
-    },
-    "C": {
-      "tag": "c:dusts/redstone"
-    },
-    "D": {
-      "item": "minecraft:furnace"
-    },
-    "E": {
-      "item": "create:industrial_iron_block"
-    }
-  },
-  "result": {
-    "id": "dif:burning_generator"
-  }
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		"ABA",
+		"CDC",
+		"AEA"
+	],
+	"key":{
+		"A":{
+			"tag":"c:plates/nickel"
+		},
+		"B":{
+			"item":"minecraft:flint_and_steel"
+		},
+		"C":{
+			"tag":"c:dusts/redstone"
+		},
+		"D":{
+			"item":"minecraft:furnace"
+		},
+		"E":{
+			"item":"create:industrial_iron_block"
+		}
+	},
+	"result":{
+		"id":"dif:burning_generator"
+	}
 }

@@ -13,7 +13,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-
 public class NukeCraterHandler{
 	private static final TagKey<Block> C_STONES=BlockTags.create(ResourceLocation.fromNamespaceAndPath("c","stones"));
 	private static final TagKey<Block> NUKE_WATER_PLANTS=BlockTags.create(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"nuke_water_plants"));
@@ -29,19 +28,15 @@ public class NukeCraterHandler{
 	private static final BlockState AIR=Blocks.AIR.defaultBlockState();
 	private static final BlockState WATER=Blocks.WATER.defaultBlockState();
 	private static final int UPDATE_FLAGS=2|16|64;
-
 	private int currentShell=0, maxShell=(int)Math.ceil(SCORCH_RADIUS), shellFace=0, shellU=0, shellV=0;
 	private boolean debrisSpawned=false;
 	private final BlockPos.MutableBlockPos mutablePos=new BlockPos.MutableBlockPos();
-
 	public boolean tick(Level level,BlockPos center,double groundWaveRadius,RandomSource random){
 		if(level.isClientSide) return true;
-
 		if(!debrisSpawned){
 			debrisSpawned=true;
 			spawnDebris(level,center,random);
 		}
-
 		int targetShell=(int)Math.floor(groundWaveRadius);
 		int cx=center.getX(), cy=center.getY(), cz=center.getZ(), processed=0;
 		while(processed<BLOCKS_PER_TICK){
@@ -61,13 +56,52 @@ public class NukeCraterHandler{
 			}
 			int dx, dy, dz, uSize, vSize;
 			switch(shellFace){
-				case 0 -> { dy=-r+shellU; dz=-r+shellV; dx=r; uSize=2*r+1; vSize=2*r+1; }
-				case 1 -> { dy=-r+shellU; dz=-r+shellV; dx=-r; uSize=2*r+1; vSize=2*r+1; }
-				case 2 -> { dx=-(r-1)+shellU; dz=-r+shellV; dy=r; uSize=2*(r-1)+1; vSize=2*r+1; }
-				case 3 -> { dx=-(r-1)+shellU; dz=-r+shellV; dy=-r; uSize=2*(r-1)+1; vSize=2*r+1; }
-				case 4 -> { dx=-(r-1)+shellU; dy=-(r-1)+shellV; dz=r; uSize=2*(r-1)+1; vSize=2*(r-1)+1; }
-				case 5 -> { dx=-(r-1)+shellU; dy=-(r-1)+shellV; dz=-r; uSize=2*(r-1)+1; vSize=2*(r-1)+1; }
-				default -> { dx=dy=dz=0; uSize=vSize=0; }
+				case 0 -> {
+					dy=-r+shellU;
+					dz=-r+shellV;
+					dx=r;
+					uSize=2*r+1;
+					vSize=2*r+1;
+				}
+				case 1 -> {
+					dy=-r+shellU;
+					dz=-r+shellV;
+					dx=-r;
+					uSize=2*r+1;
+					vSize=2*r+1;
+				}
+				case 2 -> {
+					dx=-(r-1)+shellU;
+					dz=-r+shellV;
+					dy=r;
+					uSize=2*(r-1)+1;
+					vSize=2*r+1;
+				}
+				case 3 -> {
+					dx=-(r-1)+shellU;
+					dz=-r+shellV;
+					dy=-r;
+					uSize=2*(r-1)+1;
+					vSize=2*r+1;
+				}
+				case 4 -> {
+					dx=-(r-1)+shellU;
+					dy=-(r-1)+shellV;
+					dz=r;
+					uSize=2*(r-1)+1;
+					vSize=2*(r-1)+1;
+				}
+				case 5 -> {
+					dx=-(r-1)+shellU;
+					dy=-(r-1)+shellV;
+					dz=-r;
+					uSize=2*(r-1)+1;
+					vSize=2*(r-1)+1;
+				}
+				default -> {
+					dx=dy=dz=0;
+					uSize=vSize=0;
+				}
 			}
 			shellV++;
 			if(shellV>=vSize){
@@ -82,11 +116,9 @@ public class NukeCraterHandler{
 					}
 				}
 			}
-
 			double dxSq=(double)dx*dx, dzSq=(double)dz*dz;
 			double horizDistSq=dxSq+dzSq;
 			if(horizDistSq>SCORCH_RADIUS_SQ) continue;
-
 			double verFullSq, verTotalSq, dyEff;
 			if(dy>=0){
 				verFullSq=UP_FULL_SQ;
@@ -94,46 +126,41 @@ public class NukeCraterHandler{
 				dyEff=dy;
 			}else{
 				double horFrac=Math.sqrt(horizDistSq)/HOR_R_TOTAL;
-				dyEff=dy+horFrac*2.0;
+				dyEff=dy+horFrac*2;
 				verFullSq=DN_FULL_SQ;
 				verTotalSq=DN_TOTAL_SQ;
 			}
 			double dyEffSq=dyEff*dyEff;
 			double nTotal=dxSq/HOR_TOTAL_SQ+dyEffSq/verTotalSq+dzSq/HOR_TOTAL_SQ;
-
-			if(nTotal<=1.0){
+			if(nTotal<=1){
 				double nFull=dxSq/HOR_FULL_SQ+dyEffSq/verFullSq+dzSq/HOR_FULL_SQ;
 				boolean destroy;
-				if(nFull<=1.0){
+				if(nFull<=1)
 					destroy=true;
-				}else{
-					double t=(nFull-1.0)/((HOR_TOTAL_SQ/HOR_FULL_SQ)-1.0);
-					double chance=Math.max(0.15,1.0-t*0.80);
+				else{
+					double t=(nFull-1)/((HOR_TOTAL_SQ/HOR_FULL_SQ)-1.0);
+					double chance=Math.max(0.15,1-t*0.8);
 					destroy=random.nextDouble()<chance;
 				}
 				if(destroy){
 					destroyAt(level,cx+dx,cy+dy,cz+dz);
-					if(dy<-8){
+					if(dy<-8)
 						mutateFloorAt(level,cx+dx,cy+dy-1,cz+dz,random);
-					}
-				}else{
+				}else
 					thermalScorchAt(level,cx+dx,cy+dy,cz+dz,random);
-				}
-			}else if(dy>=-16&&dy<=28){
+			}else if(dy>=-16&&dy<=28)
 				thermalScorchAt(level,cx+dx,cy+dy,cz+dz,random);
-			}
 			processed++;
 		}
 		return false;
 	}
-
 	private void spawnDebris(Level level,BlockPos center,RandomSource random){
 		if(!(level instanceof ServerLevel sl)) return;
 		for(int i=0;i<45;i++){
-			BlockState debrisState = (random.nextFloat()<0.40F) ? Blocks.COBBLED_DEEPSLATE.defaultBlockState()
-					: (random.nextFloat()<0.40F) ? Blocks.BLACKSTONE.defaultBlockState()
-					: (random.nextFloat()<0.50F) ? Blocks.COBBLESTONE.defaultBlockState()
-					: Blocks.DIRT.defaultBlockState();
+			BlockState debrisState=(random.nextFloat()<0.40F)?Blocks.COBBLED_DEEPSLATE.defaultBlockState()
+					:(random.nextFloat()<0.40F)?Blocks.BLACKSTONE.defaultBlockState()
+					:(random.nextFloat()<0.50F)?Blocks.COBBLESTONE.defaultBlockState()
+					:Blocks.DIRT.defaultBlockState();
 			FallingBlockEntity falling=FallingBlockEntity.fall(sl,center.above(3),debrisState);
 			falling.time=1;
 			falling.dropItem=false;
@@ -143,12 +170,10 @@ public class NukeCraterHandler{
 			falling.setDeltaMovement(Math.cos(angle)*speed,vy,Math.sin(angle)*speed);
 		}
 	}
-
 	@SuppressWarnings("deprecation")
 	private static boolean isBlastResistant(BlockState state){
 		return state.getBlock().getExplosionResistance()>MAX_DESTROYABLE_RESISTANCE;
 	}
-
 	private void destroyAt(Level level,int x,int y,int z){
 		if(y<level.getMinBuildHeight()||y>=level.getMaxBuildHeight()) return;
 		mutablePos.set(x,y,z);
@@ -156,7 +181,6 @@ public class NukeCraterHandler{
 		if(state.isAir()||isBlastResistant(state)) return;
 		level.setBlock(mutablePos,AIR,UPDATE_FLAGS);
 	}
-
 	private void mutateFloorAt(Level level,int x,int y,int z,RandomSource random){
 		if(y<level.getMinBuildHeight()||y>=level.getMaxBuildHeight()) return;
 		mutablePos.set(x,y,z);
@@ -164,40 +188,34 @@ public class NukeCraterHandler{
 		if(state.isAir()||isBlastResistant(state)) return;
 		if(state.isSolidRender(level,mutablePos)){
 			float roll=random.nextFloat();
-			BlockState melted = roll<0.38F ? Blocks.COBBLED_DEEPSLATE.defaultBlockState()
-					: roll<0.68F ? Blocks.DEEPSLATE.defaultBlockState()
-					: roll<0.84F ? Blocks.BLACKSTONE.defaultBlockState()
-					: roll<0.94F ? Blocks.POLISHED_BLACKSTONE.defaultBlockState()
-					: Blocks.MAGMA_BLOCK.defaultBlockState();
+			BlockState melted=roll<0.38F?Blocks.COBBLED_DEEPSLATE.defaultBlockState()
+					:roll<0.68F?Blocks.DEEPSLATE.defaultBlockState()
+					:roll<0.84F?Blocks.BLACKSTONE.defaultBlockState()
+					:roll<0.94F?Blocks.POLISHED_BLACKSTONE.defaultBlockState()
+					:Blocks.MAGMA_BLOCK.defaultBlockState();
 			level.setBlock(mutablePos,melted,UPDATE_FLAGS);
 		}
 	}
-
 	private void thermalScorchAt(Level level,int x,int y,int z,RandomSource random){
 		if(y<level.getMinBuildHeight()||y>=level.getMaxBuildHeight()) return;
 		mutablePos.set(x,y,z);
 		BlockState state=level.getBlockState(mutablePos);
 		if(state.isAir()) return;
-
 		if(state.is(Blocks.WATER)) return;
-
 		if(state.is(NUKE_WATER_PLANTS)){
 			level.setBlock(mutablePos,WATER,UPDATE_FLAGS);
 			return;
 		}
-
 		if(state.is(BlockTags.SWORD_EFFICIENT)||state.is(BlockTags.REPLACEABLE_BY_TREES)
 				||state.is(BlockTags.ICE)||state.is(BlockTags.SNOW)){
 			level.setBlock(mutablePos,AIR,UPDATE_FLAGS);
 			return;
 		}
-
 		if(state.is(BlockTags.LOGS)){
 			BlockState charred=(random.nextFloat()<0.70F)?Blocks.POLISHED_BASALT.defaultBlockState():Blocks.BASALT.defaultBlockState();
 			level.setBlock(mutablePos,charred,UPDATE_FLAGS);
 			return;
 		}
-
 		if(state.is(BlockTags.DIRT)||state.is(Blocks.CLAY)){
 			float r=random.nextFloat();
 			BlockState dirt=(r<0.60F)?Blocks.COARSE_DIRT.defaultBlockState()
@@ -210,13 +228,11 @@ public class NukeCraterHandler{
 			}
 			return;
 		}
-
 		if(state.is(C_STONES)){
 			if(random.nextFloat()<0.10F){
 				level.setBlock(mutablePos,Blocks.COBBLESTONE.defaultBlockState(),UPDATE_FLAGS);
 			}
 		}
-
 		if(random.nextFloat()<0.08F&&state.isSolidRender(level,mutablePos)){
 			mutablePos.set(x,y+1,z);
 			if(level.getBlockState(mutablePos).isAir()){
@@ -224,7 +240,6 @@ public class NukeCraterHandler{
 			}
 		}
 	}
-
 	public void writeNbt(CompoundTag tag){
 		tag.putInt("CurrentShell",currentShell);
 		tag.putInt("MaxShell",maxShell);
@@ -233,7 +248,6 @@ public class NukeCraterHandler{
 		tag.putInt("ShellV",shellV);
 		tag.putBoolean("DebrisSpawned",debrisSpawned);
 	}
-
 	public void readNbt(CompoundTag tag){
 		currentShell=tag.getInt("CurrentShell");
 		maxShell=tag.getInt("MaxShell");

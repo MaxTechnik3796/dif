@@ -1,13 +1,13 @@
 {
-  "type": "create:pressing",
-  "ingredients": [
-    {
-      "tag": "c:ingots/nickel"
-    }
-  ],
-  "results": [
-    {
-      "id": "dif:nickel_sheet"
-    }
-  ]
+	"type":"create:pressing",
+	"ingredients":[
+		{
+			"tag":"c:ingots/nickel"
+		}
+	],
+	"results":[
+		{
+			"id":"dif:nickel_sheet"
+		}
+	]
 }

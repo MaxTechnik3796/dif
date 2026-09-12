@@ -18,10 +18,10 @@ public class PortalData extends SavedData{
 	public static PortalData get(ServerLevel serverLevel){
 		return serverLevel.getDataStorage().computeIfAbsent(new SavedData.Factory<>(PortalData::new,PortalData::load),"dif_portals");
 	}
-	public static PortalData load(CompoundTag t,HolderLookup.Provider provider){
+	public static PortalData load(CompoundTag tag,HolderLookup.Provider provider){
 		PortalData d=new PortalData();
-		t.getAllKeys().forEach(k->{
-			CompoundTag pt=t.getCompound(k);
+		tag.getAllKeys().forEach(k->{
+			CompoundTag pt=tag.getCompound(k);
 			Map<Boolean,BlockPos> m=new HashMap<>();
 			if(pt.contains("b")) NbtUtils.readBlockPos(pt,"b").ifPresent(pos->m.put(true,pos));
 			if(pt.contains("o")) NbtUtils.readBlockPos(pt,"o").ifPresent(pos->m.put(false,pos));
@@ -55,21 +55,18 @@ public class PortalData extends SavedData{
 		}
 	}
 	// Správa portálů – sjednocený lookup a lifecycle
-	/** Najde portál entity ve světě podle uloženého BlockPos. Sjednocuje původní findPortal i findLinkedPortal. */
-	public PortalEntity findEntity(ServerLevel sl, UUID owner, boolean isBlue){
+	public PortalEntity findEntity(ServerLevel sl,UUID owner,boolean isBlue){
 		BlockPos pos=getPos(owner,isBlue);
 		if(pos==null||!sl.isLoaded(pos)) return null;
 		List<PortalEntity> list=sl.getEntitiesOfClass(PortalEntity.class,new AABB(pos).inflate(2),
 				p->owner.equals(p.getOwner())&&p.isBlue()==isBlue);
 		return list.isEmpty()?null:list.getFirst();
 	}
-	/** Smaže existující portál entity a jeho data. */
 	public void removeOldPortal(ServerLevel sl,UUID owner,boolean isBlue){
 		PortalEntity existing=findEntity(sl,owner,isBlue);
 		if(existing!=null) existing.discard();
 		remove(owner,isBlue);
 	}
-	/** Aktualizuje isLinked stav obou portálů daného hráče. */
 	public void updateLinks(ServerLevel sl,UUID owner){
 		PortalEntity blue=findEntity(sl,owner,true);
 		PortalEntity orange=findEntity(sl,owner,false);

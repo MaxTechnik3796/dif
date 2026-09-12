@@ -1,31 +1,31 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ABA",
-    "CDC",
-    "EFE"
-  ],
-  "key": {
-    "A": {
-      "tag": "c:plates/mithril"
-    },
-    "B": {
-      "tag": "c:plates/brass"
-    },
-    "C": {
-      "tag": "c:ingots/nickel"
-    },
-    "D": {
-      "tag": "c:storage_blocks/redstone"
-    },
-    "E": {
-      "item": "create:industrial_iron_block"
-    },
-    "F": {
-      "item": "create:mechanical_drill"
-    }
-  },
-  "result": {
-    "id": "dif:quarry"
-  }
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		"ABA",
+		"CDC",
+		"EFE"
+	],
+	"key":{
+		"A":{
+			"tag":"c:plates/mithril"
+		},
+		"B":{
+			"tag":"c:plates/brass"
+		},
+		"C":{
+			"tag":"c:ingots/nickel"
+		},
+		"D":{
+			"tag":"c:storage_blocks/redstone"
+		},
+		"E":{
+			"item":"create:industrial_iron_block"
+		},
+		"F":{
+			"item":"create:mechanical_drill"
+		}
+	},
+	"result":{
+		"id":"dif:quarry"
+	}
 }

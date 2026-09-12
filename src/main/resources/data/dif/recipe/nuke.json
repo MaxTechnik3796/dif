@@ -1,42 +1,42 @@
 {
-  "type": "create:mechanical_crafting",
-  "accept_mirrored": true,
-  "key": {
-    "A": {
-      "tag": "c:storage_blocks/nickel"
-    },
-    "B": {
-      "tag": "c:plates/brass"
-    },
-    "C": {
-      "tag": "c:ingots/nickel"
-    },
-    "D": {
-      "item": "create:industrial_iron_block"
-    },
-    "E": {
-      "tag": "c:plates/mithril"
-    },
-    "F": {
-      "tag": "c:ingots/netherite"
-    },
-    "G": {
-      "item": "minecraft:tnt"
-    },
-    "H": {
-      "tag": "c:nether_stars"
-    }
-  },
-  "pattern": [
-    "  ABA  ",
-    " CDEDC ",
-    "ADFGFDA",
-    "BEGHGEB",
-    "ADFGFDA",
-    " CDEDC ",
-    "  ABA  "
-  ],
-  "result": {
-    "id": "dif:nuke"
-  }
+	"type":"create:mechanical_crafting",
+	"accept_mirrored":true,
+	"key":{
+		"A":{
+			"tag":"c:storage_blocks/nickel"
+		},
+		"B":{
+			"tag":"c:plates/brass"
+		},
+		"C":{
+			"tag":"c:ingots/nickel"
+		},
+		"D":{
+			"item":"create:industrial_iron_block"
+		},
+		"E":{
+			"tag":"c:plates/mithril"
+		},
+		"F":{
+			"tag":"c:ingots/netherite"
+		},
+		"G":{
+			"item":"minecraft:tnt"
+		},
+		"H":{
+			"tag":"c:nether_stars"
+		}
+	},
+	"pattern":[
+		"  ABA  ",
+		" CDEDC ",
+		"ADFGFDA",
+		"BEGHGEB",
+		"ADFGFDA",
+		" CDEDC ",
+		"  ABA  "
+	],
+	"result":{
+		"id":"dif:nuke"
+	}
 }

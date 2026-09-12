@@ -10,13 +10,11 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.neoforged.neoforge.network.PacketDistributor;
-
 public class NukeSoundEffect{
 	// Konfigurace
 	private static final double MAX_DISTANCE=1024.0;
 	private static final double BLOCKS_PER_TICK=2.0;
 	private static final float VOLUME_SCALE=8.0f;
-
 	// pitch, volume, delayTicks
 	private static final float[][] PHASES={
 			{0.30f,10.0f,0},
@@ -24,20 +22,17 @@ public class NukeSoundEffect{
 			{0.35f,14.0f,8},
 			{0.22f,8.0f,22},
 	};
-
 	private static final SoundEvent[] SOUNDS={
 			SoundEvents.WARDEN_SONIC_BOOM,
 			SoundEvents.GENERIC_EXPLODE.value(),
 			SoundEvents.LIGHTNING_BOLT_THUNDER,
 			SoundEvents.WARDEN_ROAR,
 	};
-
 	// Hlavní metoda
 	public static void play(ServerLevel level,double x,double y,double z){
 		long currentTick=level.getServer().getTickCount();
 		for(ServerPlayer player: level.getPlayers(p->p.distanceToSqr(x,y,z)<MAX_DISTANCE*MAX_DISTANCE)){
 			PacketDistributor.sendToPlayer(player,new NukeDetonationMessage(x,y,z,1.0F));
-
 			double distance=Math.sqrt(player.distanceToSqr(x,y,z));
 			int travelDelay=(int)(distance/BLOCKS_PER_TICK);
 			for(int i=0;i<PHASES.length;i++){

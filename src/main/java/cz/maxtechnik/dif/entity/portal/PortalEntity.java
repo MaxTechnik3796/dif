@@ -59,9 +59,8 @@ public class PortalEntity extends Entity{
 	@Override
 	public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> key){
 		super.onSyncedDataUpdated(key);
-		if(DATA_FACING.equals(key)||DATA_UP_DIR.equals(key)){
+		if(DATA_FACING.equals(key)||DATA_UP_DIR.equals(key))
 			setBoundingBox(buildPortalAABB());
-		}
 	}
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder){
@@ -105,7 +104,7 @@ public class PortalEntity extends Entity{
 	}
 	// Bounding box
 	public AABB buildPortalAABB(){
-		double x=getX(),y=getY(),z=getZ();
+		double x=getX(), y=getY(), z=getZ();
 		Vec3 normal=dirVec(getFacing());
 		Vec3 upVec=dirVec(getUpDir());
 		Vec3 rightVec=normal.cross(upVec);
@@ -146,11 +145,11 @@ public class PortalEntity extends Entity{
 		long now=sl.getGameTime();
 		boolean allowNonPlayers=DifModServerConfig.PORTAL_ALLOW_ENTITIES.get();
 		int nonPlayerCount=0;
-		for(Entity e:sl.getEntitiesOfClass(Entity.class,box,entity->!(entity instanceof PortalEntity))){
+		for(Entity e: sl.getEntitiesOfClass(Entity.class,box,entity->!(entity instanceof PortalEntity))){
 			if(isOnCooldown(e.getUUID(),now)) continue;
-			if(e instanceof Player p){
-				teleport(p,sl,now,true);
-			}else if(allowNonPlayers&&nonPlayerCount<MAX_ENTITIES_PER_TICK){
+			if(e instanceof Player player)
+				teleport(player,sl,now,true);
+			else if(allowNonPlayers&&nonPlayerCount<MAX_ENTITIES_PER_TICK){
 				teleport(e,sl,now,false);
 				nonPlayerCount++;
 			}
@@ -220,9 +219,9 @@ public class PortalEntity extends Entity{
 	}
 	// Rotace a hybnost 3D
 	private static Vec3 transformVector(Vec3 vec,PortalEntity in,PortalEntity out){
-		Vec3 inN=dirVec(in.getFacing()),inU=dirVec(in.getUpDir()),inR=inN.cross(inU);
-		double cN=-vec.dot(inN),cU=vec.dot(inU),cR=vec.dot(inR);
-		Vec3 outN=dirVec(out.getFacing()),outU=dirVec(out.getUpDir()),outR=outN.cross(outU);
+		Vec3 inN=dirVec(in.getFacing()), inU=dirVec(in.getUpDir()), inR=inN.cross(inU);
+		double cN=-vec.dot(inN), cU=vec.dot(inU), cR=vec.dot(inR);
+		Vec3 outN=dirVec(out.getFacing()), outU=dirVec(out.getUpDir()), outR=outN.cross(outU);
 		return outN.scale(cN).add(outU.scale(cU)).add(outR.scale(cR));
 	}
 	private static Vec3 transformMotion(Vec3 vel,PortalEntity in,PortalEntity out){
@@ -283,18 +282,50 @@ public class PortalEntity extends Entity{
 		return false;
 	}
 	// Fyzická imunita
-	@Override public boolean isPickable(){ return !isRemoved(); }
-	@Override public boolean canCollideWith(@NotNull Entity entity){ return false; }
-	@Override public void push(@NotNull Entity entity){}
-	@Override public void push(double x,double y,double z){}
-	@Override public void setDeltaMovement(@NotNull Vec3 motion){ super.setDeltaMovement(Vec3.ZERO); }
-	@Override public void setDeltaMovement(double x,double y,double z){ super.setDeltaMovement(Vec3.ZERO); }
-	@Override public void move(@NotNull MoverType type,@NotNull Vec3 pos){}
-	@Override public @NotNull PushReaction getPistonPushReaction(){ return PushReaction.IGNORE; }
-	@Override public boolean isNoGravity(){ return true; }
-	@Override public boolean isPushedByFluid(@NotNull FluidType type){ return false; }
-	@Override public boolean ignoreExplosion(@NotNull Explosion explosion){ return true; }
-	@Override public void lerpTo(double x,double y,double z,float yRot,float xRot,int steps){}
+	@Override
+	public boolean isPickable(){
+		return !isRemoved();
+	}
+	@Override
+	public boolean canCollideWith(@NotNull Entity entity){
+		return false;
+	}
+	@Override
+	public void push(@NotNull Entity entity){
+	}
+	@Override
+	public void push(double x,double y,double z){
+	}
+	@Override
+	public void setDeltaMovement(@NotNull Vec3 motion){
+		super.setDeltaMovement(Vec3.ZERO);
+	}
+	@Override
+	public void setDeltaMovement(double x,double y,double z){
+		super.setDeltaMovement(Vec3.ZERO);
+	}
+	@Override
+	public void move(@NotNull MoverType type,@NotNull Vec3 pos){
+	}
+	@Override
+	public @NotNull PushReaction getPistonPushReaction(){
+		return PushReaction.IGNORE;
+	}
+	@Override
+	public boolean isNoGravity(){
+		return true;
+	}
+	@Override
+	public boolean isPushedByFluid(@NotNull FluidType type){
+		return false;
+	}
+	@Override
+	public boolean ignoreExplosion(@NotNull Explosion explosion){
+		return true;
+	}
+	@Override
+	public void lerpTo(double x,double y,double z,float yRot,float xRot,int steps){
+	}
 	// Utility
 	private static final Vec3[] DIR_VECS=Arrays.stream(Direction.values())
 			.map(d->new Vec3(d.getStepX(),d.getStepY(),d.getStepZ()))

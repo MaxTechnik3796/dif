@@ -17,14 +17,12 @@ import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 
 import java.awt.*;
-
 @EventBusSubscriber(modid=DifMod.MODID, value=Dist.CLIENT)
 public class ClientVisualEffectsRenderer{
 	private static boolean wasExperienceActive=false;
 	private static SoundInstance playingExperienceSound=null;
 	private static float nukeFlashIntensity=0.0F;
 	private static float nukeShakeIntensity=0.0F;
-
 	public static void triggerNukeEffects(double x,double y,double z,float intensity){
 		Minecraft mc=Minecraft.getInstance();
 		Player player=mc.player;
@@ -32,11 +30,10 @@ public class ClientVisualEffectsRenderer{
 		double dist=Math.sqrt(player.distanceToSqr(x,y,z));
 		if(dist<320.0){
 			float factor=(float)Math.max(0.0,1.0-(dist/320.0));
-			nukeFlashIntensity=Math.clamp(Math.max(nukeFlashIntensity, factor * intensity * 1.5F), 0.0F, 1.0F);
-			nukeShakeIntensity=Math.clamp(Math.max(nukeShakeIntensity, factor * intensity), 0.0F, 1.0F);
+			nukeFlashIntensity=Math.clamp(Math.max(nukeFlashIntensity,factor*intensity*1.5F),0.0F,1.0F);
+			nukeShakeIntensity=Math.clamp(Math.max(nukeShakeIntensity,factor*intensity),0.0F,1.0F);
 		}
 	}
-
 	@SubscribeEvent
 	public static void onClientTick(ClientTickEvent.Pre event){
 		Minecraft mc=Minecraft.getInstance();
@@ -69,7 +66,6 @@ public class ClientVisualEffectsRenderer{
 			nukeShakeIntensity=Math.max(0.0F,nukeShakeIntensity-0.015F);
 		}
 	}
-
 	@SubscribeEvent
 	public static void onCameraSetup(ViewportEvent.ComputeCameraAngles event){
 		Minecraft mc=Minecraft.getInstance();
@@ -92,7 +88,6 @@ public class ClientVisualEffectsRenderer{
 			event.setRoll(event.getRoll()+(float)(Math.sin(t*2.3)*shake*0.5));
 		}
 	}
-
 	@SubscribeEvent
 	public static void onRenderGuiOverlay(RenderGuiEvent.Post event){
 		Minecraft mc=Minecraft.getInstance();

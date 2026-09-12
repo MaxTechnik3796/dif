@@ -56,7 +56,6 @@ public class JetpackHandler{
 		if(fuel<=0) return;
 		UUID uid=player.getUUID();
 		lastFlyTick.put(uid,player.tickCount);
-
 		if(player.isShiftKeyDown()){
 			verticalVelocity.remove(uid);
 			Vec3 motion=player.getDeltaMovement();
@@ -69,7 +68,6 @@ public class JetpackHandler{
 			spawnParticles(player);
 			return;
 		}
-
 		float accel=MAX_VELOCITY/ACCEL_TICKS;
 		float curVel=verticalVelocity.getOrDefault(uid,0F);
 		curVel=Math.min(curVel+accel,MAX_VELOCITY);
@@ -118,15 +116,12 @@ public class JetpackHandler{
 			Jetpack.Chestplate.setMode(chest,2);
 			return;
 		}
-
 		UUID uid=player.getUUID();
 		boolean spaceDown=(player.tickCount-lastFlyTick.getOrDefault(uid,-99)<=1);
 		if(player.level().isClientSide()){
 			spaceDown=cz.maxtechnik.dif.init.other.DifModKeys.JETPACK_FLY.isDown();
 		}
-
 		if(spaceDown) return;
-
 		Vec3 motion=player.getDeltaMovement();
 		double newY=0;
 		if(player.isShiftKeyDown()) newY=-0.25;
@@ -152,7 +147,6 @@ public class JetpackHandler{
 		double vx=Math.sin(angle)*0.05;
 		double vy=-0.1;
 		double vz=-Math.cos(angle)*0.05;
-
 		if(player.level().isClientSide()){
 			player.level().addParticle(ParticleTypes.FLAME,bx,by,bz,vx,vy,vz);
 		}else if(player.level() instanceof ServerLevel sl){

@@ -1,26 +1,26 @@
 {
-  "type": "create:mechanical_crafting",
-  "accept_mirrored": true,
-  "key": {
-    "A": {
-      "item": "create:industrial_iron_block"
-    },
-    "B": {
-      "item": "dif:brass_barrel"
-    },
-    "C": {
-      "tag": "c:plates/mithril"
-    },
-    "D": {
-      "tag": "c:storage_blocks/iron"
-    }
-  },
-  "pattern": [
-    "ABA",
-    "CDC",
-    "ABA"
-  ],
-  "result": {
-    "id": "dif:super_box"
-  }
+	"type":"create:mechanical_crafting",
+	"accept_mirrored":true,
+	"key":{
+		"A":{
+			"item":"create:industrial_iron_block"
+		},
+		"B":{
+			"item":"dif:brass_barrel"
+		},
+		"C":{
+			"tag":"c:plates/mithril"
+		},
+		"D":{
+			"tag":"c:storage_blocks/iron"
+		}
+	},
+	"pattern":[
+		"ABA",
+		"CDC",
+		"ABA"
+	],
+	"result":{
+		"id":"dif:super_box"
+	}
 }

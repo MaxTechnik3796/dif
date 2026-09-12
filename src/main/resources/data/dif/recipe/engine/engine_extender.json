@@ -1,28 +1,28 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " A ",
-    "BCB",
-    "DED"
-  ],
-  "key": {
-    "A": {
-      "tag": "c:plates/mithril"
-    },
-    "B": {
-      "tag": "c:nuggets/iron"
-    },
-    "C": {
-      "item": "create:fluid_tank"
-    },
-    "D": {
-      "tag": "c:plates/nickel"
-    },
-    "E": {
-      "item": "dif:zinc_casing"
-    }
-  },
-  "result": {
-    "id": "dif:engine_extender"
-  }
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		" A ",
+		"BCB",
+		"DED"
+	],
+	"key":{
+		"A":{
+			"tag":"c:plates/mithril"
+		},
+		"B":{
+			"tag":"c:nuggets/iron"
+		},
+		"C":{
+			"item":"create:fluid_tank"
+		},
+		"D":{
+			"tag":"c:plates/nickel"
+		},
+		"E":{
+			"item":"dif:zinc_casing"
+		}
+	},
+	"result":{
+		"id":"dif:engine_extender"
+	}
 }
