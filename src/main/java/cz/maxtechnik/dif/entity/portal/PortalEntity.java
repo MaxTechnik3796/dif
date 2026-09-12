@@ -106,19 +106,22 @@ public class PortalEntity extends Entity{
 		double x=getX(), y=getY(), z=getZ();
 		Direction facing=getFacing();
 		Direction up=getUpDir();
+		Vec3 normal=dirVec(facing);
 		Vec3 upVec=dirVec(up);
-		Vec3 rightVec=dirVec(facing).cross(upVec);
+		Vec3 rightVec=normal.cross(upVec);
 		// Tenká deska: 1/16 bloku tlustá, 1 blok široká, 2 bloky vysoká
-		double pixelInset=0.01/16.0;
-		Vec3 halfThick=dirVec(facing).scale(0.03125);
-		Vec3 halfWidth=rightVec.scale(0.5-pixelInset);
-		Vec3 halfHeight=upVec.scale(1.0-pixelInset);
-		double minX=x-Math.abs(halfThick.x)-Math.abs(halfWidth.x)-Math.abs(halfHeight.x);
-		double maxX=x+Math.abs(halfThick.x)+Math.abs(halfWidth.x)+Math.abs(halfHeight.x);
-		double minY=y-Math.abs(halfThick.y)-Math.abs(halfWidth.y)-Math.abs(halfHeight.y);
-		double maxY=y+Math.abs(halfThick.y)+Math.abs(halfWidth.y)+Math.abs(halfHeight.y);
-		double minZ=z-Math.abs(halfThick.z)-Math.abs(halfWidth.z)-Math.abs(halfHeight.z);
-		double maxZ=z+Math.abs(halfThick.z)+Math.abs(halfWidth.z)+Math.abs(halfHeight.z);
+		// Bounding box se rozšiřuje od povrchu stěny dopředu do prostoru, ne dovnitř do bloku
+		double inset=0.005;
+		double thickness=0.0625;
+		Vec3 thickVec=normal.scale(thickness);
+		Vec3 halfWidth=rightVec.scale(0.5-inset);
+		Vec3 halfHeight=upVec.scale(1.0-inset);
+		double minX=x+Math.min(0,thickVec.x)-Math.abs(halfWidth.x)-Math.abs(halfHeight.x);
+		double maxX=x+Math.max(0,thickVec.x)+Math.abs(halfWidth.x)+Math.abs(halfHeight.x);
+		double minY=y+Math.min(0,thickVec.y)-Math.abs(halfWidth.y)-Math.abs(halfHeight.y);
+		double maxY=y+Math.max(0,thickVec.y)+Math.abs(halfWidth.y)+Math.abs(halfHeight.y);
+		double minZ=z+Math.min(0,thickVec.z)-Math.abs(halfWidth.z)-Math.abs(halfHeight.z);
+		double maxZ=z+Math.max(0,thickVec.z)+Math.abs(halfWidth.z)+Math.abs(halfHeight.z);
 		return new AABB(minX,minY,minZ,maxX,maxY,maxZ);
 	}
 	@Override

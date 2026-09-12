@@ -140,7 +140,7 @@ public class PortalGun extends Item{
 		double[] tryR={offR,cR};
 		for(double u: tryU){
 			for(double r: tryR){
-				Vec3 pos=normal.scale(nVal+0.02).add(up.scale(u)).add(right.scale(r));
+				Vec3 pos=normal.scale(nVal+0.005).add(up.scale(u)).add(right.scale(r));
 				if(isValidPortalPos(world,pos,extDir,face)) return pos;
 			}
 		}
