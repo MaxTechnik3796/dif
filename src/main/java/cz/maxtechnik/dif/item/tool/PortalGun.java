@@ -29,6 +29,7 @@ public class PortalGun extends Item{
 		super(new Properties().stacksTo(1));
 	}
 	// NBT helpers
+	@SuppressWarnings("deprecation")
 	private CompoundTag readTag(ItemStack gun){
 		CustomData data=gun.get(DataComponents.CUSTOM_DATA);
 		return data!=null?data.getUnsafe():new CompoundTag();

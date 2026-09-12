@@ -309,14 +309,6 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity {
 		return fuel;
 	}
 
-	public FuelType scanExtenders() {
-		return getFuelType();
-	}
-
-	public int countExtenders() {
-		return cachedExtenders;
-	}
-
 	public boolean isEngineExtender(BlockPos pos) {
 		if (level == null || !level.isLoaded(pos)) return false;
 		return level.getBlockState(pos).getBlock() instanceof EngineExtender;

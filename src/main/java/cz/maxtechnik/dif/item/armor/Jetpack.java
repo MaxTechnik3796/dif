@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-@SuppressWarnings("removal")
+@SuppressWarnings({"removal","deprecation"})
 public abstract class Jetpack extends ArmorItem{
 	public static int getCapacity(){
 		return cz.maxtechnik.dif.config.DifModServerConfig.JETPACK_CAPACITY.get();
