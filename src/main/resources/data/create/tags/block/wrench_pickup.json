@@ -27,6 +27,7 @@
 		"dif:big_girder",
 		"#dif:engines",
 		"#dif:engine_extenders",
-		"dif:super_box"
+		"dif:super_box",
+		"dif:nuke"
 	]
 }
