@@ -119,7 +119,7 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>BROKEN_TRACK02=REGISTRY.register("broken_track02",BrokenTrack::new);
 
 	//nuke
-	public static final DeferredBlock<Block> NUKE= REGISTRY.register("nuke",()->new Nuke(BlockBehaviour.Properties.of().strength(5F,1200F).sound(SoundType.METAL).noOcclusion()));
+	public static final DeferredBlock<Block> NUKE= REGISTRY.register("nuke",()->new Nuke(BlockBehaviour.Properties.of().strength(5F,1200F).sound(SoundType.METAL).noOcclusion().requiresCorrectToolForDrops()));
 
 
 	public static final DeferredBlock<Block>BIG_GIRDER=REGISTRY.register("big_girder",()->new RotatedPillarBlock(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops().strength(4F,5F)));

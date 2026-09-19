@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static cz.maxtechnik.dif.DifMod.goggleTooltipFix;
+@SuppressWarnings("unchecked")
 public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 	public static final int MAX_FOOTPRINT=3;
 	public static final int MAX_OUTPUTS=15;
