@@ -25,7 +25,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -36,7 +35,7 @@ public class SuperBox extends Block implements SimpleWaterloggedBlock, EntityBlo
 	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
 	public static final BooleanProperty WATERLOGGED=BlockStateProperties.WATERLOGGED;
 	public SuperBox(){
-		super(Properties.of().sound(SoundType.ANVIL).strength(2.5F,20F).requiresCorrectToolForDrops().noOcclusion().isRedstoneConductor((bs,br,bp)->false).pushReaction(PushReaction.BLOCK));
+		super(Properties.of().sound(SoundType.ANVIL).strength(2.5F,20F).requiresCorrectToolForDrops().noOcclusion().isRedstoneConductor((bs,br,bp)->false));
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING,Direction.NORTH).setValue(WATERLOGGED,false));
 	}
 	@Override
