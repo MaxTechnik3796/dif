@@ -19,9 +19,10 @@ import java.util.Objects;
 
 import static cz.maxtechnik.dif.DifMod.addItemStacksBehind;
 import static cz.maxtechnik.dif.init.basic.DifModItems.*;
+import static cz.maxtechnik.dif.init.fluid.DifModFluids.*;
 @SuppressWarnings("unused")
 public class DifModTabs{
-	public static final DeferredRegister<CreativeModeTab>REGISTER=DeferredRegister.create(Registries.CREATIVE_MODE_TAB,DifMod.MODID);
+	public static final DeferredRegister<CreativeModeTab> REGISTER=DeferredRegister.create(Registries.CREATIVE_MODE_TAB,DifMod.MODID);
 	public static final DeferredHolder<CreativeModeTab,CreativeModeTab> MAIN=REGISTER.register("main",()->CreativeModeTab.builder().title(Component.translatable("creative_tab.dif.main")).icon(()->new ItemStack(THE_DIFFERENTIAL.get())).displayItems(((parameters,tabData)->{
 		tabData.accept(THE_DIFFERENTIAL);
 		tabData.accept(MEGA_TORCH);
@@ -29,60 +30,43 @@ public class DifModTabs{
 		tabData.accept(JETPACK);
 		tabData.accept(CHUNK_LOADER);
 		tabData.accept(NUKE);
-
 		tabData.accept(FAST_POWERED_RAIL);
 		tabData.accept(FAST_RAIL);
-
 		tabData.accept(EVENT_BUS);
 		tabData.accept(VENT);
-
 		tabData.accept(ANDESITE_LATTICE);
 		tabData.accept(ANDESITE_WINDOW);
 		tabData.accept(SUPER_BOX);
 		if(ModList.get().isLoaded("farmersdelight")) tabData.accept(FRYING_TABLE);
-
 		tabData.accept(MITHRIL);
 		tabData.accept(MITHRIL_PLATE);
 		tabData.accept(MITHRIL_TEMPLATE);
 		tabData.accept(BLUESTONE);
 		tabData.accept(BLUE_PLATE);
 		tabData.accept(NICKEL_SHEET);
-
 	})).build());
-	public static final DeferredHolder<CreativeModeTab,CreativeModeTab>INDUSTRIAL=REGISTER.register("industrial",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.industrials")).icon(()->new ItemStack(ENGINE_EXTENDER.get())).displayItems(((parameters,tabData)->{
-
+	public static final DeferredHolder<CreativeModeTab,CreativeModeTab> INDUSTRIAL=REGISTER.register("industrial",()->CreativeModeTab.builder().withTabsBefore(DifModTabs.MAIN.getKey()).title(Component.translatable("creative_tab.dif.industrials")).icon(()->new ItemStack(ENGINE_EXTENDER.get())).displayItems(((parameters,tabData)->{
 		tabData.accept(DISTILLATION_TANK);
 		tabData.accept(MITHRIL_FLUID_TANK);
-
 		tabData.accept(ENGINE_BASE);
 		tabData.accept(ENGINE_PORTABLE);
 		tabData.accept(ENGINE_EXTENDER);
-
 		tabData.accept(ZINC_CASING);
 		tabData.accept(BIG_GIRDER);
-
 		tabData.accept(QUARRY);
 		tabData.accept(QUARRY_FRAME);
 		tabData.accept(QUARRY_LANDMARK);
-
 		tabData.accept(BURNING_GENERATOR);
-
 		tabData.accept(COPPER_SUPPORT);
 		tabData.accept(ZINC_SUPPORT);
 		tabData.accept(BRASS_SUPPORT);
-
 		tabData.accept(WOODEN_FRAME);
-
 		tabData.accept(NANO_GLASS);
-
 		tabData.accept(SOLAR_PANEL_00);
 		tabData.accept(SOLAR_PANEL_01);
-
 		tabData.accept(SOLAR_PANEL_00_W);
 		tabData.accept(SOLAR_PANEL_01_W);
-
 	})).build());
-
 	public static void addCreative(BuildCreativeModeTabContentsEvent tabData){
 		if(tabData.getTabKey().equals(CreativeModeTabs.BUILDING_BLOCKS)){
 			tabData.insertAfter(new ItemStack(Items.SMOOTH_STONE),new ItemStack(SMOOTH_STONE_DOUBLE_SLAB.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
@@ -157,7 +141,6 @@ public class DifModTabs{
 							new ItemStack(PHANTOM_RING.get()),
 							new ItemStack(MAGNET.get())
 					});
-
 			addItemStacksBehind(tabData,new ItemStack(Items.STONE_HOE),
 					new ItemStack[]{
 							new ItemStack(COPPER_SHOVEL.get()),
@@ -165,22 +148,22 @@ public class DifModTabs{
 							new ItemStack(COPPER_AXE.get()),
 							new ItemStack(COPPER_HOE.get())
 					});
-			List<ItemStack> buckets = new ArrayList<>(Arrays.asList(
-					new ItemStack(BEER_BUCKET.get()),
-					new ItemStack(XP_BUCKET.get()),
-					new ItemStack(JETPACK_FUEL_BUCKET.get())
+			List<ItemStack> buckets=new ArrayList<>(Arrays.asList(
+					new ItemStack(BEER.bucket.get()),
+					new ItemStack(XP.bucket.get()),
+					new ItemStack(JETPACK_FUEL.bucket.get())
 			));
 			if(ModList.get().isLoaded("farmersdelight"))
-				buckets.add(new ItemStack(SUNFLOWER_OIL_BUCKET.get()));
+				buckets.add(new ItemStack(SUNFLOWER_OIL.bucket.get()));
 			buckets.addAll(Arrays.asList(
-					new ItemStack(CRUDE_OIL_BUCKET.get()),
-					new ItemStack(LPG_BUCKET.get()),
-					new ItemStack(GASOLINE_BUCKET.get()),
-					new ItemStack(DIESEL_BUCKET.get()),
-					new ItemStack(LUBRICATING_OIL_BUCKET.get()),
-					new ItemStack(HEAVY_FUEL_OIL_BUCKET.get())
+					new ItemStack(CRUDE_OIL.bucket.get()),
+					new ItemStack(LPG.bucket.get()),
+					new ItemStack(GASOLINE.bucket.get()),
+					new ItemStack(DIESEL.bucket.get()),
+					new ItemStack(LUBRICATING_OIL.bucket.get()),
+					new ItemStack(HEAVY_FUEL_OIL.bucket.get())
 			));
-			addItemStacksBehind(tabData, new ItemStack(Items.LAVA_BUCKET), buckets.toArray(new ItemStack[0]));
+			addItemStacksBehind(tabData,new ItemStack(Items.LAVA_BUCKET),buckets.toArray(new ItemStack[0]));
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.COMBAT)){
 			tabData.insertAfter(new ItemStack(Items.STONE_SWORD),new ItemStack(COPPER_SWORD.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			tabData.insertAfter(new ItemStack(Items.STONE_AXE),new ItemStack(COPPER_AXE.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
@@ -209,7 +192,7 @@ public class DifModTabs{
 							new ItemStack(COPPER_BOOTS.get())
 					});
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.FOOD_AND_DRINKS)){
-			if (ModList.get().isLoaded("farmersdelight")) {
+			if(ModList.get().isLoaded("farmersdelight")){
 				tabData.insertAfter(new ItemStack(Items.POISONOUS_POTATO),new ItemStack(FRIES.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 				addItemStacksBehind(tabData,new ItemStack(Items.BREAD),
 						new ItemStack[]{
@@ -233,8 +216,8 @@ public class DifModTabs{
 						});
 			}
 			addItemStacksBehind(tabData,new ItemStack(Items.MILK_BUCKET),
-					new ItemStack[]{   
-							new ItemStack(BEER.get()),
+					new ItemStack[]{
+							new ItemStack(BEER_BOTTLE.get()),
 					});
 			tabData.accept(BOTTLE_OF_MOLOTOVUV_KOKTEJL);
 			tabData.accept(EXPERIENCE_DRINK);
@@ -251,7 +234,6 @@ public class DifModTabs{
 			tabData.accept(LAVA);
 			tabData.accept(FIRE);
 			tabData.accept(INCOMPLETE_UNIVERSAL);
-
 		}else if(tabData.getTabKey().location().getNamespace().equals("farmersdelight")){
 			Item strawBale=BuiltInRegistries.ITEM.get(ResourceLocation.parse("farmersdelight:straw_bale"));
 			if(strawBale!=Items.AIR) tabData.insertAfter(new ItemStack(strawBale),new ItemStack(TREE_BARK_BLOCK.get()),CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);

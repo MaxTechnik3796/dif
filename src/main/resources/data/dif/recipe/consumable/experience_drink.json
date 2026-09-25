@@ -6,7 +6,7 @@
 		},
 		{
 			"type":"neoforge:single",
-			"fluid":"dif:xp_fluid",
+			"fluid":"dif:xp",
 			"amount":250
 		}
 	],

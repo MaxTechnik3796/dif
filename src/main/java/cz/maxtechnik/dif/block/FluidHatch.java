@@ -122,7 +122,7 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		int currentTotal=getActualPlayerXP(player);
 		int toInsert=insertAll?currentTotal:(currentTotal-totalXpForLevel(player.experienceLevel)>0?currentTotal-totalXpForLevel(player.experienceLevel):(player.experienceLevel>0?totalXpForLevel(player.experienceLevel)-totalXpForLevel(player.experienceLevel-1):0));
 		if(toInsert<=0) return;
-		int filled=cap.fill(new FluidStack(DifModFluids.XP.get(),toInsert),IFluidHandler.FluidAction.EXECUTE);
+		int filled=cap.fill(new FluidStack(DifModFluids.XP.source.get(),toInsert),IFluidHandler.FluidAction.EXECUTE);
 		if(filled>0) player.giveExperiencePoints(-filled);
 	}
 	private void handleXpExtraction(Level world,BlockPos hatchPos,BlockState blockState,Player player,int levelsRequested){
@@ -130,7 +130,7 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		if(cap==null) return;
 		int neededXP=totalXpForLevel(player.experienceLevel+levelsRequested)-getActualPlayerXP(player);
 		if(neededXP<=0) return;
-		FluidStack drained=cap.drain(new FluidStack(DifModFluids.XP.get(),neededXP),IFluidHandler.FluidAction.EXECUTE);
+		FluidStack drained=cap.drain(new FluidStack(DifModFluids.XP.source.get(),neededXP),IFluidHandler.FluidAction.EXECUTE);
 		if(drained.getAmount()>0) player.giveExperiencePoints(drained.getAmount());
 	}
 	private static int totalXpForLevel(int level){

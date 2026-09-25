@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.block;
 
 import cz.maxtechnik.dif.block.entity.FryingTableBlockEntity;
-import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -165,8 +164,8 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 		BlockEntity blockEntity=world.getBlockEntity(pos);
 		if(!(blockEntity instanceof FryingTableBlockEntity be)) return InteractionResult.PASS;
 		ItemStack handItem=player.getMainHandItem();
-		if(handItem.is(DifModItems.SUNFLOWER_OIL_BUCKET.get())){
-			int accepted=be.fluidTank.fill(new FluidStack(DifModFluids.SUNFLOWER_OIL.get(),1000),IFluidHandler.FluidAction.EXECUTE);
+		if(handItem.is(DifModFluids.SUNFLOWER_OIL.bucket.get())){
+			int accepted=be.fluidTank.fill(new FluidStack(DifModFluids.SUNFLOWER_OIL.source.get(),1000),IFluidHandler.FluidAction.EXECUTE);
 			if(accepted>0){
 				if(!player.getAbilities().instabuild)
 					player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND,new ItemStack(net.minecraft.world.item.Items.BUCKET));
@@ -179,7 +178,7 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 			FluidStack drained=be.fluidTank.drain(1000,IFluidHandler.FluidAction.SIMULATE);
 			if(drained.getAmount()==1000){
 				be.fluidTank.drain(1000,IFluidHandler.FluidAction.EXECUTE);
-				ItemStack oilBucket=new ItemStack(DifModItems.SUNFLOWER_OIL_BUCKET.get());
+				ItemStack oilBucket=new ItemStack(DifModFluids.SUNFLOWER_OIL.bucket.get());
 				if(!player.getAbilities().instabuild){
 					handItem.shrink(1);
 					if(handItem.isEmpty())

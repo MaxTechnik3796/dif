@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.ponder;
 
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
-import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.ponder.util.Type;
 import net.createmod.catnip.math.Pointing;
@@ -32,8 +31,8 @@ public class PortableEngine{
 		scene.idle(5);
 		narrate(scene,"Fuel is supplied from any open side of the Engine Base.",util.vector().centerOf(3,1,3));
 		scene.idle(4);
-		showItem(scene,util,new BlockPos(1,2,6),new ItemStack(DifModItems.GASOLINE_BUCKET.get()),Pointing.DOWN,5);
-		fillFluidTank(scene,new BlockPos(1,1,6),new FluidStack(DifModFluids.GASOLINE.get(),16000));
+		showItem(scene,util,new BlockPos(1,2,6),new ItemStack(DifModFluids.GASOLINE.bucket.get()),Pointing.DOWN,5);
+		fillFluidTank(scene,new BlockPos(1,1,6),new FluidStack(DifModFluids.GASOLINE.source.get(),16000));
 		applyKineticSpeedAt(scene,util,util.select().position(2,1,6),32);
 		scene.world().propagatePipeChange(new BlockPos(2,1,6));
 		scene.idle(8);

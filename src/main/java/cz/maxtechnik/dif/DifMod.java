@@ -12,7 +12,6 @@ import cz.maxtechnik.dif.init.basic.DifModSounds;
 import cz.maxtechnik.dif.init.basic.DifModTabs;
 import cz.maxtechnik.dif.init.events.ChunkLoaderData;
 import cz.maxtechnik.dif.init.events.JetpackHandler;
-import cz.maxtechnik.dif.init.fluid.DifModFluidTypes;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import cz.maxtechnik.dif.init.other.*;
@@ -73,7 +72,6 @@ public class DifMod{
 	public static final String MODID="dif";
 	public static final Logger LOGGER=LogUtils.getLogger();
 	public DifMod(IEventBus bus,ModContainer modContainer){
-		// Registrace modulů
 		DifModBlocks.REGISTRY.register(bus);
 		DifModItems.REGISTRY.register(bus);
 		DifModItems.V_REGISTRY.register(bus);
@@ -82,8 +80,6 @@ public class DifMod{
 		DifModMobEffects.REGISTRY.register(bus);
 		DifModBlockEntities.REGISTRY.register(bus);
 		DifModMenus.REGISTRY.register(bus);
-		DifModFluids.REGISTRY.register(bus);
-		DifModFluidTypes.REGISTRY.register(bus);
 		DifModRecipes.REGISTRY.register(bus);
 		DifModRecipes.TYPE_REGISTRY.register(bus);
 		DifModEntities.REGISTRY.register(bus);
@@ -91,7 +87,10 @@ public class DifMod{
 		DifModLootModifiers.REGISTRY.register(bus);
 		DifModComponents.REGISTRY.register(bus);
 		DifModParticles.REGISTRY.register(bus);
-		// REGISTRACE EVENTŮ
+		DifModFluids.ITEMS.register(bus);
+		DifModFluids.FLUIDS.register(bus);
+		DifModFluids.TYPES.register(bus);
+		DifModFluids.BLOCKS.register(bus);
 		NeoForge.EVENT_BUS.register(this);
 		NeoForge.EVENT_BUS.register(JetpackHandler.class);
 		bus.addListener(DifModTabs::addCreative);

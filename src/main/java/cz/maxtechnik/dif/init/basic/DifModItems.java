@@ -1,7 +1,6 @@
 package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModFoods;
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.DistillationTankItem;
@@ -85,20 +84,6 @@ public class DifModItems{
 	//Jetpack
 	public static final DeferredItem<Item> JETPACK=REGISTRY.register("jetpack",Jetpack.Chestplate::new);
 
-	//Fluid:
-	public static final Item.Properties BUCKET_PROPERTIES=new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1);
-	public static final DeferredItem<Item> BEER_BUCKET=REGISTRY.register("beer_bucket",()->new BucketItem(DifModFluids.BEER.get(),BUCKET_PROPERTIES));
-	public static final DeferredItem<Item> XP_BUCKET=REGISTRY.register("xp_bucket",()->new BucketItem(DifModFluids.XP.get(),BUCKET_PROPERTIES));
-	public static final DeferredItem<Item>CRUDE_OIL_BUCKET=REGISTRY.register("crude_oil_bucket",()->new BucketItem(DifModFluids.CRUDE_OIL.get(),BUCKET_PROPERTIES));
-	public static final DeferredItem<Item>JETPACK_FUEL_BUCKET=REGISTRY.register("jetpack_fuel_bucket",()->new BucketItem(DifModFluids.JETPACK_FUEL.get(),BUCKET_PROPERTIES));
-	public static final DeferredItem<Item>SUNFLOWER_OIL_BUCKET=REGISTRY.register("sunflower_oil_bucket",()->new BucketItem(DifModFluids.SUNFLOWER_OIL.get(),BUCKET_PROPERTIES));
-
-	public static final DeferredItem<Item>LPG_BUCKET=REGISTRY.register("lpg_bucket",()->new BucketItem(DifModFluids.LPG.get(),BUCKET_PROPERTIES));
-	public static final DeferredItem<Item>GASOLINE_BUCKET=REGISTRY.register("gasoline_bucket",()->new BucketItem(DifModFluids.GASOLINE.get(),BUCKET_PROPERTIES));
-	public static final DeferredItem<Item>DIESEL_BUCKET=REGISTRY.register("diesel_bucket",()->new BucketItem(DifModFluids.DIESEL.get(),BUCKET_PROPERTIES));
-	public static final DeferredItem<Item>LUBRICATING_OIL_BUCKET=REGISTRY.register("lubricating_oil_bucket",()->new BucketItem(DifModFluids.LUBRICATING_OIL.get(),BUCKET_PROPERTIES));
-	public static final DeferredItem<Item>HEAVY_FUEL_OIL_BUCKET=REGISTRY.register("heavy_fuel_oil_bucket",()->new BucketItem(DifModFluids.HEAVY_FUEL_OIL.get(),BUCKET_PROPERTIES));
-
 	//Vanilla + :
 	public static final DeferredItem<Item> END_PORTAL=V_REGISTRY.register("end_portal",()->new BlockItem(Blocks.END_PORTAL,new Item.Properties()));
 	public static final DeferredItem<Item> END_GATEWAY=V_REGISTRY.register("end_gateway",()->new BlockItem(Blocks.END_GATEWAY,new Item.Properties()));
@@ -108,7 +93,7 @@ public class DifModItems{
 	public static final DeferredItem<Item> FIRE=V_REGISTRY.register("fire",()->new BlockItem(Blocks.FIRE,new Item.Properties().fireResistant()));
 
 	//Food:
-	public static final DeferredItem<Item> BEER=REGISTRY.register("beer",()->new Beer(DifModBlocks.BEER.get(),new Item.Properties().food(DifModFoods.BEER)));
+	public static final DeferredItem<Item> BEER_BOTTLE=REGISTRY.register("beer_bottle",()->new Beer(DifModBlocks.BEER_BOTTLE.get(),new Item.Properties().food(DifModFoods.BEER_BOTTLE)));
 
 	public static final DeferredItem<Item> BOTTLE_OF_MOLOTOVUV_KOKTEJL=REGISTRY.register("bottle_of_molotovuv_koktejl",MolotovuvKoktejl::new);
 	public static final DeferredItem<Item> EXPERIENCE_DRINK=REGISTRY.register("experience_drink",ExperienceDrink::new);

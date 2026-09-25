@@ -115,7 +115,7 @@ public abstract class Jetpack extends ArmorItem{
 			public @NotNull FluidStack getFluidInTank(int tank){
 				int amount=getThrust(container);
 				if(amount<=0) return FluidStack.EMPTY;
-				return new FluidStack(DifModFluids.JETPACK_FUEL.get(),amount);
+				return new FluidStack(DifModFluids.JETPACK_FUEL.source.get(),amount);
 			}
 			@Override
 			public int getTankCapacity(int tank){
@@ -123,7 +123,7 @@ public abstract class Jetpack extends ArmorItem{
 			}
 			@Override
 			public boolean isFluidValid(int tank,@NotNull FluidStack stack){
-				return stack.getFluid()==DifModFluids.JETPACK_FUEL.get();
+				return stack.getFluid()==DifModFluids.JETPACK_FUEL.source.get();
 			}
 			@Override
 			public int fill(FluidStack resource,IFluidHandler.@NotNull FluidAction action){
@@ -145,7 +145,7 @@ public abstract class Jetpack extends ArmorItem{
 				int drained=Math.min(current,maxDrain);
 				if(drained<=0) return FluidStack.EMPTY;
 				if(action.execute()) setThrust(container,current-drained);
-				return new FluidStack(DifModFluids.JETPACK_FUEL.get(),drained);
+				return new FluidStack(DifModFluids.JETPACK_FUEL.source.get(),drained);
 			}
 		}
 		// Bar ukazuje naplnění

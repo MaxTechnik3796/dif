@@ -1,5 +1,5 @@
 {
 	"parent":"neoforge:item/bucket_drip",
 	"loader":"neoforge:fluid_container",
-	"fluid":"dif:lubricating_oil_fluid"
+	"fluid":"dif:lubricating_oil"
 }

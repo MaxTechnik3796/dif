@@ -9,7 +9,6 @@ import cz.maxtechnik.dif.block.barrel.CopperBarrel;
 import cz.maxtechnik.dif.block.rails.FastPoweredRailBlock;
 import cz.maxtechnik.dif.block.rails.FastRailBlock;
 import cz.maxtechnik.dif.block.template.*;
-import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -50,25 +49,10 @@ public class DifModBlocks{
 	public static final DeferredBlock<Block>QUARRY=REGISTRY.register("quarry",()->new Quarry(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5F,6F).pushReaction(PushReaction.BLOCK).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block>QUARRY_FRAME=REGISTRY.register("quarry_frame",QuarryFrame::new);
 	public static final DeferredBlock<Block>QUARRY_LANDMARK=REGISTRY.register("quarry_landmark",QuarryLandmark::new);
-
-	//Fluids:
-	public static final BlockBehaviour.Properties FLUID_PROPERTIES=BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable();
-	public static final DeferredBlock<Block>BEER_FLUID=REGISTRY.register("beer_fluid",()->new LiquidBlock(DifModFluids.BEER.get(),FLUID_PROPERTIES));
-	public static final DeferredBlock<Block>XP_FLUID=REGISTRY.register("xp_fluid",()->new LiquidBlock(DifModFluids.XP.get(),BlockBehaviour.Properties.of().strength(100F).noCollission().noLootTable().liquid().pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable().lightLevel(s->15)));
-	public static final DeferredBlock<Block>CRUDE_OIL_FLUID=REGISTRY.register("crude_oil_fluid",()->new LiquidBlock(DifModFluids.CRUDE_OIL.get(),FLUID_PROPERTIES));
-	public static final DeferredBlock<Block>JETPACK_FUEL_FLUID=REGISTRY.register("jetpack_fuel_fluid",()->new LiquidBlock(DifModFluids.JETPACK_FUEL.get(),FLUID_PROPERTIES));
-	public static final DeferredBlock<Block>SUNFLOWER_OIL_FLUID=REGISTRY.register("sunflower_oil_fluid",()->new LiquidBlock(DifModFluids.SUNFLOWER_OIL.get(),FLUID_PROPERTIES));
-
-	public static final DeferredBlock<Block>LPG_FLUID=REGISTRY.register("lpg_fluid",()->new LiquidBlock(DifModFluids.LPG.get(),FLUID_PROPERTIES));
-	public static final DeferredBlock<Block>GASOLINE_FLUID=REGISTRY.register("gasoline_fluid",()->new LiquidBlock(DifModFluids.GASOLINE.get(),FLUID_PROPERTIES));
-	public static final DeferredBlock<Block>DIESEL_FLUID=REGISTRY.register("diesel_fluid",()->new LiquidBlock(DifModFluids.DIESEL.get(),FLUID_PROPERTIES));
-	public static final DeferredBlock<Block>LUBRICATING_OIL_FLUID=REGISTRY.register("lubricating_oil_fluid",()->new LiquidBlock(DifModFluids.LUBRICATING_OIL.get(),FLUID_PROPERTIES));
-	public static final DeferredBlock<Block>HEAVY_FUEL_OIL_FLUID=REGISTRY.register("heavy_fuel_oil_fluid",()->new LiquidBlock(DifModFluids.HEAVY_FUEL_OIL.get(),FLUID_PROPERTIES));
-
 	//Random (0):
 	public static final DeferredBlock<Block> MEGA_TORCH = REGISTRY.register("mega_torch",()->new MegaTorch(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(2F,3F).sound(SoundType.WOOD).pushReaction(PushReaction.BLOCK).lightLevel(state->15)));
 
-	public static final DeferredBlock<Block>BEER=REGISTRY.register("beer",Beer::new);
+	public static final DeferredBlock<Block> BEER_BOTTLE=REGISTRY.register("beer_bottle",Beer::new);
 	public static final DeferredBlock<Block>THE_DIFFERENTIAL=REGISTRY.register("the_differential",()->new CustomWaterloggedHorizontalRotation(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(5F,6F).requiresCorrectToolForDrops()));
 
 	public static final DeferredBlock<Block>EVENT_BUS=REGISTRY.register("event_bus",()->new CustomWaterloggedHorizontalRotation(BlockBehaviour.Properties.of().sound(SoundType.NETHERITE_BLOCK).strength(5F,6F).requiresCorrectToolForDrops()));
