@@ -1,6 +1,7 @@
-package cz.maxtechnik.dif.init.fluid;
+package cz.maxtechnik.dif.init.other;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.util.FluidEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackLocationInfo;
@@ -25,7 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 @SuppressWarnings({"removal","deprecation"})
 @EventBusSubscriber(modid=DifMod.MODID, bus=EventBusSubscriber.Bus.MOD)
-public class RuntimeTagPack{
+public class DifModRuntimePack{
 	@SubscribeEvent
 	public static void onAddPackFinders(AddPackFindersEvent event){
 		if(event.getPackType().equals(PackType.SERVER_DATA)){
@@ -49,8 +50,7 @@ public class RuntimeTagPack{
 				Pack.Metadata metadata=new Pack.Metadata(
 						Component.literal("In-RAM Tags"),
 						PackCompatibility.COMPATIBLE,
-						FeatureFlagSet.of(),
-						List.of()
+						FeatureFlagSet.of(),List.of()
 				);
 				consumer.accept(new Pack(info,resourcesSupplier,metadata,new PackSelectionConfig(true,Pack.Position.TOP,false)));
 			});
@@ -67,9 +67,10 @@ public class RuntimeTagPack{
 			List<String> allBuckets=new ArrayList<>();
 			List<String> waterFluids=new ArrayList<>();
 			for(FluidEntry entry: FluidEntry.ALL_ENTRIES){
-				String sourceId=DifMod.MODID+":"+entry.name;
-				String flowingId=DifMod.MODID+":flowing_"+entry.name;
-				String bucketId=DifMod.MODID+":"+entry.name+"_bucket";
+				String namespace=entry.namespace;
+				String sourceId=namespace+":"+entry.name;
+				String flowingId=namespace+":flowing_"+entry.name;
+				String bucketId=namespace+":"+entry.name+"_bucket";
 				allBuckets.add(bucketId);
 				// 1. Tag c:fluids/<name>
 				addJson("data/c/tags/fluid/"+entry.name+".json",createTagJson(List.of(sourceId,flowingId)));
@@ -118,7 +119,7 @@ public class RuntimeTagPack{
 		}
 		@Override
 		public @NotNull Set<String> getNamespaces(@NotNull PackType type){
-			return type.equals(PackType.SERVER_DATA)?Set.of("c","minecraft",DifMod.MODID):Collections.emptySet();
+			return type.equals(PackType.SERVER_DATA)?Set.of("c","minecraft","dif_runtime"):Collections.emptySet();
 		}
 		@Override
 		public @NotNull PackLocationInfo location(){

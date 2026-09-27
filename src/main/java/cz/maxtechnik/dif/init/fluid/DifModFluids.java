@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.init.fluid;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.util.FluidEntry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -49,6 +50,10 @@ public class DifModFluids{
 	);
 	public static final FluidEntry HEAVY_FUEL_OIL=new FluidEntry("heavy_fuel_oil",false,false,
 			type->type.density(900).viscosity(1500).canHydrate(false).canDrown(true).canExtinguish(true).supportsBoating(true).fallDistanceModifier(0F).motionScale(0.0002D),
+			fluid->fluid.tickRate(25).levelDecreasePerBlock(1).slopeFindDistance(4),FLUIDS,TYPES,ITEMS,BLOCKS
+	);
+	public static final FluidEntry ASTRAGEL=new FluidEntry("astragel",false,false,
+			type->type.density(2320).viscosity(1500).canHydrate(false).canDrown(true).canExtinguish(true).supportsBoating(true).fallDistanceModifier(0F).motionScale(0.0002D),
 			fluid->fluid.tickRate(7).levelDecreasePerBlock(1).slopeFindDistance(4),FLUIDS,TYPES,ITEMS,BLOCKS
 	);
 }

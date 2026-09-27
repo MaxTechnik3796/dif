@@ -161,7 +161,8 @@ public class DifModTabs{
 					new ItemStack(GASOLINE.bucket.get()),
 					new ItemStack(DIESEL.bucket.get()),
 					new ItemStack(LUBRICATING_OIL.bucket.get()),
-					new ItemStack(HEAVY_FUEL_OIL.bucket.get())
+					new ItemStack(HEAVY_FUEL_OIL.bucket.get()),
+					new ItemStack(ASTRAGEL.bucket.get())
 			));
 			addItemStacksBehind(tabData,new ItemStack(Items.LAVA_BUCKET),buckets.toArray(new ItemStack[0]));
 		}else if(tabData.getTabKey().equals(CreativeModeTabs.COMBAT)){

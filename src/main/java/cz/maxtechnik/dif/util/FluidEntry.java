@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.init.fluid;
+package cz.maxtechnik.dif.util;
 
 import cz.maxtechnik.dif.DifMod;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -34,43 +34,42 @@ import java.util.function.Consumer;
 @SuppressWarnings("removal")
 public class FluidEntry{
 	public static final List<FluidEntry> ALL_ENTRIES=new ArrayList<>();
-	public final String name;
+	public final String name,namespace;
 	public final DeferredHolder<FluidType,FluidType> type;
-	public final DeferredHolder<Fluid,FlowingFluid> source;
-	public final DeferredHolder<Fluid,FlowingFluid> flowing;
+	public final DeferredHolder<Fluid,FlowingFluid> source,flowing;
 	public final DeferredBlock<LiquidBlock> block;
 	public final DeferredItem<BucketItem> bucket;
-	public final boolean isWaterLike;
-	public final boolean isTranslucent;
+	public final boolean isWaterLike,isTranslucent;
 	public FluidEntry(String name,boolean isWaterLike,boolean isTranslucent,Consumer<FluidType.Properties> typePropsModifier,Consumer<BaseFlowingFluid.Properties> fluidPropsModifier,DeferredRegister<Fluid> FLUIDS,DeferredRegister<FluidType> TYPES,DeferredRegister.Items ITEMS,DeferredRegister.Blocks BLOCKS){
 		this.name=name;
 		this.isWaterLike=isWaterLike;
 		this.isTranslucent=isTranslucent;
+		namespace=FLUIDS.getNamespace();
 		FluidType.Properties typeProps=FluidType.Properties.create();
 		typePropsModifier.accept(typeProps);
-		this.type=TYPES.register(name,()->new ModFluidType(typeProps,name));
+		type=TYPES.register(name,()->new ModFluidType(typeProps,name,namespace));
 		BaseFlowingFluid.Properties[] fluidProps=new BaseFlowingFluid.Properties[1];
-		this.source=FLUIDS.register(name,()->new BaseFlowingFluid.Source(fluidProps[0]));
-		this.flowing=FLUIDS.register("flowing_"+name,()->new BaseFlowingFluid.Flowing(fluidProps[0]));
+		source=FLUIDS.register(name,()->new BaseFlowingFluid.Source(fluidProps[0]));
+		flowing=FLUIDS.register("flowing_"+name,()->new BaseFlowingFluid.Flowing(fluidProps[0]));
 		BlockBehaviour.Properties blockProps=BlockBehaviour.Properties.of()
 				.noCollission().strength(100F).noLootTable().liquid()
 				.pushReaction(PushReaction.DESTROY).sound(SoundType.EMPTY).replaceable();
-		this.block=BLOCKS.register(name,()->new LiquidBlock(this.source.get(),blockProps));
+		block=BLOCKS.register(name,()->new LiquidBlock(source.get(),blockProps));
 		Item.Properties bucketProps=new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1);
-		this.bucket=ITEMS.register(name+"_bucket",()->new BucketItem(this.source.get(),bucketProps));
-		fluidProps[0]=new BaseFlowingFluid.Properties(this.type,this.source,this.flowing).bucket(this.bucket).block(this.block);
+		bucket=ITEMS.register(name+"_bucket",()->new BucketItem(source.get(),bucketProps));
+		fluidProps[0]=new BaseFlowingFluid.Properties(type,source,flowing).bucket(bucket).block(block);
 		fluidPropsModifier.accept(fluidProps[0]);
 		ALL_ENTRIES.add(this);
 	}
 	public static class ModFluidType extends FluidType{
 		private final ResourceLocation stillTexture;
 		private final ResourceLocation flowingTexture;
-		public ModFluidType(Properties properties,String name){
+		public ModFluidType(Properties properties,String name,String namespace){
 			super(properties.sound(SoundActions.BUCKET_FILL,SoundEvents.BUCKET_FILL)
 					.sound(SoundActions.BUCKET_EMPTY,SoundEvents.BUCKET_EMPTY)
 					.sound(SoundActions.FLUID_VAPORIZE,SoundEvents.FIRE_EXTINGUISH));
-			this.stillTexture=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/"+name+"_still");
-			this.flowingTexture=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"block/"+name+"_flow");
+			stillTexture=ResourceLocation.fromNamespaceAndPath(namespace,"block/"+name+"_still");
+			flowingTexture=ResourceLocation.fromNamespaceAndPath(namespace,"block/"+name+"_flow");
 		}
 		@Override
 		public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer){

@@ -29,6 +29,11 @@
 	"fluid.dif.xp":"Experience",
 	"fluid_type.dif.xp":"Experience",
 
+	"item.dif.astragel_bucket":"AstraGel Bucket",
+	"block.dif.astragel":"AstraGel",
+	"fluid.dif.astragel":"AstraGel",
+	"fluid_type.dif.astragel":"AstraGel",
+
 	"item.dif.sunflower_oil_bucket":"Sunflower Oil Bucket",
 	"block.dif.sunflower_oil":"Sunflower Oil",
 	"fluid.dif.sunflower_oil":"Sunflower Oil",
