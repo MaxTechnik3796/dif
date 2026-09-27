@@ -10,7 +10,7 @@
 		"base":"dif:block/frying_table",
 		"grid_top":"farmersdelight:block/heating_tray_top",
 		"grid_side":"farmersdelight:block/heating_tray_side",
-		"oil":"dif:block/sunflower_oil_fluid_still",
+		"oil":"dif:block/sunflower_oil_still",
 		"particle":"dif:block/big_girder_top"
 	},
 	"elements":[

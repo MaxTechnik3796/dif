@@ -8,7 +8,7 @@
 	],
 	"textures":{
 		"base":"dif:block/frying_table",
-		"oil":"dif:block/sunflower_oil_fluid_still",
+		"oil":"dif:block/sunflower_oil_still",
 		"particle":"dif:block/big_girder_top"
 	},
 	"elements":[
