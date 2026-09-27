@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.feature;
 
 import com.mojang.serialization.Codec;
-import cz.maxtechnik.dif.init.basic.DifModBlocks;
+import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
@@ -57,7 +57,7 @@ public class OilWellFeature extends Feature<NoneFeatureConfiguration>{
 			if(level.isEmptyBlock(origin.offset(rx,ry,rz))) airBlocks++;
 		}
 		if(airBlocks>checks/4) return false;
-		BlockState fluid=DifModBlocks.CRUDE_OIL_FLUID.get().defaultBlockState();
+		BlockState fluid=DifModFluids.CRUDE_OIL.block.get().defaultBlockState();
 		int centerChunkX=origin.getX()>>4;
 		int centerChunkZ=origin.getZ()>>4;
 		// GENERACE BAŇKY
