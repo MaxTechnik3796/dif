@@ -1,7 +1,9 @@
 package cz.maxtechnik.dif.init.other;
 
+import cz.maxtechnik.dif.block.entity.FryingTableBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.item.armor.Jetpack;
+import cz.maxtechnik.dif.item.tool.PortalGun;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -25,6 +27,7 @@ public class DifModCapabilities{
 		registerEnergyCapabilities(event);
 	}
 	private static void registerItemCapabilities(RegisterCapabilitiesEvent event){
+		event.registerBlockEntity(bITEM,FRYING_TABLE.get(),FryingTableBlockEntity::getItemHandler);
 		event.registerBlockEntity(bITEM,ANDESITE_BARREL.get(),(be,side)->be.getInventory());
 		event.registerBlockEntity(bITEM,COPPER_BARREL.get(),(be,side)->be.getInventory());
 		event.registerBlockEntity(bITEM,BRASS_BARREL.get(),(be,side)->be.getInventory());
@@ -34,6 +37,8 @@ public class DifModCapabilities{
 	}
 	private static void registerFluidCapabilities(RegisterCapabilitiesEvent event){
 		event.registerItem(iFLUID,(stack,side)->new Jetpack.Chestplate.FluidHandler(stack),DifModItems.JETPACK.get());
+		event.registerItem(iFLUID,(stack,side)->new PortalGun.FluidHandler(stack),DifModItems.PORTAL_GUN.get());
+		event.registerBlockEntity(bFLUID,FRYING_TABLE.get(),(be,side)->be.fluidTank);
 		event.registerBlockEntity(bFLUID,DISTILLATION_TANK.get(),(be,ctx)->be.fluidTank());
 		event.registerBlockEntity(bFLUID,MITHRIL_FLUID_TANK.get(),(be,ctx)->be.getFluidCapability());
 		event.registerBlockEntity(bFLUID,ENGINE.get(),(be,side)->be.fluidTank);

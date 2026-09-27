@@ -24,8 +24,7 @@ public class DifModServerConfig{
 	public static final ModConfigSpec.DoubleValue FAST_RAIL_TOP_SPEED;
 	public static final ModConfigSpec.DoubleValue FAST_POWERED_RAIL_ACCELERATION;
 	// Portal Gun
-	public static final ModConfigSpec.IntValue PORTAL_GUN_MAX_DURABILITY;
-	public static final ModConfigSpec.IntValue PORTAL_GUN_ENERGY_PER_PEARL;
+	public static final ModConfigSpec.IntValue PORTAL_GUN_CAPACITY;
 	public static final ModConfigSpec.IntValue PORTAL_MAX_DISTANCE;
 	public static final ModConfigSpec.BooleanValue PORTAL_ALLOW_ENTITIES;
 	// Engines
@@ -70,8 +69,7 @@ public class DifModServerConfig{
 		FAST_POWERED_RAIL_ACCELERATION=BUILDER.defineInRange("fast_powered_rail_acceleration",0.3D,0.01D,MAX);
 		BUILDER.pop();
 		BUILDER.push("PortalGun");
-		PORTAL_GUN_MAX_DURABILITY=BUILDER.defineInRange("portal_gun_max_durability",24,1,MAX);
-		PORTAL_GUN_ENERGY_PER_PEARL=BUILDER.defineInRange("portal_gun_energy_per_pearl",4,1,MAX);
+		PORTAL_GUN_CAPACITY=BUILDER.defineInRange("portal_gun_capacity",24000,1000,MAX);
 		PORTAL_MAX_DISTANCE=BUILDER.defineInRange("portal_max_distance",512,16,MAX);
 		PORTAL_ALLOW_ENTITIES=BUILDER.define("portal_allow_entities",true);
 		BUILDER.pop();

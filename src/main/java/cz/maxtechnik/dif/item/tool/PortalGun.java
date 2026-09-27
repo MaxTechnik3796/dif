@@ -4,29 +4,101 @@ import cz.maxtechnik.dif.config.DifModServerConfig;
 import cz.maxtechnik.dif.entity.portal.PortalData;
 import cz.maxtechnik.dif.entity.portal.PortalEntity;
 import cz.maxtechnik.dif.entity.portal.PortalPlacement;
+import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.FastColor;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 public class PortalGun extends Item{
 	public PortalGun(){
 		super(new Properties().stacksTo(1));
+	}
+	public static class FluidHandler implements IFluidHandlerItem{
+		private final ItemStack container;
+		private final int capacity;
+		public FluidHandler(ItemStack container){
+			this.container=container;
+			this.capacity=DifModServerConfig.PORTAL_GUN_CAPACITY.get();
+		}
+		@Override
+		public @NotNull ItemStack getContainer(){
+			return container;
+		}
+		@Override
+		public int getTanks(){
+			return 1;
+		}
+		@Override
+		public @NotNull FluidStack getFluidInTank(int tank){
+			if(tank!=0) return FluidStack.EMPTY;
+			CustomData customData=container.get(DataComponents.CUSTOM_DATA);
+			if(customData==null) return FluidStack.EMPTY;
+			int amount=customData.copyTag().getInt("astragel_amount");
+			if(amount<=0) return FluidStack.EMPTY;
+			return new FluidStack(DifModFluids.ASTRAGEL.source.get(),amount);
+		}
+		@Override
+		public int getTankCapacity(int tank){
+			return capacity;
+		}
+		@Override
+		public boolean isFluidValid(int tank,@NotNull FluidStack fluidStack){
+			return fluidStack.getFluid().equals(DifModFluids.ASTRAGEL.source.get());
+		}
+		@Override
+		public int fill(FluidStack resource,@NotNull FluidAction action){
+			if(resource.isEmpty()||!isFluidValid(0,resource)) return 0;
+			FluidStack current=getFluidInTank(0);
+			int space=this.capacity-current.getAmount();
+			if(space<=0) return 0;
+			int toFill=Math.min(space,resource.getAmount());
+			if(action.execute()){
+				int newAmount=current.getAmount()+toFill;
+				CustomData.update(DataComponents.CUSTOM_DATA,container,tag->tag.putInt("astragel_amount",newAmount));
+			}
+			return toFill;
+		}
+		@Override
+		public @NotNull FluidStack drain(FluidStack resource,@NotNull FluidAction action){
+			if(resource.isEmpty()||!isFluidValid(0,resource)) return FluidStack.EMPTY;
+			return drain(resource.getAmount(),action);
+		}
+		@Override
+		public @NotNull FluidStack drain(int maxDrain,@NotNull FluidAction action){
+			if(maxDrain<=0) return FluidStack.EMPTY;
+			FluidStack current=getFluidInTank(0);
+			if(current.isEmpty()) return FluidStack.EMPTY;
+			int toDrain=Math.min(current.getAmount(),maxDrain);
+			if(action.execute()){
+				int newAmount=current.getAmount()-toDrain;
+				CustomData.update(DataComponents.CUSTOM_DATA,container,tag->{
+					if(newAmount>0){
+						tag.putInt("astragel_amount",newAmount);
+					}else{
+						tag.remove("astragel_amount");
+					}
+				});
+			}
+			return new FluidStack(DifModFluids.ASTRAGEL.source.get(),toDrain);
+		}
 	}
 	// NBT helpers
 	@SuppressWarnings("deprecation")
@@ -42,41 +114,29 @@ public class PortalGun extends Item{
 		CustomData.update(DataComponents.CUSTOM_DATA,gun,tag->tag.putBoolean("mode",blue));
 		gun.set(DataComponents.CUSTOM_MODEL_DATA,new CustomModelData(blue?0:1));
 	}
-	private int getEnergy(ItemStack gun){
-		CompoundTag tag=readTag(gun);
-		return tag.contains("energy")?tag.getInt("energy"):DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get();
+	public static int getAstragelAmount(ItemStack gun) {
+		IFluidHandlerItem handler = gun.getCapability(Capabilities.FluidHandler.ITEM);
+		if (handler == null) return 0;
+		return handler.getFluidInTank(0).getAmount();
 	}
-	private void setEnergy(ItemStack gun,int energy){
-		int max=DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get();
-		CustomData.update(DataComponents.CUSTOM_DATA,gun,tag->tag.putInt("energy",Math.clamp(energy,0,max)));
+	public static void consumeAstragel(ItemStack gun,int amount) {
+		IFluidHandlerItem handler = gun.getCapability(Capabilities.FluidHandler.ITEM);
+		if (handler == null) return;
+		FluidStack drainedSimulated = handler.drain(amount, IFluidHandler.FluidAction.SIMULATE);
+		if (drainedSimulated.getAmount() < amount) return;
+		handler.drain(amount, IFluidHandler.FluidAction.EXECUTE);
 	}
-	// use
 	@Override
 	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world,Player player,@NotNull InteractionHand hand){
 		ItemStack gun=player.getItemInHand(hand);
-		// Inicializace dat
-		if(!readTag(gun).contains("energy")){
-			setMode(gun,true);
-			setEnergy(gun,DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get());
-		}
 		boolean isBlue=isBlueMode(gun);
-		int energy=getEnergy(gun);
-		// Dobíjení ender perlou
-		ItemStack off=player.getOffhandItem();
-		if(off.is(Items.ENDER_PEARL)&&energy<DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get()){
-			if(!world.isClientSide){
-				setEnergy(gun,energy+DifModServerConfig.PORTAL_GUN_ENERGY_PER_PEARL.get());
-				off.shrink(1);
-				player.displayClientMessage(Component.literal("[+] Energy restored"),true);
-			}
-			return InteractionResultHolder.sidedSuccess(gun,world.isClientSide());
-		}
+		int energy=getAstragelAmount(gun);
 		// Přepínání módu
-		if(player.isShiftKeyDown()){
+		if(player.isCrouching()){
 			if(!world.isClientSide){
-				boolean m=!isBlue;
-				setMode(gun,m);
-				player.displayClientMessage(Component.literal(m?"Mode: Blue":"Mode: Orange"),true);
+				boolean mode=!isBlue;
+				setMode(gun,mode);
+				player.displayClientMessage(Component.literal(mode?"Mode: Blue":"Mode: Orange"),true);
 			}
 			return InteractionResultHolder.sidedSuccess(gun,world.isClientSide());
 		}
@@ -84,12 +144,10 @@ public class PortalGun extends Item{
 		if(!world.isClientSide){
 			if(energy>=1||player.isCreative()){
 				if(firePortal((ServerLevel)world,player,isBlue)){
-					if(!player.isCreative()) setEnergy(gun,energy-1);
+					if(!player.isCreative()) consumeAstragel(gun,1);
 					player.getCooldowns().addCooldown(this,10);
 				}
-			}else{
-				player.displayClientMessage(Component.literal("[!] Out of energy"),true);
-			}
+			}else player.displayClientMessage(Component.literal("[!] Out of AstraGel"),true);
 		}
 		return InteractionResultHolder.success(gun);
 	}
@@ -118,30 +176,34 @@ public class PortalGun extends Item{
 		world.addFreshEntity(portal);
 		return true;
 	}
-	// Durability bar
 	@Override
-	public boolean isBarVisible(@NotNull ItemStack s){
-		return getEnergy(s)<DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get();
-	}
-	@Override
-	public int getBarWidth(@NotNull ItemStack s){
-		return Math.round((float)getEnergy(s)/DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get()*13);
-	}
-	@Override
-	public int getBarColor(@NotNull ItemStack s){
-		float f=(float)getEnergy(s)/DifModServerConfig.PORTAL_GUN_MAX_DURABILITY.get();
-		return FastColor.ARGB32.color(0,(int)(f*255),255-(int)(f*255),0);
-	}
-	@Override
-	public boolean isEnchantable(@NotNull ItemStack s){
+	public boolean isEnchantable(@NotNull ItemStack itemStack){
 		return false;
 	}
 	@Override
-	public boolean isRepairable(@NotNull ItemStack s){
+	public boolean isRepairable(@NotNull ItemStack itemStack){
 		return false;
 	}
 	@Override
-	public boolean isValidRepairItem(@NotNull ItemStack a,@NotNull ItemStack b){
+	public boolean isValidRepairItem(@NotNull ItemStack itemStack,@NotNull ItemStack stack){
 		return false;
+	}
+	@Override
+	public boolean isBarVisible(ItemStack itemStack){
+		IFluidHandlerItem handler=itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+		return handler!=null&&!handler.getFluidInTank(0).isEmpty();
+	}
+	@Override
+	public int getBarWidth(ItemStack stack){
+		IFluidHandlerItem handler=stack.getCapability(Capabilities.FluidHandler.ITEM);
+		if(handler==null) return 0;
+		FluidStack fluid=handler.getFluidInTank(0);
+		int capacity=DifModServerConfig.PORTAL_GUN_CAPACITY.get();
+		if(capacity<=0) return 0;
+		return Math.round(13F*fluid.getAmount()/(float)capacity);
+	}
+	@Override
+	public int getBarColor(@NotNull ItemStack itemStack){
+		return 0x3F76E4;
 	}
 }

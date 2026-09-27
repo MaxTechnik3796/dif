@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.item.armor;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.config.DifModServerConfig;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.model.ModelJetpack;
@@ -33,7 +34,7 @@ import java.util.function.Consumer;
 @SuppressWarnings({"removal","deprecation"})
 public abstract class Jetpack extends ArmorItem{
 	public static int getCapacity(){
-		return cz.maxtechnik.dif.config.DifModServerConfig.JETPACK_CAPACITY.get();
+		return DifModServerConfig.JETPACK_CAPACITY.get();
 	}
 	public Jetpack(ArmorItem.Type type,Item.Properties properties){
 		super(DifModTiers.ARMOR_MATERIAL_JETPACK,type,properties.stacksTo(1));
