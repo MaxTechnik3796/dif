@@ -3,8 +3,8 @@ package cz.maxtechnik.dif.init.basic;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.other.DifModFoods;
 import cz.maxtechnik.dif.init.other.DifModTiers;
-import cz.maxtechnik.dif.item.DistillationTankItem;
-import cz.maxtechnik.dif.item.MithrilFluidTankItem;
+import cz.maxtechnik.dif.item.blockitem.DistillationTankItem;
+import cz.maxtechnik.dif.item.blockitem.MithrilFluidTankItem;
 import cz.maxtechnik.dif.item.armor.CopperArmor;
 import cz.maxtechnik.dif.item.armor.Jetpack;
 import cz.maxtechnik.dif.item.food.Beer;
@@ -79,7 +79,7 @@ public class DifModItems{
 
 	public static final DeferredItem<Item>CHUNK_LOADER=REGISTRY.register("chunk_loader",()->new BlockItem(DifModBlocks.CHUNK_LOADER.get(),new Item.Properties()){@Override public boolean isFoil(@NotNull ItemStack stack){return true;}});
 
-	public static final DeferredItem<Item> PORTAL_GUN=REGISTRY.register("portal_gun",PortalGun::new);
+	public static final DeferredItem<Item> PORTAL_GUN=REGISTRY.register("portal_gun",()->new PortalGun(new Item.Properties()));
 
 	//Jetpack
 	public static final DeferredItem<Item> JETPACK=REGISTRY.register("jetpack",Jetpack.Chestplate::new);

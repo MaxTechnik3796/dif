@@ -294,5 +294,13 @@
 
 	"block.dif.mithril_fluid_tank.tooltip.summary":"Higher capacity fluid tank",
 	"block.dif.mithril_fluid_tank.tooltip.condition1":"When Placed",
-	"block.dif.mithril_fluid_tank.tooltip.behaviour1":"Holds _4x more fluid_ than a normal tank"
+	"block.dif.mithril_fluid_tank.tooltip.behaviour1":"Holds _4x more fluid_ than a normal tank",
+
+
+	"info.dif.portal_gun.mode":"Mode",
+	"info.dif.portal_gun.blue":"Blue",
+	"info.dif.portal_gun.orange":"Orange",
+	"info.dif.portal_gun.out_of_astragel":"Out of AstraGel",
+	"info.dif.portal_gun.invalid_placement":"Invalid Placement",
+	"info.dif.portal_gun.invalid_position":"Invalid Position"
 }

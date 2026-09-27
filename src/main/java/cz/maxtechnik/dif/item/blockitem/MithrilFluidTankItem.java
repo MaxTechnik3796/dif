@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.item;
+package cz.maxtechnik.dif.item.blockitem;
 
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.content.equipment.symmetryWand.SymmetryWandItem;

@@ -28,8 +28,8 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 public class PortalGun extends Item{
-	public PortalGun(){
-		super(new Properties().stacksTo(1));
+	public PortalGun(Item.Properties properties){
+		super(properties.stacksTo(1));
 	}
 	public static class FluidHandler implements IFluidHandlerItem{
 		private final ItemStack container;
@@ -90,84 +90,72 @@ public class PortalGun extends Item{
 			if(action.execute()){
 				int newAmount=current.getAmount()-toDrain;
 				CustomData.update(DataComponents.CUSTOM_DATA,container,tag->{
-					if(newAmount>0){
-						tag.putInt("astragel_amount",newAmount);
-					}else{
-						tag.remove("astragel_amount");
-					}
+					if(newAmount>0) tag.putInt("astragel_amount",newAmount);
+					else tag.remove("astragel_amount");
 				});
 			}
 			return new FluidStack(DifModFluids.ASTRAGEL.source.get(),toDrain);
 		}
 	}
-	// NBT helpers
-	@SuppressWarnings("deprecation")
-	private CompoundTag readTag(ItemStack gun){
-		CustomData data=gun.get(DataComponents.CUSTOM_DATA);
-		return data!=null?data.getUnsafe():new CompoundTag();
-	}
 	private boolean isBlueMode(ItemStack gun){
-		CompoundTag tag=readTag(gun);
+		CustomData data=gun.get(DataComponents.CUSTOM_DATA);
+		CompoundTag tag=data!=null?data.copyTag():new CompoundTag();
 		return !tag.contains("mode")||tag.getBoolean("mode");
 	}
 	private void setMode(ItemStack gun,boolean blue){
 		CustomData.update(DataComponents.CUSTOM_DATA,gun,tag->tag.putBoolean("mode",blue));
 		gun.set(DataComponents.CUSTOM_MODEL_DATA,new CustomModelData(blue?0:1));
 	}
-	public static int getAstragelAmount(ItemStack gun) {
-		IFluidHandlerItem handler = gun.getCapability(Capabilities.FluidHandler.ITEM);
-		if (handler == null) return 0;
+	public static int getAstragelAmount(ItemStack gun){
+		IFluidHandlerItem handler=gun.getCapability(Capabilities.FluidHandler.ITEM);
+		if(handler==null) return 0;
 		return handler.getFluidInTank(0).getAmount();
 	}
-	public static void consumeAstragel(ItemStack gun,int amount) {
-		IFluidHandlerItem handler = gun.getCapability(Capabilities.FluidHandler.ITEM);
-		if (handler == null) return;
-		FluidStack drainedSimulated = handler.drain(amount, IFluidHandler.FluidAction.SIMULATE);
-		if (drainedSimulated.getAmount() < amount) return;
-		handler.drain(amount, IFluidHandler.FluidAction.EXECUTE);
+	public static void consumeAstragel(ItemStack gun,int amount){
+		IFluidHandlerItem handler=gun.getCapability(Capabilities.FluidHandler.ITEM);
+		if(handler==null) return;
+		FluidStack drainedSimulated=handler.drain(amount,IFluidHandler.FluidAction.SIMULATE);
+		if(drainedSimulated.getAmount()<amount) return;
+		handler.drain(amount,IFluidHandler.FluidAction.EXECUTE);
 	}
 	@Override
 	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world,Player player,@NotNull InteractionHand hand){
 		ItemStack gun=player.getItemInHand(hand);
 		boolean isBlue=isBlueMode(gun);
 		int energy=getAstragelAmount(gun);
-		// Přepínání módu
 		if(player.isCrouching()){
 			if(!world.isClientSide){
 				boolean mode=!isBlue;
 				setMode(gun,mode);
-				player.displayClientMessage(Component.literal(mode?"Mode: Blue":"Mode: Orange"),true);
+				player.displayClientMessage(Component.translatable("info.dif.portal_gun.mode").append(": ").append(Component.translatable(mode?"info.dif.portal_gun.blue":"info.dif.portal_gun.orange")),true);
 			}
 			return InteractionResultHolder.sidedSuccess(gun,world.isClientSide());
 		}
-		// Střelba
 		if(!world.isClientSide){
 			if(energy>=1||player.isCreative()){
 				if(firePortal((ServerLevel)world,player,isBlue)){
 					if(!player.isCreative()) consumeAstragel(gun,1);
 					player.getCooldowns().addCooldown(this,10);
 				}
-			}else player.displayClientMessage(Component.literal("[!] Out of AstraGel"),true);
+			}else player.displayClientMessage(Component.translatable("info.dif.portal_gun.out_of_astragel"),true);
 		}
 		return InteractionResultHolder.success(gun);
 	}
-	// Placement
 	private boolean firePortal(ServerLevel world,Player player,boolean isBlue){
 		Vec3 eye=player.getEyePosition();
-		var hit=world.clip(new ClipContext(eye,eye.add(player.getLookAngle().scale(128)),
-				ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,player));
+		var hit=world.clip(new ClipContext(eye,eye.add(player.getLookAngle().scale(128)),ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,player));
 		if(hit.getType()!=HitResult.Type.BLOCK) return false;
 		Direction face=hit.getDirection();
 		BlockPos hitPos=hit.getBlockPos();
 		Direction extDir=(face.getAxis()==Direction.Axis.Y)?player.getDirection():Direction.UP;
 		Vec3 spawnPos=PortalPlacement.align(world,hitPos,face,extDir,hit.getLocation());
 		if(spawnPos==null){
-			player.displayClientMessage(Component.literal("[!] Invalid placement"),true);
+			player.displayClientMessage(Component.translatable("info.dif.portal_gun.invalid_placement"),true);
 			return false;
 		}
 		PortalEntity portal=new PortalEntity(world,player.getUUID(),isBlue,face,extDir,spawnPos);
 		if(PortalPlacement.hasOverlap(world,portal.getBoundingBox(),player.getUUID(),isBlue)){
-			player.displayClientMessage(Component.literal("[!] Invalid position"),true);
+			player.displayClientMessage(Component.translatable("info.dif.portal_gun.invalid_position"),true);
 			return false;
 		}
 		PortalData data=PortalData.get(world);
@@ -189,18 +177,18 @@ public class PortalGun extends Item{
 		return false;
 	}
 	@Override
-	public boolean isBarVisible(ItemStack itemStack){
-		IFluidHandlerItem handler=itemStack.getCapability(Capabilities.FluidHandler.ITEM);
-		return handler!=null&&!handler.getFluidInTank(0).isEmpty();
+	public boolean isBarVisible(@NotNull ItemStack itemStack){
+		return true;
 	}
 	@Override
-	public int getBarWidth(ItemStack stack){
+	public int getBarWidth(@NotNull ItemStack stack){
 		IFluidHandlerItem handler=stack.getCapability(Capabilities.FluidHandler.ITEM);
 		if(handler==null) return 0;
-		FluidStack fluid=handler.getFluidInTank(0);
 		int capacity=DifModServerConfig.PORTAL_GUN_CAPACITY.get();
 		if(capacity<=0) return 0;
-		return Math.round(13F*fluid.getAmount()/(float)capacity);
+		FluidStack fluid=handler.getFluidInTank(0);
+		int amount=fluid.getAmount();
+		return Math.clamp(Math.round(13F*amount/(float)capacity),0,13);
 	}
 	@Override
 	public int getBarColor(@NotNull ItemStack itemStack){
