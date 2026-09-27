@@ -236,4 +236,18 @@ public class DifModItems{
 
 	public static final DeferredItem<Item>DEFORESTRATOR=REGISTRY.register("deforestrator", Electrum::new);
 	public static final DeferredItem<Item>DEFORESTER=DEFORESTRATOR;
+
+	static{
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"beer"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"beer_bottle"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"beer_fluid_bucket"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"beer_bucket"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"jetpack_fuel_fluid_bucket"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"jetpack_fuel_bucket"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"crude_oil_fluid_bucket"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"crude_oil_bucket"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"xp_fluid_bucket"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"xp_bucket"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"sunflower_oil_fluid_bucket"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"sunflower_oil_bucket"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"lpg_fluid_bucket"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"lpg_bucket"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"gasoline_fluid_bucket"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"gasoline_bucket"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"diesel_fluid_bucket"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"diesel_bucket"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"lubricating_oil_fluid_bucket"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"lubricating_oil_bucket"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"heavy_fuel_oil_fluid_bucket"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"heavy_fuel_oil_bucket"));
+	}
 }

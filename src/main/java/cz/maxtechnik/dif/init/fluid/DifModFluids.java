@@ -2,6 +2,7 @@ package cz.maxtechnik.dif.init.fluid;
 
 import cz.maxtechnik.dif.DifMod;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -51,4 +52,29 @@ public class DifModFluids{
 			type->type.density(900).viscosity(1500).canHydrate(false).canDrown(true).canExtinguish(true).supportsBoating(true).fallDistanceModifier(0F).motionScale(0.0002D),
 			fluid->fluid.tickRate(7).levelDecreasePerBlock(1).slopeFindDistance(4),FLUIDS,TYPES,ITEMS,BLOCKS
 	);
+	static{
+		aliasFluid("beer");
+		aliasFluid("jetpack_fuel");
+		aliasFluid("crude_oil");
+		aliasFluid("xp");
+		aliasFluid("sunflower_oil");
+		aliasFluid("lpg");
+		aliasFluid("gasoline");
+		aliasFluid("diesel");
+		aliasFluid("lubricating_oil");
+		aliasFluid("heavy_fuel_oil");
+	}
+
+	private static void aliasFluid(String name){
+		ResourceLocation oldFluid=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,name+"_fluid");
+		ResourceLocation newFluid=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,name);
+		ResourceLocation oldFlowing=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"flowing_"+name+"_fluid");
+		ResourceLocation newFlowing=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"flowing_"+name);
+
+		FLUIDS.addAlias(oldFluid,newFluid);
+		FLUIDS.addAlias(oldFlowing,newFlowing);
+		TYPES.addAlias(oldFluid,newFluid);
+		BLOCKS.addAlias(oldFluid,newFluid);
+		BLOCKS.addAlias(oldFlowing,newFluid);
+	}
 }
