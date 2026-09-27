@@ -5,8 +5,10 @@ import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -199,7 +201,7 @@ public class FryingTable extends Block implements SimpleWaterloggedBlock, Entity
 				be.setChanged();
 				world.playSound(null,pos,SoundEvents.LANTERN_PLACE,SoundSource.BLOCKS,1F,1F);
 				if(blockstate.getValue(OIL)&&blockstate.getValue(HEATED)){
-					net.minecraft.sounds.SoundEvent skilletSound=net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.fromNamespaceAndPath("farmersdelight","block.skillet.add_food"));
+					SoundEvent skilletSound=BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.fromNamespaceAndPath("farmersdelight","block.skillet.add_food"));
 					if(skilletSound!=null) world.playSound(null,pos,skilletSound,SoundSource.BLOCKS,1F,1F);
 				}
 				return InteractionResult.SUCCESS;

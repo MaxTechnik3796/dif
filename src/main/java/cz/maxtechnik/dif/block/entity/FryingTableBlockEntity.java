@@ -11,14 +11,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
@@ -32,7 +29,6 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -42,13 +38,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 public class FryingTableBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer{
-	public static final TagKey<Fluid> SUNFLOWER_OIL_TAG=TagKey.create(Registries.FLUID,ResourceLocation.parse("c:sunflower_oil"));
 	public static final int SLOTS=2;
 	public static final int INPUT_SLOT=0;
 	public static final int OUTPUT_SLOT=1;
 	public int progress=0;
 	public NonNullList<ItemStack> stacks=NonNullList.withSize(SLOTS,ItemStack.EMPTY);
-	public final FluidTank fluidTank=new FluidTank(1000,fs->fs.is(SUNFLOWER_OIL_TAG)){
+	public final FluidTank fluidTank=new FluidTank(1000){
 		@Override
 		protected void onContentsChanged(){
 			super.onContentsChanged();
