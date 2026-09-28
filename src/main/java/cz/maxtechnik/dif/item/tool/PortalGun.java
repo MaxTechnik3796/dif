@@ -192,6 +192,6 @@ public class PortalGun extends Item{
 	}
 	@Override
 	public int getBarColor(@NotNull ItemStack itemStack){
-		return 0x3F76E4;
+		return isBlueMode(itemStack)?0x00EBFF:0xFFBB00;
 	}
 }
