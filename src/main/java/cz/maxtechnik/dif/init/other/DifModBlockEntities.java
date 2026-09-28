@@ -8,6 +8,7 @@ import cz.maxtechnik.dif.block.entity.barrel.CopperBarrelBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -30,7 +31,7 @@ public class DifModBlockEntities{
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<cz.maxtechnik.dif.block.MithrilFluidTank.Entity>> MITHRIL_FLUID_TANK=REGISTRY.register("mithril_fluid_tank",()->BlockEntityType.Builder.of((pos,state)->new cz.maxtechnik.dif.block.MithrilFluidTank.Entity(DifModBlockEntities.MITHRIL_FLUID_TANK.get(),pos,state),DifModBlocks.MITHRIL_FLUID_TANK.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<EngineBlockEntity>> ENGINE=REGISTRY.register("engine",()->BlockEntityType.Builder.of(EngineBlockEntity::new,DifModBlocks.ENGINE_BASE.get(),DifModBlocks.ENGINE_PORTABLE.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<NanoGlassBlockEntity>> NANO_GLASS=REGISTRY.register("nano_glass",()->BlockEntityType.Builder.of((pos,state)->new NanoGlassBlockEntity(DifModBlockEntities.NANO_GLASS.get(),pos,state),DifModBlocks.NANO_GLASS.get()).build(null));
-	private static <T extends net.minecraft.world.level.block.entity.BlockEntity> DeferredHolder<BlockEntityType<?>,BlockEntityType<T>> register(String name,Supplier<? extends Block> block,BlockEntityType.BlockEntitySupplier<T> supplier){
+	private static <T extends BlockEntity> DeferredHolder<BlockEntityType<?>,BlockEntityType<T>> register(String name,Supplier<? extends Block> block,BlockEntityType.BlockEntitySupplier<T> supplier){
 		return REGISTRY.register(name,()->BlockEntityType.Builder.of(supplier,block.get()).build(null));
 	}
 }
