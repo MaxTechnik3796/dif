@@ -27,7 +27,7 @@ public class JetpackHandler{
 	private static final Map<UUID,Float> verticalVelocity=new HashMap<>();
 	private static final float MAX_VELOCITY=0.5F;
 	private static final float ACCEL_TICKS=20F;
-	private static final float DECEL_TICKS=20F;
+	private static final float DECAL_TICKS=20F;
 	private static final int FLY_COST=1;
 	private static final int HOVER_COST=1;
 	private static final Map<UUID,Integer> lastFlyTick=new HashMap<>();
@@ -88,7 +88,7 @@ public class JetpackHandler{
 			verticalVelocity.remove(uid);
 			return;
 		}
-		float decel=MAX_VELOCITY/DECEL_TICKS;
+		float decel=MAX_VELOCITY/DECAL_TICKS;
 		curVel=Math.max(0,curVel-decel);
 		verticalVelocity.put(uid,curVel);
 		if(curVel>0){
