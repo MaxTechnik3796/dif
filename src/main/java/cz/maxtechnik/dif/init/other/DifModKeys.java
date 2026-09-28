@@ -35,11 +35,11 @@ public class DifModKeys{
 			if(Minecraft.getInstance().player!=null){
 				var player=Minecraft.getInstance().player;
 				if(JETPACK_FLY.isDown()){
-					PacketDistributor.sendToServer(new JetpackFlyMessage(0,0));
+					PacketDistributor.sendToServer(new JetpackFlyMessage(0));
 					JetpackFlyMessage.pressAction(player,0);
 				}
 				if(KEY_HOVER.consumeClick()){
-					PacketDistributor.sendToServer(new JetpackFlyMessage(2,0));
+					PacketDistributor.sendToServer(new JetpackFlyMessage(2));
 				}
 				// 3. Logika Ender Chesty
 				while(OPEN_ENDER_CHEST.consumeClick()){

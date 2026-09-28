@@ -162,7 +162,9 @@ public abstract class Jetpack extends ArmorItem{
 		@Override
 		public void appendHoverText(@NotNull ItemStack stack,@Nullable TooltipContext ctx,@NotNull List<Component> list,@NotNull TooltipFlag flag){
 			list.add(Component.literal("Fuel: "+getThrust(stack)+" / "+getCapacity()+" mB").withStyle(ChatFormatting.AQUA));
-			if(isHovering(stack)){
+			if(isOff(stack)){
+				list.add(Component.literal("❌ OFF").withStyle(ChatFormatting.RED));
+			}else if(isHovering(stack)){
 				list.add(Component.literal("⭐ HOVER").withStyle(ChatFormatting.GREEN));
 			}
 		}
