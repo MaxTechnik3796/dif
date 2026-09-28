@@ -14,7 +14,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import java.util.List;
 @EventBusSubscriber(modid=DifMod.MODID)
 public class MagnetHandler{
-	private static final double RANGE=5.0;
+	private static final double RANGE=5;
 	private static final double PULL_SPEED=0.25;
 	@SubscribeEvent
 	public static void onPlayerTick(PlayerTickEvent.Post event){
@@ -39,15 +39,10 @@ public class MagnetHandler{
 	private static boolean hasActiveMagnet(Player player){
 		if(isMagnetEnabled(player.getMainHandItem())) return true;
 		if(isMagnetEnabled(player.getOffhandItem())) return true;
-		for(ItemStack stack: player.getInventory().items){
-			if(isMagnetEnabled(stack)) return true;
-		}
-		for(ItemStack stack: player.getInventory().armor){
-			if(isMagnetEnabled(stack)) return true;
-		}
+		for(ItemStack itemStack: player.getInventory().items) if(isMagnetEnabled(itemStack)) return true;
 		return false;
 	}
-	private static boolean isMagnetEnabled(ItemStack stack){
-		return !stack.isEmpty()&&stack.getItem() instanceof Magnet&&Magnet.isEnabled(stack);
+	private static boolean isMagnetEnabled(ItemStack itemStack){
+		return !itemStack.isEmpty()&&itemStack.getItem() instanceof Magnet&&Magnet.isEnabled(itemStack);
 	}
 }

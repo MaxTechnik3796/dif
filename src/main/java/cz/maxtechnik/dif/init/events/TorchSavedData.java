@@ -11,30 +11,20 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 public class TorchSavedData extends SavedData{
 	private final Set<BlockPos> torches=ConcurrentHashMap.newKeySet();
-	private static final SavedData.Factory<TorchSavedData> FACTORY=new SavedData.Factory<>(
-			TorchSavedData::new,
-			TorchSavedData::load,
-			null
-	);
+	private static final SavedData.Factory<TorchSavedData> FACTORY=new SavedData.Factory<>(TorchSavedData::new,TorchSavedData::load,null);
 	public TorchSavedData(){
 	}
-	// Načtení z NBT
 	public static TorchSavedData load(CompoundTag tag,HolderLookup.Provider registries){
 		TorchSavedData data=new TorchSavedData();
 		long[] array=tag.getLongArray("Torches");
-		for(long posLong: array){
-			data.torches.add(BlockPos.of(posLong));
-		}
+		for(long posLong: array) data.torches.add(BlockPos.of(posLong));
 		return data;
 	}
-	// Uložení do NBT
 	@Override
 	public @NotNull CompoundTag save(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider registries){
 		long[] array=new long[torches.size()];
 		int i=0;
-		for(BlockPos pos: torches){
-			array[i++]=pos.asLong();
-		}
+		for(BlockPos pos: torches) array[i++]=pos.asLong();
 		tag.putLongArray("Torches",array);
 		return tag;
 	}
@@ -49,9 +39,7 @@ public class TorchSavedData extends SavedData{
 	public Set<BlockPos> getTorches(){
 		return torches;
 	}
-	// Získání nebo vytvoření dat pro daný ServerLevel
 	public static TorchSavedData get(ServerLevel level){
-		// ukládá data pro každou dimenzi zvlášť
 		return level.getDataStorage().computeIfAbsent(FACTORY,"dif_mega_torches");
 	}
 }

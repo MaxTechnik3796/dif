@@ -49,18 +49,15 @@ public class FluidDrain extends Block implements SimpleWaterloggedBlock{
 	protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack heldItem,@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
 		if(world.isClientSide()) return ItemInteractionResult.SUCCESS;
 		BlockPos targetPos=pos.relative(blockState.getValue(FACING));
-		// Wrench logika
 		if(heldItem.getItem() instanceof WrenchItem){
 			world.setBlock(pos,blockState.setValue(FACING,blockState.getValue(FACING).getClockWise()),3);
 			AllSoundEvents.WRENCH_ROTATE.playOnServer(world,pos,1.0F,Create.RANDOM.nextFloat()*0.5F+0.5F);
 			return ItemInteractionResult.SUCCESS;
 		}
-		// Zjistíme capability tanku za drainem
 		IFluidHandler cap=world.getCapability(Capabilities.FluidHandler.BLOCK,targetPos,blockState.getValue(FACING).getOpposite());
 		if(cap==null) cap=world.getCapability(Capabilities.FluidHandler.BLOCK,targetPos,blockState.getValue(FACING));
 		if(cap==null) cap=world.getCapability(Capabilities.FluidHandler.BLOCK,targetPos,null);
 		if(cap==null) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-		// 1. Kliknutí kbelíkem
 		if(heldItem.is(Items.BUCKET)){
 			FluidStack drainedSim=cap.drain(1000,IFluidHandler.FluidAction.SIMULATE);
 			if(drainedSim.isEmpty()||drainedSim.getAmount()<1000) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
@@ -83,9 +80,7 @@ public class FluidDrain extends Block implements SimpleWaterloggedBlock{
 			var fluidHandlerItem=FluidUtil.getFluidHandler(heldItem);
 			if(fluidHandlerItem.isPresent()){
 				var result=FluidUtil.tryFillContainerAndStow(heldItem,cap,new PlayerInvWrapper(player.getInventory()),1000,player,true);
-				if(result.isSuccess()){
-					return ItemInteractionResult.SUCCESS;
-				}
+				if(result.isSuccess()) return ItemInteractionResult.SUCCESS;
 			}
 		}
 		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;

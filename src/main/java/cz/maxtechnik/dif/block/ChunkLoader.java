@@ -28,13 +28,7 @@ import org.jetbrains.annotations.Nullable;
 public class ChunkLoader extends Block implements EntityBlock, IWrenchable{
 	public static final BooleanProperty LIT=BlockStateProperties.LIT;
 	public ChunkLoader(){
-		super(BlockBehaviour.Properties.of()
-				.mapColor(MapColor.METAL)
-				.strength(3.5F)
-				.sound(SoundType.LODESTONE)
-				.requiresCorrectToolForDrops()
-				.pushReaction(PushReaction.BLOCK)
-				.lightLevel(s->s.getValue(LIT)?12:0));
+		super(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5F).sound(SoundType.LODESTONE).requiresCorrectToolForDrops().pushReaction(PushReaction.BLOCK).lightLevel(s->s.getValue(LIT)?12:0));
 		this.registerDefaultState(this.stateDefinition.any().setValue(LIT,true));
 	}
 	@Override
@@ -50,35 +44,26 @@ public class ChunkLoader extends Block implements EntityBlock, IWrenchable{
 	public @NotNull RenderShape getRenderShape(@NotNull BlockState blockState){
 		return RenderShape.MODEL;
 	}
-	// Wrench interaction
 	@Override
 	public InteractionResult onWrenched(BlockState blockState,UseOnContext context){
 		Level level=context.getLevel();
 		BlockPos pos=context.getClickedPos();
-		if(!level.isClientSide){
-			if(level.getBlockEntity(pos) instanceof ChunkLoaderBlockEntity loader){
-				loader.cycleRadius(context.getPlayer());
-			}
-		}
+		if(!level.isClientSide) if(level.getBlockEntity(pos) instanceof ChunkLoaderBlockEntity loader) loader.cycleRadius(context.getPlayer());
 		return InteractionResult.SUCCESS;
 	}
-	// Lifecycle
 	@Override
 	public void setPlacedBy(Level level,@NotNull BlockPos pos,@NotNull BlockState blockState,@Nullable LivingEntity placer,@NotNull ItemStack itemStack){
 		if(!level.isClientSide&&placer instanceof Player player){
-			if(level.getBlockEntity(pos) instanceof ChunkLoaderBlockEntity be){
-				be.setOwner(player.getUUID(),player.getName().getString());
-				// Force initial chunk load — bypass the active==active guard
-				be.forceInitialLoad(!level.hasNeighborSignal(pos));
+			if(level.getBlockEntity(pos) instanceof ChunkLoaderBlockEntity blockEntity){
+				blockEntity.setOwner(player.getUUID(),player.getName().getString());
+				blockEntity.forceInitialLoad(!level.hasNeighborSignal(pos));
 			}
 		}
 	}
 	@Override
 	public void onRemove(BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,BlockState newState,boolean isMoving){
 		if(!blockState.is(newState.getBlock())){
-			if(level.getBlockEntity(pos) instanceof ChunkLoaderBlockEntity loader){
-				loader.handleRemoval();
-			}
+			if(level.getBlockEntity(pos) instanceof ChunkLoaderBlockEntity loader) loader.handleRemoval();
 			super.onRemove(blockState,level,pos,newState,isMoving);
 		}
 	}
@@ -88,13 +73,10 @@ public class ChunkLoader extends Block implements EntityBlock, IWrenchable{
 			boolean shouldBeLit=!level.hasNeighborSignal(pos);
 			if(blockState.getValue(LIT)!=shouldBeLit){
 				level.setBlock(pos,blockState.setValue(LIT,shouldBeLit),3);
-				if(level.getBlockEntity(pos) instanceof ChunkLoaderBlockEntity be){
-					be.updateStatus(shouldBeLit);
-				}
+				if(level.getBlockEntity(pos) instanceof ChunkLoaderBlockEntity blockEntity) blockEntity.updateStatus(shouldBeLit);
 			}
 		}
 	}
-	// Particles
 	@Override
 	public void animateTick(BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull RandomSource random){
 		if(!blockState.getValue(LIT)) return;

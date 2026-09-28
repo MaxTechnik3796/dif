@@ -43,8 +43,7 @@ public class SleepingBag extends Block{
 		BlockPos pos=context.getClickedPos();
 		BlockPos headPos=pos.relative(dir);
 		Level level=context.getLevel();
-		if(level.getBlockState(headPos).canBeReplaced(context)&&level.getWorldBorder().isWithinBounds(headPos))
-			return this.defaultBlockState().setValue(FACING,dir);
+		if(level.getBlockState(headPos).canBeReplaced(context)&&level.getWorldBorder().isWithinBounds(headPos)) return this.defaultBlockState().setValue(FACING,dir);
 		return null;
 	}
 	@Override
@@ -89,7 +88,7 @@ public class SleepingBag extends Block{
 			if(!blockState.is(this)) return InteractionResult.FAIL;
 		}
 		if(!BedBlock.canSetSpawn(level)){
-			level.explode(null,pos.getX()+0.5,pos.getY()+0.5,pos.getZ()+0.5,5.0F,Level.ExplosionInteraction.BLOCK);
+			level.explode(null,pos.getX()+0.5,pos.getY()+0.5,pos.getZ()+0.5,5F,Level.ExplosionInteraction.BLOCK);
 			return InteractionResult.SUCCESS;
 		}
 		if(blockState.getValue(OCCUPIED)){

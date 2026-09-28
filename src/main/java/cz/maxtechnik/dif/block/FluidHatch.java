@@ -73,19 +73,19 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 		super.attack(blockState,world,pos,player);
 		if(world.isClientSide||!(player instanceof ServerPlayer serverPlayer)||DifMod.playerGameModeIsCreativeCategory(serverPlayer)) return;
 		if(!blockState.getValue(XP)||isOnCooldown(player)) return;
-		handleXpExtraction(world,pos,blockState,player,player.isShiftKeyDown()?30:1);
+		handleXpExtraction(world,pos,blockState,player,player.isCrouching()?30:1);
 	}
 	@Override
 	protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack heldItem,@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Player player,@NotNull InteractionHand hand,@NotNull BlockHitResult hit){
 		if(world.isClientSide()) return ItemInteractionResult.SUCCESS;
 		if(heldItem.getItem() instanceof WrenchItem){
 			world.setBlock(pos,blockState.setValue(XP,!blockState.getValue(XP)),3);
-			AllSoundEvents.WRENCH_ROTATE.playOnServer(world,pos,1.0F,Create.RANDOM.nextFloat()*0.5F+0.5F);
+			AllSoundEvents.WRENCH_ROTATE.playOnServer(world,pos,1F,Create.RANDOM.nextFloat()*0.5F+0.5F);
 			return ItemInteractionResult.SUCCESS;
 		}
 		if(blockState.getValue(XP)){
 			if(isOnCooldown(player)) return ItemInteractionResult.SUCCESS;
-			handleXpInsertion(world,pos,blockState,player,player.isShiftKeyDown());
+			handleXpInsertion(world,pos,blockState,player,player.isCrouching());
 			return ItemInteractionResult.SUCCESS;
 		}
 		var fluidHandlerItem=FluidUtil.getFluidHandler(heldItem);
@@ -97,7 +97,7 @@ public class FluidHatch extends Block implements SimpleWaterloggedBlock{
 			FluidStack fluidToFill=new FluidStack(containedFluid.getFluid(),1000);
 			if(cap.fill(fluidToFill,IFluidHandler.FluidAction.SIMULATE)>=1000){
 				cap.fill(fluidToFill,IFluidHandler.FluidAction.EXECUTE);
-				if(!player.getAbilities().instabuild){
+				if(!DifMod.playerGameModeIsCreativeCategory((ServerPlayer)player)){
 					heldItem.shrink(1);
 					ItemStack emptyBucket=new ItemStack(Items.BUCKET);
 					if(heldItem.isEmpty()) player.setItemInHand(hand,emptyBucket);

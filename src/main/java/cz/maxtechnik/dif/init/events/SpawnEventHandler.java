@@ -22,11 +22,7 @@ public class SpawnEventHandler{
 		int radius=DifModServerConfig.MEGA_TORCH_RADIUS.get();
 		int x=pos.getX();
 		int z=pos.getZ();
-		for(BlockPos torchPos: torches){
-			if(Math.abs(torchPos.getX()-x)<=radius&&Math.abs(torchPos.getZ()-z)<=radius){
-				return true;
-			}
-		}
+		for(BlockPos torchPos: torches) if(Math.abs(torchPos.getX()-x)<=radius&&Math.abs(torchPos.getZ()-z)<=radius) return true;
 		return false;
 	}
 	public static boolean isSpawnAllowed(EntityType<?> type,MobSpawnType spawnType){
@@ -46,27 +42,19 @@ public class SpawnEventHandler{
 		if(isSpawnAllowed(event.getEntity().getType(),event.getSpawnType())) return;
 		ServerLevel serverLevel=event.getLevel().getLevel();
 		BlockPos spawnPos=BlockPos.containing(event.getX(),event.getY(),event.getZ());
-		if(isNearTorch(serverLevel,spawnPos)){
-			event.setResult(MobSpawnEvent.PositionCheck.Result.FAIL);
-		}
+		if(isNearTorch(serverLevel,spawnPos)) event.setResult(MobSpawnEvent.PositionCheck.Result.FAIL);
 	}
 	@SubscribeEvent
 	public static void onFinalizeSpawn(FinalizeSpawnEvent event){
 		if(isSpawnAllowed(event.getEntity().getType(),event.getSpawnType())) return;
 		ServerLevel serverLevel=event.getLevel().getLevel();
 		BlockPos spawnPos=BlockPos.containing(event.getX(),event.getY(),event.getZ());
-		if(isNearTorch(serverLevel,spawnPos)){
-			event.setSpawnCancelled(true);
-		}
+		if(isNearTorch(serverLevel,spawnPos)) event.setSpawnCancelled(true);
 	}
 	@SubscribeEvent
 	public static void onPlayerSpawnPhantoms(PlayerSpawnPhantomsEvent event){
 		if(!EntityType.PHANTOM.is(MegaTorch.BLOCKED_MOBS)) return;
 		Player player=event.getEntity();
-		if(player.level() instanceof ServerLevel serverLevel){
-			if(isNearTorch(serverLevel,player.blockPosition())){
-				event.setResult(PlayerSpawnPhantomsEvent.Result.DENY);
-			}
-		}
+		if(player.level() instanceof ServerLevel serverLevel) if(isNearTorch(serverLevel,player.blockPosition())) event.setResult(PlayerSpawnPhantomsEvent.Result.DENY);
 	}
 }
