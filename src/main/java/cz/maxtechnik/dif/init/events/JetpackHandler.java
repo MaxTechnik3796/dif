@@ -88,8 +88,8 @@ public class JetpackHandler{
 			verticalVelocity.remove(uid);
 			return;
 		}
-		float decel=MAX_VELOCITY/DECAL_TICKS;
-		curVel=Math.max(0,curVel-decel);
+		float decal=MAX_VELOCITY/DECAL_TICKS;
+		curVel=Math.max(0,curVel-decal);
 		verticalVelocity.put(uid,curVel);
 		if(curVel>0){
 			Vec3 motion=player.getDeltaMovement();
