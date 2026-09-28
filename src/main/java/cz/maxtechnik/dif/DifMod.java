@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
 import cz.maxtechnik.dif.command.IsChunkLoadedCommand;
+import cz.maxtechnik.dif.config.DifModClientConfig;
 import cz.maxtechnik.dif.config.DifModCommonConfig;
 import cz.maxtechnik.dif.config.DifModServerConfig;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
@@ -97,6 +98,7 @@ public class DifMod{
 		bus.addListener(this::commonSetup);
 		modContainer.registerConfig(ModConfig.Type.COMMON,DifModCommonConfig.SPEC);
 		modContainer.registerConfig(ModConfig.Type.SERVER,DifModServerConfig.SPEC);
+		modContainer.registerConfig(ModConfig.Type.CLIENT,DifModClientConfig.SPEC);
 		bus.addListener(DifModCapabilities::registerCapabilities);
 		bus.addListener((RegisterTicketControllersEvent event)->event.register(CHUNK_LOADER_TICKETS));
 	}
