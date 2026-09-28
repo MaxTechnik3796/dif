@@ -80,43 +80,14 @@ public class ChunkLoader extends Block implements EntityBlock, IWrenchable{
 	@Override
 	public void animateTick(BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull RandomSource random){
 		if(!blockState.getValue(LIT)) return;
-		double cx=pos.getX()+0.5, cy=pos.getY()+0.5, cz=pos.getZ()+0.5;
-		double time=level.getGameTime()*0.2;
-		int ri=0;
-		if(level.getBlockEntity(pos) instanceof ChunkLoaderBlockEntity be) ri=be.getRadius();
-		double orbitRadius=1.1+ri*0.25;
-		for(int orbit=0;orbit<3;orbit++){
-			double offset=(orbit*Math.PI*2)/3;
-			for(int seg=0;seg<12;seg++){
-				double t=time-seg*0.08;
-				double a=Math.cos(t+offset)*orbitRadius;
-				double b=Math.sin(t+offset)*orbitRadius;
-				double x, y, z;
-				switch(orbit){
-					case 0 -> {
-						x=cx+a;
-						y=cy+b;
-						z=cz;
-					}
-					case 1 -> {
-						x=cx+a;
-						y=cy;
-						z=cz+b;
-					}
-					default -> {
-						x=cx;
-						y=cy+a;
-						z=cz+b;
-					}
-				}
-				level.addParticle(seg==0?ParticleTypes.END_ROD:ParticleTypes.PORTAL,x,y,z,0,0,0);
-			}
-		}
-		if(random.nextFloat()<0.3F){
-			level.addParticle(ParticleTypes.WITCH,
-					pos.getX()+random.nextDouble(),
-					pos.getY()+random.nextDouble(),
-					pos.getZ()+random.nextDouble(),0,0,0);
+		for(int i=0;i<2;i++){
+			double x=pos.getX()+0.5+(random.nextDouble()-0.5)*1.4;
+			double y=pos.getY()+0.5+(random.nextDouble()-0.5)*1.4;
+			double z=pos.getZ()+0.5+(random.nextDouble()-0.5)*1.4;
+			double vx=(random.nextDouble()-0.5)*0.1;
+			double vy=(random.nextDouble()-0.5)*0.1;
+			double vz=(random.nextDouble()-0.5)*0.1;
+			level.addParticle(ParticleTypes.PORTAL,x,y,z,vx,vy,vz);
 		}
 	}
 }

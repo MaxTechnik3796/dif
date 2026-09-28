@@ -27,9 +27,8 @@ import java.util.UUID;
 @EventBusSubscriber(modid=DifMod.MODID)
 public class JetpackHandler{
 	private static final float FLY_SPEED=0.5F;
-	private static final int FLY_COST=1;
-	private static final int HOVER_COST=1;
-	private static final int HOVER_INTERVAL=8;
+	private static final int FUEL_COST=1;
+	private static final int FUEL_INTERVAL=4;
 	private static final Map<UUID,Integer> lastFlyTick=new HashMap<>();
 	@SubscribeEvent
 	public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event){
@@ -39,7 +38,7 @@ public class JetpackHandler{
 	public static void onPlayerTick(PlayerTickEvent.Post event){
 		Player player=event.getEntity();
 		ItemStack chest=player.getItemBySlot(EquipmentSlot.CHEST);
-		if(DifMod.playerGameModeIsCreativeCategory((ServerPlayer)player)) return;
+		if(player.isCreative()||player.isSpectator()) return;
 		if(!(chest.getItem() instanceof Jetpack)) return;
 		tickHover(player,chest);
 		if(player.level().isClientSide()&&player.isLocalPlayer()) showOverlay(player,chest);
@@ -54,8 +53,7 @@ public class JetpackHandler{
 		double yMotion=player.isCrouching()?0:FLY_SPEED;
 		player.setDeltaMovement(motion.x,yMotion,motion.z);
 		resetFall(player);
-		boolean hovering=Jetpack.Chestplate.isHovering(chest);
-		if(!hovering||player.tickCount%HOVER_INTERVAL==0) consumeFuel(player,chest,hovering?HOVER_COST:FLY_COST);
+		if(player.tickCount%FUEL_INTERVAL==0) consumeFuel(player,chest);
 		spawnParticles(player);
 	}
 	public static void toggleHover(Player player){
@@ -77,7 +75,7 @@ public class JetpackHandler{
 		double newY=player.isCrouching()?-0.25:0;
 		player.setDeltaMovement(motion.x,newY,motion.z);
 		resetFall(player);
-		if(player.tickCount%HOVER_INTERVAL==0) consumeFuel(player,chest,HOVER_COST);
+		if(player.tickCount%FUEL_INTERVAL==0) consumeFuel(player,chest);
 		spawnParticles(player);
 	}
 	private static boolean isFlying(Player player){
@@ -88,10 +86,10 @@ public class JetpackHandler{
 		player.fallDistance=0;
 		player.resetFallDistance();
 	}
-	private static void consumeFuel(Player player,ItemStack chest,int amount){
+	private static void consumeFuel(Player player,ItemStack chest){
 		if(!player.level().isClientSide()){
 			int current=Jetpack.Chestplate.getThrust(chest);
-			Jetpack.Chestplate.setThrust(chest,Math.max(0,current-amount));
+			Jetpack.Chestplate.setThrust(chest,Math.max(0,current- JetpackHandler.FUEL_COST));
 			syncFuel(player,chest);
 		}
 	}
