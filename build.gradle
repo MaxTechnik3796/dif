@@ -114,7 +114,7 @@ dependencies{
     runtimeOnly"curse.maven:balm-531761:7420963"
     runtimeOnly"curse.maven:kotlin-for-forge-351264:7471280"
     runtimeOnly"curse.maven:worldedit-225608:5830452"
-    runtimeOnly"curse.maven:sable-1312371:8263584"
+    runtimeOnly"curse.maven:sable-1312371:8673825"
     runtimeOnly fileTree(dir:'libs',include:['*.jar'])
     implementation fileTree(dir:'sourceLibs',include:['*.jar'])
 }
