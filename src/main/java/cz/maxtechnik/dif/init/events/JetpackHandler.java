@@ -4,17 +4,13 @@ import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.other.DifModKeys;
 import cz.maxtechnik.dif.item.armor.Jetpack;
 import cz.maxtechnik.dif.network.JetpackSyncMessage;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -41,7 +37,6 @@ public class JetpackHandler{
 		if(player.isCreative()||player.isSpectator()) return;
 		if(!(chest.getItem() instanceof Jetpack)) return;
 		tickHover(player,chest);
-		if(player.level().isClientSide()&&player.isLocalPlayer()) showOverlay(player,chest);
 	}
 	public static void fly(Player player){
 		ItemStack chest=player.getItemBySlot(EquipmentSlot.CHEST);
@@ -107,18 +102,5 @@ public class JetpackHandler{
 		if(player.level().isClientSide()) player.level().addParticle(ParticleTypes.FLAME,bx,by,bz,vx,vy,vz);
 		else if(player.level() instanceof ServerLevel level&&player.tickCount%4==0) level.sendParticles(ParticleTypes.FLAME,bx,by,bz,1,vx,vy,vz,0.02);
 
-	}
-	@Deprecated
-	@OnlyIn(Dist.CLIENT)
-	private static void showOverlay(Player player,ItemStack chest){
-		int thrust=Jetpack.Chestplate.getThrust(chest);
-		int max=Jetpack.Chestplate.getMax();
-		int pct=max>0?(thrust*100)/max:0;
-		boolean off=Jetpack.Chestplate.isOff(chest);
-		boolean hovering=Jetpack.Chestplate.isHovering(chest);
-		String status=off?"OFF":(hovering?"Hover: ON":"Hover: OFF");
-		ChatFormatting color=thrust<=0?ChatFormatting.RED:(off?ChatFormatting.GRAY:(hovering?ChatFormatting.GREEN:ChatFormatting.AQUA));
-		Component msg=Component.literal(status+" | Thrust: "+thrust+" mB ("+pct+"%)").withStyle(color);
-		player.displayClientMessage(msg,true);
 	}
 }

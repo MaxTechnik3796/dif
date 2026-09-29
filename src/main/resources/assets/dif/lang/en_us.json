@@ -302,5 +302,9 @@
 	"info.dif.portal_gun.orange":"Orange",
 	"info.dif.portal_gun.out_of_astragel":"Out of AstraGel",
 	"info.dif.portal_gun.invalid_placement":"Invalid Placement",
-	"info.dif.portal_gun.invalid_position":"Invalid Position"
+	"info.dif.portal_gun.invalid_position":"Invalid Position",
+	"info.dif.jetpack.info_panel":"%1$s | Fuel: %2$s mB (%3$s%%)",
+	"info.dif.jetpack.thrust":"Thrust",
+	"info.dif.jetpack.hover":"Hover",
+	"info.dif.jetpack.off":"Off"
 }
