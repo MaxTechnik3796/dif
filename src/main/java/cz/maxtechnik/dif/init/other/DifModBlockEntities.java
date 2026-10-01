@@ -15,6 +15,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
+@SuppressWarnings("DataFlowIssue")
 public class DifModBlockEntities{
 	public static final DeferredRegister<BlockEntityType<?>> REGISTRY=DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE,DifMod.MODID);
 	public static final DeferredHolder<BlockEntityType<?>,BlockEntityType<SuperBoxBlockEntity>> SUPER_BOX=register("super_box",DifModBlocks.SUPER_BOX,SuperBoxBlockEntity::new);
