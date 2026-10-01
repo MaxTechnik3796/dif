@@ -3,6 +3,7 @@ package cz.maxtechnik.dif.init.basic;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.other.DifModFoods;
 import cz.maxtechnik.dif.init.other.DifModTiers;
+import cz.maxtechnik.dif.item.Assembly;
 import cz.maxtechnik.dif.item.blockitem.DistillationTankItem;
 import cz.maxtechnik.dif.item.blockitem.MithrilFluidTankItem;
 import cz.maxtechnik.dif.item.armor.CopperArmor;
@@ -114,8 +115,8 @@ public class DifModItems{
 	public static final DeferredItem<Item> SUPER_HEATED_CREATE_BOWL=REGISTRY.register("super_heated_create_bowl",()->new RetvalFoods(new  Item.Properties().food(DifModFoods.CREATE_SUPER),Items.BOWL,UseAnim.EAT));
 
 	//Tech & Stuff:
-	public static final DeferredItem<Item> INCOMPLETE_UNIVERSAL=REGISTRY.registerSimpleItem("incomplete_universal");
-	public static final DeferredItem<Item> DESTROYER=REGISTRY.register("destroyer", Destroyer::new);
+	public static final DeferredItem<Item> INCOMPLETE_UNIVERSAL=REGISTRY.register("incomplete_universal",()->new Assembly(new Item.Properties()));
+	public static final DeferredItem<Item> DESTROYER=REGISTRY.register("destroyer",Destroyer::new);
 	public static final DeferredItem<Item> BLUESTONE=REGISTRY.registerSimpleItem("bluestone");
 	public static final DeferredItem<Item> BLUE_PLATE=REGISTRY.registerSimpleItem("blue_plate");
 
@@ -123,7 +124,7 @@ public class DifModItems{
 	public static final DeferredItem<Item> MITHRIL=REGISTRY.registerSimpleItem("mithril");
 	public static final DeferredItem<Item> MITHRIL_TEMPLATE=REGISTRY.registerSimpleItem("mithril_template");
 	public static final DeferredItem<Item> MITHRIL_PLATE=REGISTRY.registerSimpleItem("mithril_plate");
-	public static final DeferredItem<Item> INCOMPLETE_MITHRIL_PLATE=REGISTRY.registerSimpleItem("incomplete_mithril_plate");
+	public static final DeferredItem<Item> INCOMPLETE_MITHRIL_PLATE=REGISTRY.register("incomplete_mithril_plate",()->new Assembly(new Item.Properties()));
 
 
 
