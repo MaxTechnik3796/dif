@@ -2,7 +2,7 @@
 	"type":"create:splashing",
 	"ingredients":[
 		{
-			"tag":"create:crushed_raw_materials"
+			"item":"dif:crushed_raw_nickel"
 		}
 	],
 	"results":[
