@@ -10,6 +10,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -21,6 +22,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
+
+import static cz.maxtechnik.dif.DifMod.goggleTooltipFix;
 public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleInformation{
 	public static final int MAX_RADIUS=2; // 0 = 1x1, 1 = 3x3, 2 = 5x5
 	private static final int CYCLE_COOLDOWN_TICKS=10;
@@ -37,9 +40,6 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 		this.ownerName=name;
 		this.setChanged();
 	}
-	public int getRadius(){
-		return radius;
-	}
 	public int getLoadedChunksCount(){
 		int side=2*radius+1;
 		return side*side;
@@ -48,35 +48,21 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 		int side=2*radius+1;
 		return side+"x"+side;
 	}
-	// Chunk forcing via TicketController
 	private void forceChunks(ServerLevel serverLevel,int r,boolean force){
 		ChunkPos center=new ChunkPos(worldPosition);
-		for(int dx=-r;dx<=r;dx++){
-			for(int dz=-r;dz<=r;dz++){
-				DifMod.CHUNK_LOADER_TICKETS.forceChunk(serverLevel,worldPosition,center.x+dx,center.z+dz,force,true);
-			}
-		}
+		for(int dx=-r;dx<=r;dx++) for(int dz=-r;dz<=r;dz++) DifMod.CHUNK_LOADER_TICKETS.forceChunk(serverLevel,worldPosition,center.x+dx,center.z+dz,force,true);
 	}
-	// Public API
 	public void cycleRadius(Player player){
 		if(!(level instanceof ServerLevel serverLevel)) return;
-		// Cooldown check
 		long gameTime=serverLevel.getGameTime();
 		if(gameTime-lastCycleTime<CYCLE_COOLDOWN_TICKS) return;
 		lastCycleTime=gameTime;
 		forceChunks(serverLevel,this.radius,false);
 		this.radius=(this.radius+1)%(MAX_RADIUS+1);
-		if(this.active){
-			forceChunks(serverLevel,this.radius,true);
-		}
+		if(this.active) forceChunks(serverLevel,this.radius,true);
 		syncAndSave(serverLevel);
-		serverLevel.playSound(null,worldPosition,SoundEvents.EXPERIENCE_ORB_PICKUP,SoundSource.BLOCKS,1.0F,0.8F+this.radius*0.3F);
-		if(player!=null){
-			player.displayClientMessage(
-					Component.literal("§6§lChunk Loader: §b"+getRadiusLabel()+" §7("+getLoadedChunksCount()+" chunks)"),
-					true
-			);
-		}
+		serverLevel.playSound(null,worldPosition,SoundEvents.EXPERIENCE_ORB_PICKUP,SoundSource.BLOCKS,1F,0.8F+this.radius*0.3F);
+		if(player!=null) player.displayClientMessage(Component.literal("§6§lChunk Loader: §b"+getRadiusLabel()+" §7("+getLoadedChunksCount()+" chunks)"),true);
 	}
 	public void updateStatus(boolean newActive){
 		if(this.active==newActive) return;
@@ -89,9 +75,7 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 	public void forceInitialLoad(boolean initialActive){
 		this.active=initialActive;
 		if(level instanceof ServerLevel serverLevel){
-			if(this.active){
-				forceChunks(serverLevel,this.radius,true);
-			}
+			if(this.active) forceChunks(serverLevel,this.radius,true);
 			syncAndSave(serverLevel);
 		}
 	}
@@ -99,8 +83,8 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 		if(level instanceof ServerLevel serverLevel){
 			forceChunks(serverLevel,this.radius,false);
 			ChunkLoaderData data=ChunkLoaderData.get(serverLevel);
-			net.minecraft.resources.ResourceLocation dimId=serverLevel.dimension().location();
-			data.loaders.removeIf(r->r.pos().equals(this.worldPosition)&&r.dimension().equals(dimId));
+			ResourceLocation dimId=serverLevel.dimension().location();
+			data.loaders.removeIf(loaderRecord->loaderRecord.pos().equals(this.worldPosition)&&loaderRecord.dimension().equals(dimId));
 			data.setDirty();
 		}
 	}
@@ -109,47 +93,37 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 		this.setChanged();
 		serverLevel.sendBlockUpdated(worldPosition,getBlockState(),getBlockState(),3);
 	}
-	// Goggles overlay
 	@Override
 	public boolean addToGoggleTooltip(List<Component> tooltip,boolean isPlayerSneaking){
-		tooltip.add(Component.literal("     Chunk Loader").withStyle(ChatFormatting.GOLD));
-		tooltip.add(Component.literal("     Status: ").withStyle(ChatFormatting.GRAY)
-				.append(active
-						?Component.literal("Active").withStyle(ChatFormatting.GREEN)
-						:Component.literal("Disabled (Redstone)").withStyle(ChatFormatting.RED)));
-		tooltip.add(Component.literal("     Range: ").withStyle(ChatFormatting.GRAY)
-				.append(Component.literal(getRadiusLabel()+" ("+getLoadedChunksCount()+" chunks)").withStyle(ChatFormatting.AQUA)));
-		if(ownerName!=null&&!ownerName.isEmpty()){
-			tooltip.add(Component.literal("     Owner: ").withStyle(ChatFormatting.GRAY)
-					.append(Component.literal(ownerName).withStyle(ChatFormatting.WHITE)));
-		}
+		tooltip.add(Component.literal(goggleTooltipFix+"Chunk Loader").withStyle(ChatFormatting.GOLD));
+		tooltip.add(Component.literal(goggleTooltipFix+"Status: ").withStyle(ChatFormatting.GRAY).append(active?Component.literal("Active").withStyle(ChatFormatting.GREEN):Component.literal("Disabled (Redstone)").withStyle(ChatFormatting.RED)));
+		tooltip.add(Component.literal(goggleTooltipFix+"Range: ").withStyle(ChatFormatting.GRAY).append(Component.literal(getRadiusLabel()+" ("+getLoadedChunksCount()+" chunks)").withStyle(ChatFormatting.AQUA)));
+		if(ownerName!=null&&!ownerName.isEmpty()) tooltip.add(Component.literal(goggleTooltipFix+"Owner: ").withStyle(ChatFormatting.GRAY).append(Component.literal(ownerName).withStyle(ChatFormatting.WHITE)));
 		return true;
 	}
-	// NBT
 	@Override
 	protected void loadAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider registries){
 		super.loadAdditional(tag,registries);
-		if(tag.contains("radius")) this.radius=tag.getInt("radius");
-		else if(tag.contains("is3x3")) this.radius=tag.getBoolean("is3x3")?1:0;
-		if(tag.contains("active")) this.active=tag.getBoolean("active");
-		if(tag.hasUUID("ownerUUID")) this.ownerUUID=tag.getUUID("ownerUUID");
-		if(tag.contains("ownerName")) this.ownerName=tag.getString("ownerName");
+		if(tag.contains("radius")) radius=tag.getInt("radius");
+		if(tag.contains("active")) active=tag.getBoolean("active");
+		if(tag.hasUUID("ownerUUID")) ownerUUID=tag.getUUID("ownerUUID");
+		if(tag.contains("ownerName")) ownerName=tag.getString("ownerName");
 	}
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider registries){
 		super.saveAdditional(tag,registries);
-		tag.putInt("radius",this.radius);
-		tag.putBoolean("active",this.active);
-		if(this.ownerUUID!=null) tag.putUUID("ownerUUID",this.ownerUUID);
-		if(this.ownerName!=null) tag.putString("ownerName",this.ownerName);
+		tag.putInt("radius",radius);
+		tag.putBoolean("active",active);
+		if(ownerUUID!=null) tag.putUUID("ownerUUID",ownerUUID);
+		if(ownerName!=null) tag.putString("ownerName",ownerName);
 	}
 	@Override
 	public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registries){
 		CompoundTag tag=new CompoundTag();
-		tag.putInt("radius",this.radius);
-		tag.putBoolean("active",this.active);
-		if(this.ownerUUID!=null) tag.putUUID("ownerUUID",this.ownerUUID);
-		if(this.ownerName!=null) tag.putString("ownerName",this.ownerName);
+		tag.putInt("radius",radius);
+		tag.putBoolean("active",active);
+		if(ownerUUID!=null) tag.putUUID("ownerUUID",ownerUUID);
+		if(ownerName!=null) tag.putString("ownerName",ownerName);
 		return tag;
 	}
 	@Override

@@ -111,12 +111,8 @@ public class DifMod{
 		for(ChunkLoaderData.LoaderRecord record: data.getLoadersForDimension(level.dimension())){
 			if(record.active()){
 				ChunkPos center=new ChunkPos(record.pos());
-				int r=record.radius();
-				for(int x=-r;x<=r;x++){
-					for(int z=-r;z<=r;z++){
-						CHUNK_LOADER_TICKETS.forceChunk(level,record.pos(),center.x+x,center.z+z,true,true);
-					}
-				}
+				int radius=record.radius();
+				for(int x=-radius;x<=radius;x++) for(int z=-radius;z<=radius;z++) CHUNK_LOADER_TICKETS.forceChunk(level,record.pos(),center.x+x,center.z+z,true,true);
 			}
 		}
 	}

@@ -14,21 +14,18 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.material.PushReaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 public class ChunkLoader extends Block implements EntityBlock, IWrenchable{
 	public static final BooleanProperty LIT=BlockStateProperties.LIT;
-	public ChunkLoader(){
-		super(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5F).sound(SoundType.LODESTONE).requiresCorrectToolForDrops().pushReaction(PushReaction.BLOCK).lightLevel(s->s.getValue(LIT)?12:0));
+	public ChunkLoader(BlockBehaviour.Properties properties){
+		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(LIT,true));
 	}
 	@Override

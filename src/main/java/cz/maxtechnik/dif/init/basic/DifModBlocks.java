@@ -23,7 +23,7 @@ import static net.minecraft.world.level.block.Blocks.GOLD_ORE;
 public class DifModBlocks{
 	public static final DeferredRegister.Blocks REGISTRY=DeferredRegister.createBlocks(DifMod.MODID);
 	//Random:
-	public static final DeferredBlock<Block>CHUNK_LOADER=REGISTRY.register("chunk_loader",ChunkLoader::new);
+	public static final DeferredBlock<Block>CHUNK_LOADER=REGISTRY.register("chunk_loader",()->new ChunkLoader(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5F).sound(SoundType.LODESTONE).requiresCorrectToolForDrops().pushReaction(PushReaction.BLOCK).lightLevel(blockState->blockState.getValue(ChunkLoader.LIT)?12:0)));
 	public static final DeferredBlock<Block>FAST_POWERED_RAIL=REGISTRY.register("fast_powered_rail",()->new FastPoweredRailBlock(BlockBehaviour.Properties.of().noCollission().strength(0.7F).sound(SoundType.METAL)));
 	public static final DeferredBlock<Block>FAST_RAIL=REGISTRY.register("fast_rail",()->new FastRailBlock(BlockBehaviour.Properties.of().noCollission().strength(0.7F).sound(SoundType.METAL)));
 	//Sleeping Bags:
