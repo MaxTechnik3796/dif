@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.init.events.nuke;
+package cz.maxtechnik.dif.init.event.nuke;
 
 import cz.maxtechnik.dif.DifMod;
 import net.minecraft.core.BlockPos;

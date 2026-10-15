@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.init.events.client;
+package cz.maxtechnik.dif.init.event.client;
 
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.other.DifModMobEffects;

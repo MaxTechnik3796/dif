@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.init.events.client;
+package cz.maxtechnik.dif.init.event.client;
 
 import com.simibubi.create.content.fluids.tank.FluidTankCTBehaviour;
 import com.simibubi.create.foundation.block.connected.CTModel;

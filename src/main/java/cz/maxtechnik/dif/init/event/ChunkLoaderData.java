@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.init.events;
+package cz.maxtechnik.dif.init.event;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;

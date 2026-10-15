@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.network;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.init.events.client.ClientVisualEffectsRenderer;
+import cz.maxtechnik.dif.init.event.client.ClientVisualEffectsRenderer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

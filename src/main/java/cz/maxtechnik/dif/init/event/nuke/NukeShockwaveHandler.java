@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.init.events.nuke;
+package cz.maxtechnik.dif.init.event.nuke;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;

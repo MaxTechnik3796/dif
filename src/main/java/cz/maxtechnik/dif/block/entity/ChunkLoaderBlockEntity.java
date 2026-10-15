@@ -2,7 +2,7 @@ package cz.maxtechnik.dif.block.entity;
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.init.events.ChunkLoaderData;
+import cz.maxtechnik.dif.init.event.ChunkLoaderData;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;

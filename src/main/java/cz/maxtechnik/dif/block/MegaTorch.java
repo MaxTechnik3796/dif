@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.block;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.init.events.TorchSavedData; // Zkontroluj, že odpovídá tvému balíčku!
+import cz.maxtechnik.dif.init.event.TorchSavedData; // Zkontroluj, že odpovídá tvému balíčku!
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;

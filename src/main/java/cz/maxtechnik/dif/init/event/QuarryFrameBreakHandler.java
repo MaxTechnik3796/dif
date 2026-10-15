@@ -1,4 +1,4 @@
-package cz.maxtechnik.dif.init.events;
+package cz.maxtechnik.dif.init.event;
 
 import cz.maxtechnik.dif.block.entity.QuarryBlockEntity;
 import cz.maxtechnik.dif.block.entity.QuarryFrameBlockEntity;

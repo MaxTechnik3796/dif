@@ -1,10 +1,10 @@
 package cz.maxtechnik.dif.entity.bomb;
 
-import cz.maxtechnik.dif.init.events.client.NukeSoundEffect;
-import cz.maxtechnik.dif.init.events.nuke.NukeCraterHandler;
-import cz.maxtechnik.dif.init.events.nuke.NukeParticleHandler;
-import cz.maxtechnik.dif.init.events.nuke.NukeRadiationHandler;
-import cz.maxtechnik.dif.init.events.nuke.NukeShockwaveHandler;
+import cz.maxtechnik.dif.init.event.client.NukeSoundEffect;
+import cz.maxtechnik.dif.init.event.nuke.NukeCraterHandler;
+import cz.maxtechnik.dif.init.event.nuke.NukeParticleHandler;
+import cz.maxtechnik.dif.init.event.nuke.NukeRadiationHandler;
+import cz.maxtechnik.dif.init.event.nuke.NukeShockwaveHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;

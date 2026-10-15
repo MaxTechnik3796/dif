@@ -2,7 +2,7 @@ package cz.maxtechnik.dif.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import cz.maxtechnik.dif.init.events.ChunkLoaderData;
+import cz.maxtechnik.dif.init.event.ChunkLoaderData;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
