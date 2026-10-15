@@ -16,11 +16,13 @@ import net.minecraft.world.level.block.state.BlockState;
 public class NukeCraterHandler{
 	private static final TagKey<Block> C_STONES=BlockTags.create(ResourceLocation.fromNamespaceAndPath("c","stones"));
 	private static final TagKey<Block> NUKE_WATER_PLANTS=BlockTags.create(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"nuke_water_plants"));
+	//odtud
 	private static final int BLOCKS_PER_TICK=36_000;
 	private static final float MAX_DESTROYABLE_RESISTANCE=1500F;
 	private static final double HOR_R_FULL=56.0, HOR_R_TOTAL=72.0;
 	private static final double UP_R_FULL=36.0, UP_R_TOTAL=48.0;
 	private static final double DOWN_R_FULL=20.0, DOWN_R_TOTAL=28.0;
+	//potud dát do configu tyto hodnoty
 	private static final double HOR_FULL_SQ=HOR_R_FULL*HOR_R_FULL, HOR_TOTAL_SQ=HOR_R_TOTAL*HOR_R_TOTAL;
 	private static final double UP_FULL_SQ=UP_R_FULL*UP_R_FULL, UP_TOTAL_SQ=UP_R_TOTAL*UP_R_TOTAL;
 	private static final double DN_FULL_SQ=DOWN_R_FULL*DOWN_R_FULL, DN_TOTAL_SQ=DOWN_R_TOTAL*DOWN_R_TOTAL;
