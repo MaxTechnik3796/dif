@@ -5,29 +5,29 @@ public class DifModServerConfig{
 	private static final ModConfigSpec.Builder BUILDER=new ModConfigSpec.Builder();
 	public static final ModConfigSpec SPEC;
 	public static final int MAX=Integer.MAX_VALUE;
-	public static final double DOUBLE_MAX=1_000_000.0D;
-	// General
+	public static final double DOUBLE_MAX=1_000_000D;
+	//General:
 	public static final ModConfigSpec.IntValue MEGA_TORCH_RADIUS;
 	public static final ModConfigSpec.IntValue NANO_GLASS_MAX_SPREAD;
 	public static final ModConfigSpec.IntValue JETPACK_CAPACITY;
 	public static final ModConfigSpec.IntValue ELECTRUM_DEFORESTER_MAX_LOGS;
 	public static final ModConfigSpec.IntValue MITHRIL_FLUID_TANK_CAPACITY;
 	public static final ModConfigSpec.DoubleValue QUARRY_STRESS_IMPACT;
-	// Solar Panels
+	//Solar Panels:
 	public static final ModConfigSpec.IntValue SOLAR_PANEL_00;
 	public static final ModConfigSpec.IntValue SOLAR_PANEL_01;
-	// Burning Generator
+	//Burning Generator:
 	public static final ModConfigSpec.IntValue BURNING_GENERATOR_ENERGY_PER_TICK;
 	public static final ModConfigSpec.IntValue BURNING_GENERATOR_MAX_ENERGY;
 	public static final ModConfigSpec.IntValue BURNING_GENERATOR_MAX_EXTRACT;
-	// Fast Rails
+	//Fast Rails:
 	public static final ModConfigSpec.DoubleValue FAST_RAIL_TOP_SPEED;
 	public static final ModConfigSpec.DoubleValue FAST_POWERED_RAIL_ACCELERATION;
-	// Portal Gun
+	//Portal Gun:
 	public static final ModConfigSpec.IntValue PORTAL_GUN_CAPACITY;
 	public static final ModConfigSpec.IntValue PORTAL_MAX_DISTANCE;
 	public static final ModConfigSpec.BooleanValue PORTAL_ALLOW_ENTITIES;
-	// Engines
+	//Engines:
 	public static final ModConfigSpec.DoubleValue ENGINE_DIESEL_RPM;
 	public static final ModConfigSpec.DoubleValue ENGINE_DIESEL_SU;
 	public static final ModConfigSpec.DoubleValue ENGINE_DIESEL_CONSUMPTION;
@@ -46,6 +46,12 @@ public class DifModServerConfig{
 	public static final ModConfigSpec.DoubleValue ENGINE_LPG_CONSUMPTION;
 	public static final ModConfigSpec.DoubleValue ENGINE_LPG_PORTABLE_SU;
 	public static final ModConfigSpec.DoubleValue ENGINE_LPG_PORTABLE_CONSUMPTION;
+	//Nuke:
+	public static final ModConfigSpec.IntValue NUKE_BLOCKS_PER_TICK;
+	public static final ModConfigSpec.DoubleValue NUKE_MAX_DESTROYABLE_RESISTANCE;
+	public static final ModConfigSpec.DoubleValue NUKE_HOR_R_FULL, NUKE_HOR_R_TOTAL;
+	public static final ModConfigSpec.DoubleValue NUKE_UP_R_FULL, NUKE_UP_R_TOTAL;
+	public static final ModConfigSpec.DoubleValue NUKE_DOWN_R_FULL, NUKE_DOWN_R_TOTAL;
 	static{
 		BUILDER.push("GeneralSettings");
 		MEGA_TORCH_RADIUS=BUILDER.defineInRange("mega_torch_radius",128,32,8192);
@@ -75,31 +81,40 @@ public class DifModServerConfig{
 		BUILDER.pop();
 		BUILDER.push("Engines");
 		BUILDER.push("Diesel");
-		ENGINE_DIESEL_RPM=BUILDER.defineInRange("engine_diesel_rpm",128.0D,0.0D,DOUBLE_MAX);
-		ENGINE_DIESEL_SU=BUILDER.defineInRange("engine_diesel_su",160.0D,0.0D,DOUBLE_MAX);
-		ENGINE_DIESEL_CONSUMPTION=BUILDER.defineInRange("engine_diesel_consumption",2.5D,0.0D,DOUBLE_MAX);
-		ENGINE_DIESEL_PORTABLE_SU=BUILDER.defineInRange("engine_diesel_portable_su",142.0D,0.0D,DOUBLE_MAX);
-		ENGINE_DIESEL_PORTABLE_CONSUMPTION=BUILDER.defineInRange("engine_diesel_portable_consumption",2.2D,0.0D,DOUBLE_MAX);
+		ENGINE_DIESEL_RPM=BUILDER.defineInRange("engine_diesel_rpm",128D,0D,DOUBLE_MAX);
+		ENGINE_DIESEL_SU=BUILDER.defineInRange("engine_diesel_su",160D,0D,DOUBLE_MAX);
+		ENGINE_DIESEL_CONSUMPTION=BUILDER.defineInRange("engine_diesel_consumption",2.5D,0D,DOUBLE_MAX);
+		ENGINE_DIESEL_PORTABLE_SU=BUILDER.defineInRange("engine_diesel_portable_su",142D,0D,DOUBLE_MAX);
+		ENGINE_DIESEL_PORTABLE_CONSUMPTION=BUILDER.defineInRange("engine_diesel_portable_consumption",2.2D,0D,DOUBLE_MAX);
 		BUILDER.pop();
 		BUILDER.push("HeavyFuelOil");
-		ENGINE_HEAVY_FUEL_OIL_RPM=BUILDER.defineInRange("engine_heavy_fuel_oil_rpm",96.0D,0.0D,DOUBLE_MAX);
-		ENGINE_HEAVY_FUEL_OIL_SU=BUILDER.defineInRange("engine_heavy_fuel_oil_su",292.0D,0.0D,DOUBLE_MAX);
-		ENGINE_HEAVY_FUEL_OIL_CONSUMPTION=BUILDER.defineInRange("engine_heavy_fuel_oil_consumption",3.5D,0.0D,DOUBLE_MAX);
+		ENGINE_HEAVY_FUEL_OIL_RPM=BUILDER.defineInRange("engine_heavy_fuel_oil_rpm",96D,0D,DOUBLE_MAX);
+		ENGINE_HEAVY_FUEL_OIL_SU=BUILDER.defineInRange("engine_heavy_fuel_oil_su",292D,0D,DOUBLE_MAX);
+		ENGINE_HEAVY_FUEL_OIL_CONSUMPTION=BUILDER.defineInRange("engine_heavy_fuel_oil_consumption",3.5D,0D,DOUBLE_MAX);
 		BUILDER.pop();
 		BUILDER.push("Gasoline");
-		ENGINE_GASOLINE_RPM=BUILDER.defineInRange("engine_gasoline_rpm",192.0D,0.0D,DOUBLE_MAX);
-		ENGINE_GASOLINE_SU=BUILDER.defineInRange("engine_gasoline_su",86.0D,0.0D,DOUBLE_MAX);
-		ENGINE_GASOLINE_CONSUMPTION=BUILDER.defineInRange("engine_gasoline_consumption",2.0D,0.0D,DOUBLE_MAX);
-		ENGINE_GASOLINE_PORTABLE_SU=BUILDER.defineInRange("engine_gasoline_portable_su",74.0D,0.0D,DOUBLE_MAX);
-		ENGINE_GASOLINE_PORTABLE_CONSUMPTION=BUILDER.defineInRange("engine_gasoline_portable_consumption",1.7D,0.0D,DOUBLE_MAX);
+		ENGINE_GASOLINE_RPM=BUILDER.defineInRange("engine_gasoline_rpm",192D,0D,DOUBLE_MAX);
+		ENGINE_GASOLINE_SU=BUILDER.defineInRange("engine_gasoline_su",86D,0D,DOUBLE_MAX);
+		ENGINE_GASOLINE_CONSUMPTION=BUILDER.defineInRange("engine_gasoline_consumption",2D,0D,DOUBLE_MAX);
+		ENGINE_GASOLINE_PORTABLE_SU=BUILDER.defineInRange("engine_gasoline_portable_su",74D,0D,DOUBLE_MAX);
+		ENGINE_GASOLINE_PORTABLE_CONSUMPTION=BUILDER.defineInRange("engine_gasoline_portable_consumption",1.7D,0D,DOUBLE_MAX);
 		BUILDER.pop();
 		BUILDER.push("LPG");
-		ENGINE_LPG_RPM=BUILDER.defineInRange("engine_lpg_rpm",160.0D,0.0D,DOUBLE_MAX);
-		ENGINE_LPG_SU=BUILDER.defineInRange("engine_lpg_su",80.0D,0.0D,DOUBLE_MAX);
+		ENGINE_LPG_RPM=BUILDER.defineInRange("engine_lpg_rpm",160D,0D,DOUBLE_MAX);
+		ENGINE_LPG_SU=BUILDER.defineInRange("engine_lpg_su",80D,0D,DOUBLE_MAX);
 		ENGINE_LPG_CONSUMPTION=BUILDER.defineInRange("engine_lpg_consumption",1.5D,0.0D,DOUBLE_MAX);
-		ENGINE_LPG_PORTABLE_SU=BUILDER.defineInRange("engine_lpg_portable_su",68.0D,0.0D,DOUBLE_MAX);
-		ENGINE_LPG_PORTABLE_CONSUMPTION=BUILDER.defineInRange("engine_lpg_portable_consumption",1.2D,0.0D,DOUBLE_MAX);
+		ENGINE_LPG_PORTABLE_SU=BUILDER.defineInRange("engine_lpg_portable_su",68D,0.0D,DOUBLE_MAX);
+		ENGINE_LPG_PORTABLE_CONSUMPTION=BUILDER.defineInRange("engine_lpg_portable_consumption",1.2D,0D,DOUBLE_MAX);
 		BUILDER.pop();
+		BUILDER.push("Nuke");
+		NUKE_BLOCKS_PER_TICK=BUILDER.defineInRange("nuke_blocks_per_tick",36000,0,MAX);
+		NUKE_MAX_DESTROYABLE_RESISTANCE=BUILDER.defineInRange("nuke_max_destroyable_resistance",1500D,0D,MAX);
+		NUKE_HOR_R_FULL=BUILDER.defineInRange("nuke_hor_r_full",56D,0D,MAX);
+		NUKE_HOR_R_TOTAL=BUILDER.defineInRange("nuke_hor_r_total",72D,0D,MAX);
+		NUKE_UP_R_FULL=BUILDER.defineInRange("nuke_up_r_full",36D,0D,MAX);
+		NUKE_UP_R_TOTAL=BUILDER.defineInRange("nuke_up_r_total",48D,0D,MAX);
+		NUKE_DOWN_R_FULL=BUILDER.defineInRange("nuke_down_r_full",20D,0D,MAX);
+		NUKE_DOWN_R_TOTAL=BUILDER.defineInRange("nuke_down_r_total",28D,0D,MAX);
 		BUILDER.pop();
 		SPEC=BUILDER.build();
 	}
