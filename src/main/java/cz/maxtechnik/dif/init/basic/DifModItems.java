@@ -1,11 +1,11 @@
 package cz.maxtechnik.dif.init.basic;
 
 import cz.maxtechnik.dif.DifMod;
+import cz.maxtechnik.dif.block.DistillationTank;
+import cz.maxtechnik.dif.block.MithrilFluidTank;
 import cz.maxtechnik.dif.init.other.DifModFoods;
 import cz.maxtechnik.dif.init.other.DifModTiers;
 import cz.maxtechnik.dif.item.Assembly;
-import cz.maxtechnik.dif.item.blockitem.DistillationTankItem;
-import cz.maxtechnik.dif.item.blockitem.MithrilFluidTankItem;
 import cz.maxtechnik.dif.item.armor.CopperArmor;
 import cz.maxtechnik.dif.item.armor.Jetpack;
 import cz.maxtechnik.dif.item.food.Beer;
@@ -65,8 +65,8 @@ public class DifModItems{
 	public static final DeferredItem<Item>QUARRY_LANDMARK=block(DifModBlocks.QUARRY_LANDMARK);
 	
 
-	public static final DeferredItem<Item> DISTILLATION_TANK=REGISTRY.register("distillation_tank",()->new DistillationTankItem(DifModBlocks.DISTILLATION_TANK.get(),new Item.Properties()));
-	public static final DeferredItem<Item> MITHRIL_FLUID_TANK=REGISTRY.register("mithril_fluid_tank",()->new MithrilFluidTankItem(DifModBlocks.MITHRIL_FLUID_TANK.get(),new Item.Properties()));
+	public static final DeferredItem<Item> DISTILLATION_TANK=REGISTRY.register("distillation_tank",()->new DistillationTank.TankItem(DifModBlocks.DISTILLATION_TANK.get(),new Item.Properties()));
+	public static final DeferredItem<Item> MITHRIL_FLUID_TANK=REGISTRY.register("mithril_fluid_tank",()->new MithrilFluidTank.TankItem(DifModBlocks.MITHRIL_FLUID_TANK.get(),new Item.Properties()));
 
 	public static final DeferredItem<Item>MEGA_TORCH=block(DifModBlocks.MEGA_TORCH);
 

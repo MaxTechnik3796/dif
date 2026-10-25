@@ -12,8 +12,9 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
 public class DistillationJEI{
 	public static final RecipeType<DistillationRecipe> TYPE=RecipeType.create(DifMod.MODID,"distillation",DistillationRecipe.class);
 	public static class Category extends JeiCompact.Category<DistillationRecipe>{
@@ -22,17 +23,14 @@ public class DistillationJEI{
 		}
 		@Override
 		public void setRecipe(@NotNull IRecipeLayoutBuilder builder,@NotNull DistillationRecipe recipe,@NotNull IFocusGroup focuses){
-			FluidStack[] matchingFluids=recipe.input().getFluids();
 			builder.addSlot(RecipeIngredientRole.INPUT,1,19)
 					.setStandardSlotBackground()
 					.setFluidRenderer(recipe.input().amount(),false,16,16)
-					.addIngredients(NeoForgeTypes.FLUID_STACK,java.util.Arrays.asList(matchingFluids));
+					.addIngredients(NeoForgeTypes.FLUID_STACK,Arrays.asList(recipe.input().getFluids()));
 			int size=recipe.outputs().size();
 			for(int i=0;i<size;i++){
-				int col=i%5;
-				int row=i/5;
-				int slotX=61+col*18;
-				int slotY=19+row*18-(size>5?9:0);
+				int slotX=61+(i%5)*18;
+				int slotY=19+(i/5)*18-(size>5?9:0);
 				builder.addSlot(RecipeIngredientRole.OUTPUT,slotX,slotY)
 						.setStandardSlotBackground()
 						.setFluidRenderer(recipe.outputs().get(i).getAmount(),false,16,16)
@@ -41,7 +39,8 @@ public class DistillationJEI{
 		}
 		@Override
 		public void createRecipeExtras(@NotNull IRecipeExtrasBuilder builder,@NotNull DistillationRecipe recipe,@NotNull IFocusGroup focuses){
-			builder.addAnimatedRecipeArrow(DistillationTankBlockEntity.BASE_TICKS).setPosition(26,19);
+			builder.addAnimatedRecipeArrowWidget(DistillationTankBlockEntity.BASE_TICKS).setPosition(26,19);
 		}
 	}
 }
+

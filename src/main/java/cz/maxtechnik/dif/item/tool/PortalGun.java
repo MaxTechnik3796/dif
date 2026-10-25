@@ -3,7 +3,6 @@ package cz.maxtechnik.dif.item.tool;
 import cz.maxtechnik.dif.config.DifModServerConfig;
 import cz.maxtechnik.dif.entity.portal.PortalData;
 import cz.maxtechnik.dif.entity.portal.PortalEntity;
-import cz.maxtechnik.dif.entity.portal.PortalPlacement;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -52,8 +51,7 @@ public class PortalGun extends Item{
 			CustomData customData=container.get(DataComponents.CUSTOM_DATA);
 			if(customData==null) return FluidStack.EMPTY;
 			int amount=customData.copyTag().getInt("astragel_amount");
-			if(amount<=0) return FluidStack.EMPTY;
-			return new FluidStack(DifModFluids.ASTRAGEL.source.get(),amount);
+			return amount>0?new FluidStack(DifModFluids.ASTRAGEL.source.get(),amount):FluidStack.EMPTY;
 		}
 		@Override
 		public int getTankCapacity(int tank){
@@ -66,13 +64,11 @@ public class PortalGun extends Item{
 		@Override
 		public int fill(FluidStack resource,@NotNull FluidAction action){
 			if(resource.isEmpty()||!isFluidValid(0,resource)) return 0;
-			FluidStack current=getFluidInTank(0);
-			int space=this.capacity-current.getAmount();
-			if(space<=0) return 0;
-			int toFill=Math.min(space,resource.getAmount());
+			int current=getFluidInTank(0).getAmount();
+			int toFill=Math.min(capacity-current,resource.getAmount());
+			if(toFill<=0) return 0;
 			if(action.execute()){
-				int newAmount=current.getAmount()+toFill;
-				CustomData.update(DataComponents.CUSTOM_DATA,container,tag->tag.putInt("astragel_amount",newAmount));
+				CustomData.update(DataComponents.CUSTOM_DATA,container,tag->tag.putInt("astragel_amount",current+toFill));
 			}
 			return toFill;
 		}
@@ -84,13 +80,13 @@ public class PortalGun extends Item{
 		@Override
 		public @NotNull FluidStack drain(int maxDrain,@NotNull FluidAction action){
 			if(maxDrain<=0) return FluidStack.EMPTY;
-			FluidStack current=getFluidInTank(0);
-			if(current.isEmpty()) return FluidStack.EMPTY;
-			int toDrain=Math.min(current.getAmount(),maxDrain);
+			int current=getFluidInTank(0).getAmount();
+			int toDrain=Math.min(current,maxDrain);
+			if(toDrain<=0) return FluidStack.EMPTY;
 			if(action.execute()){
-				int newAmount=current.getAmount()-toDrain;
+				int remaining=current-toDrain;
 				CustomData.update(DataComponents.CUSTOM_DATA,container,tag->{
-					if(newAmount>0) tag.putInt("astragel_amount",newAmount);
+					if(remaining>0) tag.putInt("astragel_amount",remaining);
 					else tag.remove("astragel_amount");
 				});
 			}
@@ -99,7 +95,8 @@ public class PortalGun extends Item{
 	}
 	private boolean isBlueMode(ItemStack gun){
 		CustomData data=gun.get(DataComponents.CUSTOM_DATA);
-		CompoundTag tag=data!=null?data.copyTag():new CompoundTag();
+		if(data==null) return true;
+		CompoundTag tag=data.copyTag();
 		return !tag.contains("mode")||tag.getBoolean("mode");
 	}
 	private void setMode(ItemStack gun,boolean blue){
@@ -108,36 +105,34 @@ public class PortalGun extends Item{
 	}
 	public static int getAstragelAmount(ItemStack gun){
 		IFluidHandlerItem handler=gun.getCapability(Capabilities.FluidHandler.ITEM);
-		if(handler==null) return 0;
-		return handler.getFluidInTank(0).getAmount();
+		return handler!=null?handler.getFluidInTank(0).getAmount():0;
 	}
 	public static void consumeAstragel(ItemStack gun,int amount){
 		IFluidHandlerItem handler=gun.getCapability(Capabilities.FluidHandler.ITEM);
-		if(handler==null) return;
-		FluidStack drainedSimulated=handler.drain(amount,IFluidHandler.FluidAction.SIMULATE);
-		if(drainedSimulated.getAmount()<amount) return;
-		handler.drain(amount,IFluidHandler.FluidAction.EXECUTE);
+		if(handler!=null&&handler.drain(amount,IFluidHandler.FluidAction.SIMULATE).getAmount()>=amount){
+			handler.drain(amount,IFluidHandler.FluidAction.EXECUTE);
+		}
 	}
 	@Override
 	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world,Player player,@NotNull InteractionHand hand){
 		ItemStack gun=player.getItemInHand(hand);
 		boolean isBlue=isBlueMode(gun);
-		int energy=getAstragelAmount(gun);
 		if(player.isCrouching()){
 			if(!world.isClientSide){
-				boolean mode=!isBlue;
-				setMode(gun,mode);
-				player.displayClientMessage(Component.translatable("info.dif.portal_gun.mode").append(": ").append(Component.translatable(mode?"info.dif.portal_gun.blue":"info.dif.portal_gun.orange")),true);
+				setMode(gun,!isBlue);
+				player.displayClientMessage(Component.translatable("info.dif.portal_gun.mode").append(": ").append(Component.translatable(!isBlue?"info.dif.portal_gun.blue":"info.dif.portal_gun.orange")),true);
 			}
 			return InteractionResultHolder.sidedSuccess(gun,world.isClientSide());
 		}
 		if(!world.isClientSide){
-			if(energy>=1||player.isCreative()){
+			if(getAstragelAmount(gun)>=1||player.isCreative()){
 				if(firePortal((ServerLevel)world,player,isBlue)){
 					if(!player.isCreative()) consumeAstragel(gun,1);
 					player.getCooldowns().addCooldown(this,10);
 				}
-			}else player.displayClientMessage(Component.translatable("info.dif.portal_gun.out_of_astragel"),true);
+			}else{
+				player.displayClientMessage(Component.translatable("info.dif.portal_gun.out_of_astragel"),true);
+			}
 		}
 		return InteractionResultHolder.success(gun);
 	}
@@ -147,14 +142,14 @@ public class PortalGun extends Item{
 		if(hit.getType()!=HitResult.Type.BLOCK) return false;
 		Direction face=hit.getDirection();
 		BlockPos hitPos=hit.getBlockPos();
-		Direction extDir=(face.getAxis()==Direction.Axis.Y)?player.getDirection():Direction.UP;
-		Vec3 spawnPos=PortalPlacement.align(world,hitPos,face,extDir,hit.getLocation());
+		Direction upDir=(face.getAxis()==Direction.Axis.Y)?player.getDirection():Direction.UP;
+		Vec3 spawnPos=PortalEntity.findPlacementPos(world,hitPos,face,upDir);
 		if(spawnPos==null){
 			player.displayClientMessage(Component.translatable("info.dif.portal_gun.invalid_placement"),true);
 			return false;
 		}
-		PortalEntity portal=new PortalEntity(world,player.getUUID(),isBlue,face,extDir,spawnPos);
-		if(PortalPlacement.hasOverlap(world,portal.getBoundingBox(),player.getUUID(),isBlue)){
+		PortalEntity portal=new PortalEntity(world,player.getUUID(),isBlue,face,upDir,spawnPos);
+		if(PortalEntity.hasOverlap(world,portal.getBoundingBox(),player.getUUID(),isBlue)){
 			player.displayClientMessage(Component.translatable("info.dif.portal_gun.invalid_position"),true);
 			return false;
 		}
@@ -182,13 +177,9 @@ public class PortalGun extends Item{
 	}
 	@Override
 	public int getBarWidth(@NotNull ItemStack stack){
-		IFluidHandlerItem handler=stack.getCapability(Capabilities.FluidHandler.ITEM);
-		if(handler==null) return 0;
 		int capacity=DifModServerConfig.PORTAL_GUN_CAPACITY.get();
 		if(capacity<=0) return 0;
-		FluidStack fluid=handler.getFluidInTank(0);
-		int amount=fluid.getAmount();
-		return Math.clamp(Math.round(13F*amount/(float)capacity),0,13);
+		return Math.clamp(Math.round(13F*getAstragelAmount(stack)/(float)capacity),0,13);
 	}
 	@Override
 	public int getBarColor(@NotNull ItemStack itemStack){

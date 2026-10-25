@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.block;
 
 import com.mojang.serialization.MapCodec;
+import cz.maxtechnik.dif.block.entity.QuarryBlockEntity;
 import cz.maxtechnik.dif.block.entity.QuarryFrameBlockEntity;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import net.minecraft.core.BlockPos;
@@ -74,6 +75,17 @@ public class QuarryFrame extends BaseEntityBlock{
 	@Override
 	public int getLightBlock(@NotNull BlockState blockState,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
 		return 0;
+	}
+	@Override
+	public void onRemove(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState newState,boolean isMoving){
+		if(!state.is(newState.getBlock())&&!level.isClientSide){
+			if(level.getBlockEntity(pos) instanceof QuarryFrameBlockEntity frame&&frame.getOwnerPos()!=null){
+				if(level.getBlockEntity(frame.getOwnerPos()) instanceof QuarryBlockEntity quarry){
+					quarry.onFrameDestroyed(level);
+				}
+			}
+		}
+		super.onRemove(state,level,pos,newState,isMoving);
 	}
 	@Override
 	public void neighborChanged(@NotNull BlockState blockState,@NotNull Level world,@NotNull BlockPos pos,@NotNull Block neighborBlock,@NotNull BlockPos fromPos,boolean moving){

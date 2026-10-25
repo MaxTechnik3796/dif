@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.block;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.init.event.TorchSavedData; // Zkontroluj, že odpovídá tvému balíčku!
+import cz.maxtechnik.dif.init.event.SpawnEventHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public class MegaTorch extends Block{
 	public static final BooleanProperty FORMED=BooleanProperty.create("formed");
 	public static final IntegerProperty PART=IntegerProperty.create("part",0,4);
+	public static final TagKey<EntityType<?>> BLOCKED_MOBS=TagKey.create(Registries.ENTITY_TYPE,ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"mega_torch_blocked"));
 	public MegaTorch(Properties properties){
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FORMED,false).setValue(PART,0));
@@ -38,47 +39,37 @@ public class MegaTorch extends Block{
 	@Override
 	public void onRemove(@NotNull BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState newState,boolean isMoving){
 		if(!blockState.is(newState.getBlock())){
-			if(!level.isClientSide&&level instanceof ServerLevel serverLevel&&blockState.getValue(FORMED)){
-				BlockPos bottom=pos.below(blockState.getValue(PART));
-				TorchSavedData.get(serverLevel).removeTorch(bottom);
+			if(level instanceof ServerLevel sl&&blockState.getValue(FORMED)){
+				SpawnEventHandler.get(sl).removeTorch(pos.below(blockState.getValue(PART)));
 			}
 			super.onRemove(blockState,level,pos,newState,isMoving);
 		}
 	}
 	private void checkMultiblock(Level level,BlockPos pos){
 		if(!level.getBlockState(pos).is(this)) return;
-		BlockPos bottom=findBottom(level,pos);
-		int height=countHeight(level,bottom);
-		boolean isValid=height==5&&noHorizontalNeighbors(level,bottom);
-		boolean isCurrentlyFormed=level.getBlockState(bottom).getValue(FORMED);
-		if(isValid&&!isCurrentlyFormed){
-			for(int i=0;i<5;i++)
-				level.setBlock(bottom.above(i),this.defaultBlockState().setValue(FORMED,true).setValue(PART,i),3);
-			if(level instanceof ServerLevel serverLevel) TorchSavedData.get(serverLevel).addTorch(bottom);
-		}else if(!isValid&&isCurrentlyFormed){
-			for(int i=0;i<height;i++){
-				BlockState blockState=level.getBlockState(bottom.above(i));
-				if(blockState.is(this)&&blockState.getValue(FORMED)) level.setBlock(bottom.above(i),blockState.setValue(FORMED,false).setValue(PART,0),3);
-			}
-			if(level instanceof ServerLevel serverLevel) TorchSavedData.get(serverLevel).removeTorch(bottom);
-		}
-	}
-	private BlockPos findBottom(Level level,BlockPos pos){
-		BlockPos current=pos;
-		while(level.getBlockState(current.below()).is(this)) current=current.below();
-		return current;
-	}
-	private int countHeight(Level level,BlockPos bottom){
+		BlockPos bottom=pos;
+		while(level.getBlockState(bottom.below()).is(this)) bottom=bottom.below();
 		int height=0;
 		while(level.getBlockState(bottom.above(height)).is(this)) height++;
-		return height;
+		boolean isValid=height==5&&noHorizontalNeighbors(level,bottom);
+		boolean isFormed=level.getBlockState(bottom).getValue(FORMED);
+		if(isValid&&!isFormed){
+			for(int i=0;i<5;i++) level.setBlock(bottom.above(i),defaultBlockState().setValue(FORMED,true).setValue(PART,i),3);
+			if(level instanceof ServerLevel sl) SpawnEventHandler.get(sl).addTorch(bottom);
+		}else if(!isValid&&isFormed){
+			for(int i=0;i<height;i++){
+				BlockState s=level.getBlockState(bottom.above(i));
+				if(s.is(this)&&s.getValue(FORMED)) level.setBlock(bottom.above(i),s.setValue(FORMED,false).setValue(PART,0),3);
+			}
+			if(level instanceof ServerLevel sl) SpawnEventHandler.get(sl).removeTorch(bottom);
+		}
 	}
 	private boolean noHorizontalNeighbors(Level level,BlockPos bottom){
-		for(int i=0;i<5;i++) for(Direction dir: Direction.Plane.HORIZONTAL) if(level.getBlockState(bottom.above(i).relative(dir)).is(this)) return false;
+		for(int i=0;i<5;i++){
+			for(Direction dir: Direction.Plane.HORIZONTAL){
+				if(level.getBlockState(bottom.above(i).relative(dir)).is(this)) return false;
+			}
+		}
 		return true;
 	}
-	public static final TagKey<EntityType<?>> BLOCKED_MOBS=TagKey.create(
-			Registries.ENTITY_TYPE,
-			ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"mega_torch_blocked")
-	);
 }

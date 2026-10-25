@@ -14,52 +14,51 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 public class PortalData extends SavedData{
-	private final Map<UUID,Map<Boolean,BlockPos>> map=new HashMap<>();
+	private final Map<UUID,BlockPos> bluePortals=new HashMap<>();
+	private final Map<UUID,BlockPos> orangePortals=new HashMap<>();
 	public static PortalData get(ServerLevel serverLevel){
 		return serverLevel.getDataStorage().computeIfAbsent(new SavedData.Factory<>(PortalData::new,PortalData::load),"dif_portals");
 	}
 	public static PortalData load(CompoundTag tag,HolderLookup.Provider provider){
-		PortalData d=new PortalData();
-		tag.getAllKeys().forEach(k->{
-			CompoundTag pt=tag.getCompound(k);
-			Map<Boolean,BlockPos> m=new HashMap<>();
-			if(pt.contains("b")) NbtUtils.readBlockPos(pt,"b").ifPresent(pos->m.put(true,pos));
-			if(pt.contains("o")) NbtUtils.readBlockPos(pt,"o").ifPresent(pos->m.put(false,pos));
-			d.map.put(UUID.fromString(k),m);
-		});
-		return d;
+		PortalData data=new PortalData();
+		for(String key: tag.getAllKeys()){
+			UUID id=UUID.fromString(key);
+			CompoundTag pt=tag.getCompound(key);
+			NbtUtils.readBlockPos(pt,"b").ifPresent(pos->data.bluePortals.put(id,pos));
+			NbtUtils.readBlockPos(pt,"o").ifPresent(pos->data.orangePortals.put(id,pos));
+		}
+		return data;
 	}
 	@Override
 	public @NotNull CompoundTag save(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider provider){
-		map.forEach((k,v)->{
+		for(UUID id: bluePortals.keySet()){
 			CompoundTag pt=new CompoundTag();
-			if(v.containsKey(true)) pt.put("b",NbtUtils.writeBlockPos(v.get(true)));
-			if(v.containsKey(false)) pt.put("o",NbtUtils.writeBlockPos(v.get(false)));
-			tag.put(k.toString(),pt);
-		});
+			pt.put("b",NbtUtils.writeBlockPos(bluePortals.get(id)));
+			if(orangePortals.containsKey(id)) pt.put("o",NbtUtils.writeBlockPos(orangePortals.get(id)));
+			tag.put(id.toString(),pt);
+		}
+		for(UUID id: orangePortals.keySet()){
+			if(bluePortals.containsKey(id)) continue;
+			CompoundTag pt=new CompoundTag();
+			pt.put("o",NbtUtils.writeBlockPos(orangePortals.get(id)));
+			tag.put(id.toString(),pt);
+		}
 		return tag;
 	}
-	public void set(UUID uuid,boolean b,BlockPos pos){
-		map.computeIfAbsent(uuid,k->new HashMap<>()).put(b,pos);
+	public void set(UUID uuid,boolean isBlue,BlockPos pos){
+		(isBlue?bluePortals:orangePortals).put(uuid,pos);
 		setDirty();
 	}
-	public BlockPos getPos(UUID uuid,boolean b){
-		return map.getOrDefault(uuid,Map.of()).get(b);
+	public BlockPos getPos(UUID uuid,boolean isBlue){
+		return (isBlue?bluePortals:orangePortals).get(uuid);
 	}
-	public void remove(UUID id,boolean b){
-		Map<Boolean,BlockPos> m=map.get(id);
-		if(m!=null){
-			m.remove(b);
-			if(m.isEmpty()) map.remove(id);
-			setDirty();
-		}
+	public void remove(UUID uuid,boolean isBlue){
+		if((isBlue?bluePortals:orangePortals).remove(uuid)!=null) setDirty();
 	}
-	// Správa portálů – sjednocený lookup a lifecycle
 	public PortalEntity findEntity(ServerLevel sl,UUID owner,boolean isBlue){
 		BlockPos pos=getPos(owner,isBlue);
 		if(pos==null||!sl.isLoaded(pos)) return null;
-		List<PortalEntity> list=sl.getEntitiesOfClass(PortalEntity.class,new AABB(pos).inflate(2),
-				p->owner.equals(p.getOwner())&&p.isBlue()==isBlue);
+		List<PortalEntity> list=sl.getEntitiesOfClass(PortalEntity.class,new AABB(pos).inflate(2),p->owner.equals(p.getOwner())&&p.isBlue()==isBlue);
 		return list.isEmpty()?null:list.getFirst();
 	}
 	public void removeOldPortal(ServerLevel sl,UUID owner,boolean isBlue){

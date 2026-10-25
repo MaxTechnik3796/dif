@@ -20,9 +20,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
-import java.util.Optional;
 public class BattleAxeItem extends SwordItem{
-	private static final Map<Block,Block> AXE_STRIPPABLES=(new ImmutableMap.Builder<Block,Block>())
+	private static final Map<Block,Block> AXE_STRIPPABLES=new ImmutableMap.Builder<Block,Block>()
 			.put(Blocks.OAK_LOG,Blocks.STRIPPED_OAK_LOG)
 			.put(Blocks.SPRUCE_LOG,Blocks.STRIPPED_SPRUCE_LOG)
 			.put(Blocks.BIRCH_LOG,Blocks.STRIPPED_BIRCH_LOG)
@@ -41,10 +40,7 @@ public class BattleAxeItem extends SwordItem{
 	}
 	@Override
 	public float getDestroySpeed(@NotNull ItemStack stack,BlockState state){
-		if(state.is(BlockTags.MINEABLE_WITH_AXE)){
-			return this.getTier().getSpeed();
-		}
-		return super.getDestroySpeed(stack,state);
+		return state.is(BlockTags.MINEABLE_WITH_AXE)?getTier().getSpeed():super.getDestroySpeed(stack,state);
 	}
 	@Override
 	public boolean isCorrectToolForDrops(@NotNull ItemStack stack,BlockState state){
@@ -53,21 +49,18 @@ public class BattleAxeItem extends SwordItem{
 	@Override
 	public @NotNull InteractionResult useOn(UseOnContext context){
 		Level level=context.getLevel();
-		BlockPos blockpos=context.getClickedPos();
+		BlockPos pos=context.getClickedPos();
+		BlockState state=level.getBlockState(pos);
+		Block stripped=AXE_STRIPPABLES.get(state.getBlock());
+		if(stripped==null) return InteractionResult.PASS;
 		Player player=context.getPlayer();
-		BlockState blockstate=level.getBlockState(blockpos);
-		Optional<BlockState> optional=Optional.ofNullable(AXE_STRIPPABLES.get(blockstate.getBlock())).map((block)->block.defaultBlockState().setValue(RotatedPillarBlock.AXIS,blockstate.getValue(RotatedPillarBlock.AXIS)));
-		if(optional.isPresent()){
-			level.playSound(player,blockpos,SoundEvents.AXE_STRIP,SoundSource.BLOCKS,1.0F,1.0F);
-			if(!level.isClientSide){
-				level.setBlock(blockpos,optional.get(),11);
-				if(player!=null){
-					context.getItemInHand().hurtAndBreak(1,player,LivingEntity.getSlotForHand(context.getHand()));
-				}
+		level.playSound(player,pos,SoundEvents.AXE_STRIP,SoundSource.BLOCKS,1.0F,1.0F);
+		if(!level.isClientSide){
+			level.setBlock(pos,stripped.defaultBlockState().setValue(RotatedPillarBlock.AXIS,state.getValue(RotatedPillarBlock.AXIS)),11);
+			if(player!=null){
+				context.getItemInHand().hurtAndBreak(1,player,LivingEntity.getSlotForHand(context.getHand()));
 			}
-			return InteractionResult.sidedSuccess(level.isClientSide);
-		}else{
-			return InteractionResult.PASS;
 		}
+		return InteractionResult.sidedSuccess(level.isClientSide);
 	}
 }

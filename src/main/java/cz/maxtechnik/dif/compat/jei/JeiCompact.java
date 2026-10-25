@@ -11,12 +11,14 @@ public class JeiCompact{
 	public static abstract class Category<T> implements IRecipeCategory<T>{
 		private final RecipeType<T> type;
 		private final Component title;
-		private final IDrawable background;
+		private final int width;
+		private final int height;
 		private final IDrawable icon;
-		protected Category(IGuiHelper helper,int w,int h,ItemStack iconStack,RecipeType<T> type,String titleKey){
+		protected Category(IGuiHelper helper,int width,int height,ItemStack iconStack,RecipeType<T> type,String titleKey){
 			this.type=type;
 			this.title=Component.translatable(titleKey);
-			this.background=helper.createBlankDrawable(w,h);
+			this.width=width;
+			this.height=height;
 			this.icon=helper.createDrawableItemStack(iconStack);
 		}
 		@Override
@@ -27,10 +29,13 @@ public class JeiCompact{
 		public @NotNull Component getTitle(){
 			return title;
 		}
-		@SuppressWarnings("removal")
 		@Override
-		public @NotNull IDrawable getBackground(){
-			return background;
+		public int getWidth(){
+			return width;
+		}
+		@Override
+		public int getHeight(){
+			return height;
 		}
 		@Override
 		public @NotNull IDrawable getIcon(){
@@ -38,3 +43,4 @@ public class JeiCompact{
 		}
 	}
 }
+

@@ -1,7 +1,10 @@
 package cz.maxtechnik.dif;
 
 import com.mojang.logging.LogUtils;
+import com.simibubi.create.api.behaviour.display.DisplaySource;
+import com.simibubi.create.api.registry.CreateBuiltInRegistries;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
+import cz.maxtechnik.dif.block.DistillationTank;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
 import cz.maxtechnik.dif.command.IsChunkLoadedCommand;
 import cz.maxtechnik.dif.config.DifModClientConfig;
@@ -72,6 +75,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class DifMod{
 	public static final String MODID="dif";
 	public static final Logger LOGGER=LogUtils.getLogger();
+	public static final net.neoforged.neoforge.registries.DeferredRegister<DisplaySource> DISPLAY_SOURCES=net.neoforged.neoforge.registries.DeferredRegister.create(CreateBuiltInRegistries.DISPLAY_SOURCE.key(),DifMod.MODID);
+	public static final net.neoforged.neoforge.registries.DeferredHolder<DisplaySource,DistillationTank.TankDisplaySource> TANK_DISPLAY_SOURCE=DISPLAY_SOURCES.register("tank_fluid",DistillationTank.TankDisplaySource::new);
 	public DifMod(IEventBus bus,ModContainer modContainer){
 		DifModBlocks.REGISTRY.register(bus);
 		DifModItems.REGISTRY.register(bus);
@@ -92,6 +97,7 @@ public class DifMod{
 		DifModFluids.FLUIDS.register(bus);
 		DifModFluids.TYPES.register(bus);
 		DifModFluids.BLOCKS.register(bus);
+		DISPLAY_SOURCES.register(bus);
 		NeoForge.EVENT_BUS.register(this);
 		NeoForge.EVENT_BUS.register(JetpackHandler.class);
 		bus.addListener(DifModTabs::addCreative);
@@ -118,6 +124,10 @@ public class DifMod{
 	}
 	private void commonSetup(final FMLCommonSetupEvent event){
 		LOGGER.info("TheDifferential: Common Setup");
+		event.enqueueWork(()->{
+			DisplaySource.BY_BLOCK.register(DifModBlocks.DISTILLATION_TANK.get(),List.of(TANK_DISPLAY_SOURCE.get()));
+			DisplaySource.BY_BLOCK.register(DifModBlocks.MITHRIL_FLUID_TANK.get(),List.of(TANK_DISPLAY_SOURCE.get()));
+		});
 	}
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event){

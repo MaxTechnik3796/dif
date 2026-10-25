@@ -17,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Objects;
 public class FryingJEI{
 	public static final RecipeType<FryingRecipe> TYPE=RecipeType.create(DifMod.MODID,"frying",FryingRecipe.class);
@@ -36,18 +37,16 @@ public class FryingJEI{
 				builder.addSlot(RecipeIngredientRole.INPUT,1,38)
 						.setStandardSlotBackground()
 						.setFluidRenderer(recipe.getOilAmount(),false,16,16)
-						.addIngredients(NeoForgeTypes.FLUID_STACK,java.util.Arrays.asList(recipe.getFluidIngredient().getFluids()));
+						.addIngredients(NeoForgeTypes.FLUID_STACK,Arrays.asList(recipe.getFluidIngredient().getFluids()));
 			}
 		}
 		@Override
 		public void createRecipeExtras(@NotNull IRecipeExtrasBuilder builder,@NotNull FryingRecipe recipe,@NotNull IFocusGroup focuses){
-			int cookTime=recipe.getProcessingTime();
-			if(cookTime<=0) cookTime=400;
-			builder.addAnimatedRecipeArrow(cookTime).setPosition(26,19);
-			builder.addAnimatedRecipeFlame(300).setPosition(1,20);
-			int cookTimeSeconds=cookTime/20;
-			Component timeString=Component.translatable("gui.jei.category.smelting.time.seconds",cookTimeSeconds);
-			builder.addText(timeString,82-20,10)
+			int cookTime=recipe.getProcessingTime()>0?recipe.getProcessingTime():400;
+			builder.addAnimatedRecipeArrowWidget(cookTime).setPosition(26,19);
+			builder.addAnimatedRecipeFlameWidget(300).setPosition(1,20);
+			Component timeString=Component.translatable("gui.jei.category.smelting.time.seconds",cookTime/20);
+			builder.addText(timeString,62,10)
 					.setPosition(0,2,82,54,HorizontalAlignment.RIGHT,VerticalAlignment.BOTTOM)
 					.setTextAlignment(HorizontalAlignment.RIGHT)
 					.setTextAlignment(VerticalAlignment.BOTTOM)
@@ -55,3 +54,4 @@ public class FryingJEI{
 		}
 	}
 }
+
