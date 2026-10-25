@@ -142,7 +142,10 @@ public class PortalEntity extends Entity{
 		boolean allowNonPlayers=DifModServerConfig.PORTAL_ALLOW_ENTITIES.get();
 		int count=0;
 		for(Entity e: sl.getEntitiesOfClass(Entity.class,getBoundingBox(),entity->!(entity instanceof PortalEntity))){
-			if(cooldowns.getOrDefault(e.getUUID(),0L)+15>=now) continue;
+			if(cooldowns.getOrDefault(e.getUUID(),0L)+15>=now){
+				cooldowns.put(e.getUUID(),now);
+				continue;
+			}
 			if(e instanceof Player player){
 				teleport(player,sl,now,true);
 			}else if(allowNonPlayers&&count<MAX_ENTITIES_PER_TICK){
@@ -174,7 +177,7 @@ public class PortalEntity extends Entity{
 		double destY=other.getY();
 		double destZ=other.getZ();
 		if(outFace==Direction.UP){
-			destY+=0.05;
+			destY+=0.07;
 		}else if(outFace==Direction.DOWN){
 			destY-=entity.getBbHeight()+0.1;
 		}else{
@@ -184,10 +187,16 @@ public class PortalEntity extends Entity{
 			destZ+=outFace.getStepZ()*offset;
 		}
 		float newYaw=calcNewYaw(entity.getYRot(),this,other);
-		double speed=entity.getDeltaMovement().length();
+		float newPitch=entity.getXRot();
+		if(getFacing().getAxis()!=outFace.getAxis()){
+			if(outFace==Direction.UP) newPitch=-90F;
+			else if(outFace==Direction.DOWN) newPitch=90F;
+			else if(getFacing().getAxis()==Direction.Axis.Y) newPitch=0F;
+		}
+		double speed=Math.max(entity.getDeltaMovement().length(),outFace==Direction.UP?0.3:0.0);
 		Vec3 newMotion=speed<0.05?Vec3.ZERO:new Vec3(outFace.getStepX()*speed,outFace.getStepY()*speed,outFace.getStepZ()*speed);
 		if(isPlayer&&entity instanceof ServerPlayer sp){
-			sp.teleportTo(sl,destX,destY,destZ,Set.of(),newYaw,sp.getXRot());
+			sp.teleportTo(sl,destX,destY,destZ,Set.of(),newYaw,newPitch);
 			sp.setYBodyRot(newYaw);
 			sp.setYHeadRot(newYaw);
 			sp.yRotO=newYaw;
@@ -197,12 +206,14 @@ public class PortalEntity extends Entity{
 		}else{
 			entity.teleportTo(destX,destY,destZ);
 			entity.setYRot(newYaw);
+			entity.setXRot(newPitch);
 			entity.setYBodyRot(newYaw);
 			entity.setYHeadRot(newYaw);
 			entity.setDeltaMovement(newMotion);
 			entity.hurtMarked=true;
 		}
 		other.lastTeleportTime=this.lastTeleportTime=now;
+		this.cooldowns.put(entity.getUUID(),now);
 		other.cooldowns.put(entity.getUUID(),now);
 	}
 	private static float calcNewYaw(float oldYaw,PortalEntity in,PortalEntity out){

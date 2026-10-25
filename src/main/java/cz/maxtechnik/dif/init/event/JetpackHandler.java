@@ -33,7 +33,7 @@ public class JetpackHandler{
 	@SubscribeEvent
 	public static void onPlayerTick(PlayerTickEvent.Post event){
 		Player player=event.getEntity();
-		if(player.isSpectator()||player.getAbilities().flying) return;
+		if(player.isCreative()||player.isSpectator()||player.getAbilities().flying) return;
 		ItemStack chest=player.getItemBySlot(EquipmentSlot.CHEST);
 		if(chest.getItem() instanceof Jetpack) tickHover(player,chest);
 	}
