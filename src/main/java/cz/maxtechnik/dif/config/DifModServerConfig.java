@@ -47,11 +47,10 @@ public class DifModServerConfig{
 	public static final ModConfigSpec.DoubleValue ENGINE_LPG_PORTABLE_SU;
 	public static final ModConfigSpec.DoubleValue ENGINE_LPG_PORTABLE_CONSUMPTION;
 	//Nuke:
+	public static final ModConfigSpec.IntValue NUKE_RADIUS;
+	public static final ModConfigSpec.IntValue NUKE_DAMAGE_RADIUS;
 	public static final ModConfigSpec.IntValue NUKE_BLOCKS_PER_TICK;
 	public static final ModConfigSpec.DoubleValue NUKE_MAX_DESTROYABLE_RESISTANCE;
-	public static final ModConfigSpec.DoubleValue NUKE_HOR_R_FULL, NUKE_HOR_R_TOTAL;
-	public static final ModConfigSpec.DoubleValue NUKE_UP_R_FULL, NUKE_UP_R_TOTAL;
-	public static final ModConfigSpec.DoubleValue NUKE_DOWN_R_FULL, NUKE_DOWN_R_TOTAL;
 	static{
 		BUILDER.push("GeneralSettings");
 		MEGA_TORCH_RADIUS=BUILDER.defineInRange("mega_torch_radius",128,32,8192);
@@ -107,14 +106,10 @@ public class DifModServerConfig{
 		ENGINE_LPG_PORTABLE_CONSUMPTION=BUILDER.defineInRange("engine_lpg_portable_consumption",1.2D,0D,DOUBLE_MAX);
 		BUILDER.pop();
 		BUILDER.push("Nuke");
-		NUKE_BLOCKS_PER_TICK=BUILDER.defineInRange("nuke_blocks_per_tick",36000,0,MAX);
+		NUKE_RADIUS=BUILDER.defineInRange("nuke_radius",96,16,512);
+		NUKE_DAMAGE_RADIUS=BUILDER.defineInRange("nuke_damage_radius",128,16,1024);
+		NUKE_BLOCKS_PER_TICK=BUILDER.defineInRange("nuke_blocks_per_tick",36000,1000,MAX);
 		NUKE_MAX_DESTROYABLE_RESISTANCE=BUILDER.defineInRange("nuke_max_destroyable_resistance",1500D,0D,MAX);
-		NUKE_HOR_R_FULL=BUILDER.defineInRange("nuke_hor_r_full",56D,0D,MAX);
-		NUKE_HOR_R_TOTAL=BUILDER.defineInRange("nuke_hor_r_total",72D,0D,MAX);
-		NUKE_UP_R_FULL=BUILDER.defineInRange("nuke_up_r_full",36D,0D,MAX);
-		NUKE_UP_R_TOTAL=BUILDER.defineInRange("nuke_up_r_total",48D,0D,MAX);
-		NUKE_DOWN_R_FULL=BUILDER.defineInRange("nuke_down_r_full",20D,0D,MAX);
-		NUKE_DOWN_R_TOTAL=BUILDER.defineInRange("nuke_down_r_total",28D,0D,MAX);
 		BUILDER.pop();
 		SPEC=BUILDER.build();
 	}

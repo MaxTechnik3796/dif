@@ -117,7 +117,7 @@ public class ClientVisualEffectsRenderer{
 		if(nukeFlashIntensity>0.0F){
 			int flashAlpha=(int)(Math.min(1.0F,nukeFlashIntensity*1.2F)*255.0F);
 			if(flashAlpha>0){
-				gg.fill(0,0,w,h,(flashAlpha<<24)|0xFFFFFF);
+				gg.fill(0,0,w,h,(flashAlpha<<24)|0xE0FFFF);
 			}
 		}
 	}

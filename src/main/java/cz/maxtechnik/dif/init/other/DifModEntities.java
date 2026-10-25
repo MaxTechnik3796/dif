@@ -12,7 +12,7 @@ public class DifModEntities{
 	public static final DeferredHolder<EntityType<?>,EntityType<NuclearExplosionEntity>> NUCLEAR_EXPLOSION=
 			REGISTRY.register("nuclear_explosion",()->
 					EntityType.Builder.of(NuclearExplosionEntity::new,MobCategory.MISC)
-							.sized(0F,0F).clientTrackingRange(512).updateInterval(20)
+							.sized(0F,0F).clientTrackingRange(512).updateInterval(1)
 							.build("nuclear_explosion"));
 	public static final DeferredHolder<EntityType<?>,EntityType<cz.maxtechnik.dif.entity.portal.PortalEntity>> PORTAL=
 			REGISTRY.register("portal",()->
