@@ -57,6 +57,9 @@ public class MithrilFluidTank extends FluidTankBlock{
 			}
 		}
 		@Override
+		public void addBehaviours(java.util.List<com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour> list){
+		}
+		@Override
 		protected SmartFluidTank createInventory(){
 			return new SmartFluidTank(getCapacityMultiplier(),this::onFluidStackChanged);
 		}
@@ -102,9 +105,11 @@ public class MithrilFluidTank extends FluidTankBlock{
 			}
 		}
 		public IFluidHandler getFluidCapability(){
-			if(fluidCapability!=null) return fluidCapability;
-			FluidTankBlockEntity controller=getControllerBE();
-			return controller!=null?controller.getTankInventory():tankInventory;
+			if(fluidCapability==null){
+				FluidTankBlockEntity ctrl=getControllerBE();
+				fluidCapability=ctrl!=null?ctrl.getTankInventory():new net.neoforged.neoforge.fluids.capability.templates.FluidTank(0);
+			}
+			return fluidCapability;
 		}
 	}
 	public static class TankItem extends FluidTankItem{

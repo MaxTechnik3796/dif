@@ -33,23 +33,16 @@ public class JetpackHandler{
 	@SubscribeEvent
 	public static void onPlayerTick(PlayerTickEvent.Post event){
 		Player player=event.getEntity();
+		if(player.isSpectator()||player.getAbilities().flying) return;
 		ItemStack chest=player.getItemBySlot(EquipmentSlot.CHEST);
-		if(player.isCreative()||player.isSpectator()) return;
-		if(!(chest.getItem() instanceof Jetpack)) return;
-		tickHover(player,chest);
+		if(chest.getItem() instanceof Jetpack) tickHover(player,chest);
 	}
 	public static void fly(Player player){
 		ItemStack chest=player.getItemBySlot(EquipmentSlot.CHEST);
 		if(!(chest.getItem() instanceof Jetpack)||Jetpack.Chestplate.isOff(chest)) return;
-		int fuel=Jetpack.Chestplate.getThrust(chest);
-		if(fuel<=0) return;
+		if(Jetpack.Chestplate.getThrust(chest)<=0) return;
 		lastFlyTick.put(player.getUUID(),player.tickCount);
-		Vec3 motion=player.getDeltaMovement();
-		double yMotion=player.isCrouching()?0:FLY_SPEED;
-		player.setDeltaMovement(motion.x,yMotion,motion.z);
-		resetFall(player);
-		if(player.tickCount%FUEL_INTERVAL==0) consumeFuel(player,chest);
-		spawnParticles(player);
+		applyThrust(player,chest,player.isCrouching()?0:FLY_SPEED);
 	}
 	public static void toggleHover(Player player){
 		ItemStack chest=player.getItemBySlot(EquipmentSlot.CHEST);
@@ -60,36 +53,27 @@ public class JetpackHandler{
 	}
 	public static void tickHover(Player player,ItemStack chest){
 		if(!Jetpack.Chestplate.isHovering(chest)||player.onGround()) return;
-		int fuel=Jetpack.Chestplate.getThrust(chest);
-		if(fuel<=0){
+		if(Jetpack.Chestplate.getThrust(chest)<=0){
 			Jetpack.Chestplate.setMode(chest,2);
 			return;
 		}
 		if(isFlying(player)) return;
+		applyThrust(player,chest,player.isCrouching()?-0.25:0);
+	}
+	private static void applyThrust(Player player,ItemStack chest,double yMotion){
 		Vec3 motion=player.getDeltaMovement();
-		double newY=player.isCrouching()?-0.25:0;
-		player.setDeltaMovement(motion.x,newY,motion.z);
-		resetFall(player);
-		if(player.tickCount%FUEL_INTERVAL==0) consumeFuel(player,chest);
+		player.setDeltaMovement(motion.x,yMotion,motion.z);
+		player.resetFallDistance();
+		if(player.tickCount%FUEL_INTERVAL==0&&!player.level().isClientSide()){
+			int newFuel=Math.max(0,Jetpack.Chestplate.getThrust(chest)-FUEL_COST);
+			Jetpack.Chestplate.setThrust(chest,newFuel);
+			if(player instanceof ServerPlayer sp) PacketDistributor.sendToPlayer(sp,new JetpackSyncMessage(newFuel));
+		}
 		spawnParticles(player);
 	}
 	private static boolean isFlying(Player player){
 		if(player.level().isClientSide()) return DifModKeys.JETPACK_FLY.isDown();
 		return player.tickCount-lastFlyTick.getOrDefault(player.getUUID(),-99)<=1;
-	}
-	private static void resetFall(Player player){
-		player.fallDistance=0;
-		player.resetFallDistance();
-	}
-	private static void consumeFuel(Player player,ItemStack chest){
-		if(!player.level().isClientSide()){
-			int current=Jetpack.Chestplate.getThrust(chest);
-			Jetpack.Chestplate.setThrust(chest,Math.max(0,current- JetpackHandler.FUEL_COST));
-			syncFuel(player,chest);
-		}
-	}
-	private static void syncFuel(Player player,ItemStack chest){
-		if(player instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer,new JetpackSyncMessage(Jetpack.Chestplate.getThrust(chest)));
 	}
 	private static void spawnParticles(Player player){
 		double angle=Math.toRadians(player.getYRot());
@@ -97,10 +81,11 @@ public class JetpackHandler{
 		double by=player.getY()+0.8;
 		double bz=player.getZ()-Math.cos(angle)*0.3;
 		double vx=Math.sin(angle)*0.05;
-		double vy=-0.1;
 		double vz=-Math.cos(angle)*0.05;
-		if(player.level().isClientSide()) player.level().addParticle(ParticleTypes.FLAME,bx,by,bz,vx,vy,vz);
-		else if(player.level() instanceof ServerLevel level&&player.tickCount%4==0) level.sendParticles(ParticleTypes.FLAME,bx,by,bz,1,vx,vy,vz,0.02);
-
+		if(player.level().isClientSide()){
+			player.level().addParticle(ParticleTypes.FLAME,bx,by,bz,vx,-0.1,vz);
+		}else if(player.level() instanceof ServerLevel level&&player.tickCount%4==0){
+			level.sendParticles(ParticleTypes.FLAME,bx,by,bz,1,vx,-0.1,vz,0.02);
+		}
 	}
 }

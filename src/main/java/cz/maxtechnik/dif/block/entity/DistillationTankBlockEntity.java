@@ -64,9 +64,11 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 		}
 	}
 	public IFluidHandler fluidTank(){
-		if(fluidCapability!=null) return fluidCapability;
-		FluidTankBlockEntity controller=getControllerBE();
-		return controller!=null?controller.getTankInventory():tankInventory;
+		if(fluidCapability==null){
+			FluidTankBlockEntity ctrl=getControllerBE();
+			fluidCapability=ctrl!=null?ctrl.getTankInventory():new net.neoforged.neoforge.fluids.capability.templates.FluidTank(0);
+		}
+		return fluidCapability;
 	}
 	public boolean isTowerMaster(){
 		return isController()&&level!=null&&!(level.getBlockState(worldPosition.below()).getBlock() instanceof DistillationTank);

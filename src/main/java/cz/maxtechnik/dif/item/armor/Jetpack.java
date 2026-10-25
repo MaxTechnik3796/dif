@@ -31,7 +31,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-@SuppressWarnings({"removal","deprecation"})
+@SuppressWarnings("removal")
 public abstract class Jetpack extends ArmorItem{
 	public static int getCapacity(){
 		return DifModServerConfig.JETPACK_CAPACITY.get();
@@ -40,28 +40,31 @@ public abstract class Jetpack extends ArmorItem{
 		super(DifModTiers.ARMOR_MATERIAL_JETPACK,type,properties.stacksTo(1));
 	}
 	public static class Chestplate extends Jetpack{
+		private static final ResourceLocation TEXTURE=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/models/armor/jetpack.png");
 		public Chestplate(){
 			super(Type.CHESTPLATE,new Item.Properties().stacksTo(1));
 		}
 		@Override
 		public ResourceLocation getArmorTexture(@NotNull ItemStack stack,@NotNull Entity entity,@NotNull EquipmentSlot slot,ArmorMaterial.@NotNull Layer layer,boolean innerModel){
-			return ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"textures/models/armor/jetpack.png");
+			return TEXTURE;
 		}
 		@Override
 		public void initializeClient(Consumer<IClientItemExtensions> consumer){
 			consumer.accept(new IClientItemExtensions(){
+				private HumanoidModel<?> armorModel;
 				@Override
 				@OnlyIn(Dist.CLIENT)
 				public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NotNull LivingEntity living,@NotNull ItemStack stack,@NotNull EquipmentSlot slot,@NotNull HumanoidModel<?> defaultModel){
-					ModelJetpack<LivingEntity> jetpackModel=new ModelJetpack<>(Minecraft.getInstance().getEntityModels().bakeLayer(ModelJetpack.LAYER_LOCATION));
-					HumanoidModel<?> armorModel=new HumanoidModel<>(new ModelPart(Collections.emptyList(),
-							Map.of("body",jetpackModel.Body,
-									"left_arm",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
-									"right_arm",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
-									"head",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
-									"hat",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
-									"right_leg",new ModelPart(Collections.emptyList(),Collections.emptyMap()),
-									"left_leg",new ModelPart(Collections.emptyList(),Collections.emptyMap()))));
+					if(armorModel==null){
+						ModelJetpack<LivingEntity> jetpackModel=new ModelJetpack<>(Minecraft.getInstance().getEntityModels().bakeLayer(ModelJetpack.LAYER_LOCATION));
+						ModelPart empty=new ModelPart(Collections.emptyList(),Collections.emptyMap());
+						armorModel=new HumanoidModel<>(new ModelPart(Collections.emptyList(),Map.of(
+								"body",jetpackModel.Body,
+								"left_arm",empty,"right_arm",empty,
+								"head",empty,"hat",empty,
+								"right_leg",empty,"left_leg",empty
+						)));
+					}
 					armorModel.crouching=living.isShiftKeyDown();
 					armorModel.riding=defaultModel.riding;
 					armorModel.young=living.isBaby();
@@ -69,11 +72,9 @@ public abstract class Jetpack extends ArmorItem{
 				}
 			});
 		}
-		// Palivo (Thrust)
 		public static int getThrust(ItemStack stack){
 			CustomData data=stack.get(DataComponents.CUSTOM_DATA);
-			if(data==null) return 0;
-			return data.getUnsafe().getInt("Thrust");
+			return data!=null?data.copyTag().getInt("Thrust"):0;
 		}
 		public static void setThrust(ItemStack stack,int value){
 			stack.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,
@@ -82,11 +83,9 @@ public abstract class Jetpack extends ArmorItem{
 		public static int getMax(){
 			return getCapacity();
 		}
-		// Stav jetpacku: 0=let, 1=hover, 2=vypnuto
 		public static int getMode(ItemStack stack){
 			CustomData data=stack.get(DataComponents.CUSTOM_DATA);
-			if(data==null) return 0;
-			return data.getUnsafe().getInt("Mode");
+			return data!=null?data.copyTag().getInt("Mode"):0;
 		}
 		public static void setMode(ItemStack stack,int mode){
 			stack.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,
@@ -98,7 +97,6 @@ public abstract class Jetpack extends ArmorItem{
 		public static boolean isOff(ItemStack stack){
 			return getMode(stack)==2;
 		}
-		// Fluid capability
 		public static class FluidHandler implements IFluidHandlerItem{
 			private final ItemStack container;
 			public FluidHandler(ItemStack container){
@@ -115,8 +113,7 @@ public abstract class Jetpack extends ArmorItem{
 			@Override
 			public @NotNull FluidStack getFluidInTank(int tank){
 				int amount=getThrust(container);
-				if(amount<=0) return FluidStack.EMPTY;
-				return new FluidStack(DifModFluids.JETPACK_FUEL.source.get(),amount);
+				return amount>0?new FluidStack(DifModFluids.JETPACK_FUEL.source.get(),amount):FluidStack.EMPTY;
 			}
 			@Override
 			public int getTankCapacity(int tank){
@@ -131,9 +128,8 @@ public abstract class Jetpack extends ArmorItem{
 				if(resource.isEmpty()||!isFluidValid(0,resource)) return 0;
 				int current=getThrust(container);
 				int accepted=Math.min(getCapacity()-current,resource.getAmount());
-				if(accepted<=0) return 0;
-				if(action.execute()) setThrust(container,current+accepted);
-				return accepted;
+				if(accepted>0&&action.execute()) setThrust(container,current+accepted);
+				return Math.max(0,accepted);
 			}
 			@Override
 			public @NotNull FluidStack drain(FluidStack resource,IFluidHandler.@NotNull FluidAction action){
@@ -149,24 +145,20 @@ public abstract class Jetpack extends ArmorItem{
 				return new FluidStack(DifModFluids.JETPACK_FUEL.source.get(),drained);
 			}
 		}
-		// Bar ukazuje naplnění
 		@Override
 		public int getBarWidth(@NotNull ItemStack stack){
-			return Math.round(13F*(float)getThrust(stack)/(float)getCapacity());
+			return Math.round(13F*getThrust(stack)/Math.max(1F,getCapacity()));
 		}
 		@Override
 		public int getBarColor(@NotNull ItemStack stack){
-			float f=Math.max(0,(float)getThrust(stack)/(float)getCapacity());
-			return Mth.hsvToRgb(f*0.33F,1F,1F);
+			float fill=Math.max(0F,(float)getThrust(stack)/Math.max(1F,getCapacity()));
+			return Mth.hsvToRgb(fill*0.33F,1F,1F);
 		}
 		@Override
 		public void appendHoverText(@NotNull ItemStack stack,@Nullable TooltipContext ctx,@NotNull List<Component> list,@NotNull TooltipFlag flag){
 			list.add(Component.literal("Fuel: "+getThrust(stack)+" / "+getCapacity()+" mB").withStyle(ChatFormatting.AQUA));
-			if(isOff(stack)){
-				list.add(Component.literal("❌ OFF").withStyle(ChatFormatting.RED));
-			}else if(isHovering(stack)){
-				list.add(Component.literal("⭐ HOVER").withStyle(ChatFormatting.GREEN));
-			}
+			if(isOff(stack)) list.add(Component.literal("❌ OFF").withStyle(ChatFormatting.RED));
+			else if(isHovering(stack)) list.add(Component.literal("⭐ HOVER").withStyle(ChatFormatting.GREEN));
 		}
 		@Override
 		public boolean isEnchantable(@NotNull ItemStack stack){

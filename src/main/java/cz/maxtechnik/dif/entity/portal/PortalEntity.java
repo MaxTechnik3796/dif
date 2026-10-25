@@ -54,17 +54,17 @@ public class PortalEntity extends Entity{
 		setBoundingBox(buildPortalAABB());
 	}
 	@Override
-	public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> key){
-		super.onSyncedDataUpdated(key);
-		if(DATA_FACING.equals(key)||DATA_UP_DIR.equals(key)) setBoundingBox(buildPortalAABB());
-	}
-	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder){
 		builder.define(DATA_OWNER,Optional.empty());
 		builder.define(DATA_IS_BLUE,true);
 		builder.define(DATA_IS_LINKED,false);
 		builder.define(DATA_FACING,Direction.NORTH.getName());
 		builder.define(DATA_UP_DIR,Direction.UP.getName());
+	}
+	@Override
+	public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> key){
+		super.onSyncedDataUpdated(key);
+		if(DATA_FACING.equals(key)||DATA_UP_DIR.equals(key)) setBoundingBox(buildPortalAABB());
 	}
 	public UUID getOwner(){
 		return entityData.get(DATA_OWNER).orElse(null);
@@ -100,20 +100,22 @@ public class PortalEntity extends Entity{
 		entityData.set(DATA_UP_DIR,direction!=null?direction.getName():Direction.UP.getName());
 		setBoundingBox(buildPortalAABB());
 	}
-	// Výpočet hitboxu portálu podle os (tloušťka 0.0625, výška 2 bloky, šířka 1 blok)
 	public AABB buildPortalAABB(){
-		Direction.Axis normalAxis=getFacing().getAxis();
-		Direction.Axis heightAxis=getUpDir().getAxis();
-		double rx=getAxisRadius(Direction.Axis.X,normalAxis,heightAxis);
-		double ry=getAxisRadius(Direction.Axis.Y,normalAxis,heightAxis);
-		double rz=getAxisRadius(Direction.Axis.Z,normalAxis,heightAxis);
-		double cx=getX()+getFacing().getStepX()*0.03;
-		double cy=getY()+getFacing().getStepY()*0.03;
-		double cz=getZ()+getFacing().getStepZ()*0.03;
+		return buildPortalAABB(getX(),getY(),getZ(),getFacing(),getUpDir());
+	}
+	public static AABB buildPortalAABB(double x,double y,double z,Direction facing,Direction upDir){
+		Direction.Axis normalAxis=facing.getAxis();
+		Direction.Axis heightAxis=upDir.getAxis();
+		double rx=getAxisSize(Direction.Axis.X,normalAxis,heightAxis);
+		double ry=getAxisSize(Direction.Axis.Y,normalAxis,heightAxis);
+		double rz=getAxisSize(Direction.Axis.Z,normalAxis,heightAxis);
+		double cx=x+facing.getStepX()*0.03;
+		double cy=y+facing.getStepY()*0.03;
+		double cz=z+facing.getStepZ()*0.03;
 		return new AABB(cx-rx,cy-ry,cz-rz,cx+rx,cy+ry,cz+rz);
 	}
-	private static double getAxisRadius(Direction.Axis axis,Direction.Axis normalAxis,Direction.Axis heightAxis){
-		if(axis==normalAxis) return 0.035;
+	private static double getAxisSize(Direction.Axis axis,Direction.Axis normalAxis,Direction.Axis heightAxis){
+		if(axis==normalAxis) return 0.03;
 		if(axis==heightAxis) return 0.995;
 		return 0.495;
 	}
@@ -130,7 +132,7 @@ public class PortalEntity extends Entity{
 			return;
 		}
 		ServerLevel sl=(ServerLevel)level();
-		if(tickCount%20==0&&!isStillSupported(sl)){
+		if(tickCount%20==0&&!isValidPosition(sl,getX(),getY(),getZ(),getFacing(),getUpDir())){
 			PortalData.get(sl).remove(getOwner(),isBlue());
 			discard();
 			return;
@@ -138,17 +140,17 @@ public class PortalEntity extends Entity{
 		if(!isLinked()) return;
 		long now=sl.getGameTime();
 		boolean allowNonPlayers=DifModServerConfig.PORTAL_ALLOW_ENTITIES.get();
-		int nonPlayerCount=0;
+		int count=0;
 		for(Entity e: sl.getEntitiesOfClass(Entity.class,getBoundingBox(),entity->!(entity instanceof PortalEntity))){
 			if(cooldowns.getOrDefault(e.getUUID(),0L)+15>=now) continue;
 			if(e instanceof Player player){
 				teleport(player,sl,now,true);
-			}else if(allowNonPlayers&&nonPlayerCount<MAX_ENTITIES_PER_TICK){
+			}else if(allowNonPlayers&&count<MAX_ENTITIES_PER_TICK){
 				teleport(e,sl,now,false);
-				nonPlayerCount++;
+				count++;
 			}
 		}
-		if(!cooldowns.isEmpty()&&(tickCount&31)==0) cooldowns.values().removeIf(t->now-t>200);
+		if(!cooldowns.isEmpty()&&tickCount%32==0) cooldowns.values().removeIf(t->now-t>200);
 	}
 	private void teleport(Entity entity,ServerLevel sl,long now,boolean isPlayer){
 		PortalData data=PortalData.get(sl);
@@ -167,11 +169,25 @@ public class PortalEntity extends Entity{
 			data.remove(getOwner(),!isBlue());
 			return;
 		}
-		Vec3 dest=calcDestination(other,entity);
+		Direction outFace=other.getFacing();
+		double destX=other.getX();
+		double destY=other.getY();
+		double destZ=other.getZ();
+		if(outFace==Direction.UP){
+			destY+=0.05;
+		}else if(outFace==Direction.DOWN){
+			destY-=entity.getBbHeight()+0.1;
+		}else{
+			double offset=entity.getBbWidth()*0.5+0.1;
+			destX+=outFace.getStepX()*offset;
+			destY-=0.99;
+			destZ+=outFace.getStepZ()*offset;
+		}
 		float newYaw=calcNewYaw(entity.getYRot(),this,other);
-		Vec3 newMotion=calcExitMotion(entity.getDeltaMovement(),other);
+		double speed=entity.getDeltaMovement().length();
+		Vec3 newMotion=speed<0.05?Vec3.ZERO:new Vec3(outFace.getStepX()*speed,outFace.getStepY()*speed,outFace.getStepZ()*speed);
 		if(isPlayer&&entity instanceof ServerPlayer sp){
-			sp.teleportTo(sl,dest.x,dest.y,dest.z,Set.of(),newYaw,sp.getXRot());
+			sp.teleportTo(sl,destX,destY,destZ,Set.of(),newYaw,sp.getXRot());
 			sp.setYBodyRot(newYaw);
 			sp.setYHeadRot(newYaw);
 			sp.yRotO=newYaw;
@@ -179,7 +195,7 @@ public class PortalEntity extends Entity{
 			sp.hurtMarked=true;
 			sp.connection.send(new ClientboundSetEntityMotionPacket(sp));
 		}else{
-			entity.teleportTo(dest.x,dest.y,dest.z);
+			entity.teleportTo(destX,destY,destZ);
 			entity.setYRot(newYaw);
 			entity.setYBodyRot(newYaw);
 			entity.setYHeadRot(newYaw);
@@ -189,54 +205,56 @@ public class PortalEntity extends Entity{
 		other.lastTeleportTime=this.lastTeleportTime=now;
 		other.cooldowns.put(entity.getUUID(),now);
 	}
-	private static Vec3 calcDestination(PortalEntity out,Entity entity){
-		Vec3 center=out.position();
-		Direction face=out.getFacing();
-		if(face==Direction.UP) return center.add(0,0.05,0);
-		if(face==Direction.DOWN) return new Vec3(center.x,center.y-entity.getBbHeight()-0.1,center.z);
-		double dist=entity.getBbWidth()*0.5+0.1;
-		return new Vec3(center.x+face.getStepX()*dist,center.y-0.99,center.z+face.getStepZ()*dist);
-	}
 	private static float calcNewYaw(float oldYaw,PortalEntity in,PortalEntity out){
 		float inYaw=(in.getFacing().getAxis()==Direction.Axis.Y)?in.getUpDir().toYRot():in.getFacing().getOpposite().toYRot();
 		float outYaw=(out.getFacing().getAxis()==Direction.Axis.Y)?out.getUpDir().getOpposite().toYRot():out.getFacing().toYRot();
 		return Mth.wrapDegrees(outYaw+Mth.wrapDegrees(oldYaw-inYaw));
 	}
-	// Zachování rychlosti a přesměrování ven z výstupního portálu
-	private static Vec3 calcExitMotion(Vec3 oldMotion,PortalEntity out){
-		double speed=oldMotion.length();
-		if(speed<0.05) return Vec3.ZERO;
-		Direction outFace=out.getFacing();
-		return new Vec3(outFace.getStepX()*speed,outFace.getStepY()*speed,outFace.getStepZ()*speed);
+	private static double snapPixel(double value){
+		return Math.round(value*16.0)/16.0;
 	}
-	// Kontrola 2 bloků (spodní a horní půlka portálu)
-	private boolean isStillSupported(ServerLevel world){
-		BlockPos bottomAir=BlockPos.containing(position().relative(getUpDir().getOpposite(),0.5).relative(getFacing(),0.2));
-		return canPlaceAt(world,bottomAir,getFacing(),getUpDir());
-	}
-	public static boolean canPlaceAt(ServerLevel world,BlockPos bottomAir,Direction face,Direction upDir){
-		BlockPos topAir=bottomAir.relative(upDir);
-		BlockPos bottomWall=bottomAir.relative(face.getOpposite());
-		BlockPos topWall=topAir.relative(face.getOpposite());
-		boolean airFree=(world.isEmptyBlock(bottomAir)||world.getBlockState(bottomAir).canBeReplaced())
-				&&(world.isEmptyBlock(topAir)||world.getBlockState(topAir).canBeReplaced());
-		boolean wallSturdy=world.getBlockState(bottomWall).isFaceSturdy(world,bottomWall,face)
-				&&world.getBlockState(topWall).isFaceSturdy(world,topWall,face);
-		return airFree&&wallSturdy;
-	}
-	// Najde pozici pro 1x2 portál na kliknutém bloku (zkusí směrem nahoru/dopředu, případně o 1 blok níž)
-	public static Vec3 findPlacementPos(ServerLevel world,BlockPos hitPos,Direction face,Direction upDir){
-		BlockPos clickedAir=hitPos.relative(face);
-		BlockPos bottomAir= null;
-		if(canPlaceAt(world,clickedAir,face,upDir)){
-			bottomAir=clickedAir;
-		}else if(canPlaceAt(world,clickedAir.relative(upDir.getOpposite()),face,upDir)){
-			bottomAir=clickedAir.relative(upDir.getOpposite());
+	private static double[] getCandidatesForAxis(Direction.Axis axis,Direction face,Direction upDir,double blockCenter,double hitCoord){
+		if(axis==face.getAxis()){
+			int step=face.getAxisDirection().getStep();
+			return new double[]{blockCenter+step*0.505};
 		}
-		if(bottomAir==null) return null;
-		BlockPos topAir=bottomAir.relative(upDir);
-		Vec3 mid=Vec3.atCenterOf(bottomAir).add(Vec3.atCenterOf(topAir)).scale(0.5);
-		return mid.relative(face.getOpposite(),0.495);
+		double snapped=snapPixel(Math.clamp(hitCoord,blockCenter-0.5,blockCenter+0.5));
+		if(axis==upDir.getAxis()){
+			return new double[]{snapped,blockCenter+0.5,blockCenter-0.5,blockCenter};
+		}
+		return new double[]{snapped,blockCenter};
+	}
+	public static Vec3 findSpawnPos(ServerLevel world,BlockPos hitPos,Direction face,Direction upDir,Vec3 hitLoc){
+		double[] xList=getCandidatesForAxis(Direction.Axis.X,face,upDir,hitPos.getX()+0.5,hitLoc.x);
+		double[] yList=getCandidatesForAxis(Direction.Axis.Y,face,upDir,hitPos.getY()+0.5,hitLoc.y);
+		double[] zList=getCandidatesForAxis(Direction.Axis.Z,face,upDir,hitPos.getZ()+0.5,hitLoc.z);
+		for(double x: xList){
+			for(double y: yList){
+				for(double z: zList){
+					if(isValidPosition(world,x,y,z,face,upDir)){
+						return new Vec3(x,y,z);
+					}
+				}
+			}
+		}
+		return null;
+	}
+	public static boolean isValidPosition(ServerLevel world,double x,double y,double z,Direction face,Direction upDir){
+		AABB box=buildPortalAABB(x,y,z,face,upDir);
+		int minX=Mth.floor(box.minX+0.001), maxX=Mth.floor(box.maxX-0.001);
+		int minY=Mth.floor(box.minY+0.001), maxY=Mth.floor(box.maxY-0.001);
+		int minZ=Mth.floor(box.minZ+0.001), maxZ=Mth.floor(box.maxZ-0.001);
+		for(int bx=minX;bx<=maxX;bx++){
+			for(int by=minY;by<=maxY;by++){
+				for(int bz=minZ;bz<=maxZ;bz++){
+					BlockPos frontPos=new BlockPos(bx,by,bz);
+					BlockPos wallPos=frontPos.relative(face.getOpposite());
+					if(!world.getBlockState(wallPos).isFaceSturdy(world,wallPos,face)) return false;
+					if(!world.isEmptyBlock(frontPos)&&!world.getBlockState(frontPos).canBeReplaced()) return false;
+				}
+			}
+		}
+		return true;
 	}
 	public static boolean hasOverlap(ServerLevel world,AABB box,UUID owner,boolean isBlue){
 		for(PortalEntity o: world.getEntitiesOfClass(PortalEntity.class,box.inflate(0.05))){
@@ -299,4 +317,3 @@ public class PortalEntity extends Entity{
 	@Override public boolean ignoreExplosion(@NotNull Explosion explosion){return true;}
 	@Override public void lerpTo(double x,double y,double z,float yRot,float xRot,int steps){}
 }
-

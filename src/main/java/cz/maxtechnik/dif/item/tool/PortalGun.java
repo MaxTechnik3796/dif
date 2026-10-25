@@ -19,6 +19,7 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -29,6 +30,100 @@ import org.jetbrains.annotations.NotNull;
 public class PortalGun extends Item{
 	public PortalGun(Item.Properties properties){
 		super(properties.stacksTo(1));
+	}
+	@Override
+	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world,Player player,@NotNull InteractionHand hand){
+		ItemStack gun=player.getItemInHand(hand);
+		boolean isBlue=isBlueMode(gun);
+		if(player.isCrouching()){
+			if(!world.isClientSide){
+				setMode(gun,!isBlue);
+				Component modeName=Component.translatable(!isBlue?"info.dif.portal_gun.blue":"info.dif.portal_gun.orange");
+				player.displayClientMessage(Component.translatable("info.dif.portal_gun.mode").append(": ").append(modeName),true);
+			}
+			return InteractionResultHolder.sidedSuccess(gun,world.isClientSide());
+		}
+		if(!world.isClientSide&&world instanceof ServerLevel serverLevel){
+			if(getAstragelAmount(gun)>=1||player.isCreative()){
+				if(shootPortal(serverLevel,player,isBlue)){
+					if(!player.isCreative()) consumeAstragel(gun,1);
+					player.getCooldowns().addCooldown(this,10);
+				}
+			}else{
+				player.displayClientMessage(Component.translatable("info.dif.portal_gun.out_of_astragel"),true);
+			}
+		}
+		return InteractionResultHolder.success(gun);
+	}
+	private boolean shootPortal(ServerLevel world,Player player,boolean isBlue){
+		Vec3 start=player.getEyePosition();
+		Vec3 end=start.add(player.getLookAngle().scale(128));
+		BlockHitResult hit=world.clip(new ClipContext(start,end,ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,player));
+		if(hit.getType()!=HitResult.Type.BLOCK) return false;
+		Direction face=hit.getDirection();
+		BlockPos hitPos=hit.getBlockPos();
+		Direction upDir=(face.getAxis()==Direction.Axis.Y)?player.getDirection():Direction.UP;
+		Vec3 spawnPos=PortalEntity.findSpawnPos(world,hitPos,face,upDir,hit.getLocation());
+		if(spawnPos==null){
+			player.displayClientMessage(Component.translatable("info.dif.portal_gun.invalid_placement"),true);
+			return false;
+		}
+		PortalEntity portal=new PortalEntity(world,player.getUUID(),isBlue,face,upDir,spawnPos);
+		if(PortalEntity.hasOverlap(world,portal.getBoundingBox(),player.getUUID(),isBlue)){
+			player.displayClientMessage(Component.translatable("info.dif.portal_gun.invalid_position"),true);
+			return false;
+		}
+		PortalData data=PortalData.get(world);
+		data.removeOldPortal(world,player.getUUID(),isBlue);
+		data.set(player.getUUID(),isBlue,portal.blockPosition());
+		world.addFreshEntity(portal);
+		return true;
+	}
+	private boolean isBlueMode(ItemStack gun){
+		CustomData data=gun.get(DataComponents.CUSTOM_DATA);
+		if(data==null) return true;
+		CompoundTag tag=data.copyTag();
+		return !tag.contains("mode")||tag.getBoolean("mode");
+	}
+	private void setMode(ItemStack gun,boolean blue){
+		CustomData.update(DataComponents.CUSTOM_DATA,gun,tag->tag.putBoolean("mode",blue));
+		gun.set(DataComponents.CUSTOM_MODEL_DATA,new CustomModelData(blue?0:1));
+	}
+	public static int getAstragelAmount(ItemStack gun){
+		IFluidHandlerItem handler=gun.getCapability(Capabilities.FluidHandler.ITEM);
+		return handler!=null?handler.getFluidInTank(0).getAmount():0;
+	}
+	public static void consumeAstragel(ItemStack gun,int amount){
+		IFluidHandlerItem handler=gun.getCapability(Capabilities.FluidHandler.ITEM);
+		if(handler!=null&&handler.drain(amount,IFluidHandler.FluidAction.SIMULATE).getAmount()>=amount){
+			handler.drain(amount,IFluidHandler.FluidAction.EXECUTE);
+		}
+	}
+	@Override
+	public boolean isEnchantable(@NotNull ItemStack itemStack){
+		return false;
+	}
+	@Override
+	public boolean isRepairable(@NotNull ItemStack itemStack){
+		return false;
+	}
+	@Override
+	public boolean isValidRepairItem(@NotNull ItemStack itemStack,@NotNull ItemStack stack){
+		return false;
+	}
+	@Override
+	public boolean isBarVisible(@NotNull ItemStack itemStack){
+		return true;
+	}
+	@Override
+	public int getBarWidth(@NotNull ItemStack stack){
+		int capacity=DifModServerConfig.PORTAL_GUN_CAPACITY.get();
+		if(capacity<=0) return 0;
+		return Math.clamp(Math.round(13F*getAstragelAmount(stack)/(float)capacity),0,13);
+	}
+	@Override
+	public int getBarColor(@NotNull ItemStack itemStack){
+		return isBlueMode(itemStack)?0x00EBFF:0xFFBB00;
 	}
 	public static class FluidHandler implements IFluidHandlerItem{
 		private final ItemStack container;
@@ -92,97 +187,5 @@ public class PortalGun extends Item{
 			}
 			return new FluidStack(DifModFluids.ASTRAGEL.source.get(),toDrain);
 		}
-	}
-	private boolean isBlueMode(ItemStack gun){
-		CustomData data=gun.get(DataComponents.CUSTOM_DATA);
-		if(data==null) return true;
-		CompoundTag tag=data.copyTag();
-		return !tag.contains("mode")||tag.getBoolean("mode");
-	}
-	private void setMode(ItemStack gun,boolean blue){
-		CustomData.update(DataComponents.CUSTOM_DATA,gun,tag->tag.putBoolean("mode",blue));
-		gun.set(DataComponents.CUSTOM_MODEL_DATA,new CustomModelData(blue?0:1));
-	}
-	public static int getAstragelAmount(ItemStack gun){
-		IFluidHandlerItem handler=gun.getCapability(Capabilities.FluidHandler.ITEM);
-		return handler!=null?handler.getFluidInTank(0).getAmount():0;
-	}
-	public static void consumeAstragel(ItemStack gun,int amount){
-		IFluidHandlerItem handler=gun.getCapability(Capabilities.FluidHandler.ITEM);
-		if(handler!=null&&handler.drain(amount,IFluidHandler.FluidAction.SIMULATE).getAmount()>=amount){
-			handler.drain(amount,IFluidHandler.FluidAction.EXECUTE);
-		}
-	}
-	@Override
-	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world,Player player,@NotNull InteractionHand hand){
-		ItemStack gun=player.getItemInHand(hand);
-		boolean isBlue=isBlueMode(gun);
-		if(player.isCrouching()){
-			if(!world.isClientSide){
-				setMode(gun,!isBlue);
-				player.displayClientMessage(Component.translatable("info.dif.portal_gun.mode").append(": ").append(Component.translatable(!isBlue?"info.dif.portal_gun.blue":"info.dif.portal_gun.orange")),true);
-			}
-			return InteractionResultHolder.sidedSuccess(gun,world.isClientSide());
-		}
-		if(!world.isClientSide){
-			if(getAstragelAmount(gun)>=1||player.isCreative()){
-				if(firePortal((ServerLevel)world,player,isBlue)){
-					if(!player.isCreative()) consumeAstragel(gun,1);
-					player.getCooldowns().addCooldown(this,10);
-				}
-			}else{
-				player.displayClientMessage(Component.translatable("info.dif.portal_gun.out_of_astragel"),true);
-			}
-		}
-		return InteractionResultHolder.success(gun);
-	}
-	private boolean firePortal(ServerLevel world,Player player,boolean isBlue){
-		Vec3 eye=player.getEyePosition();
-		var hit=world.clip(new ClipContext(eye,eye.add(player.getLookAngle().scale(128)),ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,player));
-		if(hit.getType()!=HitResult.Type.BLOCK) return false;
-		Direction face=hit.getDirection();
-		BlockPos hitPos=hit.getBlockPos();
-		Direction upDir=(face.getAxis()==Direction.Axis.Y)?player.getDirection():Direction.UP;
-		Vec3 spawnPos=PortalEntity.findPlacementPos(world,hitPos,face,upDir);
-		if(spawnPos==null){
-			player.displayClientMessage(Component.translatable("info.dif.portal_gun.invalid_placement"),true);
-			return false;
-		}
-		PortalEntity portal=new PortalEntity(world,player.getUUID(),isBlue,face,upDir,spawnPos);
-		if(PortalEntity.hasOverlap(world,portal.getBoundingBox(),player.getUUID(),isBlue)){
-			player.displayClientMessage(Component.translatable("info.dif.portal_gun.invalid_position"),true);
-			return false;
-		}
-		PortalData data=PortalData.get(world);
-		data.removeOldPortal(world,player.getUUID(),isBlue);
-		data.set(player.getUUID(),isBlue,portal.blockPosition());
-		world.addFreshEntity(portal);
-		return true;
-	}
-	@Override
-	public boolean isEnchantable(@NotNull ItemStack itemStack){
-		return false;
-	}
-	@Override
-	public boolean isRepairable(@NotNull ItemStack itemStack){
-		return false;
-	}
-	@Override
-	public boolean isValidRepairItem(@NotNull ItemStack itemStack,@NotNull ItemStack stack){
-		return false;
-	}
-	@Override
-	public boolean isBarVisible(@NotNull ItemStack itemStack){
-		return true;
-	}
-	@Override
-	public int getBarWidth(@NotNull ItemStack stack){
-		int capacity=DifModServerConfig.PORTAL_GUN_CAPACITY.get();
-		if(capacity<=0) return 0;
-		return Math.clamp(Math.round(13F*getAstragelAmount(stack)/(float)capacity),0,13);
-	}
-	@Override
-	public int getBarColor(@NotNull ItemStack itemStack){
-		return isBlueMode(itemStack)?0x00EBFF:0xFFBB00;
 	}
 }

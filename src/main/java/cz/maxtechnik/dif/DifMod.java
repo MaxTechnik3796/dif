@@ -15,7 +15,6 @@ import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.basic.DifModSounds;
 import cz.maxtechnik.dif.init.basic.DifModTabs;
 import cz.maxtechnik.dif.init.event.ChunkLoaderData;
-import cz.maxtechnik.dif.init.event.JetpackHandler;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import cz.maxtechnik.dif.init.other.*;
@@ -99,7 +98,6 @@ public class DifMod{
 		DifModFluids.BLOCKS.register(bus);
 		DISPLAY_SOURCES.register(bus);
 		NeoForge.EVENT_BUS.register(this);
-		NeoForge.EVENT_BUS.register(JetpackHandler.class);
 		bus.addListener(DifModTabs::addCreative);
 		bus.addListener(this::commonSetup);
 		modContainer.registerConfig(ModConfig.Type.COMMON,DifModCommonConfig.SPEC);

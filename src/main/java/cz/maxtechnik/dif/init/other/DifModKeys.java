@@ -40,6 +40,7 @@ public class DifModKeys{
 				}
 				if(KEY_HOVER.consumeClick()){
 					PacketDistributor.sendToServer(new JetpackFlyMessage(2));
+					JetpackFlyMessage.pressAction(player,2);
 				}
 				// 3. Logika Ender Chesty
 				while(OPEN_ENDER_CHEST.consumeClick()){
