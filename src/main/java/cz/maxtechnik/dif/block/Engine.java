@@ -4,10 +4,17 @@ import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import cz.maxtechnik.dif.block.entity.EngineBlockEntity;
+import cz.maxtechnik.dif.config.DifModServerConfig;
+import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
@@ -15,12 +22,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -28,8 +35,10 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import java.util.List;
+import java.util.Locale;
 public class Engine extends KineticBlock implements EntityBlock, IWrenchable{
-	public static final DirectionProperty FACING=HorizontalDirectionalBlock.FACING;
+	public static final DirectionProperty FACING=BlockStateProperties.FACING;
 	public static final BooleanProperty ACTIVE=BooleanProperty.create("active");
 	public static final BooleanProperty INVERT=BooleanProperty.create("invert");
 	public Engine(Properties properties){
@@ -61,9 +70,7 @@ public class Engine extends KineticBlock implements EntityBlock, IWrenchable{
 	}
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context){
-		Direction dir=context.getNearestLookingDirection();
-		if(dir.getAxis().isVertical()) dir=context.getHorizontalDirection().getOpposite();
-		return this.defaultBlockState().setValue(FACING,dir);
+		return this.defaultBlockState().setValue(FACING,context.getNearestLookingDirection().getOpposite());
 	}
 	@Override
 	public @NotNull VoxelShape getVisualShape(@NotNull BlockState blockState,@NotNull BlockGetter world,@NotNull BlockPos pos,@NotNull CollisionContext context){
@@ -84,6 +91,7 @@ public class Engine extends KineticBlock implements EntityBlock, IWrenchable{
 				return InteractionResult.PASS;
 			}else{
 				KineticBlockEntity.switchToBlockState(level,pos,this.updateAfterWrenched(rotated,context));
+				if(level.getBlockEntity(pos) instanceof EngineBlockEntity be) be.updateExtenders();
 				if(level.getBlockState(pos)!=state) IWrenchable.playRotateSound(level,pos);
 				return InteractionResult.SUCCESS;
 			}
@@ -97,23 +105,21 @@ public class Engine extends KineticBlock implements EntityBlock, IWrenchable{
 		}
 	}
 	@Override
-	public void appendHoverText(net.minecraft.world.item.@NotNull ItemStack stack,net.minecraft.world.item.Item.@NotNull TooltipContext context,java.util.@NotNull List<net.minecraft.network.chat.Component> tooltipComponents,net.minecraft.world.item.@NotNull TooltipFlag tooltipFlag){
+	public void appendHoverText(@NotNull ItemStack stack,Item.@NotNull TooltipContext context,@NotNull List<Component> tooltipComponents,@NotNull TooltipFlag tooltipFlag){
 		super.appendHoverText(stack,context,tooltipComponents,tooltipFlag);
-		boolean isPortable=this.equals(cz.maxtechnik.dif.init.basic.DifModBlocks.ENGINE_PORTABLE.get());
-		tooltipComponents.add(net.minecraft.network.chat.Component.literal("Burn Rates:").withStyle(net.minecraft.ChatFormatting.GRAY));
-		double dieselRate=isPortable?cz.maxtechnik.dif.config.DifModServerConfig.ENGINE_DIESEL_PORTABLE_CONSUMPTION.get():cz.maxtechnik.dif.config.DifModServerConfig.ENGINE_DIESEL_CONSUMPTION.get();
-		double gasolineRate=isPortable?cz.maxtechnik.dif.config.DifModServerConfig.ENGINE_GASOLINE_PORTABLE_CONSUMPTION.get():cz.maxtechnik.dif.config.DifModServerConfig.ENGINE_GASOLINE_CONSUMPTION.get();
-		double lpgRate=isPortable?cz.maxtechnik.dif.config.DifModServerConfig.ENGINE_LPG_PORTABLE_CONSUMPTION.get():cz.maxtechnik.dif.config.DifModServerConfig.ENGINE_LPG_CONSUMPTION.get();
-		tooltipComponents.add(net.minecraft.network.chat.Component.literal(" • Diesel: ").withStyle(net.minecraft.ChatFormatting.DARK_GRAY)
-				.append(net.minecraft.network.chat.Component.literal(String.format(java.util.Locale.US,"%.2f mB/s",dieselRate)).withStyle(net.minecraft.ChatFormatting.GOLD)));
-		tooltipComponents.add(net.minecraft.network.chat.Component.literal(" • Gasoline: ").withStyle(net.minecraft.ChatFormatting.DARK_GRAY)
-				.append(net.minecraft.network.chat.Component.literal(String.format(java.util.Locale.US,"%.2f mB/s",gasolineRate)).withStyle(net.minecraft.ChatFormatting.GOLD)));
-		tooltipComponents.add(net.minecraft.network.chat.Component.literal(" • LPG: ").withStyle(net.minecraft.ChatFormatting.DARK_GRAY)
-				.append(net.minecraft.network.chat.Component.literal(String.format(java.util.Locale.US,"%.2f mB/s",lpgRate)).withStyle(net.minecraft.ChatFormatting.GOLD)));
-		if(!isPortable){
-			double heavyRate=cz.maxtechnik.dif.config.DifModServerConfig.ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get();
-			tooltipComponents.add(net.minecraft.network.chat.Component.literal(" • Heavy Fuel Oil: ").withStyle(net.minecraft.ChatFormatting.DARK_GRAY)
-					.append(net.minecraft.network.chat.Component.literal(String.format(java.util.Locale.US,"%.2f mB/s",heavyRate)).withStyle(net.minecraft.ChatFormatting.GOLD)));
+		boolean isPortable=this.equals(DifModBlocks.ENGINE_PORTABLE.get());
+		tooltipComponents.add(Component.literal("Burn Rates:").withStyle(ChatFormatting.GRAY));
+		if(isPortable){
+			addFuelTooltip(tooltipComponents,"Gasoline",DifModServerConfig.PORTABLE_ENGINE_GASOLINE_CONSUMPTION.get());
+			addFuelTooltip(tooltipComponents,"LPG",DifModServerConfig.PORTABLE_ENGINE_LPG_CONSUMPTION.get());
+		}else{
+			addFuelTooltip(tooltipComponents,"Gasoline",DifModServerConfig.LARGE_ENGINE_GASOLINE_CONSUMPTION.get());
+			addFuelTooltip(tooltipComponents,"Diesel",DifModServerConfig.LARGE_ENGINE_DIESEL_CONSUMPTION.get());
+			addFuelTooltip(tooltipComponents,"Heavy Fuel Oil",DifModServerConfig.LARGE_ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get());
 		}
+	}
+	private void addFuelTooltip(List<Component> tooltipComponents,String name,double rate){
+		tooltipComponents.add(Component.literal(" • "+name+": ").withStyle(ChatFormatting.DARK_GRAY)
+				.append(Component.literal(String.format(Locale.US,"%.1f mB/s",rate)).withStyle(ChatFormatting.GOLD)));
 	}
 }

@@ -39,9 +39,9 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	boolean generating=false;
 	float speed=0F;
 	float su=0F;
-	private boolean ext0=false, ext1=false, ext2=false;
+	private boolean extUp=false, extNorth=false, extSouth=false, extEast=false, extWest=false;
 	private int cachedExtenders=0;
-	private boolean redstonePowered=false;
+	private int redstoneSignal=0;
 	private double consumptionPerTick=0.0D;
 	private boolean isDrainingInternally=false;
 	private static final int FUEL_TICK_INTERVAL=10;
@@ -53,10 +53,8 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	public final FluidTank fluidTank=new FluidTank(1000,stack->{
 		if(stack.isEmpty()) return false;
 		boolean isPortable=isEngineBlockPortable(getBlockState().getBlock());
-		if(stack.is(DIESEL_TAG)) return true;
-		if(stack.is(GASOLINE_TAG)) return true;
-		if(stack.is(LPG_TAG)) return true;
-		return !isPortable&&stack.is(HEAVY_FUEL_OIL_TAG);
+		if(isPortable) return stack.is(GASOLINE_TAG)||stack.is(LPG_TAG);
+		return stack.is(GASOLINE_TAG)||stack.is(DIESEL_TAG)||stack.is(HEAVY_FUEL_OIL_TAG);
 	}){
 		@Override
 		protected void onContentsChanged(){
@@ -84,10 +82,13 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		generating=tag.getBoolean("generating");
 		speed=tag.getFloat("speed");
 		su=tag.getFloat("su");
-		ext0=tag.getBoolean("ext0");
-		ext1=tag.getBoolean("ext1");
-		ext2=tag.getBoolean("ext2");
+		extUp=tag.getBoolean("extUp");
+		extNorth=tag.getBoolean("extNorth");
+		extSouth=tag.getBoolean("extSouth");
+		extEast=tag.getBoolean("extEast");
+		extWest=tag.getBoolean("extWest");
 		cachedExtenders=tag.getInt("extenders");
+		redstoneSignal=tag.getInt("redstoneSignal");
 	}
 	@Override
 	public void write(CompoundTag tag,HolderLookup.Provider registries,boolean clientPacket){
@@ -96,10 +97,13 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		tag.putBoolean("generating",generating);
 		tag.putFloat("speed",speed);
 		tag.putFloat("su",su);
-		tag.putBoolean("ext0",ext0);
-		tag.putBoolean("ext1",ext1);
-		tag.putBoolean("ext2",ext2);
+		tag.putBoolean("extUp",extUp);
+		tag.putBoolean("extNorth",extNorth);
+		tag.putBoolean("extSouth",extSouth);
+		tag.putBoolean("extEast",extEast);
+		tag.putBoolean("extWest",extWest);
 		tag.putInt("extenders",cachedExtenders);
+		tag.putInt("redstoneSignal",redstoneSignal);
 	}
 	@Override
 	public void initialize(){
@@ -113,22 +117,36 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		if(!(ownState.getBlock() instanceof Engine)) return;
 		if(isEngineBlock(ownState.getBlock())){
 			Direction.Axis axis=ownState.getValue(FACING).getAxis();
-			ext0=isEngineExtender(worldPosition.above());
 			if(axis==Direction.Axis.Z){
-				ext1=isEngineExtender(worldPosition.east());
-				ext2=isEngineExtender(worldPosition.west());
+				extUp=isEngineExtender(worldPosition.above());
+				extEast=isEngineExtender(worldPosition.east());
+				extWest=isEngineExtender(worldPosition.west());
+				extNorth=false;
+				extSouth=false;
+				cachedExtenders=(extUp?1:0)+(extEast?1:0)+(extWest?1:0);
 			}else if(axis==Direction.Axis.X){
-				ext1=isEngineExtender(worldPosition.north());
-				ext2=isEngineExtender(worldPosition.south());
+				extUp=isEngineExtender(worldPosition.above());
+				extNorth=isEngineExtender(worldPosition.north());
+				extSouth=isEngineExtender(worldPosition.south());
+				extEast=false;
+				extWest=false;
+				cachedExtenders=(extUp?1:0)+(extNorth?1:0)+(extSouth?1:0);
 			}else{
-				ext1=false;
-				ext2=false;
+				extUp=false;
+				extNorth=isEngineExtender(worldPosition.north());
+				extSouth=isEngineExtender(worldPosition.south());
+				extEast=isEngineExtender(worldPosition.east());
+				extWest=isEngineExtender(worldPosition.west());
+				int total=(extNorth?1:0)+(extSouth?1:0)+(extEast?1:0)+(extWest?1:0);
+				if(total>3) extWest=false;
+				cachedExtenders=Math.min(3,total);
 			}
-			cachedExtenders=(ext0?1:0)+(ext1?1:0)+(ext2?1:0);
 		}else{
-			ext0=false;
-			ext1=false;
-			ext2=false;
+			extUp=false;
+			extNorth=false;
+			extSouth=false;
+			extEast=false;
+			extWest=false;
 			cachedExtenders=1;
 		}
 		if(!level.isClientSide) recalculateStats();
@@ -138,49 +156,72 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		boolean wasGenerating=generating;
 		float prevSpeed=speed;
 		float prevSu=su;
-		redstonePowered=level.hasNeighborSignal(worldPosition);
+		int prevSignal=redstoneSignal;
+		redstoneSignal=level.getBestNeighborSignal(worldPosition);
 		FuelType fuel=getFuelType();
-		if(redstonePowered||fuel==FuelType.INVALID||fluidTank.isEmpty()){
+		if(redstoneSignal<=0||fuel==FuelType.INVALID||fluidTank.isEmpty()){
 			generating=false;
 			speed=0F;
 			su=0F;
 			consumptionPerTick=0.0D;
 		}else{
 			boolean isPortable=isEngineBlockPortable(getBlockState().getBlock());
-			int extenders=cachedExtenders;
-			double baseRpm=0.0D;
-			double calculatedSu=0.0D;
-			double burnRatePerSec=0.0D;
-			if(fuel==FuelType.DIESEL){
-				baseRpm=ENGINE_DIESEL_RPM.get();
-				calculatedSu=isPortable?ENGINE_DIESEL_PORTABLE_SU.get():ENGINE_DIESEL_SU.get()*extenders;
-				burnRatePerSec=isPortable?ENGINE_DIESEL_PORTABLE_CONSUMPTION.get():ENGINE_DIESEL_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
-			}else if(fuel==FuelType.HEAVY_FUEL_OIL){
-				baseRpm=ENGINE_HEAVY_FUEL_OIL_RPM.get();
-				calculatedSu=ENGINE_HEAVY_FUEL_OIL_SU.get()*extenders;
-				burnRatePerSec=ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
-			}else if(fuel==FuelType.GASOLINE){
-				baseRpm=ENGINE_GASOLINE_RPM.get();
-				calculatedSu=isPortable?ENGINE_GASOLINE_PORTABLE_SU.get():ENGINE_GASOLINE_SU.get()*extenders;
-				burnRatePerSec=isPortable?ENGINE_GASOLINE_PORTABLE_CONSUMPTION.get():ENGINE_GASOLINE_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
-			}else if(fuel==FuelType.LPG){
-				baseRpm=ENGINE_LPG_RPM.get();
-				calculatedSu=isPortable?ENGINE_LPG_PORTABLE_SU.get():ENGINE_LPG_SU.get()*extenders;
-				burnRatePerSec=isPortable?ENGINE_LPG_PORTABLE_CONSUMPTION.get():ENGINE_LPG_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
-			}
+			double baseRpm=getBaseRpm(fuel,isPortable);
+			double maxSu=getBaseSu(fuel,isPortable)*(isPortable?1:cachedExtenders);
+			double burnRatePerSec=calculateBurnRate(fuel,isPortable,cachedExtenders,redstoneSignal);
 			speed=(float)baseRpm;
-			su=(float)calculatedSu;
+			su=(float)(maxSu*(redstoneSignal/15.0D));
 			consumptionPerTick=burnRatePerSec/20.0D;
 			generating=true;
 		}
-		if(wasGenerating!=generating||prevSpeed!=speed||prevSu!=su){
+		if(wasGenerating!=generating||prevSpeed!=speed||prevSu!=su||prevSignal!=redstoneSignal){
 			if(!level.isClientSide){
 				BlockState state=getBlockState();
-				if(state.getBlock() instanceof Engine&&state.getValue(ACTIVE)!=generating) KineticBlockEntity.switchToBlockState(level,worldPosition,state.setValue(ACTIVE,generating));
+				if(state.getBlock() instanceof Engine&&state.getValue(ACTIVE)!=generating)
+					KineticBlockEntity.switchToBlockState(level,worldPosition,state.setValue(ACTIVE,generating));
 				updateGeneratedRotation();
 				sendData();
 			}
 		}
+	}
+	private double getBaseRpm(FuelType fuel,boolean isPortable){
+		if(isPortable){
+			if(fuel==FuelType.GASOLINE) return PORTABLE_ENGINE_GASOLINE_RPM.get();
+			if(fuel==FuelType.LPG) return PORTABLE_ENGINE_LPG_RPM.get();
+		}else{
+			if(fuel==FuelType.GASOLINE) return LARGE_ENGINE_GASOLINE_RPM.get();
+			if(fuel==FuelType.DIESEL) return LARGE_ENGINE_DIESEL_RPM.get();
+			if(fuel==FuelType.HEAVY_FUEL_OIL) return LARGE_ENGINE_HEAVY_FUEL_OIL_RPM.get();
+		}
+		return 0.0D;
+	}
+	private double getBaseSu(FuelType fuel,boolean isPortable){
+		if(isPortable){
+			if(fuel==FuelType.GASOLINE) return PORTABLE_ENGINE_GASOLINE_SU.get();
+			if(fuel==FuelType.LPG) return PORTABLE_ENGINE_LPG_SU.get();
+		}else{
+			if(fuel==FuelType.GASOLINE) return LARGE_ENGINE_GASOLINE_SU.get();
+			if(fuel==FuelType.DIESEL) return LARGE_ENGINE_DIESEL_SU.get();
+			if(fuel==FuelType.HEAVY_FUEL_OIL) return LARGE_ENGINE_HEAVY_FUEL_OIL_SU.get();
+		}
+		return 0.0D;
+	}
+	private double getBaseConsumption(FuelType fuel,boolean isPortable){
+		if(isPortable){
+			if(fuel==FuelType.GASOLINE) return PORTABLE_ENGINE_GASOLINE_CONSUMPTION.get();
+			if(fuel==FuelType.LPG) return PORTABLE_ENGINE_LPG_CONSUMPTION.get();
+		}else{
+			if(fuel==FuelType.GASOLINE) return LARGE_ENGINE_GASOLINE_CONSUMPTION.get();
+			if(fuel==FuelType.DIESEL) return LARGE_ENGINE_DIESEL_CONSUMPTION.get();
+			if(fuel==FuelType.HEAVY_FUEL_OIL) return LARGE_ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get();
+		}
+		return 0.0D;
+	}
+	private double calculateBurnRate(FuelType fuel,boolean isPortable,int extenders,int signal){
+		if(signal<=0||fuel==FuelType.INVALID) return 0.0D;
+		double maxBurnRate=getBaseConsumption(fuel,isPortable)*(isPortable?1:extenders);
+		double factor=0.1D+0.9D*((signal-1)/14.0D);
+		return Math.round(maxBurnRate*factor*10.0D)/10.0D;
 	}
 	@Override
 	public void tick(){
@@ -191,7 +232,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 			reActivateSource=false;
 		}
 		if(!level.isClientSide){
-			if(generating&&!redstonePowered){
+			if(generating&&redstoneSignal>0){
 				fuelAccumulator+=consumptionPerTick;
 				if(++fuelTickCounter>=FUEL_TICK_INTERVAL){
 					fuelTickCounter=0;
@@ -221,21 +262,36 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	private static final double[] PORTABLE_ALONG={0.22,0.78};
 	public void clientTick(){
 		if(level==null) return;
-		boolean isZ=getBlockState().getValue(FACING).getAxis()==Direction.Axis.Z;
+		Direction facing=getBlockState().getValue(FACING);
+		Direction.Axis axis=facing.getAxis();
+		boolean isZ=axis==Direction.Axis.Z;
 		double vel=0.007;
 		double px=worldPosition.getX(), py=worldPosition.getY(), pz=worldPosition.getZ();
 		Block ownBlock=getBlockState().getBlock();
 		if(isEngineBlock(ownBlock)){
-			if(ext0) spawnExtenderParticles(0.5,py+2,0,isZ);
-			if(ext1) spawnExtenderParticles(isZ?2:-1,py+0.5,isZ?vel*2:-vel*2,isZ);
-			if(ext2) spawnExtenderParticles(isZ?-1:2,py+0.5,isZ?-vel*2:vel*2,isZ);
+			if(extUp) spawnExtenderParticles(0.5,py+2,0,isZ);
+			if(extEast) spawnExtenderParticles(2,py+0.5,vel*2,true);
+			if(extWest) spawnExtenderParticles(-1,py+0.5,-vel*2,true);
+			if(extSouth) spawnExtenderParticles(2,py+0.5,vel*2,false);
+			if(extNorth) spawnExtenderParticles(-1,py+0.5,-vel*2,false);
 		}else if(isEngineBlockPortable(ownBlock)){
-			for(double side: PORTABLE_SIDES){
-				double sideVel=side<0.5?-vel*2:vel*2;
-				for(double along: PORTABLE_ALONG){
-					double x=isZ?px+side:px+along;
-					double z=isZ?pz+along:pz+side;
-					particle(new Vec3(x,py+0.99,z),new Vec3(isZ?sideVel:0,vel,isZ?0:sideVel));
+			if(axis.isHorizontal()){
+				for(double side: PORTABLE_SIDES){
+					double sideVel=side<0.5?-vel*2:vel*2;
+					for(double along: PORTABLE_ALONG){
+						double x=isZ?px+side:px+along;
+						double z=isZ?pz+along:pz+side;
+						particle(new Vec3(x,py+0.99,z),new Vec3(isZ?sideVel:0,vel,isZ?0:sideVel));
+					}
+				}
+			}else{
+				double zOff=facing==Direction.UP?0.99:0.01;
+				double vz=facing==Direction.UP?vel:-vel;
+				for(double side: PORTABLE_SIDES){
+					double sideVel=side<0.5?-vel*2:vel*2;
+					for(double along: PORTABLE_ALONG){
+						particle(new Vec3(px+side,py+along,pz+zOff),new Vec3(sideVel,0,vz));
+					}
 				}
 			}
 		}
@@ -263,8 +319,9 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		Block ownBlock=getBlockState().getBlock();
 		if(isEngineBlock(ownBlock)&&cachedExtenders==0) return FuelType.INVALID;
 		FuelType fuel=getFuelFromTank();
-		if(isEngineBlockPortable(ownBlock)&&fuel==FuelType.HEAVY_FUEL_OIL) return FuelType.INVALID;
-		return fuel;
+		if(isEngineBlockPortable(ownBlock))
+			return (fuel==FuelType.GASOLINE||fuel==FuelType.LPG)?fuel:FuelType.INVALID;
+		return (fuel==FuelType.GASOLINE||fuel==FuelType.DIESEL||fuel==FuelType.HEAVY_FUEL_OIL)?fuel:FuelType.INVALID;
 	}
 	public boolean isEngineExtender(BlockPos pos){
 		if(level==null||!level.isLoaded(pos)) return false;
@@ -289,19 +346,13 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		}else
 			tooltip.add(Component.literal("     Fuel: ").withStyle(ChatFormatting.GRAY).append(Component.literal("Empty (0 / "+fluidTank.getCapacity()+" mB)").withStyle(ChatFormatting.DARK_GRAY)));
 		FuelType fuel=getFuelType();
-		if(fuel!=FuelType.INVALID){
+		if(fuel!=FuelType.INVALID&&redstoneSignal>0){
 			boolean isPortable=isEngineBlockPortable(getBlockState().getBlock());
-			int extenders=cachedExtenders;
-			double burnRatePerSec=0D;
-			if(fuel.equals(FuelType.DIESEL)) burnRatePerSec=isPortable?ENGINE_DIESEL_PORTABLE_CONSUMPTION.get():ENGINE_DIESEL_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
-			else if(fuel.equals(FuelType.GASOLINE)) burnRatePerSec=isPortable?ENGINE_GASOLINE_PORTABLE_CONSUMPTION.get():ENGINE_GASOLINE_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
-			else if(fuel.equals(FuelType.LPG)) burnRatePerSec=isPortable?ENGINE_LPG_PORTABLE_CONSUMPTION.get():ENGINE_LPG_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
-			else if(fuel.equals(FuelType.HEAVY_FUEL_OIL)) burnRatePerSec=ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get()*(1.0+(extenders-1)*0.5);
-
-			String burnRateStr=String.format(Locale.US,"%.2f",burnRatePerSec);
+			double burnRatePerSec=calculateBurnRate(fuel,isPortable,cachedExtenders,redstoneSignal);
+			String burnRateStr=String.format(Locale.US,"%.1f",burnRatePerSec);
 			tooltip.add(Component.literal("     Burn Rate: ").withStyle(ChatFormatting.GRAY).append(Component.literal(burnRateStr+" mB/s").withStyle(ChatFormatting.GOLD)));
 		}else
-			tooltip.add(Component.literal("     Burn Rate: ").withStyle(ChatFormatting.GRAY).append(Component.literal("0.00 mB/s").withStyle(ChatFormatting.DARK_GRAY)));
+			tooltip.add(Component.literal("     Burn Rate: ").withStyle(ChatFormatting.GRAY).append(Component.literal("0.0 mB/s").withStyle(ChatFormatting.DARK_GRAY)));
 		return true;
 	}
 }
