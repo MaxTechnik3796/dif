@@ -17,11 +17,11 @@
 		},
 		"facing=up":{
 			"model":"dif:block/engine_portable",
-			"x":90
+			"x":270
 		},
 		"facing=down":{
 			"model":"dif:block/engine_portable",
-			"x":270
+			"x":90
 		}
 	}
 }
