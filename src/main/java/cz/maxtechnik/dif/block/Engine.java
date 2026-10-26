@@ -5,7 +5,6 @@ import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import cz.maxtechnik.dif.block.entity.EngineBlockEntity;
 import cz.maxtechnik.dif.config.DifModServerConfig;
-import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -82,20 +81,17 @@ public class Engine extends KineticBlock implements EntityBlock, IWrenchable{
 		Level level=context.getLevel();
 		BlockPos pos=context.getClickedPos();
 		Direction side=context.getClickedFace();
-		BlockState rotated=this.getRotatedBlockState(state,context.getClickedFace());
-		if(side.equals(level.getBlockState(pos).getValue(FACING))||side.equals(level.getBlockState(pos).getValue(FACING).getOpposite())){
-			KineticBlockEntity.switchToBlockState(level,pos,level.getBlockState(pos).setValue(INVERT,!level.getBlockState(pos).getValue(INVERT)));
-			if(level.getBlockState(pos)!=state) IWrenchable.playRotateSound(level,pos);
+		if(side.getAxis()==state.getValue(FACING).getAxis()){
+			KineticBlockEntity.switchToBlockState(level,pos,state.cycle(INVERT));
+			IWrenchable.playRotateSound(level,pos);
 			return InteractionResult.SUCCESS;
-		}else{
-			if(!rotated.canSurvive(level,context.getClickedPos())) return InteractionResult.PASS;
-			else{
-				KineticBlockEntity.switchToBlockState(level,pos,this.updateAfterWrenched(rotated,context));
-				if(level.getBlockEntity(pos) instanceof EngineBlockEntity be) be.updateExtenders();
-				if(level.getBlockState(pos)!=state) IWrenchable.playRotateSound(level,pos);
-				return InteractionResult.SUCCESS;
-			}
 		}
+		BlockState rotated=this.getRotatedBlockState(state,side);
+		if(!rotated.canSurvive(level,pos)) return InteractionResult.PASS;
+		KineticBlockEntity.switchToBlockState(level,pos,this.updateAfterWrenched(rotated,context));
+		if(level.getBlockEntity(pos) instanceof EngineBlockEntity be) be.updateExtenders();
+		if(level.getBlockState(pos)!=state) IWrenchable.playRotateSound(level,pos);
+		return InteractionResult.SUCCESS;
 	}
 	@Override
 	public void neighborChanged(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Block block,@NotNull BlockPos fromPos,boolean isMoving){
@@ -105,18 +101,12 @@ public class Engine extends KineticBlock implements EntityBlock, IWrenchable{
 	@Override
 	public void appendHoverText(@NotNull ItemStack stack,Item.@NotNull TooltipContext context,@NotNull List<Component> tooltipComponents,@NotNull TooltipFlag tooltipFlag){
 		super.appendHoverText(stack,context,tooltipComponents,tooltipFlag);
-		boolean isPortable=this.equals(DifModBlocks.ENGINE_PORTABLE.get());
 		tooltipComponents.add(Component.literal("Burn Rates:").withStyle(ChatFormatting.GRAY));
-		if(isPortable){
-			addFuelTooltip(tooltipComponents,"Gasoline",DifModServerConfig.PORTABLE_ENGINE_GASOLINE_CONSUMPTION.get());
-			addFuelTooltip(tooltipComponents,"LPG",DifModServerConfig.PORTABLE_ENGINE_LPG_CONSUMPTION.get());
-		}else{
-			addFuelTooltip(tooltipComponents,"Gasoline",DifModServerConfig.LARGE_ENGINE_GASOLINE_CONSUMPTION.get());
-			addFuelTooltip(tooltipComponents,"Diesel",DifModServerConfig.LARGE_ENGINE_DIESEL_CONSUMPTION.get());
-			addFuelTooltip(tooltipComponents,"Heavy Fuel Oil",DifModServerConfig.LARGE_ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get());
-		}
+		addFuelTooltip(tooltipComponents,"Gasoline",DifModServerConfig.LARGE_ENGINE_GASOLINE_CONSUMPTION.get());
+		addFuelTooltip(tooltipComponents,"Diesel",DifModServerConfig.LARGE_ENGINE_DIESEL_CONSUMPTION.get());
+		addFuelTooltip(tooltipComponents,"Heavy Fuel Oil",DifModServerConfig.LARGE_ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get());
 	}
-	private void addFuelTooltip(List<Component> tooltipComponents,String name,double rate){
+	public static void addFuelTooltip(List<Component> tooltipComponents,String name,double rate){
 		tooltipComponents.add(Component.literal(" • "+name+": ").withStyle(ChatFormatting.DARK_GRAY).append(Component.literal(String.format(Locale.US,"%.1f mB/s",rate)).withStyle(ChatFormatting.GOLD)));
 	}
 }
