@@ -35,6 +35,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 import java.util.Locale;
 public class Engine extends KineticBlock implements EntityBlock, IWrenchable{
@@ -87,9 +88,8 @@ public class Engine extends KineticBlock implements EntityBlock, IWrenchable{
 			if(level.getBlockState(pos)!=state) IWrenchable.playRotateSound(level,pos);
 			return InteractionResult.SUCCESS;
 		}else{
-			if(!rotated.canSurvive(level,context.getClickedPos())){
-				return InteractionResult.PASS;
-			}else{
+			if(!rotated.canSurvive(level,context.getClickedPos())) return InteractionResult.PASS;
+			else{
 				KineticBlockEntity.switchToBlockState(level,pos,this.updateAfterWrenched(rotated,context));
 				if(level.getBlockEntity(pos) instanceof EngineBlockEntity be) be.updateExtenders();
 				if(level.getBlockState(pos)!=state) IWrenchable.playRotateSound(level,pos);
@@ -100,9 +100,7 @@ public class Engine extends KineticBlock implements EntityBlock, IWrenchable{
 	@Override
 	public void neighborChanged(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Block block,@NotNull BlockPos fromPos,boolean isMoving){
 		super.neighborChanged(state,level,pos,block,fromPos,isMoving);
-		if(level.getBlockEntity(pos) instanceof EngineBlockEntity be){
-			be.updateExtenders();
-		}
+		if(level.getBlockEntity(pos) instanceof EngineBlockEntity blockEntity) blockEntity.updateExtenders();
 	}
 	@Override
 	public void appendHoverText(@NotNull ItemStack stack,Item.@NotNull TooltipContext context,@NotNull List<Component> tooltipComponents,@NotNull TooltipFlag tooltipFlag){
@@ -119,7 +117,6 @@ public class Engine extends KineticBlock implements EntityBlock, IWrenchable{
 		}
 	}
 	private void addFuelTooltip(List<Component> tooltipComponents,String name,double rate){
-		tooltipComponents.add(Component.literal(" • "+name+": ").withStyle(ChatFormatting.DARK_GRAY)
-				.append(Component.literal(String.format(Locale.US,"%.1f mB/s",rate)).withStyle(ChatFormatting.GOLD)));
+		tooltipComponents.add(Component.literal(" • "+name+": ").withStyle(ChatFormatting.DARK_GRAY).append(Component.literal(String.format(Locale.US,"%.1f mB/s",rate)).withStyle(ChatFormatting.GOLD)));
 	}
 }
