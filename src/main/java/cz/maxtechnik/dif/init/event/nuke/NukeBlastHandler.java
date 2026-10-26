@@ -52,12 +52,13 @@ public class NukeBlastHandler{
 	public static void detonateEntities(ServerLevel level,double x,double y,double z){
 		int craterRadius=DifModServerConfig.NUKE_RADIUS.get();
 		double damageRadius=DifModServerConfig.NUKE_DAMAGE_RADIUS.get();
-		AABB area=new AABB(x-damageRadius,y-damageRadius,z-damageRadius,x+damageRadius,y+damageRadius,z+damageRadius);
+		double maxRadius=Math.max(craterRadius,damageRadius);
+		AABB area=new AABB(x-maxRadius,y-maxRadius,z-maxRadius,x+maxRadius,y+maxRadius,z+maxRadius);
 		for(LivingEntity entity: level.getEntitiesOfClass(LivingEntity.class,area)){
 			if(entity.isSpectator()) continue;
 			if(entity instanceof Player player&&player.isCreative()) continue;
 			double dist=Math.sqrt(entity.distanceToSqr(x,y,z));
-			if(dist>damageRadius) continue;
+			if(dist>maxRadius) continue;
 			if(dist<=craterRadius){
 				entity.hurt(level.damageSources().wither(),100.0F);
 				entity.addEffect(new MobEffectInstance(MobEffects.WITHER,600,1));
@@ -68,7 +69,7 @@ public class NukeBlastHandler{
 			}
 			Vec3 dir=entity.position().subtract(x,y,z);
 			if(dir.lengthSqr()>0.01){
-				double strength=Math.max(0.5,1.0-(dist/damageRadius))*2.5;
+				double strength=Math.max(0.5,1.0-(dist/maxRadius))*2.5;
 				Vec3 push=dir.normalize().scale(strength).add(0,0.6,0);
 				entity.setDeltaMovement(entity.getDeltaMovement().add(push));
 				entity.hurtMarked=true;
