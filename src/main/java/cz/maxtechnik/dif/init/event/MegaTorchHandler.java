@@ -19,17 +19,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 @EventBusSubscriber(modid=DifMod.MODID)
-public class SpawnEventHandler extends SavedData{
+public class MegaTorchHandler extends SavedData{
 	private final Set<BlockPos> torches=new HashSet<>();
-	private static final Factory<SpawnEventHandler> FACTORY=new Factory<>(SpawnEventHandler::new,SpawnEventHandler::load,null);
-	public static SpawnEventHandler get(ServerLevel level){
+	private static final Factory<MegaTorchHandler> FACTORY=new Factory<>(MegaTorchHandler::new,MegaTorchHandler::load,null);
+	public static MegaTorchHandler get(ServerLevel level){
 		return level.getDataStorage().computeIfAbsent(FACTORY,"dif_mega_torches");
 	}
-	public static SpawnEventHandler load(CompoundTag tag,HolderLookup.Provider registries){
-		SpawnEventHandler data=new SpawnEventHandler();
-		for(long posLong: tag.getLongArray("Torches")){
-			data.torches.add(BlockPos.of(posLong));
-		}
+	public static MegaTorchHandler load(CompoundTag tag,HolderLookup.Provider registries){
+		MegaTorchHandler data=new MegaTorchHandler();
+		for(long posLong: tag.getLongArray("Torches")) data.torches.add(BlockPos.of(posLong));
 		return data;
 	}
 	@Override
@@ -50,41 +48,22 @@ public class SpawnEventHandler extends SavedData{
 		Set<BlockPos> torches=get(level).torches;
 		if(torches.isEmpty()) return false;
 		int radius=DifModServerConfig.MEGA_TORCH_RADIUS.get();
-		for(BlockPos torch: torches){
-			if(Math.abs(torch.getX()-pos.getX())<=radius&&Math.abs(torch.getZ()-pos.getZ())<=radius){
-				return true;
-			}
-		}
+		for(BlockPos torch: torches) if(Math.abs(torch.getX()-pos.getX())<=radius&&Math.abs(torch.getZ()-pos.getZ())<=radius) return true;
 		return false;
 	}
 	public static boolean isSpawnAllowed(EntityType<?> type,MobSpawnType spawnType){
 		if(MobSpawnType.isSpawner(spawnType)) return true;
-		if(spawnType==MobSpawnType.SPAWN_EGG||
-				spawnType==MobSpawnType.COMMAND||
-				spawnType==MobSpawnType.BREEDING||
-				spawnType==MobSpawnType.BUCKET||
-				spawnType==MobSpawnType.DISPENSER||
-				spawnType==MobSpawnType.CONVERSION){
-			return true;
-		}
+		if(spawnType.equals(MobSpawnType.SPAWN_EGG)||spawnType.equals(MobSpawnType.COMMAND)||spawnType.equals(MobSpawnType.BREEDING)||spawnType.equals(MobSpawnType.BUCKET)||spawnType.equals(MobSpawnType.DISPENSER)||spawnType.equals(MobSpawnType.CONVERSION)) return true;
 		return !type.is(MegaTorch.BLOCKED_MOBS);
 	}
 	@SubscribeEvent
 	public static void onCheckSpawn(MobSpawnEvent.PositionCheck event){
 		if(isSpawnAllowed(event.getEntity().getType(),event.getSpawnType())) return;
-		ServerLevel level=event.getLevel().getLevel();
-		BlockPos pos=BlockPos.containing(event.getX(),event.getY(),event.getZ());
-		if(isNearTorch(level,pos)){
-			event.setResult(MobSpawnEvent.PositionCheck.Result.FAIL);
-		}
+		if(isNearTorch(event.getLevel().getLevel(),BlockPos.containing(event.getX(),event.getY(),event.getZ()))) event.setResult(MobSpawnEvent.PositionCheck.Result.FAIL);
 	}
 	@SubscribeEvent
 	public static void onPlayerSpawnPhantoms(PlayerSpawnPhantomsEvent event){
 		if(!EntityType.PHANTOM.is(MegaTorch.BLOCKED_MOBS)) return;
-		if(event.getEntity().level() instanceof ServerLevel level){
-			if(isNearTorch(level,event.getEntity().blockPosition())){
-				event.setResult(PlayerSpawnPhantomsEvent.Result.DENY);
-			}
-		}
+		if(event.getEntity().level() instanceof ServerLevel level) if(isNearTorch(level,event.getEntity().blockPosition())) event.setResult(PlayerSpawnPhantomsEvent.Result.DENY);
 	}
 }

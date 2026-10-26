@@ -94,8 +94,8 @@ public class DifModBlocks{
 
 	public static final DeferredBlock<Block>FRYING_TABLE=REGISTRY.register("frying_table",FryingTable::new);
 
-	public static final DeferredBlock<Block> DISTILLATION_TANK=REGISTRY.register("distillation_tank", DistillationTank::new);
-	public static final DeferredBlock<Block> MITHRIL_FLUID_TANK=REGISTRY.register("mithril_fluid_tank", MithrilFluidTank::new);
+	public static final DeferredBlock<Block> DISTILLATION_TANK=REGISTRY.register("distillation_tank",()->new DistillationTank(BlockBehaviour.Properties.of().strength(5F,6F).sound(SoundType.METAL).requiresCorrectToolForDrops(),false));
+	public static final DeferredBlock<Block> MITHRIL_FLUID_TANK=REGISTRY.register("mithril_fluid_tank",()->new MithrilFluidTank(BlockBehaviour.Properties.of().strength(4F,5F).sound(SoundType.METAL).noOcclusion().isRedstoneConductor((blockState,blockGetter,pos)->true).requiresCorrectToolForDrops(),false));
 
 	//Tracks:
 	public static final DeferredBlock<Block>BROKEN_TRACK00=REGISTRY.register("broken_track00",BrokenTrack::new);

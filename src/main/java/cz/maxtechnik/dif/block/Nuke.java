@@ -13,7 +13,7 @@ public class Nuke extends Block{
 		super(properties);
 	}
 	@Override
-	public void neighborChanged(@NotNull BlockState state,Level level,@NotNull BlockPos pos,@NotNull Block block,@NotNull BlockPos fromPos,boolean isMoving){
+	public void neighborChanged(@NotNull BlockState blockState,Level level,@NotNull BlockPos pos,@NotNull Block block,@NotNull BlockPos fromPos,boolean isMoving){
 		if(level.isClientSide) return;
 		if(level.hasNeighborSignal(pos)){
 			level.removeBlock(pos,false);
@@ -21,11 +21,8 @@ public class Nuke extends Block{
 		}
 	}
 	public static void spawnNuclearExplosion(Level level,BlockPos pos){
-		double x=pos.getX()+0.5;
-		double y=pos.getY();
-		double z=pos.getZ()+0.5;
 		NuclearExplosionEntity explosion=new NuclearExplosionEntity(DifModEntities.NUCLEAR_EXPLOSION.get(),level);
-		explosion.setPos(x,y,z);
+		explosion.setPos(pos.getX()+0.5,pos.getY(),pos.getZ()+0.5);
 		level.addFreshEntity(explosion);
 	}
 }

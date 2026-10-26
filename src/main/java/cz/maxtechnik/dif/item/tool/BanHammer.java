@@ -29,8 +29,8 @@ public class BanHammer extends Item{
 	}
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(@NotNull ItemStack stack,Item.@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
-		super.appendHoverText(stack,context,list,flag);
+	public void appendHoverText(@NotNull ItemStack itemStack,Item.@NotNull TooltipContext context,@NotNull List<Component> list,@NotNull TooltipFlag flag){
+		super.appendHoverText(itemStack,context,list,flag);
 		list.add(Component.empty());
 		list.add(Component.literal("» SYSTEM OVERRIDE « ").withStyle(ChatFormatting.DARK_RED,ChatFormatting.BOLD)
 				.append(Component.literal("ERR_BAN").withStyle(ChatFormatting.OBFUSCATED,ChatFormatting.RED)));
@@ -50,7 +50,7 @@ public class BanHammer extends Item{
 				.append(Component.literal("INSTANT").withStyle(ChatFormatting.RED,ChatFormatting.BOLD)));
 	}
 	@Override
-	public boolean onLeftClickEntity(@NotNull ItemStack stack,@NotNull Player attacker,@NotNull Entity target){
+	public boolean onLeftClickEntity(@NotNull ItemStack itemStack,@NotNull Player attacker,@NotNull Entity target){
 		if(!(attacker.level() instanceof ServerLevel level)) return true;
 		double x=target.getX(), y=target.getY(), z=target.getZ();
 		LightningBolt lightning=EntityType.LIGHTNING_BOLT.create(level);
@@ -59,20 +59,19 @@ public class BanHammer extends Item{
 			lightning.setVisualOnly(true);
 			level.addFreshEntity(lightning);
 		}
-		level.playSound(null,x,y,z,SoundEvents.LIGHTNING_BOLT_THUNDER,SoundSource.PLAYERS,5.0F,0.8F);
-		level.playSound(null,x,y,z,SoundEvents.WITHER_SPAWN,SoundSource.PLAYERS,2.0F,0.5F);
+		level.playSound(null,x,y,z,SoundEvents.LIGHTNING_BOLT_THUNDER,SoundSource.PLAYERS,5F,0.8F);
+		level.playSound(null,x,y,z,SoundEvents.WITHER_SPAWN,SoundSource.PLAYERS,2F,0.5F);
 		level.playSound(null,x,y,z,SoundEvents.WARDEN_SONIC_BOOM,SoundSource.PLAYERS,2.5F,0.7F);
-		level.sendParticles(ParticleTypes.SONIC_BOOM,x,y+1.0,z,1,0,0,0,0);
-		level.sendParticles(ParticleTypes.FLASH,x,y+1.0,z,3,0.2,0.2,0.2,0);
-		level.sendParticles(ParticleTypes.REVERSE_PORTAL,x,y+1.0,z,80,0.6,1.0,0.6,0.2);
-		level.sendParticles(ParticleTypes.LARGE_SMOKE,x,y+1.0,z,40,0.5,0.8,0.5,0.1);
-		level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,x,y+1.0,z,30,0.4,0.8,0.4,0.15);
-		// Zabití cíle
+		level.sendParticles(ParticleTypes.SONIC_BOOM,x,y+1,z,1,0,0,0,0);
+		level.sendParticles(ParticleTypes.FLASH,x,y+1,z,3,0.2,0.2,0.2,0);
+		level.sendParticles(ParticleTypes.REVERSE_PORTAL,x,y+1,z,80,0.6,1.0,0.6,0.2);
+		level.sendParticles(ParticleTypes.LARGE_SMOKE,x,y+1,z,40,0.5,0.8,0.5,0.1);
+		level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,x,y+1,z,30,0.4,0.8,0.4,0.15);
 		DamageSource source=level.damageSources().source(DamageTypes.FELL_OUT_OF_WORLD,attacker);
 		target.setInvulnerable(false);
 		target.hurt(source,Float.MAX_VALUE);
 		if(target instanceof LivingEntity living){
-			living.setHealth(0.0F);
+			living.setHealth(0F);
 			living.die(source);
 		}
 		if(target instanceof Player targetPlayer){
@@ -86,9 +85,7 @@ public class BanHammer extends Item{
 				server.getPlayerList().broadcastSystemMessage(msg,false);
 				server.getCommands().performPrefixedCommand(server.createCommandSourceStack(),"ban "+name+" Erased from existence by the Ban Hammer");
 			});
-		}else if(!target.isRemoved()){
-			target.discard();
-		}
+		}else if(!target.isRemoved()) target.discard();
 		return true;
 	}
 }

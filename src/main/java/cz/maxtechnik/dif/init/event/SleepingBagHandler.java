@@ -11,16 +11,13 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerSetSpawnEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerWakeUpEvent;
 @EventBusSubscriber(modid=DifMod.MODID)
-public class PlayerSpawnHandler{
+public class SleepingBagHandler{
 	@SubscribeEvent
 	public static void onPlayerSetSpawn(PlayerSetSpawnEvent event){
-		Level level=event.getEntity().level();
 		BlockPos pos=event.getNewSpawn();
 		if(pos!=null){
-			BlockState state=level.getBlockState(pos);
-			if(state.getBlock() instanceof SleepingBag){
-				event.setCanceled(true);
-			}
+			BlockState state=event.getEntity().level().getBlockState(pos);
+			if(state.getBlock() instanceof SleepingBag) event.setCanceled(true);
 		}
 	}
 	@SubscribeEvent
@@ -30,9 +27,7 @@ public class PlayerSpawnHandler{
 			Level level=player.level();
 			if(!level.isClientSide){
 				BlockState state=level.getBlockState(pos);
-				if(state.getBlock() instanceof SleepingBag&&state.getValue(SleepingBag.OCCUPIED)){
-					level.setBlock(pos,state.setValue(SleepingBag.OCCUPIED,false),3);
-				}
+				if(state.getBlock() instanceof SleepingBag&&state.getValue(SleepingBag.OCCUPIED)) level.setBlock(pos,state.setValue(SleepingBag.OCCUPIED,false),3);
 			}
 		});
 	}

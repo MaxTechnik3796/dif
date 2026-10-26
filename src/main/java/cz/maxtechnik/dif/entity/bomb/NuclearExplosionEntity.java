@@ -37,9 +37,7 @@ public class NuclearExplosionEntity extends Entity{
 	public void tick(){
 		super.tick();
 		if(!(level() instanceof ServerLevel sl)) return;
-		if(currentY==Integer.MIN_VALUE){
-			currentY=DifModServerConfig.NUKE_RADIUS.get();
-		}
+		if(currentY==Integer.MIN_VALUE) currentY=DifModServerConfig.NUKE_RADIUS.get();
 		double x=getX(), y=getY(), z=getZ();
 		if(age==0){
 			NukeBlastHandler.destroyInitialArea(sl,blockPosition(),INITIAL_BLAST_RADIUS,mutablePos);
@@ -47,28 +45,22 @@ public class NuclearExplosionEntity extends Entity{
 		}
 		if(age<IMPLOSION_TICKS){
 			NukeVisualHandler.tickImplosion(sl,x,y,z,age,IMPLOSION_TICKS,random);
-			NukeBlastHandler.pullEntities(sl,x,y,z,16.0);
+			NukeBlastHandler.pullEntities(sl,x,y,z,16);
 		}else{
 			if(age==IMPLOSION_TICKS){
 				NukeVisualHandler.triggerMainDetonation(sl,x,y,z);
 				NukeBlastHandler.detonateEntities(sl,x,y,z);
 			}
 			int blastAge=age-IMPLOSION_TICKS;
-			if(blastAge<=EXPAND_TICKS){
-				NukeVisualHandler.tickExplosionExpand(sl,x,y,z,blastAge,EXPAND_TICKS,random);
-			}
+			if(blastAge<=EXPAND_TICKS) NukeVisualHandler.tickExplosionExpand(sl,x,y,z,blastAge,EXPAND_TICKS,random);
 			if(!craterFinished){
 				currentY=NukeBlastHandler.tickCrater(sl,blockPosition(),currentY,mutablePos);
-				if(currentY<-DifModServerConfig.NUKE_RADIUS.get()){
-					craterFinished=true;
-				}
+				if(currentY<-DifModServerConfig.NUKE_RADIUS.get()) craterFinished=true;
 			}
 		}
 		age++;
 		this.entityData.set(DATA_AGE,age);
-		if(craterFinished&&age>IMPLOSION_TICKS+EXPAND_TICKS){
-			discard();
-		}
+		if(craterFinished&&age>IMPLOSION_TICKS+EXPAND_TICKS) discard();
 	}
 	@Override
 	protected void readAdditionalSaveData(CompoundTag tag){
