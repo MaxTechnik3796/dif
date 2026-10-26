@@ -14,6 +14,14 @@
 		"facing=west":{
 			"model":"dif:block/engine_portable",
 			"y":270
+		},
+		"facing=up":{
+			"model":"dif:block/engine_portable",
+			"x":90
+		},
+		"facing=down":{
+			"model":"dif:block/engine_portable",
+			"x":270
 		}
 	}
 }
