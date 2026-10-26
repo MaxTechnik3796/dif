@@ -17,6 +17,7 @@
 		"minecraft:zombified_piglin",
 		"minecraft:silverfish",
 		"minecraft:skeleton",
+		"minecraft:skeleton_horse",
 		"minecraft:slime",
 		"minecraft:spider",
 		"minecraft:stray",
@@ -24,6 +25,7 @@
 		"minecraft:wither_skeleton",
 		"minecraft:zoglin",
 		"minecraft:zombie",
+		"minecraft:zombie_horse",
 		"minecraft:zombie_villager",
 		"minecraft:zombified_piglin"
 	]
