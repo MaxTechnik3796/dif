@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.UUID;
 
-import static cz.maxtechnik.dif.DifMod.goggleTooltipFix;
 public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleInformation{
 	public static final int MAX_RADIUS=2; // 0 = 1x1, 1 = 3x3, 2 = 5x5
 	private static final int CYCLE_COOLDOWN_TICKS=10;
@@ -95,10 +94,10 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 	}
 	@Override
 	public boolean addToGoggleTooltip(List<Component> tooltip,boolean isPlayerSneaking){
-		tooltip.add(Component.literal(goggleTooltipFix+"Chunk Loader").withStyle(ChatFormatting.GOLD));
-		tooltip.add(Component.literal(goggleTooltipFix+"Status: ").withStyle(ChatFormatting.GRAY).append(active?Component.literal("Active").withStyle(ChatFormatting.GREEN):Component.literal("Disabled (Redstone)").withStyle(ChatFormatting.RED)));
-		tooltip.add(Component.literal(goggleTooltipFix+"Range: ").withStyle(ChatFormatting.GRAY).append(Component.literal(getRadiusLabel()+" ("+getLoadedChunksCount()+" chunks)").withStyle(ChatFormatting.AQUA)));
-		if(ownerName!=null&&!ownerName.isEmpty()) tooltip.add(Component.literal(goggleTooltipFix+"Owner: ").withStyle(ChatFormatting.GRAY).append(Component.literal(ownerName).withStyle(ChatFormatting.WHITE)));
+		tooltip.add(DifMod.fixedComponent(Component.literal("Chunk Loader").withStyle(ChatFormatting.GOLD)));
+		tooltip.add(DifMod.fixedComponent(Component.literal("Status: ").withStyle(ChatFormatting.GRAY).append(active?Component.literal("Active").withStyle(ChatFormatting.GREEN):Component.literal("Disabled (Redstone)").withStyle(ChatFormatting.RED))));
+		tooltip.add(DifMod.fixedComponent(DifMod.fixedComponent(Component.literal("Range: ").withStyle(ChatFormatting.GRAY).append(Component.literal(getRadiusLabel()+" ("+getLoadedChunksCount()+" chunks)").withStyle(ChatFormatting.AQUA)))));
+		if(ownerName!=null&&!ownerName.isEmpty()) tooltip.add(DifMod.fixedComponent(Component.literal("Owner: ").withStyle(ChatFormatting.GRAY).append(Component.literal(ownerName).withStyle(ChatFormatting.WHITE))));
 		return true;
 	}
 	@Override

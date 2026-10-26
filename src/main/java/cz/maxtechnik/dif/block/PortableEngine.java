@@ -37,12 +37,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-public class PortableEngineBlock extends KineticBlock implements EntityBlock, IWrenchable{
+public class PortableEngine extends KineticBlock implements EntityBlock, IWrenchable{
 	public static final DirectionProperty FACING=Engine.FACING;
 	public static final BooleanProperty ACTIVE=Engine.ACTIVE;
 	public static final BooleanProperty INVERT=Engine.INVERT;
 	public static final DirectionProperty ROTATION=DirectionProperty.create("rotation",Direction.Plane.HORIZONTAL);
-	public PortableEngineBlock(Properties properties){
+	public PortableEngine(Properties properties){
 		super(properties.noOcclusion());
 		this.registerDefaultState(this.getStateDefinition().any().setValue(FACING,Direction.NORTH).setValue(ROTATION,Direction.NORTH).setValue(INVERT,false).setValue(ACTIVE,false));
 	}
@@ -78,22 +78,21 @@ public class PortableEngineBlock extends KineticBlock implements EntityBlock, IW
 		return this.defaultBlockState().setValue(FACING,context.getNearestLookingDirection().getOpposite()).setValue(ROTATION,context.getHorizontalDirection());
 	}
 	@Override
-	public InteractionResult onWrenched(BlockState state,UseOnContext context){
+	public InteractionResult onWrenched(BlockState blockState,UseOnContext context){
 		Level level=context.getLevel();
 		BlockPos pos=context.getClickedPos();
 		Direction side=context.getClickedFace();
-		Direction facing=state.getValue(FACING);
+		Direction facing=blockState.getValue(FACING);
 		if(side.getAxis()==facing.getAxis()){
-			KineticBlockEntity.switchToBlockState(level,pos,state.cycle(INVERT));
+			KineticBlockEntity.switchToBlockState(level,pos,blockState.cycle(INVERT));
 			IWrenchable.playRotateSound(level,pos);
 			return InteractionResult.SUCCESS;
 		}
-		Direction rot=state.getValue(ROTATION);
+		Direction rot=blockState.getValue(ROTATION);
 		BlockState rotated;
-		if(facing.getAxis().isVertical()&&side.getAxis()!=rot.getAxis()){
-			rotated=state.setValue(ROTATION,rot.getClockWise());
-		}else{
-			rotated=this.getRotatedBlockState(state,side);
+		if(facing.getAxis().isVertical()&&side.getAxis()!=rot.getAxis()) rotated=blockState.setValue(ROTATION,rot.getClockWise());
+		else{
+			rotated=this.getRotatedBlockState(blockState,side);
 			if(facing.getAxis().isHorizontal()) rotated=rotated.setValue(ROTATION,facing);
 		}
 		if(!rotated.canSurvive(level,pos)) return InteractionResult.PASS;
@@ -107,16 +106,16 @@ public class PortableEngineBlock extends KineticBlock implements EntityBlock, IW
 		if(!level.isClientSide&&level.getBlockEntity(pos) instanceof EngineBlockEntity be) be.recalculateStats();
 	}
 	@Override
-	public @NotNull BlockState rotate(@NotNull BlockState state,Rotation rotation){
-		return state.setValue(FACING,rotation.rotate(state.getValue(FACING))).setValue(ROTATION,rotation.rotate(state.getValue(ROTATION)));
+	public @NotNull BlockState rotate(@NotNull BlockState blockState,Rotation rotation){
+		return blockState.setValue(FACING,rotation.rotate(blockState.getValue(FACING))).setValue(ROTATION,rotation.rotate(blockState.getValue(ROTATION)));
 	}
 	@Override
-	public @NotNull BlockState mirror(@NotNull BlockState state,Mirror mirror){
-		return state.setValue(FACING,mirror.mirror(state.getValue(FACING))).setValue(ROTATION,mirror.mirror(state.getValue(ROTATION)));
+	public @NotNull BlockState mirror(@NotNull BlockState blockState,Mirror mirror){
+		return blockState.setValue(FACING,mirror.mirror(blockState.getValue(FACING))).setValue(ROTATION,mirror.mirror(blockState.getValue(ROTATION)));
 	}
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack,Item.@NotNull TooltipContext context,@NotNull List<Component> tooltipComponents,@NotNull TooltipFlag tooltipFlag){
-		super.appendHoverText(stack,context,tooltipComponents,tooltipFlag);
+	public void appendHoverText(@NotNull ItemStack itemStack,Item.@NotNull TooltipContext context,@NotNull List<Component> tooltipComponents,@NotNull TooltipFlag tooltipFlag){
+		super.appendHoverText(itemStack,context,tooltipComponents,tooltipFlag);
 		tooltipComponents.add(Component.literal("Burn Rates:").withStyle(ChatFormatting.GRAY));
 		Engine.addFuelTooltip(tooltipComponents,"Gasoline",DifModServerConfig.PORTABLE_ENGINE_GASOLINE_CONSUMPTION.get());
 		Engine.addFuelTooltip(tooltipComponents,"LPG",DifModServerConfig.PORTABLE_ENGINE_LPG_CONSUMPTION.get());

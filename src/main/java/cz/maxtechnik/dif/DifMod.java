@@ -179,7 +179,9 @@ public class DifMod{
 			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.QUARRY.get()).factory(QuarryShaftVisual.factory()).neverSkipVanillaRender().apply();
 		}
 	}
-	public static final String goggleTooltipFix="     ";
+	public static Component fixedComponent(Component component){
+		return Component.literal("    ").append(component);
+	}
 	public static boolean rouletteBoolean(int range){
 		return 0==Mth.nextInt(RandomSource.create(),0,range);
 	}

@@ -1,6 +1,7 @@
 package cz.maxtechnik.dif.block.entity;
 
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.block.Quarry;
 import cz.maxtechnik.dif.config.DifModServerConfig;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
@@ -26,7 +27,6 @@ import net.neoforged.neoforge.items.ItemHandlerHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-import static cz.maxtechnik.dif.DifMod.goggleTooltipFix;
 public class QuarryBlockEntity extends KineticBlockEntity{
 	public enum State{NO_ENERGY,CLEARING,BUILDING_FRAME,MINING,DONE}
 	private static final int FRAME_CHECK_INTERVAL=40;
@@ -76,12 +76,12 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 			};
 			statusComponent=Component.literal(actionName).withStyle(ChatFormatting.GREEN);
 		}
-		tooltip.add(Component.literal(goggleTooltipFix+"Status: ").withStyle(ChatFormatting.GRAY).append(statusComponent));
+		tooltip.add(DifMod.fixedComponent(Component.literal("Status: ").withStyle(ChatFormatting.GRAY).append(statusComponent)));
 		if(areaManager.hasArea()){
 			QuarryArea area=areaManager.getArea();
 			QuarryArea mining=area.miningBounds();
-			tooltip.add(Component.literal(goggleTooltipFix+"Area: ").withStyle(ChatFormatting.GRAY).append(Component.literal(area.sizeX()+" x "+area.sizeZ()+" blocks").withStyle(ChatFormatting.WHITE)));
-			tooltip.add(Component.literal(goggleTooltipFix+"Mining: ").withStyle(ChatFormatting.GRAY).append(Component.literal(mining.sizeX()+" x "+mining.sizeZ()+" blocks").withStyle(ChatFormatting.WHITE)));
+			tooltip.add(DifMod.fixedComponent(Component.literal("Area: ").withStyle(ChatFormatting.GRAY).append(Component.literal(area.sizeX()+" x "+area.sizeZ()+" blocks").withStyle(ChatFormatting.WHITE))));
+			tooltip.add(DifMod.fixedComponent(Component.literal("Mining: ").withStyle(ChatFormatting.GRAY).append(Component.literal(mining.sizeX()+" x "+mining.sizeZ()+" blocks").withStyle(ChatFormatting.WHITE))));
 		}
 		return true;
 	}
