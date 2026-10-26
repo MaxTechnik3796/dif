@@ -8,6 +8,9 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+
+import java.util.List;
+
 public class DifModFluids{
 	public static final DeferredRegister<Fluid> FLUIDS=DeferredRegister.create(Registries.FLUID,DifMod.MODID);
 	public static final DeferredRegister<FluidType> TYPES=DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES,DifMod.MODID);
@@ -57,39 +60,31 @@ public class DifModFluids{
 			type->type.density(2320).viscosity(1500).canHydrate(false).canDrown(true).canExtinguish(true).supportsBoating(true).fallDistanceModifier(0F).motionScale(0.0002D),
 			fluid->fluid.tickRate(7).levelDecreasePerBlock(1).slopeFindDistance(4),FLUIDS,TYPES,ITEMS,BLOCKS
 	);
-	static{
-		aliasFluid("beer");
-		aliasFluid("jetpack_fuel");
-		aliasFluid("crude_oil");
-		aliasFluid("xp");
-		aliasFluid("sunflower_oil");
-		aliasFluid("lpg");
-		aliasFluid("gasoline");
-		aliasFluid("diesel");
-		aliasFluid("heavy_fuel_oil");
+	static {
+		List.of(
+				"beer", "jetpack_fuel", "crude_oil", "xp", "sunflower_oil",
+				"lpg", "gasoline", "diesel", "heavy_fuel_oil"
+		).forEach(name -> aliasFluid(name + "_fluid", name));
 
-		ResourceLocation oldFluid=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"lubricating_oil_fluid");
-		ResourceLocation newFluid=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"kerosene");
-		ResourceLocation oldFlowing=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"flowing_lubricating_oil_fluid");
-		ResourceLocation newFlowing=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"flowing_kerosene");
-
-		FLUIDS.addAlias(oldFluid,newFluid);
-		FLUIDS.addAlias(oldFlowing,newFlowing);
-		TYPES.addAlias(oldFluid,newFluid);
-		BLOCKS.addAlias(oldFluid,newFluid);
-		BLOCKS.addAlias(oldFlowing,newFluid);
+		aliasFluid("lubricating_oil_fluid", "kerosene");
+		aliasFluid("lubricating_oil", "kerosene");
 	}
 
-	private static void aliasFluid(String name){
-		ResourceLocation oldFluid=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,name+"_fluid");
-		ResourceLocation newFluid=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,name);
-		ResourceLocation oldFlowing=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"flowing_"+name+"_fluid");
-		ResourceLocation newFlowing=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"flowing_"+name);
+	private static void aliasFluid(String oldName, String newName) {
+		ResourceLocation oldFluid = id(oldName);
+		ResourceLocation newFluid = id(newName);
+		ResourceLocation oldFlowing = id("flowing_" + oldName);
+		ResourceLocation newFlowing = id("flowing_" + newName);
 
-		FLUIDS.addAlias(oldFluid,newFluid);
-		FLUIDS.addAlias(oldFlowing,newFlowing);
-		TYPES.addAlias(oldFluid,newFluid);
-		BLOCKS.addAlias(oldFluid,newFluid);
-		BLOCKS.addAlias(oldFlowing,newFluid);
+		FLUIDS.addAlias(oldFluid, newFluid);
+		FLUIDS.addAlias(oldFlowing, newFlowing);
+		TYPES.addAlias(oldFluid, newFluid);
+		BLOCKS.addAlias(oldFluid, newFluid);
+		BLOCKS.addAlias(oldFlowing, newFluid);
+		ITEMS.addAlias(id(oldName + "_bucket"), id(newName + "_bucket"));
+	}
+
+	private static ResourceLocation id(String path) {
+		return ResourceLocation.fromNamespaceAndPath(DifMod.MODID, path);
 	}
 }
