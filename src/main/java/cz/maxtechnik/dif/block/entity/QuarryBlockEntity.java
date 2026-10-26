@@ -63,15 +63,11 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 	public boolean addToGoggleTooltip(List<Component> tooltip,boolean isPlayerSneaking){
 		super.addToGoggleTooltip(tooltip,isPlayerSneaking);
 		Component statusComponent;
-		if(isRedstonePowered()){
-			statusComponent=Component.literal("Stopped").withStyle(ChatFormatting.GOLD);
-		}else if(quarryState==State.DONE){
-			statusComponent=Component.literal("Finished").withStyle(ChatFormatting.AQUA);
-		}else if(isOverStressed()){
-			statusComponent=Component.literal("Overstressed").withStyle(ChatFormatting.RED);
-		}else if(Math.abs(getSpeed())==0){
-			statusComponent=Component.literal("No Power").withStyle(ChatFormatting.RED);
-		}else{
+		if(isRedstonePowered()) statusComponent=Component.literal("Stopped").withStyle(ChatFormatting.GOLD);
+		else if(quarryState==State.DONE) statusComponent=Component.literal("Finished").withStyle(ChatFormatting.AQUA);
+		else if(isOverStressed()) statusComponent=Component.literal("Overstressed").withStyle(ChatFormatting.RED);
+		else if(Math.abs(getSpeed())==0) statusComponent=Component.literal("No Power").withStyle(ChatFormatting.RED);
+		else{
 			String actionName=switch(quarryState){
 				case CLEARING -> "Clearing Area";
 				case BUILDING_FRAME -> "Building Frame";
@@ -84,10 +80,8 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 		if(areaManager.hasArea()){
 			QuarryArea area=areaManager.getArea();
 			QuarryArea mining=area.miningBounds();
-			tooltip.add(Component.literal(goggleTooltipFix+"Area: ").withStyle(ChatFormatting.GRAY)
-					.append(Component.literal(area.sizeX()+" x "+area.sizeZ()+" blocks").withStyle(ChatFormatting.WHITE)));
-			tooltip.add(Component.literal(goggleTooltipFix+"Mining: ").withStyle(ChatFormatting.GRAY)
-					.append(Component.literal(mining.sizeX()+" x "+mining.sizeZ()+" blocks").withStyle(ChatFormatting.WHITE)));
+			tooltip.add(Component.literal(goggleTooltipFix+"Area: ").withStyle(ChatFormatting.GRAY).append(Component.literal(area.sizeX()+" x "+area.sizeZ()+" blocks").withStyle(ChatFormatting.WHITE)));
+			tooltip.add(Component.literal(goggleTooltipFix+"Mining: ").withStyle(ChatFormatting.GRAY).append(Component.literal(mining.sizeX()+" x "+mining.sizeZ()+" blocks").withStyle(ChatFormatting.WHITE)));
 		}
 		return true;
 	}
@@ -145,7 +139,8 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 			case CLEARING -> tickClearing(level);
 			case BUILDING_FRAME -> tickBuildFrame(level);
 			case MINING -> tickMine(level);
-			default -> {}
+			default -> {
+			}
 		}
 		if(chunksNeedReload&&quarryState==State.MINING&&level instanceof ServerLevel sl){
 			areaManager.loadMiningChunks(sl);
@@ -161,9 +156,7 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 			for(int x=area.minX();x<=area.maxX();x++){
 				for(int z=area.minZ();z<=area.maxZ();z++){
 					BlockPos bp=new BlockPos(x,y,z);
-					if(!level.isEmptyBlock(bp)&&!isOurFrame(level,bp)){
-						workQueue.add(bp);
-					}
+					if(!level.isEmptyBlock(bp)&&!isOurFrame(level,bp)) workQueue.add(bp);
 				}
 			}
 		}
@@ -317,9 +310,7 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 		sendData();
 	}
 	public boolean isFrameIntact(Level level){
-		for(BlockPos fp: areaManager.computeFramePositions(worldPosition.getY())){
-			if(level.isLoaded(fp)&&!isFrame(level,fp)) return false;
-		}
+		for(BlockPos fp: areaManager.computeFramePositions(worldPosition.getY())) if(level.isLoaded(fp)&&!isFrame(level,fp)) return false;
 		return true;
 	}
 	private boolean isFrame(Level level,BlockPos pos){

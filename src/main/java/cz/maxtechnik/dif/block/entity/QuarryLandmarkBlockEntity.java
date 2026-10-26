@@ -50,23 +50,13 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 			BlockPos found=scanDirection(worldPosition,dir[0],dir[1]);
 			if(found!=null) nearby.add(found);
 		}
-		if(nearby.size()>=2){
-			for(int a=0;a<nearby.size();a++){
-				for(int b=a+1;b<nearby.size();b++){
-					if(tryForm(worldPosition,nearby.get(a),nearby.get(b))!=null){
-						return List.of(worldPosition,nearby.get(a),nearby.get(b));
-					}
-				}
-			}
-		}
+		if(nearby.size()>=2) for(int a=0;a<nearby.size();a++) for(int b=a+1;b<nearby.size();b++) if(tryForm(worldPosition,nearby.get(a),nearby.get(b))!=null) return List.of(worldPosition,nearby.get(a),nearby.get(b));
 		for(BlockPos first: nearby){
 			boolean onX=first.getZ()==worldPosition.getZ();
 			int[][] perps=onX?new int[][]{{0,-1},{0,1}}:new int[][]{{-1,0},{1,0}};
 			for(int[] p: perps){
 				BlockPos third=scanDirection(first,p[0],p[1]);
-				if(third!=null&&!third.equals(worldPosition)&&tryForm(worldPosition,first,third)!=null){
-					return List.of(worldPosition,first,third);
-				}
+				if(third!=null&&!third.equals(worldPosition)&&tryForm(worldPosition,first,third)!=null) return List.of(worldPosition,first,third);
 			}
 		}
 		return null;
@@ -155,11 +145,9 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 	public boolean addToGoggleTooltip(List<Component> tooltip,boolean isPlayerSneaking){
 		Component statusComponent;
 		QuarryArea canFormArea=getFormableArea();
-		if(formed&&formedArea!=null){
-			statusComponent=Component.literal("Formed").withStyle(ChatFormatting.GREEN);
-		}else if(canFormArea!=null){
-			statusComponent=Component.literal("Can Be Formed (3/3)").withStyle(ChatFormatting.GOLD);
-		}else{
+		if(formed&&formedArea!=null) statusComponent=Component.literal("Formed").withStyle(ChatFormatting.GREEN);
+		else if(canFormArea!=null) statusComponent=Component.literal("Can Be Formed (3/3)").withStyle(ChatFormatting.GOLD);
+		else{
 			int count=countConnectedLandmarks()+1;
 			statusComponent=Component.literal("Cannot Be Formed ("+count+"/3)").withStyle(ChatFormatting.RED);
 		}
@@ -167,10 +155,8 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 		QuarryArea displayArea=formed?formedArea:canFormArea;
 		if(displayArea!=null){
 			QuarryArea mining=displayArea.miningBounds();
-			tooltip.add(Component.literal("     Area: ").withStyle(ChatFormatting.GRAY)
-					.append(Component.literal(displayArea.sizeX()+" x "+displayArea.sizeZ()+" blocks").withStyle(ChatFormatting.WHITE)));
-			tooltip.add(Component.literal("     Mining: ").withStyle(ChatFormatting.GRAY)
-					.append(Component.literal(mining.sizeX()+" x "+mining.sizeZ()+" blocks").withStyle(ChatFormatting.WHITE)));
+			tooltip.add(Component.literal("     Area: ").withStyle(ChatFormatting.GRAY).append(Component.literal(displayArea.sizeX()+" x "+displayArea.sizeZ()+" blocks").withStyle(ChatFormatting.WHITE)));
+			tooltip.add(Component.literal("     Mining: ").withStyle(ChatFormatting.GRAY).append(Component.literal(mining.sizeX()+" x "+mining.sizeZ()+" blocks").withStyle(ChatFormatting.WHITE)));
 		}
 		return true;
 	}
@@ -182,9 +168,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 	public int countConnectedLandmarks(){
 		if(level==null) return 0;
 		int count=0;
-		for(int[] dir: DIRS){
-			if(scanDirection(worldPosition,dir[0],dir[1])!=null) count++;
-		}
+		for(int[] dir: DIRS) if(scanDirection(worldPosition,dir[0],dir[1])!=null) count++;
 		return count;
 	}
 	public boolean isFormed(){
@@ -207,9 +191,7 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 		formed=tag.getBoolean("Formed");
 		formedArea=QuarryArea.load(tag);
 		partnerPositions.clear();
-		if(tag.contains("Partners")){
-			for(long l: tag.getLongArray("Partners")) partnerPositions.add(BlockPos.of(l));
-		}
+		if(tag.contains("Partners")) for(long l: tag.getLongArray("Partners")) partnerPositions.add(BlockPos.of(l));
 	}
 	@Override
 	public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider p){

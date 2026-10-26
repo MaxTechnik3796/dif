@@ -107,9 +107,7 @@ public class Quarry extends KineticBlock implements EntityBlock, IWrenchable, IB
 				if(!lm.isFormed()) continue;
 				QuarryArea area=lm.getFormedArea();
 				if(area==null) continue;
-				boolean onEdge=
-						(qx>=area.minX()-1&&qx<=area.maxX()+1)&&
-								(qz>=area.minZ()-1&&qz<=area.maxZ()+1);
+				boolean onEdge=(qx>=area.minX()-1&&qx<=area.maxX()+1)&&(qz>=area.minZ()-1&&qz<=area.maxZ()+1);
 				if(!onEdge) continue;
 				lm.applyToQuarry(level,quarryPos);
 				return;
@@ -135,8 +133,7 @@ public class Quarry extends KineticBlock implements EntityBlock, IWrenchable, IB
 	}
 	@Override
 	public void onRemove(BlockState bs,@NotNull Level level,@NotNull BlockPos pos,BlockState newState,boolean moving){
-		if(!bs.is(newState.getBlock())&&level.getBlockEntity(pos) instanceof QuarryBlockEntity blockEntity)
-			blockEntity.onQuarryRemoved();
+		if(!bs.is(newState.getBlock())&&level.getBlockEntity(pos) instanceof QuarryBlockEntity blockEntity) blockEntity.onQuarryRemoved();
 		super.onRemove(bs,level,pos,newState,moving);
 	}
 	@Override
