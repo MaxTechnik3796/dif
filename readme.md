@@ -8,7 +8,7 @@
 
 🟠 GitHub Issue: [[Here]](https://github.com/MaxTechnik3796/dif/issues)
 
-💬 Discrod: [[Here]](https://discord.gg/mjVprFtWTk)
+💬 Discord: [[Here]](https://discord.gg/mjVprFtWTk)
 
 ***
 
