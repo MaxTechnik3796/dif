@@ -93,8 +93,8 @@ public class PortalEntity extends Entity{
 		setBoundingBox(buildPortalAABB());
 	}
 	public Direction getUpDir(){
-		Direction d=Direction.byName(entityData.get(DATA_UP_DIR));
-		return d!=null?d:Direction.UP;
+		Direction direction=Direction.byName(entityData.get(DATA_UP_DIR));
+		return direction!=null?direction:Direction.UP;
 	}
 	public void setUpDir(Direction direction){
 		entityData.set(DATA_UP_DIR,direction!=null?direction.getName():Direction.UP.getName());
@@ -115,8 +115,8 @@ public class PortalEntity extends Entity{
 		return new AABB(cx-rx,cy-ry,cz-rz,cx+rx,cy+ry,cz+rz);
 	}
 	private static double getAxisSize(Direction.Axis axis,Direction.Axis normalAxis,Direction.Axis heightAxis){
-		if(axis==normalAxis) return 0.03;
-		if(axis==heightAxis) return 0.995;
+		if(axis.equals(normalAxis)) return 0.03;
+		if(axis.equals(heightAxis)) return 0.995;
 		return 0.495;
 	}
 	@Override
@@ -131,32 +131,31 @@ public class PortalEntity extends Entity{
 			discard();
 			return;
 		}
-		ServerLevel sl=(ServerLevel)level();
-		if(tickCount%20==0&&!isValidPosition(sl,getX(),getY(),getZ(),getFacing(),getUpDir())){
-			PortalData.get(sl).remove(getOwner(),isBlue());
+		ServerLevel serverLevel=(ServerLevel)level();
+		if(tickCount%20==0&&!isValidPosition(serverLevel,getX(),getY(),getZ(),getFacing(),getUpDir())){
+			PortalData.get(serverLevel).remove(getOwner(),isBlue());
 			discard();
 			return;
 		}
 		if(!isLinked()) return;
-		long now=sl.getGameTime();
+		long now=serverLevel.getGameTime();
 		boolean allowNonPlayers=DifModServerConfig.PORTAL_ALLOW_ENTITIES.get();
 		int count=0;
-		for(Entity e: sl.getEntitiesOfClass(Entity.class,getBoundingBox(),entity->!(entity instanceof PortalEntity))){
-			if(cooldowns.getOrDefault(e.getUUID(),0L)+15>=now){
-				cooldowns.put(e.getUUID(),now);
+		for(Entity entity: serverLevel.getEntitiesOfClass(Entity.class,getBoundingBox(),ent->!(ent instanceof PortalEntity))){
+			if(cooldowns.getOrDefault(entity.getUUID(),0L)+15>=now){
+				cooldowns.put(entity.getUUID(),now);
 				continue;
 			}
-			if(e instanceof Player player){
-				teleport(player,sl,now,true);
-			}else if(allowNonPlayers&&count<MAX_ENTITIES_PER_TICK){
-				teleport(e,sl,now,false);
+			if(entity instanceof Player player) teleport(player,serverLevel,now,true);
+			else if(allowNonPlayers&&count<MAX_ENTITIES_PER_TICK){
+				teleport(entity,serverLevel,now,false);
 				count++;
 			}
 		}
 		if(!cooldowns.isEmpty()&&tickCount%32==0) cooldowns.values().removeIf(t->now-t>200);
 	}
-	private void teleport(Entity entity,ServerLevel sl,long now,boolean isPlayer){
-		PortalData data=PortalData.get(sl);
+	private void teleport(Entity entity,ServerLevel serverLevel,long now,boolean isPlayer){
+		PortalData data=PortalData.get(serverLevel);
 		BlockPos targetPos=data.getPos(getOwner(),!isBlue());
 		if(targetPos==null){
 			if(isPlayer) entity.sendSystemMessage(Component.literal("[!] Linked portal not found"));
@@ -167,7 +166,7 @@ public class PortalEntity extends Entity{
 			if(isPlayer) ((Player)entity).displayClientMessage(Component.literal("[!] Portal too far away"),true);
 			return;
 		}
-		PortalEntity other=data.findEntity(sl,getOwner(),!isBlue());
+		PortalEntity other=data.findEntity(serverLevel,getOwner(),!isBlue());
 		if(other==null){
 			data.remove(getOwner(),!isBlue());
 			return;
@@ -176,11 +175,9 @@ public class PortalEntity extends Entity{
 		double destX=other.getX();
 		double destY=other.getY();
 		double destZ=other.getZ();
-		if(outFace==Direction.UP){
-			destY+=0.07;
-		}else if(outFace==Direction.DOWN){
-			destY-=entity.getBbHeight()+0.1;
-		}else{
+		if(outFace.equals(Direction.UP)) destY+=0.07;
+		else if(outFace==Direction.DOWN) destY-=entity.getBbHeight()+0.1;
+		else{
 			double offset=entity.getBbWidth()*0.5+0.1;
 			destX+=outFace.getStepX()*offset;
 			destY-=0.99;
@@ -195,14 +192,14 @@ public class PortalEntity extends Entity{
 		}
 		double speed=Math.max(entity.getDeltaMovement().length(),outFace==Direction.UP?0.3:0.0);
 		Vec3 newMotion=speed<0.05?Vec3.ZERO:new Vec3(outFace.getStepX()*speed,outFace.getStepY()*speed,outFace.getStepZ()*speed);
-		if(isPlayer&&entity instanceof ServerPlayer sp){
-			sp.teleportTo(sl,destX,destY,destZ,Set.of(),newYaw,newPitch);
-			sp.setYBodyRot(newYaw);
-			sp.setYHeadRot(newYaw);
-			sp.yRotO=newYaw;
-			sp.setDeltaMovement(newMotion);
-			sp.hurtMarked=true;
-			sp.connection.send(new ClientboundSetEntityMotionPacket(sp));
+		if(isPlayer&&entity instanceof ServerPlayer serverPlayer){
+			serverPlayer.teleportTo(serverLevel,destX,destY,destZ,Set.of(),newYaw,newPitch);
+			serverPlayer.setYBodyRot(newYaw);
+			serverPlayer.setYHeadRot(newYaw);
+			serverPlayer.yRotO=newYaw;
+			serverPlayer.setDeltaMovement(newMotion);
+			serverPlayer.hurtMarked=true;
+			serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(serverPlayer));
 		}else{
 			entity.teleportTo(destX,destY,destZ);
 			entity.setYRot(newYaw);
@@ -216,21 +213,21 @@ public class PortalEntity extends Entity{
 		this.cooldowns.put(entity.getUUID(),now);
 		other.cooldowns.put(entity.getUUID(),now);
 	}
-	private static float calcNewYaw(float oldYaw,PortalEntity in,PortalEntity out){
-		float inYaw=(in.getFacing().getAxis()==Direction.Axis.Y)?in.getUpDir().toYRot():in.getFacing().getOpposite().toYRot();
-		float outYaw=(out.getFacing().getAxis()==Direction.Axis.Y)?out.getUpDir().getOpposite().toYRot():out.getFacing().toYRot();
+	private static float calcNewYaw(float oldYaw,PortalEntity portalIn,PortalEntity portalOut){
+		float inYaw=(portalIn.getFacing().getAxis()==Direction.Axis.Y)?portalIn.getUpDir().toYRot():portalIn.getFacing().getOpposite().toYRot();
+		float outYaw=(portalOut.getFacing().getAxis()==Direction.Axis.Y)?portalOut.getUpDir().getOpposite().toYRot():portalOut.getFacing().toYRot();
 		return Mth.wrapDegrees(outYaw+Mth.wrapDegrees(oldYaw-inYaw));
 	}
 	private static double snapPixel(double value){
-		return Math.round(value*16.0)/16.0;
+		return Math.round(value*16D)/16D;
 	}
 	private static double[] getCandidatesForAxis(Direction.Axis axis,Direction face,Direction upDir,double blockCenter,double hitCoord){
-		if(axis==face.getAxis()){
+		if(axis.equals(face.getAxis())){
 			int step=face.getAxisDirection().getStep();
 			return new double[]{blockCenter+step*0.505};
 		}
 		double snapped=snapPixel(Math.clamp(hitCoord,blockCenter-0.5,blockCenter+0.5));
-		if(axis==upDir.getAxis()){
+		if(axis.equals(upDir.getAxis())){
 			return new double[]{snapped,blockCenter+0.5,blockCenter-0.5,blockCenter};
 		}
 		return new double[]{snapped,blockCenter};
@@ -239,18 +236,10 @@ public class PortalEntity extends Entity{
 		double[] xList=getCandidatesForAxis(Direction.Axis.X,face,upDir,hitPos.getX()+0.5,hitLoc.x);
 		double[] yList=getCandidatesForAxis(Direction.Axis.Y,face,upDir,hitPos.getY()+0.5,hitLoc.y);
 		double[] zList=getCandidatesForAxis(Direction.Axis.Z,face,upDir,hitPos.getZ()+0.5,hitLoc.z);
-		for(double x: xList){
-			for(double y: yList){
-				for(double z: zList){
-					if(isValidPosition(world,x,y,z,face,upDir)){
-						return new Vec3(x,y,z);
-					}
-				}
-			}
-		}
+		for(double x: xList) for(double y: yList) for(double z: zList) if(isValidPosition(world,x,y,z,face,upDir)) return new Vec3(x,y,z);
 		return null;
 	}
-	public static boolean isValidPosition(ServerLevel world,double x,double y,double z,Direction face,Direction upDir){
+	public static boolean isValidPosition(ServerLevel serverLevel,double x,double y,double z,Direction face,Direction upDir){
 		AABB box=buildPortalAABB(x,y,z,face,upDir);
 		int minX=Mth.floor(box.minX+0.001), maxX=Mth.floor(box.maxX-0.001);
 		int minY=Mth.floor(box.minY+0.001), maxY=Mth.floor(box.maxY-0.001);
@@ -260,15 +249,15 @@ public class PortalEntity extends Entity{
 				for(int bz=minZ;bz<=maxZ;bz++){
 					BlockPos frontPos=new BlockPos(bx,by,bz);
 					BlockPos wallPos=frontPos.relative(face.getOpposite());
-					if(!world.getBlockState(wallPos).isFaceSturdy(world,wallPos,face)) return false;
-					if(!world.isEmptyBlock(frontPos)&&!world.getBlockState(frontPos).canBeReplaced()) return false;
+					if(!serverLevel.getBlockState(wallPos).isFaceSturdy(serverLevel,wallPos,face)) return false;
+					if(!serverLevel.isEmptyBlock(frontPos)&&!serverLevel.getBlockState(frontPos).canBeReplaced()) return false;
 				}
 			}
 		}
 		return true;
 	}
-	public static boolean hasOverlap(ServerLevel world,AABB box,UUID owner,boolean isBlue){
-		for(PortalEntity o: world.getEntitiesOfClass(PortalEntity.class,box.inflate(0.05))){
+	public static boolean hasOverlap(ServerLevel serverLevel,AABB box,UUID owner,boolean isBlue){
+		for(PortalEntity o: serverLevel.getEntitiesOfClass(PortalEntity.class,box.inflate(0.05))){
 			if(owner.equals(o.getOwner())&&o.isBlue()==isBlue) continue;
 			if(box.intersects(o.getBoundingBox())) return true;
 		}
@@ -315,16 +304,48 @@ public class PortalEntity extends Entity{
 		}
 		return false;
 	}
-	@Override public boolean isPickable(){return !isRemoved();}
-	@Override public boolean canCollideWith(@NotNull Entity entity){return false;}
-	@Override public void push(@NotNull Entity entity){}
-	@Override public void push(double x,double y,double z){}
-	@Override public void setDeltaMovement(@NotNull Vec3 motion){super.setDeltaMovement(Vec3.ZERO);}
-	@Override public void setDeltaMovement(double x,double y,double z){super.setDeltaMovement(Vec3.ZERO);}
-	@Override public void move(@NotNull MoverType type,@NotNull Vec3 pos){}
-	@Override public @NotNull PushReaction getPistonPushReaction(){return PushReaction.IGNORE;}
-	@Override public boolean isNoGravity(){return true;}
-	@Override public boolean isPushedByFluid(@NotNull FluidType type){return false;}
-	@Override public boolean ignoreExplosion(@NotNull Explosion explosion){return true;}
-	@Override public void lerpTo(double x,double y,double z,float yRot,float xRot,int steps){}
+	@Override
+	public boolean isPickable(){
+		return !isRemoved();
+	}
+	@Override
+	public boolean canCollideWith(@NotNull Entity entity){
+		return false;
+	}
+	@Override
+	public void push(@NotNull Entity entity){
+	}
+	@Override
+	public void push(double x,double y,double z){
+	}
+	@Override
+	public void setDeltaMovement(@NotNull Vec3 motion){
+		super.setDeltaMovement(Vec3.ZERO);
+	}
+	@Override
+	public void setDeltaMovement(double x,double y,double z){
+		super.setDeltaMovement(Vec3.ZERO);
+	}
+	@Override
+	public void move(@NotNull MoverType type,@NotNull Vec3 pos){
+	}
+	@Override
+	public @NotNull PushReaction getPistonPushReaction(){
+		return PushReaction.IGNORE;
+	}
+	@Override
+	public boolean isNoGravity(){
+		return true;
+	}
+	@Override
+	public boolean isPushedByFluid(@NotNull FluidType type){
+		return false;
+	}
+	@Override
+	public boolean ignoreExplosion(@NotNull Explosion explosion){
+		return true;
+	}
+	@Override
+	public void lerpTo(double x,double y,double z,float yRot,float xRot,int steps){
+	}
 }

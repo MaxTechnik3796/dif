@@ -39,11 +39,8 @@ public final class MiningHandler{
 		BlockState centerState=event.getState();
 		isBreaking=true;
 		try{
-			if(isDestroyer){
-				break3x3(level,player,center,state->state.is(BlockTags.MINEABLE_WITH_PICKAXE)||state.is(BlockTags.MINEABLE_WITH_SHOVEL)||tool.isCorrectToolForDrops(state));
-			}else if(!centerState.is(BlockTags.LOGS)||!fellTree(level,player,center)){
-				break3x3(level,player,center,state->state.is(BlockTags.MINEABLE_WITH_AXE)||state.is(BlockTags.LOGS)||tool.isCorrectToolForDrops(state));
-			}
+			if(isDestroyer) break3x3(level,player,center,state->state.is(BlockTags.MINEABLE_WITH_PICKAXE)||state.is(BlockTags.MINEABLE_WITH_SHOVEL)||tool.isCorrectToolForDrops(state));
+			else if(!centerState.is(BlockTags.LOGS)||!fellTree(level,player,center)) break3x3(level,player,center,state->state.is(BlockTags.MINEABLE_WITH_AXE)||state.is(BlockTags.LOGS)||tool.isCorrectToolForDrops(state));
 		}finally{
 			isBreaking=false;
 		}
@@ -55,9 +52,7 @@ public final class MiningHandler{
 			BlockState state=level.getBlockState(pos);
 			if(state.isAir()||state.getDestroySpeed(level,pos)<0) continue;
 			if(canMine.test(state)&&player.gameMode.destroyBlock(pos)){
-				if(!(state.getBlock() instanceof BaseFireBlock)){
-					level.levelEvent(2001,pos,Block.getId(state));
-				}
+				if(!(state.getBlock() instanceof BaseFireBlock)) level.levelEvent(2001,pos,Block.getId(state));
 			}
 		}
 	}
@@ -79,11 +74,8 @@ public final class MiningHandler{
 						BlockPos next=cur.offset(dx,dy,dz);
 						if(!visited.add(next)) continue;
 						BlockState state=level.getBlockState(next);
-						if(state.is(BlockTags.LOGS)){
-							queue.add(next);
-						}else if(!hasNaturalLeaves&&state.is(BlockTags.LEAVES)&&state.hasProperty(LeavesBlock.PERSISTENT)&&!state.getValue(LeavesBlock.PERSISTENT)){
-							hasNaturalLeaves=true;
-						}
+						if(state.is(BlockTags.LOGS)) queue.add(next);
+						else if(!hasNaturalLeaves&&state.is(BlockTags.LEAVES)&&state.hasProperty(LeavesBlock.PERSISTENT)&&!state.getValue(LeavesBlock.PERSISTENT)) hasNaturalLeaves=true;
 					}
 				}
 			}
@@ -94,9 +86,7 @@ public final class MiningHandler{
 			if(pos.equals(start)) continue;
 			if(player.getMainHandItem().isEmpty()) break;
 			BlockState state=level.getBlockState(pos);
-			if(!state.isAir()&&player.gameMode.destroyBlock(pos)){
-				level.levelEvent(2001,pos,Block.getId(state));
-			}
+			if(!state.isAir()&&player.gameMode.destroyBlock(pos)) level.levelEvent(2001,pos,Block.getId(state));
 		}
 		return true;
 	}
@@ -120,10 +110,10 @@ public final class MiningHandler{
 		return result;
 	}
 	private static Direction getPlayerFacingFace(Player player){
-		HitResult hit=player.pick(5.0D,0.0F,false);
+		HitResult hit=player.pick(5D,0F,false);
 		if(hit instanceof BlockHitResult blockHit) return blockHit.getDirection();
-		if(player.getXRot()>45f) return Direction.DOWN;
-		if(player.getXRot()<-45f) return Direction.UP;
+		if(player.getXRot()>45F) return Direction.DOWN;
+		if(player.getXRot()<-45F) return Direction.UP;
 		return player.getDirection();
 	}
 }

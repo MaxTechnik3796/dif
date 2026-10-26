@@ -25,7 +25,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -40,8 +39,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 public class DistillationTank extends FluidTankBlock{
-	public DistillationTank(){
-		super(BlockBehaviour.Properties.of().strength(5F,6F).sound(SoundType.METAL).requiresCorrectToolForDrops(),false);
+	public DistillationTank(BlockBehaviour.Properties properties,boolean creative){
+		super(properties,creative);
 		registerDefaultState(defaultBlockState().setValue(TOP,true).setValue(BOTTOM,true).setValue(SHAPE,Shape.PLAIN));
 	}
 	@Override

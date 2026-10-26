@@ -49,9 +49,7 @@ public class PortalGun extends Item{
 					if(!player.isCreative()) consumeAstragel(gun,1);
 					player.getCooldowns().addCooldown(this,10);
 				}
-			}else{
-				player.displayClientMessage(Component.translatable("info.dif.portal_gun.out_of_astragel"),true);
-			}
+			}else player.displayClientMessage(Component.translatable("info.dif.portal_gun.out_of_astragel"),true);
 		}
 		return InteractionResultHolder.success(gun);
 	}
@@ -95,9 +93,7 @@ public class PortalGun extends Item{
 	}
 	public static void consumeAstragel(ItemStack gun,int amount){
 		IFluidHandlerItem handler=gun.getCapability(Capabilities.FluidHandler.ITEM);
-		if(handler!=null&&handler.drain(amount,IFluidHandler.FluidAction.SIMULATE).getAmount()>=amount){
-			handler.drain(amount,IFluidHandler.FluidAction.EXECUTE);
-		}
+		if(handler!=null&&handler.drain(amount,IFluidHandler.FluidAction.SIMULATE).getAmount()>=amount) handler.drain(amount,IFluidHandler.FluidAction.EXECUTE);
 	}
 	@Override
 	public boolean isEnchantable(@NotNull ItemStack itemStack){
@@ -162,9 +158,7 @@ public class PortalGun extends Item{
 			int current=getFluidInTank(0).getAmount();
 			int toFill=Math.min(capacity-current,resource.getAmount());
 			if(toFill<=0) return 0;
-			if(action.execute()){
-				CustomData.update(DataComponents.CUSTOM_DATA,container,tag->tag.putInt("astragel_amount",current+toFill));
-			}
+			if(action.execute()) CustomData.update(DataComponents.CUSTOM_DATA,container,tag->tag.putInt("astragel_amount",current+toFill));
 			return toFill;
 		}
 		@Override

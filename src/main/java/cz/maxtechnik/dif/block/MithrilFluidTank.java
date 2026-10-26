@@ -22,7 +22,6 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -31,15 +30,9 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import org.jetbrains.annotations.NotNull;
-@SuppressWarnings("unchecked")
 public class MithrilFluidTank extends FluidTankBlock{
-	public MithrilFluidTank(){
-		super(BlockBehaviour.Properties.of()
-				.strength(4.0F,5.0F)
-				.sound(SoundType.METAL)
-				.noOcclusion()
-				.isRedstoneConductor((p1,p2,p3)->true)
-				.requiresCorrectToolForDrops(),false);
+	public MithrilFluidTank(BlockBehaviour.Properties properties,boolean creative){
+		super(properties,creative);
 	}
 	@Override
 	public BlockEntityType<? extends FluidTankBlockEntity> getBlockEntityType(){
@@ -52,7 +45,7 @@ public class MithrilFluidTank extends FluidTankBlock{
 		public static int getCapacityMultiplier(){
 			try{
 				return DifModServerConfig.MITHRIL_FLUID_TANK_CAPACITY.get()*1000;
-			}catch(Exception e){
+			}catch(Exception exception){
 				return 32000;
 			}
 		}
@@ -66,16 +59,12 @@ public class MithrilFluidTank extends FluidTankBlock{
 		@Override
 		protected void onFluidStackChanged(FluidStack newFluidStack){
 			super.onFluidStackChanged(newFluidStack);
-			if(level!=null&&!level.isClientSide){
-				DisplayLinkBlock.notifyGatherers(level,worldPosition);
-			}
+			if(level!=null&&!level.isClientSide) DisplayLinkBlock.notifyGatherers(level,worldPosition);
 		}
 		@Override
 		public void notifyMultiUpdated(){
 			super.notifyMultiUpdated();
-			if(level!=null&&!level.isClientSide){
-				DisplayLinkBlock.notifyGatherers(level,worldPosition);
-			}
+			if(level!=null&&!level.isClientSide) DisplayLinkBlock.notifyGatherers(level,worldPosition);
 		}
 		@Override
 		public void applyFluidTankSize(int blocks){
@@ -100,9 +89,7 @@ public class MithrilFluidTank extends FluidTankBlock{
 			int blocks=compound.getInt("Size")*compound.getInt("Size")*compound.getInt("Height");
 			if(blocks>0) tankInventory.setCapacity(blocks*getCapacityMultiplier());
 			super.read(compound,registries,clientPacket);
-			if(isController()){
-				tankInventory.setCapacity(getTotalTankSize()*getCapacityMultiplier());
-			}
+			if(isController()) tankInventory.setCapacity(getTotalTankSize()*getCapacityMultiplier());
 		}
 		public IFluidHandler getFluidCapability(){
 			if(fluidCapability==null){

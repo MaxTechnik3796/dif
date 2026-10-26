@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static cz.maxtechnik.dif.DifMod.goggleTooltipFix;
-@SuppressWarnings("unchecked")
 public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 	public static final int MAX_FOOTPRINT=3;
 	public static final int MAX_OUTPUTS=15;
@@ -125,44 +124,44 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 			sendData();
 		}
 	}
-	public static void serverTick(Level level,DistillationTankBlockEntity be){
-		if(!be.isTowerMaster()) return;
-		if(be.cacheTick--<=0){
-			be.refreshCache();
-			be.cacheTick=CACHE_REFRESH_RATE;
+	public static void serverTick(Level level,DistillationTankBlockEntity blockEntity){
+		if(!blockEntity.isTowerMaster()) return;
+		if(blockEntity.cacheTick--<=0){
+			blockEntity.refreshCache();
+			blockEntity.cacheTick=CACHE_REFRESH_RATE;
 		}
-		FluidStack input=be.tankInventory.getFluid();
-		if(be.cachedHeatPoints==0||be.cachedSpeed<=0||input.isEmpty()){
-			be.resetProgress();
+		FluidStack input=blockEntity.tankInventory.getFluid();
+		if(blockEntity.cachedHeatPoints==0||blockEntity.cachedSpeed<=0||input.isEmpty()){
+			blockEntity.resetProgress();
 			return;
 		}
-		if(be.cachedRecipe==null||!be.cachedRecipe.input().test(input)){
-			if(!FluidStack.isSameFluidSameComponents(be.lastInput,input)){
-				be.cachedRecipe=findRecipe(level,input);
-				be.lastInput=input.copy();
-				be.progress=0;
+		if(blockEntity.cachedRecipe==null||!blockEntity.cachedRecipe.input().test(input)){
+			if(!FluidStack.isSameFluidSameComponents(blockEntity.lastInput,input)){
+				blockEntity.cachedRecipe=findRecipe(level,input);
+				blockEntity.lastInput=input.copy();
+				blockEntity.progress=0;
 			}
 		}
-		if(be.cachedRecipe==null||input.getAmount()<be.cachedRecipe.input().amount()){
-			be.resetProgress();
+		if(blockEntity.cachedRecipe==null||input.getAmount()<blockEntity.cachedRecipe.input().amount()){
+			blockEntity.resetProgress();
 			return;
 		}
-		List<FluidStack> outputs=be.cachedRecipe.outputs();
-		if(outputs.size()>be.towerOutputCount){
-			be.resetProgress();
+		List<FluidStack> outputs=blockEntity.cachedRecipe.outputs();
+		if(outputs.size()>blockEntity.towerOutputCount){
+			blockEntity.resetProgress();
 			return;
 		}
-		List<IFluidHandler> outputHandlers=getOutputHandlersIfFit(level,be.worldPosition,outputs);
+		List<IFluidHandler> outputHandlers=getOutputHandlersIfFit(level,blockEntity.worldPosition,outputs);
 		if(outputHandlers==null) return;
-		be.progress++;
-		int targetTicks=Math.max(1,Math.round(BASE_TICKS/be.cachedSpeed));
-		if(be.progress>=targetTicks){
-			be.progress=0;
-			be.tankInventory.drain(be.cachedRecipe.input().amount(),IFluidHandler.FluidAction.EXECUTE);
+		blockEntity.progress++;
+		int targetTicks=Math.max(1,Math.round(BASE_TICKS/blockEntity.cachedSpeed));
+		if(blockEntity.progress>=targetTicks){
+			blockEntity.progress=0;
+			blockEntity.tankInventory.drain(blockEntity.cachedRecipe.input().amount(),IFluidHandler.FluidAction.EXECUTE);
 			for(int i=0;i<outputs.size();i++){
 				outputHandlers.get(i).fill(outputs.get(i).copy(),IFluidHandler.FluidAction.EXECUTE);
 			}
-			be.setChanged();
+			blockEntity.setChanged();
 		}
 	}
 	private void resetProgress(){

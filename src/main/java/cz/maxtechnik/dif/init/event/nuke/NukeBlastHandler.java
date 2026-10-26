@@ -11,9 +11,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+@SuppressWarnings("deprecation")
 public class NukeBlastHandler{
 	private static final int BLOCK_UPDATE_FLAGS=2|16|64;
-	@SuppressWarnings("deprecation")
 	public static void destroyInitialArea(ServerLevel level,BlockPos center,int radius,BlockPos.MutableBlockPos mutablePos){
 		double maxResistance=DifModServerConfig.NUKE_MAX_DESTROYABLE_RESISTANCE.get();
 		int cx=center.getX(), cy=center.getY(), cz=center.getZ();
@@ -26,9 +26,7 @@ public class NukeBlastHandler{
 						if(y>=level.getMinBuildHeight()&&y<level.getMaxBuildHeight()){
 							mutablePos.set(cx+dx,y,cz+dz);
 							BlockState state=level.getBlockState(mutablePos);
-							if(!state.isAir()&&state.getBlock().getExplosionResistance()<=maxResistance){
-								level.setBlock(mutablePos,Blocks.AIR.defaultBlockState(),BLOCK_UPDATE_FLAGS);
-							}
+							if(!state.isAir()&&state.getBlock().getExplosionResistance()<=maxResistance) level.setBlock(mutablePos,Blocks.AIR.defaultBlockState(),BLOCK_UPDATE_FLAGS);
 						}
 					}
 				}
@@ -40,10 +38,10 @@ public class NukeBlastHandler{
 		for(LivingEntity entity: level.getEntitiesOfClass(LivingEntity.class,area)){
 			if(entity.isSpectator()) continue;
 			if(entity instanceof Player player&&player.isCreative()) continue;
-			Vec3 toCenter=new Vec3(x-entity.getX(),(y+1.0)-entity.getY(),z-entity.getZ());
+			Vec3 toCenter=new Vec3(x-entity.getX(),(y+1)-entity.getY(),z-entity.getZ());
 			double dist=toCenter.length();
-			if(dist>1.0&&dist<=pullRadius){
-				Vec3 pull=toCenter.normalize().scale(0.10);
+			if(dist>1&&dist<=pullRadius){
+				Vec3 pull=toCenter.normalize().scale(0.1);
 				entity.setDeltaMovement(entity.getDeltaMovement().add(pull));
 				entity.hurtMarked=true;
 			}
@@ -60,23 +58,22 @@ public class NukeBlastHandler{
 			double dist=Math.sqrt(entity.distanceToSqr(x,y,z));
 			if(dist>maxRadius) continue;
 			if(dist<=craterRadius){
-				entity.hurt(level.damageSources().wither(),100.0F);
+				entity.hurt(level.damageSources().wither(),100F);
 				entity.addEffect(new MobEffectInstance(MobEffects.WITHER,600,1));
-				entity.addEffect(new MobEffectInstance(MobEffects.DARKNESS,200,0));
+				entity.addEffect(new MobEffectInstance(MobEffects.DARKNESS,200));
 			}else{
-				entity.addEffect(new MobEffectInstance(MobEffects.WITHER,300,0));
-				entity.addEffect(new MobEffectInstance(MobEffects.DARKNESS,120,0));
+				entity.addEffect(new MobEffectInstance(MobEffects.WITHER,300));
+				entity.addEffect(new MobEffectInstance(MobEffects.DARKNESS,120));
 			}
 			Vec3 dir=entity.position().subtract(x,y,z);
 			if(dir.lengthSqr()>0.01){
-				double strength=Math.max(0.5,1.0-(dist/maxRadius))*2.5;
+				double strength=Math.max(0.5,1-(dist/maxRadius))*2.5;
 				Vec3 push=dir.normalize().scale(strength).add(0,0.6,0);
 				entity.setDeltaMovement(entity.getDeltaMovement().add(push));
 				entity.hurtMarked=true;
 			}
 		}
 	}
-	@SuppressWarnings("deprecation")
 	public static int tickCrater(ServerLevel level,BlockPos center,int currentY,BlockPos.MutableBlockPos mutablePos){
 		int radius=DifModServerConfig.NUKE_RADIUS.get();
 		int blocksPerTick=DifModServerConfig.NUKE_BLOCKS_PER_TICK.get();
@@ -93,9 +90,7 @@ public class NukeBlastHandler{
 						if(dx*dx+dz*dz<=rSq){
 							mutablePos.set(cx+dx,y,cz+dz);
 							BlockState state=level.getBlockState(mutablePos);
-							if(!state.isAir()&&state.getBlock().getExplosionResistance()<=maxResistance){
-								level.setBlock(mutablePos,Blocks.AIR.defaultBlockState(),BLOCK_UPDATE_FLAGS);
-							}
+							if(!state.isAir()&&state.getBlock().getExplosionResistance()<=maxResistance) level.setBlock(mutablePos,Blocks.AIR.defaultBlockState(),BLOCK_UPDATE_FLAGS);
 							processed++;
 						}
 					}

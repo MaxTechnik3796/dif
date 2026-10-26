@@ -1,7 +1,7 @@
 package cz.maxtechnik.dif.block;
 
 import cz.maxtechnik.dif.DifMod;
-import cz.maxtechnik.dif.init.event.SpawnEventHandler;
+import cz.maxtechnik.dif.init.event.MegaTorchHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -39,9 +39,7 @@ public class MegaTorch extends Block{
 	@Override
 	public void onRemove(@NotNull BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull BlockState newState,boolean isMoving){
 		if(!blockState.is(newState.getBlock())){
-			if(level instanceof ServerLevel sl&&blockState.getValue(FORMED)){
-				SpawnEventHandler.get(sl).removeTorch(pos.below(blockState.getValue(PART)));
-			}
+			if(level instanceof ServerLevel sl&&blockState.getValue(FORMED)) MegaTorchHandler.get(sl).removeTorch(pos.below(blockState.getValue(PART)));
 			super.onRemove(blockState,level,pos,newState,isMoving);
 		}
 	}
@@ -55,21 +53,17 @@ public class MegaTorch extends Block{
 		boolean isFormed=level.getBlockState(bottom).getValue(FORMED);
 		if(isValid&&!isFormed){
 			for(int i=0;i<5;i++) level.setBlock(bottom.above(i),defaultBlockState().setValue(FORMED,true).setValue(PART,i),3);
-			if(level instanceof ServerLevel sl) SpawnEventHandler.get(sl).addTorch(bottom);
+			if(level instanceof ServerLevel sl) MegaTorchHandler.get(sl).addTorch(bottom);
 		}else if(!isValid&&isFormed){
 			for(int i=0;i<height;i++){
 				BlockState s=level.getBlockState(bottom.above(i));
 				if(s.is(this)&&s.getValue(FORMED)) level.setBlock(bottom.above(i),s.setValue(FORMED,false).setValue(PART,0),3);
 			}
-			if(level instanceof ServerLevel sl) SpawnEventHandler.get(sl).removeTorch(bottom);
+			if(level instanceof ServerLevel sl) MegaTorchHandler.get(sl).removeTorch(bottom);
 		}
 	}
 	private boolean noHorizontalNeighbors(Level level,BlockPos bottom){
-		for(int i=0;i<5;i++){
-			for(Direction dir: Direction.Plane.HORIZONTAL){
-				if(level.getBlockState(bottom.above(i).relative(dir)).is(this)) return false;
-			}
-		}
+		for(int i=0;i<5;i++) for(Direction dir: Direction.Plane.HORIZONTAL) if(level.getBlockState(bottom.above(i).relative(dir)).is(this)) return false;
 		return true;
 	}
 }
