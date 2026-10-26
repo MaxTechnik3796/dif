@@ -77,36 +77,36 @@ public class Engine extends KineticBlock implements EntityBlock, IWrenchable{
 		return Shapes.empty();
 	}
 	@Override
-	public InteractionResult onWrenched(BlockState state,UseOnContext context){
+	public InteractionResult onWrenched(BlockState blockState,UseOnContext context){
 		Level level=context.getLevel();
 		BlockPos pos=context.getClickedPos();
 		Direction side=context.getClickedFace();
-		if(side.getAxis()==state.getValue(FACING).getAxis()){
-			KineticBlockEntity.switchToBlockState(level,pos,state.cycle(INVERT));
+		if(side.getAxis()==blockState.getValue(FACING).getAxis()){
+			KineticBlockEntity.switchToBlockState(level,pos,blockState.cycle(INVERT));
 			IWrenchable.playRotateSound(level,pos);
 			return InteractionResult.SUCCESS;
 		}
-		BlockState rotated=this.getRotatedBlockState(state,side);
+		BlockState rotated=this.getRotatedBlockState(blockState,side);
 		if(!rotated.canSurvive(level,pos)) return InteractionResult.PASS;
 		KineticBlockEntity.switchToBlockState(level,pos,this.updateAfterWrenched(rotated,context));
 		if(level.getBlockEntity(pos) instanceof EngineBlockEntity be) be.updateExtenders();
-		if(level.getBlockState(pos)!=state) IWrenchable.playRotateSound(level,pos);
+		if(level.getBlockState(pos)!=blockState) IWrenchable.playRotateSound(level,pos);
 		return InteractionResult.SUCCESS;
 	}
 	@Override
-	public void neighborChanged(@NotNull BlockState state,@NotNull Level level,@NotNull BlockPos pos,@NotNull Block block,@NotNull BlockPos fromPos,boolean isMoving){
-		super.neighborChanged(state,level,pos,block,fromPos,isMoving);
+	public void neighborChanged(@NotNull BlockState blockState,@NotNull Level level,@NotNull BlockPos pos,@NotNull Block block,@NotNull BlockPos fromPos,boolean isMoving){
+		super.neighborChanged(blockState,level,pos,block,fromPos,isMoving);
 		if(level.getBlockEntity(pos) instanceof EngineBlockEntity blockEntity) blockEntity.updateExtenders();
 	}
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack,Item.@NotNull TooltipContext context,@NotNull List<Component> tooltipComponents,@NotNull TooltipFlag tooltipFlag){
-		super.appendHoverText(stack,context,tooltipComponents,tooltipFlag);
+	public void appendHoverText(@NotNull ItemStack itemStack,Item.@NotNull TooltipContext context,@NotNull List<Component> tooltipComponents,@NotNull TooltipFlag tooltipFlag){
+		super.appendHoverText(itemStack,context,tooltipComponents,tooltipFlag);
 		tooltipComponents.add(Component.literal("Burn Rates:").withStyle(ChatFormatting.GRAY));
 		addFuelTooltip(tooltipComponents,"Gasoline",DifModServerConfig.LARGE_ENGINE_GASOLINE_CONSUMPTION.get());
 		addFuelTooltip(tooltipComponents,"Diesel",DifModServerConfig.LARGE_ENGINE_DIESEL_CONSUMPTION.get());
 		addFuelTooltip(tooltipComponents,"Heavy Fuel Oil",DifModServerConfig.LARGE_ENGINE_HEAVY_FUEL_OIL_CONSUMPTION.get());
 	}
 	public static void addFuelTooltip(List<Component> tooltipComponents,String name,double rate){
-		tooltipComponents.add(Component.literal(" • "+name+": ").withStyle(ChatFormatting.DARK_GRAY).append(Component.literal(String.format(Locale.US,"%.1f mB/s",rate)).withStyle(ChatFormatting.GOLD)));
+		tooltipComponents.add(Component.literal(" • "+name+": ").withStyle(ChatFormatting.DARK_GRAY).append(Component.literal(String.format(Locale.ROOT,"%.1f mB/s",rate)).withStyle(ChatFormatting.GOLD)));
 	}
 }

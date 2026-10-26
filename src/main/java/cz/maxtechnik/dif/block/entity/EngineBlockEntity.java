@@ -5,7 +5,7 @@ import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.block.Engine;
 import cz.maxtechnik.dif.block.EngineExtender;
-import cz.maxtechnik.dif.block.PortableEngineBlock;
+import cz.maxtechnik.dif.block.PortableEngine;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.util.FuelType;
 import net.minecraft.ChatFormatting;
@@ -30,17 +30,17 @@ import java.util.Locale;
 import static cz.maxtechnik.dif.block.Engine.*;
 import static cz.maxtechnik.dif.config.DifModServerConfig.*;
 public class EngineBlockEntity extends GeneratingKineticBlockEntity{
-	public static final TagKey<Fluid> DIESEL_TAG=TagKey.create(Registries.FLUID,ResourceLocation.parse("c:diesel"));
-	public static final TagKey<Fluid> GASOLINE_TAG=TagKey.create(Registries.FLUID,ResourceLocation.parse("c:gasoline"));
-	public static final TagKey<Fluid> LPG_TAG=TagKey.create(Registries.FLUID,ResourceLocation.parse("c:lpg"));
-	public static final TagKey<Fluid> HEAVY_FUEL_OIL_TAG=TagKey.create(Registries.FLUID,ResourceLocation.parse("c:heavy_fuel_oil"));
+	public static final TagKey<Fluid> DIESEL_TAG=TagKey.create(Registries.FLUID,ResourceLocation.parse("c:diesel")),
+			GASOLINE_TAG=TagKey.create(Registries.FLUID,ResourceLocation.parse("c:gasoline")),
+			LPG_TAG=TagKey.create(Registries.FLUID,ResourceLocation.parse("c:lpg")),
+			HEAVY_FUEL_OIL_TAG=TagKey.create(Registries.FLUID,ResourceLocation.parse("c:heavy_fuel_oil"));
 	boolean generating=false;
 	float speed=0F;
 	float su=0F;
 	private boolean extUp=false, extNorth=false, extSouth=false, extEast=false, extWest=false;
 	private int cachedExtenders=0;
 	private int redstoneSignal=0;
-	private double consumptionPerTick=0.0D;
+	private double consumptionPerTick=0D;
 	private boolean isDrainingInternally=false;
 	private static final int FUEL_TICK_INTERVAL=10;
 	private int fuelTickCounter=0;
@@ -151,15 +151,15 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 			generating=false;
 			speed=0F;
 			su=0F;
-			consumptionPerTick=0.0D;
+			consumptionPerTick=0D;
 		}else{
 			boolean portable=isPortable();
 			double baseRpm=getBaseRpm(fuel,portable);
 			double maxSu=getBaseSu(fuel,portable)*(portable?1:cachedExtenders);
 			double burnRatePerSec=calculateBurnRate(fuel,portable,cachedExtenders,redstoneSignal);
 			speed=(float)baseRpm;
-			su=(float)(maxSu*(redstoneSignal/15.0D));
-			consumptionPerTick=burnRatePerSec/20.0D;
+			su=(float)(maxSu*(redstoneSignal/15D));
+			consumptionPerTick=burnRatePerSec/20D;
 			generating=true;
 		}
 		if(wasGenerating!=generating||prevSpeed!=speed||prevSu!=su||prevSignal!=redstoneSignal){
@@ -181,7 +181,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 			if(fuel==FuelType.DIESEL) return LARGE_ENGINE_DIESEL_RPM.get();
 			if(fuel==FuelType.HEAVY_FUEL_OIL) return LARGE_ENGINE_HEAVY_FUEL_OIL_RPM.get();
 		}
-		return 0.0D;
+		return 0D;
 	}
 	private double getBaseSu(FuelType fuel,boolean isPortable){
 		if(isPortable){
@@ -192,7 +192,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 			if(fuel==FuelType.DIESEL) return LARGE_ENGINE_DIESEL_SU.get();
 			if(fuel==FuelType.HEAVY_FUEL_OIL) return LARGE_ENGINE_HEAVY_FUEL_OIL_SU.get();
 		}
-		return 0.0D;
+		return 0D;
 	}
 	private double getBaseConsumption(FuelType fuel,boolean isPortable){
 		if(isPortable){
@@ -206,10 +206,10 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		return 0.0D;
 	}
 	private double calculateBurnRate(FuelType fuel,boolean isPortable,int extenders,int signal){
-		if(signal<=0||fuel==FuelType.INVALID) return 0.0D;
+		if(signal<=0||fuel==FuelType.INVALID) return 0D;
 		double maxBurnRate=getBaseConsumption(fuel,isPortable)*(isPortable?1:extenders);
-		double factor=0.1D+0.9D*((signal-1)/14.0D);
-		return Math.round(maxBurnRate*factor*10.0D)/10.0D;
+		double factor=0.1D+0.9D*((signal-1)/14D);
+		return Math.round(maxBurnRate*factor*10D)/10D;
 	}
 	@Override
 	public void tick(){
@@ -272,7 +272,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 					}
 				}
 			}else{
-				Direction rot=getBlockState().getValue(PortableEngineBlock.ROTATION);
+				Direction rot=getBlockState().getValue(PortableEngine.ROTATION);
 				boolean rotZ=rot.getAxis()==Direction.Axis.Z;
 				boolean pos=rot.getAxisDirection()==Direction.AxisDirection.POSITIVE;
 				double off=pos?0.99:0.01;
@@ -322,7 +322,7 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 		return getBlockState().getBlock() instanceof Engine;
 	}
 	private boolean isPortable(){
-		return getBlockState().getBlock() instanceof PortableEngineBlock;
+		return getBlockState().getBlock() instanceof PortableEngine;
 	}
 	private boolean isValidEngine(){
 		return isEngineBase()||isPortable();
@@ -335,20 +335,20 @@ public class EngineBlockEntity extends GeneratingKineticBlockEntity{
 	public boolean addToGoggleTooltip(List<Component> tooltip,boolean isPlayerSneaking){
 		super.addToGoggleTooltip(tooltip,isPlayerSneaking);
 		ChatFormatting powerColor=redstoneSignal>0?ChatFormatting.RED:ChatFormatting.DARK_GRAY;
-		tooltip.add(Component.literal("     Power: ").withStyle(ChatFormatting.GRAY).append(Component.literal(redstoneSignal+" / 15").withStyle(powerColor)));
+		tooltip.add(DifMod.fixedComponent(Component.literal("Power: ").withStyle(ChatFormatting.GRAY).append(Component.literal(redstoneSignal+" / 15").withStyle(powerColor))));
 		if(!fluidTank.isEmpty()){
 			String fluidName=fluidTank.getFluid().getHoverName().getString();
-			tooltip.add(Component.literal("     Fuel: ").withStyle(ChatFormatting.GRAY).append(Component.literal(fluidName+" ("+fluidTank.getFluidAmount()+" / "+fluidTank.getCapacity()+" mB)").withStyle(ChatFormatting.AQUA)));
+			tooltip.add(DifMod.fixedComponent(Component.literal("Fuel: ").withStyle(ChatFormatting.GRAY).append(Component.literal(fluidName+" ("+fluidTank.getFluidAmount()+" / "+fluidTank.getCapacity()+" mB)").withStyle(ChatFormatting.AQUA))));
 		}else
-			tooltip.add(Component.literal("     Fuel: ").withStyle(ChatFormatting.GRAY).append(Component.literal("Empty (0 / "+fluidTank.getCapacity()+" mB)").withStyle(ChatFormatting.DARK_GRAY)));
+			tooltip.add(DifMod.fixedComponent(Component.literal("Fuel: ").withStyle(ChatFormatting.GRAY).append(Component.literal("Empty (0 / "+fluidTank.getCapacity()+" mB)").withStyle(ChatFormatting.DARK_GRAY))));
 		FuelType fuel=getFuelType();
 		if(fuel!=FuelType.INVALID&&redstoneSignal>0){
 			boolean portable=isPortable();
 			double burnRatePerSec=calculateBurnRate(fuel,portable,cachedExtenders,redstoneSignal);
-			String burnRateStr=String.format(Locale.US,"%.1f",burnRatePerSec);
-			tooltip.add(Component.literal("     Burn Rate: ").withStyle(ChatFormatting.GRAY).append(Component.literal(burnRateStr+" mB/s").withStyle(ChatFormatting.GOLD)));
+			String burnRateStr=String.format(Locale.ROOT,"%.1f",burnRatePerSec);
+			tooltip.add(DifMod.fixedComponent(Component.literal("Burn Rate: ").withStyle(ChatFormatting.GRAY).append(Component.literal(burnRateStr+" mB/s").withStyle(ChatFormatting.GOLD))));
 		}else
-			tooltip.add(Component.literal("     Burn Rate: ").withStyle(ChatFormatting.GRAY).append(Component.literal("0.0 mB/s").withStyle(ChatFormatting.DARK_GRAY)));
+			tooltip.add(DifMod.fixedComponent(Component.literal("Burn Rate: ").withStyle(ChatFormatting.GRAY).append(Component.literal("0.0 mB/s").withStyle(ChatFormatting.DARK_GRAY))));
 		return true;
 	}
 }

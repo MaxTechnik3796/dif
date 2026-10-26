@@ -5,6 +5,7 @@ import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkBlock;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.block.DistillationTank;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
 import cz.maxtechnik.dif.recipe.DistillationRecipe;
@@ -26,7 +27,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static cz.maxtechnik.dif.DifMod.goggleTooltipFix;
 public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 	public static final int MAX_FOOTPRINT=3;
 	public static final int MAX_OUTPUTS=15;
@@ -194,12 +194,12 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 		DistillationTankBlockEntity master=isTowerMaster()?this:getTowerMaster();
 		if(master!=null&&(master.cachedHeatPoints>0||master.towerOutputCount>0)){
 			ChatFormatting heatColor=master.cachedHeatPoints==0?ChatFormatting.GRAY:ChatFormatting.AQUA;
-			tooltip.add(Component.literal(goggleTooltipFix+"Heat: ").withStyle(ChatFormatting.GRAY)
-					.append(Component.literal(master.cachedHeatPoints+" / 10").withStyle(heatColor)));
+			tooltip.add(DifMod.fixedComponent(Component.literal("Heat: ").withStyle(ChatFormatting.GRAY)
+					.append(Component.literal(master.cachedHeatPoints+" / 10").withStyle(heatColor))));
 			ChatFormatting speedColor=master.cachedSpeed==0?ChatFormatting.GRAY:ChatFormatting.GOLD;
-			tooltip.add(Component.literal(goggleTooltipFix+"Speed: ").withStyle(ChatFormatting.GRAY)
-					.append(Component.literal(master.cachedSpeed+"×").withStyle(speedColor)));
-			if(isTowerMaster()) tooltip.add(Component.literal(goggleTooltipFix+"Master").withStyle(ChatFormatting.AQUA));
+			tooltip.add(DifMod.fixedComponent(Component.literal("Speed: ").withStyle(ChatFormatting.GRAY)
+					.append(Component.literal(master.cachedSpeed+"×").withStyle(speedColor))));
+			if(isTowerMaster()) tooltip.add(DifMod.fixedComponent(Component.literal("Master").withStyle(ChatFormatting.AQUA)));
 			return true;
 		}
 		return added;
