@@ -7,23 +7,23 @@
 	"outputs":[
 		{
 			"id":"dif:heavy_fuel_oil",
-			"amount":35
-		},
-		{
-			"id":"dif:lubricating_oil",
-			"amount":10
+			"amount":15
 		},
 		{
 			"id":"dif:diesel",
-			"amount":20
+			"amount":25
+		},
+		{
+			"id":"dif:kerosene",
+			"amount":10
 		},
 		{
 			"id":"dif:gasoline",
-			"amount":20
+			"amount":40
 		},
 		{
 			"id":"dif:lpg",
-			"amount":15
+			"amount":10
 		}
 	]
 }

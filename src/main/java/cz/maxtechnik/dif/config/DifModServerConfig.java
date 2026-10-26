@@ -91,8 +91,8 @@ public class DifModServerConfig{
 		LARGE_ENGINE_DIESEL_RPM=BUILDER.defineInRange("diesel_rpm",128D,0D,DOUBLE_MAX);
 		LARGE_ENGINE_DIESEL_SU=BUILDER.defineInRange("diesel_su",160D,0D,DOUBLE_MAX);
 		LARGE_ENGINE_DIESEL_CONSUMPTION=BUILDER.defineInRange("diesel_consumption",2.5D,0D,DOUBLE_MAX);
-		LARGE_ENGINE_HEAVY_FUEL_OIL_RPM=BUILDER.defineInRange("heavy_fuel_oil_rpm",96D,0D,DOUBLE_MAX);
-		LARGE_ENGINE_HEAVY_FUEL_OIL_SU=BUILDER.defineInRange("heavy_fuel_oil_su",292D,0D,DOUBLE_MAX);
+		LARGE_ENGINE_HEAVY_FUEL_OIL_RPM=BUILDER.defineInRange("heavy_fuel_oil_rpm",32D,0D,DOUBLE_MAX);
+		LARGE_ENGINE_HEAVY_FUEL_OIL_SU=BUILDER.defineInRange("heavy_fuel_oil_su",876D,0D,DOUBLE_MAX);
 		LARGE_ENGINE_HEAVY_FUEL_OIL_CONSUMPTION=BUILDER.defineInRange("heavy_fuel_oil_consumption",3.5D,0D,DOUBLE_MAX);
 		BUILDER.pop();
 		BUILDER.push("Nuke");

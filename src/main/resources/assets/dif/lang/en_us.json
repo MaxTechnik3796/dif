@@ -64,10 +64,10 @@
 	"fluid.dif.diesel":"Diesel",
 	"fluid_type.dif.diesel":"Diesel",
 
-	"item.dif.lubricating_oil_bucket":"Lubricating Oil Bucket",
-	"block.dif.lubricating_oil":"Lubricating Oil",
-	"fluid.dif.lubricating_oild":"Lubricating Oil",
-	"fluid_type.dif.lubricating_oil":"Lubricating Oil",
+	"item.dif.kerosene_bucket":"Kerosene Bucket",
+	"block.dif.kerosene":"Kerosene",
+	"fluid.dif.kerosene":"Kerosene",
+	"fluid_type.dif.kerosene":"Kerosene",
 
 	"item.dif.heavy_fuel_oil_bucket":"Heavy Fuel Oil Bucket",
 	"block.dif.heavy_fuel_oil":"Heavy Fuel Oil",

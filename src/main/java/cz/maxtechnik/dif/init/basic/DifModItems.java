@@ -248,7 +248,8 @@ public class DifModItems{
 		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"lpg_fluid_bucket"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"lpg_bucket"));
 		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"gasoline_fluid_bucket"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"gasoline_bucket"));
 		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"diesel_fluid_bucket"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"diesel_bucket"));
-		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"lubricating_oil_fluid_bucket"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"lubricating_oil_bucket"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"lubricating_oil_fluid_bucket"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"kerosene_bucket"));
+		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"lubricating_oil_bucket"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"kerosene_bucket"));
 		REGISTRY.addAlias(ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"heavy_fuel_oil_fluid_bucket"),ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"heavy_fuel_oil_bucket"));
 	}
 }

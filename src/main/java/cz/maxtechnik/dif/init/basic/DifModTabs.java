@@ -160,7 +160,7 @@ public class DifModTabs{
 					new ItemStack(LPG.bucket.get()),
 					new ItemStack(GASOLINE.bucket.get()),
 					new ItemStack(DIESEL.bucket.get()),
-					new ItemStack(LUBRICATING_OIL.bucket.get()),
+					new ItemStack(KEROSENE.bucket.get()),
 					new ItemStack(HEAVY_FUEL_OIL.bucket.get()),
 					new ItemStack(ASTRAGEL.bucket.get())
 			));

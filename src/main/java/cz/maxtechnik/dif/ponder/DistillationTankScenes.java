@@ -49,7 +49,7 @@ public class DistillationTankScenes{
 		scene.idle(20);
 		narrate(scene,"The Distillation Tank will now begin processing fluids.",util.vector().centerOf(3,4,3));
 		showItem(scene,util,new BlockPos(4,2,3),new ItemStack(DifModFluids.HEAVY_FUEL_OIL.bucket.get()),Pointing.RIGHT,20);
-		showItem(scene,util,new BlockPos(3,3,4),new ItemStack(DifModFluids.LUBRICATING_OIL.bucket.get()),Pointing.LEFT,20);
+		showItem(scene,util,new BlockPos(3,3,4),new ItemStack(DifModFluids.KEROSENE.bucket.get()),Pointing.LEFT,20);
 		showItem(scene,util,new BlockPos(4,4,3),new ItemStack(DifModFluids.DIESEL.bucket.get()),Pointing.RIGHT,20);
 		showItem(scene,util,new BlockPos(3,5,4),new ItemStack(DifModFluids.GASOLINE.bucket.get()),Pointing.LEFT,20);
 		showItem(scene,util,new BlockPos(4,6,3),new ItemStack(DifModFluids.LPG.bucket.get()),Pointing.RIGHT,20);
@@ -70,7 +70,7 @@ public class DistillationTankScenes{
 		reveal(scene,outputSelection,Direction.WEST);
 		scene.idle(15);
 		fillFluidTank(scene,new BlockPos(7,3,3),new FluidStack(DifModFluids.HEAVY_FUEL_OIL.source.get(),8000));
-		fillFluidTank(scene,new BlockPos(6,4,3),new FluidStack(DifModFluids.LUBRICATING_OIL.source.get(),8000));
+		fillFluidTank(scene,new BlockPos(6,4,3),new FluidStack(DifModFluids.KEROSENE.source.get(),8000));
 		fillFluidTank(scene,new BlockPos(7,5,3),new FluidStack(DifModFluids.DIESEL.source.get(),8000));
 		fillFluidTank(scene,new BlockPos(6,6,3),new FluidStack(DifModFluids.GASOLINE.source.get(),8000));
 		fillFluidTank(scene,new BlockPos(7,7,3),new FluidStack(DifModFluids.LPG.source.get(),8000));

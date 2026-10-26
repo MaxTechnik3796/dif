@@ -8,7 +8,6 @@ import cz.maxtechnik.dif.block.DistillationTank;
 import cz.maxtechnik.dif.command.ChunkLoaderCommand;
 import cz.maxtechnik.dif.command.IsChunkLoadedCommand;
 import cz.maxtechnik.dif.config.DifModClientConfig;
-import cz.maxtechnik.dif.config.DifModCommonConfig;
 import cz.maxtechnik.dif.config.DifModServerConfig;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.basic.DifModItems;
@@ -97,7 +96,6 @@ public class DifMod{
 		NeoForge.EVENT_BUS.register(this);
 		bus.addListener(DifModTabs::addCreative);
 		bus.addListener(this::commonSetup);
-		modContainer.registerConfig(ModConfig.Type.COMMON,DifModCommonConfig.SPEC);
 		modContainer.registerConfig(ModConfig.Type.SERVER,DifModServerConfig.SPEC);
 		modContainer.registerConfig(ModConfig.Type.CLIENT,DifModClientConfig.SPEC);
 		bus.addListener(DifModCapabilities::registerCapabilities);

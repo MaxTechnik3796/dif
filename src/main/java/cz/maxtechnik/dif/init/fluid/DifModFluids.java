@@ -45,7 +45,7 @@ public class DifModFluids{
 			type->type.density(800).viscosity(1500).canHydrate(false).canDrown(true).canExtinguish(true).supportsBoating(true).fallDistanceModifier(0F).motionScale(0.007D),
 			fluid->fluid.tickRate(7).levelDecreasePerBlock(1).slopeFindDistance(4),FLUIDS,TYPES,ITEMS,BLOCKS
 	);
-	public static final FluidEntry LUBRICATING_OIL=new FluidEntry("lubricating_oil",false,false,
+	public static final FluidEntry KEROSENE=new FluidEntry("kerosene",false,false,
 			type->type.density(700).viscosity(1500).canHydrate(false).canDrown(true).canExtinguish(true).supportsBoating(true).fallDistanceModifier(0F).motionScale(0.007D),
 			fluid->fluid.tickRate(1).levelDecreasePerBlock(1).slopeFindDistance(4),FLUIDS,TYPES,ITEMS,BLOCKS
 	);
@@ -66,8 +66,18 @@ public class DifModFluids{
 		aliasFluid("lpg");
 		aliasFluid("gasoline");
 		aliasFluid("diesel");
-		aliasFluid("lubricating_oil");
 		aliasFluid("heavy_fuel_oil");
+
+		ResourceLocation oldFluid=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"lubricating_oil_fluid");
+		ResourceLocation newFluid=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"kerosene");
+		ResourceLocation oldFlowing=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"flowing_lubricating_oil_fluid");
+		ResourceLocation newFlowing=ResourceLocation.fromNamespaceAndPath(DifMod.MODID,"flowing_kerosene");
+
+		FLUIDS.addAlias(oldFluid,newFluid);
+		FLUIDS.addAlias(oldFlowing,newFlowing);
+		TYPES.addAlias(oldFluid,newFluid);
+		BLOCKS.addAlias(oldFluid,newFluid);
+		BLOCKS.addAlias(oldFlowing,newFluid);
 	}
 
 	private static void aliasFluid(String name){
