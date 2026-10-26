@@ -72,12 +72,12 @@ public abstract class Jetpack extends ArmorItem{
 				}
 			});
 		}
-		public static int getThrust(ItemStack stack){
-			CustomData data=stack.get(DataComponents.CUSTOM_DATA);
+		public static int getThrust(ItemStack itemStack){
+			CustomData data=itemStack.get(DataComponents.CUSTOM_DATA);
 			return data!=null?data.copyTag().getInt("Thrust"):0;
 		}
-		public static void setThrust(ItemStack stack,int value){
-			stack.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,
+		public static void setThrust(ItemStack itemStack,int value){
+			itemStack.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,
 					data->data.update(tag->tag.putInt("Thrust",Mth.clamp(value,0,getCapacity()))));
 		}
 		public static int getMax(){
@@ -91,11 +91,11 @@ public abstract class Jetpack extends ArmorItem{
 			stack.update(DataComponents.CUSTOM_DATA,CustomData.EMPTY,
 					data->data.update(tag->tag.putInt("Mode",Mth.clamp(mode,0,2))));
 		}
-		public static boolean isHovering(ItemStack stack){
-			return getMode(stack)==1;
+		public static boolean isHovering(ItemStack itemStack){
+			return getMode(itemStack)==1;
 		}
-		public static boolean isOff(ItemStack stack){
-			return getMode(stack)==2;
+		public static boolean isOff(ItemStack itemStack){
+			return getMode(itemStack)==2;
 		}
 		public static class FluidHandler implements IFluidHandlerItem{
 			private final ItemStack container;
@@ -120,8 +120,8 @@ public abstract class Jetpack extends ArmorItem{
 				return getCapacity();
 			}
 			@Override
-			public boolean isFluidValid(int tank,@NotNull FluidStack stack){
-				return stack.getFluid()==DifModFluids.JETPACK_FUEL.source.get();
+			public boolean isFluidValid(int tank,@NotNull FluidStack fluidStack){
+				return fluidStack.getFluid()==DifModFluids.JETPACK_FUEL.source.get();
 			}
 			@Override
 			public int fill(FluidStack resource,IFluidHandler.@NotNull FluidAction action){
@@ -146,12 +146,12 @@ public abstract class Jetpack extends ArmorItem{
 			}
 		}
 		@Override
-		public int getBarWidth(@NotNull ItemStack stack){
-			return Math.round(13F*getThrust(stack)/Math.max(1F,getCapacity()));
+		public int getBarWidth(@NotNull ItemStack itemStack){
+			return Math.round(13F*getThrust(itemStack)/Math.max(1F,getCapacity()));
 		}
 		@Override
-		public int getBarColor(@NotNull ItemStack stack){
-			float fill=Math.max(0F,(float)getThrust(stack)/Math.max(1F,getCapacity()));
+		public int getBarColor(@NotNull ItemStack itemStack){
+			float fill=Math.max(0F,(float)getThrust(itemStack)/Math.max(1F,getCapacity()));
 			return Mth.hsvToRgb(fill*0.33F,1F,1F);
 		}
 		@Override

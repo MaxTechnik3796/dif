@@ -34,25 +34,17 @@ public class AddMeatLootModifier extends LootModifier{
 	@Override
 	protected @NotNull ObjectArrayList<ItemStack> doApply(@NotNull ObjectArrayList<ItemStack> generatedLoot,LootContext context){
 		Entity entity=context.getParamOrNull(LootContextParams.THIS_ENTITY);
-		if(entity instanceof AgeableMob ageable&&ageable.isBaby()){
-			return generatedLoot;
-		}
+		if(entity instanceof AgeableMob ageable&&ageable.isBaby()) return generatedLoot;
 		Item itemToDrop=this.rawItem;
-		if(entity!=null&&entity.isOnFire()){
-			itemToDrop=this.cookedItem;
-		}
+		if(entity!=null&&entity.isOnFire()) itemToDrop=this.cookedItem;
 		int count=context.getRandom().nextInt(3)+1; // 1-3 ks
 		int lootingLevel=0;
 		Entity attacker=context.getParamOrNull(LootContextParams.ATTACKING_ENTITY);
 		if(attacker instanceof LivingEntity livingAttacker){
 			var enchantmentRegistry=context.getLevel().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
-			lootingLevel=livingAttacker.getMainHandItem().getEnchantmentLevel(
-					enchantmentRegistry.getOrThrow(Enchantments.LOOTING)
-			);
+			lootingLevel=livingAttacker.getMainHandItem().getEnchantmentLevel(enchantmentRegistry.getOrThrow(Enchantments.LOOTING));
 		}
-		if(lootingLevel>0){
-			count+=context.getRandom().nextInt(lootingLevel+1);
-		}
+		if(lootingLevel>0) count+=context.getRandom().nextInt(lootingLevel+1);
 		generatedLoot.add(new ItemStack(itemToDrop,count));
 		return generatedLoot;
 	}
