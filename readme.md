@@ -1,14 +1,24 @@
-# TheDifferential
+# ⚙️ TheDifferential
 
 **TheDifferential** is a technical addon for the **Create** mod that expands its mechanics to include the oil industry.
 
-## 🚀 Features
+***
 
-*   **Industrial Quarry:** A massive excavation machine, capable of clearing large areas with integrated frame-building logic.
-*   **Oil Processing:** Discover underground oil reservoirs and geysers. Refine crude oil into useful fuels.
-*   **Create Integration:** Fully compatible with Create’s stress (SU) and rotation systems.
-*   **Culinary Expansion:** New ingredients and cooking methods that integrate with **Farmer's Delight**.
-*   **Utility Additions:** Various "Quality of Life" items and blocks to your industrial experience.
+📦 CurseForge: [[Here]](https://www.curseforge.com/minecraft/mc-mods/the-differential)
+
+🟠 GitHub Issue: [[Here]](https://github.com/MaxTechnik3796/dif/issues)
+
+💬 Discrod: [[Here]](https://discord.gg/mjVprFtWTk)
+
+***
+
+**✨ Features**
+
+*   **Industrial Quarry:** A massive mining machine capable of clearing large areas.
+*   **Oil Processing:** Discover underground oil deposits and geysers. Refine crude oil into useful fuels.
+*   **Integration with Create:** Fully compatible with Create’s stress (SU) and rotation systems.
+*   **Culinary Expansion:** New ingredients and cooking methods that integrate with the **Farmer’s Delight** mod.
+*   **Convenience Add-ons:** Various items and blocks that enhance the “quality of life” in your industrial environment.
 
 ***
 
@@ -34,17 +44,11 @@ This project respects the work of the original modders.
 
 ***
 
-## 🛠️ Installation & Dependencies
+## 🛠️ Dependencies
 
-*   **Minecraft Version:** 1.21.1
-*   **Loader:** NeoForge
 *   **Required Mods:**
-  *   [Create](https://www.curseforge.com/minecraft/mc-mods/create)
-  *   [Farmer's Delight](https://www.curseforge.com/minecraft/mc-mods/farmers-delight)
-  *   [Curios API](https://www.curseforge.com/minecraft/mc-mods/curios)
+    *   [Create](https://www.curseforge.com/minecraft/mc-mods/create)
+    *   [Curios API](https://www.curseforge.com/minecraft/mc-mods/curios)
 *   **Optional (Recommended):**
-  *   [JEI (Just Enough Items)](https://www.curseforge.com/minecraft/mc-mods/jei)
-
-***
-
-_Developed by TheDifferential Team_
+    *   [Farmer's Delight](https://www.curseforge.com/minecraft/mc-mods/farmers-delight)
+    *   [JEI (Just Enough Items)](https://www.curseforge.com/minecraft/mc-mods/jei)
