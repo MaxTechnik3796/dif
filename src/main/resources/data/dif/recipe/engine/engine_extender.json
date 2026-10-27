@@ -10,13 +10,13 @@
 			"tag":"c:plates/mithril"
 		},
 		"B":{
-			"tag":"c:nuggets/iron"
+			"tag":"c:plates/nickel"
 		},
 		"C":{
 			"item":"create:fluid_tank"
 		},
 		"D":{
-			"tag":"c:plates/nickel"
+			"tag":"c:ingots/nickel"
 		},
 		"E":{
 			"item":"dif:zinc_casing"

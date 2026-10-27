@@ -1,16 +1,19 @@
 {
 	"type":"minecraft:crafting_shaped",
 	"pattern":[
-		" A ",
+		"CAC",
 		"ABA",
-		" A "
+		"CAC"
 	],
 	"key":{
 		"A":{
-			"tag":"c:plates/nickel"
+			"tag":"c:ingots/nickel"
 		},
 		"B":{
 			"item":"create:shaft"
+		},
+		"C":{
+			"tag":"c:plates/nickel"
 		}
 	},
 	"result":{
