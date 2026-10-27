@@ -16,8 +16,9 @@ import org.jetbrains.annotations.NotNull;
 public class NuclearExplosionEntity extends Entity{
 	private static final EntityDataAccessor<Integer> DATA_AGE=SynchedEntityData.defineId(NuclearExplosionEntity.class,EntityDataSerializers.INT);
 	public static final int INITIAL_BLAST_RADIUS=5;
-	public static final int IMPLOSION_TICKS=50;
-	public static final int EXPAND_TICKS=35;
+	public static final int CHARGE_TICKS=20;
+	public static final int CRATER_DELAY_TICKS=70;
+	public static final int TOTAL_LIFETIME=240;
 	private int age=0;
 	private int currentY=Integer.MIN_VALUE;
 	private boolean craterFinished=false;
@@ -39,28 +40,20 @@ public class NuclearExplosionEntity extends Entity{
 		if(!(level() instanceof ServerLevel sl)) return;
 		if(currentY==Integer.MIN_VALUE) currentY=DifModServerConfig.NUKE_RADIUS.get();
 		double x=getX(), y=getY(), z=getZ();
-		if(age==0){
-			NukeBlastHandler.destroyInitialArea(sl,blockPosition(),INITIAL_BLAST_RADIUS,mutablePos);
-			NukeVisualHandler.triggerInitialBlast(sl,x,y,z);
-		}
-		if(age<IMPLOSION_TICKS){
-			NukeVisualHandler.tickImplosion(sl,x,y,z,age,IMPLOSION_TICKS,random);
-			NukeBlastHandler.pullEntities(sl,x,y,z,16);
-		}else{
-			if(age==IMPLOSION_TICKS){
+		if(age>=CHARGE_TICKS){
+			if(age==CHARGE_TICKS){
+				NukeBlastHandler.destroyInitialArea(sl,blockPosition(),INITIAL_BLAST_RADIUS,mutablePos);
 				NukeVisualHandler.triggerMainDetonation(sl,x,y,z);
 				NukeBlastHandler.detonateEntities(sl,x,y,z);
 			}
-			int blastAge=age-IMPLOSION_TICKS;
-			if(blastAge<=EXPAND_TICKS) NukeVisualHandler.tickExplosionExpand(sl,x,y,z,blastAge,EXPAND_TICKS,random);
-			if(!craterFinished){
+			if(!craterFinished&&age>=CHARGE_TICKS+CRATER_DELAY_TICKS){
 				currentY=NukeBlastHandler.tickCrater(sl,blockPosition(),currentY,mutablePos);
 				if(currentY<-DifModServerConfig.NUKE_RADIUS.get()) craterFinished=true;
 			}
 		}
 		age++;
 		this.entityData.set(DATA_AGE,age);
-		if(craterFinished&&age>IMPLOSION_TICKS+EXPAND_TICKS) discard();
+		if(craterFinished&&age>TOTAL_LIFETIME) discard();
 	}
 	@Override
 	protected void readAdditionalSaveData(CompoundTag tag){
