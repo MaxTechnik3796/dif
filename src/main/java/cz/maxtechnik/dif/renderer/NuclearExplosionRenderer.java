@@ -8682,7 +8682,7 @@ public class NuclearExplosionRenderer extends EntityRenderer<NuclearExplosionEnt
 	private void renderSingleBeam(PoseStack poseStack,MultiBufferSource buffer,float partialTick,long gameTime,int color,float beamRadius,float glowRadius){
 		BeaconRenderer.renderBeaconBeam(
 				poseStack,buffer,BeaconRenderer.BEAM_LOCATION,
-				partialTick,1.0F,gameTime,
+				partialTick,1F,gameTime,
 				0,BEAM_HEIGHT,color,
 				beamRadius,glowRadius
 		);
@@ -8692,8 +8692,8 @@ public class NuclearExplosionRenderer extends EntityRenderer<NuclearExplosionEnt
 		int alpha=(int)((1F-progress)*0.85F*255F);
 		ColorRGBA sphereColor=new ColorRGBA(160,80,255,alpha);
 		for(int ring=0;ring<SPHERE_HORIZONTAL_RINGS;ring++){
-			float bottomPitch=(float)(-Math.PI/2.0+Math.PI*ring/SPHERE_HORIZONTAL_RINGS);
-			float topPitch=(float)(-Math.PI/2.0+Math.PI*(ring+1)/SPHERE_HORIZONTAL_RINGS);
+			float bottomPitch=(float)(-Math.PI/2+Math.PI*ring/SPHERE_HORIZONTAL_RINGS);
+			float topPitch=(float)(-Math.PI/2+Math.PI*(ring+1)/SPHERE_HORIZONTAL_RINGS);
 			float bottomY=SPHERE_CENTER_Y+sphereRadius*(float)Math.sin(bottomPitch);
 			float topY=SPHERE_CENTER_Y+sphereRadius*(float)Math.sin(topPitch);
 			float bottomRingRadius=sphereRadius*(float)Math.cos(bottomPitch);
@@ -8716,8 +8716,8 @@ public class NuclearExplosionRenderer extends EntityRenderer<NuclearExplosionEnt
 		int alpha=(int)((1F-progress)*200F);
 		ColorRGBA waveColor=new ColorRGBA(0,220,255,alpha);
 		for(int segment=0;segment<WAVE_SEGMENTS;segment++){
-			float startAngle=(float)(2.0*Math.PI*segment/WAVE_SEGMENTS);
-			float endAngle=(float)(2.0*Math.PI*(segment+1)/WAVE_SEGMENTS);
+			float startAngle=(float)(2*Math.PI*segment/WAVE_SEGMENTS);
+			float endAngle=(float)(2*Math.PI*(segment+1)/WAVE_SEGMENTS);
 			Point3D innerStart=createCirclePoint(innerRadius,startAngle,WAVE_BOTTOM_Y);
 			Point3D outerStart=createCirclePoint(outerRadius,startAngle,outerHeight);
 			Point3D outerEnd=createCirclePoint(outerRadius,endAngle,outerHeight);
