@@ -25,15 +25,17 @@ public class DifModServerConfig{
 	public static final ModConfigSpec.DoubleValue FAST_POWERED_RAIL_ACCELERATION;
 	//Portal Gun:
 	public static final ModConfigSpec.IntValue PORTAL_GUN_CAPACITY;
+	public static final ModConfigSpec.IntValue PORTAL_GUN_CONSUMPTION;
 	public static final ModConfigSpec.IntValue PORTAL_MAX_DISTANCE;
 	public static final ModConfigSpec.BooleanValue PORTAL_ALLOW_ENTITIES;
-	//Engines:
+	//PortableEngine:
 	public static final ModConfigSpec.DoubleValue PORTABLE_ENGINE_GASOLINE_RPM;
 	public static final ModConfigSpec.DoubleValue PORTABLE_ENGINE_GASOLINE_SU;
 	public static final ModConfigSpec.DoubleValue PORTABLE_ENGINE_GASOLINE_CONSUMPTION;
 	public static final ModConfigSpec.DoubleValue PORTABLE_ENGINE_LPG_RPM;
 	public static final ModConfigSpec.DoubleValue PORTABLE_ENGINE_LPG_SU;
 	public static final ModConfigSpec.DoubleValue PORTABLE_ENGINE_LPG_CONSUMPTION;
+	//LargeEngine:
 	public static final ModConfigSpec.DoubleValue LARGE_ENGINE_GASOLINE_RPM;
 	public static final ModConfigSpec.DoubleValue LARGE_ENGINE_GASOLINE_SU;
 	public static final ModConfigSpec.DoubleValue LARGE_ENGINE_GASOLINE_CONSUMPTION;
@@ -71,7 +73,8 @@ public class DifModServerConfig{
 		FAST_POWERED_RAIL_ACCELERATION=BUILDER.defineInRange("fast_powered_rail_acceleration",0.3D,0.01D,MAX);
 		BUILDER.pop();
 		BUILDER.push("PortalGun");
-		PORTAL_GUN_CAPACITY=BUILDER.defineInRange("portal_gun_capacity",24,1,MAX);
+		PORTAL_GUN_CAPACITY=BUILDER.defineInRange("portal_gun_capacity",500,1,MAX);
+		PORTAL_GUN_CONSUMPTION=BUILDER.defineInRange("portal_gun_consumption",20,0,MAX);
 		PORTAL_MAX_DISTANCE=BUILDER.defineInRange("portal_max_distance",512,16,MAX);
 		PORTAL_ALLOW_ENTITIES=BUILDER.define("portal_allow_entities",true);
 		BUILDER.pop();

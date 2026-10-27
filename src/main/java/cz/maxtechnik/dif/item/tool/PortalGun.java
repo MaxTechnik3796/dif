@@ -46,7 +46,7 @@ public class PortalGun extends Item{
 		if(!world.isClientSide&&world instanceof ServerLevel serverLevel){
 			if(getAstragelAmount(gun)>=1||player.isCreative()){
 				if(shootPortal(serverLevel,player,isBlue)){
-					if(!player.isCreative()) consumeAstragel(gun,1);
+					if(!player.isCreative()) consumeAstragel(gun,DifModServerConfig.PORTAL_GUN_CONSUMPTION.get());
 					player.getCooldowns().addCooldown(this,10);
 				}
 			}else player.displayClientMessage(Component.translatable("info.dif.portal_gun.out_of_astragel"),true);
