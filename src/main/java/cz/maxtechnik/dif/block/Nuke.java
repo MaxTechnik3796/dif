@@ -3,6 +3,7 @@ package cz.maxtechnik.dif.block;
 import cz.maxtechnik.dif.entity.bomb.NuclearExplosionEntity;
 import cz.maxtechnik.dif.init.other.DifModEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -19,6 +20,14 @@ public class Nuke extends Block{
 			level.removeBlock(pos,false);
 			spawnNuclearExplosion(level,pos);
 		}
+	}
+	@Override
+	public float getShadeBrightness(@NotNull BlockState blockState,@NotNull BlockGetter blockGetter,@NotNull BlockPos pos){
+		return 1F;
+	}
+	@Override
+	public int getLightBlock(@NotNull BlockState blockState,@NotNull BlockGetter worldIn,@NotNull BlockPos pos){
+		return 0;
 	}
 	public static void spawnNuclearExplosion(Level level,BlockPos pos){
 		NuclearExplosionEntity explosion=new NuclearExplosionEntity(DifModEntities.NUCLEAR_EXPLOSION.get(),level);

@@ -95,7 +95,7 @@ public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleIn
 	public boolean addToGoggleTooltip(List<Component> tooltip,boolean isPlayerSneaking){
 		tooltip.add(DifMod.fixedComponent(Component.literal("Chunk Loader").withStyle(ChatFormatting.GOLD)));
 		tooltip.add(DifMod.fixedComponent(Component.literal("Status: ").withStyle(ChatFormatting.GRAY).append(active?Component.literal("Active").withStyle(ChatFormatting.GREEN):Component.literal("Disabled (Redstone)").withStyle(ChatFormatting.RED))));
-		tooltip.add(DifMod.fixedComponent(DifMod.fixedComponent(Component.literal("Range: ").withStyle(ChatFormatting.GRAY).append(Component.literal(getRadiusLabel()+" ("+getLoadedChunksCount()+" chunks)").withStyle(ChatFormatting.AQUA)))));
+		tooltip.add(DifMod.fixedComponent(Component.literal("Range: ").withStyle(ChatFormatting.GRAY).append(Component.literal(getRadiusLabel()+" ("+getLoadedChunksCount()+" chunks)").withStyle(ChatFormatting.AQUA))));
 		if(ownerName!=null&&!ownerName.isEmpty()) tooltip.add(DifMod.fixedComponent(Component.literal("Owner: ").withStyle(ChatFormatting.GRAY).append(Component.literal(ownerName).withStyle(ChatFormatting.WHITE))));
 		return true;
 	}

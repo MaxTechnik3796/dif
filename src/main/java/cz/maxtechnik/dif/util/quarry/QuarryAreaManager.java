@@ -5,6 +5,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 public class QuarryAreaManager{
@@ -17,8 +18,7 @@ public class QuarryAreaManager{
 	private final List<ChunkPos> forcedChunks=new ArrayList<>();
 	public QuarryAreaManager(){
 	}
-	// Správa oblasti
-	public void setArea(@org.jetbrains.annotations.Nullable QuarryArea newArea){
+	public void setArea(@Nullable QuarryArea newArea){
 		this.area=newArea;
 		this.miningBounds=newArea!=null?newArea.miningBounds():null;
 		this.cachedFramePos=null;
@@ -29,7 +29,6 @@ public class QuarryAreaManager{
 	public boolean hasArea(){
 		return area!=null;
 	}
-	// Matematika framu
 	public List<BlockPos> computeFramePositions(int yBase){
 		if(cachedFramePos!=null) return cachedFramePos;
 		if(area==null) return List.of();
@@ -39,7 +38,6 @@ public class QuarryAreaManager{
 				boolean edgeX=(x==area.minX()||x==area.maxX());
 				boolean edgeZ=(z==area.minZ()||z==area.maxZ());
 				if(!edgeX&&!edgeZ) continue;
-				// Spodní a vrchní hrana framu
 				result.add(new BlockPos(x,yBase,z));
 				result.add(new BlockPos(x,yBase+FRAME_HEIGHT,z));
 				if(edgeX&&edgeZ){
@@ -51,7 +49,6 @@ public class QuarryAreaManager{
 		cachedFramePos=result;
 		return result;
 	}
-	// Iterace těžební pozice
 	public BlockPos getMiningPos(){
 		return miningPos;
 	}
@@ -79,9 +76,8 @@ public class QuarryAreaManager{
 		miningPos=new BlockPos(nx,ny,nz);
 		return ny<=level.getMinBuildHeight();
 	}
-	// Chunkloading
-	public void loadMiningChunks(ServerLevel sl){
-		unloadForcedChunks(sl);
+	public void loadMiningChunks(ServerLevel serverLevel){
+		unloadForcedChunks(serverLevel);
 		if(miningBounds==null) return;
 		int mnCx=miningBounds.minX()>>4;
 		int mxCx=miningBounds.maxX()>>4;
@@ -89,15 +85,13 @@ public class QuarryAreaManager{
 		int mxCz=miningBounds.maxZ()>>4;
 		for(int cx=mnCx;cx<=mxCx;cx++){
 			for(int cz=mnCz;cz<=mxCz;cz++){
-				sl.setChunkForced(cx,cz,true);
+				serverLevel.setChunkForced(cx,cz,true);
 				forcedChunks.add(new ChunkPos(cx,cz));
 			}
 		}
 	}
-	public void unloadForcedChunks(ServerLevel sl){
-		for(ChunkPos cp: forcedChunks){
-			sl.setChunkForced(cp.x,cp.z,false);
-		}
+	public void unloadForcedChunks(ServerLevel serverLevel){
+		for(ChunkPos cp: forcedChunks) serverLevel.setChunkForced(cp.x,cp.z,false);
 		forcedChunks.clear();
 	}
 }

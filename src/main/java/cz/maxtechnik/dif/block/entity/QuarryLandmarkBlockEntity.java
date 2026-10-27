@@ -1,11 +1,11 @@
 package cz.maxtechnik.dif.block.entity;
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
+import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.init.basic.DifModBlocks;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.renderer.QuarryRenderer;
 import cz.maxtechnik.dif.util.quarry.QuarryArea;
-import cz.maxtechnik.dif.util.quarry.QuarryAreaManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggleInformation{
-	public static final int MAX_SEARCH=QuarryAreaManager.DEFAULT_RANGE*25;
+	public static final int MAX_SEARCH=128;
 	public static final int MIN_SPAN=2;
 	private static final int[][] DIRS={{1,0},{-1,0},{0,1},{0,-1}};
 	private final List<BlockPos> partnerPositions=new ArrayList<>(2);
@@ -73,34 +73,34 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 		return null;
 	}
 	@Nullable
-	public static QuarryArea tryForm(BlockPos a,BlockPos b,BlockPos c){
-		if(isNotCorner(a,b,c)&&isNotCorner(b,a,c)&&isNotCorner(c,a,b)) return null;
-		int minX=Math.min(a.getX(),Math.min(b.getX(),c.getX()));
-		int maxX=Math.max(a.getX(),Math.max(b.getX(),c.getX()));
-		int minZ=Math.min(a.getZ(),Math.min(b.getZ(),c.getZ()));
-		int maxZ=Math.max(a.getZ(),Math.max(b.getZ(),c.getZ()));
+	public static QuarryArea tryForm(BlockPos pos1,BlockPos pos2,BlockPos pos3){
+		if(isNotCorner(pos1,pos2,pos3)&&isNotCorner(pos2,pos1,pos3)&&isNotCorner(pos3,pos1,pos2)) return null;
+		int minX=Math.min(pos1.getX(),Math.min(pos2.getX(),pos3.getX()));
+		int maxX=Math.max(pos1.getX(),Math.max(pos2.getX(),pos3.getX()));
+		int minZ=Math.min(pos1.getZ(),Math.min(pos2.getZ(),pos3.getZ()));
+		int maxZ=Math.max(pos1.getZ(),Math.max(pos2.getZ(),pos3.getZ()));
 		int spanX=maxX-minX, spanZ=maxZ-minZ;
 		if(spanX<MIN_SPAN||spanZ<MIN_SPAN||spanX>MAX_SEARCH||spanZ>MAX_SEARCH) return null;
 		return new QuarryArea(minX,maxX,minZ,maxZ);
 	}
-	private static boolean isNotCorner(BlockPos corner,BlockPos p1,BlockPos p2){
-		return (corner.getX()!=p1.getX()||corner.getZ()!=p2.getZ())&&(corner.getX()!=p2.getX()||corner.getZ()!=p1.getZ());
+	private static boolean isNotCorner(BlockPos corner,BlockPos pos1,BlockPos pos2){
+		return (corner.getX()!=pos1.getX()||corner.getZ()!=pos2.getZ())&&(corner.getX()!=pos2.getX()||corner.getZ()!=pos1.getZ());
 	}
 	private void applyFormation(List<BlockPos> landmarks,QuarryArea area){
 		if(level==null) return;
 		for(BlockPos lmPos: landmarks){
-			if(!(level.getBlockEntity(lmPos) instanceof QuarryLandmarkBlockEntity lm)) continue;
-			lm.partnerPositions.clear();
-			for(BlockPos other: landmarks) if(!other.equals(lmPos)) lm.partnerPositions.add(other);
-			lm.formed=true;
-			lm.formedArea=area;
-			lm.setChanged();
-			level.sendBlockUpdated(lmPos,lm.getBlockState(),lm.getBlockState(),3);
+			if(!(level.getBlockEntity(lmPos) instanceof QuarryLandmarkBlockEntity blockEntity)) continue;
+			blockEntity.partnerPositions.clear();
+			for(BlockPos other: landmarks) if(!other.equals(lmPos)) blockEntity.partnerPositions.add(other);
+			blockEntity.formed=true;
+			blockEntity.formedArea=area;
+			blockEntity.setChanged();
+			level.sendBlockUpdated(lmPos,blockEntity.getBlockState(),blockEntity.getBlockState(),3);
 		}
 	}
 	public void applyToQuarry(Level level,BlockPos quarryPos){
-		if(!formed||formedArea==null||!(level.getBlockEntity(quarryPos) instanceof QuarryBlockEntity qe)) return;
-		qe.setArea(formedArea.minX(),formedArea.maxX(),formedArea.minZ(),formedArea.maxZ());
+		if(!formed||formedArea==null||!(level.getBlockEntity(quarryPos) instanceof QuarryBlockEntity blockEntity)) return;
+		blockEntity.setArea(formedArea.minX(),formedArea.maxX(),formedArea.minZ(),formedArea.maxZ());
 		List<BlockPos> all=new ArrayList<>(partnerPositions);
 		all.add(worldPosition);
 		for(BlockPos lmPos: all){
@@ -113,12 +113,12 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 	public void onRemoved(){
 		if(level==null||level.isClientSide||!formed) return;
 		for(BlockPos pp: new ArrayList<>(partnerPositions)){
-			if(!(level.getBlockEntity(pp) instanceof QuarryLandmarkBlockEntity pe)) continue;
-			pe.formed=false;
-			pe.formedArea=null;
-			pe.partnerPositions.clear();
-			pe.setChanged();
-			level.sendBlockUpdated(pp,pe.getBlockState(),pe.getBlockState(),3);
+			if(!(level.getBlockEntity(pp) instanceof QuarryLandmarkBlockEntity blockEntity)) continue;
+			blockEntity.formed=false;
+			blockEntity.formedArea=null;
+			blockEntity.partnerPositions.clear();
+			blockEntity.setChanged();
+			level.sendBlockUpdated(pp,blockEntity.getBlockState(),blockEntity.getBlockState(),3);
 		}
 	}
 	@Override
@@ -132,13 +132,13 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 		if(level!=null&&level.isClientSide) QuarryRenderer.unregister(worldPosition);
 	}
 	@Override
-	public void handleUpdateTag(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider p){
-		loadAdditional(tag,p);
+	public void handleUpdateTag(@NotNull CompoundTag tag,@NotNull HolderLookup.Provider provider){
+		loadAdditional(tag,provider);
 		if(level!=null&&level.isClientSide) QuarryRenderer.register(this);
 	}
 	@Override
-	public void onDataPacket(@NotNull Connection c,ClientboundBlockEntityDataPacket pkt,@NotNull HolderLookup.Provider p){
-		loadAdditional(pkt.getTag(),p);
+	public void onDataPacket(@NotNull Connection connection,ClientboundBlockEntityDataPacket pkt,@NotNull HolderLookup.Provider provider){
+		loadAdditional(pkt.getTag(),provider);
 		if(level!=null&&level.isClientSide) QuarryRenderer.register(this);
 	}
 	@Override
@@ -151,12 +151,12 @@ public class QuarryLandmarkBlockEntity extends BlockEntity implements IHaveGoggl
 			int count=countConnectedLandmarks()+1;
 			statusComponent=Component.literal("Cannot Be Formed ("+count+"/3)").withStyle(ChatFormatting.RED);
 		}
-		tooltip.add(Component.literal("     Status: ").withStyle(ChatFormatting.GRAY).append(statusComponent));
+		tooltip.add(DifMod.fixedComponent(Component.literal("Status: ").withStyle(ChatFormatting.GRAY).append(statusComponent)));
 		QuarryArea displayArea=formed?formedArea:canFormArea;
 		if(displayArea!=null){
 			QuarryArea mining=displayArea.miningBounds();
-			tooltip.add(Component.literal("     Area: ").withStyle(ChatFormatting.GRAY).append(Component.literal(displayArea.sizeX()+" x "+displayArea.sizeZ()+" blocks").withStyle(ChatFormatting.WHITE)));
-			tooltip.add(Component.literal("     Mining: ").withStyle(ChatFormatting.GRAY).append(Component.literal(mining.sizeX()+" x "+mining.sizeZ()+" blocks").withStyle(ChatFormatting.WHITE)));
+			tooltip.add(DifMod.fixedComponent(Component.literal("Area: ").withStyle(ChatFormatting.GRAY).append(Component.literal(displayArea.sizeX()+" x "+displayArea.sizeZ()+" blocks").withStyle(ChatFormatting.WHITE))));
+			tooltip.add(DifMod.fixedComponent(Component.literal("Mining: ").withStyle(ChatFormatting.GRAY).append(Component.literal(mining.sizeX()+" x "+mining.sizeZ()+" blocks").withStyle(ChatFormatting.WHITE))));
 		}
 		return true;
 	}

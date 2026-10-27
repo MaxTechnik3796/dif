@@ -1,0 +1,26 @@
+{
+	"type":"create:mixing",
+	"ingredients":[
+		{
+			"tag":"c:ender_pearls"
+		},
+		{
+			"tag":"c:ender_pearls"
+		},
+		{
+			"tag":"c:slime_balls"
+		},
+		{
+			"type":"neoforge:single",
+			"fluid":"minecraft:water",
+			"amount":500
+		}
+	],
+	"results":[
+		{
+			"id":"dif:astragel",
+			"amount":500
+		}
+	],
+	"heat_requirement":"superheated"
+}

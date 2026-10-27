@@ -193,12 +193,12 @@ public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 		DistillationTankBlockEntity master=isTowerMaster()?this:getTowerMaster();
 		if(master!=null&&(master.cachedHeatPoints>0||master.towerOutputCount>0)){
 			ChatFormatting heatColor=master.cachedHeatPoints==0?ChatFormatting.GRAY:ChatFormatting.AQUA;
-			tooltip.add(DifMod.fixedComponent(Component.literal("Heat: ").withStyle(ChatFormatting.GRAY)
+			tooltip.add(DifMod.fixedComponent(Component.literal(" Heat: ").withStyle(ChatFormatting.GRAY)
 					.append(Component.literal(master.cachedHeatPoints+" / 10").withStyle(heatColor))));
 			ChatFormatting speedColor=master.cachedSpeed==0?ChatFormatting.GRAY:ChatFormatting.GOLD;
-			tooltip.add(DifMod.fixedComponent(Component.literal("Speed: ").withStyle(ChatFormatting.GRAY)
+			tooltip.add(DifMod.fixedComponent(Component.literal(" Speed: ").withStyle(ChatFormatting.GRAY)
 					.append(Component.literal(master.cachedSpeed+"×").withStyle(speedColor))));
-			if(isTowerMaster()) tooltip.add(DifMod.fixedComponent(Component.literal("Master").withStyle(ChatFormatting.AQUA)));
+			if(isTowerMaster()) tooltip.add(DifMod.fixedComponent(Component.literal(" Master").withStyle(ChatFormatting.AQUA)));
 			return true;
 		}
 		return added;

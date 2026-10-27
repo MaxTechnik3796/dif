@@ -41,14 +41,14 @@ public class NuclearExplosionRenderer extends EntityRenderer<NuclearExplosionEnt
 			poseStack.pushPose();
 			Matrix4f matrix=poseStack.last().pose();
 			VertexConsumer builder=buffer.getBuffer(RenderType.lightning());
-			if(blastTime<=25.0F){
-				float sphereProgress=blastTime/25.0F;
-				float radius=2.0F+28.0F*sphereProgress;
-				float alpha=(1.0F-sphereProgress)*0.85F;
+			if(blastTime<=25F){
+				float sphereProgress=blastTime/25F;
+				float radius=2F+28F*sphereProgress;
+				float alpha=(1F-sphereProgress)*0.85F;
 				renderExplosionSphere(matrix,builder,radius,alpha);
 			}
-			if(blastTime>=5.0F&&blastTime<=70.0F){
-				float waveProgress=(blastTime-5.0F)/65.0F;
+			if(blastTime>=5F&&blastTime<=70F){
+				float waveProgress=(blastTime-5F)/65F;
 				renderShockwaveRing(matrix,builder,waveProgress);
 			}
 			poseStack.popPose();
@@ -57,10 +57,10 @@ public class NuclearExplosionRenderer extends EntityRenderer<NuclearExplosionEnt
 	}
 	private void renderChargingStar(NuclearExplosionEntity entity,PoseStack poseStack,MultiBufferSource buffer,float time,float progress){
 		poseStack.pushPose();
-		poseStack.translate(0.0D,1.2D,0.0D);
-		float rotation=time*(25.0F+progress*60.0F);
+		poseStack.translate(0D,1.2D,0D);
+		float rotation=time*(25F+progress*60F);
 		poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
-		float scale=2.0F+progress;
+		float scale=2F+progress;
 		poseStack.scale(scale,scale,scale);
 		this.itemRenderer.renderStatic(
 				NETHER_STAR_STACK,
@@ -85,7 +85,7 @@ public class NuclearExplosionRenderer extends EntityRenderer<NuclearExplosionEnt
 		);
 		BeaconRenderer.renderBeaconBeam(
 				poseStack,buffer,BeaconRenderer.BEAM_LOCATION,
-				partialTick,1.0F,gameTime,
+				partialTick,1F,gameTime,
 				0,350,INNER_BEAM_COLOR,
 				0.7F,1.5F
 		);
@@ -96,15 +96,15 @@ public class NuclearExplosionRenderer extends EntityRenderer<NuclearExplosionEnt
 		int segments=16;
 		int a=(int)(alpha*255);
 		for(int i=0;i<rings;i++){
-			float lat0=(float)(-Math.PI/2.0+Math.PI*i/rings);
-			float lat1=(float)(-Math.PI/2.0+Math.PI*(i+1)/rings);
+			float lat0=(float)(-Math.PI/2+Math.PI*i/rings);
+			float lat1=(float)(-Math.PI/2+Math.PI*(i+1)/rings);
 			float y0=(float)1.5+radius*(float)Math.sin(lat0);
 			float y1=(float)1.5+radius*(float)Math.sin(lat1);
 			float r0=radius*(float)Math.cos(lat0);
 			float r1=radius*(float)Math.cos(lat1);
 			for(int j=0;j<segments;j++){
-				float lon0=(float)(2.0*Math.PI*j/segments);
-				float lon1=(float)(2.0*Math.PI*(j+1)/segments);
+				float lon0=(float)(2*Math.PI*j/segments);
+				float lon1=(float)(2*Math.PI*(j+1)/segments);
 				float x00=r0*(float)Math.cos(lon0), z00=r0*(float)Math.sin(lon0);
 				float x01=r0*(float)Math.cos(lon1), z01=r0*(float)Math.sin(lon1);
 				float x10=r1*(float)Math.cos(lon0), z10=r1*(float)Math.sin(lon0);
@@ -114,14 +114,14 @@ public class NuclearExplosionRenderer extends EntityRenderer<NuclearExplosionEnt
 		}
 	}
 	private static void renderShockwaveRing(Matrix4f matrix,VertexConsumer builder,float progress){
-		float outerRadius=6.0F+75.0F*progress;
-		float innerRadius=Math.max(0.5F,outerRadius-12.0F);
-		float height=2.5F*(1.0F-progress);
-		int a=(int)((1.0F-progress)*200);
+		float outerRadius=6F+75F*progress;
+		float innerRadius=Math.max(0.5F,outerRadius-12F);
+		float height=2.5F*(1F-progress);
+		int a=(int)((1F-progress)*200);
 		int segments=32;
 		for(int i=0;i<segments;i++){
-			float angle0=(float)(2.0*Math.PI*i/segments);
-			float angle1=(float)(2.0*Math.PI*(i+1)/segments);
+			float angle0=(float)(2*Math.PI*i/segments);
+			float angle1=(float)(2*Math.PI*(i+1)/segments);
 			float cos0=(float)Math.cos(angle0), sin0=(float)Math.sin(angle0);
 			float cos1=(float)Math.cos(angle1), sin1=(float)Math.sin(angle1);
 			float inX0=innerRadius*cos0, inZ0=innerRadius*sin0;
@@ -136,12 +136,7 @@ public class NuclearExplosionRenderer extends EntityRenderer<NuclearExplosionEnt
 					0,220,a);
 		}
 	}
-	private static void addQuad(Matrix4f matrix,VertexConsumer builder,
-								float x0,float y0,float z0,
-								float x1,float y1,float z1,
-								float x2,float y2,float z2,
-								float x3,float y3,float z3,
-								int r,int g,int a){
+	private static void addQuad(Matrix4f matrix,VertexConsumer builder,float x0,float y0,float z0,float x1,float y1,float z1,float x2,float y2,float z2,float x3,float y3,float z3,int r,int g,int a){
 		builder.addVertex(matrix,x0,y0,z0).setColor(r,g,255,a);
 		builder.addVertex(matrix,x1,y1,z1).setColor(r,g,255,a);
 		builder.addVertex(matrix,x2,y2,z2).setColor(r,g,255,a);

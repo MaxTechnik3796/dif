@@ -63,7 +63,7 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 		super.addToGoggleTooltip(tooltip,isPlayerSneaking);
 		Component statusComponent;
 		if(isRedstonePowered()) statusComponent=Component.literal("Stopped").withStyle(ChatFormatting.GOLD);
-		else if(quarryState==State.DONE) statusComponent=Component.literal("Finished").withStyle(ChatFormatting.AQUA);
+		else if(quarryState.equals(State.DONE)) statusComponent=Component.literal("Finished").withStyle(ChatFormatting.AQUA);
 		else if(isOverStressed()) statusComponent=Component.literal("Overstressed").withStyle(ChatFormatting.RED);
 		else if(Math.abs(getSpeed())==0) statusComponent=Component.literal("No Power").withStyle(ChatFormatting.RED);
 		else{
@@ -197,7 +197,7 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 		if(workIndex>=workQueue.size()){
 			workQueue.clear();
 			workIndex=0;
-			miningProgressAcc=0f;
+			miningProgressAcc=0F;
 			startBuildingFrame();
 		}
 	}
@@ -245,7 +245,7 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 			}
 		}
 		float step=getProgressPerTick();
-		if(step<=0F||!(level instanceof ServerLevel sl)) return;
+		if(step<=0F||!(level instanceof ServerLevel serverLevel)) return;
 		BlockPos miningPos=areaManager.getMiningPos();
 		if(miningPos==null){
 			areaManager.resetMiningPos(worldPosition.getY());
@@ -272,10 +272,10 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 				miningPos=areaManager.getMiningPos();
 				continue;
 			}
-			float required=Math.max(1f,hardness*10f);
+			float required=Math.max(1F,hardness*10F);
 			if(miningProgressAcc<required) break;
 			miningProgressAcc-=required;
-			List<ItemStack> drops=Block.getDrops(target,sl,miningPos,sl.getBlockEntity(miningPos),null,SIMULATED_TOOL);
+			List<ItemStack> drops=Block.getDrops(target,serverLevel,miningPos,serverLevel.getBlockEntity(miningPos),null,SIMULATED_TOOL);
 			level.removeBlock(miningPos,false);
 			if(!drops.isEmpty()) distributeDrops(level,drops);
 			if(areaManager.advanceMiningPos(level)){
@@ -309,7 +309,7 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 		sendData();
 	}
 	public boolean isFrameIntact(Level level){
-		for(BlockPos fp: areaManager.computeFramePositions(worldPosition.getY())) if(level.isLoaded(fp)&&!isFrame(level,fp)) return false;
+		for(BlockPos pos: areaManager.computeFramePositions(worldPosition.getY())) if(level.isLoaded(pos)&&!isFrame(level,pos)) return false;
 		return true;
 	}
 	private boolean isFrame(Level level,BlockPos pos){
@@ -332,20 +332,14 @@ public class QuarryBlockEntity extends KineticBlockEntity{
 		try{
 			if(level instanceof ServerLevel sl&&!level.isClientSide) areaManager.unloadForcedChunks(sl);
 			BlockPos checkPos=originPos!=null?originPos:worldPosition;
-			if(areaManager.hasArea()&&level!=null&&!level.isClientSide){
-				for(BlockPos fp: areaManager.computeFramePositions(checkPos.getY())){
-					if(level.isLoaded(fp)&&level.getBlockEntity(fp) instanceof QuarryFrameBlockEntity frame&&checkPos.equals(frame.getOwnerPos())){
-						frame.scheduleRemoval();
-					}
-				}
-			}
+			if(areaManager.hasArea()&&level!=null&&!level.isClientSide) for(BlockPos fp: areaManager.computeFramePositions(checkPos.getY())) if(level.isLoaded(fp)&&level.getBlockEntity(fp) instanceof QuarryFrameBlockEntity frame&&checkPos.equals(frame.getOwnerPos())) frame.scheduleRemoval();
 		}catch(Exception ignored){
 		}
 		areaManager.setArea(null);
 		areaManager.setMiningPos(null);
 		workQueue.clear();
 		workIndex=0;
-		miningProgressAcc=0f;
+		miningProgressAcc=0F;
 		originPos=null;
 		quarryState=State.NO_ENERGY;
 		activeState=State.CLEARING;

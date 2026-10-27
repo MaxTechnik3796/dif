@@ -1,0 +1,31 @@
+{
+	"type":"create:mixing",
+	"ingredients":[
+		{
+			"tag":"c:gunpowders"
+		},
+		{
+			"item":"create:cinder_flour"
+		},
+		{
+			"item":"create:cinder_flour"
+		},
+		{
+			"type":"neoforge:single",
+			"fluid":"minecraft:water",
+			"amount":500
+		},
+		{
+			"type":"neoforge:single",
+			"fluid":"dif:kerosene",
+			"amount":500
+		}
+	],
+	"results":[
+		{
+			"id":"dif:jetpack_fuel",
+			"amount":1000
+		}
+	],
+	"heat_requirement":"heated"
+}
