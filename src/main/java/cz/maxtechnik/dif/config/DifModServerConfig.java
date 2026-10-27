@@ -34,7 +34,6 @@ public class DifModServerConfig{
 	public static final ModConfigSpec.DoubleValue PORTABLE_ENGINE_LPG_RPM;
 	public static final ModConfigSpec.DoubleValue PORTABLE_ENGINE_LPG_SU;
 	public static final ModConfigSpec.DoubleValue PORTABLE_ENGINE_LPG_CONSUMPTION;
-
 	public static final ModConfigSpec.DoubleValue LARGE_ENGINE_GASOLINE_RPM;
 	public static final ModConfigSpec.DoubleValue LARGE_ENGINE_GASOLINE_SU;
 	public static final ModConfigSpec.DoubleValue LARGE_ENGINE_GASOLINE_CONSUMPTION;

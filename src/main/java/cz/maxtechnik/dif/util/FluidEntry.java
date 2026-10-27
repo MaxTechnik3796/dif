@@ -34,12 +34,12 @@ import java.util.function.Consumer;
 @SuppressWarnings("removal")
 public class FluidEntry{
 	public static final List<FluidEntry> ALL_ENTRIES=new ArrayList<>();
-	public final String name,namespace;
+	public final String name, namespace;
 	public final DeferredHolder<FluidType,FluidType> type;
-	public final DeferredHolder<Fluid,FlowingFluid> source,flowing;
+	public final DeferredHolder<Fluid,FlowingFluid> source, flowing;
 	public final DeferredBlock<LiquidBlock> block;
 	public final DeferredItem<BucketItem> bucket;
-	public final boolean isWaterLike,isTranslucent;
+	public final boolean isWaterLike, isTranslucent;
 	public FluidEntry(String name,boolean isWaterLike,boolean isTranslucent,Consumer<FluidType.Properties> typePropsModifier,Consumer<BaseFlowingFluid.Properties> fluidPropsModifier,DeferredRegister<Fluid> FLUIDS,DeferredRegister<FluidType> TYPES,DeferredRegister.Items ITEMS,DeferredRegister.Blocks BLOCKS){
 		this.name=name;
 		this.isWaterLike=isWaterLike;

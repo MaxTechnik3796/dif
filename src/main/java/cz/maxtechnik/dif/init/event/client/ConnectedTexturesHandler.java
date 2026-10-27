@@ -27,7 +27,6 @@ import net.neoforged.neoforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-
 @SuppressWarnings("removal")
 @EventBusSubscriber(modid=DifMod.MODID, bus=EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
 public class ConnectedTexturesHandler{
@@ -48,7 +47,7 @@ public class ConnectedTexturesHandler{
 				));
 	}
 	private static void register(ModelEvent.ModifyBakingResult event){
-		ModelSwapper.swapModels(event.getModels(),ModelSwapper.getAllBlockStateModelLocations(DifModBlocks.ZINC_CASING.get()), model->new CTModel(model,new SimpleCTBehaviour(DifModSpriteShifts.ZINC_CASING)));
+		ModelSwapper.swapModels(event.getModels(),ModelSwapper.getAllBlockStateModelLocations(DifModBlocks.ZINC_CASING.get()),model->new CTModel(model,new SimpleCTBehaviour(DifModSpriteShifts.ZINC_CASING)));
 	}
 	private static class TankModel extends CTModel{
 		private static final ModelProperty<CullData> CULL_PROPERTY=new ModelProperty<>();
@@ -69,7 +68,7 @@ public class ConnectedTexturesHandler{
 			if(side!=null) return Collections.emptyList();
 			List<BakedQuad> quads=new ArrayList<>();
 			for(Direction d: Iterate.directions){
-				if(extraData.has(CULL_PROPERTY)&& Objects.requireNonNull(extraData.get(CULL_PROPERTY)).isCulled(d)) continue;
+				if(extraData.has(CULL_PROPERTY)&&Objects.requireNonNull(extraData.get(CULL_PROPERTY)).isCulled(d)) continue;
 				quads.addAll(super.getQuads(state,d,rand,extraData,renderType));
 			}
 			quads.addAll(super.getQuads(state,null,rand,extraData,renderType));

@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public class DistillationTankBlockEntity extends FluidTankBlockEntity{
 	public static final int MAX_FOOTPRINT=3;
 	public static final int MAX_OUTPUTS=15;

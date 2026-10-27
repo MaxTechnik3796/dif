@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
-
 public class ChunkLoaderBlockEntity extends BlockEntity implements IHaveGoggleInformation{
 	public static final int MAX_RADIUS=2; // 0 = 1x1, 1 = 3x3, 2 = 5x5
 	private static final int CYCLE_COOLDOWN_TICKS=10;
