@@ -35,7 +35,7 @@ public class PortalGun extends Item{
 	public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world,Player player,@NotNull InteractionHand hand){
 		ItemStack gun=player.getItemInHand(hand);
 		boolean isBlue=isBlueMode(gun);
-		if(player.isCrouching()){
+		if(player.isShiftKeyDown()){
 			if(!world.isClientSide){
 				setMode(gun,!isBlue);
 				Component modeName=Component.translatable(!isBlue?"info.dif.portal_gun.blue":"info.dif.portal_gun.orange");
