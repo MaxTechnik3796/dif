@@ -1,12 +1,11 @@
 package cz.maxtechnik.dif.entity.bomb;
 
-import cz.maxtechnik.dif.config.DifModServerConfig;
-import cz.maxtechnik.dif.init.event.nuke.NukeBlastHandler;
-import cz.maxtechnik.dif.init.event.nuke.NukeVisualHandler;
+import cz.maxtechnik.dif.init.event.nuke.NukeCraterHandler;
+import cz.maxtechnik.dif.init.event.nuke.NukeEffectHandler;
+import cz.maxtechnik.dif.init.event.nuke.NukeMushroomHandler;
+import cz.maxtechnik.dif.init.event.nuke.NukeShockwaveHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -14,11 +13,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 public class NuclearExplosionEntity extends Entity{
-	private static final EntityDataAccessor<Integer> DATA_AGE=SynchedEntityData.defineId(NuclearExplosionEntity.class,EntityDataSerializers.INT);
-	public static final int INITIAL_BLAST_RADIUS=5;
-	public static final int CHARGE_TICKS=20;
-	public static final int CRATER_DELAY_TICKS=70;
-	public static final int TOTAL_LIFETIME=240;
+	public static final int SHOCKWAVE_TICKS=55;
+	public static final int MUSHROOM_TICKS=NukeMushroomHandler.TOTAL_MUSHROOM_TICKS;
 	private int age=0;
 	private int currentY=Integer.MIN_VALUE;
 	private boolean craterFinished=false;
@@ -29,38 +25,38 @@ public class NuclearExplosionEntity extends Entity{
 	}
 	@Override
 	protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder){
-		builder.define(DATA_AGE,0);
-	}
-	public int getAge(){
-		return level().isClientSide?this.entityData.get(DATA_AGE):this.age;
 	}
 	@Override
 	public void tick(){
 		super.tick();
 		if(!(level() instanceof ServerLevel sl)) return;
-		if(currentY==Integer.MIN_VALUE) currentY=DifModServerConfig.NUKE_RADIUS.get();
+		int radius=NukeCraterHandler.getRadius();
+		if(currentY==Integer.MIN_VALUE)
+			currentY=NukeCraterHandler.getCraterUpRadius(radius);
 		double x=getX(), y=getY(), z=getZ();
-		if(age>=CHARGE_TICKS){
-			if(age==CHARGE_TICKS){
-				NukeBlastHandler.destroyInitialArea(sl,blockPosition(),INITIAL_BLAST_RADIUS,mutablePos);
-				NukeVisualHandler.triggerMainDetonation(sl,x,y,z);
-				NukeBlastHandler.detonateEntities(sl,x,y,z);
-			}
-			if(!craterFinished&&age>=CHARGE_TICKS+CRATER_DELAY_TICKS){
-				currentY=NukeBlastHandler.tickCrater(sl,blockPosition(),currentY,mutablePos);
-				if(currentY<-DifModServerConfig.NUKE_RADIUS.get()) craterFinished=true;
-			}
+		if(age==0){
+			NukeMushroomHandler.spawnInitialFlash(sl,x,y,z,random);
+			NukeEffectHandler.applyDetonationEffects(sl,x,y,z);
 		}
+		if(!craterFinished){
+			currentY=NukeCraterHandler.tickCrater(sl,blockPosition(),currentY,mutablePos);
+			if(currentY<-NukeCraterHandler.getCraterDownRadius(radius))
+				craterFinished=true;
+		}
+		NukeShockwaveHandler.tickShockwaves(sl,x,y,z,age,SHOCKWAVE_TICKS,random);
+		if(age<=MUSHROOM_TICKS)
+			NukeMushroomHandler.tickMushroomCloud(sl,x,y,z,age,random);
+		if(age%20==0)
+			NukeEffectHandler.tickFalloutRadiation(sl,x,y,z);
 		age++;
-		this.entityData.set(DATA_AGE,age);
-		if(craterFinished&&age>TOTAL_LIFETIME) discard();
+		if(craterFinished&&age>MUSHROOM_TICKS)
+			discard();
 	}
 	@Override
 	protected void readAdditionalSaveData(CompoundTag tag){
 		age=tag.getInt("ExplosionAge");
 		currentY=tag.getInt("CurrentY");
 		craterFinished=tag.getBoolean("CraterFinished");
-		this.entityData.set(DATA_AGE,age);
 	}
 	@Override
 	protected void addAdditionalSaveData(CompoundTag tag){

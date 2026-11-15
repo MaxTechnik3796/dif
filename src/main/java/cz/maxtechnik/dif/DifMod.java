@@ -17,15 +17,17 @@ import cz.maxtechnik.dif.init.event.ChunkLoaderData;
 import cz.maxtechnik.dif.init.fluid.DifModFluids;
 import cz.maxtechnik.dif.init.gui.DifModMenus;
 import cz.maxtechnik.dif.init.other.*;
+import cz.maxtechnik.dif.particle.NukeBlastParticle;
+import cz.maxtechnik.dif.particle.NukeSmokeParticle;
 import cz.maxtechnik.dif.renderer.ChunkLoaderRenderer;
 import cz.maxtechnik.dif.renderer.FryingTableRenderer;
-import cz.maxtechnik.dif.renderer.NuclearExplosionRenderer;
 import cz.maxtechnik.dif.renderer.QuarryRenderer;
 import cz.maxtechnik.dif.renderer.QuarryShaftVisual;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -51,6 +53,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.util.thread.SidedThreadGroups;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
@@ -85,6 +88,7 @@ public class DifMod{
 		DifModRecipes.REGISTRY.register(bus);
 		DifModRecipes.TYPE_REGISTRY.register(bus);
 		DifModEntities.REGISTRY.register(bus);
+		DifModParticles.REGISTRY.register(bus);
 		DifModFeatures.REGISTRY.register(bus);
 		DifModLootModifiers.REGISTRY.register(bus);
 		DifModComponents.REGISTRY.register(bus);
@@ -172,9 +176,14 @@ public class DifMod{
 			event.registerBlockEntityRenderer(DifModBlockEntities.QUARRY.get(),QuarryRenderer::new);
 			event.registerBlockEntityRenderer(DifModBlockEntities.CHUNK_LOADER_BE.get(),context->new ChunkLoaderRenderer());
 			event.registerBlockEntityRenderer(DifModBlockEntities.MITHRIL_FLUID_TANK.get(),com.simibubi.create.content.fluids.tank.FluidTankRenderer::new);
-			event.registerEntityRenderer(DifModEntities.NUCLEAR_EXPLOSION.get(),NuclearExplosionRenderer::new);
+			event.registerEntityRenderer(DifModEntities.NUCLEAR_EXPLOSION.get(),NoopRenderer::new);
 			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.ENGINE.get()).factory(SingleAxisRotatingVisual::shaft).neverSkipVanillaRender().apply();
 			SimpleBlockEntityVisualizer.builder(DifModBlockEntities.QUARRY.get()).factory(QuarryShaftVisual.factory()).neverSkipVanillaRender().apply();
+		}
+		@SubscribeEvent
+		public static void registerParticleProviders(RegisterParticleProvidersEvent event){
+			event.registerSpriteSet(DifModParticles.NUKE_BLAST.get(),NukeBlastParticle.Provider::new);
+			event.registerSpriteSet(DifModParticles.NUKE_SMOKE.get(),NukeSmokeParticle.Provider::new);
 		}
 	}
 	public static Component fixedComponent(Component component){
