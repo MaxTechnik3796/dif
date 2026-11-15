@@ -28,9 +28,9 @@ public class ClientVisualEffectsRenderer{
 		Player player=mc.player;
 		if(player==null) return;
 		double dist=Math.sqrt(player.distanceToSqr(x,y,z));
-		if(dist<320.0){
-			float factor=(float)Math.max(0.0,1.0-(dist/320.0));
-			nukeFlashIntensity=Math.clamp(Math.max(nukeFlashIntensity,factor*intensity*1.5F),0.0F,1.0F);
+		if(dist<350.0){
+			float factor=(float)Math.max(0.0,1.0-(dist/350.0));
+			nukeFlashIntensity=Math.clamp(Math.max(nukeFlashIntensity,factor*intensity*1.8F),0.0F,1.4F);
 			nukeShakeIntensity=Math.clamp(Math.max(nukeShakeIntensity,factor*intensity),0.0F,1.0F);
 		}
 	}
@@ -60,10 +60,10 @@ public class ClientVisualEffectsRenderer{
 			wasExperienceActive=isExperience;
 		}
 		if(nukeFlashIntensity>0.0F){
-			nukeFlashIntensity=Math.max(0.0F,nukeFlashIntensity-0.03F);
+			nukeFlashIntensity=Math.max(0.0F,nukeFlashIntensity-0.02F);
 		}
 		if(nukeShakeIntensity>0.0F){
-			nukeShakeIntensity=Math.max(0.0F,nukeShakeIntensity-0.015F);
+			nukeShakeIntensity=Math.max(0.0F,nukeShakeIntensity-0.012F);
 		}
 	}
 	@SubscribeEvent
@@ -115,9 +115,9 @@ public class ClientVisualEffectsRenderer{
 			gg.fill(0,0,w,h,color);
 		}
 		if(nukeFlashIntensity>0.0F){
-			int flashAlpha=(int)(Math.min(1.0F,nukeFlashIntensity*1.2F)*255.0F);
+			int flashAlpha=(int)(Math.min(1.0F,nukeFlashIntensity)*210.0F);
 			if(flashAlpha>0){
-				gg.fill(0,0,w,h,(flashAlpha<<24)|0xE0FFFF);
+				gg.fill(0,0,w,h,(flashAlpha<<24)|0xF5D9FF);
 			}
 		}
 	}
