@@ -23,15 +23,22 @@ public class ClientVisualEffectsRenderer{
 	private static SoundInstance playingExperienceSound=null;
 	private static float nukeFlashIntensity=0.0F;
 	private static float nukeShakeIntensity=0.0F;
+	private static int pendingShockwaveTicks=-1;
+	private static float pendingShockwaveStrength=0.0F;
 	public static void triggerNukeEffects(double x,double y,double z,float intensity){
 		Minecraft mc=Minecraft.getInstance();
 		Player player=mc.player;
 		if(player==null) return;
 		double dist=Math.sqrt(player.distanceToSqr(x,y,z));
-		if(dist<350.0){
-			float factor=(float)Math.max(0.0,1.0-(dist/350.0));
+		if(dist<500.0){
+			float factor=(float)Math.max(0.0,1.0-(dist/500.0));
 			nukeFlashIntensity=Math.clamp(Math.max(nukeFlashIntensity,factor*intensity*1.8F),0.0F,1.4F);
-			nukeShakeIntensity=Math.clamp(Math.max(nukeShakeIntensity,factor*intensity),0.0F,1.0F);
+			if(dist<45.0){
+				nukeShakeIntensity=Math.clamp(Math.max(nukeShakeIntensity,factor*intensity),0.0F,1.0F);
+			}else{
+				pendingShockwaveTicks=(int)(dist/12.0);
+				pendingShockwaveStrength=Math.clamp(factor*intensity,0.2F,1.0F);
+			}
 		}
 	}
 	@SubscribeEvent
@@ -58,6 +65,15 @@ public class ClientVisualEffectsRenderer{
 				}
 			}
 			wasExperienceActive=isExperience;
+		}
+		if(pendingShockwaveTicks>0){
+			pendingShockwaveTicks--;
+			if(pendingShockwaveTicks==0&&player!=null){
+				nukeShakeIntensity=Math.max(nukeShakeIntensity,pendingShockwaveStrength);
+				player.level().playLocalSound(player.getX(),player.getY(),player.getZ(),SoundEvents.GENERIC_EXPLODE.value(),SoundSource.BLOCKS,4.0F,0.55F,false);
+				player.level().playLocalSound(player.getX(),player.getY(),player.getZ(),SoundEvents.LIGHTNING_BOLT_THUNDER,SoundSource.BLOCKS,4.0F,0.65F,false);
+				pendingShockwaveTicks=-1;
+			}
 		}
 		if(nukeFlashIntensity>0.0F){
 			nukeFlashIntensity=Math.max(0.0F,nukeFlashIntensity-0.02F);

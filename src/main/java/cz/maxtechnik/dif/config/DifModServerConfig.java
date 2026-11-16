@@ -98,8 +98,8 @@ public class DifModServerConfig{
 		LARGE_ENGINE_HEAVY_FUEL_OIL_CONSUMPTION=BUILDER.defineInRange("heavy_fuel_oil_consumption",2D,0D,DOUBLE_MAX);
 		BUILDER.pop();
 		BUILDER.push("Nuke");
-		NUKE_RADIUS=BUILDER.defineInRange("radius",96,16,512);
-		NUKE_DAMAGE_RADIUS=BUILDER.defineInRange("damage_radius",128,16,1024);
+		NUKE_RADIUS=BUILDER.defineInRange("radius",112,16,512);
+		NUKE_DAMAGE_RADIUS=BUILDER.defineInRange("damage_radius",300,16,1024);
 		NUKE_BLOCKS_PER_TICK=BUILDER.defineInRange("blocks_per_tick",36000,1000,MAX);
 		NUKE_MAX_DESTROYABLE_RESISTANCE=BUILDER.defineInRange("max_destroyable_resistance",1500D,0D,MAX);
 		BUILDER.pop();
