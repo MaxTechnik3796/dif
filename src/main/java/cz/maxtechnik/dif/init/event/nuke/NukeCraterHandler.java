@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 @SuppressWarnings("deprecation")
 public class NukeCraterHandler{
-	public static final int BLOCK_UPDATE_FLAGS=2|16|64;
+	private static final int BLOCK_UPDATE_FLAGS=2|16|64;
 	private static final double CRATER_UP_RATIO=0.55;
 	private static final double CRATER_DOWN_RATIO=0.55;
 	private static final double INNER_CLEAN_NORM_SQ=0.86;

@@ -5,45 +5,36 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.levelgen.Heightmap;
 public class NukeShockwaveHandler{
 	private static final double VIEW_RANGE_SQ=512.0*512.0;
-	public static void tickShockwaves(ServerLevel level,double x,double y,double z,int age,int waveRadius,RandomSource random){
+	private static final double WAVE_START_RADIUS=6.0;
+	public static void tickShockwaves(ServerLevel level,double x,double y,double z,int age,int waveDuration,RandomSource random){
 		int radius=NukeCraterHandler.getRadius();
 		int downRadius=NukeCraterHandler.getCraterDownRadius(radius);
-		if(waveRadius<=NukeScorchHandler.getMaxScorchRadius())
-			tickGroundWave(level,x,y,z,waveRadius,random);
+		if(age<=waveDuration)
+			tickGroundWave(level,x,y,z,radius,age,waveDuration,random);
 		if(age>=12&&age<=40)
 			tickVaporRing(level,x,y+radius*0.20,z,radius,age,random);
 		if(age>=10&&age<=110)
 			tickBaseSurge(level,x,y,z,radius,downRadius,age,random);
 	}
-	private static void tickGroundWave(ServerLevel level,double x,double y,double z,int currentRadius,RandomSource random){
-		int points=Math.clamp(currentRadius/3,20,64);
+	private static void tickGroundWave(ServerLevel level,double x,double y,double z,int maxRadius,int age,int duration,RandomSource random){
+		double progress=(double)age/duration;
+		double currentRadius=WAVE_START_RADIUS+progress*(maxRadius-WAVE_START_RADIUS);
+		int points=Math.clamp((int)(currentRadius/3.0),16,64);
 		for(int i=0;i<points;i++){
-			double angle=(2.0*Math.PI*i)/points+(random.nextDouble()-0.5)*0.08;
+			double angle=(2.0*Math.PI*i)/points+(random.nextDouble()-0.5)*0.1;
 			double dirX=Math.cos(angle);
 			double dirZ=Math.sin(angle);
 			double px=x+dirX*currentRadius;
 			double pz=z+dirZ*currentRadius;
-			double groundY=getSurfaceY(level,px,y,pz);
-			spawnParticle(level,ParticleTypes.EXPLOSION,px,groundY+1.0,pz,1,0.0,0.0,0.0,0.0);
-			if(i%6==0)
-				spawnParticle(level,ParticleTypes.EXPLOSION_EMITTER,px,groundY+1.5,pz,1,0.0,0.0,0.0,0.0);
-			spawnParticle(level,DifModParticles.NUKE_BLAST.get(),px,groundY+0.8,pz,0,dirX*0.25,0.0,dirZ*0.25,1.0);
+			spawnParticle(level,DifModParticles.NUKE_BLAST.get(),px,y+0.6,pz,0,dirX*0.22,0.0,dirZ*0.22,1.0);
 			if(i%2==0)
-				spawnParticle(level,ParticleTypes.CAMPFIRE_COSY_SMOKE,px,groundY+0.5,pz,0,dirX*0.08,0.03,dirZ*0.08,1.0);
-			if(i%3==0)
-				spawnParticle(level,ParticleTypes.POOF,px,groundY+0.5,pz,0,dirX*0.18,0.04,dirZ*0.18,1.0);
+				spawnParticle(level,ParticleTypes.CAMPFIRE_COSY_SMOKE,px,y+0.4,pz,0,dirX*0.06,0.02,dirZ*0.06,1.0);
+			if(i%4==0)
+				spawnParticle(level,ParticleTypes.LARGE_SMOKE,px,y+0.3,pz,0,dirX*0.10,0.02,dirZ*0.10,1.0);
 		}
-	}
-	private static double getSurfaceY(ServerLevel level,double px,double fallbackY,double pz){
-		int bx=Mth.floor(px), bz=Mth.floor(pz);
-		if(!level.hasChunk(bx>>4,bz>>4)) return fallbackY;
-		int surface=level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,bx,bz);
-		return Math.abs(surface-fallbackY)>80?fallbackY:surface;
 	}
 	private static void tickVaporRing(ServerLevel level,double x,double ringY,double z,int maxRadius,int age,RandomSource random){
 		double progress=(age-12.0)/28.0;
