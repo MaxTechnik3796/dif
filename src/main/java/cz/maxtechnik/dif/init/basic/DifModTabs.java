@@ -29,7 +29,6 @@ public class DifModTabs{
 		tabData.accept(PORTAL_GUN);
 		tabData.accept(JETPACK);
 		tabData.accept(CHUNK_LOADER);
-		tabData.accept(NUKE);
 		tabData.accept(FAST_POWERED_RAIL);
 		tabData.accept(FAST_RAIL);
 		tabData.accept(EVENT_BUS);

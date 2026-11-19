@@ -213,7 +213,6 @@ public class DifModItems{
 
 	public static final DeferredItem<Item>BIG_GIRDER=block(DifModBlocks.BIG_GIRDER);
 
-	public static final DeferredItem<Item>NUKE=block(DifModBlocks.NUKE,new Item.Properties().stacksTo(16));
 
 	public static final DeferredItem<Item>ENGINE_BASE=block(DifModBlocks.ENGINE_BASE);
 	public static final DeferredItem<Item>ENGINE_PORTABLE=block(DifModBlocks.ENGINE_PORTABLE);

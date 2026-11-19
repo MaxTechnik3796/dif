@@ -1,8 +1,6 @@
 package cz.maxtechnik.dif.block.entity;
 
 import cz.maxtechnik.dif.block.FryingTable;
-import cz.maxtechnik.dif.block.Nuke;
-import cz.maxtechnik.dif.init.basic.DifModItems;
 import cz.maxtechnik.dif.init.other.DifModBlockEntities;
 import cz.maxtechnik.dif.init.other.DifModRecipes;
 import cz.maxtechnik.dif.recipe.FryingRecipe;
@@ -147,16 +145,13 @@ public class FryingTableBlockEntity extends RandomizableContainerBlockEntity imp
 		if(!newState.equals(blockState))
 			world.setBlock(pos,newState,3);
 		ItemStack inputStack=be.getItem(INPUT_SLOT);
-		boolean isExplosive=inputStack.is(Items.ICE)||inputStack.is(DifModItems.NUKE.get());
+		boolean isExplosive=inputStack.is(Items.ICE);
 		if(isExplosive){
 			if(heated&&hasOil){
 				be.progress++;
 				if(be.progress>=100){
 					be.progress=0;
-					if(inputStack.is(Items.ICE))
-						world.explode(null,pos.getX(),pos.getY(),pos.getZ(),5,Level.ExplosionInteraction.BLOCK);
-					else
-						Nuke.spawnNuclearExplosion(world,pos);
+					world.explode(null,pos.getX(),pos.getY(),pos.getZ(),5,Level.ExplosionInteraction.BLOCK);
 				}
 				be.setChanged();
 			}else{

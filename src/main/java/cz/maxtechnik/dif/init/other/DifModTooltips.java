@@ -25,7 +25,6 @@ public class DifModTooltips{
 			FLUID_DRAIN,
 			QUARRY,
 			CHUNK_LOADER,
-			NUKE,
 			MITHRIL_FLUID_TANK
 	);
 	@SubscribeEvent

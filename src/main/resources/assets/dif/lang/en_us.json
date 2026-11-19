@@ -186,11 +186,9 @@
 	"block.dif.quarry_frame":"Quarry Frame",
 	"block.dif.quarry_landmark":"Quarry Landmark",
 	"item.dif.quarry_landmark":"Quarry Landmark",
-	"entity.dif.nuclear_explosion":"Nuclear Explosion",
 	"block.dif.distillation_tank":"Distillation Tank",
 	"block.dif.mithril_fluid_tank":"Mithril Fluid Tank",
 	"jei.dif.distillation": "Distillation",
-	"block.dif.nuke":"Nuke",
 	"block.dif.big_girder":"Big Metal Girder",
 
 	"block.dif.zinc_casing":"Zinc Casing",
@@ -288,9 +286,6 @@
 	"block.dif.chunk_loader.tooltip.condition1":"When R-Clicked with Wrench",
 	"block.dif.chunk_loader.tooltip.behaviour1":"Changes loading _distance_",
 
-	"block.dif.nuke.tooltip.summary":"Devastating nuclear explosive",
-	"block.dif.nuke.tooltip.condition1":"When Powered by Redstone",
-	"block.dif.nuke.tooltip.behaviour1":"Triggers a massive _explosion_",
 
 	"block.dif.mithril_fluid_tank.tooltip.summary":"Higher capacity fluid tank",
 	"block.dif.mithril_fluid_tank.tooltip.condition1":"When Placed",

@@ -21,26 +21,6 @@ import java.awt.*;
 public class ClientVisualEffectsRenderer{
 	private static boolean wasExperienceActive=false;
 	private static SoundInstance playingExperienceSound=null;
-	private static float nukeFlashIntensity=0.0F;
-	private static float nukeShakeIntensity=0.0F;
-	private static int pendingShockwaveTicks=-1;
-	private static float pendingShockwaveStrength=0.0F;
-	public static void triggerNukeEffects(double x,double y,double z,float intensity){
-		Minecraft mc=Minecraft.getInstance();
-		Player player=mc.player;
-		if(player==null) return;
-		double dist=Math.sqrt(player.distanceToSqr(x,y,z));
-		if(dist<500.0){
-			float factor=(float)Math.max(0.0,1.0-(dist/500.0));
-			nukeFlashIntensity=Math.clamp(Math.max(nukeFlashIntensity,factor*intensity*1.8F),0.0F,1.4F);
-			if(dist<45.0){
-				nukeShakeIntensity=Math.clamp(Math.max(nukeShakeIntensity,factor*intensity),0.0F,1.0F);
-			}else{
-				pendingShockwaveTicks=(int)(dist/12.0);
-				pendingShockwaveStrength=Math.clamp(factor*intensity,0.2F,1.0F);
-			}
-		}
-	}
 	@SubscribeEvent
 	public static void onClientTick(ClientTickEvent.Pre event){
 		Minecraft mc=Minecraft.getInstance();
@@ -66,21 +46,6 @@ public class ClientVisualEffectsRenderer{
 			}
 			wasExperienceActive=isExperience;
 		}
-		if(pendingShockwaveTicks>0){
-			pendingShockwaveTicks--;
-			if(pendingShockwaveTicks==0&&player!=null){
-				nukeShakeIntensity=Math.max(nukeShakeIntensity,pendingShockwaveStrength);
-				player.level().playLocalSound(player.getX(),player.getY(),player.getZ(),SoundEvents.GENERIC_EXPLODE.value(),SoundSource.BLOCKS,4.0F,0.55F,false);
-				player.level().playLocalSound(player.getX(),player.getY(),player.getZ(),SoundEvents.LIGHTNING_BOLT_THUNDER,SoundSource.BLOCKS,4.0F,0.65F,false);
-				pendingShockwaveTicks=-1;
-			}
-		}
-		if(nukeFlashIntensity>0.0F){
-			nukeFlashIntensity=Math.max(0.0F,nukeFlashIntensity-0.02F);
-		}
-		if(nukeShakeIntensity>0.0F){
-			nukeShakeIntensity=Math.max(0.0F,nukeShakeIntensity-0.012F);
-		}
 	}
 	@SubscribeEvent
 	public static void onCameraSetup(ViewportEvent.ComputeCameraAngles event){
@@ -95,13 +60,6 @@ public class ClientVisualEffectsRenderer{
 			event.setYaw(yaw);
 			event.setPitch(pitch);
 			event.setRoll(roll);
-		}
-		if(nukeShakeIntensity>0.0F){
-			float shake=nukeShakeIntensity*6.5F;
-			float t=player.tickCount;
-			event.setPitch(event.getPitch()+(float)(Math.sin(t*1.8)*shake*0.7));
-			event.setYaw(event.getYaw()+(float)(Math.cos(t*1.5)*shake*0.8));
-			event.setRoll(event.getRoll()+(float)(Math.sin(t*2.3)*shake*0.5));
 		}
 	}
 	@SubscribeEvent
@@ -129,12 +87,6 @@ public class ClientVisualEffectsRenderer{
 			float alpha=0.18F+pulse*0.25F;
 			int color=((int)(alpha*255)<<24)|(rgb&0xFFFFFF);
 			gg.fill(0,0,w,h,color);
-		}
-		if(nukeFlashIntensity>0.0F){
-			int flashAlpha=(int)(Math.min(1.0F,nukeFlashIntensity)*210.0F);
-			if(flashAlpha>0){
-				gg.fill(0,0,w,h,(flashAlpha<<24)|0xF5D9FF);
-			}
 		}
 	}
 }

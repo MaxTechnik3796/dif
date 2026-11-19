@@ -4,7 +4,6 @@ import cz.maxtechnik.dif.DifMod;
 import cz.maxtechnik.dif.network.EnderOpenMessage;
 import cz.maxtechnik.dif.network.JetpackFlyMessage;
 import cz.maxtechnik.dif.network.JetpackSyncMessage;
-import cz.maxtechnik.dif.network.NukeDetonationMessage;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -19,6 +18,5 @@ public class DifModNetworking{
 		registrar.playToServer(JetpackFlyMessage.TYPE,JetpackFlyMessage.STREAM_CODEC,JetpackFlyMessage::handle);
 		registrar.playToServer(EnderOpenMessage.TYPE,EnderOpenMessage.STREAM_CODEC,EnderOpenMessage::handle);
 		registrar.playToClient(JetpackSyncMessage.TYPE,JetpackSyncMessage.STREAM_CODEC,JetpackSyncMessage::handle);
-		registrar.playToClient(NukeDetonationMessage.TYPE,NukeDetonationMessage.STREAM_CODEC,NukeDetonationMessage::handle);
 	}
 }

@@ -40,7 +40,6 @@
 		"dif:raw_nickel_block",
 		"dif:nickel_ore",
 		"dif:deepslate_nickel_ore",
-		"dif:nano_glass",
-		"dif:nuke"
+		"dif:nano_glass"
 	]
 }
